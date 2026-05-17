@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1920, initial-scale=1" />
+  <title>Wake Runtime Prototype 01-02</title>
+  <style>
+    @font-face {
+      font-family: "SF Pro Display Local";
+      src: url("../../02-assets/fonts/sf-pro/payload-extract/Library/Fonts/SF-Pro-Display-Regular.otf") format("opentype");
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "SF Pro Display Local";
+      src: url("../../02-assets/fonts/sf-pro/payload-extract/Library/Fonts/SF-Pro-Display-Semibold.otf") format("opentype");
+      font-weight: 600;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "SF Pro Display Local";
+      src: url("../../02-assets/fonts/sf-pro/payload-extract/Library/Fonts/SF-Pro-Display-Bold.otf") format("opentype");
+      font-weight: 700;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "SF Pro Display Local";
+      src: url("../../02-assets/fonts/sf-pro/payload-extract/Library/Fonts/SF-Pro-Display-Heavy.otf") format("opentype");
+      font-weight: 800;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "SF Pro Text Local";
+      src: url("../../02-assets/fonts/sf-pro/payload-extract/Library/Fonts/SF-Pro-Text-Regular.otf") format("opentype");
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "SF Pro Text Local";
+      src: url("../../02-assets/fonts/sf-pro/payload-extract/Library/Fonts/SF-Pro-Text-Medium.otf") format("opentype");
+      font-weight: 500;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "SF Pro Text Local";
+      src: url("../../02-assets/fonts/sf-pro/payload-extract/Library/Fonts/SF-Pro-Text-Semibold.otf") format("opentype");
+      font-weight: 600;
+      font-style: normal;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --phi: 1.618;
+      --size--1: calc(18px / var(--phi));
+      --size-0: 18px;
+      --size-1: calc(var(--size-0) * var(--phi));
+      --size-2: calc(var(--size-1) * var(--phi));
+      --size-3: calc(var(--size-2) * var(--phi));
+      --paper: #fbfbf8;
+      --silver: #eef1f4;
+      --silver-2: #e3e8ee;
+      --ink: #17191c;
+      --ink-2: #2b2f34;
+      --muted: rgba(43, 47, 52, 0.68);
+      --amber: #b08a57;
+      --blue: #6f8296;
+      --red: #9a514b;
+      --grid: rgba(23, 25, 28, 0.04);
+      --border: rgba(23, 25, 28, 0.10);
+      --shadow: rgba(98, 114, 132, 0.12);
+      --ui: "SF Pro Text Local", "Segoe UI", Arial, sans-serif;
+      --ui-display: "SF Pro Display Local", "SF Pro Text Local", "Segoe UI", Arial, sans-serif;
+      --jp: "Noto Sans JP", "BIZ UDPGothic", Meiryo, sans-serif;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: linear-gradient(180deg, #dde3ea 0%, #edf1f5 24%, #f6f8fa 100%);
+      color: var(--ink);
+      font-family: var(--ui);
+    }
+
+    body {
+      background:
+        radial-gradient(ellipse at 50% -8%, rgba(255,255,255,.98) 0%, rgba(255,255,255,.78) 18%, transparent 42%),
+        radial-gradient(ellipse at 50% 118%, rgba(208,216,226,.32) 0%, transparent 42%),
+        radial-gradient(circle at 8% 2%, rgba(162,174,190,.12) 0%, transparent 24%),
+        radial-gradient(circle at 92% 2%, rgba(162,174,190,.12) 0%, transparent 24%),
+        linear-gradient(135deg, rgba(255,255,255,.34) 0%, rgba(255,255,255,0) 38%),
+        linear-gradient(180deg, #fbfcfd 0%, #f3f6f9 28%, #e7edf2 64%, #dbe2e9 100%);
+    }
+
+    .viewport {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .runtime {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform-origin: top left;
+      overflow: hidden;
+    }
+
+    .hud {
+      position: absolute;
+      top: 22px;
+      right: 28px;
+      z-index: 20;
+      display: flex;
+      gap: 18px;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(15, 22, 32, 0.72);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 16px 32px var(--shadow);
+      font-size: var(--size--1);
+      color: var(--muted);
+    }
+
+    .hud strong {
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .caption-rail {
+      position: absolute;
+      left: 50%;
+      bottom: 52px;
+      transform: translateX(-50%);
+      width: 1180px;
+      min-height: 96px;
+      z-index: 18;
+      display: grid;
+      align-items: center;
+      padding: 18px 28px 20px;
+      border-radius: 26px;
+      border: 1px solid rgba(23, 25, 28, 0.08);
+      background: linear-gradient(180deg, rgba(255,255,255,.84), rgba(255,255,255,.72));
+      box-shadow: 0 1px 0 rgba(255,255,255,.94) inset, 0 18px 44px rgba(98,114,132,.14);
+      backdrop-filter: blur(18px);
+      opacity: 0;
+      transition: opacity 260ms ease, transform 260ms ease;
+      pointer-events: none;
+      display: none;
+    }
+
+    .caption-rail.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .caption-text {
+      font-family: var(--ui);
+      font-size: var(--size-1);
+      line-height: 1.38;
+      color: rgba(23, 25, 28, 0.76);
+      letter-spacing: 0.005em;
+      font-weight: 600;
+    }
+
+    .caption-text .soft {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .caption-text .emph-gold {
+      color: var(--amber);
+      font-weight: 800;
+    }
+
+    .caption-text .emph-blue {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .caption-text .chip {
+      display: inline-block;
+      padding: 2px 12px 4px;
+      margin: 0 4px;
+      border-radius: 999px;
+      background: rgba(176, 138, 87, 0.12);
+      border: 1px solid rgba(176, 138, 87, 0.16);
+      color: var(--amber);
+      font-size: .88em;
+      font-weight: 800;
+      vertical-align: baseline;
+    }
+
+    .caption-rail.is-note {
+      background: linear-gradient(180deg, rgba(255,255,255,.84), rgba(248,250,252,.76));
+    }
+
+    .caption-rail.is-answer {
+      background: linear-gradient(180deg, rgba(243,247,251,.90), rgba(234,241,248,.82));
+      border-color: rgba(111, 130, 150, 0.18);
+    }
+
+    .stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-rows: 88px 1fr 74px;
+      padding: 44px 72px 38px;
+      opacity: 0;
+      transform: translateX(32px) scale(0.985);
+      transition: opacity 700ms ease, transform 700ms ease;
+      pointer-events: none;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+
+    .topbar, .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar {
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .footer {
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: var(--size--1);
+      letter-spacing: 0.04em;
+    }
+
+    .slide-meta {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .slide-num {
+      color: var(--amber);
+      font-size: var(--size--1);
+      font-weight: 800;
+      letter-spacing: 0.14em;
+    }
+
+    .slide-title {
+      color: var(--muted);
+      font-size: var(--size-1);
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      font-family: var(--ui-display);
+    }
+
+    .topic-tag {
+      color: var(--amber);
+      font-size: var(--size--1);
+      font-weight: 800;
+      border: 1px solid rgba(176, 138, 87, 0.24);
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: rgba(255,255,255,.62);
+      font-family: var(--ui-display);
+    }
+
+    .body {
+      display: grid;
+      align-content: center;
+      gap: 18px;
+      padding: 28px 0 34px;
+    }
+
+    .quote-panel,
+    .quiz-panel {
+      width: 1236px;
+      min-height: 764px;
+      justify-self: center;
+      padding: 46px 50px;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.60);
+      box-shadow: 0 1px 0 rgba(255,255,255,.92) inset, 0 24px 48px var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .quote-panel {
+      display: grid;
+      align-content: center;
+      gap: 14px;
+    }
+
+    .jp-line {
+      font-family: var(--jp);
+      font-weight: 700;
+      line-height: 1.48;
+      letter-spacing: 0.01em;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 520ms ease, transform 520ms ease;
+    }
+
+    .slide-01 .jp-line {
+      font-size: var(--size-2);
+    }
+
+    .slide-02 .jp-line {
+      font-size: var(--size-2);
+    }
+
+    .slide-02-tight {
+      font-size: calc(var(--size-2) * 0.9) !important;
+      line-height: 1.34;
+    }
+
+    .jp-line.long {
+      font-size: var(--size-2);
+    }
+
+    .text-line,
+    .takeaway,
+    .quick-rule,
+    .choice {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 520ms ease, transform 520ms ease;
+    }
+
+    .text-line {
+      font-size: var(--size-1);
+      color: var(--ink-2);
+      line-height: 1.45;
+      font-family: var(--ui);
+    }
+
+    .takeaway {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+      font-size: var(--size-1);
+      font-weight: 800;
+      line-height: 1.3;
+      letter-spacing: 0.01em;
+      font-family: var(--ui-display);
+    }
+
+    .takeaway .emph {
+      color: var(--amber);
+    }
+
+    .quiz-panel {
+      display: grid;
+      align-content: center;
+      gap: 12px;
+    }
+
+    .slide-02-body .quiz-panel {
+      min-height: 500px;
+    }
+
+    .choices {
+      display: grid;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .choice {
+      padding: 14px 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(247, 241, 229, 0.12);
+      background: rgba(255, 255, 255, 0.02);
+      font-size: var(--size-1);
+      color: var(--ink-2);
+      font-family: var(--ui);
+    }
+
+    .choice.correct {
+      border-color: rgba(111, 130, 150, 0.55);
+      background: rgba(111, 130, 150, 0.14);
+      box-shadow: 0 0 0 2px rgba(111, 130, 150, 0.10) inset;
+    }
+
+    .answer-bar {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 520ms ease, transform 520ms ease;
+      margin-top: 2px;
+      padding: 14px 18px;
+      border-left: 4px solid var(--blue);
+      background: rgba(111, 130, 150, 0.12);
+      border-radius: 14px;
+      font-size: var(--size-1);
+      font-weight: 800;
+      font-family: var(--ui-display);
+    }
+
+    .quick-rule {
+      display: grid;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .rule-item {
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.56);
+      border: 1px solid rgba(23,25,28,.06);
+      font-size: var(--size-1);
+      line-height: 1.42;
+      color: var(--ink-2);
+      font-family: var(--ui);
+    }
+
+    .rule-item strong {
+      color: var(--amber);
+    }
+
+    .hl-amber {
+      color: var(--amber);
+    }
+
+    .hl-blue {
+      color: var(--blue);
+    }
+
+    .visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .pulse {
+      animation: pulse 900ms ease;
+    }
+
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(123, 176, 255, 0.00); }
+      35%  { box-shadow: 0 0 0 16px rgba(123, 176, 255, 0.12); }
+      100% { box-shadow: 0 0 0 0 rgba(123, 176, 255, 0.00); }
+    }
+  </style>
+</head>
+<body>
+  <div class="viewport">
+  <div class="runtime">
+    <div class="hud">
+      <span><strong>Prototype</strong> script-driven runtime</span>
+      <span>Space = play/pause</span>
+      <span>R = restart</span>
+    </div>
+
+    <div class="stage">
+      <section class="slide slide-01 active" data-slide="01">
+        <div class="topbar">
+          <div class="slide-meta">
+            <span class="slide-num">01</span>
+            <span class="slide-title">Tình huống mở đầu</span>
+          </div>
+          <span class="topic-tag">JLPT N2 · わけ</span>
+        </div>
+
+        <div class="body" style="justify-items:center;">
+          <div class="quote-panel">
+            <div class="jp-line" data-reveal="01-1">「行きたくない<span class="hl-amber">わけじゃない</span>んだけど、」</div>
+            <div class="jp-line long" data-reveal="01-2">「明日N2だから、今夜は遊びに行く<span class="hl-amber">わけにはいかない</span>んだ。」</div>
+            <div class="takeaway" data-reveal="01-4">
+              <div>Cùng có <span class="hl-amber">わけ</span></div>
+              <div>nhưng <span class="emph">KHÔNG cùng mạch logic</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <span>Skeleton → Hook contrast</span>
+          <span>01 / 02</span>
+        </div>
+      </section>
+
+      <section class="slide slide-02" data-slide="02">
+        <div class="topbar">
+          <div class="slide-meta">
+            <span class="slide-num">02</span>
+            <span class="slide-title">Thử chọn nhanh</span>
+          </div>
+          <span class="topic-tag">JLPT N2 · わけ</span>
+        </div>
+
+        <div class="body slide-02-body" style="justify-items:center;">
+          <div class="quiz-panel">
+            <div class="jp-line slide-02-tight" data-reveal="02-1">行きたくない＿＿んだけど、</div>
+            <div class="jp-line slide-02-tight" data-reveal="02-1b">明日N2だから、今夜は遊びに行く＿＿。</div>
+
+            <div class="choices">
+              <div class="choice" data-reveal="02-2" data-choice="A">A. わけでは / わけには</div>
+              <div class="choice" data-reveal="02-2" data-choice="B">B. わけが / わけでは</div>
+              <div class="choice" data-reveal="02-2" data-choice="C">C. わけだ / わけが</div>
+            </div>
+
+            <div class="answer-bar" data-reveal="02-3">Đáp án là <span class="hl-blue">A</span>.</div>
+
+            <div class="quick-rule" data-reveal="02-4">
+              <div class="rule-item"><strong>わけではない</strong> = không phải là... / không có nghĩa là...</div>
+              <div class="rule-item"><strong>わけにはいかない</strong> = không thể làm vì có ràng buộc</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <span>Script pause + reveal drive the stage</span>
+          <span>02 / 02</span>
+        </div>
+      </section>
+    </div>
+
+    <div class="caption-rail visible is-note" id="captionRail">
+      <div class="caption-text" id="captionText">Bạn đã bao giờ gặp cảm giác này chưa?</div>
+    </div>
+  </div>
+  </div>
+
+  <script>
+    const scenes = [
+      {
+        slide: "01",
+        steps: [
+          { at: 200, caption: { html: 'Bạn đã bao giờ gặp cảm giác này chưa?', tone: 'note' } },
+          { at: 400, reveal: ["01-1"], caption: { html: 'Không phải là <span class="emph-gold">không muốn đi</span>.', tone: 'note' } },
+          { at: 1900, reveal: ["01-2"], caption: { html: 'Nhưng mai thi N2 rồi, nên tối nay <span class="emph-blue">không đi được</span>.', tone: 'note' } },
+          { at: 3600, pulse: ["01-1", "01-2"], caption: { html: 'Nhìn giống nhau ở chữ <span class="chip">わけ</span>, nhưng <span class="emph-gold">mạch logic khác</span>.', tone: 'note' } },
+          { at: 4700, reveal: ["01-4"], caption: { html: 'Chỗ khó không nằm ở chữ. <span class="soft">Chỗ khó nằm ở cách người nói đang nghĩ.</span>', tone: 'note' } },
+          { at: 7600, transitionTo: "02" }
+        ]
+      },
+      {
+        slide: "02",
+        steps: [
+          { at: 200, caption: { html: 'Thử dừng <span class="emph-gold">3 giây</span> và chọn nhanh trước.', tone: 'note' } },
+          { at: 400, reveal: ["02-1", "02-1b"] },
+          { at: 1600, reveal: ["02-2"], caption: { html: 'Đừng dịch vội. <span class="soft">Hãy chọn theo logic nghe tự nhiên nhất.</span>', tone: 'note' } },
+          { at: 4700, reveal: ["02-3"], markChoice: "A", caption: { html: 'Đáp án là <span class="emph-blue">A</span>.', tone: 'answer' } },
+          { at: 6300, reveal: ["02-4"], caption: { html: '<span class="chip">わけではない</span> = không phải là... &nbsp;&nbsp; <span class="chip">わけにはいかない</span> = không thể làm vì có ràng buộc.', tone: 'answer' } }
+        ]
+      }
+    ];
+
+    const state = {
+      sceneIndex: 0,
+      timeouts: [],
+      playing: false
+    };
+
+    function clearTimers() {
+      state.timeouts.forEach((id) => window.clearTimeout(id));
+      state.timeouts = [];
+    }
+
+    function setCaption(html, tone = "note") {
+      const rail = document.getElementById("captionRail");
+      const text = document.getElementById("captionText");
+      rail.classList.remove("is-note", "is-answer");
+      rail.classList.add("visible", tone === "answer" ? "is-answer" : "is-note");
+      text.innerHTML = html;
+    }
+
+    function fitRuntime() {
+      const runtime = document.querySelector(".runtime");
+      const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      runtime.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    }
+
+    function hideAllReveals() {
+      document.querySelectorAll("[data-reveal]").forEach((el) => {
+        el.classList.remove("visible", "pulse", "correct");
+      });
+    }
+
+    function setActiveSlide(slideId) {
+      document.querySelectorAll(".slide").forEach((slide) => {
+        slide.classList.toggle("active", slide.dataset.slide === slideId);
+      });
+    }
+
+    function reveal(ids) {
+      ids.forEach((id) => {
+        document.querySelectorAll(`[data-reveal="${id}"]`).forEach((el) => {
+          el.classList.add("visible");
+        });
+      });
+    }
+
+    function pulse(ids) {
+      ids.forEach((id) => {
+        document.querySelectorAll(`[data-reveal="${id}"]`).forEach((el) => {
+          el.classList.remove("pulse");
+          void el.offsetWidth;
+          el.classList.add("pulse");
+        });
+      });
+    }
+
+    function markChoice(choiceId) {
+      const el = document.querySelector(`[data-choice="${choiceId}"]`);
+      if (el) el.classList.add("correct", "visible", "pulse");
+    }
+
+    function runScene(sceneIndex) {
+      clearTimers();
+      hideAllReveals();
+      state.sceneIndex = sceneIndex;
+      const scene = scenes[sceneIndex];
+      setActiveSlide(scene.slide);
+
+      scene.steps.forEach((step) => {
+        const id = window.setTimeout(() => {
+          if (step.reveal) reveal(step.reveal);
+          if (step.pulse) pulse(step.pulse);
+          if (step.markChoice) markChoice(step.markChoice);
+          if (step.caption) setCaption(step.caption.html, step.caption.tone);
+          if (step.transitionTo) {
+            const nextIndex = scenes.findIndex((s) => s.slide === step.transitionTo);
+            if (nextIndex >= 0) runScene(nextIndex);
+          }
+        }, step.at);
+        state.timeouts.push(id);
+      });
+    }
+
+    function play() {
+      state.playing = true;
+      runScene(0);
+    }
+
+    function pause() {
+      state.playing = false;
+      clearTimers();
+    }
+
+    function togglePlay() {
+      if (state.playing) {
+        pause();
+      } else {
+        play();
+      }
+    }
+
+    function restart() {
+      pause();
+      play();
+    }
+
+    window.addEventListener("resize", fitRuntime);
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === " ") {
+        e.preventDefault();
+        togglePlay();
+      } else if (e.key.toLowerCase() === "r") {
+        e.preventDefault();
+        restart();
+      }
+    });
+
+    fitRuntime();
+    play();
+  </script>
+</body>
+</html>

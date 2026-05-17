@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lucida.local/schemas/slots.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["template_id", "version", "required_slots"],
+  "properties": {
+    "template_id": { "type": "string", "pattern": "^[a-z0-9]+(?:_[a-z0-9]+)*$" },
+    "version": { "type": "string" },
+    "required_slots": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/slot" }
+    },
+    "optional_slots": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/slot" }
+    }
+  },
+  "$defs": {
+    "slot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["string", "string[]", "rows", "rich_jp"] },
+        "max_chars": { "type": "integer", "minimum": 1 },
+        "max_items": { "type": "integer", "minimum": 1 },
+        "escape": { "type": "boolean" }
+      }
+    }
+  }
+}

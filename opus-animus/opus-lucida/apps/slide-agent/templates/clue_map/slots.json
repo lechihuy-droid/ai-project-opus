@@ -1,0 +1,1 @@
+{"template_id":"clue_map","version":"1.0","required_slots":{"title":{"type":"string","max_chars":64},"checklist":{"type":"string[]","max_items":4,"max_chars":210},"mappings":{"type":"rows","max_items":4,"max_chars":430},"takeaway":{"type":"string","max_chars":130}},"optional_slots":{}}

@@ -1,0 +1,1 @@
+{"template_id":"hero_title","version":"1.0","required_slots":{"title":{"type":"string","max_chars":86},"subtitle":{"type":"string","max_chars":160},"footer_cue":{"type":"string","max_chars":80}},"optional_slots":{}}

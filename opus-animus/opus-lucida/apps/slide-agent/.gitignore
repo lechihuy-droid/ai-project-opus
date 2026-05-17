@@ -1,0 +1,3 @@
+node_modules/
+lessons/*/.baseline.html
+lessons/*/qa-findings-*.json

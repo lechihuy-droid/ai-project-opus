@@ -1,0 +1,1 @@
+{"template_id":"comparison_table","version":"1.0","required_slots":{"title":{"type":"string","max_chars":72},"rows":{"type":"rows","max_items":5,"max_chars":360}},"optional_slots":{}}

@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "version": "1.1",
+    "description": "Lucida V-Romaji Pitch Accent Mapping Rules (with JLPT N2/N3 Integration)",
+    "base_dialect": "Tokyo Standard"
+  },
+  "mora_processor": {
+    "description": "Quy tac tach phach (mora) bat buoc de ep he thong dem nhip",
+    "long_vowels": {
+      "ou": ["ô"], "uu": ["ư"], "ei": ["ê"],
+      "aa": ["a"], "ii": ["i"], "oo": ["ô"], "ee": ["ê"]
+    },
+    "diphthongs": {
+      "ai": ["a", "i"], "oi": ["o", "i"], "ui": ["u", "i"]
+    },
+    "vowel_assimilation": {
+      "description": "Khi mora don la nguyen am dung sau mora khac, no assimilate theo nguyen am cuoi cua mora truoc",
+      "u": {"o": "ô", "u": "ư", "a": "ư", "i": "ư", "e": "ư"},
+      "i": {"e": "ê", "i": "i", "default": "i"},
+      "e": {"default": "ê"}
+    }
+  },
+  "v_romaji_orthography": {
+    "description": "Tu dien anh xa cach viet de TTS tieng Viet (Azure/Google) doc dung am",
+    "mapping": {
+      "u": "ư", "o": "ô", "e": "ê",
+      "wa": "qua", "ke": "kê", "de": "đê", "do": "đô", "to": "tô",
+      "ko": "cô", "ku": "cu", "ka": "ca", "gi": "gí", "zu": "dư",
+      "tsu": "chư", "shi": "shi", "te": "tê", "be": "bê", "ma": "ma",
+      "su": "su", "na": "na", "i": "i", "ta": "ta", "ru": "ru",
+      "ha": "ha", "hi": "hi", "fu": "fu", "he": "hê", "ho": "hô",
+      "ra": "ra", "ri": "ri", "re": "rê", "ro": "rô",
+      "sa": "sa", "si": "si", "se": "sê", "so": "sô",
+      "ne": "nê", "ni": "ni", "no": "nô", "nu": "nu",
+      "mi": "mi", "mu": "mu", "me": "mê", "mo": "mô",
+      "ya": "ya", "yu": "yu", "yo": "yô",
+      "ba": "ba", "bi": "bi", "bu": "bu", "bo": "bô",
+      "pa": "pa", "pi": "pi", "pu": "pu", "pe": "pê", "po": "pô",
+      "ga": "ga", "gu": "gu", "ge": "gê", "go": "gô",
+      "za": "da", "ze": "đê", "zo": "đô",
+      "ja": "da", "ji": "đi", "jo": "đô", "ju": "đu",
+      "chi": "chi", "n": "n"
+    }
+  },
+  "pitch_to_tone_mapping": {
+    "L": "huyền",
+    "H": "ngang",
+    "P": "sắc"
+  },
+  "suffix_grammar_rules": {
+    "deaccenting_group": {
+      "description": "Hau to san bang: Bien toan bo tu thanh Heiban (L-H-H-H...)",
+      "suffixes": ["teki", "ka", "sei", "go", "gachi", "gimi", "kake", "tate", "muke", "zoi"],
+      "action": "apply_heiban_pattern"
+    },
+    "preaccenting_group": {
+      "description": "Hau to cam co: Day dinh trong am (P - Dau Sac) len ngay truoc no",
+      "suffixes": ["jin", "gatai", "darake", "kiri"],
+      "action": "set_peak_at_offset",
+      "target_mora_offset": -1
+    },
+    "dominant_group": {
+      "description": "Hau to ap dat: Dinh trong am nam o mot vi tri co dinh ben trong hau to",
+      "rules": [
+        { "suffix": "sugiru", "action": "set_peak_at_suffix_mora", "peak_index": 1 },
+        { "suffix": "douri", "action": "set_peak_at_suffix_mora", "peak_index": 0 },
+        { "suffix": "ppoi", "action": "set_peak_at_suffix_mora", "peak_index": 0 },
+        { "suffix": "nikui", "action": "set_peak_at_suffix_mora", "peak_index": 0 },
+        { "suffix": "yasui", "action": "set_peak_at_suffix_mora", "peak_index": 0 }
+      ]
+    },
+    "phrasal_reset_group": {
+      "description": "Tro tu ngat cau: Tao ranh gioi, buoc cao do khoi dong lai tu muc L",
+      "suffixes": ["node", "noni", "nara", "ba", "tsutsu", "tomo"],
+      "action": "insert_minor_phrase_boundary"
+    }
+  },
+  "conjugation_rules": {
+    "description": "Quy tac chia Dong tu & Tinh tu co ban",
+    "kunai": {
+      "heiban": {"action": "set_peak_at_target", "target_mora": "na"},
+      "kifuku": {"action": "set_peak_before_suffix", "suffix_start": "ku"}
+    },
+    "nai": {
+      "heiban": {"action": "apply_heiban_pattern"},
+      "kifuku": {"action": "set_peak_before_suffix", "suffix_start": "na"}
+    }
+  }
+}

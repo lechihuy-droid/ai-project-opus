@@ -1,0 +1,1 @@
+{"template_id":"two_column","version":"1.0","required_slots":{"title":{"type":"string","max_chars":72},"left_title":{"type":"string","max_chars":42},"right_title":{"type":"string","max_chars":42},"left_items":{"type":"string[]","max_items":4,"max_chars":220},"right_items":{"type":"string[]","max_items":4,"max_chars":220}},"optional_slots":{}}

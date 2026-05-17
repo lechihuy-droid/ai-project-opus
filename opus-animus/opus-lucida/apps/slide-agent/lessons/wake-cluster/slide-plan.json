@@ -1,0 +1,799 @@
+{
+  "lane_id": "wake-cluster",
+  "source_lesson": "",
+  "deck_meta": {
+    "deck_id": "wake-cluster-v1",
+    "title": "JLPT N2 · 4 mẫu わけ",
+    "audience": "Vietnamese late N3 / early N2 learners",
+    "theme_id": "lucida-n2",
+    "aspect_ratio": "16:9",
+    "frame_mode": "static"
+  },
+  "slides": [
+    {
+      "slide_id": "wake-01",
+      "slide_number": 1,
+      "role": "hero_title",
+      "phase": "Hook",
+      "template_id": "hero_title",
+      "learning_operation": "contrast",
+      "skeleton_link": "01-master-teaching-skeleton.md#3-hook-core",
+      "slots": {
+        "title": "Cùng có わけ, nhưng không cùng ý",
+        "subtitle": "Một câu đang đính chính. Một câu đang nói có ràng buộc.",
+        "footer_cue": "Ở câu này, người nói đang muốn nói gì?"
+      },
+      "design": {
+        "dominant_accent": "amber",
+        "visual_hierarchy": [
+          "title",
+          "subtitle",
+          "footer_cue"
+        ]
+      },
+      "production": {
+        "frame_mode": "static",
+        "requires_deck_stage": false
+      },
+      "qa": {
+        "risk": [
+          "hook_confusion"
+        ],
+        "required_checks": [
+          "slot_budget",
+          "template_fit",
+          "no_overflow"
+        ]
+      },
+      "source_section": "01-master-teaching-skeleton.md#3-hook-core",
+      "duration_sec": 8
+    },
+    {
+      "slide_id": "wake-02",
+      "slide_number": 2,
+      "role": "quiz",
+      "phase": "Try First",
+      "template_id": "quiz_before_after",
+      "learning_operation": "exam_decision",
+      "skeleton_link": "01-master-teaching-skeleton.md#3-hook-core",
+      "slots": {
+        "title": "Thử chọn nhanh",
+        "question": "行きたくない＿＿んだけど、\n明日N2だから、今夜は遊びに行く＿＿。",
+        "choices": [
+          "A. わけでは / わけには",
+          "B. わけが / わけでは",
+          "C. わけだ / わけが"
+        ],
+        "answer": "Đáp án: A",
+        "payoff": "Chỗ trống 1 là đính chính. Chỗ trống 2 là bị ràng buộc nên không đi được."
+      },
+      "design": {
+        "dominant_accent": "blue",
+        "visual_hierarchy": [
+          "title",
+          "question",
+          "answer"
+        ]
+      },
+      "production": {
+        "frame_mode": "static",
+        "requires_deck_stage": false
+      },
+      "qa": {
+        "risk": [
+          "quiz_static_mvp"
+        ],
+        "required_checks": [
+          "slot_budget",
+          "template_fit"
+        ]
+      },
+      "source_section": "01-master-teaching-skeleton.md#3-hook-core",
+      "duration_sec": 8
+    },
+    {
+      "slide_id": "wake-03",
+      "slide_number": 3,
+      "role": "key_message",
+      "phase": "Promise",
+      "template_id": "two_column",
+      "learning_operation": "speaker_action",
+      "skeleton_link": "01-master-teaching-skeleton.md#2-audience-and-promise",
+      "slots": {
+        "title": "Bài này giúp gì?",
+        "left_title": "Khi làm đề N2",
+        "left_items": [
+          "Đỡ chọn theo cảm giác quen",
+          "Biết nhìn clue và trap",
+          "Tách đáp án gần nghĩa"
+        ],
+        "right_title": "Khi nghe ngoài đời",
+        "right_items": [
+          "Nghe ra người nói đang kết luận",
+          "Nhận ra lúc họ đính chính",
+          "Phân biệt bác bỏ và ràng buộc"
+        ]
+      },
+      "design": {
+        "dominant_accent": "green",
+        "visual_hierarchy": [
+          "title",
+          "left_title",
+          "right_title"
+        ]
+      },
+      "production": {
+        "frame_mode": "static",
+        "requires_deck_stage": false
+      },
+      "qa": {
+        "risk": [
+          "too_many_outcomes"
+        ],
+        "required_checks": [
+          "slot_budget",
+          "template_fit"
+        ]
+      },
+      "source_section": "01-master-teaching-skeleton.md#2-audience-and-promise",
+      "duration_sec": 8
+    },
+    {
+      "slide_id": "wake-04",
+      "slide_number": 4,
+      "role": "key_message",
+      "phase": "Context",
+      "template_id": "key_message",
+      "learning_operation": "real_life_situation",
+      "skeleton_link": "01-master-teaching-skeleton.md#4-story-core",
+      "slots": {
+        "title": "Tình huống thực tế",
+        "key_message": "Không phải không muốn đi, nhưng tối nay có trách nhiệm phải làm.",
+        "bullets": [
+          "Đồng nghiệp rủ đi ăn tối",
+          "Tối nay phải gửi tài liệu cho khách",
+          "Muốn đi nhưng bị công việc giữ lại"
+        ]
+      },
+      "design": {
+        "dominant_accent": "red",
+        "visual_hierarchy": [
+          "title",
+          "key_message",
+          "bullets"
+        ]
+      },
+      "production": {
+        "frame_mode": "static",
+        "requires_deck_stage": false
+      },
+      "qa": {
+        "risk": [
+          "story_overexplains"
+        ],
+        "required_checks": [
+          "slot_budget",
+          "template_fit"
+        ]
+      },
+      "source_section": "01-master-teaching-skeleton.md#4-story-core",
+      "duration_sec": 8
+    },
+    {
+      "slide_id": "wake-05",
+      "slide_number": 5,
+      "role": "summary",
+      "phase": "Method",
+      "template_id": "summary",
+      "learning_operation": "clue_spotting",
+      "skeleton_link": "01-master-teaching-skeleton.md#5-big-idea",
+      "slots": {
+        "title": "Cách nhìn để phân biệt",
+        "items": [
+          "Ý nghĩa: mẫu này nói ý gì?",
+          "Dạng: mẫu này đi với dạng nào?",
+          "Cách dùng: dùng trong tình huống nào?",
+          "Đừng nhìn chữ わけ trước.",
+          "Nhìn người nói đang nhấn vào đâu.",
+          "Bốn mẫu わけ = bốn mạch logic."
+        ],
+        "takeaway": "Ở câu này, người nói đang muốn nói gì?"
+      },
+      "design": {
+        "dominant_accent": "violet",
+        "visual_hierarchy": [
+          "title",
+          "items",
+          "takeaway"
+        ]
+      },
+      "production": {
+        "frame_mode": "static",
+        "requires_deck_stage": false
+      },
+      "qa": {
+        "risk": [
+          "method_density"
+        ],
+        "required_checks": [
+          "slot_budget",
+          "template_fit",
+          "text_density"
+        ]
+      },
+      "source_section": "01-master-teaching-skeleton.md#5-big-idea",
+      "duration_sec": 8
+    },
+    {
+      "slide_id": "wake-06",
+      "slide_number": 6,
+      "role": "grammar_card",
+      "phase": "Grammar Core",
+      "template_id": "grammar_card_v2",
+      "learning_operation": "trap_elimination",
+      "skeleton_link": "01-master-teaching-skeleton.md#7-grammar-point-1",
+      "slots": {
+        "pattern_jp": "わけではない",
+        "speaker_action_vi": "Người nói đang đính chính lại một cách hiểu dễ bị lệch.",
+        "meaning_vi": "không phải là... / không có nghĩa là...",
+        "form_jp": "普通形 + わけではない",
+        "usage_vi": "Dùng khi muốn gỡ lại một cách hiểu sai.",
+        "example_jp": "行きたくないわけではありません。",
+        "trap_vi": "Đừng kéo sang わけがない nếu câu chỉ đang đính chính."
+      },
+      "design": {
+        "dominant_accent": "blue",
+        "visual_hierarchy": [
+          "pattern_jp",
+          "speaker_action_vi",
+          "example_jp"
+        ]
+      },
+      "production": {
+        "frame_mode": "static",
+        "requires_deck_stage": false
+      },
+      "qa": {
+        "risk": [
+          "correction_vs_denial"
+        ],
+        "required_checks": [
+          "slot_budget",
+          "template_fit"
+        ]
+      },
+      "source_section": "01-master-teaching-skeleton.md#7-grammar-point-1",
+      "duration_sec": 8
+    },
+    {
+      "slide_id": "wake-07",
+      "slide_number": 7,
+      "role": "grammar_card",
+      "phase": "Grammar Core",
+      "template_id": "grammar_card_v2",
+      "learning_operation": "real_life_situation",
+      "skeleton_link": "01-master-teaching-skeleton.md#7-grammar-point-2",
+      "slots": {
+        "pattern_jp": "わけにはいかない",
+        "speaker_action_vi": "Muốn cũng không làm được, vì có trách nhiệm hoặc ràng buộc.",
+        "meaning_vi": "không thể làm, vì có ràng buộc",
+        "form_jp": "V辞書形 + わけにはいかない",
+        "usage_vi": "Hay gặp với deadline, quy tắc, vai trò, trách nhiệm.",
+        "example_jp": "今夜は飲みに行くわけにはいきません。",
+        "trap_vi": "Khác わけがない: đây là hành động bị giữ lại.",
+        "bonus_vi": "Vない + わけにはいかない = không thể không làm"
+      },
+      "design": {
+        "dominant_accent": "green",
+        "visual_hierarchy": [
+          "pattern_jp",
+          "meaning_vi",
+          "example_jp"
+        ]
+      },
+      "production": {
+        "frame_mode": "static",
+        "requires_deck_stage": false
+      },
+      "qa": {
+        "risk": [
+          "constraint_missed"
+        ],
+        "required_checks": [
+          "slot_budget",
+          "template_fit"
+        ]
+      },
+      "source_section": "01-master-teaching-skeleton.md#7-grammar-point-2",
+      "duration_sec": 8
+    },
+    {
+      "slide_id": "wake-08",
+      "slide_number": 8,
+      "role": "grammar_card",
+      "phase": "Grammar Core",
+      "template_id": "grammar_card_v2",
+      "learning_operation": "speaker_action",
+      "skeleton_link": "01-master-teaching-skeleton.md#7-grammar-point-3",
+      "slots": {
+        "pattern_jp": "わけだ",
+        "speaker_action_vi": "Nghe thông tin rồi hiểu ra: à, ra là vậy.",
+        "meaning_vi": "thảo nào / ra là vậy",
+        "form_jp": "普通形 + わけだ",
+        "usage_vi": "Có dữ kiện ở trước, rồi chốt ra kết luận.",
+        "example_jp": "資料を送る必要がある。だから行けないわけだ。",
+        "trap_vi": "わけだ chỉ là kết luận, không tự mang nghĩa ràng buộc."
+      },
+      "design": {
+        "dominant_accent": "amber",
+        "visual_hierarchy": [
+          "pattern_jp",
+          "meaning_vi",
+          "example_jp"
+        ]
+      },
+      "production": {
+        "frame_mode": "static",
+        "requires_deck_stage": false
+      },
+      "qa": {
+        "risk": [
+          "conclusion_vs_constraint"
+        ],
+        "required_checks": [
+          "slot_budget",
+          "template_fit"
+        ]
+      },
+      "source_section": "01-master-teaching-skeleton.md#7-grammar-point-3",
+      "duration_sec": 8
+    },
+    {
+      "slide_id": "wake-09",
+      "slide_number": 9,
+      "role": "grammar_card",
+      "phase": "Grammar Core",
+      "template_id": "grammar_card_v2",
+      "learning_operation": "trap_elimination",
+      "skeleton_link": "01-master-teaching-skeleton.md#7-grammar-point-4",
+      "slots": {
+        "pattern_jp": "わけがない",
+        "speaker_action_vi": "Người nói bác bỏ rất mạnh: không thể nào lại như thế.",
+        "meaning_vi": "không thể nào... / làm gì có chuyện...",
+        "form_jp": "普通形 + わけがない",
+        "usage_vi": "Dùng khi gần như chắc điều đó không thể xảy ra.",
+        "example_jp": "みんなを嫌いなわけがない。",
+        "trap_vi": "Nếu chỉ gỡ hiểu lầm, chưa phải わけがない."
+      },
+      "design": {
+        "dominant_accent": "red",
+        "visual_hierarchy": [
+          "pattern_jp",
+          "meaning_vi",
+          "example_jp"
+        ]
+      },
+      "production": {
+        "frame_mode": "static",
+        "requires_deck_stage": false
+      },
+      "qa": {
+        "risk": [
+          "intensity_mismatch"
+        ],
+        "required_checks": [
+          "slot_budget",
+          "template_fit"
+        ]
+      },
+      "source_section": "01-master-teaching-skeleton.md#7-grammar-point-4",
+      "duration_sec": 8
+    },
+    {
+      "slide_id": "wake-10",
+      "slide_number": 10,
+      "role": "comparison",
+      "phase": "Contrast",
+      "template_id": "comparison_table",
+      "learning_operation": "contrast",
+      "skeleton_link": "01-master-teaching-skeleton.md#8-comparison-core",
+      "slots": {
+        "title": "Nhìn nhanh cả nhóm",
+        "rows": [
+          {
+            "label": "わけだ",
+            "value": "rút ra kết luận hợp lý",
+            "note": "có dữ kiện trước"
+          },
+          {
+            "label": "わけではない",
+            "value": "đính chính cách hiểu",
+            "note": "không phải theo nghĩa đó"
+          },
+          {
+            "label": "わけがない",
+            "value": "bác bỏ khả năng rất mạnh",
+            "note": "không thể nào"
+          },
+          {
+            "label": "わけにはいかない",
+            "value": "bị ràng buộc nên không làm được",
+            "note": "trách nhiệm / quy tắc"
+          }
+        ]
+      },
+      "design": {
+        "dominant_accent": "violet",
+        "visual_hierarchy": [
+          "title",
+          "rows"
+        ]
+      },
+      "production": {
+        "frame_mode": "static",
+        "requires_deck_stage": false
+      },
+      "qa": {
+        "risk": [
+          "comparison_density"
+        ],
+        "required_checks": [
+          "slot_budget",
+          "template_fit"
+        ]
+      },
+      "source_section": "01-master-teaching-skeleton.md#8-comparison-core",
+      "duration_sec": 8
+    },
+    {
+      "slide_id": "wake-11",
+      "slide_number": 11,
+      "role": "minimal_pair",
+      "phase": "Contrast",
+      "template_id": "minimal_pair",
+      "learning_operation": "contrast",
+      "skeleton_link": "01-master-teaching-skeleton.md#8-comparison-1",
+      "slots": {
+        "title": "Đính chính hay bác rất mạnh?",
+        "left_title": "わけではない",
+        "left_items": [
+          "Gỡ lại cách hiểu",
+          "Không phải là theo nghĩa A",
+          "Mức độ mềm hơn"
+        ],
+        "right_title": "わけがない",
+        "right_items": [
+          "Bác hẳn khả năng",
+          "Không thể nào lại là A",
+          "Mức độ rất mạnh"
+        ],
+        "pair_a": "嫌いなわけではない",
+        "pair_b": "嫌いなわけがない",
+        "trap": "Cùng nghe như phủ định, nhưng một bên đính chính, một bên bác hẳn khả năng."
+      },
+      "design": {
+        "dominant_accent": "amber",
+        "visual_hierarchy": [
+          "title",
+          "left_title",
+          "right_title"
+        ]
+      },
+      "production": {
+        "frame_mode": "static",
+        "requires_deck_stage": false
+      },
+      "qa": {
+        "risk": [
+          "correction_vs_denial"
+        ],
+        "required_checks": [
+          "slot_budget",
+          "template_fit"
+        ]
+      },
+      "source_section": "01-master-teaching-skeleton.md#8-comparison-1",
+      "duration_sec": 8
+    },
+    {
+      "slide_id": "wake-12",
+      "slide_number": 12,
+      "role": "minimal_pair",
+      "phase": "Contrast",
+      "template_id": "minimal_pair",
+      "learning_operation": "contrast",
+      "skeleton_link": "01-master-teaching-skeleton.md#8-comparison-2",
+      "slots": {
+        "title": "Khả năng hay ràng buộc?",
+        "left_title": "わけがない",
+        "left_items": [
+          "Phán đoán khả năng",
+          "Không thể nào xảy ra",
+          "Bác một nhận định"
+        ],
+        "right_title": "わけにはいかない",
+        "right_items": [
+          "Hành động bị giữ lại",
+          "Muốn cũng không làm được",
+          "Có trách nhiệm / quy tắc"
+        ],
+        "pair_a": "そんなことを言うわけがない",
+        "pair_b": "今日は休むわけにはいかない",
+        "trap": "Cùng dịch ra 'không thể', nhưng một bên là khả năng, một bên là ràng buộc."
+      },
+      "design": {
+        "dominant_accent": "blue",
+        "visual_hierarchy": [
+          "title",
+          "left_title",
+          "right_title"
+        ]
+      },
+      "production": {
+        "frame_mode": "static",
+        "requires_deck_stage": false
+      },
+      "qa": {
+        "risk": [
+          "constraint_missed"
+        ],
+        "required_checks": [
+          "slot_budget",
+          "template_fit"
+        ]
+      },
+      "source_section": "01-master-teaching-skeleton.md#8-comparison-2",
+      "duration_sec": 8
+    },
+    {
+      "slide_id": "wake-13",
+      "slide_number": 13,
+      "role": "clue_map",
+      "phase": "Exam Transfer",
+      "template_id": "clue_map",
+      "learning_operation": "clue_spotting",
+      "skeleton_link": "01-master-teaching-skeleton.md#9-clue-map",
+      "slots": {
+        "title": "Dấu hiệu để chọn mẫu",
+        "checklist": [
+          "Trước chỗ trống: đang có dữ kiện hay ràng buộc?",
+          "Sau chỗ trống: câu đi về hướng nào?",
+          "Người nói đang đính chính, bác bỏ, hay kết luận?",
+          "Không nhìn đáp án trước, nhìn mạch logic trước."
+        ],
+        "mappings": [
+          {
+            "label": "Gỡ hiểu lầm",
+            "value": "わけではない",
+            "note": "bẫy: わけがない"
+          },
+          {
+            "label": "Bác rất mạnh",
+            "value": "わけがない",
+            "note": "bẫy: わけではない"
+          },
+          {
+            "label": "Bị ràng buộc",
+            "value": "わけにはいかない",
+            "note": "bẫy: わけだ"
+          },
+          {
+            "label": "Rút kết luận",
+            "value": "わけだ",
+            "note": "bẫy: ràng buộc"
+          }
+        ],
+        "takeaway": "Hỏi trước: ở câu này, người nói đang muốn nói gì?"
+      },
+      "design": {
+        "dominant_accent": "violet",
+        "visual_hierarchy": [
+          "title",
+          "checklist",
+          "mappings"
+        ]
+      },
+      "production": {
+        "frame_mode": "static",
+        "requires_deck_stage": false
+      },
+      "qa": {
+        "risk": [
+          "clue_missed"
+        ],
+        "required_checks": [
+          "slot_budget",
+          "template_fit"
+        ]
+      },
+      "source_section": "01-master-teaching-skeleton.md#9-clue-map",
+      "duration_sec": 8
+    },
+    {
+      "slide_id": "wake-14",
+      "slide_number": 14,
+      "role": "worked_example",
+      "phase": "Worked Example",
+      "template_id": "worked_example",
+      "learning_operation": "trap_elimination",
+      "skeleton_link": "01-master-teaching-skeleton.md#10-worked-example",
+      "slots": {
+        "title": "Giải đề từng bước",
+        "question": "行きたくない＿＿んだけど、\n明日N2だから、今夜は遊びに行く＿＿。",
+        "choices": [
+          "A. わけでは / わけには",
+          "B. わけが / わけでは",
+          "C. わけだ / わけが"
+        ],
+        "steps": [
+          "Chỗ trống 1: ＿＿んだけど → đang đính chính.",
+          "Chọn わけでは; わけが nghe bác quá mạnh.",
+          "Chỗ trống 2: 明日N2だから → có ràng buộc.",
+          "Chọn わけには; わけだ chỉ là kết luận.",
+          "Loại B/C vì lệch ý người nói."
+        ],
+        "answer": "Đáp án: A",
+        "rule": "Đính chính → わけではない. Ràng buộc → わけにはいかない."
+      },
+      "design": {
+        "dominant_accent": "red",
+        "visual_hierarchy": [
+          "title",
+          "steps",
+          "answer"
+        ]
+      },
+      "production": {
+        "frame_mode": "static",
+        "requires_deck_stage": false
+      },
+      "qa": {
+        "risk": [
+          "worked_example_density"
+        ],
+        "required_checks": [
+          "slot_budget",
+          "template_fit"
+        ]
+      },
+      "source_section": "01-master-teaching-skeleton.md#10-worked-example",
+      "duration_sec": 8
+    },
+    {
+      "slide_id": "wake-15",
+      "slide_number": 15,
+      "role": "diagnostic_practice",
+      "phase": "Practice",
+      "template_id": "diagnostic_practice",
+      "learning_operation": "diagnostic_feedback",
+      "skeleton_link": "01-master-teaching-skeleton.md#11-diagnostic-practice",
+      "slots": {
+        "title": "Luyện chẩn đoán",
+        "question": "あの人がみんなを嫌いな＿＿。",
+        "choices": [
+          "A. わけではない",
+          "B. わけがない",
+          "C. わけだ"
+        ],
+        "answer": "Đáp án: B",
+        "feedback": [
+          "Ý cần nói: không thể nào lại ghét mọi người.",
+          "嫌い là な-adjective → 嫌いな + わけがない.",
+          "Bẫy là chọn わけではない vì thấy phủ định."
+        ]
+      },
+      "design": {
+        "dominant_accent": "violet",
+        "visual_hierarchy": [
+          "title",
+          "question",
+          "answer"
+        ]
+      },
+      "production": {
+        "frame_mode": "static",
+        "requires_deck_stage": false
+      },
+      "qa": {
+        "risk": [
+          "intensity_mismatch",
+          "form_error"
+        ],
+        "required_checks": [
+          "slot_budget",
+          "template_fit"
+        ]
+      },
+      "source_section": "01-master-teaching-skeleton.md#11-diagnostic-practice",
+      "duration_sec": 8
+    },
+    {
+      "slide_id": "wake-16",
+      "slide_number": 16,
+      "role": "summary",
+      "phase": "Recap",
+      "template_id": "summary",
+      "learning_operation": "recap",
+      "skeleton_link": "01-master-teaching-skeleton.md#12-recap",
+      "slots": {
+        "title": "Tổng kết nhanh",
+        "items": [
+          "わけだ = nghe thông tin rồi kết luận",
+          "わけではない = không phải theo nghĩa đó",
+          "わけがない = không thể nào lại như thế",
+          "わけにはいかない = bị ràng buộc nên không làm được",
+          "Bonus: Vないわけにはいかない",
+          "Hỏi lại: người nói đang muốn nói gì?"
+        ],
+        "takeaway": "Đừng dịch trước. Hãy nghe hướng người nói đang đẩy câu."
+      },
+      "design": {
+        "dominant_accent": "amber",
+        "visual_hierarchy": [
+          "title",
+          "items",
+          "takeaway"
+        ]
+      },
+      "production": {
+        "frame_mode": "static",
+        "requires_deck_stage": false
+      },
+      "qa": {
+        "risk": [
+          "recap_density"
+        ],
+        "required_checks": [
+          "slot_budget",
+          "template_fit"
+        ]
+      },
+      "source_section": "01-master-teaching-skeleton.md#12-recap",
+      "duration_sec": 8
+    },
+    {
+      "slide_id": "wake-17",
+      "slide_number": 17,
+      "role": "cta",
+      "phase": "CTA",
+      "template_id": "cta_diagnostic",
+      "learning_operation": "cta",
+      "skeleton_link": "01-master-teaching-skeleton.md#14-worksheet-contract",
+      "slots": {
+        "title": "Hiểu rồi nhưng vào đề vẫn lưỡng lự?",
+        "subtitle": "Phần luyện tiếp theo giúp bạn biến bài học thành phản xạ chọn mẫu.",
+        "items": [
+          "Nhìn lại 4 mẫu qua Ý nghĩa - Dạng - Cách dùng",
+          "Luyện dấu hiệu trong câu thật",
+          "Làm bài kiểu JLPT",
+          "Xem mình hay nhầm ở bẫy nào"
+        ],
+        "cue": "Worksheet + diagnostic quiz: luyện đúng phần còn yếu."
+      },
+      "design": {
+        "dominant_accent": "blue",
+        "visual_hierarchy": [
+          "title",
+          "subtitle",
+          "items",
+          "cue"
+        ]
+      },
+      "production": {
+        "frame_mode": "static",
+        "requires_deck_stage": false
+      },
+      "qa": {
+        "risk": [
+          "generic_cta"
+        ],
+        "required_checks": [
+          "slot_budget",
+          "template_fit"
+        ]
+      },
+      "source_section": "01-master-teaching-skeleton.md#14-worksheet-contract",
+      "duration_sec": 8
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "grammar_targets": [
+    "Vないわけにはいかない",
+    "わけにはいかない",
+    "わけにはいきません",
+    "わけではありません",
+    "わけではない",
+    "わけじゃない",
+    "わけがない",
+    "わけですね",
+    "わけです",
+    "わけだ",
+    "わけ"
+  ],
+  "grammar_metalanguage_gloss": {
+    "普通形": "thể thường",
+    "辞書形": "thể từ điển",
+    "ない形": "thể nai",
+    "V辞書形": "V thể từ điển",
+    "Vない": "thể nai",
+    "た形": "thể ta",
+    "て形": "thể te",
+    "ます形": "thể masu",
+    "意向形": "thể ý hướng",
+    "受身形": "thể bị động",
+    "使役形": "thể sai khiến",
+    "名詞": "danh từ",
+    "動詞": "động từ",
+    "形容詞": "tính từ",
+    "な形容詞": "tính từ na",
+    "い形容詞": "tính từ i",
+    "な": "na"
+  },
+  "example_vocab_gloss": {
+    "締切": "deadline",
+    "責任": "trách nhiệm",
+    "ルール": "quy tắc",
+    "立場": "vị trí / vai trò",
+    "社会人として": "với tư cách người đi làm",
+    "絶対": "tuyệt đối",
+    "なるほど": "à ra vậy",
+    "別に": "không hẳn / đâu có",
+    "そうか": "à ra vậy",
+    "そういう意味じゃない": "không phải ý đó",
+    "ありえない": "không thể có chuyện đó",
+    "そんなこと": "chuyện như vậy",
+    "明日N2だから": "vì mai thi N2",
+    "嫌い": "ghét",
+    "今夜中に資料を送らないといけない": "phải gửi tài liệu trong tối nay"
+  },
+  "protected_full_sentence_rules": {
+    "sentence_punctuation": "。？！",
+    "quote_pairs": ["「」"]
+  }
+}

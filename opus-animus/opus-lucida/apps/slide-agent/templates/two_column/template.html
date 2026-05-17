@@ -1,0 +1,14 @@
+<div class="layout two-column">
+  <p class="slide-kicker">{{phase_label}}</p>
+  <h2 data-slot="title">{{title}}</h2>
+  <div class="columns">
+    <section class="panel">
+      <h3 data-slot="left_title">{{left_title}}</h3>
+      <ul data-slot="left_items">{{#left_items}}<li>{{.}}</li>{{/left_items}}</ul>
+    </section>
+    <section class="panel">
+      <h3 data-slot="right_title">{{right_title}}</h3>
+      <ul data-slot="right_items">{{#right_items}}<li>{{.}}</li>{{/right_items}}</ul>
+    </section>
+  </div>
+</div>

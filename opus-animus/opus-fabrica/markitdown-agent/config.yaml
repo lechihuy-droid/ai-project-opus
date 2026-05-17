@@ -1,0 +1,18 @@
+# markitdown-agent configuration
+# Mode: standalone | integrated
+mode: integrated
+
+standalone:
+  watched_dir: ./input
+  output_dir: ./output
+
+integrated:
+  # Path to opus-consilium raw/ directory
+  watched_dir: ../../opus-consilium/raw/inbox
+  processed_dir: ../../opus-consilium/raw/inbox/processed
+  # Route converted files by extension
+  routing:
+    papers:    [.pdf]
+    articles:  [.docx, .doc, .pptx, .ppt, .xlsx, .xls, .csv, .html, .htm, .txt, .rtf, .xml, .json]
+    notes:     [.png, .jpg, .jpeg, .gif, .webp, .mp3, .wav, .m4a]
+  output_base: ../../opus-consilium/raw

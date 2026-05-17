@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<title>Wireframe — ChatGPT Handoff Panel</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0B0D0C; --surface:#141918; --card:#1C2220; --elevated:#252E2B;
+  --border:rgba(255,255,255,0.07); --gold:#C9A84C; --gold-dim:#7A6838;
+  --green:#3DAA88; --green-dim:#1E3828;
+  --blue:#4A8FCC; --blue-dim:#122233;
+  --red:#C04858; --red-dim:#260F14;
+  --text:#E8EDE9; --soft:#B4C4BC; --muted:#7A9088; --dim:#4D5E58;
+}
+body{font-family:"Inter",system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;padding:32px 24px;-webkit-font-smoothing:antialiased;}
+
+/* ── layout ── */
+.page-header{margin-bottom:24px}
+.page-header h1{font-size:18px;font-weight:600;color:var(--gold);letter-spacing:0.02em}
+.page-header p{font-size:12px;color:var(--muted);margin-top:4px}
+
+.topic-bar{
+  background:var(--card);border:1px solid rgba(201,168,76,0.2);
+  border-radius:4px;padding:14px 18px;margin-bottom:20px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.topic-title{font-size:15px;font-weight:600}
+.topic-step{font-size:11px;color:var(--muted);background:var(--elevated);padding:3px 10px;border-radius:2px;letter-spacing:0.05em}
+
+/* ── 3-lane grid ── */
+.lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+
+.lane{
+  background:var(--card);border:1px solid var(--border);border-radius:4px;
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.lane-header{
+  padding:10px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+}
+.lane-header .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.lane-header .title{font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase}
+
+.lane-body{padding:12px;display:flex;flex-direction:column;gap:10px;flex:1}
+
+/* ── info block ── */
+.info-block{
+  border:1px solid var(--border);border-radius:3px;
+  overflow:hidden;
+}
+.info-block-header{
+  padding:6px 10px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:6px;
+}
+.info-block-header .num{
+  width:18px;height:18px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;flex-shrink:0;
+}
+.info-block-header .label{font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted)}
+.info-block-body{padding:8px 10px}
+
+/* file path display */
+.file-path{
+  font-family:"JetBrains Mono","Fira Code",monospace;
+  font-size:10px;color:var(--soft);line-height:1.6;
+  word-break:break-all;
+}
+.file-path .root{color:var(--dim)}
+.file-path .folder{color:var(--muted)}
+.file-path .filename{color:var(--text);font-weight:600}
+
+.path-actions{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+
+/* prompt preview */
+.prompt-preview{
+  font-size:11px;color:var(--soft);line-height:1.6;
+  max-height:80px;overflow:hidden;
+  mask-image:linear-gradient(to bottom, black 60%, transparent 100%);
+  -webkit-mask-image:linear-gradient(to bottom, black 60%, transparent 100%);
+}
+
+/* ── buttons ── */
+.btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:3px;font-size:10px;font-weight:700;
+  letter-spacing:0.04em;border:none;cursor:pointer;transition:opacity .15s;
+  white-space:nowrap;
+}
+.btn:hover{opacity:0.85}
+.btn-path{background:var(--elevated);color:var(--muted);border:1px solid var(--border)}
+.btn-copy{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(74,143,204,0.25)}
+.btn-copy-prompt{background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.25)}
+.btn-open{background:var(--elevated);color:var(--soft);border:1px solid var(--border)}
+
+/* color variants per lane */
+.lane-content .lane-header{border-bottom-color:rgba(61,170,136,0.2);background:rgba(61,170,136,0.04)}
+.lane-content .dot{background:var(--green);box-shadow:0 0 5px rgba(61,170,136,0.5)}
+.lane-content .info-block-header .num{background:var(--green-dim);color:var(--green)}
+
+.lane-method .lane-header{border-bottom-color:rgba(74,143,204,0.2);background:rgba(74,143,204,0.04)}
+.lane-method .dot{background:var(--blue);box-shadow:0 0 5px rgba(74,143,204,0.5)}
+.lane-method .info-block-header .num{background:var(--blue-dim);color:var(--blue)}
+
+.lane-flow .lane-header{border-bottom-color:rgba(201,168,76,0.2);background:rgba(201,168,76,0.04)}
+.lane-flow .dot{background:var(--gold);box-shadow:0 0 5px rgba(201,168,76,0.5)}
+.lane-flow .info-block-header .num{background:rgba(201,168,76,0.08);color:var(--gold)}
+
+/* ── action bar ── */
+.action-bar{
+  display:flex;gap:10px;justify-content:flex-end;
+  padding:12px 0 0;border-top:1px solid var(--border);margin-top:4px;
+}
+.btn-lg{padding:9px 20px;font-size:12px;border-radius:3px}
+.btn-advance{background:var(--green-dim);color:var(--green);border:1px solid rgba(61,170,136,0.25)}
+.btn-reset{background:transparent;color:var(--muted);border:1px solid var(--border)}
+
+/* ── annotation ── */
+.anno{
+  font-size:11px;color:var(--muted);font-style:italic;
+  margin-top:8px;padding:8px 10px;background:var(--elevated);border-radius:3px;border-left:2px solid var(--gold-dim);
+}
+
+/* ── section label ── */
+.section-label{
+  font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:8px;
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>ChatGPT Handoff Panel — Lucida</h1>
+  <p>Wireframe · 3 thông tin cần thiết per review lane</p>
+</div>
+
+<!-- Topic bar -->
+<div class="topic-bar">
+  <div>
+    <div class="topic-title">わけだ・わけではない・わけがない・わけにはいかない</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:3px">Wake Cluster · Public Video #1</div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <div class="topic-step">STEP 5–7 · REVIEW × 3</div>
+    <div style="font-size:11px;color:var(--muted)">3 lanes chạy song song</div>
+  </div>
+</div>
+
+<!-- Annotation -->
+<div class="section-label">Quy trình mỗi lane: upload file 1 + file 2 lên ChatGPT → paste prompt → nhận review report</div>
+
+<!-- 3 Lanes -->
+<div class="lanes">
+
+  <!-- Lane A: Content Accuracy -->
+  <div class="lane lane-content">
+    <div class="lane-header">
+      <div class="dot"></div>
+      <div class="title" style="color:var(--green)">Content Accuracy</div>
+    </div>
+    <div class="lane-body">
+
+      <!-- Block 1: File cần review -->
+      <div class="info-block">
+        <div class="info-block-header">
+          <div class="num">1</div>
+          <div class="label">File cần review</div>
+        </div>
+        <div class="info-block-body">
+          <div class="file-path">
+            <span class="root">C:\Users\HUY\AI\OPUS ANIMUS\</span><span class="folder">opus-lucida\production\decks\03-script-outputs\</span><span class="filename">04-script-wake-cluster-draft.md</span>
+          </div>
+          <div class="path-actions">
+            <button class="btn btn-path">📂 Open in Explorer</button>
+            <button class="btn btn-copy">📋 Copy path</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Block 2: File chứa quan điểm review -->
+      <div class="info-block">
+        <div class="info-block-header">
+          <div class="num">2</div>
+          <div class="label">File quan điểm review</div>
+        </div>
+        <div class="info-block-body">
+          <div class="file-path">
+            <span class="root">C:\Users\HUY\AI\OPUS ANIMUS\</span><span class="folder">opus-lucida\automation\prompts\</span><span class="filename">01-review-script-content-prompt.md</span>
+          </div>
+          <div class="path-actions">
+            <button class="btn btn-path">📂 Open in Explorer</button>
+            <button class="btn btn-copy">📋 Copy path</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Block 3: Prompt -->
+      <div class="info-block" style="flex:1">
+        <div class="info-block-header">
+          <div class="num">3</div>
+          <div class="label">Prompt cho ChatGPT</div>
+        </div>
+        <div class="info-block-body">
+          <div class="prompt-preview">Bạn là reviewer học thuật cho sample video JLPT N2. File 1 là script cần review. File 2 là tiêu chí và quan điểm review. Dùng File 2 để review File 1. Output: Decision / Findings / Priority fixes...</div>
+          <div class="path-actions">
+            <button class="btn btn-copy-prompt">📋 Copy prompt</button>
+            <button class="btn btn-open">👁 Preview full</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Lane B: Method / 3-View -->
+  <div class="lane lane-method">
+    <div class="lane-header">
+      <div class="dot"></div>
+      <div class="title" style="color:var(--blue)">Method / 3-View</div>
+    </div>
+    <div class="lane-body">
+
+      <div class="info-block">
+        <div class="info-block-header">
+          <div class="num">1</div>
+          <div class="label">File cần review</div>
+        </div>
+        <div class="info-block-body">
+          <div class="file-path">
+            <span class="root">C:\Users\HUY\AI\OPUS ANIMUS\</span><span class="folder">opus-lucida\production\decks\03-script-outputs\</span><span class="filename">04-script-wake-cluster-draft.md</span>
+          </div>
+          <div class="path-actions">
+            <button class="btn btn-path">📂 Open in Explorer</button>
+            <button class="btn btn-copy">📋 Copy path</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-block">
+        <div class="info-block-header">
+          <div class="num">2</div>
+          <div class="label">File quan điểm review</div>
+        </div>
+        <div class="info-block-body">
+          <div class="file-path">
+            <span class="root">C:\Users\HUY\AI\OPUS ANIMUS\</span><span class="folder">opus-lucida\automation\prompts\</span><span class="filename">02-review-script-method-prompt.md</span>
+          </div>
+          <div class="path-actions">
+            <button class="btn btn-path">📂 Open in Explorer</button>
+            <button class="btn btn-copy">📋 Copy path</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-block" style="flex:1">
+        <div class="info-block-header">
+          <div class="num">3</div>
+          <div class="label">Prompt cho ChatGPT</div>
+        </div>
+        <div class="info-block-body">
+          <div class="prompt-preview">Bạn là instructional designer chuyên về phương pháp dạy ngữ pháp. File 1 là script. File 2 là framework 3 View (Meaning/Form/Usage). Review xem script có bám đúng 3 View không...</div>
+          <div class="path-actions">
+            <button class="btn btn-copy-prompt">📋 Copy prompt</button>
+            <button class="btn btn-open">👁 Preview full</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Lane C: Hook / Flow / CTA -->
+  <div class="lane lane-flow">
+    <div class="lane-header">
+      <div class="dot"></div>
+      <div class="title" style="color:var(--gold)">Hook / Flow / CTA</div>
+    </div>
+    <div class="lane-body">
+
+      <div class="info-block">
+        <div class="info-block-header">
+          <div class="num">1</div>
+          <div class="label">File cần review</div>
+        </div>
+        <div class="info-block-body">
+          <div class="file-path">
+            <span class="root">C:\Users\HUY\AI\OPUS ANIMUS\</span><span class="folder">opus-lucida\production\decks\03-script-outputs\</span><span class="filename">04-script-wake-cluster-draft.md</span>
+          </div>
+          <div class="path-actions">
+            <button class="btn btn-path">📂 Open in Explorer</button>
+            <button class="btn btn-copy">📋 Copy path</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-block">
+        <div class="info-block-header">
+          <div class="num">2</div>
+          <div class="label">File quan điểm review</div>
+        </div>
+        <div class="info-block-body">
+          <div class="file-path">
+            <span class="root">C:\Users\HUY\AI\OPUS ANIMUS\</span><span class="folder">opus-lucida\automation\prompts\</span><span class="filename">03-review-script-funnel-prompt.md</span>
+          </div>
+          <div class="path-actions">
+            <button class="btn btn-path">📂 Open in Explorer</button>
+            <button class="btn btn-copy">📋 Copy path</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-block" style="flex:1">
+        <div class="info-block-header">
+          <div class="num">3</div>
+          <div class="label">Prompt cho ChatGPT</div>
+        </div>
+        <div class="info-block-body">
+          <div class="prompt-preview">Bạn là YouTube education strategist. File 1 là script. File 2 là tiêu chí hook/funnel. Review hook (30-60s đầu), pacing, payoff, CTA worksheet. Verdict: Pass / Revise / Fail...</div>
+          <div class="path-actions">
+            <button class="btn btn-copy-prompt">📋 Copy prompt</button>
+            <button class="btn btn-open">👁 Preview full</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end lanes -->
+
+<!-- Annotation -->
+<div class="anno">
+  💡 File 1 (script) giống nhau ở cả 3 lanes. File 2 và Prompt khác nhau mỗi lane — đây là lý do phải mở ChatGPT riêng cho từng lane.
+</div>
+
+<!-- Action bar -->
+<div class="action-bar">
+  <button class="btn btn-lg btn-reset">← Quay lại step 4</button>
+  <button class="btn btn-lg btn-advance">✓ Cả 3 lane done → Step 8: Script Integrator</button>
+</div>
+
+<hr style="margin:40px 0;border-color:var(--border)">
+
+<!-- Annotation: decisions -->
+<div class="section-label" style="margin-bottom:16px">Ghi chú thiết kế — các điểm cần quyết định</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:4px;padding:14px">
+    <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:8px;letter-spacing:0.05em">OPTION A — Path only (đơn giản)</div>
+    <div style="font-size:12px;color:var(--soft);line-height:1.7">
+      Chỉ hiển thị path.<br>
+      User tự mở file + upload lên ChatGPT.<br>
+      <span style="color:var(--green)">✓ Không cần backend đọc file</span><br>
+      <span style="color:var(--muted)">✗ Vẫn phải tự mở từng file</span>
+    </div>
+  </div>
+  <div style="background:var(--card);border:1px solid rgba(61,170,136,0.2);border-radius:4px;padding:14px">
+    <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px;letter-spacing:0.05em">OPTION B — Copy content (đầy đủ)</div>
+    <div style="font-size:12px;color:var(--soft);line-height:1.7">
+      Backend đọc file → JS copy nội dung vào clipboard.<br>
+      User paste thẳng vào ChatGPT.<br>
+      <span style="color:var(--green)">✓ Zero file navigation</span><br>
+      <span style="color:var(--muted)">✗ Cần thêm API endpoint /api/lucida/file</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

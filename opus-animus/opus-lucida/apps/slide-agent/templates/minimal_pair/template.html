@@ -1,0 +1,10 @@
+<div class="layout minimal-pair">
+  <p class="slide-kicker">{{phase_label}}</p>
+  <h2 data-slot="title">{{title}}</h2>
+  <div class="contrast-axis">Trục khác nhau: ý người nói đang đẩy câu theo hướng nào?</div>
+  <div class="pair-grid">
+    <section><h3 data-slot="left_title">{{left_title}}</h3><ul data-slot="left_items">{{#left_items}}<li>{{.}}</li>{{/left_items}}</ul><div class="jp-mini" data-slot="pair_a">{{pair_a}}</div></section>
+    <section><h3 data-slot="right_title">{{right_title}}</h3><ul data-slot="right_items">{{#right_items}}<li>{{.}}</li>{{/right_items}}</ul><div class="jp-mini" data-slot="pair_b">{{pair_b}}</div></section>
+  </div>
+  <div class="takeaway-strip" data-slot="trap">{{trap}}</div>
+</div>

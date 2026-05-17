@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash('C:\\\\Users\\\\HUY\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe' -c ' *)",
+      "Bash(cp \"C:\\\\Users\\\\HUY\\\\Downloads\\\\drive-download-20260501T200045Z-3-001\\\\my-project-lucida_200e_6400s.pth\" \"C:\\\\Users\\\\HUY\\\\AI\\\\OPUS ANIMUS\\\\opus-lucida\\\\models\\\\rvc/\")",
+      "Bash(cp \"C:\\\\Users\\\\HUY\\\\Downloads\\\\drive-download-20260501T200045Z-3-001\\\\my-project-lucida.index\" \"C:\\\\Users\\\\HUY\\\\AI\\\\OPUS ANIMUS\\\\opus-lucida\\\\models\\\\rvc/\")",
+      "Bash(code \"C:\\\\Users\\\\HUY\\\\AI\\\\OPUS ANIMUS\\\\opus-lucida\\\\.env\")",
+      "Bash(\"C:\\\\Users\\\\HUY\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" automation/video/rvc_agent.py production/00-active/wake-cluster/audio production/00-active/wake-cluster/rvc --dry-run)",
+      "Bash(\"C:\\\\Users\\\\HUY\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" automation/video/rvc_agent.py production/00-active/wake-cluster/audio production/00-active/wake-cluster/rvc)",
+      "Bash(conda info *)",
+      "Bash(uv python *)",
+      "Bash(.venv-rvc/Scripts/python -c \"from rvc_python.infer import RVCInference; print\\('ok'\\)\")"
+    ]
+  }
+}

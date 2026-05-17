@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sprint 3 — Review Report</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./diagram.js" defer></script>
+</head>
+<body>
+
+  <header class="doc-header">
+    <span class="badge navy">Report</span>
+    <h1>Sprint 3 — Review Report</h1>
+    <p class="lead">Authentication & User Management · May 1–10, 2026</p>
+    <p class="meta">Author: Huy Le · Status: <span class="badge green">On Track</span></p>
+  </header>
+
+  <!-- ── Summary cards ── -->
+  <div class="card-grid">
+    <div class="card">
+      <h4>Velocity</h4>
+      <p style="font-size:2rem;font-weight:700;color:#051C2C;margin:0">34 <span style="font-size:1rem;color:#6B7280">/ 36 pts</span></p>
+      <p class="text-muted text-small mt-1">94% completion · +8 vs Sprint 2</p>
+    </div>
+    <div class="card">
+      <h4>Bugs Closed</h4>
+      <p style="font-size:2rem;font-weight:700;color:#00875A;margin:0">12</p>
+      <p class="text-muted text-small mt-1">2 deferred to Sprint 4</p>
+    </div>
+    <div class="card">
+      <h4>Blockers</h4>
+      <p style="font-size:2rem;font-weight:700;color:#C9002B;margin:0">1</p>
+      <p class="text-muted text-small mt-1">Waiting on infra team · ETA May 12</p>
+    </div>
+  </div>
+
+  <!-- ── Architecture flow ── -->
+  <h2>Auth Flow — New Design</h2>
+  <div class="diagram" data-chart='{
+    "type": "flow",
+    "nodes": [
+      {"id": "start",   "label": "User Login",     "shape": "terminal"},
+      {"id": "check",   "label": "Token valid?",   "shape": "diamond"},
+      {"id": "refresh", "label": "Refresh Token",  "shape": "rect"},
+      {"id": "deny",    "label": "401 Denied",     "shape": "terminal"},
+      {"id": "grant",   "label": "Access Granted", "shape": "terminal"}
+    ],
+    "edges": [
+      {"from": "start",   "to": "check"},
+      {"from": "check",   "to": "grant",   "label": "Yes"},
+      {"from": "check",   "to": "refresh", "label": "Expired"},
+      {"from": "refresh", "to": "grant",   "label": "OK"},
+      {"from": "refresh", "to": "deny",    "label": "Fail"}
+    ]
+  }'></div>
+
+  <!-- ── Sequence diagram ── -->
+  <h2>Login API — Sequence</h2>
+  <div class="diagram" data-chart='{
+    "type": "sequence",
+    "actors": ["Browser", "API Gateway", "Auth Service", "PostgreSQL"],
+    "steps": [
+      {"from": "Browser",      "to": "API Gateway",   "msg": "POST /auth/login"},
+      {"from": "API Gateway",  "to": "Auth Service",  "msg": "validateCredentials()"},
+      {"from": "Auth Service", "to": "PostgreSQL",    "msg": "SELECT user WHERE email=?"},
+      {"from": "PostgreSQL",   "to": "Auth Service",  "msg": "user row", "return": true},
+      {"from": "Auth Service", "to": "API Gateway",   "msg": "JWT token", "return": true},
+      {"from": "API Gateway",  "to": "Browser",       "msg": "200 OK + token", "return": true}
+    ]
+  }'></div>
+
+  <!-- ── Tabs: tickets ── -->
+  <h2>Tickets</h2>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab(event,'done')">Done (8)</button>
+    <button class="tab-btn"        onclick="showTab(event,'prog')">In Progress (2)</button>
+    <button class="tab-btn"        onclick="showTab(event,'defer')">Deferred (2)</button>
+  </div>
+
+  <div id="done" class="tab-panel active">
+    <table>
+      <thead><tr><th>ID</th><th>Title</th><th>Points</th><th>Owner</th></tr></thead>
+      <tbody>
+        <tr><td>AUTH-41</td><td>Implement JWT refresh endpoint</td><td>5</td><td>Huy</td></tr>
+        <tr><td>AUTH-42</td><td>Rate limiting on /login</td><td>3</td><td>Minh</td></tr>
+        <tr><td>AUTH-43</td><td>Password reset email flow</td><td>8</td><td>Huy</td></tr>
+        <tr><td>AUTH-44</td><td>Add 2FA toggle in settings</td><td>5</td><td>Linh</td></tr>
+        <tr><td>AUTH-45</td><td>Audit log for auth events</td><td>3</td><td>Minh</td></tr>
+        <tr><td>AUTH-46</td><td>Unit tests: auth middleware</td><td>3</td><td>Huy</td></tr>
+        <tr><td>AUTH-47</td><td>Fix session cookie SameSite bug</td><td>2</td><td>Linh</td></tr>
+        <tr><td>AUTH-48</td><td>Docs: API auth guide</td><td>2</td><td>Minh</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="prog" class="tab-panel">
+    <table>
+      <thead><tr><th>ID</th><th>Title</th><th>Points</th><th>Blocker</th></tr></thead>
+      <tbody>
+        <tr><td>AUTH-49</td><td>OAuth2 Google integration</td><td>8</td><td><span class="badge red">Infra pending</span></td></tr>
+        <tr><td>AUTH-50</td><td>Role-based access control (RBAC)</td><td>5</td><td><span class="badge gray">Code review</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="defer" class="tab-panel">
+    <div class="callout warn">Deferred to Sprint 4 — scope agreed with PM on May 9.</div>
+    <table>
+      <thead><tr><th>ID</th><th>Title</th><th>Reason</th></tr></thead>
+      <tbody>
+        <tr><td>AUTH-51</td><td>SSO SAML integration</td><td>Dependency on external IdP not ready</td></tr>
+        <tr><td>AUTH-52</td><td>Passkey (WebAuthn) support</td><td>Moved to Q3 roadmap</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Code diff ── -->
+  <h2>Key Change — AUTH-47</h2>
+  <p>Fixed <code>SameSite</code> cookie attribute to prevent CSRF on cross-origin requests.</p>
+  <pre><code><span class="diff-del">- res.cookie('session', token, { httpOnly: true })</span>
+<span class="diff-add">+ res.cookie('session', token, { httpOnly: true, sameSite: 'Lax', secure: true })</span>
+<span class="diff-ctx">  return res.status(200).json({ ok: true })</span></code></pre>
+
+  <!-- ── Side-by-side ── -->
+  <h2>Approach Comparison — Token Storage</h2>
+  <div class="compare">
+    <div>
+      <div class="col-head">Option A — HttpOnly Cookie</div>
+      <div class="card" style="border-radius:0 0 4px 4px;margin:0">
+        <p>Token stored in server-set cookie. XSS cannot read it.</p>
+        <span class="badge green">Chosen</span>
+        <ul style="margin-top:.5rem;padding-left:1.2rem;font-size:.9rem">
+          <li>XSS-safe by default</li>
+          <li>Needs CSRF protection</li>
+          <li>Works on all browsers</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="col-head">Option B — localStorage</div>
+      <div class="card" style="border-radius:0 0 4px 4px;margin:0">
+        <p>Token stored in browser JS. Simple to implement.</p>
+        <span class="badge red">Rejected</span>
+        <ul style="margin-top:.5rem;padding-left:1.2rem;font-size:.9rem">
+          <li>Vulnerable to XSS</li>
+          <li>No CSRF concern</li>
+          <li>Easy to debug</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Timeline ── -->
+  <h2>Sprint Timeline</h2>
+  <ul class="timeline">
+    <li>
+      <span class="time">May 1</span>
+      <p><strong>Sprint kick-off.</strong> All tickets groomed, AUTH-49 flagged as at-risk due to infra dependency.</p>
+    </li>
+    <li>
+      <span class="time">May 5</span>
+      <p><strong>Mid-sprint check.</strong> JWT refresh (AUTH-41) and rate limiting (AUTH-42) merged. Velocity on track.</p>
+    </li>
+    <li>
+      <span class="time">May 8</span>
+      <p><strong>Blocker raised.</strong> Infra team delayed OAuth2 env setup by 4 days. AUTH-49 moved to in-progress pending.</p>
+    </li>
+    <li>
+      <span class="time">May 10</span>
+      <p><strong>Sprint close.</strong> 34/36 points delivered. AUTH-51 and AUTH-52 formally deferred.</p>
+    </li>
+  </ul>
+
+  <!-- ── Risks ── -->
+  <h2>Risks & Decisions</h2>
+  <details open>
+    <summary>RISK-01 · OAuth2 infra delay</summary>
+    <p><strong>Impact:</strong> Google login blocked until May 12.<br>
+    <strong>Mitigation:</strong> AUTH-49 continues in Sprint 4. No user-facing impact until feature flag is turned on.</p>
+  </details>
+  <details>
+    <summary>DEC-01 · HttpOnly cookie over localStorage</summary>
+    <p>Decision made by security review on May 3. See ADR-007 for full rationale. Tradeoff: adds CSRF header requirement on all state-mutating requests.</p>
+  </details>
+
+  <div class="callout mt-3">
+    <strong>Next Sprint Focus:</strong> Complete OAuth2 (AUTH-49), ship RBAC (AUTH-50), begin SSO scoping.
+  </div>
+
+  <script>
+    function showTab(e, id) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      e.target.classList.add('active');
+      document.getElementById(id).classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

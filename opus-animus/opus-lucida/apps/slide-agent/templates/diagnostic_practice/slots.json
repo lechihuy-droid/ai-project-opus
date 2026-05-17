@@ -1,0 +1,1 @@
+{"template_id":"diagnostic_practice","version":"1.0","required_slots":{"title":{"type":"string","max_chars":64},"question":{"type":"string","max_chars":76},"choices":{"type":"string[]","max_items":3,"max_chars":110},"answer":{"type":"string","max_chars":58},"feedback":{"type":"string[]","max_items":3,"max_chars":180}},"optional_slots":{}}

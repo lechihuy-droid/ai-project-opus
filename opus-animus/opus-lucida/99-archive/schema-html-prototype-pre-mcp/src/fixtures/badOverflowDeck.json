@@ -1,0 +1,27 @@
+{
+  "deck_meta": {
+    "deck_id": "bad-overflow-deck",
+    "title": "Bad Overflow Deck",
+    "audience": "QA fixture",
+    "theme_id": "lucida-n2",
+    "aspect_ratio": "16:9",
+    "frame_mode": "static"
+  },
+  "slides": [
+    {
+      "slide_id": "bad-01",
+      "slide_number": 1,
+      "role": "hero_title",
+      "phase": "Hook",
+      "template_id": "hero_title",
+      "learning_operation": "contrast",
+      "slots": {
+        "title": "Đây là một tiêu đề cố tình quá dài để vượt qua slot budget và chứng minh rằng validator không được để renderer nhận nội dung quá tải trước khi QA phát hiện",
+        "subtitle": "Subtitle này cũng cố tình dài quá mức để kiểm tra budget và text density trong prototype schema-first renderer.",
+        "footer_cue": "Footer cue này quá dài so với vùng một dòng nên phải bị báo lỗi bởi slot budget check."
+      },
+      "design": { "dominant_accent": "red" },
+      "qa": { "risk": ["intentional_overflow"], "required_checks": ["slot_budget", "text_density"] }
+    }
+  ]
+}

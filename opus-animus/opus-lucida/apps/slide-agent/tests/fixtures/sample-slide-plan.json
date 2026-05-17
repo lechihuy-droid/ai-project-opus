@@ -1,0 +1,19 @@
+{
+  "lane_id": "sample",
+  "source_lesson": "tests/fixtures/sample-lesson.json",
+  "slides": [
+    {
+      "slide_id": "sample-01",
+      "phase": "Hook",
+      "template_id": "hero_title",
+      "source_section": "01-master-teaching-skeleton.md#hook",
+      "duration_sec": 8,
+      "slots": {
+        "title": "Cùng có わけ, nhưng không cùng ý",
+        "subtitle": "Một câu đang đính chính. Một câu đang nói có ràng buộc.",
+        "footer_cue": "Ở câu này, người nói đang muốn nói gì?"
+      },
+      "design": { "dominant_accent": "amber" }
+    }
+  ]
+}

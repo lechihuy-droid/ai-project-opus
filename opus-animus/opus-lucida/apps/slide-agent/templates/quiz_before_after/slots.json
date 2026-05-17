@@ -1,0 +1,1 @@
+{"template_id":"quiz_before_after","version":"1.0","required_slots":{"title":{"type":"string","max_chars":72},"question":{"type":"string","max_chars":150},"choices":{"type":"string[]","max_items":4,"max_chars":190},"answer":{"type":"string","max_chars":70},"payoff":{"type":"string","max_chars":170}},"optional_slots":{}}

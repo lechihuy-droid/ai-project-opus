@@ -1,0 +1,32 @@
+:root {
+  --lucida-ink: #111827;
+  --lucida-charcoal: #1f2937;
+  --lucida-paper: #f7f1e5;
+  --lucida-mist: #e7e2d6;
+  --lucida-line: rgba(247, 241, 229, 0.18);
+  --lucida-amber: #f5b841;
+  --lucida-blue: #4a90e2;
+  --lucida-red: #d95d59;
+  --lucida-green: #2f7d5c;
+  --lucida-violet: #7c6a9e;
+  --font-ui: "Manrope", "Segoe UI", Arial, sans-serif;
+  --font-jp: "Noto Sans JP", "BIZ UDPGothic", Meiryo, sans-serif;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #05070b;
+  color: var(--lucida-paper);
+  font-family: var(--font-ui);
+}
+
+* {
+  box-sizing: border-box;
+}

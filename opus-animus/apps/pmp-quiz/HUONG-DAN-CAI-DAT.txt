@@ -1,0 +1,69 @@
+============================================
+  PMP QUIZ APP - HUONG DAN CAI DAT & SU DUNG
+============================================
+
+App chay offline tren trinh duyet. KHONG can internet sau khi cai.
+History hoc (tien do, cau sai, thong ke) luu rieng tung may.
+
+
+----------------------------------------
+CACH 1: MAY DA CO PYTHON (de nhat)
+----------------------------------------
+
+Kiem tra Python: mo Command Prompt, go:   python --version
+- Co hien "Python 3.x.x"  -> da co, bo qua buoc cai
+- Khong hien              -> xem Cach 2, hoac cai Python tai:
+                             https://www.python.org/downloads/
+                             (Nho tick "Add python.exe to PATH" khi cai)
+
+Chay app:
+  1. Double-click file:  start-app-python.bat
+  2. Mot cua so den hien ra + trinh duyet tu mo http://localhost:8000/
+  3. Hoc thoai mai
+  4. Hoc xong: dong cua so den de tat server
+
+
+----------------------------------------
+CACH 2: MAY KHONG CO PYTHON (khong can cai gi)
+----------------------------------------
+
+Can them file caddy.exe (chi tai 1 lan):
+
+  1. Vao:  https://caddyserver.com/download
+  2. Chon: Windows / amd64 / Standard  -> Download
+  3. Giai nen file zip vua tai
+  4. Copy file "caddy.exe" vao CHUNG folder voi file nay (canh start-app.bat)
+
+Chay app:
+  1. Double-click file:  start-app.bat
+  2. Cua so den hien ra + trinh duyet tu mo http://localhost:8000/
+  3. Hoc xong: dong cua so den
+
+
+----------------------------------------
+LUU Y QUAN TRONG
+----------------------------------------
+
+* History hoc KHONG nam trong folder nay - no luu trong trinh duyet
+  (localStorage). Copy folder sang may khac se KHONG mang history theo.
+
+* Cac viec lam MAT history:
+  - Xoa "Cookies and site data" trong trinh duyet
+  - Chay CCleaner co tick phan browser  (BO TICK di!)
+  - Mo app trong InPrivate / Incognito
+  - Mo bang URL khac, vi du 127.0.0.1:8000 thay vi localhost:8000
+    (2 URL nay luu tach rieng, khong chung du lieu)
+
+* Luon mo app qua:  http://localhost:8000/
+  (dung lenh tu .bat la dung roi, khong can nho URL)
+
+* Neu cua so den bao loi "port 8000 already in use":
+  - Co app khac dang chiem port -> tat app do, hoac
+  - Sua file .bat: thay so 8000 thanh 8080 (2 cho)
+
+----------------------------------------
+TAT SERVER
+----------------------------------------
+
+Dong cua so den (Command Prompt den) -> server tat ngay.
+Trinh duyet se bao "cannot connect" khi refresh - binh thuong.

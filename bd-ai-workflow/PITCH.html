@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>RD-to-BD Compiler — Pitch Deck</title>
+<link rel="stylesheet" href="../html-kit/styles.css">
+<style>
+  body { background: #f5f5f7; }
+  .deck { max-width: 1150px; margin: 2rem auto; }
+  .slide { display: flex !important; flex-direction: column; background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 2rem; padding: 2.5rem 3rem; position: relative; min-height: 600px; border-radius: 12px; }
+  .slide h1 { font-size: 1.9rem; margin: 0 0 .5rem; line-height: 1.25; }
+  .slide h2 { font-size: 1rem; color: var(--gray-500); font-weight: 500; margin: 0 0 1.5rem; text-transform: uppercase; letter-spacing: .08em; }
+  .slide-num { position: absolute; top: 1.5rem; right: 2rem; font-size: .72rem; color: var(--gray-400); letter-spacing: .15em; font-weight: 600; }
+  .big-stat { font-size: 2.2rem; font-weight: 700; color: #1e3a8a; line-height: 1; }
+  .big-stat-label { font-size: .82rem; color: var(--gray-500); margin-top: .35rem; line-height: 1.4; }
+  .pillar { padding: 1.1rem 1.25rem; border-radius: 8px; background: #f8fafc; border-left: 4px solid #2563eb; }
+  .pillar h3 { margin: 0 0 .4rem; font-size: .95rem; }
+  .pillar p { margin: 0; font-size: .85rem; color: var(--gray-600); line-height: 1.5; }
+  .arrow-flow { display: flex; align-items: center; gap: .5rem; font-family: ui-monospace, monospace; font-size: .8rem; flex-wrap: wrap; margin: 1.25rem 0; }
+  .arrow-flow .step { padding: .45rem .85rem; background: #dbeafe; border-radius: 6px; color: #1e3a8a; white-space: nowrap; }
+  .arrow-flow .step.llm { background: #f3e8ff; color: #581c87; }
+  .arrow-flow .step.gate { background: #fef3c7; color: #78350f; font-weight: 600; }
+  .arrow-flow .step.out { background: #d1fae5; color: #064e3b; }
+  .arrow-flow .arr { color: var(--gray-400); }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .json-box { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 8px; font-size: .72rem; font-family: ui-monospace, monospace; overflow-x: auto; line-height: 1.5; }
+  .json-box .key { color: #93c5fd; }
+  .json-box .str { color: #86efac; }
+  .json-box .num { color: #fbbf24; }
+  .json-box .src-llm { background: #6b21a8; padding: 0 4px; border-radius: 3px; }
+  .json-box .src-mcp { background: #1d4ed8; padding: 0 4px; border-radius: 3px; }
+  .json-box .comment { color: #64748b; font-style: italic; }
+
+  .legend-inline { display: flex; gap: 1rem; font-size: .78rem; margin: .5rem 0; }
+  .legend-inline span { padding: 2px 8px; border-radius: 3px; }
+  .src-llm-tag { background: #f3e8ff; color: #6b21a8; }
+  .src-mcp-tag { background: #dbeafe; color: #1d4ed8; }
+
+  .tbl { width: 100%; border-collapse: collapse; font-size: .82rem; margin-top: .75rem; }
+  .tbl th { text-align: left; padding: .55rem .7rem; background: #f1f5f9; border-bottom: 2px solid #cbd5e1; font-weight: 600; }
+  .tbl td { padding: .45rem .7rem; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  .tbl tr:hover { background: #f8fafc; }
+  .tbl code { font-size: .78rem; }
+
+  .anti { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-top: .5rem; }
+  .anti-item { padding: .5rem .75rem; border-radius: 6px; font-size: .8rem; }
+  .anti-no { background: #fee2e2; color: #7f1d1d; }
+  .anti-yes { background: #d1fae5; color: #064e3b; }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <!-- ========== SLIDE 1 · PROBLEM ========== -->
+  <div class="slide">
+    <div class="slide-num">01 / 06 · PROBLEM</div>
+    <h2>Vấn đề</h2>
+    <h1>Excel RD tiếng Nhật → Basic Design: chậm, dễ sai, không trace được</h1>
+
+    <div class="card-grid" style="margin-top: 1rem;">
+      <div class="card">
+        <div class="big-stat">5–10 ngày</div>
+        <div class="big-stat-label">Manual: BrSE đọc RD, copy sang BD template, viết tay từng cell</div>
+      </div>
+      <div class="card">
+        <div class="big-stat">~30%</div>
+        <div class="big-stat-label">Rework rate khi reviewer Nhật phát hiện sai số/ID/thuật ngữ</div>
+      </div>
+      <div class="card">
+        <div class="big-stat">0</div>
+        <div class="big-stat-label">Traceability từ BD cell → RD requirement source</div>
+      </div>
+    </div>
+
+    <div class="callout warn" style="margin-top: 1.25rem;">
+      <strong>Tại sao "AI đọc Excel rồi tự sửa" không work:</strong>
+      LLM hallucinate số liệu, paraphrase mất nghĩa nghiệp vụ, ghi đè format template,
+      không reproducible, không audit được — deliverable cho khách Nhật không chấp nhận được.
+    </div>
+  </div>
+
+  <!-- ========== SLIDE 2 · SOLUTION ========== -->
+  <div class="slide">
+    <div class="slide-num">02 / 06 · SOLUTION</div>
+    <h2>Giải pháp tổng thể</h2>
+    <h1>Deterministic pipeline + LLM có ràng buộc + 6 human gates</h1>
+
+    <div class="arrow-flow">
+      <span class="step">📊 RD.xlsx</span>
+      <span class="arr">→</span>
+      <span class="step">⚙️ Extract + Normalize</span>
+      <span class="arr">→</span>
+      <span class="step llm">✨ L1 · LLM<br/><small>JP wording</small></span>
+      <span class="arr">→</span>
+      <span class="step">⚙️ Patch plan<br/><small>+ locking</small></span>
+      <span class="arr">→</span>
+      <span class="step gate">🛂 Human Approve</span>
+      <span class="arr">→</span>
+      <span class="step">⚙️ Apply + Verify</span>
+      <span class="arr">→</span>
+      <span class="step llm">✨ L2 · LLM<br/><small>DD notes</small></span>
+      <span class="arr">→</span>
+      <span class="step out">📦 BD.xlsx + DD.md</span>
+    </div>
+
+    <div class="card-grid" style="grid-template-columns: 1fr 1fr; margin-top: 1.25rem;">
+      <div class="pillar">
+        <h3>1. MCP layer đọc/ghi Excel</h3>
+        <p>Python deterministic (openpyxl/xlwings). LLM <b>không</b> chạm cell trực tiếp. Format preserved binary-diff.</p>
+      </div>
+      <div class="pillar" style="border-color: #9333ea;">
+        <h3>2. LLM chỉ tại 2 call sites (L1, L2)</h3>
+        <p>Section mapping + JP wording (C.6a) + DD notes (E.14a). Verbatim constraint cho số/ID/date.</p>
+      </div>
+      <div class="pillar" style="border-color: #d97706;">
+        <h3>3. Optimistic locking + approval</h3>
+        <p>Mỗi patch có <code>expected_old_value</code>. Re-run không wipe khách edits. Human approve G2 trước write.</p>
+      </div>
+      <div class="pillar" style="border-color: #059669;">
+        <h3>4. Bidirectional traceability + audit</h3>
+        <p>Cell comment <code>[RD-TRACE]</code>. Idempotency check + LLM prompt hash + model_id trong audit log.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SLIDE 3 · LLM CALL SITES (NEW) ========== -->
+  <div class="slide">
+    <div class="slide-num">03 / 06 · LLM CONTRACTS</div>
+    <h2>LLM call sites &amp; JSON contracts</h2>
+    <h1>LLM chỉ chạy 2 lần — mỗi lần có schema, có ràng buộc, có hợp đồng với MCP</h1>
+
+    <table class="tbl">
+      <thead><tr><th>Call</th><th>Phase</th><th>Mục đích</th><th>Model</th><th>Output schema</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b style="color:#9333ea;">L1</b></td>
+          <td>C.6a</td>
+          <td>Section mapping + JP business wording cho mỗi requirement</td>
+          <td>Opus 4.7</td>
+          <td><code>BDPatchCandidate</code></td>
+        </tr>
+        <tr>
+          <td><b style="color:#9333ea;">L2</b></td>
+          <td>E.14a</td>
+          <td>DD design notes + API/data candidates + open questions</td>
+          <td>Opus 4.7</td>
+          <td><code>DDFunctionNotes</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top: 1.25rem; font-size:.9rem; color:var(--gray-600);"><b>Ví dụ L1 — Patch dùng cả LLM output và MCP compute:</b></p>
+
+    <div class="legend-inline">
+      <span class="src-llm-tag">✨ Field do LLM produce</span>
+      <span class="src-mcp-tag">⚙️ Field do MCP compute</span>
+    </div>
+
+<div class="json-box">{
+  <span class="key">"patch_id"</span>: <span class="src-mcp">"P-0042"</span>,
+  <span class="key">"sheet"</span>: <span class="src-mcp">"機能一覧"</span>,                          <span class="comment">// từ bd_mapping.yaml</span>
+  <span class="key">"cell"</span>: <span class="src-mcp">"C15"</span>,                              <span class="comment">// start_row + offset</span>
+  <span class="key">"expected_old_value"</span>: <span class="src-mcp">""</span>,                   <span class="comment">// đọc template hiện tại</span>
+  <span class="key">"expected_old_hash"</span>: <span class="src-mcp">"sha256:e3b0c4..."</span>,
+  <span class="key">"new_value"</span>: <span class="src-llm">"ユーザー認証"</span>,                  <span class="comment">// LLM fields.function_name</span>
+  <span class="key">"source_requirement_id"</span>: <span class="src-llm">"REQ-FUNC-001"</span>,     <span class="comment">// LLM + MCP cross-check</span>
+  <span class="key">"source_cell"</span>: <span class="src-mcp">"RD.xlsx#機能要件!B12"</span>,        <span class="comment">// từ rd_normalized.json</span>
+  <span class="key">"verbatim_tokens"</span>: <span class="src-llm">["3回連続失敗", "アカウントロック"]</span>,
+  <span class="key">"llm_trace_id"</span>: <span class="src-mcp">"L1-REQ-FUNC-001"</span>,
+  <span class="key">"conflict_policy"</span>: <span class="src-mcp">"abort"</span>
+}</div>
+
+    <div class="callout" style="margin-top: 1.25rem; background:#faf5ff; border-color:#9333ea;">
+      <strong>Critical:</strong> LLM <b>không</b> quyết định cell address, expected_old_value, patch_id, source_cell — tất cả MCP compute. LLM chỉ produce content + verbatim_tokens để post-validator regex check.
+    </div>
+  </div>
+
+  <!-- ========== SLIDE 4 · ANTI-PATTERNS + CACHING ========== -->
+  <div class="slide">
+    <div class="slide-num">04 / 06 · LLM GUARDRAILS</div>
+    <h2>Anti-patterns &amp; prompt caching</h2>
+    <h1>9 việc LLM tuyệt đối không được làm — và cách tiết kiệm 70% cost</h1>
+
+    <div class="split">
+      <div>
+        <h3 style="font-size: 1rem; margin: 0 0 .5rem; color: #7f1d1d;">❌ LLM KHÔNG được làm</h3>
+        <div class="anti">
+          <div class="anti-item anti-no">Quyết định cell address</div>
+          <div class="anti-item anti-yes">→ MCP đọc <code>bd_mapping.yaml</code></div>
+
+          <div class="anti-item anti-no">Đọc file Excel trực tiếp</div>
+          <div class="anti-item anti-yes">→ MCP <code>read_range</code> → JSON</div>
+
+          <div class="anti-item anti-no">Ghi file Excel</div>
+          <div class="anti-item anti-yes">→ MCP <code>apply_bd_patch</code></div>
+
+          <div class="anti-item anti-no">Quyết định <code>expected_old_value</code></div>
+          <div class="anti-item anti-yes">→ MCP đọc target cell</div>
+
+          <div class="anti-item anti-no">Auto-generate <code>patch_id</code></div>
+          <div class="anti-item anti-yes">→ MCP auto-increment</div>
+
+          <div class="anti-item anti-no">Self-validate verbatim</div>
+          <div class="anti-item anti-yes">→ Python regex validator</div>
+
+          <div class="anti-item anti-no">Format Japanese date</div>
+          <div class="anti-item anti-yes">→ MCP <code>normalize_japanese</code></div>
+
+          <div class="anti-item anti-no">Decide mapping schema</div>
+          <div class="anti-item anti-yes">→ YAML version-controlled</div>
+
+          <div class="anti-item anti-no">Self-retry on schema invalid</div>
+          <div class="anti-item anti-yes">→ MCP enforce + feedback loop</div>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="font-size: 1rem; margin: 0 0 .5rem; color: #064e3b;">💾 Prompt caching strategy</h3>
+
+        <div class="pillar" style="border-color: #059669; margin-bottom: .75rem;">
+          <h3>Layer 1 — System prompt</h3>
+          <p>Role + verbatim rules + JP style guide + output schema spec<br/>
+          <b>~3000 tokens</b> · TTL 1h · hit rate ~95%</p>
+        </div>
+
+        <div class="pillar" style="border-color: #059669; margin-bottom: .75rem;">
+          <h3>Layer 2 — Per-workbook context</h3>
+          <p><code>rd_normalized.json</code> + mapping YAML + JP examples<br/>
+          <b>~5000 tokens</b> · TTL session · hit rate ~80%</p>
+        </div>
+
+        <div class="pillar" style="border-color: #059669;">
+          <h3>Per-call (uncached)</h3>
+          <p>Single requirement payload<br/>
+          <b>~200–500 tokens</b></p>
+        </div>
+
+        <div class="callout" style="margin-top: 1rem; background:#ecfdf5; border-color:#059669;">
+          <strong>Cost saving ~70–80%</strong> so với gửi full context mỗi call. 100+ requirements/workbook vẫn trong ngân sách.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SLIDE 5 · MCP TOOLSET ========== -->
+  <div class="slide">
+    <div class="slide-num">05 / 06 · MCP TOOLSET</div>
+    <h2>MCP tools — deterministic Python layer</h2>
+    <h1>18 tools / 5 phases / fastmcp Python · gọi từ Claude, Copilot, Codex qua stdio</h1>
+
+    <table class="tbl">
+      <thead><tr><th>Phase</th><th>Tool</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="3" style="background:#f8fafc;"><b>A · Inspect</b></td>
+            <td><code>format_preservation_smoke_test</code></td>
+            <td>Test openpyxl roundtrip giữ format (G0 gate)</td></tr>
+        <tr><td><code>inspect_workbook</code></td><td>Đọc sheets, merged cells, macros</td></tr>
+        <tr><td><code>validate_mapping_against_headers</code></td><td>Fail-fast nếu column shift vs YAML</td></tr>
+
+        <tr><td rowspan="3" style="background:#f8fafc;"><b>B · Extract</b></td>
+            <td><code>extract_rd_requirements</code></td><td>Đọc RD cells → <code>rd_extracted.json</code></td></tr>
+        <tr><td><code>normalize_japanese</code></td><td>NFKC, 全角→半角, 令和→西暦</td></tr>
+        <tr><td><code>validate_extraction</code></td><td>Cross-sheet xref + duplicate ID</td></tr>
+
+        <tr><td rowspan="3" style="background:#f8fafc;"><b>C · Plan</b></td>
+            <td><code>generate_bd_patch_plan</code> <span style="color:#9333ea;">[L1]</span></td>
+            <td>Patch list + locking · gọi LLM cho wording</td></tr>
+        <tr><td><code>validate_verbatim</code></td><td>Regex check số/ID/date vs RD source</td></tr>
+        <tr><td><code>detect_conflicts</code></td><td>Optimistic locking check</td></tr>
+
+        <tr><td rowspan="5" style="background:#f8fafc;"><b>D · Write</b></td>
+            <td><code>backup_workbook</code></td><td>Timestamped backup</td></tr>
+        <tr><td><code>apply_bd_patch</code></td><td>Chỉ ghi APPROVED cells</td></tr>
+        <tr><td><code>write_cell_comments</code></td><td><code>[RD-TRACE]</code> comment mỗi cell</td></tr>
+        <tr><td><code>verify_written_cells</code></td><td>Read-back compare</td></tr>
+        <tr><td><code>verify_format_preservation</code></td><td>Binary diff vs template</td></tr>
+
+        <tr><td rowspan="4" style="background:#f8fafc;"><b>E · Audit</b></td>
+            <td><code>generate_dd_handoff_md</code> <span style="color:#9333ea;">[L2]</span></td>
+            <td>DD_input.md · gọi LLM cho design notes</td></tr>
+        <tr><td><code>build_bidirectional_traceability</code></td><td>Forward + reverse RD ↔ BD</td></tr>
+        <tr><td><code>audit_log</code></td><td>Cells + LLM prompts + model_id</td></tr>
+        <tr><td><code>idempotency_check</code></td><td>Hash diff vs previous run</td></tr>
+      </tbody>
+    </table>
+
+    <div class="card-grid" style="grid-template-columns: 1fr 1fr 1fr; margin-top: 1.25rem;">
+      <div class="pillar"><h3>🐍 Stack</h3><p>Python 3.11 + fastmcp + openpyxl + pydantic + pyyaml + jinja2</p></div>
+      <div class="pillar"><h3>📡 Transport</h3><p>MCP stdio — Claude Desktop, Copilot, Codex CLI plug được</p></div>
+      <div class="pillar"><h3>🧪 Test</h3><p>pytest per tool · idempotency regression · sample RD fixtures</p></div>
+    </div>
+  </div>
+
+  <!-- ========== SLIDE 6 · OUTCOME & ROADMAP ========== -->
+  <div class="slide">
+    <div class="slide-num">06 / 06 · OUTCOME</div>
+    <h2>Kết quả &amp; Roadmap</h2>
+    <h1>Deliverable Nhật-grade + DD AI handoff + full audit, MVP trong 2–3 tuần</h1>
+
+    <div class="compare" style="margin-top: 1rem;">
+      <div>
+        <h3 style="color: #dc2626;">❌ Trước</h3>
+        <ul>
+          <li>BrSE copy thủ công 5–10 ngày</li>
+          <li>Review cycle dài, ~30% rework</li>
+          <li>Không trace được nguồn requirement</li>
+          <li>Re-run = làm lại từ đầu</li>
+          <li>Không audit được quyết định AI</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color: #059669;">✅ Sau</h3>
+        <ul>
+          <li>Pipeline 1–2 ngày + 6 review gates (G0–G5)</li>
+          <li>Verbatim constraint chặn hallucination số/ID</li>
+          <li>Mỗi cell có comment <code>[RD-TRACE]</code></li>
+          <li>Idempotent: re-run output identical hash</li>
+          <li>Audit log: cells + LLM prompts + model_id</li>
+        </ul>
+      </div>
+    </div>
+
+    <table class="tbl" style="margin-top: 1.25rem;">
+      <thead><tr><th>Phase</th><th>Scope</th><th>Gate</th></tr></thead>
+      <tbody>
+        <tr><td><b>0 · SDD</b></td><td>Viết <code>ai/RD.md</code> theo SDD template, lock open questions</td><td>RD approved</td></tr>
+        <tr><td><b>1 · Foundation</b></td><td>G0 smoke test → quyết định openpyxl vs xlwings · MCP skeleton · pydantic schemas</td><td>G0</td></tr>
+        <tr><td><b>2 · MVP</b></td><td>機能要件 → 機能一覧 · full pipeline 5 phases</td><td>G1–G5</td></tr>
+        <tr><td><b>3 · Regression</b></td><td>Idempotency 3-run identical + RD edit drift test</td><td>Hash match</td></tr>
+        <tr><td><b>4+ · Scale</b></td><td>画面 → 帳票 → 外部IF → 非機能</td><td>Per-phase G1–G5</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout" style="margin-top: 1.25rem; background: #eff6ff; border-color: #2563eb;">
+      <strong>Next step:</strong> Approve plan → viết <code>ai/RD.md</code> (SDD) → G0 smoke test → MVP scope 機能要件.
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

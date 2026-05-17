@@ -1,0 +1,43 @@
+Đây là file nghe thử cách JSON rule đang chuyển các pattern ngắn của nhóm wake sang tiếng Việt.
+
+...
+
+Một. wake. đọc là: quà kê.
+
+Hai. wake da. đọc là: quà kê da.
+
+Ba. wake desu. đọc là: quà kê đê su.
+
+Bốn. wake desu ne. đọc là: quà kê đê su nê.
+
+Năm. wake dewa nai. đọc là: quà kê đê há nà ì.
+
+Sáu. wake ja nai. đọc là: quà kê dá nà ì.
+
+Bảy. wake dewa arimasen. đọc là: quà kê đê ha a ri ma sê n.
+
+Tám. wake ga nai. đọc là: quà kê gá nà ì.
+
+Chín. wake niwa ikanai. đọc là: quà kê ni ha i cá nà ì.
+
+Mười. wake niwa ikimasen. đọc là: quà kê ni ha i ki ma sê n.
+
+...
+
+Dạng công thức.
+
+V nai wake niwa ikanai. đọc là: thể nai quà kê ni ha i cá nà ì.
+
+Futsuu kei cộng wake da. đọc là: thể thường cộng quà kê da.
+
+Futsuu kei cộng wake dewa nai. đọc là: thể thường cộng quà kê đê há nà ì.
+
+Futsuu kei cộng wake ga nai. đọc là: thể thường cộng quà kê gá nà ì.
+
+V jisho kei cộng wake niwa ikanai. đọc là: V thể từ điển cộng quà kê ni ha i cá nà ì.
+
+V nai cộng wake niwa ikanai. đọc là: thể nai cộng quà kê ni ha i cá nà ì.
+
+...
+
+Hết danh sách nghe thử.

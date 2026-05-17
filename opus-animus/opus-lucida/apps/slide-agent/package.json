@@ -1,0 +1,21 @@
+{
+  "name": "lucida-slide-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "render": "node scripts/render.js",
+    "validate:template": "node scripts/validateTemplate.js",
+    "qa:layout": "node scripts/qa-layout.js",
+    "qa:mapping": "node scripts/qa-mapping.js",
+    "qa:banned": "node scripts/qa-bannedlabel.js",
+    "export:frames": "node scripts/exportFrames.js",
+    "agent": "node scripts/runAgent.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.59.0",
+    "ajv": "^8.17.1",
+    "mustache": "^4.2.0"
+  }
+}

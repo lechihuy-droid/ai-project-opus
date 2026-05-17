@@ -1,0 +1,143 @@
+{
+  "topic_slug": "wake-cluster",
+  "source": "01-master-teaching-skeleton.md",
+  "notes": "Schema-first V2 plan for the full 17-slide Wake cluster deck. Each slide maps to a deterministic renderer template and one static PNG frame.",
+  "slides": [
+    {
+      "slide_number": 1,
+      "phase": "Hook",
+      "skeleton_link": "01-master-teaching-skeleton.md#3-hook-core",
+      "learning_function": "Make the learner feel that two わけ sentences can look similar but express different speaker actions.",
+      "template_id": "hero_title",
+      "slide_goal": "Open with the confusion: same わけ surface form, different logic."
+    },
+    {
+      "slide_number": 2,
+      "phase": "Try First",
+      "skeleton_link": "01-master-teaching-skeleton.md#3-hook-core",
+      "learning_function": "Let the learner attempt a JLPT-style choice before explanation.",
+      "template_id": "quiz_before_after",
+      "slide_goal": "Show the blank question, choices, answer, and quick payoff."
+    },
+    {
+      "slide_number": 3,
+      "phase": "Promise",
+      "skeleton_link": "01-master-teaching-skeleton.md#2-audience-and-promise",
+      "learning_function": "Clarify the lesson outcome: choose better in N2 and hear speaker intention in real life.",
+      "template_id": "two_column",
+      "slide_goal": "Connect the four わけ patterns to two learner benefits."
+    },
+    {
+      "slide_number": 4,
+      "phase": "Context",
+      "skeleton_link": "01-master-teaching-skeleton.md#4-story-core",
+      "learning_function": "Ground the grammar in a practical constraint situation.",
+      "template_id": "key_message",
+      "slide_goal": "Move from exam-night context to work responsibility context."
+    },
+    {
+      "slide_number": 5,
+      "phase": "Method",
+      "skeleton_link": "01-master-teaching-skeleton.md#5-big-idea",
+      "learning_function": "Give the learner a method for distinguishing the group before teaching each pattern.",
+      "template_id": "summary",
+      "slide_goal": "Introduce Ý nghĩa - Dạng - Cách dùng and the speaker-action question."
+    },
+    {
+      "slide_number": 6,
+      "phase": "Grammar Core",
+      "skeleton_link": "01-master-teaching-skeleton.md#7-grammar-point-1",
+      "learning_function": "Teach わけではない as correction of a possible misunderstanding.",
+      "template_id": "grammar_card",
+      "slide_goal": "Separate soft correction from strong denial."
+    },
+    {
+      "slide_number": 7,
+      "phase": "Grammar Core",
+      "skeleton_link": "01-master-teaching-skeleton.md#7-grammar-point-2",
+      "learning_function": "Teach わけにはいかない as constrained action.",
+      "template_id": "grammar_card",
+      "slide_goal": "Anchor deadline, responsibility, rule, and role constraints."
+    },
+    {
+      "slide_number": 8,
+      "phase": "Grammar Core",
+      "skeleton_link": "01-master-teaching-skeleton.md#7-grammar-point-3",
+      "learning_function": "Teach わけだ as a conclusion drawn from prior information.",
+      "template_id": "grammar_card",
+      "slide_goal": "Prevent conclusion logic from being confused with constraint logic."
+    },
+    {
+      "slide_number": 9,
+      "phase": "Grammar Core",
+      "skeleton_link": "01-master-teaching-skeleton.md#7-grammar-point-4",
+      "learning_function": "Teach わけがない as strong denial of possibility.",
+      "template_id": "grammar_card",
+      "slide_goal": "Mark intensity and な-adjective attachment risk."
+    },
+    {
+      "slide_number": 10,
+      "phase": "Contrast",
+      "skeleton_link": "01-master-teaching-skeleton.md#8-comparison-core",
+      "learning_function": "Convert the four patterns into four speaker actions.",
+      "template_id": "comparison_table",
+      "slide_goal": "Give a screenshot-friendly map of the whole group."
+    },
+    {
+      "slide_number": 11,
+      "phase": "Contrast",
+      "skeleton_link": "01-master-teaching-skeleton.md#8-comparison-1",
+      "learning_function": "Separate correction from strong denial.",
+      "template_id": "minimal_pair",
+      "slide_goal": "Compare わけではない and わけがない with a minimal pair."
+    },
+    {
+      "slide_number": 12,
+      "phase": "Contrast",
+      "skeleton_link": "01-master-teaching-skeleton.md#8-comparison-2",
+      "learning_function": "Separate possibility judgment from constrained action.",
+      "template_id": "minimal_pair",
+      "slide_goal": "Compare わけがない and わけにはいかない."
+    },
+    {
+      "slide_number": 13,
+      "phase": "Exam Transfer",
+      "skeleton_link": "01-master-teaching-skeleton.md#9-clue-map",
+      "learning_function": "Turn the grammar map into a JLPT answer-choice process.",
+      "template_id": "clue_map",
+      "slide_goal": "Guide before/after clue reading and speaker-action selection."
+    },
+    {
+      "slide_number": 14,
+      "phase": "Worked Example",
+      "skeleton_link": "01-master-teaching-skeleton.md#10-worked-example",
+      "learning_function": "Model the solving process on the hook question.",
+      "template_id": "worked_example",
+      "slide_goal": "Use clue, speaker action, and trap elimination before revealing answer A."
+    },
+    {
+      "slide_number": 15,
+      "phase": "Practice",
+      "skeleton_link": "01-master-teaching-skeleton.md#11-diagnostic-practice",
+      "learning_function": "Let the learner diagnose the correction-versus-denial trap.",
+      "template_id": "diagnostic_practice",
+      "slide_goal": "Check わけがない with 嫌いな and explain the trap."
+    },
+    {
+      "slide_number": 16,
+      "phase": "Recap",
+      "skeleton_link": "01-master-teaching-skeleton.md#12-recap",
+      "learning_function": "Lock the four-pattern memory map.",
+      "template_id": "summary",
+      "slide_goal": "Provide a compact screenshot-friendly recap."
+    },
+    {
+      "slide_number": 17,
+      "phase": "CTA",
+      "skeleton_link": "01-master-teaching-skeleton.md#14-worksheet-contract",
+      "learning_function": "Lead to worksheet and diagnostic quiz as guided trap practice.",
+      "template_id": "cta_diagnostic",
+      "slide_goal": "Sell diagnosis and targeted practice, not a generic PDF summary."
+    }
+  ]
+}

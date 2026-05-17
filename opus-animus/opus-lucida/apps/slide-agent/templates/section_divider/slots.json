@@ -1,0 +1,1 @@
+{"template_id":"section_divider","version":"1.0","required_slots":{"title":{"type":"string","max_chars":72},"subtitle":{"type":"string","max_chars":140}},"optional_slots":{}}

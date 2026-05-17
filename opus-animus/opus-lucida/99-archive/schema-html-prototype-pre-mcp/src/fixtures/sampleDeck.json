@@ -1,0 +1,101 @@
+{
+  "deck_meta": {
+    "deck_id": "sample-lucida-deck",
+    "title": "Lucida Schema-First HTML Slides",
+    "audience": "Vietnamese late N3 / early N2 learners",
+    "theme_id": "lucida-n2",
+    "aspect_ratio": "16:9",
+    "frame_mode": "static"
+  },
+  "slides": [
+    {
+      "slide_id": "s01",
+      "slide_number": 1,
+      "role": "hero_title",
+      "phase": "Hook",
+      "template_id": "hero_title",
+      "learning_operation": "contrast",
+      "slots": {
+        "title": "Lucida không để LLM viết HTML tự do",
+        "subtitle": "JSON là source of truth. HTML là artifact được renderer biên dịch.",
+        "footer_cue": "Kiểm soát layout trước khi quay video."
+      },
+      "design": { "dominant_accent": "amber" },
+      "qa": { "risk": ["long_title"], "required_checks": ["slot_budget", "no_overflow"] }
+    },
+    {
+      "slide_id": "s02",
+      "slide_number": 2,
+      "role": "key_message",
+      "phase": "Method",
+      "template_id": "key_message",
+      "learning_operation": "speaker_action",
+      "slots": {
+        "title": "Pipeline được chọn",
+        "key_message": "LLM tạo typed JSON, renderer cố định quyết định HTML/CSS.",
+        "bullets": [
+          "Không có raw HTML trong JSON",
+          "Layout nằm trong layout catalog",
+          "Slot budgets bắt lỗi trước khi render"
+        ]
+      },
+      "design": { "dominant_accent": "blue" },
+      "qa": { "risk": [], "required_checks": ["slot_budget"] }
+    },
+    {
+      "slide_id": "s03",
+      "slide_number": 3,
+      "role": "comparison",
+      "phase": "Contrast",
+      "template_id": "comparison_table",
+      "learning_operation": "contrast",
+      "slots": {
+        "title": "So sánh cách làm",
+        "rows": [
+          { "label": "Raw HTML", "value": "Nhanh nhưng layout drift cao", "note": "Reject as core" },
+          { "label": "Typed JSON", "value": "Chậm hơn lúc đầu nhưng kiểm soát tốt", "note": "Choose" },
+          { "label": "Renderer", "value": "Tái dùng design system và QA được", "note": "Build now" }
+        ]
+      },
+      "design": { "dominant_accent": "green" },
+      "qa": { "risk": [], "required_checks": ["slot_budget", "no_overlap"] }
+    },
+    {
+      "slide_id": "s04",
+      "slide_number": 4,
+      "role": "figure_focus",
+      "phase": "Exam Transfer",
+      "template_id": "figure_focus",
+      "learning_operation": "exam_decision",
+      "slots": {
+        "title": "Renderer là production boundary",
+        "figure_label": "JSON -> React -> HTML -> PNG",
+        "caption": "Sau bước này, video pipeline chỉ xử lý frame đã được kiểm tra."
+      },
+      "design": { "dominant_accent": "violet" },
+      "qa": { "risk": [], "required_checks": ["no_overflow"] }
+    },
+    {
+      "slide_id": "s05",
+      "slide_number": 5,
+      "role": "summary",
+      "phase": "Recap",
+      "template_id": "summary",
+      "learning_operation": "recap",
+      "slots": {
+        "title": "Definition of done",
+        "items": [
+          "Deck validates with Zod",
+          "Every template has slot budgets",
+          "Browser renders 16:9 slides",
+          "Playwright exports frames",
+          "QA catches bad fixtures",
+          "No LLM-generated CSS"
+        ],
+        "takeaway": "Prototype proves the architecture before real LLM calls."
+      },
+      "design": { "dominant_accent": "amber" },
+      "qa": { "risk": [], "required_checks": ["slot_budget", "text_density"] }
+    }
+  ]
+}

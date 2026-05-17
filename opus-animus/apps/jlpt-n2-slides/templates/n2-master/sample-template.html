@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>N2 Master Template — MVP Spike</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* tokens — mirror of brand-tokens.json */
+  --c-bg: #FAF8F3;
+  --c-ink: #1A1A1A;
+  --c-muted: #6B6B6B;
+  --c-accent: #0B3D91;
+  --c-accent-soft: #E6ECF6;
+  --c-correct: #2E7D32;
+  --c-wrong: #C62828;
+  --c-rule: #E5E2DA;
+  --c-callout-bg: #FFF7D6;
+
+  --f-jp: "Noto Serif JP", "Yu Mincho", serif;
+  --f-jp-ui: "Noto Sans JP", "Yu Gothic UI", sans-serif;
+  --f-vi: "Inter", "Segoe UI", sans-serif;
+
+  --fs-hook: 96px;
+  --fs-title: 56px;
+  --fs-h2: 36px;
+  --fs-body: 22px;
+  --fs-jp-lg: 64px;
+  --fs-furigana: 14px;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 16px;
+  --sp-4: 24px;
+  --sp-5: 40px;
+  --sp-6: 64px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; padding: 0;
+  background: #2a2a2a;
+  font-family: var(--f-vi);
+  color: var(--c-ink);
+}
+
+/* Deck shell */
+.deck {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--sp-5) 0;
+  gap: var(--sp-5);
+}
+
+.deck-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(20,20,20,0.92);
+  color: #f5f5f5;
+  padding: var(--sp-3) var(--sp-5);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  font-size: 14px;
+  font-family: var(--f-vi);
+  z-index: 100;
+}
+
+.deck-bar button {
+  background: #444;
+  color: #f5f5f5;
+  border: 1px solid #666;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.deck-bar button:hover { background: #555; }
+.deck-bar .spacer { flex: 1; }
+.deck-bar .pos { font-variant-numeric: tabular-nums; }
+
+/* Slide frame — 16:9 */
+.slide {
+  width: 1280px;
+  height: 720px;
+  background: var(--c-bg);
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  overflow: hidden;
+  display: none;
+}
+
+.slide.active { display: block; }
+
+.stage {
+  position: absolute;
+  inset: 64px;
+  max-width: 1120px;
+  display: flex;
+  flex-direction: column;
+}
+
+.slide-id {
+  position: absolute;
+  bottom: 24px; right: 32px;
+  font-size: 13px;
+  color: var(--c-muted);
+  font-family: var(--f-vi);
+  letter-spacing: 0.05em;
+}
+
+.notes {
+  display: none;
+}
+
+/* Furigana */
+ruby { ruby-position: over; }
+ruby rt { font-size: var(--fs-furigana); color: var(--c-muted); font-family: var(--f-jp-ui); }
+
+/* ============================================================ */
+/* Slide types                                                    */
+/* ============================================================ */
+
+/* HookSlide */
+.slide--hook .stage {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.slide--hook .hook-jp {
+  font-family: var(--f-jp);
+  font-size: var(--fs-hook);
+  font-weight: 600;
+  color: var(--c-ink);
+  line-height: 1.2;
+  margin: 0 0 var(--sp-4);
+}
+.slide--hook .hook-jp .accent { color: var(--c-accent); }
+.slide--hook .hook-vi {
+  font-size: var(--fs-h2);
+  color: var(--c-muted);
+  margin: 0;
+  font-weight: 400;
+}
+
+/* ThreeViewGrammarSlide */
+.slide--3view .stage {
+  gap: var(--sp-4);
+}
+.slide--3view .pattern {
+  font-family: var(--f-jp);
+  font-size: var(--fs-jp-lg);
+  color: var(--c-accent);
+  margin: 0;
+  font-weight: 700;
+}
+.slide--3view .pattern-form {
+  font-family: var(--f-jp-ui);
+  font-size: var(--fs-body);
+  color: var(--c-muted);
+  margin: 0;
+}
+.slide--3view .three-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--sp-4);
+  flex: 1;
+  margin-top: var(--sp-3);
+}
+.slide--3view .view {
+  background: var(--c-accent-soft);
+  border-left: 4px solid var(--c-accent);
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.slide--3view .view h3 {
+  margin: 0;
+  font-size: 20px;
+  color: var(--c-accent);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.slide--3view .view p {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  color: var(--c-ink);
+}
+
+/* ExampleSlide */
+.slide--example .stage { gap: var(--sp-5); justify-content: center; }
+.slide--example h2 {
+  font-size: var(--fs-h2);
+  color: var(--c-muted);
+  margin: 0;
+  font-weight: 500;
+}
+.slide--example .example {
+  border-top: 1px solid var(--c-rule);
+  padding-top: var(--sp-4);
+}
+.slide--example .jp {
+  font-family: var(--f-jp);
+  font-size: 38px;
+  margin: 0 0 var(--sp-3);
+  line-height: 1.4;
+  color: var(--c-ink);
+}
+.slide--example .jp .accent { color: var(--c-accent); font-weight: 700; }
+.slide--example .vi {
+  font-size: var(--fs-body);
+  color: var(--c-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ComparisonSlide */
+.slide--compare .stage { gap: var(--sp-4); }
+.slide--compare h2 {
+  font-size: var(--fs-h2);
+  margin: 0;
+  color: var(--c-ink);
+  font-weight: 600;
+}
+.slide--compare .two-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-5);
+  flex: 1;
+  margin-top: var(--sp-3);
+}
+.slide--compare .col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.slide--compare .col-title {
+  font-family: var(--f-jp);
+  font-size: 44px;
+  color: var(--c-accent);
+  margin: 0;
+  font-weight: 700;
+}
+.slide--compare ul {
+  margin: 0;
+  padding-left: var(--sp-4);
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--c-ink);
+}
+.slide--compare li { margin-bottom: var(--sp-2); }
+.slide--compare .verdict {
+  background: var(--c-callout-bg);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: 6px;
+  font-size: 20px;
+  margin: 0;
+  color: var(--c-ink);
+  font-style: italic;
+}
+
+/* PracticeSlide */
+.slide--practice .stage { gap: var(--sp-4); }
+.slide--practice .label {
+  font-size: 16px;
+  color: var(--c-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  margin: 0;
+}
+.slide--practice .prompt {
+  font-family: var(--f-jp);
+  font-size: 40px;
+  margin: 0;
+  line-height: 1.4;
+  color: var(--c-ink);
+}
+.slide--practice .prompt .blank {
+  display: inline-block;
+  min-width: 120px;
+  border-bottom: 3px solid var(--c-accent);
+  text-align: center;
+  color: var(--c-accent);
+}
+.slide--practice .choices {
+  list-style: none;
+  padding: 0;
+  margin: var(--sp-3) 0 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3);
+}
+.slide--practice .choice {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: white;
+  border: 2px solid var(--c-rule);
+  border-radius: 8px;
+  font-family: var(--f-jp);
+  font-size: 24px;
+  cursor: pointer;
+  transition: border-color 120ms, background 120ms;
+}
+.slide--practice .choice:hover { border-color: var(--c-accent); }
+.slide--practice .choice .num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
+  background: var(--c-accent-soft);
+  color: var(--c-accent);
+  border-radius: 50%;
+  font-family: var(--f-vi);
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.slide--practice.revealed .choice { pointer-events: none; }
+.slide--practice.revealed .choice.correct {
+  border-color: var(--c-correct);
+  background: rgba(46,125,50,0.08);
+}
+.slide--practice.revealed .choice.wrong-pick {
+  border-color: var(--c-wrong);
+  background: rgba(198,40,40,0.08);
+}
+.slide--practice .explanation {
+  display: none;
+  margin-top: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--c-callout-bg);
+  border-radius: 6px;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--c-ink);
+}
+.slide--practice.revealed .explanation { display: block; }
+.slide--practice .hint {
+  font-size: 13px;
+  color: var(--c-muted);
+  margin: var(--sp-2) 0 0;
+}
+
+/* RecapSlide */
+.slide--recap .stage { justify-content: center; gap: var(--sp-4); }
+.slide--recap h2 {
+  font-size: var(--fs-h2);
+  margin: 0 0 var(--sp-3);
+  color: var(--c-ink);
+}
+.slide--recap ol {
+  margin: 0;
+  padding-left: var(--sp-5);
+  font-size: 26px;
+  line-height: 1.7;
+}
+.slide--recap li {
+  margin-bottom: var(--sp-2);
+  color: var(--c-ink);
+}
+.slide--recap .accent { color: var(--c-accent); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <!-- 1. HookSlide -->
+  <section class="slide slide--hook active"
+           data-slide-id="hook-01"
+           data-duration="8">
+    <div class="stage">
+      <h1 class="hook-jp">「<span class="accent">わけ</span>」って何？</h1>
+      <p class="hook-vi">4 mẫu nhìn giống nhau — nhưng người nói đang làm 4 chuyện khác nhau.</p>
+    </div>
+    <div class="slide-id">hook-01</div>
+    <aside class="notes">Mở video bằng câu hỏi gây tò mò. わけだ・わけではない・わけがない・わけにはいかない — học sinh thường gộp chung nhưng mỗi cái diễn đạt hành động ngôn ngữ khác nhau. Pause 2s trước khi sang slide tiếp theo.</aside>
+  </section>
+
+  <!-- 2. ThreeViewGrammarSlide -->
+  <section class="slide slide--3view"
+           data-slide-id="3view-wakedewanai"
+           data-duration="60">
+    <div class="stage">
+      <p class="pattern">〜<ruby><rb>訳</rb><rt>わけ</rt></ruby>ではない</p>
+      <p class="pattern-form">普通形 + わけではない</p>
+      <div class="three-cols">
+        <div class="view">
+          <h3>Ý NGHĨA</h3>
+          <p>Đính chính một hiểu lầm: "không phải là như vậy đâu".</p>
+        </div>
+        <div class="view">
+          <h3>DẠNG</h3>
+          <p>Plain form + わけではない. Lịch sự hơn: わけではありません.</p>
+        </div>
+        <div class="view">
+          <h3>CÁCH DÙNG</h3>
+          <p>Nói nhẹ nhàng phủ định một suy luận của đối phương. Không phải phủ định mạnh.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-id">3view-wakedewanai</div>
+    <aside class="notes">Slide trụ cột của bài. Nhấn vào hành động ngôn ngữ "đính chính" — phân biệt với "phủ định hoàn toàn" của わけがない. Cho example sau slide này.</aside>
+  </section>
+
+  <!-- 3. ExampleSlide -->
+  <section class="slide slide--example"
+           data-slide-id="example-wakedewanai"
+           data-duration="20">
+    <div class="stage">
+      <h2>Ví dụ — 〜わけではない</h2>
+      <div class="example">
+        <p class="jp">日本語が<ruby><rb>嫌</rb><rt>きら</rt></ruby>いな<span class="accent">わけではない</span>。ただ、<ruby><rb>難</rb><rt>むずか</rt></ruby>しいだけ。</p>
+        <p class="vi">Không phải mình ghét tiếng Nhật đâu. Chỉ là nó khó thôi.</p>
+      </div>
+      <div class="example">
+        <p class="jp"><ruby><rb>反対</rb><rt>はんたい</rt></ruby>している<span class="accent">わけではない</span>けど、もう少し<ruby><rb>考</rb><rt>かんが</rt></ruby>えたい。</p>
+        <p class="vi">Không phải mình phản đối đâu, mà chỉ là muốn suy nghĩ thêm chút.</p>
+      </div>
+    </div>
+    <div class="slide-id">example-wakedewanai</div>
+    <aside class="notes">Cả 2 ví dụ đều minh hoạ "đính chính một hiểu lầm". Người nói không khẳng định mạnh — chỉ làm rõ. Nhấn intonation mềm.</aside>
+  </section>
+
+  <!-- 4. ComparisonSlide -->
+  <section class="slide slide--compare"
+           data-slide-id="compare-vs-wakeganai"
+           data-duration="45">
+    <div class="stage">
+      <h2>わけではない vs わけがない</h2>
+      <div class="two-cols">
+        <div class="col">
+          <p class="col-title">〜わけではない</p>
+          <ul>
+            <li>Đính chính một hiểu lầm</li>
+            <li>"Không phải vậy đâu"</li>
+            <li>Mềm, có không gian giải thích</li>
+            <li>Sau đó thường có "ただ…", "ちょっと…"</li>
+          </ul>
+        </div>
+        <div class="col">
+          <p class="col-title">〜わけがない</p>
+          <ul>
+            <li>Phủ định mạnh tuyệt đối</li>
+            <li>"Làm gì có chuyện đó"</li>
+            <li>Cứng, không thương lượng</li>
+            <li>Thường đi với 「そんな」「絶対に」</li>
+          </ul>
+        </div>
+      </div>
+      <p class="verdict">Trục phân biệt: <strong>cường độ phủ định</strong>. Đính chính ≠ Phủ định.</p>
+    </div>
+    <div class="slide-id">compare-vs-wakeganai</div>
+    <aside class="notes">Trục chính = cường độ. Học sinh hay dùng わけがない khi chỉ muốn đính chính nhẹ → nghe gay gắt với người Nhật. Nhấn ví dụ trật register.</aside>
+  </section>
+
+  <!-- 5. PracticeSlide (with reveal) -->
+  <section class="slide slide--practice"
+           data-slide-id="practice-01"
+           data-duration="60"
+           data-answer="2">
+    <div class="stage">
+      <p class="label">Thử trước — Chọn 1 đáp án</p>
+      <p class="prompt">そんなに<ruby><rb>簡単</rb><rt>かんたん</rt></ruby>に<ruby><rb>合格</rb><rt>ごうかく</rt></ruby>できる<span class="blank">_____</span>。<br>もっと<ruby><rb>勉強</rb><rt>べんきょう</rt></ruby>しないと。</p>
+      <ul class="choices">
+        <li class="choice" data-index="0"><span class="num">1</span>わけだ</li>
+        <li class="choice" data-index="1"><span class="num">2</span>わけではない</li>
+        <li class="choice" data-index="2"><span class="num">3</span>わけがない</li>
+        <li class="choice" data-index="3"><span class="num">4</span>わけにはいかない</li>
+      </ul>
+      <p class="hint">Phím: <kbd>1–4</kbd> chọn · <kbd>Space</kbd> xem đáp án</p>
+      <div class="explanation">
+        <strong>Đáp án: 3 — わけがない.</strong><br>
+        Câu sau (もっと勉強しないと) cho biết người nói phủ định mạnh "không thể đậu dễ vậy được". 「そんなに〜できるわけがない」 = "làm gì có chuyện làm được dễ vậy". わけではない (chọn 2) quá nhẹ — không phù hợp với 「もっと勉強しないと」.
+      </div>
+    </div>
+    <div class="slide-id">practice-01</div>
+    <aside class="notes">MVP feature test: hotspot-toggle reveal. Click choice hoặc bấm 1-4 → reveal correct/wrong + explanation. Bấm Space chỉ reveal answer không pick choice nào.</aside>
+  </section>
+
+  <!-- 6. RecapSlide -->
+  <section class="slide slide--recap"
+           data-slide-id="recap-01"
+           data-duration="20">
+    <div class="stage">
+      <h2>Recap — わけ family</h2>
+      <ol>
+        <li><span class="accent">わけだ</span> — kết luận hợp lý ("hèn chi", "thảo nào")</li>
+        <li><span class="accent">わけではない</span> — đính chính nhẹ một hiểu lầm</li>
+        <li><span class="accent">わけがない</span> — phủ định mạnh, không có chuyện đó</li>
+        <li><span class="accent">わけにはいかない</span> — bị ràng buộc, không thể (về mặt trách nhiệm)</li>
+      </ol>
+    </div>
+    <div class="slide-id">recap-01</div>
+    <aside class="notes">Lock memory map. Mỗi mẫu = một hành động ngôn ngữ khác. Sau slide này: CTA worksheet (chưa làm trong MVP).</aside>
+  </section>
+
+</div>
+
+<!-- Deck controls -->
+<div class="deck-bar">
+  <button id="prev">← Prev</button>
+  <button id="next">Next →</button>
+  <span class="pos"><span id="pos-cur">1</span> / <span id="pos-tot">6</span></span>
+  <span class="spacer"></span>
+  <span id="slide-meta"></span>
+  <span class="spacer"></span>
+  <span>MVP Spike · わけ family · 16:9 · self-contained</span>
+</div>
+
+<script>
+(() => {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let idx = 0;
+
+  const posCur = document.getElementById('pos-cur');
+  const posTot = document.getElementById('pos-tot');
+  const meta = document.getElementById('slide-meta');
+  posTot.textContent = slides.length;
+
+  function show(n) {
+    idx = (n + slides.length) % slides.length;
+    slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+    posCur.textContent = idx + 1;
+    const s = slides[idx];
+    meta.textContent = `${s.dataset.slideId} · ${s.dataset.duration}s`;
+  }
+
+  document.getElementById('prev').onclick = () => show(idx - 1);
+  document.getElementById('next').onclick = () => show(idx + 1);
+
+  // PracticeSlide reveal
+  function revealPractice(slide, pickedIdx) {
+    const answer = parseInt(slide.dataset.answer, 10);
+    slide.classList.add('revealed');
+    slide.querySelectorAll('.choice').forEach((c, i) => {
+      if (i === answer) c.classList.add('correct');
+      if (pickedIdx !== null && i === pickedIdx && i !== answer) c.classList.add('wrong-pick');
+    });
+  }
+
+  document.querySelectorAll('.slide--practice .choice').forEach(c => {
+    c.addEventListener('click', () => {
+      const slide = c.closest('.slide--practice');
+      if (slide.classList.contains('revealed')) return;
+      revealPractice(slide, parseInt(c.dataset.index, 10));
+    });
+  });
+
+  // Reset practice state when leaving the slide
+  function resetPractice() {
+    document.querySelectorAll('.slide--practice').forEach(slide => {
+      if (slide !== slides[idx]) {
+        slide.classList.remove('revealed');
+        slide.querySelectorAll('.choice').forEach(c => c.classList.remove('correct', 'wrong-pick'));
+      }
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    const cur = slides[idx];
+    const isPractice = cur.classList.contains('slide--practice');
+
+    if (e.key === 'ArrowLeft') { show(idx - 1); resetPractice(); }
+    else if (e.key === 'ArrowRight') { show(idx + 1); resetPractice(); }
+    else if (isPractice && !cur.classList.contains('revealed')) {
+      if (['1','2','3','4'].includes(e.key)) {
+        const pick = parseInt(e.key, 10) - 1;
+        revealPractice(cur, pick);
+      } else if (e.key === ' ') {
+        e.preventDefault();
+        revealPractice(cur, null);
+      }
+    }
+  });
+
+  show(0);
+})();
+</script>
+
+</body>
+</html>

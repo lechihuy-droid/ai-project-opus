@@ -1,0 +1,1 @@
+{"template_id":"key_message","version":"1.0","required_slots":{"title":{"type":"string","max_chars":68},"key_message":{"type":"string","max_chars":160},"bullets":{"type":"string[]","max_items":4,"max_chars":220}},"optional_slots":{}}

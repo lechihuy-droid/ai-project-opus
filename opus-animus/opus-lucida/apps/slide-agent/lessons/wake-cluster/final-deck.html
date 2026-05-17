@@ -1,0 +1,1411 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JLPT N2 · 4 mẫu わけ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --lucida-ink: #111827;
+  --lucida-charcoal: #1f2937;
+  --lucida-paper: #f7f1e5;
+  --lucida-mist: #e7e2d6;
+  --lucida-line: rgba(247, 241, 229, 0.18);
+  --lucida-amber: #f5b841;
+  --lucida-blue: #4a90e2;
+  --lucida-red: #d95d59;
+  --lucida-green: #2f7d5c;
+  --lucida-violet: #7c6a9e;
+  --font-ui: "Manrope", "Segoe UI", Arial, sans-serif;
+  --font-jp: "Noto Sans JP", "BIZ UDPGothic", Meiryo, sans-serif;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #05070b;
+  color: var(--lucida-paper);
+  font-family: var(--font-ui);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+
+.deck {
+  width: 1920px;
+  margin: 0 auto;
+  background: #05070b;
+}
+
+.slide {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  display: grid;
+  grid-template-rows: 84px 1fr 62px;
+  padding: 46px 72px 36px;
+  overflow: hidden;
+  page-break-after: always;
+  background:
+    linear-gradient(115deg, rgba(247, 241, 229, 0.065) 0 1px, transparent 1px 100%),
+    linear-gradient(180deg, rgba(247, 241, 229, 0.045), transparent 36%),
+    linear-gradient(180deg, var(--lucida-ink), #070a11);
+  background-size: 78px 78px, auto, auto;
+}
+
+.slide::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(247, 241, 229, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(247, 241, 229, 0.03) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse at center, black 0%, transparent 82%);
+  pointer-events: none;
+}
+
+.slide-topbar,
+.slide-body,
+.slide-footer {
+  position: relative;
+  z-index: 1;
+}
+
+.slide-topbar,
+.slide-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgba(247, 241, 229, 0.64);
+  font-size: 18px;
+}
+
+.slide-topbar {
+  border-bottom: 1px solid var(--lucida-line);
+  padding-bottom: 18px;
+}
+
+.slide-footer {
+  border-top: 1px solid rgba(247, 241, 229, 0.1);
+  padding-top: 14px;
+}
+
+.slide-number {
+  margin-right: 16px;
+  color: var(--accent);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.slide-template,
+.slide-operation {
+  text-transform: uppercase;
+  letter-spacing: 0;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.slide-body {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+
+.layout {
+  width: min(1480px, 100%);
+}
+
+.accent-amber { --accent: var(--lucida-amber); }
+.accent-blue { --accent: var(--lucida-blue); }
+.accent-red { --accent: var(--lucida-red); }
+.accent-green { --accent: var(--lucida-green); }
+.accent-violet { --accent: var(--lucida-violet); }
+
+.slide-kicker {
+  margin: 0 0 22px;
+  color: var(--accent);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+h1 {
+  max-width: 1180px;
+  color: var(--lucida-paper);
+  font-size: 96px;
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+h2 {
+  color: var(--lucida-paper);
+  font-size: 66px;
+  line-height: 1.04;
+  letter-spacing: 0;
+}
+
+h3 {
+  color: var(--lucida-paper);
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.hero-subtitle,
+.support {
+  margin-top: 28px;
+  color: rgba(247, 241, 229, 0.72);
+  font-size: 34px;
+  line-height: 1.34;
+  max-width: 1120px;
+}
+
+.takeaway-strip {
+  margin-top: 44px;
+  padding: 24px 30px;
+  border-left: 8px solid var(--accent);
+  background: rgba(247, 241, 229, 0.075);
+  color: var(--lucida-paper);
+  font-size: 32px;
+  line-height: 1.25;
+}
+
+.message-box {
+  margin-top: 34px;
+  padding: 30px 34px;
+  border: 1px solid rgba(247, 241, 229, 0.16);
+  background: rgba(247, 241, 229, 0.075);
+  color: var(--lucida-paper);
+  font-size: 42px;
+  line-height: 1.22;
+}
+
+.bullet-list {
+  margin: 28px 0 0;
+  padding-left: 34px;
+  display: grid;
+  gap: 14px;
+  color: rgba(247, 241, 229, 0.78);
+  font-size: 28px;
+  line-height: 1.28;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.panel {
+  min-height: 360px;
+  padding: 34px;
+  border: 1px solid rgba(247, 241, 229, 0.16);
+  background: rgba(247, 241, 229, 0.065);
+}
+
+.panel ul {
+  margin: 24px 0 0;
+  padding-left: 28px;
+  display: grid;
+  gap: 14px;
+  color: rgba(247, 241, 229, 0.76);
+  font-size: 27px;
+  line-height: 1.3;
+}
+
+.comparison-grid {
+  margin-top: 34px;
+  display: grid;
+  gap: 14px;
+}
+
+.comparison-row {
+  display: grid;
+  grid-template-columns: 270px 1fr 340px;
+  gap: 18px;
+  align-items: center;
+  padding: 20px 24px;
+  border: 1px solid rgba(247, 241, 229, 0.14);
+  background: rgba(247, 241, 229, 0.065);
+  color: rgba(247, 241, 229, 0.76);
+  font-size: 25px;
+  line-height: 1.22;
+}
+
+.comparison-row strong {
+  color: var(--lucida-paper);
+  font-family: var(--font-jp);
+  font-size: 31px;
+}
+
+.comparison-row em {
+  color: rgba(247, 241, 229, 0.58);
+  font-style: normal;
+}
+
+.figure-focus {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 42px;
+  align-items: center;
+}
+
+.figure-box {
+  display: grid;
+  min-height: 520px;
+  place-items: center;
+  border: 1px solid rgba(247, 241, 229, 0.18);
+  background: rgba(247, 241, 229, 0.075);
+  color: var(--accent);
+  font-family: var(--font-jp);
+  font-size: 56px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.summary-grid {
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.summary-item {
+  min-height: 150px;
+  padding: 26px;
+  display: grid;
+  align-items: center;
+  border: 1px solid rgba(247, 241, 229, 0.14);
+  background: rgba(247, 241, 229, 0.065);
+  color: rgba(247, 241, 229, 0.8);
+  font-size: 26px;
+  line-height: 1.26;
+}
+
+.jp-question {
+  margin-top: 28px;
+  padding: 28px 32px;
+  border: 1px solid rgba(247, 241, 229, 0.16);
+  background: rgba(247, 241, 229, 0.065);
+  color: var(--lucida-paper);
+  font-family: var(--font-jp);
+  font-size: 42px;
+  line-height: 1.35;
+  white-space: pre-line;
+}
+
+.jp-question.smaller {
+  font-size: 34px;
+}
+
+.choice-list {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.choice-pill {
+  min-height: 82px;
+  padding: 18px 22px;
+  display: grid;
+  align-items: center;
+  border: 1px solid rgba(247, 241, 229, 0.16);
+  background: rgba(247, 241, 229, 0.07);
+  color: rgba(247, 241, 229, 0.82);
+  font-size: 25px;
+  line-height: 1.22;
+}
+
+.answer-strip,
+.example-strip,
+.bonus-note {
+  margin-top: 24px;
+  padding: 20px 26px;
+  border-left: 8px solid var(--accent);
+  background: rgba(247, 241, 229, 0.085);
+  color: var(--lucida-paper);
+  font-size: 30px;
+  line-height: 1.24;
+}
+
+.example-strip {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-family: var(--font-jp);
+}
+
+.example-strip span {
+  color: var(--accent);
+  font-family: var(--font-ui);
+  font-size: 18px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.support.compact {
+  margin-top: 20px;
+  font-size: 27px;
+}
+
+.grammar-shell {
+  display: grid;
+  grid-template-columns: 0.86fr 1.14fr;
+  gap: 26px;
+  align-items: stretch;
+}
+
+.pattern-card,
+.grammar-cell,
+.pair-grid section,
+.checklist,
+.mapping-row,
+.feedback-panel,
+.cta-item,
+.board-panel {
+  border: 1px solid rgba(247, 241, 229, 0.15);
+  background: rgba(247, 241, 229, 0.065);
+}
+
+.pattern-card {
+  min-height: 440px;
+  padding: 34px;
+  display: grid;
+  align-content: center;
+  gap: 20px;
+  border-left: 8px solid var(--accent);
+}
+
+.pattern-card h2 {
+  font-family: var(--font-jp);
+  color: var(--accent);
+  font-size: 70px;
+  line-height: 1.02;
+}
+
+.pattern-card strong {
+  color: var(--lucida-paper);
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+.pattern-card p {
+  color: rgba(247, 241, 229, 0.8);
+  font-size: 31px;
+  line-height: 1.28;
+}
+
+.grammar-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.grammar-cell {
+  min-height: 198px;
+  padding: 24px;
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.grammar-cell strong {
+  color: var(--accent);
+  font-size: 22px;
+}
+
+.grammar-cell span {
+  color: rgba(247, 241, 229, 0.82);
+  font-size: 28px;
+  line-height: 1.24;
+}
+
+.bonus-note {
+  margin-top: 14px;
+  border-left-color: rgba(247, 241, 229, 0.38);
+  color: rgba(247, 241, 229, 0.76);
+  font-size: 24px;
+}
+
+.pair-grid,
+.diagnostic-grid,
+.worked-grid,
+.clue-layout,
+.quiz-board {
+  margin-top: 30px;
+  display: grid;
+  gap: 24px;
+}
+
+.pair-grid,
+.diagnostic-grid,
+.worked-grid,
+.quiz-board {
+  grid-template-columns: 1fr 1fr;
+}
+
+.worked-example h2 {
+  font-size: 58px;
+}
+
+.worked-example .worked-grid {
+  margin-top: 20px;
+}
+
+.worked-example .board-panel {
+  padding: 22px 28px;
+}
+
+.worked-example .jp-question.smaller {
+  font-size: 32px;
+  line-height: 1.26;
+  padding: 24px 28px;
+}
+
+.worked-example .choice-list {
+  margin-top: 16px;
+  gap: 12px;
+}
+
+.worked-example .choice-pill {
+  min-height: 66px;
+  padding: 14px 20px;
+}
+
+.worked-example .answer-strip {
+  margin-top: 12px;
+  padding: 16px 22px;
+  font-size: 28px;
+}
+
+.worked-example .takeaway-strip {
+  margin-top: 18px;
+  padding: 18px 26px;
+  font-size: 28px;
+}
+
+.board-panel {
+  padding: 28px;
+}
+
+.board-label {
+  margin-bottom: 16px;
+  color: var(--accent);
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.board-before {
+  border-top: 5px solid rgba(247, 241, 229, 0.34);
+}
+
+.board-after {
+  border-top: 5px solid var(--accent);
+}
+
+.quiz-board .jp-question,
+.diagnostic-grid .jp-question,
+.worked-grid .jp-question {
+  margin-top: 0;
+}
+
+.quiz-board .choice-list,
+.worked-grid .choice-list,
+.diagnostic-grid .choice-list {
+  grid-template-columns: 1fr;
+}
+
+.quiz-board .answer-strip,
+.worked-grid .answer-strip,
+.diagnostic-grid .answer-strip {
+  margin-top: 0;
+}
+
+.pair-grid section {
+  min-height: 370px;
+  padding: 30px;
+}
+
+.contrast-axis {
+  margin-top: 24px;
+  padding: 18px 24px;
+  border-left: 6px solid var(--accent);
+  background: rgba(247, 241, 229, 0.075);
+  color: var(--lucida-paper);
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+.pair-grid h3 {
+  color: var(--accent);
+}
+
+.pair-grid ul,
+.feedback-panel ul,
+.step-list {
+  margin: 22px 0 0;
+  padding-left: 28px;
+  display: grid;
+  gap: 13px;
+  color: rgba(247, 241, 229, 0.78);
+  font-size: 25px;
+  line-height: 1.25;
+}
+
+.jp-mini {
+  margin-top: 26px;
+  color: var(--lucida-paper);
+  font-family: var(--font-jp);
+  font-size: 34px;
+}
+
+.clue-layout {
+  grid-template-columns: 0.75fr 1.25fr;
+}
+
+.checklist {
+  padding: 24px;
+  display: grid;
+  gap: 14px;
+  color: rgba(247, 241, 229, 0.82);
+  font-size: 27px;
+  line-height: 1.24;
+}
+
+.mapping-list {
+  display: grid;
+  gap: 12px;
+}
+
+.mapping-list > .board-label {
+  margin-bottom: 2px;
+}
+
+.mapping-row {
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: 300px 1fr 210px;
+  gap: 14px;
+  align-items: center;
+  color: rgba(247, 241, 229, 0.78);
+  font-size: 23px;
+  line-height: 1.2;
+}
+
+.mapping-row strong {
+  color: var(--lucida-paper);
+  font-size: 25px;
+}
+
+.mapping-row em {
+  color: rgba(247, 241, 229, 0.58);
+  font-style: normal;
+}
+
+.step-list {
+  margin-top: 0;
+  padding: 0 0 0 30px;
+  border: 0;
+  background: transparent;
+  font-size: 24px;
+}
+
+.feedback-panel {
+  padding: 30px;
+}
+
+.feedback-panel .answer-strip {
+  margin-top: 0;
+}
+
+.cta-list {
+  margin-top: 38px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.cta-item {
+  min-height: 132px;
+  padding: 26px;
+  display: grid;
+  align-items: center;
+  color: rgba(247, 241, 229, 0.82);
+  font-size: 28px;
+  line-height: 1.24;
+}
+
+
+:root {
+  --lucida-ink: #111827;
+  --lucida-paper: #f7f1e5;
+  --lucida-line: rgba(247, 241, 229, 0.14);
+  --lucida-amber: #f5b841;
+  --lucida-blue: #4a90e2;
+  --lucida-red: #d95d59;
+  --lucida-green: #2f7d5c;
+  --lucida-violet: #7c6a9e;
+  --paper-dim: rgba(247, 241, 229, 0.6);
+  --paper-muted: rgba(247, 241, 229, 0.36);
+  --amber-dim: rgba(245, 184, 65, 0.72);
+  --red-light: #e8908d;
+  --green-light: #56b090;
+  --violet-light: #a898c8;
+  --font-vi: 'Manrope', 'Segoe UI', Arial, sans-serif;
+  --font-jp: 'Noto Sans JP', 'BIZ UDPGothic', 'Meiryo', sans-serif;
+}
+
+.grammar-card-v2 * ,
+.grammar-card-v2 *::before,
+.grammar-card-v2 *::after {
+  box-sizing: border-box;
+}
+
+.grammar-card-v2 {
+  width: min(100%, 1920px);
+  height: 100%;
+}
+
+.gc-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  color: var(--lucida-paper);
+  font-family: var(--font-vi);
+}
+
+.gc-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--lucida-line);
+  flex: 0 0 1px;
+}
+
+.gc-header {
+  flex: 0 0 auto;
+  padding-bottom: 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.gc-pattern {
+  font-family: var(--font-jp);
+  font-size: 84px;
+  font-weight: 700;
+  color: var(--lucida-amber);
+  line-height: 1;
+  letter-spacing: 0.03em;
+}
+
+.gc-speaker-intent {
+  font-size: 27px;
+  font-weight: 400;
+  color: var(--violet-light);
+  line-height: 1.55;
+  max-width: 1500px;
+  letter-spacing: 0.01em;
+}
+
+.gc-info {
+  flex: 1 1 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 34px 0;
+  min-height: 0;
+}
+
+.gc-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-right: 48px;
+}
+
+.gc-info-col + .gc-info-col {
+  border-left: 1px solid var(--lucida-line);
+  padding-left: 48px;
+}
+
+.gc-info-col:last-child {
+  padding-right: 0;
+}
+
+.gc-col-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--amber-dim);
+}
+
+.gc-col-value {
+  font-size: 23px;
+  font-weight: 400;
+  color: var(--lucida-paper);
+  line-height: 1.65;
+  letter-spacing: 0.005em;
+}
+
+.jp {
+  font-family: var(--font-jp);
+  font-weight: 500;
+}
+
+.gc-example-zone {
+  flex: 0 0 auto;
+  padding: 34px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gc-example-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--paper-muted);
+}
+
+.gc-example-sentence {
+  font-family: var(--font-jp);
+  font-size: 42px;
+  font-weight: 400;
+  color: var(--lucida-paper);
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+}
+
+.gc-bottom {
+  flex: 0 0 auto;
+  padding-top: 32px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.gc-trap,
+.gc-bonus {
+  padding: 14px 20px;
+  border-radius: 0 4px 4px 0;
+}
+
+.gc-trap {
+  border-left: 3px solid var(--lucida-red);
+  background: rgba(217, 93, 89, 0.07);
+}
+
+.gc-trap-marker,
+.gc-bonus-marker {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  margin-bottom: 6px;
+}
+
+.gc-trap-marker {
+  color: var(--lucida-red);
+}
+
+.gc-trap-text {
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--red-light);
+  line-height: 1.55;
+}
+
+.gc-bonus {
+  border-left: 3px solid var(--lucida-green);
+  background: rgba(47, 125, 92, 0.07);
+}
+
+.gc-bonus:empty {
+  display: none;
+}
+
+.gc-bonus-marker {
+  color: var(--lucida-green);
+}
+
+.gc-bonus-text {
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--green-light);
+  line-height: 1.55;
+}
+
+  </style>
+</head>
+<body>
+  <div class="deck" data-lane-id="wake-cluster">
+<section class="slide accent-amber" data-slide-id="wake-01" data-template-id="hero_title" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">01</span><span class="slide-template">Mở bài</span></div>
+    <div class="slide-operation">So sánh</div>
+  </header>
+  <main class="slide-body">
+<div class="layout hero-title">
+  <p class="slide-kicker">Tình huống mở đầu</p>
+  <h1 data-slot="title">Cùng có わけ, nhưng không cùng ý</h1>
+  <p class="hero-subtitle" data-slot="subtitle">Một câu đang đính chính. Một câu đang nói có ràng buộc.</p>
+  <div class="takeaway-strip" data-slot="footer_cue">Ở câu này, người nói đang muốn nói gì?</div>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Tình huống mở đầu</span>
+    <span>01 / 17</span>
+  </footer>
+</section>
+<section class="slide accent-blue" data-slide-id="wake-02" data-template-id="quiz_before_after" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">02</span><span class="slide-template">Thử chọn nhanh</span></div>
+    <div class="slide-operation">Chọn đáp án</div>
+  </header>
+  <main class="slide-body">
+<div class="layout quiz-before-after">
+  <p class="slide-kicker">Thử chọn nhanh</p>
+  <h2 data-slot="title">Thử chọn nhanh</h2>
+  <div class="quiz-board">
+    <section class="board-panel board-before">
+      <div class="board-label">Trước khi chốt</div>
+      <div class="jp-question" data-slot="question">行きたくない＿＿んだけど、
+明日N2だから、今夜は遊びに行く＿＿。</div>
+      <div class="choice-list" data-slot="choices"><div class="choice-pill">A. わけでは / わけには</div><div class="choice-pill">B. わけが / わけでは</div><div class="choice-pill">C. わけだ / わけが</div></div>
+    </section>
+    <section class="board-panel board-after">
+      <div class="board-label">Sau khi chốt</div>
+      <div class="answer-strip" data-slot="answer">Đáp án: A</div>
+      <div class="support compact" data-slot="payoff">Chỗ trống 1 là đính chính. Chỗ trống 2 là bị ràng buộc nên không đi được.</div>
+    </section>
+  </div>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Thử chọn nhanh</span>
+    <span>02 / 17</span>
+  </footer>
+</section>
+<section class="slide accent-green" data-slide-id="wake-03" data-template-id="two_column" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">03</span><span class="slide-template">Hai hướng nhìn</span></div>
+    <div class="slide-operation">Ý người nói</div>
+  </header>
+  <main class="slide-body">
+<div class="layout two-column">
+  <p class="slide-kicker">Bài này giúp gì?</p>
+  <h2 data-slot="title">Bài này giúp gì?</h2>
+  <div class="columns">
+    <section class="panel">
+      <h3 data-slot="left_title">Khi làm đề N2</h3>
+      <ul data-slot="left_items"><li>Đỡ chọn theo cảm giác quen</li><li>Biết nhìn clue và trap</li><li>Tách đáp án gần nghĩa</li></ul>
+    </section>
+    <section class="panel">
+      <h3 data-slot="right_title">Khi nghe ngoài đời</h3>
+      <ul data-slot="right_items"><li>Nghe ra người nói đang kết luận</li><li>Nhận ra lúc họ đính chính</li><li>Phân biệt bác bỏ và ràng buộc</li></ul>
+    </section>
+  </div>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Bài này giúp gì?</span>
+    <span>03 / 17</span>
+  </footer>
+</section>
+<section class="slide accent-red" data-slide-id="wake-04" data-template-id="key_message" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">04</span><span class="slide-template">Ý chính</span></div>
+    <div class="slide-operation">Tình huống thật</div>
+  </header>
+  <main class="slide-body">
+<div class="layout key-message">
+  <p class="slide-kicker">Tình huống thực tế</p>
+  <h2 data-slot="title">Tình huống thực tế</h2>
+  <div class="message-box" data-slot="key_message">Không phải không muốn đi, nhưng tối nay có trách nhiệm phải làm.</div>
+  <ul class="bullet-list" data-slot="bullets">
+    <li>Đồng nghiệp rủ đi ăn tối</li><li>Tối nay phải gửi tài liệu cho khách</li><li>Muốn đi nhưng bị công việc giữ lại</li>
+  </ul>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Tình huống thực tế</span>
+    <span>04 / 17</span>
+  </footer>
+</section>
+<section class="slide accent-violet" data-slide-id="wake-05" data-template-id="summary" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">05</span><span class="slide-template">Tổng kết</span></div>
+    <div class="slide-operation">Tìm dấu hiệu</div>
+  </header>
+  <main class="slide-body">
+<div class="layout summary">
+  <p class="slide-kicker">Cách nhìn để phân biệt</p>
+  <h2 data-slot="title">Cách nhìn để phân biệt</h2>
+  <div class="summary-grid" data-slot="items">
+    <div class="summary-item">Ý nghĩa: mẫu này nói ý gì?</div><div class="summary-item">Dạng: mẫu này đi với dạng nào?</div><div class="summary-item">Cách dùng: dùng trong tình huống nào?</div><div class="summary-item">Đừng nhìn chữ わけ trước.</div><div class="summary-item">Nhìn người nói đang nhấn vào đâu.</div><div class="summary-item">Bốn mẫu わけ = bốn mạch logic.</div>
+  </div>
+  <div class="takeaway-strip" data-slot="takeaway">Ở câu này, người nói đang muốn nói gì?</div>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Cách nhìn để phân biệt</span>
+    <span>05 / 17</span>
+  </footer>
+</section>
+<section class="slide accent-blue" data-slide-id="wake-06" data-template-id="grammar_card_v2" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">06</span><span class="slide-template">Nắm từng mẫu</span></div>
+    <div class="slide-operation">Loại bẫy</div>
+  </header>
+  <main class="slide-body">
+<div class="layout grammar-card-v2">
+  <section class="gc-inner" aria-label="Grammar card">
+    <header class="gc-header">
+      <div class="gc-pattern" lang="ja" data-slot="pattern_jp">わけではない</div>
+      <p class="gc-speaker-intent" data-slot="speaker_action_vi">Người nói đang đính chính lại một cách hiểu dễ bị lệch.</p>
+    </header>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-info" aria-label="Ý nghĩa, Dạng, Cách dùng">
+      <article class="gc-info-col gc-meaning">
+        <div class="gc-col-label">Ý nghĩa</div>
+        <div class="gc-col-value" data-slot="meaning_vi">không phải là... / không có nghĩa là...</div>
+      </article>
+
+      <article class="gc-info-col gc-form">
+        <div class="gc-col-label">Dạng</div>
+        <div class="gc-col-value" lang="ja" data-slot="form_jp"><span class="jp">普通形 + わけではない</span></div>
+      </article>
+
+      <article class="gc-info-col gc-usage">
+        <div class="gc-col-label">Cách dùng</div>
+        <div class="gc-col-value" data-slot="usage_vi">Dùng khi muốn gỡ lại một cách hiểu sai.</div>
+      </article>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-example-zone">
+      <div class="gc-example-label">Ví dụ</div>
+      <div class="gc-example-sentence" lang="ja" data-slot="example_jp">行きたくないわけではありません。</div>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-bottom">
+      <article class="gc-trap">
+        <div class="gc-trap-marker">△ Lưu ý</div>
+        <div class="gc-trap-text" data-slot="trap_vi">Đừng kéo sang わけがない nếu câu chỉ đang đính chính.</div>
+      </article>
+
+    </section>
+  </section>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Nắm từng mẫu</span>
+    <span>06 / 17</span>
+  </footer>
+</section>
+<section class="slide accent-green" data-slide-id="wake-07" data-template-id="grammar_card_v2" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">07</span><span class="slide-template">Nắm từng mẫu</span></div>
+    <div class="slide-operation">Tình huống thật</div>
+  </header>
+  <main class="slide-body">
+<div class="layout grammar-card-v2">
+  <section class="gc-inner" aria-label="Grammar card">
+    <header class="gc-header">
+      <div class="gc-pattern" lang="ja" data-slot="pattern_jp">わけにはいかない</div>
+      <p class="gc-speaker-intent" data-slot="speaker_action_vi">Muốn cũng không làm được, vì có trách nhiệm hoặc ràng buộc.</p>
+    </header>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-info" aria-label="Ý nghĩa, Dạng, Cách dùng">
+      <article class="gc-info-col gc-meaning">
+        <div class="gc-col-label">Ý nghĩa</div>
+        <div class="gc-col-value" data-slot="meaning_vi">không thể làm, vì có ràng buộc</div>
+      </article>
+
+      <article class="gc-info-col gc-form">
+        <div class="gc-col-label">Dạng</div>
+        <div class="gc-col-value" lang="ja" data-slot="form_jp"><span class="jp">V辞書形 + わけにはいかない</span></div>
+      </article>
+
+      <article class="gc-info-col gc-usage">
+        <div class="gc-col-label">Cách dùng</div>
+        <div class="gc-col-value" data-slot="usage_vi">Hay gặp với deadline, quy tắc, vai trò, trách nhiệm.</div>
+      </article>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-example-zone">
+      <div class="gc-example-label">Ví dụ</div>
+      <div class="gc-example-sentence" lang="ja" data-slot="example_jp">今夜は飲みに行くわけにはいきません。</div>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-bottom">
+      <article class="gc-trap">
+        <div class="gc-trap-marker">△ Lưu ý</div>
+        <div class="gc-trap-text" data-slot="trap_vi">Khác わけがない: đây là hành động bị giữ lại.</div>
+      </article>
+
+      <article class="gc-bonus" data-slot="bonus_vi">
+        <div class="gc-bonus-marker">＋ Thêm</div>
+        <div class="gc-bonus-text">Vない + わけにはいかない = không thể không làm</div>
+      </article>
+    </section>
+  </section>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Nắm từng mẫu</span>
+    <span>07 / 17</span>
+  </footer>
+</section>
+<section class="slide accent-amber" data-slide-id="wake-08" data-template-id="grammar_card_v2" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">08</span><span class="slide-template">Nắm từng mẫu</span></div>
+    <div class="slide-operation">Ý người nói</div>
+  </header>
+  <main class="slide-body">
+<div class="layout grammar-card-v2">
+  <section class="gc-inner" aria-label="Grammar card">
+    <header class="gc-header">
+      <div class="gc-pattern" lang="ja" data-slot="pattern_jp">わけだ</div>
+      <p class="gc-speaker-intent" data-slot="speaker_action_vi">Nghe thông tin rồi hiểu ra: à, ra là vậy.</p>
+    </header>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-info" aria-label="Ý nghĩa, Dạng, Cách dùng">
+      <article class="gc-info-col gc-meaning">
+        <div class="gc-col-label">Ý nghĩa</div>
+        <div class="gc-col-value" data-slot="meaning_vi">thảo nào / ra là vậy</div>
+      </article>
+
+      <article class="gc-info-col gc-form">
+        <div class="gc-col-label">Dạng</div>
+        <div class="gc-col-value" lang="ja" data-slot="form_jp"><span class="jp">普通形 + わけだ</span></div>
+      </article>
+
+      <article class="gc-info-col gc-usage">
+        <div class="gc-col-label">Cách dùng</div>
+        <div class="gc-col-value" data-slot="usage_vi">Có dữ kiện ở trước, rồi chốt ra kết luận.</div>
+      </article>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-example-zone">
+      <div class="gc-example-label">Ví dụ</div>
+      <div class="gc-example-sentence" lang="ja" data-slot="example_jp">資料を送る必要がある。だから行けないわけだ。</div>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-bottom">
+      <article class="gc-trap">
+        <div class="gc-trap-marker">△ Lưu ý</div>
+        <div class="gc-trap-text" data-slot="trap_vi">わけだ chỉ là kết luận, không tự mang nghĩa ràng buộc.</div>
+      </article>
+
+    </section>
+  </section>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Nắm từng mẫu</span>
+    <span>08 / 17</span>
+  </footer>
+</section>
+<section class="slide accent-red" data-slide-id="wake-09" data-template-id="grammar_card_v2" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">09</span><span class="slide-template">Nắm từng mẫu</span></div>
+    <div class="slide-operation">Loại bẫy</div>
+  </header>
+  <main class="slide-body">
+<div class="layout grammar-card-v2">
+  <section class="gc-inner" aria-label="Grammar card">
+    <header class="gc-header">
+      <div class="gc-pattern" lang="ja" data-slot="pattern_jp">わけがない</div>
+      <p class="gc-speaker-intent" data-slot="speaker_action_vi">Người nói bác bỏ rất mạnh: không thể nào lại như thế.</p>
+    </header>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-info" aria-label="Ý nghĩa, Dạng, Cách dùng">
+      <article class="gc-info-col gc-meaning">
+        <div class="gc-col-label">Ý nghĩa</div>
+        <div class="gc-col-value" data-slot="meaning_vi">không thể nào... / làm gì có chuyện...</div>
+      </article>
+
+      <article class="gc-info-col gc-form">
+        <div class="gc-col-label">Dạng</div>
+        <div class="gc-col-value" lang="ja" data-slot="form_jp"><span class="jp">普通形 + わけがない</span></div>
+      </article>
+
+      <article class="gc-info-col gc-usage">
+        <div class="gc-col-label">Cách dùng</div>
+        <div class="gc-col-value" data-slot="usage_vi">Dùng khi gần như chắc điều đó không thể xảy ra.</div>
+      </article>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-example-zone">
+      <div class="gc-example-label">Ví dụ</div>
+      <div class="gc-example-sentence" lang="ja" data-slot="example_jp">みんなを嫌いなわけがない。</div>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-bottom">
+      <article class="gc-trap">
+        <div class="gc-trap-marker">△ Lưu ý</div>
+        <div class="gc-trap-text" data-slot="trap_vi">Nếu chỉ gỡ hiểu lầm, chưa phải わけがない.</div>
+      </article>
+
+    </section>
+  </section>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Nắm từng mẫu</span>
+    <span>09 / 17</span>
+  </footer>
+</section>
+<section class="slide accent-violet" data-slide-id="wake-10" data-template-id="comparison_table" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">10</span><span class="slide-template">Bảng so sánh</span></div>
+    <div class="slide-operation">So sánh</div>
+  </header>
+  <main class="slide-body">
+<div class="layout comparison-table">
+  <p class="slide-kicker">So sánh dễ nhầm</p>
+  <h2 data-slot="title">Nhìn nhanh cả nhóm</h2>
+  <div class="comparison-grid" data-slot="rows">
+    <div class="comparison-row"><strong>わけだ</strong><span>rút ra kết luận hợp lý</span><em>có dữ kiện trước</em></div><div class="comparison-row"><strong>わけではない</strong><span>đính chính cách hiểu</span><em>không phải theo nghĩa đó</em></div><div class="comparison-row"><strong>わけがない</strong><span>bác bỏ khả năng rất mạnh</span><em>không thể nào</em></div><div class="comparison-row"><strong>わけにはいかない</strong><span>bị ràng buộc nên không làm được</span><em>trách nhiệm / quy tắc</em></div>
+  </div>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>So sánh dễ nhầm</span>
+    <span>10 / 17</span>
+  </footer>
+</section>
+<section class="slide accent-amber" data-slide-id="wake-11" data-template-id="minimal_pair" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">11</span><span class="slide-template">Cặp dễ nhầm</span></div>
+    <div class="slide-operation">So sánh</div>
+  </header>
+  <main class="slide-body">
+<div class="layout minimal-pair">
+  <p class="slide-kicker">So sánh dễ nhầm</p>
+  <h2 data-slot="title">Đính chính hay bác rất mạnh?</h2>
+  <div class="contrast-axis">Trục khác nhau: ý người nói đang đẩy câu theo hướng nào?</div>
+  <div class="pair-grid">
+    <section><h3 data-slot="left_title">わけではない</h3><ul data-slot="left_items"><li>Gỡ lại cách hiểu</li><li>Không phải là theo nghĩa A</li><li>Mức độ mềm hơn</li></ul><div class="jp-mini" data-slot="pair_a">嫌いなわけではない</div></section>
+    <section><h3 data-slot="right_title">わけがない</h3><ul data-slot="right_items"><li>Bác hẳn khả năng</li><li>Không thể nào lại là A</li><li>Mức độ rất mạnh</li></ul><div class="jp-mini" data-slot="pair_b">嫌いなわけがない</div></section>
+  </div>
+  <div class="takeaway-strip" data-slot="trap">Cùng nghe như phủ định, nhưng một bên đính chính, một bên bác hẳn khả năng.</div>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>So sánh dễ nhầm</span>
+    <span>11 / 17</span>
+  </footer>
+</section>
+<section class="slide accent-blue" data-slide-id="wake-12" data-template-id="minimal_pair" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">12</span><span class="slide-template">Cặp dễ nhầm</span></div>
+    <div class="slide-operation">So sánh</div>
+  </header>
+  <main class="slide-body">
+<div class="layout minimal-pair">
+  <p class="slide-kicker">So sánh dễ nhầm</p>
+  <h2 data-slot="title">Khả năng hay ràng buộc?</h2>
+  <div class="contrast-axis">Trục khác nhau: ý người nói đang đẩy câu theo hướng nào?</div>
+  <div class="pair-grid">
+    <section><h3 data-slot="left_title">わけがない</h3><ul data-slot="left_items"><li>Phán đoán khả năng</li><li>Không thể nào xảy ra</li><li>Bác một nhận định</li></ul><div class="jp-mini" data-slot="pair_a">そんなことを言うわけがない</div></section>
+    <section><h3 data-slot="right_title">わけにはいかない</h3><ul data-slot="right_items"><li>Hành động bị giữ lại</li><li>Muốn cũng không làm được</li><li>Có trách nhiệm / quy tắc</li></ul><div class="jp-mini" data-slot="pair_b">今日は休むわけにはいかない</div></section>
+  </div>
+  <div class="takeaway-strip" data-slot="trap">Cùng dịch ra &#39;không thể&#39;, nhưng một bên là khả năng, một bên là ràng buộc.</div>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>So sánh dễ nhầm</span>
+    <span>12 / 17</span>
+  </footer>
+</section>
+<section class="slide accent-violet" data-slide-id="wake-13" data-template-id="clue_map" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">13</span><span class="slide-template">Dấu hiệu để chọn</span></div>
+    <div class="slide-operation">Tìm dấu hiệu</div>
+  </header>
+  <main class="slide-body">
+<div class="layout clue-map">
+  <p class="slide-kicker">Dấu hiệu để chọn</p>
+  <h2 data-slot="title">Dấu hiệu để chọn mẫu</h2>
+  <div class="clue-layout">
+    <div class="checklist" data-slot="checklist"><div class="board-label">Đọc đề theo thứ tự</div><div>Trước chỗ trống: đang có dữ kiện hay ràng buộc?</div><div>Sau chỗ trống: câu đi về hướng nào?</div><div>Người nói đang đính chính, bác bỏ, hay kết luận?</div><div>Không nhìn đáp án trước, nhìn mạch logic trước.</div></div>
+    <div class="mapping-list" data-slot="mappings"><div class="board-label">Chọn mẫu theo mạch ý</div><div class="mapping-row"><strong>Gỡ hiểu lầm</strong><span>わけではない</span><em>bẫy: わけがない</em></div><div class="mapping-row"><strong>Bác rất mạnh</strong><span>わけがない</span><em>bẫy: わけではない</em></div><div class="mapping-row"><strong>Bị ràng buộc</strong><span>わけにはいかない</span><em>bẫy: わけだ</em></div><div class="mapping-row"><strong>Rút kết luận</strong><span>わけだ</span><em>bẫy: ràng buộc</em></div></div>
+  </div>
+  <div class="takeaway-strip" data-slot="takeaway">Hỏi trước: ở câu này, người nói đang muốn nói gì?</div>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Dấu hiệu để chọn</span>
+    <span>13 / 17</span>
+  </footer>
+</section>
+<section class="slide accent-red" data-slide-id="wake-14" data-template-id="worked_example" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">14</span><span class="slide-template">Giải từng bước</span></div>
+    <div class="slide-operation">Loại bẫy</div>
+  </header>
+  <main class="slide-body">
+<div class="layout worked-example">
+  <p class="slide-kicker">Giải từng bước</p>
+  <h2 data-slot="title">Giải đề từng bước</h2>
+  <div class="worked-grid">
+    <section class="board-panel"><div class="board-label">Đề bài</div><div class="jp-question smaller" data-slot="question">行きたくない＿＿んだけど、
+明日N2だから、今夜は遊びに行く＿＿。</div><div class="choice-list" data-slot="choices"><div class="choice-pill">A. わけでは / わけには</div><div class="choice-pill">B. わけが / わけでは</div><div class="choice-pill">C. わけだ / わけが</div></div><div class="answer-strip" data-slot="answer">Đáp án: A</div></section>
+    <section class="board-panel"><div class="board-label">Cách giải</div><ol class="step-list" data-slot="steps"><li>Chỗ trống 1: ＿＿んだけど → đang đính chính.</li><li>Chọn わけでは; わけが nghe bác quá mạnh.</li><li>Chỗ trống 2: 明日N2だから → có ràng buộc.</li><li>Chọn わけには; わけだ chỉ là kết luận.</li><li>Loại B/C vì lệch ý người nói.</li></ol></section>
+  </div>
+  <div class="takeaway-strip" data-slot="rule">Đính chính → わけではない. Ràng buộc → わけにはいかない.</div>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Giải từng bước</span>
+    <span>14 / 17</span>
+  </footer>
+</section>
+<section class="slide accent-violet" data-slide-id="wake-15" data-template-id="diagnostic_practice" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">15</span><span class="slide-template">Luyện chẩn đoán</span></div>
+    <div class="slide-operation">Xem bẫy hay nhầm</div>
+  </header>
+  <main class="slide-body">
+<div class="layout diagnostic-practice">
+  <p class="slide-kicker">Luyện chẩn đoán</p>
+  <h2 data-slot="title">Luyện chẩn đoán</h2>
+  <div class="diagnostic-grid">
+    <section class="board-panel board-before"><div class="board-label">Trước khi chốt</div><div class="jp-question" data-slot="question">あの人がみんなを嫌いな＿＿。</div><div class="choice-list" data-slot="choices"><div class="choice-pill">A. わけではない</div><div class="choice-pill">B. わけがない</div><div class="choice-pill">C. わけだ</div></div></section>
+    <section class="feedback-panel board-after"><div class="board-label">Sau khi chốt</div><div class="answer-strip" data-slot="answer">Đáp án: B</div><ul data-slot="feedback"><li>Ý cần nói: không thể nào lại ghét mọi người.</li><li>嫌い là な-adjective → 嫌いな + わけがない.</li><li>Bẫy là chọn わけではない vì thấy phủ định.</li></ul></section>
+  </div>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Luyện chẩn đoán</span>
+    <span>15 / 17</span>
+  </footer>
+</section>
+<section class="slide accent-amber" data-slide-id="wake-16" data-template-id="summary" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">16</span><span class="slide-template">Tổng kết</span></div>
+    <div class="slide-operation">Tóm lại</div>
+  </header>
+  <main class="slide-body">
+<div class="layout summary">
+  <p class="slide-kicker">Tổng kết nhanh</p>
+  <h2 data-slot="title">Tổng kết nhanh</h2>
+  <div class="summary-grid" data-slot="items">
+    <div class="summary-item">わけだ = nghe thông tin rồi kết luận</div><div class="summary-item">わけではない = không phải theo nghĩa đó</div><div class="summary-item">わけがない = không thể nào lại như thế</div><div class="summary-item">わけにはいかない = bị ràng buộc nên không làm được</div><div class="summary-item">Bonus: Vないわけにはいかない</div><div class="summary-item">Hỏi lại: người nói đang muốn nói gì?</div>
+  </div>
+  <div class="takeaway-strip" data-slot="takeaway">Đừng dịch trước. Hãy nghe hướng người nói đang đẩy câu.</div>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Tổng kết nhanh</span>
+    <span>16 / 17</span>
+  </footer>
+</section>
+<section class="slide accent-blue" data-slide-id="wake-17" data-template-id="cta_diagnostic" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">17</span><span class="slide-template">Luyện tiếp</span></div>
+    <div class="slide-operation">Luyện tiếp</div>
+  </header>
+  <main class="slide-body">
+<div class="layout cta-diagnostic">
+  <p class="slide-kicker">Luyện tiếp</p>
+  <h2 data-slot="title">Hiểu rồi nhưng vào đề vẫn lưỡng lự?</h2>
+  <p class="support" data-slot="subtitle">Phần luyện tiếp theo giúp bạn biến bài học thành phản xạ chọn mẫu.</p>
+  <div class="cta-list" data-slot="items"><div class="cta-item">Nhìn lại 4 mẫu qua Ý nghĩa - Dạng - Cách dùng</div><div class="cta-item">Luyện dấu hiệu trong câu thật</div><div class="cta-item">Làm bài kiểu JLPT</div><div class="cta-item">Xem mình hay nhầm ở bẫy nào</div></div>
+  <div class="takeaway-strip" data-slot="cue">Worksheet + diagnostic quiz: luyện đúng phần còn yếu.</div>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Luyện tiếp</span>
+    <span>17 / 17</span>
+  </footer>
+</section>
+  </div>
+</body>
+</html>

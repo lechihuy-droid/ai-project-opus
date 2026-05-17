@@ -1,0 +1,38 @@
+.tmp/
+
+# Embedded repositories managed separately.
+open-design/
+VieNeu-TTS/
+
+# Local environments and caches.
+opus-animus/opus-lucida/.venv-rvc/
+opus-animus/opus-lucida/.cache/
+node_modules/
+.venv/
+__pycache__/
+
+# Local secrets and runtime state.
+.env
+.env.*
+!.env.example
+*.local.json
+*.log
+.telegraph_token
+.last_error.json
+.wiki_tg_offset.json
+
+# Large generated/binary artifacts.
+*.dmg
+*.pkg
+Payload~
+*.pt
+*.pth
+*.index
+*.wav
+*.mp4
+*.pdf
+*.docx
+
+# Nested Git workspace.
+opus-animus/opus-lucida/space/
+opus-animus/opus-lucida/production/00-active/wake-cluster/video/lucida_assembly_*/

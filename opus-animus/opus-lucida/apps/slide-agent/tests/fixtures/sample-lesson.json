@@ -1,0 +1,11 @@
+{
+  "lane_id": "sample",
+  "lesson_title": "わけ family",
+  "grammar_points": [
+    { "pattern": "わけだ", "form": "Plain + わけだ", "meaning_vi": "ra là vậy", "usage_vi": "kết luận", "examples": [{ "jp": "だから行けないわけだ。", "vi": "Thảo nào không đi được." }] }
+  ],
+  "examples": [],
+  "comparisons": [],
+  "practices": [],
+  "cta": {}
+}

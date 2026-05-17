@@ -1,0 +1,1 @@
+{"template_id":"worked_example","version":"1.0","required_slots":{"title":{"type":"string","max_chars":64},"question":{"type":"string","max_chars":150},"choices":{"type":"string[]","max_items":3,"max_chars":190},"steps":{"type":"string[]","max_items":5,"max_chars":420},"answer":{"type":"string","max_chars":48},"rule":{"type":"string","max_chars":140}},"optional_slots":{}}

@@ -1,0 +1,40 @@
+{
+  "template_id": "grammar_card_v2",
+  "version": "1.0",
+  "required_slots": {
+    "pattern_jp": {
+      "type": "string",
+      "max_chars": 42
+    },
+    "speaker_action_vi": {
+      "type": "string",
+      "max_chars": 130
+    },
+    "meaning_vi": {
+      "type": "string",
+      "max_chars": 100
+    },
+    "form_jp": {
+      "type": "string",
+      "max_chars": 70
+    },
+    "usage_vi": {
+      "type": "string",
+      "max_chars": 130
+    },
+    "example_jp": {
+      "type": "string",
+      "max_chars": 160
+    },
+    "trap_vi": {
+      "type": "string",
+      "max_chars": 140
+    }
+  },
+  "optional_slots": {
+    "bonus_vi": {
+      "type": "string",
+      "max_chars": 90
+    }
+  }
+}

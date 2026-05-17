@@ -1,0 +1,1115 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wake grammar cards on grammar_card_v2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --lucida-ink: #111827;
+  --lucida-charcoal: #1f2937;
+  --lucida-paper: #f7f1e5;
+  --lucida-mist: #e7e2d6;
+  --lucida-line: rgba(247, 241, 229, 0.18);
+  --lucida-amber: #f5b841;
+  --lucida-blue: #4a90e2;
+  --lucida-red: #d95d59;
+  --lucida-green: #2f7d5c;
+  --lucida-violet: #7c6a9e;
+  --font-ui: "Manrope", "Segoe UI", Arial, sans-serif;
+  --font-jp: "Noto Sans JP", "BIZ UDPGothic", Meiryo, sans-serif;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #05070b;
+  color: var(--lucida-paper);
+  font-family: var(--font-ui);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+
+.deck {
+  width: 1920px;
+  margin: 0 auto;
+  background: #05070b;
+}
+
+.slide {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  display: grid;
+  grid-template-rows: 84px 1fr 62px;
+  padding: 46px 72px 36px;
+  overflow: hidden;
+  page-break-after: always;
+  background:
+    linear-gradient(115deg, rgba(247, 241, 229, 0.065) 0 1px, transparent 1px 100%),
+    linear-gradient(180deg, rgba(247, 241, 229, 0.045), transparent 36%),
+    linear-gradient(180deg, var(--lucida-ink), #070a11);
+  background-size: 78px 78px, auto, auto;
+}
+
+.slide::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(247, 241, 229, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(247, 241, 229, 0.03) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse at center, black 0%, transparent 82%);
+  pointer-events: none;
+}
+
+.slide-topbar,
+.slide-body,
+.slide-footer {
+  position: relative;
+  z-index: 1;
+}
+
+.slide-topbar,
+.slide-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgba(247, 241, 229, 0.64);
+  font-size: 18px;
+}
+
+.slide-topbar {
+  border-bottom: 1px solid var(--lucida-line);
+  padding-bottom: 18px;
+}
+
+.slide-footer {
+  border-top: 1px solid rgba(247, 241, 229, 0.1);
+  padding-top: 14px;
+}
+
+.slide-number {
+  margin-right: 16px;
+  color: var(--accent);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.slide-template,
+.slide-operation {
+  text-transform: uppercase;
+  letter-spacing: 0;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.slide-body {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+
+.layout {
+  width: min(1480px, 100%);
+}
+
+.accent-amber { --accent: var(--lucida-amber); }
+.accent-blue { --accent: var(--lucida-blue); }
+.accent-red { --accent: var(--lucida-red); }
+.accent-green { --accent: var(--lucida-green); }
+.accent-violet { --accent: var(--lucida-violet); }
+
+.slide-kicker {
+  margin: 0 0 22px;
+  color: var(--accent);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+h1 {
+  max-width: 1180px;
+  color: var(--lucida-paper);
+  font-size: 96px;
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+h2 {
+  color: var(--lucida-paper);
+  font-size: 66px;
+  line-height: 1.04;
+  letter-spacing: 0;
+}
+
+h3 {
+  color: var(--lucida-paper);
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.hero-subtitle,
+.support {
+  margin-top: 28px;
+  color: rgba(247, 241, 229, 0.72);
+  font-size: 34px;
+  line-height: 1.34;
+  max-width: 1120px;
+}
+
+.takeaway-strip {
+  margin-top: 44px;
+  padding: 24px 30px;
+  border-left: 8px solid var(--accent);
+  background: rgba(247, 241, 229, 0.075);
+  color: var(--lucida-paper);
+  font-size: 32px;
+  line-height: 1.25;
+}
+
+.message-box {
+  margin-top: 34px;
+  padding: 30px 34px;
+  border: 1px solid rgba(247, 241, 229, 0.16);
+  background: rgba(247, 241, 229, 0.075);
+  color: var(--lucida-paper);
+  font-size: 42px;
+  line-height: 1.22;
+}
+
+.bullet-list {
+  margin: 28px 0 0;
+  padding-left: 34px;
+  display: grid;
+  gap: 14px;
+  color: rgba(247, 241, 229, 0.78);
+  font-size: 28px;
+  line-height: 1.28;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.panel {
+  min-height: 360px;
+  padding: 34px;
+  border: 1px solid rgba(247, 241, 229, 0.16);
+  background: rgba(247, 241, 229, 0.065);
+}
+
+.panel ul {
+  margin: 24px 0 0;
+  padding-left: 28px;
+  display: grid;
+  gap: 14px;
+  color: rgba(247, 241, 229, 0.76);
+  font-size: 27px;
+  line-height: 1.3;
+}
+
+.comparison-grid {
+  margin-top: 34px;
+  display: grid;
+  gap: 14px;
+}
+
+.comparison-row {
+  display: grid;
+  grid-template-columns: 270px 1fr 340px;
+  gap: 18px;
+  align-items: center;
+  padding: 20px 24px;
+  border: 1px solid rgba(247, 241, 229, 0.14);
+  background: rgba(247, 241, 229, 0.065);
+  color: rgba(247, 241, 229, 0.76);
+  font-size: 25px;
+  line-height: 1.22;
+}
+
+.comparison-row strong {
+  color: var(--lucida-paper);
+  font-family: var(--font-jp);
+  font-size: 31px;
+}
+
+.comparison-row em {
+  color: rgba(247, 241, 229, 0.58);
+  font-style: normal;
+}
+
+.figure-focus {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 42px;
+  align-items: center;
+}
+
+.figure-box {
+  display: grid;
+  min-height: 520px;
+  place-items: center;
+  border: 1px solid rgba(247, 241, 229, 0.18);
+  background: rgba(247, 241, 229, 0.075);
+  color: var(--accent);
+  font-family: var(--font-jp);
+  font-size: 56px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.summary-grid {
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.summary-item {
+  min-height: 150px;
+  padding: 26px;
+  display: grid;
+  align-items: center;
+  border: 1px solid rgba(247, 241, 229, 0.14);
+  background: rgba(247, 241, 229, 0.065);
+  color: rgba(247, 241, 229, 0.8);
+  font-size: 26px;
+  line-height: 1.26;
+}
+
+.jp-question {
+  margin-top: 28px;
+  padding: 28px 32px;
+  border: 1px solid rgba(247, 241, 229, 0.16);
+  background: rgba(247, 241, 229, 0.065);
+  color: var(--lucida-paper);
+  font-family: var(--font-jp);
+  font-size: 42px;
+  line-height: 1.35;
+  white-space: pre-line;
+}
+
+.jp-question.smaller {
+  font-size: 34px;
+}
+
+.choice-list {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.choice-pill {
+  min-height: 82px;
+  padding: 18px 22px;
+  display: grid;
+  align-items: center;
+  border: 1px solid rgba(247, 241, 229, 0.16);
+  background: rgba(247, 241, 229, 0.07);
+  color: rgba(247, 241, 229, 0.82);
+  font-size: 25px;
+  line-height: 1.22;
+}
+
+.answer-strip,
+.example-strip,
+.bonus-note {
+  margin-top: 24px;
+  padding: 20px 26px;
+  border-left: 8px solid var(--accent);
+  background: rgba(247, 241, 229, 0.085);
+  color: var(--lucida-paper);
+  font-size: 30px;
+  line-height: 1.24;
+}
+
+.example-strip {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-family: var(--font-jp);
+}
+
+.example-strip span {
+  color: var(--accent);
+  font-family: var(--font-ui);
+  font-size: 18px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.support.compact {
+  margin-top: 20px;
+  font-size: 27px;
+}
+
+.grammar-shell {
+  display: grid;
+  grid-template-columns: 0.86fr 1.14fr;
+  gap: 26px;
+  align-items: stretch;
+}
+
+.pattern-card,
+.grammar-cell,
+.pair-grid section,
+.checklist,
+.mapping-row,
+.feedback-panel,
+.cta-item,
+.board-panel {
+  border: 1px solid rgba(247, 241, 229, 0.15);
+  background: rgba(247, 241, 229, 0.065);
+}
+
+.pattern-card {
+  min-height: 440px;
+  padding: 34px;
+  display: grid;
+  align-content: center;
+  gap: 20px;
+  border-left: 8px solid var(--accent);
+}
+
+.pattern-card h2 {
+  font-family: var(--font-jp);
+  color: var(--accent);
+  font-size: 70px;
+  line-height: 1.02;
+}
+
+.pattern-card strong {
+  color: var(--lucida-paper);
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+.pattern-card p {
+  color: rgba(247, 241, 229, 0.8);
+  font-size: 31px;
+  line-height: 1.28;
+}
+
+.grammar-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.grammar-cell {
+  min-height: 198px;
+  padding: 24px;
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.grammar-cell strong {
+  color: var(--accent);
+  font-size: 22px;
+}
+
+.grammar-cell span {
+  color: rgba(247, 241, 229, 0.82);
+  font-size: 28px;
+  line-height: 1.24;
+}
+
+.bonus-note {
+  margin-top: 14px;
+  border-left-color: rgba(247, 241, 229, 0.38);
+  color: rgba(247, 241, 229, 0.76);
+  font-size: 24px;
+}
+
+.pair-grid,
+.diagnostic-grid,
+.worked-grid,
+.clue-layout,
+.quiz-board {
+  margin-top: 30px;
+  display: grid;
+  gap: 24px;
+}
+
+.pair-grid,
+.diagnostic-grid,
+.worked-grid,
+.quiz-board {
+  grid-template-columns: 1fr 1fr;
+}
+
+.worked-example h2 {
+  font-size: 58px;
+}
+
+.worked-example .worked-grid {
+  margin-top: 20px;
+}
+
+.worked-example .board-panel {
+  padding: 22px 28px;
+}
+
+.worked-example .jp-question.smaller {
+  font-size: 32px;
+  line-height: 1.26;
+  padding: 24px 28px;
+}
+
+.worked-example .choice-list {
+  margin-top: 16px;
+  gap: 12px;
+}
+
+.worked-example .choice-pill {
+  min-height: 66px;
+  padding: 14px 20px;
+}
+
+.worked-example .answer-strip {
+  margin-top: 12px;
+  padding: 16px 22px;
+  font-size: 28px;
+}
+
+.worked-example .takeaway-strip {
+  margin-top: 18px;
+  padding: 18px 26px;
+  font-size: 28px;
+}
+
+.board-panel {
+  padding: 28px;
+}
+
+.board-label {
+  margin-bottom: 16px;
+  color: var(--accent);
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.board-before {
+  border-top: 5px solid rgba(247, 241, 229, 0.34);
+}
+
+.board-after {
+  border-top: 5px solid var(--accent);
+}
+
+.quiz-board .jp-question,
+.diagnostic-grid .jp-question,
+.worked-grid .jp-question {
+  margin-top: 0;
+}
+
+.quiz-board .choice-list,
+.worked-grid .choice-list,
+.diagnostic-grid .choice-list {
+  grid-template-columns: 1fr;
+}
+
+.quiz-board .answer-strip,
+.worked-grid .answer-strip,
+.diagnostic-grid .answer-strip {
+  margin-top: 0;
+}
+
+.pair-grid section {
+  min-height: 370px;
+  padding: 30px;
+}
+
+.contrast-axis {
+  margin-top: 24px;
+  padding: 18px 24px;
+  border-left: 6px solid var(--accent);
+  background: rgba(247, 241, 229, 0.075);
+  color: var(--lucida-paper);
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+.pair-grid h3 {
+  color: var(--accent);
+}
+
+.pair-grid ul,
+.feedback-panel ul,
+.step-list {
+  margin: 22px 0 0;
+  padding-left: 28px;
+  display: grid;
+  gap: 13px;
+  color: rgba(247, 241, 229, 0.78);
+  font-size: 25px;
+  line-height: 1.25;
+}
+
+.jp-mini {
+  margin-top: 26px;
+  color: var(--lucida-paper);
+  font-family: var(--font-jp);
+  font-size: 34px;
+}
+
+.clue-layout {
+  grid-template-columns: 0.75fr 1.25fr;
+}
+
+.checklist {
+  padding: 24px;
+  display: grid;
+  gap: 14px;
+  color: rgba(247, 241, 229, 0.82);
+  font-size: 27px;
+  line-height: 1.24;
+}
+
+.mapping-list {
+  display: grid;
+  gap: 12px;
+}
+
+.mapping-list > .board-label {
+  margin-bottom: 2px;
+}
+
+.mapping-row {
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: 300px 1fr 210px;
+  gap: 14px;
+  align-items: center;
+  color: rgba(247, 241, 229, 0.78);
+  font-size: 23px;
+  line-height: 1.2;
+}
+
+.mapping-row strong {
+  color: var(--lucida-paper);
+  font-size: 25px;
+}
+
+.mapping-row em {
+  color: rgba(247, 241, 229, 0.58);
+  font-style: normal;
+}
+
+.step-list {
+  margin-top: 0;
+  padding: 0 0 0 30px;
+  border: 0;
+  background: transparent;
+  font-size: 24px;
+}
+
+.feedback-panel {
+  padding: 30px;
+}
+
+.feedback-panel .answer-strip {
+  margin-top: 0;
+}
+
+.cta-list {
+  margin-top: 38px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.cta-item {
+  min-height: 132px;
+  padding: 26px;
+  display: grid;
+  align-items: center;
+  color: rgba(247, 241, 229, 0.82);
+  font-size: 28px;
+  line-height: 1.24;
+}
+
+
+:root {
+  --lucida-ink: #111827;
+  --lucida-paper: #f7f1e5;
+  --lucida-line: rgba(247, 241, 229, 0.14);
+  --lucida-amber: #f5b841;
+  --lucida-blue: #4a90e2;
+  --lucida-red: #d95d59;
+  --lucida-green: #2f7d5c;
+  --lucida-violet: #7c6a9e;
+  --paper-dim: rgba(247, 241, 229, 0.6);
+  --paper-muted: rgba(247, 241, 229, 0.36);
+  --amber-dim: rgba(245, 184, 65, 0.72);
+  --red-light: #e8908d;
+  --green-light: #56b090;
+  --violet-light: #a898c8;
+  --font-vi: 'Manrope', 'Segoe UI', Arial, sans-serif;
+  --font-jp: 'Noto Sans JP', 'BIZ UDPGothic', 'Meiryo', sans-serif;
+}
+
+.grammar-card-v2 * ,
+.grammar-card-v2 *::before,
+.grammar-card-v2 *::after {
+  box-sizing: border-box;
+}
+
+.grammar-card-v2 {
+  width: min(100%, 1920px);
+  height: 100%;
+}
+
+.gc-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  color: var(--lucida-paper);
+  font-family: var(--font-vi);
+}
+
+.gc-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--lucida-line);
+  flex: 0 0 1px;
+}
+
+.gc-header {
+  flex: 0 0 auto;
+  padding-bottom: 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.gc-pattern {
+  font-family: var(--font-jp);
+  font-size: 84px;
+  font-weight: 700;
+  color: var(--lucida-amber);
+  line-height: 1;
+  letter-spacing: 0.03em;
+}
+
+.gc-speaker-intent {
+  font-size: 27px;
+  font-weight: 400;
+  color: var(--violet-light);
+  line-height: 1.55;
+  max-width: 1500px;
+  letter-spacing: 0.01em;
+}
+
+.gc-info {
+  flex: 1 1 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 34px 0;
+  min-height: 0;
+}
+
+.gc-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-right: 48px;
+}
+
+.gc-info-col + .gc-info-col {
+  border-left: 1px solid var(--lucida-line);
+  padding-left: 48px;
+}
+
+.gc-info-col:last-child {
+  padding-right: 0;
+}
+
+.gc-col-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--amber-dim);
+}
+
+.gc-col-value {
+  font-size: 23px;
+  font-weight: 400;
+  color: var(--lucida-paper);
+  line-height: 1.65;
+  letter-spacing: 0.005em;
+}
+
+.jp {
+  font-family: var(--font-jp);
+  font-weight: 500;
+}
+
+.gc-example-zone {
+  flex: 0 0 auto;
+  padding: 34px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gc-example-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--paper-muted);
+}
+
+.gc-example-sentence {
+  font-family: var(--font-jp);
+  font-size: 42px;
+  font-weight: 400;
+  color: var(--lucida-paper);
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+}
+
+.gc-bottom {
+  flex: 0 0 auto;
+  padding-top: 32px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.gc-trap,
+.gc-bonus {
+  padding: 14px 20px;
+  border-radius: 0 4px 4px 0;
+}
+
+.gc-trap {
+  border-left: 3px solid var(--lucida-red);
+  background: rgba(217, 93, 89, 0.07);
+}
+
+.gc-trap-marker,
+.gc-bonus-marker {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  margin-bottom: 6px;
+}
+
+.gc-trap-marker {
+  color: var(--lucida-red);
+}
+
+.gc-trap-text {
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--red-light);
+  line-height: 1.55;
+}
+
+.gc-bonus {
+  border-left: 3px solid var(--lucida-green);
+  background: rgba(47, 125, 92, 0.07);
+}
+
+.gc-bonus:empty {
+  display: none;
+}
+
+.gc-bonus-marker {
+  color: var(--lucida-green);
+}
+
+.gc-bonus-text {
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--green-light);
+  line-height: 1.55;
+}
+
+  </style>
+</head>
+<body>
+  <div class="deck" data-lane-id="wake-grammar-card-v2-check">
+<section class="slide accent-blue" data-slide-id="wake-v2-06" data-template-id="grammar_card_v2" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">01</span><span class="slide-template">Nắm từng mẫu</span></div>
+    <div class="slide-operation">Loại bẫy</div>
+  </header>
+  <main class="slide-body">
+<div class="layout grammar-card-v2">
+  <section class="gc-inner" aria-label="Grammar card">
+    <header class="gc-header">
+      <div class="gc-pattern" lang="ja" data-slot="pattern_jp">わけではない</div>
+      <p class="gc-speaker-intent" data-slot="speaker_action_vi">Người nói đang đính chính lại một cách hiểu dễ bị lệch, không phải phủ định toàn bộ sự việc.</p>
+    </header>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-info" aria-label="Ý nghĩa, Dạng, Cách dùng">
+      <article class="gc-info-col gc-meaning">
+        <div class="gc-col-label">Ý nghĩa</div>
+        <div class="gc-col-value" data-slot="meaning_vi">không phải là... / không có nghĩa là...</div>
+      </article>
+
+      <article class="gc-info-col gc-form">
+        <div class="gc-col-label">Dạng</div>
+        <div class="gc-col-value" lang="ja" data-slot="form_jp"><span class="jp">普通形 + わけではない</span></div>
+      </article>
+
+      <article class="gc-info-col gc-usage">
+        <div class="gc-col-label">Cách dùng</div>
+        <div class="gc-col-value" data-slot="usage_vi">Dùng khi muốn gỡ lại một cách hiểu sai từ câu trước hoặc từ suy đoán của người nghe.</div>
+      </article>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-example-zone">
+      <div class="gc-example-label">Ví dụ</div>
+      <div class="gc-example-sentence" lang="ja" data-slot="example_jp">行きたくないわけではありません。</div>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-bottom">
+      <article class="gc-trap">
+        <div class="gc-trap-marker">△ Lưu ý</div>
+        <div class="gc-trap-text" data-slot="trap_vi">Đừng kéo sang わけがない nếu câu chỉ đang đính chính, chưa bác bỏ khả năng.</div>
+      </article>
+
+      <article class="gc-bonus" data-slot="bonus_vi">
+        <div class="gc-bonus-marker">＋ Thêm</div>
+        <div class="gc-bonus-text">Mềm hơn わけがない; trọng tâm là sửa cách hiểu.</div>
+      </article>
+    </section>
+  </section>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Nắm từng mẫu</span>
+    <span>01 / 04</span>
+  </footer>
+</section>
+<section class="slide accent-green" data-slide-id="wake-v2-07" data-template-id="grammar_card_v2" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">02</span><span class="slide-template">Nắm từng mẫu</span></div>
+    <div class="slide-operation">Tình huống thật</div>
+  </header>
+  <main class="slide-body">
+<div class="layout grammar-card-v2">
+  <section class="gc-inner" aria-label="Grammar card">
+    <header class="gc-header">
+      <div class="gc-pattern" lang="ja" data-slot="pattern_jp">わけにはいかない</div>
+      <p class="gc-speaker-intent" data-slot="speaker_action_vi">Muốn cũng không làm được, vì có trách nhiệm hoặc ràng buộc.</p>
+    </header>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-info" aria-label="Ý nghĩa, Dạng, Cách dùng">
+      <article class="gc-info-col gc-meaning">
+        <div class="gc-col-label">Ý nghĩa</div>
+        <div class="gc-col-value" data-slot="meaning_vi">không thể làm, vì có ràng buộc</div>
+      </article>
+
+      <article class="gc-info-col gc-form">
+        <div class="gc-col-label">Dạng</div>
+        <div class="gc-col-value" lang="ja" data-slot="form_jp"><span class="jp">V辞書形 + わけにはいかない</span></div>
+      </article>
+
+      <article class="gc-info-col gc-usage">
+        <div class="gc-col-label">Cách dùng</div>
+        <div class="gc-col-value" data-slot="usage_vi">Hay gặp với deadline, quy tắc, vai trò, trách nhiệm.</div>
+      </article>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-example-zone">
+      <div class="gc-example-label">Ví dụ</div>
+      <div class="gc-example-sentence" lang="ja" data-slot="example_jp">今夜は飲みに行くわけにはいきません。</div>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-bottom">
+      <article class="gc-trap">
+        <div class="gc-trap-marker">△ Lưu ý</div>
+        <div class="gc-trap-text" data-slot="trap_vi">Khác わけがない: đây là hành động bị giữ lại.</div>
+      </article>
+
+      <article class="gc-bonus" data-slot="bonus_vi">
+        <div class="gc-bonus-marker">＋ Thêm</div>
+        <div class="gc-bonus-text">Vない + わけにはいかない = không thể không làm</div>
+      </article>
+    </section>
+  </section>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Nắm từng mẫu</span>
+    <span>02 / 04</span>
+  </footer>
+</section>
+<section class="slide accent-amber" data-slide-id="wake-v2-08" data-template-id="grammar_card_v2" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">03</span><span class="slide-template">Nắm từng mẫu</span></div>
+    <div class="slide-operation">Loại bẫy</div>
+  </header>
+  <main class="slide-body">
+<div class="layout grammar-card-v2">
+  <section class="gc-inner" aria-label="Grammar card">
+    <header class="gc-header">
+      <div class="gc-pattern" lang="ja" data-slot="pattern_jp">わけだ</div>
+      <p class="gc-speaker-intent" data-slot="speaker_action_vi">Nghe thông tin phía trước rồi chốt lại: à, vậy nên kết luận này hợp lý.</p>
+    </header>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-info" aria-label="Ý nghĩa, Dạng, Cách dùng">
+      <article class="gc-info-col gc-meaning">
+        <div class="gc-col-label">Ý nghĩa</div>
+        <div class="gc-col-value" data-slot="meaning_vi">thảo nào / ra là vậy / tức là</div>
+      </article>
+
+      <article class="gc-info-col gc-form">
+        <div class="gc-col-label">Dạng</div>
+        <div class="gc-col-value" lang="ja" data-slot="form_jp"><span class="jp">普通形 + わけだ</span></div>
+      </article>
+
+      <article class="gc-info-col gc-usage">
+        <div class="gc-col-label">Cách dùng</div>
+        <div class="gc-col-value" data-slot="usage_vi">Dùng khi đã có dữ kiện trước, rồi rút ra kết luận tự nhiên.</div>
+      </article>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-example-zone">
+      <div class="gc-example-label">Ví dụ</div>
+      <div class="gc-example-sentence" lang="ja" data-slot="example_jp">資料を送る必要がある。だから行けないわけだ。</div>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-bottom">
+      <article class="gc-trap">
+        <div class="gc-trap-marker">△ Lưu ý</div>
+        <div class="gc-trap-text" data-slot="trap_vi">わけだ chỉ là kết luận, không tự mang nghĩa bị ràng buộc.</div>
+      </article>
+
+    </section>
+  </section>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Nắm từng mẫu</span>
+    <span>03 / 04</span>
+  </footer>
+</section>
+<section class="slide accent-red" data-slide-id="wake-v2-09" data-template-id="grammar_card_v2" data-duration="8">
+  <header class="slide-topbar">
+    <div><span class="slide-number">04</span><span class="slide-template">Nắm từng mẫu</span></div>
+    <div class="slide-operation">Loại bẫy</div>
+  </header>
+  <main class="slide-body">
+<div class="layout grammar-card-v2">
+  <section class="gc-inner" aria-label="Grammar card">
+    <header class="gc-header">
+      <div class="gc-pattern" lang="ja" data-slot="pattern_jp">わけがない</div>
+      <p class="gc-speaker-intent" data-slot="speaker_action_vi">Người nói bác bỏ rất mạnh: không thể nào lại như thế.</p>
+    </header>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-info" aria-label="Ý nghĩa, Dạng, Cách dùng">
+      <article class="gc-info-col gc-meaning">
+        <div class="gc-col-label">Ý nghĩa</div>
+        <div class="gc-col-value" data-slot="meaning_vi">không thể nào... / làm gì có chuyện...</div>
+      </article>
+
+      <article class="gc-info-col gc-form">
+        <div class="gc-col-label">Dạng</div>
+        <div class="gc-col-value" lang="ja" data-slot="form_jp"><span class="jp">普通形 + わけがない</span></div>
+      </article>
+
+      <article class="gc-info-col gc-usage">
+        <div class="gc-col-label">Cách dùng</div>
+        <div class="gc-col-value" data-slot="usage_vi">Dùng khi gần như chắc điều đó không thể xảy ra.</div>
+      </article>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-example-zone">
+      <div class="gc-example-label">Ví dụ</div>
+      <div class="gc-example-sentence" lang="ja" data-slot="example_jp">みんなを嫌いなわけがない。</div>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-bottom">
+      <article class="gc-trap">
+        <div class="gc-trap-marker">△ Lưu ý</div>
+        <div class="gc-trap-text" data-slot="trap_vi">Nếu chỉ gỡ hiểu lầm, chưa phải わけがない.</div>
+      </article>
+
+      <article class="gc-bonus" data-slot="bonus_vi">
+        <div class="gc-bonus-marker">＋ Thêm</div>
+        <div class="gc-bonus-text">Mức độ mạnh hơn わけではない; gần với bác bỏ khả năng.</div>
+      </article>
+    </section>
+  </section>
+</div>
+
+  </main>
+  <footer class="slide-footer">
+    <span>Lucida</span>
+    <span>Nắm từng mẫu</span>
+    <span>04 / 04</span>
+  </footer>
+</section>
+  </div>
+</body>
+</html>

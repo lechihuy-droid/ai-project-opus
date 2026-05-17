@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lucida N2 Design System MVP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Noto+Sans+JP:wght@400;700;800&family=Source+Serif+4:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #111827;
+      --charcoal: #1f2937;
+      --paper: #f7f1e5;
+      --mist: #e7e2d6;
+      --line: rgba(17, 24, 39, 0.14);
+      --line-dark: rgba(247, 241, 229, 0.18);
+      --amber: #f5b841;
+      --blue: #4a90e2;
+      --red: #d95d59;
+      --green: #2f7d5c;
+      --violet: #7c6a9e;
+      --font-ui: "Manrope", "DM Sans", "Segoe UI", sans-serif;
+      --font-jp: "Noto Sans JP", "BIZ UDPGothic", "Yu Gothic", sans-serif;
+      --radius: 8px;
+      --shadow: 0 22px 70px rgba(17, 24, 39, 0.18);
+      --slide-w: min(1120px, calc(100vw - 420px));
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--font-ui);
+      background:
+        linear-gradient(90deg, rgba(17, 24, 39, 0.06) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(17, 24, 39, 0.05) 1px, transparent 1px),
+        var(--paper);
+      background-size: 36px 36px;
+    }
+
+    button {
+      border: 0;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 24px;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .rail {
+      position: sticky;
+      top: 24px;
+      align-self: start;
+      display: grid;
+      gap: 16px;
+    }
+
+    .brand-panel,
+    .token-panel,
+    .component-index {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(247, 241, 229, 0.82);
+      box-shadow: 0 12px 34px rgba(17, 24, 39, 0.08);
+      padding: 16px;
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 34px;
+      line-height: 0.95;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 3px 8px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .muted {
+      color: rgba(17, 24, 39, 0.68);
+    }
+
+    .rail h2,
+    .stage h2 {
+      margin: 0 0 10px;
+      font-size: 13px;
+      text-transform: uppercase;
+      color: rgba(17, 24, 39, 0.64);
+    }
+
+    .rail p {
+      margin: 0;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .swatches {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .swatch {
+      height: 44px;
+      border-radius: 6px;
+      border: 1px solid rgba(17, 24, 39, 0.14);
+    }
+
+    .index-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .index-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid var(--line);
+      padding: 8px 0;
+      font-size: 13px;
+    }
+
+    .main {
+      display: grid;
+      gap: 22px;
+      align-content: start;
+    }
+
+    .stage {
+      display: grid;
+      gap: 14px;
+    }
+
+    .slide-frame {
+      width: var(--slide-w);
+      aspect-ratio: 16 / 9;
+      min-width: 760px;
+      border-radius: 10px;
+      overflow: hidden;
+      color: var(--paper);
+      background:
+        linear-gradient(90deg, rgba(247, 241, 229, 0.04) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(247, 241, 229, 0.04) 1px, transparent 1px),
+        radial-gradient(circle at 16% 0%, rgba(245, 184, 65, 0.12), transparent 30%),
+        var(--ink);
+      background-size: 48px 48px, 48px 48px, auto, auto;
+      box-shadow: var(--shadow);
+      padding: 34px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 22px;
+    }
+
+    .slide-topbar,
+    .slide-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .slide-title {
+      margin: 0;
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 44px;
+      line-height: 1;
+    }
+
+    .slide-kicker {
+      margin: 0 0 7px;
+      font-size: 13px;
+      color: rgba(247, 241, 229, 0.68);
+      text-transform: uppercase;
+    }
+
+    .mission-grid {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 22px;
+      min-height: 0;
+    }
+
+    .focus-board {
+      border: 1px solid rgba(247, 241, 229, 0.16);
+      border-top: 2px solid rgba(247, 241, 229, 0.30);
+      border-radius: var(--radius);
+      padding: 22px;
+      background: rgba(247, 241, 229, 0.05);
+      display: grid;
+      align-content: center;
+      gap: 18px;
+    }
+
+    .jp-line {
+      font-family: var(--font-jp);
+      font-size: 43px;
+      line-height: 1.33;
+      font-weight: 700;
+    }
+
+    .jp-line .hl {
+      color: var(--accent, var(--amber));
+      background: color-mix(in srgb, var(--accent, var(--amber)) 18%, transparent);
+      box-shadow: inset 0 -0.16em 0 color-mix(in srgb, var(--accent, var(--amber)) 58%, transparent);
+    }
+
+    .support-text {
+      font-size: 24px;
+      line-height: 1.35;
+      color: rgba(247, 241, 229, 0.82);
+    }
+
+    .action-map {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .action-tile {
+      border: 1px solid rgba(247, 241, 229, 0.14);
+      border-left: 3px solid var(--accent, var(--amber));
+      border-radius: var(--radius);
+      padding: 16px;
+      background: color-mix(in srgb, var(--accent, var(--amber)) 8%, rgba(17,24,39,0.6));
+      display: grid;
+      gap: 8px;
+      min-height: 128px;
+    }
+
+    .action-tile[data-accent="amber"] { --accent: var(--amber); }
+    .action-tile[data-accent="blue"]  { --accent: var(--blue); }
+    .action-tile[data-accent="red"]   { --accent: var(--red); }
+    .action-tile[data-accent="green"] { --accent: var(--green); }
+    .action-tile[data-accent="violet"]{ --accent: var(--violet); }
+
+    .pattern {
+      font-family: var(--font-jp);
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .action-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(247, 241, 229, 0.90);
+    }
+
+    .mini-note {
+      font-size: 12px;
+      line-height: 1.5;
+      color: rgba(247, 241, 229, 0.68);
+    }
+
+    .step-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .step {
+      min-height: 44px;
+      border: 1px solid var(--line-dark);
+      border-radius: 6px;
+      padding: 8px 10px;
+      color: rgba(247, 241, 229, 0.32);
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 200ms ease;
+    }
+
+    .step.is-active {
+      border-color: var(--amber);
+      color: var(--amber);
+      background: rgba(245, 184, 65, 0.10);
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .control-btn {
+      border: 1px solid rgba(17, 24, 39, 0.18);
+      border-radius: 6px;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 36px;
+      padding: 0 12px;
+      font-size: 13px;
+    }
+
+    .control-btn.is-active {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .component-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      width: var(--slide-w);
+      min-width: 760px;
+    }
+
+    .component {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(247, 241, 229, 0.88);
+      padding: 18px;
+      min-height: 280px;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .component.wide {
+      grid-column: 1 / -1;
+    }
+
+    .component-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+    }
+
+    .component h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .component .jp {
+      font-family: var(--font-jp);
+      font-weight: 800;
+      font-size: 30px;
+      line-height: 1.25;
+    }
+
+    .component .vi {
+      font-size: 16px;
+      line-height: 1.45;
+      color: rgba(17, 24, 39, 0.74);
+    }
+
+    .component .small {
+      font-size: 12px;
+      color: rgba(17, 24, 39, 0.56);
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.38);
+    }
+
+    .panel[data-accent="amber"] { border-top: 5px solid var(--amber); }
+    .panel[data-accent="blue"] { border-top: 5px solid var(--blue); }
+    .panel[data-accent="red"] { border-top: 5px solid var(--red); }
+    .panel[data-accent="green"] { border-top: 5px solid var(--green); }
+    .panel[data-accent="violet"] { border-top: 5px solid var(--violet); }
+
+    .quiz-options {
+      display: grid;
+      gap: 8px;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.32);
+      font-family: var(--font-jp);
+      font-weight: 700;
+    }
+
+    .option.correct {
+      border-color: var(--green);
+      background: rgba(47, 125, 92, 0.1);
+    }
+
+    .option.trap {
+      border-color: var(--red);
+      background: rgba(217, 93, 89, 0.08);
+    }
+
+    .clue-path {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .clue {
+      border-left: 5px solid var(--amber);
+      background: rgba(255, 255, 255, 0.38);
+      border-radius: 6px;
+      padding: 12px;
+      min-height: 98px;
+    }
+
+    .recap-table {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .recap-table > div {
+      padding: 12px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      min-height: 64px;
+    }
+
+    .recap-table > div:nth-child(3n) {
+      border-right: 0;
+    }
+
+    .recap-table .head {
+      background: var(--ink);
+      color: var(--paper);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .state-2 .state-hidden-2,
+    .state-3 .state-hidden-3,
+    .state-4 .state-hidden-4,
+    .state-5 .state-hidden-5 {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal {
+      opacity: 0.22;
+      transform: translateY(6px);
+      transition: 280ms ease;
+    }
+
+    .state-1 .reveal[data-state="1"],
+    .state-2 .reveal[data-state="1"],
+    .state-2 .reveal[data-state="2"],
+    .state-3 .reveal[data-state="1"],
+    .state-3 .reveal[data-state="2"],
+    .state-3 .reveal[data-state="3"],
+    .state-4 .reveal[data-state="1"],
+    .state-4 .reveal[data-state="2"],
+    .state-4 .reveal[data-state="3"],
+    .state-4 .reveal[data-state="4"],
+    .state-5 .reveal {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1120px) {
+      :root {
+        --slide-w: calc(100vw - 32px);
+      }
+
+      .shell {
+        grid-template-columns: 1fr;
+        padding: 16px;
+      }
+
+      .rail {
+        position: static;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .slide-frame,
+      .component-grid {
+        min-width: 0;
+        width: var(--slide-w);
+      }
+
+      .slide-frame {
+        padding: 22px;
+      }
+
+      .slide-title {
+        font-size: 34px;
+      }
+
+      .jp-line {
+        font-size: 30px;
+      }
+
+      .mission-grid,
+      .component-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .component.wide {
+        grid-column: auto;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .rail {
+        grid-template-columns: 1fr;
+      }
+
+      .slide-frame {
+        aspect-ratio: auto;
+        min-height: 720px;
+      }
+
+      .action-map,
+      .split,
+      .clue-path,
+      .step-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <aside class="rail" aria-label="Lucida design tokens">
+      <section class="brand-panel">
+        <div class="brand-mark">
+          <div class="brand">Lucida</div>
+          <span class="tag">N2 MVP</span>
+        </div>
+        <h2>Design Freeze v0.1</h2>
+        <p><strong>Ink Study Room + Exam Console.</strong> A serious, warm system for seeing grammar logic under exam pressure.</p>
+      </section>
+
+      <section class="token-panel">
+        <h2>Semantic Color</h2>
+        <p class="muted">Colors carry speaker action, not decoration.</p>
+        <div class="swatches" aria-label="Color tokens">
+          <div class="swatch" style="background:#111827" title="Ink"></div>
+          <div class="swatch" style="background:#f5b841" title="Logic"></div>
+          <div class="swatch" style="background:#4a90e2" title="Correction"></div>
+          <div class="swatch" style="background:#d95d59" title="Denial"></div>
+          <div class="swatch" style="background:#2f7d5c" title="Constraint"></div>
+        </div>
+      </section>
+
+      <section class="component-index">
+        <h2>Component Inventory</h2>
+        <div class="index-list">
+          <div class="index-item"><span>Exam Mission</span><span>promise</span></div>
+          <div class="index-item"><span>Grammar Card</span><span>FMU</span></div>
+          <div class="index-item"><span>Comparison</span><span>contrast</span></div>
+          <div class="index-item"><span>Quiz Board</span><span>retrieval</span></div>
+          <div class="index-item"><span>Clue Map</span><span>decision</span></div>
+          <div class="index-item"><span>Worked Example</span><span>solve</span></div>
+          <div class="index-item"><span>Diagnostic</span><span>trap</span></div>
+          <div class="index-item"><span>CTA Board</span><span>next step</span></div>
+        </div>
+      </section>
+    </aside>
+
+    <div class="main">
+      <section class="stage" aria-label="Primary slide preview">
+        <div id="slide" class="slide-frame state-1">
+          <header class="slide-topbar">
+            <div>
+              <p class="slide-kicker">Exam Mission Board</p>
+              <h1 class="slide-title">4 mẫu gần nghĩa, 4 hành động khác nhau</h1>
+            </div>
+            <span class="tag" style="color:var(--amber)">JLPT N2</span>
+          </header>
+
+          <div class="mission-grid">
+            <section class="focus-board">
+              <div class="jp-line reveal" data-state="1">
+                行きたくない<span class="hl" style="--accent:var(--blue)">わけじゃない</span>んだけど、
+                <br />
+                今夜は遊びに行く<span class="hl" style="--accent:var(--green)">わけにはいかない</span>。
+              </div>
+              <div class="support-text reveal" data-state="2">
+                Không phải là không muốn đi. Nhưng hôm nay không đi được thật.
+              </div>
+              <div class="mini-note reveal" data-state="3">
+                Learner operation: see the speaker action before choosing the grammar pattern.
+              </div>
+            </section>
+
+            <section class="action-map" aria-label="Grammar action map">
+              <article class="action-tile reveal" data-state="2" data-accent="amber">
+                <div class="pattern">わけだ</div>
+                <div class="action-name">kết luận hợp lý</div>
+                <div class="mini-note">Có lý do trước đó, nên người nói hiểu ra.</div>
+              </article>
+              <article class="action-tile reveal" data-state="2" data-accent="blue">
+                <div class="pattern">わけではない</div>
+                <div class="action-name">đính chính</div>
+                <div class="mini-note">Không phải hiểu như vậy đâu.</div>
+              </article>
+              <article class="action-tile reveal" data-state="3" data-accent="red">
+                <div class="pattern">わけがない</div>
+                <div class="action-name">bác bỏ mạnh</div>
+                <div class="mini-note">Làm gì có chuyện đó.</div>
+              </article>
+              <article class="action-tile reveal" data-state="3" data-accent="green">
+                <div class="pattern">わけにはいかない</div>
+                <div class="action-name">bị ràng buộc</div>
+                <div class="mini-note">Muốn cũng không thể vì trách nhiệm.</div>
+              </article>
+            </section>
+          </div>
+
+          <footer class="slide-footer">
+            <div class="step-strip" aria-label="Reveal states">
+              <div class="step is-active">1. Situation</div>
+              <div class="step">2. Clue</div>
+              <div class="step">3. Pattern</div>
+              <div class="step">4. Trap</div>
+              <div class="step">5. Takeaway</div>
+            </div>
+            <span class="tag" style="color:var(--paper)">Lucida / Opus Animus</span>
+          </footer>
+        </div>
+
+        <div class="controls" aria-label="Reveal controls">
+          <button class="control-btn is-active" data-state="1">State 1</button>
+          <button class="control-btn" data-state="2">State 2</button>
+          <button class="control-btn" data-state="3">State 3</button>
+          <button class="control-btn" data-state="4">State 4</button>
+          <button class="control-btn" data-state="5">State 5</button>
+        </div>
+      </section>
+
+      <section class="component-grid" aria-label="Reusable Lucida components">
+        <article class="component">
+          <div class="component-head">
+            <h3>Grammar Card</h3>
+            <span class="tag" style="color:var(--green)">constraint</span>
+          </div>
+          <div class="jp">わけにはいかない</div>
+          <div class="vi">Muốn cũng không thể làm, vì hoàn cảnh hoặc trách nhiệm không cho phép.</div>
+          <div class="panel" data-accent="green">
+            <div class="small">Form note</div>
+            <div class="jp" style="font-size:22px">V辞書形 + わけにはいかない</div>
+          </div>
+        </article>
+
+        <article class="component">
+          <div class="component-head">
+            <h3>Comparison Board</h3>
+            <span class="tag" style="color:var(--blue)">contrast</span>
+          </div>
+          <div class="split">
+            <div class="panel" data-accent="blue">
+              <div class="jp">わけではない</div>
+              <p class="vi">Sửa một cách hiểu: không phải là A.</p>
+            </div>
+            <div class="panel" data-accent="red">
+              <div class="jp">わけがない</div>
+              <p class="vi">Bác bỏ khả năng: làm gì có chuyện A.</p>
+            </div>
+          </div>
+          <p class="small">Shared confusion: cả hai đều phủ định, nhưng độ mạnh và speaker action khác nhau.</p>
+        </article>
+
+        <article class="component wide">
+          <div class="component-head">
+            <h3>JLPT Quiz Board</h3>
+            <span class="tag" style="color:var(--amber)">retrieval</span>
+          </div>
+          <div class="split">
+            <div>
+              <div class="jp">明日N2だから、今夜は遊びに行く＿＿。</div>
+              <p class="vi">Điểm cần thấy: có mong muốn, nhưng có một ràng buộc mạnh hơn.</p>
+            </div>
+            <div class="quiz-options">
+              <div class="option correct">A. わけにはいかない</div>
+              <div class="option trap">B. わけではない</div>
+              <div class="option">C. わけだ</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="component wide">
+          <div class="component-head">
+            <h3>Clue Map</h3>
+            <span class="tag" style="color:var(--violet)">system</span>
+          </div>
+          <div class="clue-path">
+            <div class="clue">
+              <div class="small">Before blank</div>
+              <strong>明日N2だから</strong>
+              <p class="vi">lý do tạo áp lực</p>
+            </div>
+            <div class="clue" style="border-left-color:var(--green)">
+              <div class="small">Speaker action</div>
+              <strong>bị ràng buộc</strong>
+              <p class="vi">muốn cũng không thể</p>
+            </div>
+            <div class="clue" style="border-left-color:var(--red)">
+              <div class="small">Trap</div>
+              <strong>わけではない</strong>
+              <p class="vi">chỉ sửa hiểu nhầm</p>
+            </div>
+            <div class="clue" style="border-left-color:var(--amber)">
+              <div class="small">Decision</div>
+              <strong>わけにはいかない</strong>
+              <p class="vi">đúng logic câu</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="component">
+          <div class="component-head">
+            <h3>Worked Example</h3>
+            <span class="tag" style="color:var(--amber)">solve</span>
+          </div>
+          <div class="jp">今夜中に資料を送らないといけないので、飲みに行く＿＿。</div>
+          <div class="panel" data-accent="amber">
+            <div class="small">Think-aloud sequence</div>
+            <p class="vi">Đọc lý do -> xác định ràng buộc -> loại mẫu chỉ đính chính -> chọn đáp án.</p>
+          </div>
+        </article>
+
+        <article class="component">
+          <div class="component-head">
+            <h3>Diagnostic Practice</h3>
+            <span class="tag" style="color:var(--red)">trap</span>
+          </div>
+          <div class="jp">あの人がみんなを嫌っている＿＿よ。</div>
+          <div class="quiz-options">
+            <div class="option correct">A. わけがない</div>
+            <div class="option trap">B. わけではない</div>
+          </div>
+          <p class="small">Trap label: phủ định thường vs bác bỏ khả năng mạnh.</p>
+        </article>
+
+        <article class="component wide">
+          <div class="component-head">
+            <h3>Recap Matrix + CTA Board</h3>
+            <span class="tag" style="color:var(--green)">next action</span>
+          </div>
+          <div class="recap-table">
+            <div class="head">Pattern</div>
+            <div class="head">Speaker action</div>
+            <div class="head">Learner decision</div>
+            <div class="jp">わけだ</div>
+            <div>kết luận</div>
+            <div>có lý do trước đó</div>
+            <div class="jp">わけではない</div>
+            <div>đính chính</div>
+            <div>không phải hiểu như vậy</div>
+            <div class="jp">わけにはいかない</div>
+            <div>ràng buộc</div>
+            <div>muốn cũng không thể</div>
+          </div>
+          <div class="panel" data-accent="green">
+            <strong>Worksheet + Diagnostic Quiz</strong>
+            <p class="vi">Luyện lại bằng câu có trap tag: dịch sai, nhầm sắc thái, bỏ sót clue, nhầm speaker action.</p>
+          </div>
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const slide = document.querySelector("#slide");
+    const buttons = document.querySelectorAll(".control-btn");
+    const steps = document.querySelectorAll(".step");
+
+    function setState(state) {
+      slide.className = `slide-frame state-${state}`;
+      buttons.forEach((button) => {
+        button.classList.toggle("is-active", button.dataset.state === String(state));
+      });
+      steps.forEach((step, index) => {
+        step.classList.toggle("is-active", index < Number(state));
+      });
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => setState(button.dataset.state));
+    });
+
+    window.addEventListener("keydown", (event) => {
+      const current = Number([...buttons].find((button) => button.classList.contains("is-active")).dataset.state);
+      if (event.key === "ArrowRight") setState(Math.min(5, current + 1));
+      if (event.key === "ArrowLeft") setState(Math.max(1, current - 1));
+    });
+  </script>
+</body>
+</html>

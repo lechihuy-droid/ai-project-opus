@@ -1,0 +1,9 @@
+<div class="layout worked-example">
+  <p class="slide-kicker">{{phase_label}}</p>
+  <h2 data-slot="title">{{title}}</h2>
+  <div class="worked-grid">
+    <section class="board-panel"><div class="board-label">Đề bài</div><div class="jp-question smaller" data-slot="question">{{question}}</div><div class="choice-list" data-slot="choices">{{#choices}}<div class="choice-pill">{{.}}</div>{{/choices}}</div><div class="answer-strip" data-slot="answer">{{answer}}</div></section>
+    <section class="board-panel"><div class="board-label">Cách giải</div><ol class="step-list" data-slot="steps">{{#steps}}<li>{{.}}</li>{{/steps}}</ol></section>
+  </div>
+  <div class="takeaway-strip" data-slot="rule">{{rule}}</div>
+</div>

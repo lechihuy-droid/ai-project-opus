@@ -1,0 +1,1 @@
+{"template_id":"figure_focus","version":"1.0","required_slots":{"title":{"type":"string","max_chars":72},"figure_label":{"type":"string","max_chars":48},"caption":{"type":"string","max_chars":170}},"optional_slots":{}}

@@ -1,0 +1,19 @@
+<div class="layout grammar-card">
+  <p class="slide-kicker">{{phase_label}}</p>
+  <div class="grammar-shell">
+    <div class="pattern-card">
+      <div class="board-label">Mẫu cần nhìn</div>
+      <h2 data-slot="title">{{title}}</h2>
+      <strong>Ở câu này, người nói đang muốn nói gì?</strong>
+      <p data-slot="speaker_action">{{speaker_action}}</p>
+    </div>
+    <div class="grammar-grid">
+      <div class="grammar-cell"><strong>Ý nghĩa</strong><span data-slot="meaning">{{meaning}}</span></div>
+      <div class="grammar-cell"><strong>Dạng</strong><span data-slot="form">{{form}}</span></div>
+      <div class="grammar-cell"><strong>Cách dùng</strong><span data-slot="usage">{{usage}}</span></div>
+      <div class="grammar-cell"><strong>Bẫy dễ nhầm</strong><span data-slot="trap">{{trap}}</span></div>
+    </div>
+  </div>
+  <div class="example-strip" data-slot="example"><span>Ví dụ</span>{{example}}</div>
+  {{#bonus}}<div class="bonus-note" data-slot="bonus">{{bonus}}</div>{{/bonus}}
+</div>

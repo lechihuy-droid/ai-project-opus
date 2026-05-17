@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./diagram.js" defer></script>
+</head>
+<body>
+
+  <header class="doc-header">
+    <span class="badge">{{category}}</span>
+    <h1>{{title}}</h1>
+    <p class="lead">{{subtitle}}</p>
+    <p class="meta">{{date}} · {{author}}</p>
+  </header>
+
+  <main>
+
+    <!-- ── Section ── -->
+    <h2>Section Title</h2>
+    <p>Body text goes here.</p>
+
+    <!-- ── Cards ── -->
+    <div class="card-grid">
+      <div class="card">
+        <h3>Card Title</h3>
+        <p>Description.</p>
+        <span class="badge green">Status</span>
+      </div>
+      <div class="card">
+        <h3>Card Title</h3>
+        <p>Description.</p>
+        <span class="badge red">Risk</span>
+      </div>
+    </div>
+
+    <!-- ── Table ── -->
+    <h2>Data Table</h2>
+    <table>
+      <thead>
+        <tr><th>Column A</th><th>Column B</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Row 1</td><td>Value</td><td><span class="badge green">Done</span></td></tr>
+        <tr><td>Row 2</td><td>Value</td><td><span class="badge gray">Pending</span></td></tr>
+      </tbody>
+    </table>
+
+    <!-- ── Tabs ── -->
+    <h2>Tabbed Content</h2>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab(event,'t1')">Tab 1</button>
+      <button class="tab-btn"        onclick="showTab(event,'t2')">Tab 2</button>
+    </div>
+    <div id="t1" class="tab-panel active"><p>Content for tab 1.</p></div>
+    <div id="t2" class="tab-panel">       <p>Content for tab 2.</p></div>
+
+    <!-- ── Collapsible ── -->
+    <h2>Collapsible Sections</h2>
+    <details>
+      <summary>Section A</summary>
+      <p>Expanded content here.</p>
+    </details>
+    <details>
+      <summary>Section B</summary>
+      <p>Expanded content here.</p>
+    </details>
+
+    <!-- ── Timeline ── -->
+    <h2>Timeline</h2>
+    <ul class="timeline">
+      <li>
+        <span class="time">Day 1</span>
+        <p>Event description.</p>
+      </li>
+      <li>
+        <span class="time">Day 3</span>
+        <p>Event description.</p>
+      </li>
+    </ul>
+
+    <!-- ── Compare ── -->
+    <h2>Side-by-Side Comparison</h2>
+    <div class="compare">
+      <div>
+        <div class="col-head">Option A</div>
+        <div class="card" style="border-radius:0 0 4px 4px; margin:0;">
+          <p>Details for option A.</p>
+        </div>
+      </div>
+      <div>
+        <div class="col-head">Option B</div>
+        <div class="card" style="border-radius:0 0 4px 4px; margin:0;">
+          <p>Details for option B.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Diff ── -->
+    <h2>Code Diff</h2>
+    <pre><code><span class="diff-del">- old line of code</span><span class="diff-add">+ new line of code</span><span class="diff-ctx">  unchanged line</span></code></pre>
+
+    <!-- ── Callout ── -->
+    <div class="callout">Key insight or note here.</div>
+    <div class="callout warn">Warning message.</div>
+    <div class="callout risk">Risk or critical issue.</div>
+
+  </main>
+
+  <script>
+    function showTab(e, id) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      e.target.classList.add('active');
+      document.getElementById(id).classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,8 @@
+<div class="layout summary">
+  <p class="slide-kicker">{{phase_label}}</p>
+  <h2 data-slot="title">{{title}}</h2>
+  <div class="summary-grid" data-slot="items">
+    {{#items}}<div class="summary-item">{{.}}</div>{{/items}}
+  </div>
+  <div class="takeaway-strip" data-slot="takeaway">{{takeaway}}</div>
+</div>

@@ -1,0 +1,25 @@
+{
+  "title": "Daily AI & Market Intelligence — 2026-05-17",
+  "reading_time": "4 phút",
+  "sections": [
+    {
+      "heading": "Điểm nóng hôm nay",
+      "body": "OpenAI thống trị newsflow hôm nay với 3 động thái lớn: ChatGPT mở rộng sang personal finance (kết nối bank account), Codex lên mobile, và Greg Brockman trực tiếp cầm lái product strategy. Thông điệp rõ ràng: OpenAI đang chuyển từ 'chatbot' sang 'agent đa nền tảng' — phone + finance + coding. Song song, enterprise AI agent layer đang chín nhanh: Databricks tích hợp GPT-5.5, AWS Bedrock AgentCore + Cisco bổ sung security/governance cho agent ở quy mô doanh nghiệp."
+    },
+    {
+      "heading": "Top 5 cần đọc",
+      "body": "1. OpenAI ChatGPT for personal finance — Tín hiệu OpenAI lấn sân fintech, đụng trực tiếp Mint/Copilot/banking apps; rủi ro data privacy nhưng cơ hội cá nhân hoá tài chính rất lớn.\n2. OpenAI Codex coming to your phone — Coding agent thoát desktop, mở ra workflow 'dev on the go'; ảnh hưởng cách tổ chức team kỹ thuật và productivity cá nhân.\n3. Greg Brockman takes charge of product strategy — Founder quay lại điều hành product = OpenAI đang reset roadmap; theo dõi để đoán hướng next 6–12 tháng.\n4. Databricks brings GPT-5.5 to enterprise agent workflows — Bằng chứng GPT-5.5 đã production-ready cho agent workload, OfficeQA Pro SOTA; reference point khi đánh giá model cho dự án.\n5. AWS Bedrock AgentCore + Chrome enterprise policies — Pattern thực tế để kiểm soát browser agent (whitelist site, session recording); template tốt cho ai triển khai agent nội bộ."
+    },
+    {
+      "heading": "Tín hiệu thị trường",
+      "body": "- OpenAI mở rộng surface area: finance + mobile + product reshuffle → đang chuyển mình thành 'platform company', không còn chỉ là model lab.\n- Enterprise agent stack hợp nhất quanh 3 trụ: model (GPT-5.5/Codex), runtime (Bedrock AgentCore, Databricks), security/governance (Cisco AI Defense) — đây là layer kiếm tiền thật trong 2026.\n- Distribution play đang nóng: Malta partnership (quốc gia hoá ChatGPT Plus), Sea Limited triển khai Codex toàn engineering ở châu Á → AI access trở thành infrastructure cấp quốc gia/tập đoàn.\n- Self-improving agent (Hermes trên NVIDIA RTX) báo hiệu nhánh local/on-device agent đang tăng tốc, đối trọng với cloud-only của OpenAI."
+    },
+    {
+      "heading": "Hành động",
+      "body": "- Thử ChatGPT personal finance trong tuần này với 1 tài khoản phụ (không nối bank chính) để đánh giá UX và quyết định có thay thế công cụ tracking hiện tại không.\n- Cài Codex mobile ngay khi available, test workflow 'review PR + hotfix từ điện thoại' — nếu chạy được sẽ thay đổi cách phân bổ deep-work slot 23:00–24:00.\n- Bookmark AWS Bedrock AgentCore + Chrome policy post làm reference khi thiết kế guardrail cho agent trong opus-consilium (đặc biệt Module A research crawler)."
+    }
+  ],
+  "status": "current_llm",
+  "date": "2026-05-17",
+  "generated_at": "2026-05-17T22:52:28+0900"
+}

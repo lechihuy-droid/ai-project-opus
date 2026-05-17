@@ -1,0 +1,50 @@
+<div class="layout grammar-card-v2">
+  <section class="gc-inner" aria-label="Grammar card">
+    <header class="gc-header">
+      <div class="gc-pattern" lang="ja" data-slot="pattern_jp">{{pattern_jp}}</div>
+      <p class="gc-speaker-intent" data-slot="speaker_action_vi">{{speaker_action_vi}}</p>
+    </header>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-info" aria-label="Ý nghĩa, Dạng, Cách dùng">
+      <article class="gc-info-col gc-meaning">
+        <div class="gc-col-label">Ý nghĩa</div>
+        <div class="gc-col-value" data-slot="meaning_vi">{{meaning_vi}}</div>
+      </article>
+
+      <article class="gc-info-col gc-form">
+        <div class="gc-col-label">Dạng</div>
+        <div class="gc-col-value" lang="ja" data-slot="form_jp"><span class="jp">{{form_jp}}</span></div>
+      </article>
+
+      <article class="gc-info-col gc-usage">
+        <div class="gc-col-label">Cách dùng</div>
+        <div class="gc-col-value" data-slot="usage_vi">{{usage_vi}}</div>
+      </article>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-example-zone">
+      <div class="gc-example-label">Ví dụ</div>
+      <div class="gc-example-sentence" lang="ja" data-slot="example_jp">{{example_jp}}</div>
+    </section>
+
+    <div class="gc-divider"></div>
+
+    <section class="gc-bottom">
+      <article class="gc-trap">
+        <div class="gc-trap-marker">△ Lưu ý</div>
+        <div class="gc-trap-text" data-slot="trap_vi">{{trap_vi}}</div>
+      </article>
+
+      {{#bonus_vi}}
+      <article class="gc-bonus" data-slot="bonus_vi">
+        <div class="gc-bonus-marker">＋ Thêm</div>
+        <div class="gc-bonus-text">{{bonus_vi}}</div>
+      </article>
+      {{/bonus_vi}}
+    </section>
+  </section>
+</div>

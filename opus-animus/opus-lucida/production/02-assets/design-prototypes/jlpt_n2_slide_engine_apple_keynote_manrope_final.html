@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!--
+    ============================================================
+    JLPT N2 SLIDE ENGINE — APPLE KEYNOTE-LIKE SILVER SYSTEM
+    ============================================================
+
+    PURPOSE
+    - This file is the finalized HTML/CSS slide engine for your JLPT N2 program.
+    - Each <section class="screen"> is one slide.
+    - Primary theme: Silver Apple Keynote-like.
+    - Secondary theme: Black Premium Editorial for pause / warning / backup slides only.
+
+    PRODUCTION FLOW
+    1. Master teaching skeleton
+    2. Slide spec
+    3. Copy the matching slide section in this file
+    4. Replace title / subtitle / JP sentence / options / logic cue
+    5. Preview in browser
+    6. Export each section as PNG or use the HTML directly in video production
+
+    CORE RULE
+    One slide = one cognitive action.
+    Do not combine theory + quiz + answer reveal + long explanation in one slide.
+  -->
+
+  <title>JLPT N2 — Apple Keynote-like Slide Engine</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@500;700;900&display=swap');
+
+    /* =====================================================
+       01. FONT SYSTEM
+       - Apple devices: SF Pro / Hiragino Sans.
+       - Vietnamese primary: Manrope / Japanese fallback: Noto Sans JP.
+    ====================================================== */
+    :root {
+      --font-vn-display: "Manrope", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+      --font-vn-body: "Manrope", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      --font-jp-display: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", Meiryo, sans-serif;
+      --font-jp-body: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", Meiryo, sans-serif;
+
+      /* Black backup theme */
+      --bg-950: #0c0e12;
+      --bg-900: #11151b;
+      --bg-850: #171c24;
+      --bg-800: #202633;
+      --text-strong: #f5efe5;
+      --text-main: #e8dfd2;
+      --text-muted: rgba(232, 223, 210, 0.72);
+      --text-soft: rgba(232, 223, 210, 0.50);
+      --line: rgba(255,255,255,0.11);
+      --line-soft: rgba(255,255,255,0.06);
+
+      /* Logic colors */
+      --gold: #c9a063;
+      --gold-soft: rgba(201,160,99,.18);
+      --steel: #94a8bf;
+      --radius-xl: 30px;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --max: 1180px;
+
+      /* Apple-like component layer */
+      --apple-text: #17191c;
+      --apple-text-2: #2b2f34;
+      --apple-muted: rgba(43,47,52,.68);
+      --apple-soft: rgba(43,47,52,.44);
+      --apple-border: rgba(23,25,28,.10);
+      --apple-border-soft: rgba(23,25,28,.06);
+      --logic-gold: #b08a57;   /* わけではない / sửa hiểu nhầm */
+      --logic-blue: #6f8296;   /* わけにはいかない / ràng buộc */
+      --logic-green: #6f8b6b;  /* わけだ / kết luận */
+      --logic-red: #9a514b;    /* わけがない / bác bỏ mạnh */
+      --logic-gold-soft: rgba(176,138,87,.14);
+      --logic-blue-soft: rgba(111,130,150,.14);
+      --logic-green-soft: rgba(111,139,107,.14);
+      --logic-red-soft: rgba(154,81,75,.14);
+      --radius-card: 26px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 1px 0 rgba(255,255,255,.86) inset, 0 18px 45px rgba(60,72,88,.12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--text-main);
+      font-family: var(--font-vn-body);
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.045), transparent 25%),
+        linear-gradient(90deg, rgba(0,0,0,.26), transparent 17%, transparent 83%, rgba(0,0,0,.30)),
+        linear-gradient(180deg, var(--bg-950), var(--bg-900) 32%, var(--bg-850) 70%, var(--bg-800));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.017) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
+      background-size: 84px 84px;
+      opacity: .16;
+    }
+
+    p, h1, h2, h3 { margin: 0; }
+
+    /* Preview navigation; hide it when exporting PNG if desired. */
+    .side-nav {
+      position: fixed;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 50;
+      display: grid;
+      gap: 12px;
+    }
+    .side-nav a {
+      width: 11px; height: 11px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.28);
+      background: rgba(255,255,255,.08);
+      transition: transform .2s ease, background .2s ease;
+    }
+    .side-nav a:hover { transform: scale(1.35); background: rgba(255,255,255,.28); }
+
+    /* =====================================================
+       02. BASE SLIDE LAYOUT
+       .screen = one slide.
+       .screen-silver = primary lesson style.
+    ====================================================== */
+    .screen {
+      position: relative;
+      z-index: 1;
+      width: min(var(--max), calc(100% - 64px));
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 138px 0 84px;
+      display: grid;
+      align-items: center;
+      overflow: hidden;
+      scroll-snap-align: start;
+    }
+    .screen::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at 50% 11%, rgba(255,255,255,.044), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,.018), transparent 34%);
+      opacity: .9;
+      z-index: -1;
+    }
+    .kicker {
+      position: absolute; top: 98px; left: 0;
+      font-size: 12px; font-weight: 900; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--text-soft);
+    }
+    .page-no {
+      position: absolute; top: 98px; right: 0;
+      font-size: 13px; font-weight: 900; letter-spacing: .14em;
+      color: var(--text-soft);
+    }
+    .variant-label {
+      position: absolute; top: 134px; left: 0;
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 8px 12px; border-radius: 999px;
+      background: rgba(255,255,255,.055);
+      border: 1px solid var(--line-soft);
+      color: var(--text-muted); font-size: 12px; font-weight: 800;
+      letter-spacing: .08em; text-transform: uppercase;
+      backdrop-filter: blur(10px);
+    }
+    .title-wrap {
+      width: 100%; text-align: center; position: relative; z-index: 2;
+      transform: translateY(-8px);
+    }
+    .title-main {
+      font-family: var(--font-vn-display);
+      font-size: clamp(48px, 5.5vw, 88px);
+      line-height: 1.02; letter-spacing: -0.05em; font-weight: 850;
+      text-transform: uppercase; color: var(--text-strong);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+      text-shadow: 0 1px 0 rgba(255,255,255,.045), 0 10px 30px rgba(0,0,0,.22), 0 0 24px rgba(255,255,255,.025);
+    }
+    .title-sub {
+      font-family: var(--font-vn-body);
+      font-size: clamp(20px, 2vw, 25px);
+      line-height: 1.48; font-weight: 500;
+      color: var(--text-muted); letter-spacing: -0.015em;
+      max-width: 760px; margin: 24px auto 0;
+    }
+    .jp { font-family: var(--font-jp-display); font-weight: 900; letter-spacing: -0.03em; }
+    .accent-gold { color: var(--gold); }
+    .accent-steel { color: var(--steel); }
+
+    /* =====================================================
+       03. SIGNATURE LONG DISC CEILING LIGHT
+       Copy the .disc-rig block into each slide.
+    ====================================================== */
+    .disc-rig {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: min(980px, 88vw); height: 250px; z-index: 4; pointer-events: none;
+    }
+    .disc-long-head {
+      position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+      width: min(650px, 66vw); height: 16px; border-radius: 5px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0) 38%),
+        linear-gradient(180deg, #171b20 0%, #0d1014 58%, #050608 100%);
+      box-shadow: 0 1px 0 rgba(255,255,255,.05) inset, 0 -1px 0 rgba(0,0,0,.34) inset, 0 8px 18px rgba(0,0,0,.28);
+    }
+    .disc-long-slit {
+      position: absolute; top: 19px; left: 50%; transform: translateX(-50%);
+      width: min(620px, 63vw); height: 3px; border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255,255,255,.10), rgba(255,255,255,.72) 18%, rgba(255,255,255,.92) 50%, rgba(255,255,255,.72) 82%, rgba(255,255,255,.10));
+      box-shadow: 0 0 8px rgba(255,255,255,.12), 0 0 18px rgba(255,255,255,.05);
+    }
+    .disc-long-beam {
+      position: absolute; top: 21px; left: 50%; transform: translateX(-50%);
+      width: min(920px, 88vw); height: 220px;
+      clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.03) 10%, rgba(255,255,255,.08) 50%, rgba(255,255,255,.03) 90%, rgba(255,255,255,0) 100%),
+        radial-gradient(ellipse at top, rgba(255,255,255,.13) 0%, rgba(255,255,255,.065) 28%, rgba(255,255,255,.022) 58%, transparent 84%);
+      filter: blur(5px); opacity: .52; mix-blend-mode: screen;
+    }
+    .disc-long-beam::before,
+    .disc-long-beam::after {
+      content: ""; position: absolute; top: 0; width: 2px; height: 195px;
+      background: linear-gradient(180deg, rgba(255,255,255,.20), rgba(255,255,255,.07) 38%, transparent 100%);
+      filter: blur(1px); opacity: .34;
+    }
+    .disc-long-beam::before { left: 95px; transform: rotate(8deg); transform-origin: top center; }
+    .disc-long-beam::after { right: 95px; transform: rotate(-8deg); transform-origin: top center; }
+
+    /* =====================================================
+       04. PRIMARY SILVER THEME
+       Apple-like silver background. Slightly darker upper corners simulate lamp shadow.
+    ====================================================== */
+    .screen-silver {
+      width: 100%; max-width: none;
+      padding-left: max(32px, calc((100vw - var(--max)) / 2));
+      padding-right: max(32px, calc((100vw - var(--max)) / 2));
+      color: #2b2f34;
+      background:
+        radial-gradient(ellipse at 50% 8%, rgba(255,255,255,.96) 0%, rgba(255,255,255,.78) 22%, transparent 42%),
+        linear-gradient(180deg, #fbfcfd 0%, #f1f4f7 26%, #e5e9ee 62%, #d7dde4 100%);
+    }
+    .screen-silver::before {
+      background:
+        radial-gradient(ellipse at 50% 10%, rgba(255,255,255,.72) 0%, transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,.18), transparent 34%);
+      opacity: .78;
+    }
+    .screen-silver::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none; z-index: -1;
+      background:
+        radial-gradient(circle at 8% 0%, rgba(110,120,135,.20) 0%, rgba(110,120,135,.11) 16%, rgba(110,120,135,.045) 28%, transparent 42%),
+        radial-gradient(circle at 92% 0%, rgba(110,120,135,.20) 0%, rgba(110,120,135,.11) 16%, rgba(110,120,135,.045) 28%, transparent 42%);
+    }
+    .screen-silver .kicker,
+    .screen-silver .page-no { color: rgba(43, 47, 52, 0.48); }
+    .screen-silver .variant-label {
+      background: rgba(255,255,255,.62); border: 1px solid rgba(23,25,28,.08);
+      color: rgba(43,47,52,.72);
+      box-shadow: 0 1px 0 rgba(255,255,255,.82) inset, 0 10px 24px rgba(110,124,140,.08);
+    }
+    .screen-silver .title-main { color: #17191c; text-shadow: 0 1px 0 rgba(255,255,255,.34), 0 10px 30px rgba(160,170,184,.08); }
+    .screen-silver .title-sub { color: rgba(43,47,52,.72); }
+    .screen-silver .disc-long-head {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,.06) 36%),
+        linear-gradient(180deg, #d8dde3 0%, #bcc4cc 52%, #aeb7c0 100%);
+      box-shadow: 0 1px 0 rgba(255,255,255,.82) inset, 0 -1px 0 rgba(80,90,100,.14) inset, 0 8px 18px rgba(80,94,112,.12);
+    }
+    .screen-silver .disc-long-slit {
+      background: linear-gradient(90deg, rgba(255,255,255,.12), rgba(255,255,255,.82) 18%, rgba(255,255,255,1) 50%, rgba(255,255,255,.82) 82%, rgba(255,255,255,.12));
+      box-shadow: 0 0 8px rgba(255,255,255,.30), 0 0 18px rgba(255,255,255,.14);
+    }
+    .screen-silver .disc-long-beam {
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.04) 10%, rgba(255,255,255,.12) 50%, rgba(255,255,255,.04) 90%, rgba(255,255,255,0) 100%),
+        radial-gradient(ellipse at top, rgba(255,255,255,.26) 0%, rgba(255,255,255,.11) 28%, rgba(255,255,255,.04) 58%, transparent 84%);
+      opacity: .56;
+    }
+
+    /* =====================================================
+       05. COMPONENT SYSTEM
+       Copy these components into slide layouts.
+    ====================================================== */
+    .quiz-box, .logic-note, .apple-card, .teacher-note, .logic-cue, .comparison-card, .worksheet-card {
+      background: linear-gradient(180deg, rgba(255,255,255,.76), rgba(255,255,255,.58));
+      border: 1px solid var(--apple-border);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(18px);
+      color: var(--apple-text-2);
+    }
+    .quiz-box { width: min(930px, 100%); margin: 42px auto 0; border-radius: var(--radius-xl); padding: 36px; }
+    .question { text-align: center; color: var(--apple-text); font-size: clamp(34px, 4vw, 58px); line-height: 1.36; }
+    .logic-note { position: absolute; right: 32px; bottom: 108px; width: 350px; padding: 24px; z-index: 3; }
+    .logic-note h3 { margin: 0 0 14px 0; color: var(--apple-text); font-size: 13px; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+    .logic-note p { margin: 0; display: grid; gap: 9px; color: var(--apple-text-2); font-size: 18px; font-weight: 800; line-height: 1.52; }
+    .teacher-note { padding: 20px 24px; border-left: 4px solid var(--logic-gold); }
+    .teacher-note__label, .logic-cue__title { font-size: 12px; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; color: var(--apple-soft); margin-bottom: 8px; }
+    .teacher-note__text { font-size: 20px; line-height: 1.45; font-weight: 650; color: var(--apple-text); }
+    .logic-cue { padding: 22px 24px; }
+    .logic-cue__row { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 700; line-height: 1.45; color: var(--apple-text-2); }
+    .logic-cue__row + .logic-cue__row { margin-top: 8px; }
+    .badge, .option__badge, .step-badge {
+      width: 36px; height: 36px; border-radius: var(--radius-pill); display: inline-grid; place-items: center; flex: 0 0 auto;
+      font-size: 15px; font-weight: 850; background: var(--logic-gold-soft); color: var(--logic-gold); border: 1px solid rgba(176,138,87,.18);
+    }
+    .logic-gold { color: var(--logic-gold); }
+    .logic-blue { color: var(--logic-blue); }
+    .logic-green { color: var(--logic-green); }
+    .logic-red { color: var(--logic-red); }
+    .quiz-options { display: grid; gap: 12px; max-width: 620px; margin: 30px auto 0; }
+    .quiz-option {
+      display: flex; align-items: center; gap: 14px; padding: 14px 18px;
+      border-radius: var(--radius-pill); border: 1px solid var(--apple-border-soft);
+      background: rgba(255,255,255,.52); color: var(--apple-text-2);
+      font-size: 18px; font-weight: 750;
+      transition: background .22s ease, border-color .22s ease, opacity .22s ease, transform .22s ease, box-shadow .22s ease;
+    }
+    .quiz-option:hover { transform: translateY(-1px); background: rgba(255,255,255,.68); border-color: rgba(23,25,28,.12); }
+    .quiz-option.is-selected { background: var(--logic-gold-soft); border-color: rgba(176,138,87,.38); box-shadow: 0 1px 0 rgba(255,255,255,.72) inset, 0 12px 30px rgba(176,138,87,.10); }
+    .quiz-option.is-selected .option__badge { background: var(--logic-gold); color: #fff; }
+    .quiz-option.is-correct { background: var(--logic-green-soft); border-color: rgba(111,139,107,.42); box-shadow: 0 1px 0 rgba(255,255,255,.76) inset, 0 12px 30px rgba(111,139,107,.12); }
+    .quiz-option.is-correct .option__badge { background: var(--logic-green); color: #fff; }
+    .quiz-option.is-correct::after { content: "✓"; margin-left: auto; font-size: 20px; font-weight: 850; color: var(--logic-green); }
+    .quiz-option.is-wrong { opacity: .48; background: rgba(255,255,255,.34); border-color: rgba(23,25,28,.05); }
+    .quiz-option.is-wrong::after { content: "×"; margin-left: auto; font-size: 20px; font-weight: 850; color: rgba(43,47,52,.34); }
+    .minimal-pair { display: grid; gap: 14px; max-width: 900px; margin: 34px auto 0; }
+    .minimal-pair__line { padding: 18px 22px; border-radius: 20px; background: rgba(255,255,255,.56); border: 1px solid var(--apple-border-soft); font-size: clamp(26px, 3vw, 42px); font-weight: 850; color: var(--apple-text); }
+    .minimal-pair__meaning { display: block; margin-top: 8px; font-size: 18px; font-weight: 550; color: var(--apple-muted); }
+    .jp-highlight { color: var(--logic-gold); background: rgba(176,138,87,.10); border-radius: 8px; padding: 0 .14em; }
+    .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 980px; margin: 34px auto 0; }
+    .comparison-card { padding: 26px; }
+    .comparison-card__pattern { font-family: var(--font-jp-display); font-size: clamp(30px, 3vw, 46px); font-weight: 900; color: var(--apple-text); margin-bottom: 12px; }
+    .comparison-card__logic { font-size: 22px; font-weight: 850; margin-bottom: 12px; }
+    .comparison-card__example { font-family: var(--font-jp-body); font-size: 22px; color: var(--apple-muted); }
+    .worksheet-card { padding: 30px 34px; max-width: 720px; margin: 36px auto 0; text-align: center; }
+    .worksheet-card__title { font-size: 28px; font-weight: 850; color: var(--apple-text); margin-bottom: 10px; }
+    .worksheet-card__text { font-size: 19px; color: var(--apple-muted); line-height: 1.55; }
+
+    /* Animation presets */
+    .fade-up, .anim-fade-up { opacity: 0; transform: translateY(18px); animation: fadeUp .75s ease forwards; }
+    .delay-1, .anim-delay-1 { animation-delay: .18s; }
+    .delay-2, .anim-delay-2 { animation-delay: .36s; }
+    .delay-3, .anim-delay-3 { animation-delay: .56s; }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+    /* Responsive mainly for preview. For slide export, use desktop 16:9. */
+    @media (max-width: 900px) {
+      .screen { width: min(100% - 32px, var(--max)); padding-top: 126px; }
+      .screen-silver { width: 100%; padding-left: 16px; padding-right: 16px; }
+      .kicker, .page-no { top: 92px; }
+      .variant-label { top: 124px; }
+      .title-wrap { transform: none; }
+      .title-main { text-align: left; font-size: clamp(40px, 11vw, 64px); }
+      .title-sub { text-align: left; margin-left: 0; }
+      .logic-note { position: static; width: 100%; margin-top: 32px; }
+      .quiz-box { padding: 22px; }
+      .question { text-align: left; }
+      .disc-rig { width: 96vw; transform: translateX(-50%) scale(.88); transform-origin: top center; }
+      .disc-long-head { width: min(560px, 78vw); }
+      .disc-long-slit { width: min(500px, 70vw); }
+      .disc-long-beam { width: min(820px, 94vw); }
+      .comparison-grid { grid-template-columns: 1fr; }
+      .apple-card, .teacher-note, .logic-cue, .comparison-card, .worksheet-card { border-radius: 22px; padding: 22px; }
+      .quiz-option { font-size: 16px; }
+      .minimal-pair__line { font-size: clamp(24px, 8vw, 36px); }
+    }
+  </style>
+</head>
+<body>
+  <nav class="side-nav" aria-label="Section navigation">
+    <a href="#dark" title="Black backup"></a>
+    <a href="#silver" title="Primary silver"></a>
+    <a href="#grammar" title="Grammar layout"></a>
+    <a href="#comparison" title="Comparison layout"></a>
+    <a href="#cta" title="CTA layout"></a>
+  </nav>
+
+  <!-- SLIDE 01 — BLACK BACKUP / PAUSE SLIDE -->
+  <section class="screen" id="dark">
+    <div class="disc-rig" aria-hidden="true"><div class="disc-long-head"></div><div class="disc-long-slit"></div><div class="disc-long-beam"></div></div>
+    <div class="kicker">Pause / Backup</div>
+    <div class="page-no">01</div>
+    <div class="variant-label">Backup / pause slide — black long disc lamp</div>
+    <div class="title-wrap">
+      <h1 class="title-main fade-up">ĐỪNG DỊCH NGAY<br />HỎI LOGIC TRƯỚC</h1>
+      <p class="title-sub fade-up delay-1">Black theme chỉ dùng cho pause, warning hoặc section break.</p>
+      <div class="quiz-box fade-up delay-2">
+        <div class="jp question">行きたくない＿＿ありません。<br />でも、今日は行く＿＿いきません。</div>
+        <div class="quiz-options">
+          <div class="quiz-option is-selected"><b class="option__badge">A</b><span class="jp">わけでは / わけには</span></div>
+          <div class="quiz-option"><b class="option__badge">B</b><span class="jp">わけが / わけでは</span></div>
+          <div class="quiz-option"><b class="option__badge">C</b><span class="jp">わけだ / わけが</span></div>
+        </div>
+      </div>
+    </div>
+    <aside class="logic-note fade-up delay-3">
+      <h3>Logic cue</h3>
+      <p><span><span class="accent-gold">Câu 1:</span> sửa hiểu nhầm</span><span><span class="accent-steel">Câu 2:</span> bị ràng buộc</span><span>→ Đáp án: <strong>A</strong></span></p>
+    </aside>
+  </section>
+
+  <!-- SLIDE 02 — PRIMARY SILVER / QUIZ REVEAL -->
+  <section class="screen screen-silver" id="silver">
+    <div class="disc-rig" aria-hidden="true"><div class="disc-long-head"></div><div class="disc-long-slit"></div><div class="disc-long-beam"></div></div>
+    <div class="kicker">Primary / Apple Keynote-like</div>
+    <div class="page-no">02</div>
+    <div class="variant-label">Primary style / Apple Keynote-like silver version</div>
+    <div class="title-wrap">
+      <h1 class="title-main fade-up">ĐỪNG DỊCH NGAY<br />HỎI LOGIC TRƯỚC</h1>
+      <p class="title-sub fade-up delay-1">Style chính cho lesson: nền bạc sáng, typography sạch, gần tinh thần Apple Keynote.</p>
+      <div class="quiz-box fade-up delay-2">
+        <div class="jp question">行きたくない＿＿ありません。<br />でも、今日は行く＿＿いきません。</div>
+        <div class="quiz-options">
+          <div class="quiz-option is-correct"><b class="option__badge">A</b><span class="jp">わけでは / わけには</span></div>
+          <div class="quiz-option is-wrong"><b class="option__badge">B</b><span class="jp">わけが / わけでは</span></div>
+          <div class="quiz-option is-wrong"><b class="option__badge">C</b><span class="jp">わけだ / わけが</span></div>
+        </div>
+      </div>
+    </div>
+    <aside class="logic-note fade-up delay-3">
+      <h3>Production note</h3>
+      <p><span><span class="accent-gold">Silver:</span> style chính</span><span><span class="accent-steel">Black:</span> pause / backup</span><span>→ dùng slide spec để đổ nội dung</span></p>
+    </aside>
+  </section>
+
+  <!-- SLIDE 03 — GRAMMAR INSIGHT LAYOUT -->
+  <section class="screen screen-silver" id="grammar">
+    <div class="disc-rig" aria-hidden="true"><div class="disc-long-head"></div><div class="disc-long-slit"></div><div class="disc-long-beam"></div></div>
+    <div class="kicker">Grammar Insight / わけではない</div>
+    <div class="page-no">03</div>
+    <div class="variant-label">Layout / Grammar Insight Slide</div>
+    <div class="title-wrap">
+      <h1 class="title-main fade-up"><span class="jp">わけではない</span><br />= <span class="logic-gold">SỬA HIỂU NHẦM</span></h1>
+      <p class="title-sub fade-up delay-1">Người nói không phủ định toàn bộ sự việc, chỉ sửa cách hiểu của người nghe.</p>
+      <div class="minimal-pair fade-up delay-2">
+        <div class="minimal-pair__line jp">行きたくない<span class="jp-highlight">わけではありません</span>。<span class="minimal-pair__meaning">→ không phải là tôi không muốn đi</span></div>
+      </div>
+      <div class="teacher-note fade-up delay-3" style="max-width:760px;margin:32px auto 0;text-align:left;">
+        <div class="teacher-note__label">Teacher note</div>
+        <div class="teacher-note__text">Nếu câu có cảm giác “đừng hiểu nhầm”, hãy nghĩ đến <span class="jp logic-gold">わけではない</span> trước.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 04 — COMPARISON LAYOUT -->
+  <section class="screen screen-silver" id="comparison">
+    <div class="disc-rig" aria-hidden="true"><div class="disc-long-head"></div><div class="disc-long-slit"></div><div class="disc-long-beam"></div></div>
+    <div class="kicker">Comparison / Soft vs Strong</div>
+    <div class="page-no">04</div>
+    <div class="variant-label">Layout / Comparison Slide</div>
+    <div class="title-wrap">
+      <h1 class="title-main fade-up">ĐỪNG NHẦM<br />MỀM VÀ MẠNH</h1>
+      <p class="title-sub fade-up delay-1">Hai mẫu cùng có phủ định, nhưng lực nói hoàn toàn khác nhau.</p>
+      <div class="comparison-grid fade-up delay-2">
+        <div class="comparison-card"><div class="comparison-card__pattern jp">わけではない</div><div class="comparison-card__logic logic-gold">Sửa hiểu nhầm</div><div class="comparison-card__example jp">嫌いなわけではない。</div></div>
+        <div class="comparison-card"><div class="comparison-card__pattern jp">わけがない</div><div class="comparison-card__logic logic-red">Bác bỏ mạnh</div><div class="comparison-card__example jp">嫌いなわけがない。</div></div>
+      </div>
+      <div class="logic-cue fade-up delay-3" style="max-width:760px;margin:32px auto 0;text-align:left;">
+        <div class="logic-cue__title">Rule of thumb</div>
+        <div class="logic-cue__row"><span class="badge">1</span><span><span class="logic-gold">わけではない</span> = không phải là / sửa cách hiểu</span></div>
+        <div class="logic-cue__row"><span class="badge">2</span><span><span class="logic-red">わけがない</span> = không thể nào / bác bỏ mạnh</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 05 — WORKSHEET CTA LAYOUT -->
+  <section class="screen screen-silver" id="cta">
+    <div class="disc-rig" aria-hidden="true"><div class="disc-long-head"></div><div class="disc-long-slit"></div><div class="disc-long-beam"></div></div>
+    <div class="kicker">Worksheet / CTA</div>
+    <div class="page-no">05</div>
+    <div class="variant-label">Layout / Worksheet CTA Slide</div>
+    <div class="title-wrap">
+      <h1 class="title-main fade-up">TẢI WORKSHEET<br />LUYỆN LOGIC</h1>
+      <p class="title-sub fade-up delay-1">Đừng chỉ học nghĩa. Hãy luyện cách gọi tên logic trước khi chọn đáp án.</p>
+      <div class="worksheet-card fade-up delay-2">
+        <div class="worksheet-card__title">Trong worksheet có gì?</div>
+        <div class="worksheet-card__text">Bảng Nghĩa–Hình–Dụng, clue map, 10 câu JLPT-style và answer key giải thích theo logic người nói.</div>
+      </div>
+    </div>
+  </section>
+
+  <!--
+    ============================================================
+    TEMPLATE SNIPPETS — COPY WHEN PRODUCING SLIDES
+    ============================================================
+
+    NEW SILVER SLIDE
+    <section class="screen screen-silver" id="slide-xx">
+      <div class="disc-rig" aria-hidden="true">
+        <div class="disc-long-head"></div>
+        <div class="disc-long-slit"></div>
+        <div class="disc-long-beam"></div>
+      </div>
+      <div class="kicker">JLPT N2 / ...</div>
+      <div class="page-no">XX</div>
+      <div class="title-wrap">
+        <h1 class="title-main">TITLE</h1>
+        <p class="title-sub">Subtitle</p>
+      </div>
+    </section>
+
+    QUIZ OPTION STATES
+    <div class="quiz-option">Default</div>
+    <div class="quiz-option is-selected">Selected</div>
+    <div class="quiz-option is-correct">Correct</div>
+    <div class="quiz-option is-wrong">Wrong</div>
+
+    STANDARD DECK ORDER
+    01 Opening / pain point
+    02 Big idea
+    03 Grammar insight
+    04 Example
+    05 Minimal pair
+    06 Comparison
+    07 Quiz question
+    08 Logic cue
+    09 Answer reveal
+    10 CTA worksheet
+  -->
+</body>
+</html>

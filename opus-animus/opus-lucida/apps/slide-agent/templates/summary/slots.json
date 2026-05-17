@@ -1,0 +1,1 @@
+{"template_id":"summary","version":"1.0","required_slots":{"title":{"type":"string","max_chars":72},"items":{"type":"string[]","max_items":6,"max_chars":360},"takeaway":{"type":"string","max_chars":120}},"optional_slots":{}}

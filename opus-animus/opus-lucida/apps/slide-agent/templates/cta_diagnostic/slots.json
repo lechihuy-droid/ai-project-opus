@@ -1,0 +1,1 @@
+{"template_id":"cta_diagnostic","version":"1.0","required_slots":{"title":{"type":"string","max_chars":82},"subtitle":{"type":"string","max_chars":140},"items":{"type":"string[]","max_items":4,"max_chars":250},"cue":{"type":"string","max_chars":96}},"optional_slots":{}}

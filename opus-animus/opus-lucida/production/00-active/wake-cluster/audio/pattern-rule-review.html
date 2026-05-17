@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wake Pattern Rule Review</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f7f4;
+      --panel: #ffffff;
+      --ink: #1d2529;
+      --muted: #6a7378;
+      --line: #d8dedc;
+      --accent: #116a64;
+      --warn: #a35b00;
+      --bad: #a52828;
+      --good: #2d6d3c;
+      --chip: #edf3f1;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.45;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: rgba(247, 247, 244, 0.96);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+    }
+    .wrap { max-width: 1480px; margin: 0 auto; padding: 18px 24px; }
+    h1 { margin: 0 0 12px; font-size: 26px; letter-spacing: 0; }
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) repeat(4, minmax(150px, 190px)) auto auto;
+      gap: 10px;
+      align-items: center;
+    }
+    input, select, button, textarea {
+      font: inherit;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--ink);
+    }
+    input, select { height: 38px; padding: 0 10px; }
+    button {
+      min-height: 38px;
+      padding: 8px 12px;
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    button.secondary { background: #fff; color: var(--accent); }
+    button.danger { background: var(--bad); border-color: var(--bad); }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .stat strong { display: block; font-size: 22px; }
+    .stat span { color: var(--muted); font-size: 13px; }
+    main.wrap { padding-top: 16px; }
+    .review-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 16px;
+      align-items: start;
+    }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+    th {
+      position: sticky;
+      top: 139px;
+      z-index: 2;
+      background: #eef4f2;
+      color: #263235;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    tr:last-child td { border-bottom: 0; }
+    tr.selected td { background: #fff7df; }
+    .source { font-size: 16px; font-weight: 650; }
+    .jp { font-family: "Yu Gothic UI", "Meiryo", sans-serif; }
+    .reading { color: #243436; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--chip);
+      color: #25423f;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .needs { background: #ffe7e3; color: var(--bad); }
+    .ok { background: #e7f3e9; color: var(--good); }
+    .status-select { width: 120px; }
+    .side {
+      position: sticky;
+      top: 139px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+    }
+    .side h2 { margin: 0 0 10px; font-size: 18px; }
+    .side dl { margin: 0; }
+    .side dt { color: var(--muted); font-size: 12px; margin-top: 10px; text-transform: uppercase; }
+    .side dd { margin: 2px 0 0; overflow-wrap: anywhere; }
+    textarea {
+      width: 100%;
+      min-height: 110px;
+      margin-top: 8px;
+      padding: 10px;
+      resize: vertical;
+    }
+    .side-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .import-row { display: flex; gap: 8px; align-items: center; margin-top: 10px; color: var(--muted); font-size: 13px; }
+    .import-row input { height: auto; border: 0; padding: 0; background: transparent; }
+    @media (max-width: 1100px) {
+      .toolbar { grid-template-columns: 1fr 1fr; }
+      .stats { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+      .review-grid { grid-template-columns: 1fr; }
+      .side, th { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Wake Pattern Rule Review</h1>
+      <div class="toolbar">
+        <input id="q" type="search" placeholder="Search source, reading, slide...">
+        <select id="category"></select>
+        <select id="action"></select>
+        <select id="status"></select>
+        <select id="needs"></select>
+        <button id="exportBtn" type="button">Export decisions</button>
+        <button id="resetBtn" class="danger" type="button">Reset local</button>
+      </div>
+      <div class="import-row">
+        <span>Import audit JSON:</span>
+        <input id="importFile" type="file" accept=".json,application/json">
+        <span id="importState">Using embedded Wake audit.</span>
+      </div>
+      <div id="stats" class="stats"></div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="review-grid">
+      <section>
+        <table>
+          <thead>
+            <tr>
+              <th>Slide</th>
+              <th>Source</th>
+              <th>Category</th>
+              <th>Action</th>
+              <th>Predicted / Routing</th>
+              <th>Gate</th>
+              <th>Review</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </section>
+      <aside class="side">
+        <h2>Selected Pattern</h2>
+        <dl id="detail">
+          <dt>Status</dt><dd>Select a row to review.</dd>
+        </dl>
+        <label>
+          Review note
+          <textarea id="note" placeholder="Ví dụ: giữ rule này, đổi gloss, chuyển full sentence sang voice_ja..."></textarea>
+        </label>
+        <div class="side-actions">
+          <button id="saveNote" type="button">Save note</button>
+          <button id="copySummary" class="secondary" type="button">Copy summary</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    const EMBEDDED_AUDIT = [{"slide":1,"source_text":"行きたくないわけじゃないんだけど、","category":"full_sentence","action":"voice_ja","predicted_reading":"行きたくないわけじゃないんだけど、","needs_rule":null},{"slide":1,"source_text":"明日N2だから、今夜は遊びに行くわけにはいかないんだ。","category":"full_sentence","action":"voice_ja","predicted_reading":"明日N2だから、今夜は遊びに行くわけにはいかないんだ。","needs_rule":null},{"slide":1,"source_text":"わけ","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê","needs_rule":null},{"slide":2,"source_text":"行きたくないわけではないんだけど、","category":"full_sentence","action":"voice_ja","predicted_reading":"行きたくないわけではないんだけど、","needs_rule":null},{"slide":2,"source_text":"明日N2だから、今夜は遊びに行くわけにはいかないんだ。","category":"full_sentence","action":"voice_ja","predicted_reading":"明日N2だから、今夜は遊びに行くわけにはいかないんだ。","needs_rule":null},{"slide":2,"source_text":"わけではない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê đê há nà ì","needs_rule":null},{"slide":2,"source_text":"わけにはいかない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê ni ha i cá nà ì","needs_rule":null},{"slide":3,"source_text":"わけ","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê","needs_rule":null},{"slide":3,"source_text":"わけだ","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê da","needs_rule":null},{"slide":3,"source_text":"わけではない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê đê há nà ì","needs_rule":null},{"slide":3,"source_text":"わけがない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê gá nà ì","needs_rule":null},{"slide":3,"source_text":"わけにはいかない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê ni ha i cá nà ì","needs_rule":null},{"slide":5,"source_text":"わけ","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê","needs_rule":null},{"slide":6,"source_text":"わけではない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê đê há nà ì","needs_rule":null},{"slide":6,"source_text":"普通形 + わけではない","category":"grammar_metalanguage","action":"vi_gloss_plus_json_rule","predicted_reading":"thể thường cộng quà kê đê há nà ì","needs_rule":null},{"slide":6,"source_text":"行きたくないわけではありません。","category":"full_sentence","action":"voice_ja","predicted_reading":"行きたくないわけではありません。","needs_rule":null},{"slide":6,"source_text":"既読無視したわけじゃないよ。会議中だっただけ。","category":"full_sentence","action":"voice_ja","predicted_reading":"既読無視したわけじゃないよ。会議中だっただけ。","needs_rule":null},{"slide":6,"source_text":"そういう意味じゃない","category":"example_vocab","action":"vi_gloss","predicted_reading":"không phải ý đó","needs_rule":null},{"slide":6,"source_text":"別に","category":"example_vocab","action":"vi_gloss","predicted_reading":"không hẳn / đâu có","needs_rule":null},{"slide":6,"source_text":"わけがない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê gá nà ì","needs_rule":null},{"slide":7,"source_text":"わけにはいかない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê ni ha i cá nà ì","needs_rule":null},{"slide":7,"source_text":"V辞書形 + わけにはいかない","category":"grammar_metalanguage","action":"vi_gloss_plus_json_rule","predicted_reading":"V thể từ điển cộng quà kê ni ha i cá nà ì","needs_rule":null},{"slide":7,"source_text":"今夜中に資料を送らないといけないので、飲みに行くわけにはいきません。","category":"full_sentence","action":"voice_ja","predicted_reading":"今夜中に資料を送らないといけないので、飲みに行くわけにはいきません。","needs_rule":null},{"slide":7,"source_text":"Vない + わけにはいかない","category":"grammar_metalanguage","action":"vi_gloss_plus_json_rule","predicted_reading":"thể nai cộng quà kê ni ha i cá nà ì","needs_rule":null},{"slide":7,"source_text":"明日は試験なので、勉強しないわけにはいかない。","category":"full_sentence","action":"voice_ja","predicted_reading":"明日は試験なので、勉強しないわけにはいかない。","needs_rule":null},{"slide":7,"source_text":"締切","category":"example_vocab","action":"vi_gloss","predicted_reading":"deadline","needs_rule":null},{"slide":7,"source_text":"責任","category":"example_vocab","action":"vi_gloss","predicted_reading":"trách nhiệm","needs_rule":null},{"slide":7,"source_text":"ルール","category":"example_vocab","action":"vi_gloss","predicted_reading":"quy tắc","needs_rule":null},{"slide":7,"source_text":"立場","category":"example_vocab","action":"vi_gloss","predicted_reading":"vị trí / vai trò","needs_rule":null},{"slide":7,"source_text":"社会人として","category":"example_vocab","action":"vi_gloss","predicted_reading":"với tư cách người đi làm","needs_rule":null},{"slide":7,"source_text":"わけがない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê gá nà ì","needs_rule":null},{"slide":7,"source_text":"わけ","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê","needs_rule":null},{"slide":8,"source_text":"わけだ","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê da","needs_rule":null},{"slide":8,"source_text":"普通形 + わけだ","category":"grammar_metalanguage","action":"vi_gloss_plus_json_rule","predicted_reading":"thể thường cộng quà kê da","needs_rule":null},{"slide":8,"source_text":"今夜中に資料を送らないといけないんですね。だから飲みに行けないわけですね。","category":"full_sentence","action":"voice_ja","predicted_reading":"今夜中に資料を送らないといけないんですね。だから飲みに行けないわけですね。","needs_rule":null},{"slide":8,"source_text":"なるほど","category":"example_vocab","action":"vi_gloss","predicted_reading":"à ra vậy","needs_rule":null},{"slide":8,"source_text":"そうか","category":"example_vocab","action":"vi_gloss","predicted_reading":"à ra vậy","needs_rule":null},{"slide":8,"source_text":"わけにはいかない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê ni ha i cá nà ì","needs_rule":null},{"slide":9,"source_text":"わけがない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê gá nà ì","needs_rule":null},{"slide":9,"source_text":"普通形 + わけがない","category":"grammar_metalanguage","action":"vi_gloss_plus_json_rule","predicted_reading":"thể thường cộng quà kê gá nà ì","needs_rule":null},{"slide":9,"source_text":"あの人がみんなを嫌っているわけがないよ。今日は仕事が立て込んでいるだけだよ。","category":"full_sentence","action":"voice_ja","predicted_reading":"あの人がみんなを嫌っているわけがないよ。今日は仕事が立て込んでいるだけだよ。","needs_rule":null},{"slide":9,"source_text":"わけではない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê đê há nà ì","needs_rule":null},{"slide":9,"source_text":"絶対","category":"example_vocab","action":"vi_gloss","predicted_reading":"tuyệt đối","needs_rule":null},{"slide":9,"source_text":"ありえない","category":"example_vocab","action":"vi_gloss","predicted_reading":"không thể có chuyện đó","needs_rule":null},{"slide":9,"source_text":"そんなこと","category":"example_vocab","action":"vi_gloss","predicted_reading":"chuyện như vậy","needs_rule":null},{"slide":11,"source_text":"わけではない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê đê há nà ì","needs_rule":null},{"slide":11,"source_text":"わけがない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê gá nà ì","needs_rule":null},{"slide":11,"source_text":"嫌いなわけではない","category":"grammar_target","action":"json_rule","predicted_reading":"ghét na quà kê đê há nà ì","needs_rule":null},{"slide":11,"source_text":"嫌いなわけがない","category":"grammar_target","action":"json_rule","predicted_reading":"ghét na quà kê gá nà ì","needs_rule":null},{"slide":12,"source_text":"わけがない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê gá nà ì","needs_rule":null},{"slide":12,"source_text":"わけにはいかない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê ni ha i cá nà ì","needs_rule":null},{"slide":12,"source_text":"彼がそんなことを言うわけがない。","category":"full_sentence","action":"voice_ja","predicted_reading":"彼がそんなことを言うわけがない。","needs_rule":null},{"slide":12,"source_text":"今日は休むわけにはいかない。","category":"full_sentence","action":"voice_ja","predicted_reading":"今日は休むわけにはいかない。","needs_rule":null},{"slide":13,"source_text":"わけ","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê","needs_rule":null},{"slide":13,"source_text":"明日N2だから","category":"example_vocab","action":"vi_gloss","predicted_reading":"vì mai thi N2","needs_rule":null},{"slide":13,"source_text":"今夜中に資料を送らないといけない","category":"example_vocab","action":"vi_gloss","predicted_reading":"phải gửi tài liệu trong tối nay","needs_rule":null},{"slide":13,"source_text":"わけだ","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê da","needs_rule":null},{"slide":13,"source_text":"わけではない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê đê há nà ì","needs_rule":null},{"slide":13,"source_text":"わけがない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê gá nà ì","needs_rule":null},{"slide":13,"source_text":"わけにはいかない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê ni ha i cá nà ì","needs_rule":null},{"slide":14,"source_text":"行きたくない＿＿んだけど、","category":"quiz_blank","action":"voice_ja","predicted_reading":"行きたくない＿＿んだけど、","needs_rule":null},{"slide":14,"source_text":"わけではない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê đê há nà ì","needs_rule":null},{"slide":14,"source_text":"わけがない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê gá nà ì","needs_rule":null},{"slide":14,"source_text":"明日N2だから、今夜は遊びに行く＿＿。","category":"full_sentence","action":"voice_ja","predicted_reading":"明日N2だから、今夜は遊びに行く＿＿。","needs_rule":null},{"slide":14,"source_text":"明日N2だから","category":"example_vocab","action":"vi_gloss","predicted_reading":"vì mai thi N2","needs_rule":null},{"slide":14,"source_text":"わけにはいかない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê ni ha i cá nà ì","needs_rule":null},{"slide":14,"source_text":"わけだ","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê da","needs_rule":null},{"slide":14,"source_text":"わけではない / わけにはいかない","category":"full_sentence","action":"voice_ja","predicted_reading":"わけではない / わけにはいかない","needs_rule":null},{"slide":14,"source_text":"わけ","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê","needs_rule":null},{"slide":15,"source_text":"わけがない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê gá nà ì","needs_rule":null},{"slide":15,"source_text":"あの人がみんなを嫌いなわけがない。","category":"full_sentence","action":"voice_ja","predicted_reading":"あの人がみんなを嫌いなわけがない。","needs_rule":null},{"slide":15,"source_text":"わけではない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê đê há nà ì","needs_rule":null},{"slide":15,"source_text":"嫌い","category":"example_vocab","action":"vi_gloss","predicted_reading":"ghét","needs_rule":null},{"slide":15,"source_text":"嫌いなわけがない","category":"grammar_target","action":"json_rule","predicted_reading":"ghét na quà kê gá nà ì","needs_rule":null},{"slide":15,"source_text":"な","category":"grammar_metalanguage","action":"vi_gloss_plus_json_rule","predicted_reading":"na","needs_rule":null},{"slide":16,"source_text":"わけだ","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê da","needs_rule":null},{"slide":16,"source_text":"わけではない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê đê há nà ì","needs_rule":null},{"slide":16,"source_text":"わけがない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê gá nà ì","needs_rule":null},{"slide":16,"source_text":"わけにはいかない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê ni ha i cá nà ì","needs_rule":null},{"slide":16,"source_text":"Vないわけにはいかない","category":"grammar_metalanguage","action":"vi_gloss_plus_json_rule","predicted_reading":"thể nai quà kê ni ha i cá nà ì","needs_rule":null},{"slide":17,"source_text":"わけではない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê đê há nà ì","needs_rule":null},{"slide":17,"source_text":"わけがない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê gá nà ì","needs_rule":null},{"slide":17,"source_text":"わけにはいかない","category":"grammar_target","action":"json_rule","predicted_reading":"quà kê ni ha i cá nà ì","needs_rule":null}];
+    let audit = EMBEDDED_AUDIT.map((item, index) => ({ ...item, id: makeId(item, index) }));
+    let selectedId = audit[0]?.id || null;
+    const storageKey = "wake-pattern-rule-review:v1";
+    let decisions = loadDecisions();
+
+    const q = document.querySelector("#q");
+    const category = document.querySelector("#category");
+    const action = document.querySelector("#action");
+    const status = document.querySelector("#status");
+    const needs = document.querySelector("#needs");
+    const rows = document.querySelector("#rows");
+    const stats = document.querySelector("#stats");
+    const detail = document.querySelector("#detail");
+    const note = document.querySelector("#note");
+
+    function makeId(item, index) {
+      return `${item.slide}|${item.source_text}|${item.category}|${index}`;
+    }
+
+    function loadDecisions() {
+      try { return JSON.parse(localStorage.getItem(storageKey) || "{}"); }
+      catch { return {}; }
+    }
+
+    function saveDecisions() {
+      localStorage.setItem(storageKey, JSON.stringify(decisions));
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, ch => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+      }[ch]));
+    }
+
+    function uniq(values) {
+      return [...new Set(values.filter(Boolean))].sort((a, b) => String(a).localeCompare(String(b)));
+    }
+
+    function initFilters() {
+      fillSelect(category, "All categories", uniq(audit.map(x => x.category)));
+      fillSelect(action, "All actions", uniq(audit.map(x => x.action)));
+      fillSelect(status, "All review states", ["unreviewed", "approved", "change", "question"]);
+      fillSelect(needs, "All gate states", ["clean", "needs_rule"]);
+    }
+
+    function fillSelect(select, label, values) {
+      select.innerHTML = `<option value="">${label}</option>` + values.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join("");
+    }
+
+    function currentStatus(item) {
+      return decisions[item.id]?.status || "unreviewed";
+    }
+
+    function filteredItems() {
+      const query = q.value.trim().toLowerCase();
+      return audit.filter(item => {
+        const gate = item.needs_rule ? "needs_rule" : "clean";
+        const haystack = `${item.slide} ${item.source_text} ${item.category} ${item.action} ${item.predicted_reading} ${item.needs_rule || ""}`.toLowerCase();
+        return (!query || haystack.includes(query))
+          && (!category.value || item.category === category.value)
+          && (!action.value || item.action === action.value)
+          && (!status.value || currentStatus(item) === status.value)
+          && (!needs.value || gate === needs.value);
+      });
+    }
+
+    function renderStats(items = filteredItems()) {
+      const all = audit.length;
+      const reviewed = audit.filter(x => currentStatus(x) !== "unreviewed").length;
+      const unresolved = audit.filter(x => x.needs_rule).length;
+      const counts = {
+        visible: items.length,
+        all,
+        reviewed,
+        unresolved,
+        grammar: audit.filter(x => x.category === "grammar_target").length,
+        voiceJa: audit.filter(x => x.action === "voice_ja").length
+      };
+      stats.innerHTML = [
+        stat("Visible", counts.visible),
+        stat("Total", counts.all),
+        stat("Reviewed", `${counts.reviewed}/${counts.all}`),
+        stat("Needs rule", counts.unresolved),
+        stat("Grammar targets", counts.grammar),
+        stat("VOICE_JA", counts.voiceJa)
+      ].join("");
+    }
+
+    function stat(label, value) {
+      return `<div class="stat"><strong>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span></div>`;
+    }
+
+    function renderRows() {
+      const items = filteredItems();
+      renderStats(items);
+      rows.innerHTML = items.map(item => {
+        const review = currentStatus(item);
+        return `<tr data-id="${escapeHtml(item.id)}" class="${item.id === selectedId ? "selected" : ""}">
+          <td>${String(item.slide).padStart(2, "0")}</td>
+          <td><div class="source jp">${escapeHtml(item.source_text)}</div></td>
+          <td><span class="badge">${escapeHtml(item.category)}</span></td>
+          <td><span class="badge">${escapeHtml(item.action)}</span></td>
+          <td class="reading ${item.action === "voice_ja" ? "jp" : ""}">${escapeHtml(item.predicted_reading)}</td>
+          <td>${item.needs_rule ? `<span class="badge needs">${escapeHtml(item.needs_rule)}</span>` : `<span class="badge ok">clean</span>`}</td>
+          <td>
+            <select class="status-select" data-status-for="${escapeHtml(item.id)}">
+              ${["unreviewed", "approved", "change", "question"].map(s => `<option value="${s}" ${review === s ? "selected" : ""}>${s}</option>`).join("")}
+            </select>
+          </td>
+        </tr>`;
+      }).join("");
+      if (!items.some(x => x.id === selectedId)) selectedId = items[0]?.id || null;
+      renderDetail();
+    }
+
+    function renderDetail() {
+      const item = audit.find(x => x.id === selectedId);
+      if (!item) {
+        detail.innerHTML = "<dt>Status</dt><dd>No row selected.</dd>";
+        note.value = "";
+        return;
+      }
+      const decision = decisions[item.id] || {};
+      note.value = decision.note || "";
+      detail.innerHTML = `
+        <dt>Slide</dt><dd>${String(item.slide).padStart(2, "0")}</dd>
+        <dt>Source</dt><dd class="jp">${escapeHtml(item.source_text)}</dd>
+        <dt>Category</dt><dd>${escapeHtml(item.category)}</dd>
+        <dt>Action</dt><dd>${escapeHtml(item.action)}</dd>
+        <dt>Predicted reading / routing</dt><dd class="${item.action === "voice_ja" ? "jp" : ""}">${escapeHtml(item.predicted_reading)}</dd>
+        <dt>Gate</dt><dd>${escapeHtml(item.needs_rule || "clean")}</dd>
+        <dt>Review status</dt><dd>${escapeHtml(currentStatus(item))}</dd>
+      `;
+    }
+
+    function updateStatus(id, value) {
+      decisions[id] = { ...(decisions[id] || {}), status: value };
+      saveDecisions();
+      renderStats();
+      renderDetail();
+    }
+
+    function exportDecisions() {
+      const rows = audit.map(item => ({
+        slide: item.slide,
+        source_text: item.source_text,
+        category: item.category,
+        action: item.action,
+        predicted_reading: item.predicted_reading,
+        needs_rule: item.needs_rule,
+        review_status: currentStatus(item),
+        review_note: decisions[item.id]?.note || ""
+      }));
+      const blob = new Blob([JSON.stringify(rows, null, 2)], { type: "application/json;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "pattern_rule_review_decisions.json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function copySelectedSummary() {
+      const item = audit.find(x => x.id === selectedId);
+      if (!item) return;
+      const text = [
+        `Slide ${String(item.slide).padStart(2, "0")}`,
+        `Source: ${item.source_text}`,
+        `Category: ${item.category}`,
+        `Action: ${item.action}`,
+        `Predicted: ${item.predicted_reading}`,
+        `Gate: ${item.needs_rule || "clean"}`,
+        `Review: ${currentStatus(item)}`,
+        `Note: ${decisions[item.id]?.note || ""}`
+      ].join("\n");
+      navigator.clipboard?.writeText(text);
+    }
+
+    document.addEventListener("change", event => {
+      const target = event.target;
+      if (target.matches("[data-status-for]")) {
+        updateStatus(target.dataset.statusFor, target.value);
+      }
+    });
+
+    rows.addEventListener("click", event => {
+      const tr = event.target.closest("tr[data-id]");
+      if (!tr) return;
+      selectedId = tr.dataset.id;
+      renderRows();
+    });
+
+    [q, category, action, status, needs].forEach(el => el.addEventListener("input", renderRows));
+
+    document.querySelector("#saveNote").addEventListener("click", () => {
+      if (!selectedId) return;
+      decisions[selectedId] = { ...(decisions[selectedId] || {}), note: note.value };
+      saveDecisions();
+      renderDetail();
+    });
+    document.querySelector("#copySummary").addEventListener("click", copySelectedSummary);
+    document.querySelector("#exportBtn").addEventListener("click", exportDecisions);
+    document.querySelector("#resetBtn").addEventListener("click", () => {
+      if (!confirm("Reset all local review statuses and notes?")) return;
+      decisions = {};
+      saveDecisions();
+      renderRows();
+    });
+    document.querySelector("#importFile").addEventListener("change", async event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      audit = parsed.map((item, index) => ({ ...item, id: makeId(item, index) }));
+      selectedId = audit[0]?.id || null;
+      document.querySelector("#importState").textContent = `Imported ${audit.length} rows from ${file.name}.`;
+      initFilters();
+      renderRows();
+    });
+
+    initFilters();
+    renderRows();
+  </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "content_bundle_id": "sample-lucida-content",
+  "source_type": "markdown",
+  "title": "Lucida schema-first slide generation",
+  "audience": "Vietnamese late N3 / early N2 learners",
+  "objective": "Explain the prototype architecture",
+  "chunks": [
+    {
+      "chunk_id": "chunk-001",
+      "text": "Lucida should convert structured lesson content into browser-renderable slide decks through typed JSON and deterministic rendering.",
+      "section_path": "architecture",
+      "importance_score": 0.95
+    }
+  ],
+  "figures": []
+}

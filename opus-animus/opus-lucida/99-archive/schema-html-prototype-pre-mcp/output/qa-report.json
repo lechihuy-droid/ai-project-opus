@@ -1,0 +1,92 @@
+{
+  "deck_id": "wake-cluster-v1",
+  "status": "PASS",
+  "issues": [],
+  "slides": [
+    {
+      "slide_id": "wake-01",
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "slide_id": "wake-02",
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "slide_id": "wake-03",
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "slide_id": "wake-04",
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "slide_id": "wake-05",
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "slide_id": "wake-06",
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "slide_id": "wake-07",
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "slide_id": "wake-08",
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "slide_id": "wake-09",
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "slide_id": "wake-10",
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "slide_id": "wake-11",
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "slide_id": "wake-12",
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "slide_id": "wake-13",
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "slide_id": "wake-14",
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "slide_id": "wake-15",
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "slide_id": "wake-16",
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "slide_id": "wake-17",
+      "status": "PASS",
+      "issues": []
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+<div class="layout clue-map">
+  <p class="slide-kicker">{{phase_label}}</p>
+  <h2 data-slot="title">{{title}}</h2>
+  <div class="clue-layout">
+    <div class="checklist" data-slot="checklist"><div class="board-label">Đọc đề theo thứ tự</div>{{#checklist}}<div>{{.}}</div>{{/checklist}}</div>
+    <div class="mapping-list" data-slot="mappings"><div class="board-label">Chọn mẫu theo mạch ý</div>{{#mappings}}<div class="mapping-row"><strong>{{label}}</strong><span>{{value}}</span><em>{{note}}</em></div>{{/mappings}}</div>
+  </div>
+  <div class="takeaway-strip" data-slot="takeaway">{{takeaway}}</div>
+</div>

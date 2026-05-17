@@ -1,0 +1,28 @@
+{
+  "status": "current_llm",
+  "title": "Business Knowledge 5 phút: Khi AI agent bắt đầu trở thành economic actor",
+  "topic": "AI agents as economic actors",
+  "reading_time": "khoảng 5 phút",
+  "sections": [
+    {
+      "heading": "Khái niệm hôm nay",
+      "body": "Một AI agent trở thành economic actor khi nó không chỉ tạo text hoặc gọi tool, mà bắt đầu tham gia vào hành động có hậu quả kinh tế: đặt hàng, thanh toán, ký workflow approval, phân bổ ngân sách, chọn vendor, hoặc kích hoạt một giao dịch. Điểm chuyển này rất quan trọng cho business vì rủi ro không còn nằm ở câu trả lời sai, mà nằm ở hành động sai."
+    },
+    {
+      "heading": "Vì sao business phải quan tâm",
+      "body": "Khi agent có quyền giao dịch, doanh nghiệp sẽ hỏi ba câu mới. Một: agent được phép làm gì và giới hạn tiền/rủi ro ở đâu? Hai: nếu agent hành động sai thì ai chịu trách nhiệm và rollback thế nào? Ba: làm sao audit được quá trình agent ra quyết định? Đây là lý do các tin về Bedrock AgentCore payments, Claude trên AWS, NVIDIA/SAP specialized agents và EU AI Act nên được đọc cùng nhau: chúng đều nói về việc biến AI từ công cụ hỗ trợ thành một lớp vận hành có kiểm soát."
+    },
+    {
+      "heading": "Mental model",
+      "body": "Hãy chia agent thành 4 tầng. Tầng 1 là Reasoning: agent hiểu mục tiêu và lập kế hoạch. Tầng 2 là Tool Access: agent gọi API, database, browser, hoặc hệ thống nội bộ. Tầng 3 là Authority: agent có quyền thay đổi trạng thái, ví dụ gửi email, approve ticket, tạo order. Tầng 4 là Economic Consequence: agent làm việc có tác động tiền, pháp lý, compliance hoặc uy tín. Business value tăng mạnh từ tầng 2 lên tầng 4, nhưng governance cũng tăng theo cấp số nhân."
+    },
+    {
+      "heading": "Checklist đọc trong 5 phút",
+      "body": "Khi gặp một tin về agent platform, hãy hỏi nhanh: agent này có chỉ trả lời không, hay có thể hành động? Nó được tích hợp vào platform nào? Có permission model không? Có audit log không? Có spending limit hoặc approval gate không? Có cơ chế rollback không? Có eval cho tình huống xấu không? Nếu bài viết không trả lời được ít nhất 3 câu, đó có thể là marketing hơn là business signal."
+    },
+    {
+      "heading": "Action cho tôi",
+      "body": "Hôm nay chỉ cần làm một việc: chọn một workflow nhỏ của bạn có thể mô phỏng economic actor nhưng không dùng tiền thật. Ví dụ: agent đọc một request, đề xuất vendor/tool, tạo draft order, rồi dừng ở bước xin approval. Mục tiêu không phải automation hoàn chỉnh, mà là nhìn thấy permission, audit và rollback cần thiết trước khi agent được phép làm việc thật."
+    }
+  ]
+}

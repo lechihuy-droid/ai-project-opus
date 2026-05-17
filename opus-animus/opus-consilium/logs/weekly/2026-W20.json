@@ -1,0 +1,117 @@
+{
+  "week": "2026-W20",
+  "period": "2026-05-10 → 2026-05-17",
+  "generated_at": "2026-05-17T18:30:33",
+  "article_count": 111,
+  "status": "ok",
+  "sections": [
+    {
+      "heading": "Tóm tắt tuần",
+      "body": "Tuần W20/2026 đánh dấu bước chuyển mạnh sang AI-native enterprise stack: Anthropic ra mắt Claude Platform native trên AWS, NVIDIA bắt tay đồng thời ServiceNow và SAP để chuẩn hóa autonomous agents cho doanh nghiệp. Mảng research dồn dập về LLM agents an toàn (Security-Auditable), continual adaptation (CASCADE) và reasoning từ constrained inference — tín hiệu rõ rằng AI-SDLC đang dịch chuyển từ POC sang production-grade với yêu cầu audit/compliance. EU AI Act fine-tuning guidance trên SageMaker cho thấy regulatory pressure đang trở thành yếu tố quyết định cho SIer Nhật/EU. Tổng thể: hệ sinh thái đang củng cố nền móng để AI agents thực sự đi vào core enterprise workflow."
+    },
+    {
+      "heading": "Top 5 Stories",
+      "items": [
+        {
+          "title": "Introducing Claude Platform on AWS",
+          "source": "aws-ml-blog",
+          "why": "Anthropic native trên AWS account đồng nghĩa enterprise có thể triển khai Claude với data residency, IAM, billing thống nhất — gỡ rào cản lớn nhất khi pitch Claude cho khách hàng Nhật và regulated industries.",
+          "action": "test"
+        },
+        {
+          "title": "Towards Security-Auditable LLM Agents: A Unified Graph Representation",
+          "source": "arxiv-ai",
+          "why": "Graph representation cho audit LLM agents là mảnh ghép thiếu để đưa AI vào SDLC ngân hàng/insurance. Trùng đúng pain point của khách hàng SIer Nhật đang lo về governance.",
+          "action": "read"
+        },
+        {
+          "title": "NVIDIA and ServiceNow Partner on Autonomous AI Agents for Enterprises",
+          "source": "nvidia-blog",
+          "why": "ServiceNow là backbone ITSM của hầu hết enterprise Nhật. Autonomous agents tích hợp sẵn = cơ hội/đe dọa trực tiếp cho dịch vụ Legacy Modernization và AI-SDLC của FPT.",
+          "action": "watch"
+        },
+        {
+          "title": "Navigating EU AI Act requirements for LLM fine-tuning on SageMaker",
+          "source": "aws-ml-blog",
+          "why": "Khách hàng EU và Nhật (đang chuẩn bị AI Act tương đương) sẽ hỏi compliance ngay khi pitch fine-tuning. Cần playbook sẵn để không bị loại vòng RFP.",
+          "action": "read"
+        },
+        {
+          "title": "CASCADE: Case-Based Continual Adaptation for LLMs During Deployment",
+          "source": "arxiv-ai",
+          "why": "Continual adaptation post-deployment giải quyết bài toán drift của AI-SDLC tools — giảm chi phí retrain định kỳ, tăng ROI thuyết phục được CFO khách hàng.",
+          "action": "read"
+        }
+      ]
+    },
+    {
+      "heading": "Xu hướng tín hiệu",
+      "signals": [
+        {
+          "name": "AI-SDLC",
+          "trend": "up",
+          "summary": "Nhiều paper về security-auditable agents, continual adaptation, weight pruning bias — báo hiệu AI-SDLC đang trưởng thành từ code-gen sang full lifecycle với governance. FPT cần update narrative."
+        },
+        {
+          "name": "ROI/Proof Points",
+          "trend": "stable",
+          "summary": "Chưa có case study lớn tuần này, nhưng NVIDIA-ServiceNow và NVIDIA-SAP sẽ tạo benchmark mới trong 1-2 tháng tới. Cần theo dõi để có proof point cho pitch."
+        },
+        {
+          "name": "Legacy Modernization",
+          "trend": "up",
+          "summary": "Claude trên AWS + ServiceNow autonomous agents = enterprise có path rõ ràng để hiện đại hóa core systems bằng AI. Cơ hội mở rộng dịch vụ modernization của FPT, nhưng cạnh tranh sẽ tăng."
+        },
+        {
+          "name": "SIer Partnership",
+          "trend": "stable",
+          "summary": "Chưa có động thái M&A/partnership lớn từ SIer Nhật tuần này. NVIDIA-SAP có thể ảnh hưởng gián tiếp đến partnership ecosystem trong khu vực."
+        },
+        {
+          "name": "Sovereign AI",
+          "trend": "up",
+          "summary": "EU AI Act guidance cụ thể cho SageMaker fine-tuning là tín hiệu sovereign/regulated AI đang được hyperscaler chuẩn hóa. Nhật sẽ theo sau trong 6-12 tháng."
+        }
+      ]
+    },
+    {
+      "heading": "Động thái các bên",
+      "actors": [
+        {
+          "name": "Anthropic",
+          "summary": "Ra mắt Claude Platform native trên AWS — bước đi chiến lược để chiếm enterprise market mà không cần xây hạ tầng riêng. Đối thủ chính của OpenAI ở enterprise tier."
+        },
+        {
+          "name": "OpenAI",
+          "summary": "Im ắng đáng chú ý tuần này. Có thể đang chuẩn bị announcement lớn hoặc đang bị Anthropic chiếm spotlight enterprise."
+        },
+        {
+          "name": "Google",
+          "summary": "Mở rộng AI-powered Google Finance sang Europe — củng cố vertical fintech. Tín hiệu Google ưu tiên consumer/SMB hơn enterprise infrastructure."
+        },
+        {
+          "name": "Microsoft",
+          "summary": "Không có động thái nổi bật trong tuần. Cần theo dõi Build conference sắp tới."
+        },
+        {
+          "name": "NVIDIA",
+          "summary": "Hai partnership lớn (ServiceNow + SAP) trong cùng tuần + Spectrum-X cho gigascale AI networking. Đang định vị làm OS layer của enterprise AI agents."
+        },
+        {
+          "name": "AWS",
+          "summary": "Host Claude Platform + ra guidance EU AI Act + schema generation tự động. Đẩy mạnh AI services tier hơn là model layer — chiến lược platform-neutral."
+        }
+      ]
+    },
+    {
+      "heading": "Kế hoạch hành động",
+      "items": [
+        "Test Claude Platform trên AWS account của FPT trong tuần tới, so sánh latency/cost với Bedrock Claude hiện tại và viết internal memo cho team sales SIer Nhật.",
+        "Đọc kỹ paper Security-Auditable LLM Agents và CASCADE, chuẩn bị 1-page brief để pitch cho CTO Nhật cuộc họp tháng 6.",
+        "Soạn playbook EU AI Act compliance cho fine-tuning (dựa trên AWS guidance) — dùng làm tài liệu RFP cho deal EU và Nhật regulated.",
+        "Theo dõi sát rollout NVIDIA-ServiceNow agents: xác định 2-3 use case overlap với dịch vụ AI-SDLC của FPT để chuẩn bị defensive positioning.",
+        "Update slide AI-SDLC narrative: thêm trục governance/audit (security-auditable agents) và continual adaptation để khác biệt với competitor chỉ pitch code-gen."
+      ]
+    }
+  ]
+}

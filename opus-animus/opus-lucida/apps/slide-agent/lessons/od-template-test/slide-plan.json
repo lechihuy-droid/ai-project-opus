@@ -1,0 +1,79 @@
+{
+  "lane_id": "od-template-test",
+  "source_lesson": "grammar_card_v2_open_design_spike",
+  "deck_meta": {
+    "deck_id": "od-template-test-v1",
+    "title": "Lucida OD Template Test - Grammar Card v2",
+    "audience": "Vietnamese late N3 / early N2 learners",
+    "theme_id": "lucida-n2",
+    "aspect_ratio": "16:9",
+    "frame_mode": "static"
+  },
+  "slides": [
+    {
+      "slide_id": "od-gcv2-01",
+      "slide_number": 1,
+      "phase": "Grammar Core",
+      "template_id": "grammar_card_v2",
+      "learning_operation": "real_life_situation",
+      "skeleton_link": "01-master-teaching-skeleton.md#7-grammar-point-2",
+      "duration_sec": 8,
+      "slots": {
+        "pattern_jp": "わけにはいかない",
+        "speaker_action_vi": "Muốn cũng không làm được, vì có trách nhiệm hoặc ràng buộc.",
+        "meaning_vi": "không thể làm, vì có ràng buộc",
+        "form_jp": "V辞書形 + わけにはいかない",
+        "usage_vi": "Hay gặp với deadline, quy tắc, vai trò, trách nhiệm.",
+        "example_jp": "今夜は飲みに行くわけにはいきません。",
+        "trap_vi": "Khác わけがない: đây là hành động bị giữ lại.",
+        "bonus_vi": "Vない + わけにはいかない = không thể không làm"
+      },
+      "design": {
+        "dominant_accent": "amber"
+      }
+    },
+    {
+      "slide_id": "od-gcv2-02",
+      "slide_number": 2,
+      "phase": "Grammar Core",
+      "template_id": "grammar_card_v2",
+      "learning_operation": "speaker_action",
+      "skeleton_link": "01-master-teaching-skeleton.md#7-grammar-point-1",
+      "duration_sec": 8,
+      "slots": {
+        "pattern_jp": "わけではない",
+        "speaker_action_vi": "Người nói đang đính chính lại một cách hiểu dễ bị lệch, không phải phủ định toàn bộ sự việc.",
+        "meaning_vi": "không phải là... / không có nghĩa là...",
+        "form_jp": "普通形 + わけではない",
+        "usage_vi": "Dùng khi muốn gỡ lại một cách hiểu sai từ câu trước hoặc từ suy đoán của người nghe.",
+        "example_jp": "行きたくないわけではありません。",
+        "trap_vi": "Đừng kéo sang わけがない nếu câu chỉ đang đính chính, chưa bác bỏ khả năng.",
+        "bonus_vi": "Mềm hơn わけがない; trọng tâm là sửa cách hiểu."
+      },
+      "design": {
+        "dominant_accent": "blue"
+      }
+    },
+    {
+      "slide_id": "od-gcv2-03",
+      "slide_number": 3,
+      "phase": "Grammar Core",
+      "template_id": "grammar_card_v2",
+      "learning_operation": "trap_elimination",
+      "skeleton_link": "01-master-teaching-skeleton.md#7-grammar-point-3",
+      "duration_sec": 8,
+      "slots": {
+        "pattern_jp": "わけだ",
+        "speaker_action_vi": "Nghe thông tin phía trước rồi chốt lại: à, vậy nên kết luận này hợp lý.",
+        "meaning_vi": "thảo nào / ra là vậy / tức là",
+        "form_jp": "普通形 + わけだ",
+        "usage_vi": "Dùng khi đã có dữ kiện trước, rồi rút ra kết luận tự nhiên.",
+        "example_jp": "資料を送る必要がある。だから行けないわけだ。",
+        "trap_vi": "わけだ chỉ kết luận, không tự mang nghĩa bị ràng buộc."
+      },
+      "design": {
+        "dominant_accent": "green"
+      }
+    }
+  ]
+}

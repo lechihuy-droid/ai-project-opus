@@ -1,0 +1,548 @@
+# Shared keyword lists (YAML anchors)
+_cat4_kw: &cat4_kw
+  - "AI SDLC"
+  - "AI software development"
+  - "AI-driven development"
+  - "agentic development"
+  - "code generation"
+  - "developer productivity"
+  - "generative AI"
+  - "ROI"
+  - "productivity gain"
+  - "faster delivery"
+  - "COBOL"
+  - "legacy modernization"
+  - "mainframe migration"
+  - "digital transformation"
+  - "partnership"
+  - "joint venture"
+  - "offshore"
+  - "on-premise"
+  - "sovereign AI"
+  - "Japanese LLM"
+  - "data sovereignty"
+  - "FPT"
+  - "Rikkeisoft"
+  - "NashTech"
+  - "Fujitsu"
+  - "NTT Data"
+  - "GlobalLogic"
+  - "Accenture"
+  - "Capgemini"
+
+_market_hot_kw: &market_hot_kw
+  - "AI"
+  - "artificial intelligence"
+  - "agent"
+  - "agents"
+  - "coding"
+  - "developer"
+  - "software development"
+  - "SDLC"
+  - "Copilot"
+  - "Codex"
+  - "Claude"
+  - "OpenAI"
+  - "Anthropic"
+  - "Microsoft"
+  - "Azure AI"
+  - "partnership"
+  - "enterprise"
+  - "governance"
+  - "security"
+  - "safety"
+  - "model"
+  - "launch"
+  - "release"
+  - "announce"
+  - "pricing"
+  - "funding"
+  - "acquisition"
+  - "NVIDIA"
+  - "AWS"
+  - "Google"
+
+llm:
+  provider: groq
+  model: llama-3.3-70b-versatile
+  api_key: ${GROQ_API_KEY}
+  # Anthropic/Claude is a future option, not the current runtime default.
+
+telegram:
+  bot_token: ${TELEGRAM_BOT_TOKEN}
+  chat_id: ${TELEGRAM_CHAT_ID}
+
+wiki:
+  output_dir: ./wiki
+
+logs:
+  daily_dir: ./logs/daily
+
+schedule:
+  daily_brief_time: "06:00"   # 8:00 JST = 6:00 ICT (Vietnam) — trước khi TT Nhật mở
+
+sources:
+  # ── TOPIC: AI ──────────────────────────────────────
+  - id: huggingface-blog
+    topic: AI
+    type: rss
+    url: https://huggingface.co/blog/feed.xml
+    enabled: true
+
+  - id: arxiv-cs-ai
+    topic: AI
+    type: rss
+    url: http://export.arxiv.org/rss/cs.AI
+    enabled: true
+
+  - id: arxiv-cs-lg
+    topic: AI
+    type: rss
+    url: http://export.arxiv.org/rss/cs.LG
+    enabled: true
+
+  - id: the-batch
+    topic: AI
+    type: rss
+    url: https://www.deeplearning.ai/the-batch/feed/
+    enabled: false   # URL hỏng, disable tạm
+
+  - id: openai-news
+    topic: AI
+    type: rss
+    url: https://openai.com/news/rss.xml
+    enabled: true
+
+  - id: venturebeat-ai
+    topic: AI
+    type: rss
+    url: https://venturebeat.com/category/ai/feed/
+    enabled: true
+
+  - id: techcrunch-ai
+    topic: AI
+    type: rss
+    url: https://techcrunch.com/category/artificial-intelligence/feed/
+    enabled: true
+
+  - id: ai-web-search
+    topic: AI
+    type: web_search
+    query: "AI news today"
+    enabled: true
+
+  # ── TOPIC: JP_STOCK ────────────────────────────────
+  - id: nikkei225-index
+    topic: JP_STOCK
+    type: yfinance
+    symbols: ["^N225", "998405.T"]   # 998405.T = TOPIX on Yahoo Finance Japan
+    enabled: true
+
+  - id: jp-watchlist
+    topic: JP_STOCK
+    type: yfinance
+    symbols: []             # thêm mã cổ phiếu vào đây, vd: ["7203.T", "6758.T"]
+    enabled: false
+
+  - id: nikkei-asia-news
+    topic: JP_STOCK
+    type: rss
+    url: https://asia.nikkei.com/rss/feed/nar
+    enabled: true
+
+  - id: reuters-japan
+    topic: JP_STOCK
+    type: rss
+    url: https://feeds.reuters.com/reuters/businessNews
+    enabled: false   # URL hỏng, disable tạm
+
+  - id: japan-times-biz
+    topic: JP_STOCK
+    type: rss
+    url: https://www.japantimes.co.jp/feed/business/
+    enabled: false   # 404 — không có RSS public
+
+  - id: jp-stock-search
+    topic: JP_STOCK
+    type: web_search
+    query: "Japan stock market news today Nikkei"
+    enabled: true
+
+# ── CONTENT COLLECTOR ──────────────────────────────────────────────────────────
+# Batch riêng, chạy 05:30, độc lập với Module A (ResearchCrew 06:00)
+# python run_collect.py [--dry-run] [--no-ingest]
+
+collect:
+  max_articles_per_source: 10
+  ingest_batch_limit: 15       # max wiki pages/run — giới hạn Groq free tier
+  notify_top_n: 5
+  auto_ingest: true            # articles auto-ingest into personal-wiki after daily collect
+  goal_filter:
+    enabled: true
+    goal: >
+      I want a personal daily AI market radar that helps me decide what to read, test, compare, save, or ignore today.
+      Prioritize major AI market changes from OpenAI, Anthropic, Microsoft, Google, GitHub, AWS, NVIDIA, and important open-source tools.
+      Keep items that change my understanding of AI agents, coding tools, model capabilities, enterprise adoption, pricing, governance, or workflow automation.
+      Drop noise, minor research papers, and generic posts unless they contain a practical idea I can test in my current AI work.
+      Evaluate each article for: (1) whether it changes my next action, (2) whether it is a major market move,
+      (3) whether it reveals a useful tool or workflow pattern, (4) whether it is worth saving for later thinking.
+    min_score: 3               # 1-5: drop score < 3 (noise/tangential)
+
+collect_sources:
+  # ── Tier 0 — Official company/newsroom signals (hot market moves) ─────────────
+  - id: openai-news
+    topic: AI
+    tier: 0
+    type: rss
+    source_kind: market_news
+    url: https://openai.com/news/rss.xml
+    window_hours: 168
+    enabled: true
+    keyword_filter: *market_hot_kw
+
+  - id: anthropic-blog
+    topic: AI
+    tier: 0
+    type: rss
+    source_kind: market_news
+    url: https://www.anthropic.com/rss.xml
+    window_hours: 168
+    enabled: true
+    keyword_filter: *market_hot_kw
+
+  - id: microsoft-official-blog
+    topic: COMPETITOR
+    tier: 0
+    type: rss
+    source_kind: market_news
+    url: https://blogs.microsoft.com/feed/
+    window_hours: 168
+    enabled: true
+    keyword_filter: *market_hot_kw
+
+  - id: microsoft-azure-blog
+    topic: COMPETITOR
+    tier: 0
+    type: rss
+    source_kind: market_news
+    url: https://azure.microsoft.com/en-us/blog/feed/
+    window_hours: 168
+    enabled: true
+    keyword_filter: *market_hot_kw
+
+  - id: google-ai-blog
+    topic: AI
+    tier: 0
+    type: rss
+    source_kind: market_news
+    url: https://blog.google/technology/ai/rss/
+    window_hours: 168
+    enabled: true
+    keyword_filter: *market_hot_kw
+
+  - id: aws-ml-blog
+    topic: AI
+    tier: 0
+    type: rss
+    source_kind: market_news
+    url: https://aws.amazon.com/blogs/machine-learning/feed/
+    window_hours: 168
+    enabled: true
+    keyword_filter: *market_hot_kw
+
+  - id: nvidia-blog
+    topic: AI
+    tier: 0
+    type: rss
+    source_kind: market_news
+    url: https://blogs.nvidia.com/feed/
+    window_hours: 168
+    enabled: true
+    keyword_filter: *market_hot_kw
+
+  - id: techcrunch-ai
+    topic: AI
+    tier: 1
+    type: rss
+    source_kind: market_news
+    url: https://techcrunch.com/category/artificial-intelligence/feed/
+    window_hours: 72
+    enabled: true
+    keyword_filter: *market_hot_kw
+
+  - id: venturebeat-ai
+    topic: AI
+    tier: 1
+    type: rss
+    source_kind: market_news
+    url: https://venturebeat.com/category/ai/feed/
+    window_hours: 72
+    enabled: true
+    keyword_filter: *market_hot_kw
+
+  # ── Tier 1 — Trusted curated sources (no keyword filter needed) ──────────────
+  - id: simon-willison           # AI practitioner, high actionability
+    topic: AI
+    tier: 1
+    type: rss
+    url: https://simonwillison.net/atom/everything/
+    window_hours: 48
+    enabled: true
+
+  - id: hf-blog                  # HuggingFace — models, tools, tutorials
+    topic: AI
+    tier: 1
+    type: rss
+    url: https://huggingface.co/blog/feed.xml
+    window_hours: 168
+    enabled: true
+
+  - id: import-ai                # Jack Clark — weekly AI research digest
+    topic: AI
+    tier: 1
+    type: rss
+    url: https://jack-clark.net/feed/
+    window_hours: 168
+    enabled: true
+
+  # ── Tier 2 — Research depth (curated blogs, no filter needed) ────────────────
+  - id: interconnects            # Nathan Lambert — RLHF, alignment, frontier
+    topic: AI
+    tier: 2
+    type: rss
+    url: https://www.interconnects.ai/feed
+    window_hours: 168
+    enabled: true
+
+  - id: the-gradient             # long-form ML research commentary
+    topic: AI
+    tier: 2
+    type: rss
+    url: https://thegradient.pub/rss/
+    window_hours: 168
+    enabled: true
+
+  # ── Tier 2 — arXiv (keyword_filter required — very high noise) ───────────────
+  # Only papers whose title+abstract match at least one keyword pass.
+  # cs.AI: agents, reasoning, planning — most relevant
+  - id: arxiv-ai
+    topic: AI
+    tier: 3
+    type: rss
+    url: http://export.arxiv.org/rss/cs.AI
+    window_hours: 168
+    enabled: true
+    keyword_filter:
+      - "agent"
+      - "multi-agent"
+      - "planning"
+      - "reasoning"
+      - "tool use"
+      - "tool-use"
+      - "rag"
+      - "retrieval"
+      - "llm"
+      - "language model"
+      - "benchmark"
+      - "evaluation"
+
+  # cs.LG: ML methods — filter for LLM/efficient inference only
+  - id: arxiv-lg
+    topic: AI
+    tier: 3
+    type: rss
+    url: http://export.arxiv.org/rss/cs.LG
+    window_hours: 168
+    enabled: true
+    keyword_filter:
+      - "llm"
+      - "large language"
+      - "transformer"
+      - "fine-tun"
+      - "instruction"
+      - "alignment"
+      - "rlhf"
+      - "dpo"
+      - "efficient inference"
+      - "quantiz"
+      - "distill"
+      - "mixture of expert"
+      - "moe"
+      - "context window"
+
+  # cs.CL: Computational Linguistics — too noisy, disabled
+  # Re-enable with tight keyword_filter if needed
+  - id: arxiv-cl
+    topic: AI
+    tier: 3
+    type: rss
+    url: http://export.arxiv.org/rss/cs.CL
+    window_hours: 168
+    enabled: false
+
+  # ── Tier 3 — Market news (keyword_filter to drop off-topic articles) ─────────
+  - id: nikkei-asia
+    topic: JP_STOCK
+    tier: 3
+    type: rss
+    url: https://asia.nikkei.com/rss/feed/nar
+    window_hours: 48
+    enabled: true
+    keyword_filter:
+      - "japan"
+      - "nikkei"
+      - "boj"
+      - "bank of japan"
+      - "yen"
+      - "jpy"
+      - "topix"
+      - "tariff"
+      - "rate"
+      - "gdp"
+      - "inflation"
+      - "economy"
+      - "stock"
+      - "market"
+
+  # ── Tier 1 — HuggingFace trending papers ─────────────────────────────────────
+  - id: hf-papers                # HuggingFace daily trending papers (upvote-ranked)
+    topic: AI
+    tier: 3
+    type: hf_papers
+    max_per_source: 10
+    enabled: true
+    keyword_filter:
+      - "agent"
+      - "reasoning"
+      - "language model"
+      - "llm"
+      - "rlhf"
+      - "dpo"
+      - "alignment"
+      - "tool"
+      - "retrieval"
+      - "multimodal"
+      - "transformer"
+      - "fine-tun"
+      - "benchmark"
+      - "efficient"
+
+  # ── Tier 2 — GitHub Trending AI repos (weekly) ───────────────────────────────
+  - id: github-trending-ai       # GitHub top trending repos related to AI/LLM
+    topic: AI
+    tier: 2
+    type: github_trending
+    since: weekly
+    max_per_source: 10
+    enabled: true
+    keyword_filter:
+      - "llm"
+      - "agent"
+      - "gpt"
+      - "claude"
+      - "gemini"
+      - "mistral"
+      - "deepseek"
+      - "qwen"
+      - "phi"
+      - "rag"
+      - "ai"
+      - "ml"
+      - "model"
+      - "transformer"
+      - "inference"
+      - "fine-tun"
+      - "embed"
+      - "vector"
+      - "langchain"
+      - "openai"
+
+  # ── Category 4 — Competitor Intel ────────────────────────────────────────────
+  # 5 strategic signals:
+  #   (1) AI-SDLC productization  (2) ROI proof points  (3) Legacy modernization
+  #   (4) SIer partnership moves  (5) Sovereign/on-prem AI positioning
+
+  # ── JP IT Media (RSS — active now) ───────────────────────────────────────────
+  - id: itmedia-enterprise
+    topic: COMPETITOR
+    tier: 4
+    type: rss
+    url: https://rss.itmedia.co.jp/rss/2.0/ait.xml
+    window_hours: 48
+    enabled: true
+    keyword_filter: *cat4_kw
+
+  - id: enterprisezine
+    topic: COMPETITOR
+    tier: 4
+    type: rss
+    url: https://enterprisezine.jp/rss/all
+    window_hours: 48
+    enabled: true
+    keyword_filter: *cat4_kw
+
+  - id: zdnet-japan
+    topic: COMPETITOR
+    tier: 4
+    type: rss
+    url: https://japan.zdnet.com/rss/all.rdf
+    window_hours: 48
+    enabled: true
+    keyword_filter: *cat4_kw
+
+  - id: monoist
+    topic: COMPETITOR
+    tier: 4
+    type: rss
+    url: https://monoist.itmedia.co.jp/mn/rss/rss_index.rdf
+    window_hours: 48
+    enabled: true
+    keyword_filter: *cat4_kw
+
+  - id: prtimes-it
+    topic: COMPETITOR
+    tier: 4
+    type: rss
+    url: https://prtimes.jp/rss/all.rss
+    window_hours: 48
+    enabled: true
+    keyword_filter: *cat4_kw
+
+  # ── Analyst Press Releases (RSS — active now) ─────────────────────────────────
+  - id: everest-group
+    topic: COMPETITOR
+    tier: 4
+    type: rss
+    url: https://www.everestgrp.com/feed
+    window_hours: 168
+    enabled: true
+    keyword_filter: *cat4_kw
+
+  - id: hfs-research
+    topic: COMPETITOR
+    tier: 4
+    type: rss
+    url: https://www.hfsresearch.com/feed
+    window_hours: 168
+    enabled: true
+    keyword_filter: *cat4_kw
+
+  # ── Company Newsrooms [web_search — pending implementation] ───────────────────
+  # Until web_search is supported in collect_sources, monitor these manually.
+  # Queries to use for manual search or future automation:
+  #
+  # Fujitsu:        "Fujitsu AI software development platform SDLC"
+  # NTT Data:       "NTT Data generative AI application services aXet"
+  # GlobalLogic:    "GlobalLogic VelocityAI SDLC Japan"
+  # Hitachi:        "Hitachi AI development Japan"
+  # Accenture JP:   "Accenture Japan AI transformation software development"
+  # Capgemini JP:   "Capgemini Japan AI services offshore"
+  # IBM Japan:      "IBM Japan watsonx application modernization"
+  # Rikkeisoft:     "Rikkeisoft AI Japan"
+  # NashTech:       "NashTech AI insights software development"
+  # Aziro:          "Aziro AI platform Japan 2026"
+  #
+  # Target: add to COMPETITIVE-INTEL.md after each manual sweep (weekly).
+
+  # ── Disabled ──────────────────────────────────────────────────────────────────
+  # bloomberg-jp: 404 · papers-with-code: 302 · japan-times-biz: 404
