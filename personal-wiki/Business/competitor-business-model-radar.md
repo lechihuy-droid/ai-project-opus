@@ -121,6 +121,127 @@ Consulting project
 - Hyperscaler alliances: AWS, Microsoft, Google Cloud, Oracle, SAP
 - Industry-specific AI platforms: manufacturing, finance, healthcare, public sector
 
+## Research Signals To Track
+Track these signals in the daily research data flow. Prioritize concrete evidence over generic AI announcements.
+
+### 1. AI deployment unit / FDE signal
+Look for AI labs, SIers, or consulting firms creating deployment companies, forward-deployed engineering teams, client-embedded AI teams, AI delivery squads, or field engineering units.
+
+Why it matters:
+- Shows movement from tool/API sales into workflow ownership.
+- Indicates direct competition with consulting and SI implementation budgets.
+- Helps evaluate whether FDE-lite is becoming a repeatable market pattern.
+
+Search terms:
+- "forward deployed engineer" AI enterprise
+- "AI deployment team" enterprise
+- "AI transformation delivery unit"
+- "AI field engineering" consulting
+- "client embedded AI team"
+
+### 2. Consulting AI workforce / Center of Excellence signal
+Look for consulting firms training large internal workforces on AI tools, launching AI Centers of Excellence, certifying consultants, or packaging AI transformation by industry/function.
+
+Why it matters:
+- Shows whether consulting firms are turning AI into scalable delivery capacity.
+- Helps distinguish strategy-only consulting from implementation-ready AI transformation.
+- Signals which firms may dominate C-level AI budget.
+
+Search terms:
+- "AI center of excellence" consulting firm
+- "consultants trained on AI" PwC Accenture Deloitte Capgemini
+- "Claude Code" consulting firm
+- "AI transformation practice" consulting
+- "generative AI workforce training" consulting
+
+### 3. Japanese SIer legacy modernization signal
+Look for NTT DATA, Fujitsu, NEC, Hitachi, NRI, TIS, SCSK, and other Japanese SIers packaging GenAI around COBOL, mainframe, ERP, banking systems, government systems, documentation, migration, testing, or maintenance.
+
+Why it matters:
+- This is the most defensible Japanese SIer AI business model.
+- Legacy access, compliance, and long-term enterprise trust are hard for new entrants to copy.
+- Useful for assessing FPT-style AI-SDLC positioning in Japan.
+
+Search terms:
+- "生成AI レガシーシステム モダナイゼーション SIer"
+- "COBOL 生成AI 富士通 NEC NTTデータ"
+- "legacy modernization generative AI Japan SIer"
+- "AI code documentation COBOL Japanese SIer"
+- "基幹システム 生成AI モダナイゼーション"
+
+### 4. Hyperscaler + SIer alliance signal
+Look for AWS, Microsoft, Google Cloud, Oracle, SAP, or NVIDIA partnerships with SIers and consulting firms around GenAI, agentic AI, secure cloud, sovereign cloud, data sandbox, or enterprise modernization.
+
+Why it matters:
+- Shows how SIers compensate for model/cloud gaps.
+- Indicates where enterprise AI budgets may flow.
+- Useful for investment theses around cloud, infra, and SIer modernization.
+
+Search terms:
+- "AWS NTT DATA generative AI modernization"
+- "Microsoft Hitachi AI partnership Lumada"
+- "Google Cloud Hitachi Gemini enterprise AI"
+- "sovereign cloud generative AI SIer"
+- "secure AI data sandbox consulting"
+
+### 5. AI-enabled managed operations / BPO signal
+Look for consulting or BPO firms converting AI projects into managed operations, intelligent operations, AI-enabled process outsourcing, productivity-linked contracts, or outcome-based delivery.
+
+Why it matters:
+- This is a more durable revenue model than one-time AI advisory.
+- Shows AI moving into operational budgets, not just innovation budgets.
+- Helps identify business models with recurring revenue and measurable productivity impact.
+
+Search terms:
+- "AI-enabled managed operations"
+- "agentic AI BPO"
+- "intelligent operations generative AI"
+- "AI productivity-linked contract"
+- "AI business process services"
+
+### 6. Concrete revenue / bookings / client adoption signal
+Look for disclosed AI bookings, revenue contribution, large enterprise contracts, number of deployed users, number of trained consultants, number of client projects, or productivity metrics.
+
+Why it matters:
+- Separates monetization from marketing narrative.
+- Helps evaluate whether a competitor model is investment-relevant.
+- Converts raw news into evidence for thesis strength.
+
+Search terms:
+- "AI bookings" consulting
+- "generative AI revenue" SIer
+- "AI transformation contract" million
+- "agentic AI bookings" Capgemini Accenture
+- "enterprise AI adoption numbers" consulting
+
+## Signal Quality Filter
+Use this filter before upgrading a source from raw seed to business-model evidence.
+
+Strong signal:
+- Mentions revenue, bookings, contract size, adoption numbers, or named enterprise clients.
+- Shows a repeatable delivery model, not a one-off demo.
+- Connects AI to workflow ownership, managed operations, modernization, or long-term account lock-in.
+- Includes organizational change such as new deployment unit, CoE, subsidiary, alliance, or workforce training.
+
+Weak signal:
+- Generic product launch without customer, workflow, or monetization evidence.
+- Pure model announcement with no enterprise delivery path.
+- Marketing claim with no numbers, client examples, or operational change.
+- One-off PoC that does not connect to account control or repeatable service packaging.
+
+## Daily Research Output Format
+When the local daily research flow finds competitor signals, summarize them in this format before synthesis:
+
+```text
+Signal:
+Company / competitor type:
+Business model bucket:
+Evidence:
+Why it matters:
+Strong / weak signal:
+Recommended wiki action: ignore / seed / update radar / update thesis / create deep dive
+```
+
 ## Decision Impact
 - Track competitor business models separately from AI technology trends.
 - Prioritize business model signals that show monetization, delivery model, account control, or workflow ownership.
@@ -140,6 +261,7 @@ Use competitor signals to test whether Lucida should evolve from content-generat
 
 ## Applied
 - 2026-05-19 - Created competitor business model radar as a separate lane from AI technology trend tracking.
+- 2026-05-19 - Added daily research signals to track for competitor business model monitoring.
 
 ## See Also
 - [[ai-trend-radar]]
