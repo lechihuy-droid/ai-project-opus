@@ -14,7 +14,7 @@ sources:
   - "https://www.investopedia.com/microsoft-hitachi-form-multibillion-dollar-ai-partnership-8658022"
   - "https://www.wsj.com/articles/hitachi-google-cloud-sign-deal-to-bring-ai-to-businesses-5e900fd9"
   - "https://www.reuters.com/business/capgemini-exceeds-revenue-target-ai-bookings-grow-2026-02-13/"
-related: ["[[ai-trend-radar]]", "[[investment-theses]]", "[[open-questions]]", "[[active-project-context]]"]
+related: ["[[ai-trend-radar]]", "[[investment-theses]]", "[[outcome-based-fde-model]]", "[[open-questions]]", "[[active-project-context]]"]
 applied: []
 open_questions:
   - "Which competitor business model is most relevant to Opus Animus or Lucida?"
@@ -37,6 +37,7 @@ Key patterns:
 - Big consulting firms are training large internal workforces on AI tools, then selling AI transformation packages by industry.
 - Japanese SIers are defending and expanding their position through legacy modernization, regulated cloud, domain platforms, and OT/IT integration.
 - The durable business model is not chatbot delivery. It is workflow redesign + reliability layer + implementation + managed operations.
+- For offshore vendors, the strategic upgrade path is man-month delivery → FDE-lite pilot → measurable workflow improvement → managed outcome retainer → selective outcome-based pricing.
 
 ## Key Signals
 
@@ -112,6 +113,29 @@ Consulting project
 → outcome / productivity-linked revenue
 ```
 
+### Offshore vendors upgrade toward FDE and outcome-based delivery
+Offshore vendors can move beyond man-month pricing by adding an FDE-style discovery, workflow redesign, measurement, and managed outcome layer.
+
+Business model pattern:
+
+```text
+Offshore delivery capacity
+→ FDE-lite diagnostic / pilot
+→ measurable workflow improvement
+→ managed outcome retainer
+→ selective outcome-based pricing
+```
+
+Commercial pattern:
+
+```text
+Base fee
++ milestone fee
++ optional outcome bonus
+```
+
+See: [[outcome-based-fde-model]]
+
 ## Competitor Business Model Buckets
 - AI lab deployment companies: OpenAI DeployCo, Anthropic enterprise partnerships
 - Consulting AI transformation: PwC, Accenture, Deloitte, Capgemini, McKinsey
@@ -120,6 +144,7 @@ Consulting project
 - AI managed operations: BPO, intelligent operations, AI-enabled process outsourcing
 - Hyperscaler alliances: AWS, Microsoft, Google Cloud, Oracle, SAP
 - Industry-specific AI platforms: manufacturing, finance, healthcare, public sector
+- Offshore-to-FDE transformation: FDE-lite pods, outcome wrapper, managed outcome retainers, AI-SDLC workflow improvement
 
 ## Research Signals To Track
 Track these signals in the daily research data flow. Prioritize concrete evidence over generic AI announcements.
@@ -246,6 +271,7 @@ Recommended wiki action: ignore / seed / update radar / update thesis / create d
 - Track competitor business models separately from AI technology trends.
 - Prioritize business model signals that show monetization, delivery model, account control, or workflow ownership.
 - Treat isolated AI product launches as weak evidence unless they connect to deployment, transformation budget, managed operations, or long-term platform lock-in.
+- Treat outcome-based FDE as a strategic commercial upgrade path for offshore vendors, but introduce it gradually through measurable workflow outcomes rather than uncontrolled business outcomes.
 
 ## Application To OPUS ANIMUS
 Use this page when deciding whether an AI trend affects business strategy. For Opus Animus and Lucida, the main question is not whether a competitor uses AI. The question is whether they have a repeatable business model that turns AI into delivery capacity, customer lock-in, or managed operations.
@@ -258,12 +284,15 @@ Use competitor signals to test whether Lucida should evolve from content-generat
 - Which competitor model can be copied at MVP scale?
 - Which business model needs enterprise trust, compliance, or legacy access that a small player cannot easily replicate?
 - Which signals should be tracked daily versus weekly?
+- Which existing offshore project is safest for an outcome-based FDE pilot?
 
 ## Applied
 - 2026-05-19 - Created competitor business model radar as a separate lane from AI technology trend tracking.
 - 2026-05-19 - Added daily research signals to track for competitor business model monitoring.
+- 2026-05-19 - Linked outcome-based FDE as a commercial upgrade path from offshore man-month delivery.
 
 ## See Also
+- [[outcome-based-fde-model]]
 - [[ai-trend-radar]]
 - [[investment-theses]]
 - [[open-questions]]
