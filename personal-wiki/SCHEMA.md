@@ -23,6 +23,7 @@ This folder is both a Karpathy-style LLM Wiki and an Obsidian vault.
 - `Stock/` — Nikkei, market analysis, macro economics, Japan economy, investing
 - `Personal/` — reflections, decisions, goals, personal observations, synthesis
 - `Tech/` — tools, frameworks, software methods, workflows, dev practices
+- `FDE/` — Forward Deployed Engineer model, Japan IT transformation, outcome-based delivery, adoption radar, and playbooks
 
 ---
 
@@ -43,7 +44,7 @@ Required on every concept page:
 ---
 title: "Page Title"
 aliases: []
-topic: AI | Stock | Personal | Tech
+topic: AI | Stock | Personal | Tech | FDE
 tags: []
 status: seed | evergreen | needs-review | archived
 confidence: high | medium | low
@@ -184,4 +185,3 @@ Use Obsidian for weekly review:
 4. Mark weak pages as `needs-review`.
 5. Write or update the weekly reflection page.
 6. Capture at least one action in `Applied` or one research prompt in `Open Questions`.
-

@@ -1,6 +1,14 @@
 # Personal Wiki Index
 *Updated: 2026-05-19 04:26*
 
+## FDE
+- [[fde-model]] — FDE Model | tags: fde, forward-deployed-engineer, service-as-software, ai-fde
+- [[fde-japan-gap-analysis]] — FDE Japan Gap Analysis | tags: fde, japan-it, sier, gap-analysis
+- [[fde-roadmap]] — FDE Roadmap | tags: fde, roadmap, japan-it, outcome-based-delivery
+- [[fde-adoption-radar]] — FDE Adoption Radar | tags: fde, adoption-radar, palantir, openai, anthropic
+- [[fde-research-queue]] — FDE Research Queue | tags: fde, research-queue, sources, reading
+- [[fde-dashboard-sync]] — FDE Dashboard Sync | tags: fde, dashboard, opus-home, sync
+
 ## AI
 - [[building-scalable-web-apps-with-openai-privacy-filter]] — Building Scalable Web Apps with OpenAI's Privacy Filter | tags: openai, privacy-filter, web-apps
 - [[deepseek-v4]] — DeepSeek-V4: A Million-Token Context for Agents | tags: deepseek-v4, llm, agents

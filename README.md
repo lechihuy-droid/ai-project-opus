@@ -21,6 +21,17 @@ personal-wiki/Personal/reskill-roadmap.md
 personal-wiki/Stock/investment-theses.md
 ```
 
+For the Opus Home FDE tab, read this wiki area:
+
+```text
+personal-wiki/FDE/fde-dashboard-sync.md
+personal-wiki/FDE/fde-model.md
+personal-wiki/FDE/fde-japan-gap-analysis.md
+personal-wiki/FDE/fde-roadmap.md
+personal-wiki/FDE/fde-adoption-radar.md
+personal-wiki/FDE/fde-research-queue.md
+```
+
 Use this repo as a decision brain for AI trends, re-skill planning, investment thinking, and Opus Animus/Lucida workflow implications.
 
 Recommended ChatGPT mobile prompt:
