@@ -32,6 +32,13 @@ personal-wiki/FDE/fde-adoption-radar.md
 personal-wiki/FDE/fde-research-queue.md
 ```
 
+For research source routing and Intel-to-wiki sync, read:
+
+```text
+personal-wiki/Research/research-source-map.md
+personal-wiki/Research/intel-to-wiki-promotion.md
+```
+
 Use this repo as a decision brain for AI trends, re-skill planning, investment thinking, and Opus Animus/Lucida workflow implications.
 
 ## Cloud-First Operating Rules

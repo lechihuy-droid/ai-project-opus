@@ -12,6 +12,10 @@
 ## Business
 - [[competitor-business-model-radar]] — Competitor Business Model Radar | tags: competitor-intelligence, ai-business-models, consulting, sier, japan-sier, decision-brain
 
+## Research
+- [[research-source-map]] — Research Source Map | tags: research, sources, collector, intel, raw-articles
+- [[intel-to-wiki-promotion]] — Intel To Wiki Promotion | tags: intel, wiki-promotion, research-flow, decision-brain
+
 ## AI
 - [[building-scalable-web-apps-with-openai-privacy-filter]] — Building Scalable Web Apps with OpenAI's Privacy Filter | tags: openai, privacy-filter, web-apps
 - [[deepseek-v4]] — DeepSeek-V4: A Million-Token Context for Agents | tags: deepseek-v4, llm, agents
