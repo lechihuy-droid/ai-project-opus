@@ -9,6 +9,9 @@
 - [[fde-research-queue]] — FDE Research Queue | tags: fde, research-queue, sources, reading
 - [[fde-dashboard-sync]] — FDE Dashboard Sync | tags: fde, dashboard, opus-home, sync
 
+## Business
+- [[competitor-business-model-radar]] — Competitor Business Model Radar | tags: competitor-intelligence, ai-business-models, consulting, sier, japan-sier, decision-brain
+
 ## AI
 - [[building-scalable-web-apps-with-openai-privacy-filter]] — Building Scalable Web Apps with OpenAI's Privacy Filter | tags: openai, privacy-filter, web-apps
 - [[deepseek-v4]] — DeepSeek-V4: A Million-Token Context for Agents | tags: deepseek-v4, llm, agents
