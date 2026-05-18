@@ -1,0 +1,45 @@
+---
+title: "Focus and Dilution: The Multi-stage Learning Process of Attention"
+aliases: []
+topic: AI
+tags: [source-seed, arxiv-lg]
+status: seed
+confidence: low
+sources: ["raw/articles/2026-05-05-focus-and-dilution-the-multi-stage-learning-process-of-attention.md", "https://arxiv.org/abs/2605.01199"]
+related: []
+applied: []
+open_questions: []
+created: 2026-05-19
+updated: 2026-05-19
+---
+
+# Focus and Dilution: The Multi-stage Learning Process of Attention
+
+## Summary
+arXiv:2605.01199v1 Announce Type: new Abstract: Transformer-based models have achieved remarkable success across a wide range of domains, yet our understanding of their training dynamics remains limited. In this work, we identify a recurrent focus-dilution cycle in attention learning and provide a rigorous explanation in a one-layer Transformer setting for Markovian data via gradient-flow analysis. Using stage-wise linearization around critical points, we show that a single focus-dilution cycle can be decomposed into a sequence of distinct stages. First, embedding and projection rapidly condense to a rank-one structure, while attention parameters remain effectively frozen. Then, the attention parameters begin to increase, inducing a frequency-driven focus toward high-frequency tokens. As
+
+## Key Points
+- Seed ingest from raw research/news source.
+- Needs later concept-first synthesis or merge into a stronger existing page.
+
+## Why It Matters
+This source was collected by Consilium as potentially relevant market, AI, technology, or research intelligence. It is preserved in the wiki so it can be queried, reviewed, and consolidated later.
+
+## Details
+- Source: arxiv-lg
+- Published: 2026-05-05 04:00 UTC
+
+## Application To OPUS ANIMUS
+Review for possible implications to Opus Consilium intelligence, Opus Animus strategy, Lucida production workflows, or investment tracking.
+
+## Open Questions
+- Should this seed be merged into an existing concept page?
+- What concrete decision, workflow, or research thread should this inform?
+
+## Applied
+
+## See Also
+
+## Sources
+- `raw/articles/2026-05-05-focus-and-dilution-the-multi-stage-learning-process-of-attention.md`
+- https://arxiv.org/abs/2605.01199
