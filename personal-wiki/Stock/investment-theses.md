@@ -6,7 +6,7 @@ tags: [investment, ai-trends, decision-brain, thesis]
 status: evergreen
 confidence: medium
 sources: []
-related: ["[[current-beliefs]]", "[[open-questions]]", "[[ai-trend-radar]]", "[[japan-economy]]", "[[asia-pacific-region]]"]
+related: ["[[current-beliefs]]", "[[open-questions]]", "[[ai-trend-radar]]", "[[competitor-business-model-radar]]", "[[japan-economy]]", "[[asia-pacific-region]]"]
 applied: []
 open_questions: ["Which thesis got stronger or weaker this week?"]
 created: 2026-05-19
@@ -21,7 +21,8 @@ This page turns AI and macro sources into investment thinking. It is not a stock
 ## Key Points
 - AI agents may shift software labor, enterprise budgets, and workflow platforms.
 - Inference demand and reliability layers may be more durable than model hype.
-- Japan and APAC signals matter through industrial policy, supply chains, robotics, semiconductors, energy, and enterprise adoption.
+- Competitor AI business models matter when they show durable monetization, delivery capacity, account control, or managed operations.
+- Japan and APAC signals matter through industrial policy, supply chains, robotics, semiconductors, energy, enterprise adoption, and SIer modernization.
 - A thesis is useful only if it states evidence, risk, time horizon, and disconfirming signals.
 
 ## Why It Matters
@@ -32,6 +33,7 @@ Current thesis buckets:
 - AI infra and inference demand
 - Agentic software development and enterprise workflow platforms
 - Evaluation, security, HITL, and governance tooling
+- Competitor AI business models and SIer/consulting monetization patterns
 - Japan/Asia supply-chain and industrial policy exposure
 - AI-enabled productivity and labor restructuring
 
@@ -42,10 +44,12 @@ Codex should compare new sources against these thesis buckets and say: stronger,
 - Which thesis has enough evidence to track weekly?
 - Which thesis is just narrative without numbers?
 - Which Japan/APAC signal matters for medium-term investing?
+- Which competitor business model shows durable revenue instead of AI marketing noise?
 
 ## Applied
 
 ## See Also
+- [[competitor-business-model-radar]]
 - [[ai-trend-radar]]
 - [[japan-economy]]
 - [[asia-pacific-region]]
