@@ -24,6 +24,9 @@ This page defines how Huy should talk with Codex about the wiki. Codex is the in
 - Codex should read the decision pages first, then inspect relevant seed pages.
 - Every answer should separate signal, action, risk, and what to ignore.
 - ChatGPT mobile is for quick briefs, routing, and small approvals; desktop Codex remains the place for source inspection, file edits, and verification.
+- GitHub `main` is the source of truth for wiki content; local Codex is the sync, audit, schema, dashboard/API, and bulk-edit backstop.
+- Before creating a new folder or topic, check `SCHEMA.md` and `INDEX.md`. If a new topic is needed, update both in the same commit.
+- Every cloud edit should return changed files, commit hash, and decision label.
 
 ## Why It Matters
 The wiki should reduce cognitive load. A stable chat protocol keeps daily use simple.
@@ -73,10 +76,30 @@ Keep the change small.
 Show me the changed page name and the decision label.
 ```
 
+Cloud update prompt:
+
+```text
+Use opus-consilium.
+Read README.md, SCHEMA.md, INDEX.md, and the relevant hub/topic pages.
+Update the wiki directly on GitHub.
+
+Rules:
+- Treat GitHub main as the source of truth for wiki content.
+- Keep changes small and decision-oriented.
+- Do not rewrite whole pages unless necessary.
+- Add sources when the update is based on external facts.
+- Add links to related hub pages.
+- Before creating a new folder/topic, check SCHEMA.md and INDEX.md.
+- If a new topic is needed, update both SCHEMA.md and INDEX.md in the same commit.
+- Return changed files, commit hash, and decision label.
+```
+
 ## Application To OPUS ANIMUS
 Use this page as the operating contract for Codex-wiki conversations.
 
 For mobile ChatGPT, use Consilium as a decision inbox, not a full editing environment. Mobile is good for asking what changed, deciding whether a source matters, and approving a narrow wiki update. Avoid approving broad thesis changes, multi-page edits, or investment conclusions from mobile unless the evidence has already been reviewed on desktop.
+
+Cloud-first does not mean cloud-only. GitHub is the source of truth for Markdown wiki content, but local Codex remains responsible for audit, sync, schema-sensitive changes, Opus Home dashboard/API code, bulk operations, and conflict resolution.
 
 ## Open Questions
 - Should the daily output be saved as a reflection page?
@@ -84,6 +107,7 @@ For mobile ChatGPT, use Consilium as a decision inbox, not a full editing enviro
 
 ## Applied
 - 2026-05-19 - Test ChatGPT mobile as a lightweight Consilium inbox for daily AI trend review and narrow wiki-update approval.
+- 2026-05-19 - Adopt cloud-first wiki updates with schema/index guardrails and local Codex as audit/backstop.
 
 ## See Also
 - [[current-beliefs]]

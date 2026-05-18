@@ -34,6 +34,45 @@ personal-wiki/FDE/fde-research-queue.md
 
 Use this repo as a decision brain for AI trends, re-skill planning, investment thinking, and Opus Animus/Lucida workflow implications.
 
+## Cloud-First Operating Rules
+
+Treat GitHub `main` as the source of truth for wiki content.
+
+Use ChatGPT mobile/cloud for:
+
+- small and medium Markdown updates
+- short synthesis bullets
+- decision log entries
+- open questions
+- small topic pages
+- README or hub-page routing links
+
+Reserve local Codex for:
+
+- sync and audit
+- schema changes
+- dashboard/API/code changes
+- bulk imports or renames
+- Obsidian cleanup
+- complex conflict resolution
+
+Before creating a new folder or topic, check:
+
+```text
+personal-wiki/SCHEMA.md
+personal-wiki/INDEX.md
+```
+
+If a new topic is needed, update both `SCHEMA.md` and `INDEX.md` in the same commit.
+
+For every GitHub edit, return:
+
+```text
+changed files
+commit hash
+decision label
+```
+
 Recommended ChatGPT mobile prompt:
 
 ```text
