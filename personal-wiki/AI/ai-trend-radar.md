@@ -20,6 +20,7 @@ This hub tracks AI trends worth discussing with Codex. It should absorb high-sig
 
 ## Key Points
 - Coding agents and agentic workflows are the primary trend to watch.
+- Current synthesis: coding agents should be treated as workflow infrastructure, not standalone assistants. The actionable layer is reliability: evals, HITL, sandboxing, observability, and debugging loops.
 - Evaluation, observability, HITL, and sandboxing are the reliability layer.
 - Model efficiency and inference cost matter because agents multiply token usage.
 - Enterprise AI adoption matters only when it changes workflows, budgets, or labor structure.
