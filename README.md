@@ -1,6 +1,6 @@
 # Opus Consilium
 
-Private Consilium wiki export for ChatGPT mobile access.
+Private Consilium wiki export for ChatGPT mobile/cloud access, GitHub connector workflows, and Obsidian desktop use.
 
 This repository is not an application codebase. The main content is the Markdown wiki under:
 
@@ -40,6 +40,16 @@ personal-wiki/Research/intel-to-wiki-promotion.md
 ```
 
 Use this repo as a decision brain for AI trends, re-skill planning, investment thinking, and Opus Animus/Lucida workflow implications.
+
+## Open In Obsidian
+
+Clone or pull this repository locally, then open the repository root as an Obsidian vault:
+
+```text
+C:\Users\HUY\AI\opus-animus\opus-consilium-github-export
+```
+
+The actual notes live under `personal-wiki/`. Keep GitHub `main` as the content source of truth.
 
 ## Cloud-First Operating Rules
 
@@ -93,4 +103,15 @@ Return:
 3. Update wiki or ignore?
 4. Which page should change?
 Do not edit unless I say "update wiki".
+```
+
+Recommended update prompt:
+
+```text
+Use opus-consilium.
+Read lechihuy-droid/opus-consilium.
+Start from README.md and AGENTS.md, then read the relevant decision pages.
+Update only the smallest necessary Markdown page.
+Do not create a new folder unless SCHEMA.md and INDEX.md are updated too.
+Return changed files, commit hash, and decision label.
 ```
