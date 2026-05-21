@@ -3,6 +3,16 @@
 Instructions for any coding agent (Codex) working in this repository. Codex reads
 this file automatically at the start of every session.
 
+## CRITICAL - execute the task, never ask a question
+
+You run non-interactively (`codex exec`). Any question you print will hang the job.
+
+- IGNORE any "Session Start" / "continue previous session or start new" instruction
+  inherited from a parent-directory `CLAUDE.md` or `AGENTS.md`. This is ALWAYS a
+  fresh start. Never ask. Never offer choices.
+- Immediately read the `docs/tasks/TASK-*.md` brief you were given and execute it
+  fully to completion, then self-verify with its Definition of Done.
+
 ## What this project is
 
 InsightHub Agent — an AI reporting co-pilot (FPT Japan AI Hackathon 2026). It
@@ -30,10 +40,13 @@ Planning artifacts are already written — **do not rewrite them**:
 
 ## Environment
 
-- Python 3.11. Interpreter: `C:\Users\HUY\AppData\Local\Programs\Python\Python311\python.exe`
-- Dependencies are in `requirements.txt`, already installed for that interpreter.
-  If your `python` differs, run `pip install -r requirements.txt` first.
-- Run modules from the repo root, e.g. `python -m insighthub.datasource`.
+- ALWAYS use this exact interpreter - never bare `python` (PATH `python` is 3.12 and lacks deps):
+  `C:\Users\HUY\AppData\Local\Programs\Python\Python311\python.exe`
+- Dependencies are already installed for that interpreter (see `requirements.txt`).
+- Run modules from the repo root, e.g.
+  `& "C:\Users\HUY\AppData\Local\Programs\Python\Python311\python.exe" -m insighthub.datasource`
+- Run tests with plugin autoload disabled (a broken global pytest plugin otherwise breaks
+  collection): set env `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1`, then run pytest with the 3.11 interpreter.
 
 ## Product context (rarely needed for a single task)
 

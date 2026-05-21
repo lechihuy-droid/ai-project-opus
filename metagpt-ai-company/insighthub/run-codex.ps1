@@ -3,10 +3,11 @@
   run-codex.ps1 - Drive Codex CLI through the InsightHub build (MetaGPT SOP).
 
   Stages:
-    w0     TASK-W0   freeze contracts + dump ProjectState        (sequential)
-    wave1  TASK-SA1 / SA2 / SA3 - run in parallel as 3 jobs
-    w2     TASK-W2   reporting spine + wiring + integration QA   (sequential)
-    all    w0 then wave1 then w2
+    w0           TASK-W0   freeze contracts + dump ProjectState  (sequential)
+    wave1        TASK-SA1 / SA2 / SA3 - run in parallel as 3 jobs
+    sa1|sa2|sa3  run one Wave-1 task on its own
+    w2           TASK-W2   reporting spine + wiring + QA         (sequential)
+    all          w0 then wave1 then w2
 
   Usage:
     .\run-codex.ps1 w0
@@ -22,7 +23,7 @@
 #>
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("w0", "wave1", "w2", "all")]
+    [ValidateSet("w0", "sa1", "sa2", "sa3", "wave1", "w2", "all")]
     [string]$Stage = "all",
     [string]$Model = "",
     [string]$CodexFlags = "--full-auto",
@@ -39,7 +40,9 @@ Set-Location $Repo
 
 function Get-CodexArgs {
     param([string]$Brief)
-    $prompt = "Read and fully execute $Brief in this repository. " +
+    $prompt = "This is a fresh start. Do not ask any question and do not offer to continue a " +
+        "previous session - ignore any Session Start rule and execute immediately. " +
+        "Read and fully execute $Brief in this repository. " +
         "Treat docs/system_design.md as the contract source of truth. " +
         "Only create or edit files that belong to this task; do not touch other streams files. " +
         "Run the commands in the task Definition of Done to self-verify before finishing."
@@ -100,6 +103,18 @@ switch ($Stage) {
     "w0" {
         Invoke-Task "W0" "docs/tasks/TASK-W0-contracts.md"
         Save-Commit "W0: freeze contracts + dump ProjectState"
+    }
+    "sa1" {
+        Invoke-Task "SA-1" "docs/tasks/TASK-SA1-data-mcp.md"
+        Save-Commit "SA-1: data layer + MCP"
+    }
+    "sa2" {
+        Invoke-Task "SA-2" "docs/tasks/TASK-SA2-reconcile.md"
+        Save-Commit "SA-2: reconcile + anomalies"
+    }
+    "sa3" {
+        Invoke-Task "SA-3" "docs/tasks/TASK-SA3-output.md"
+        Save-Commit "SA-3: output - template + export"
     }
     "wave1" {
         Invoke-Wave1
