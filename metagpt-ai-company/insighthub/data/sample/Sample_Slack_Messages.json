@@ -1,0 +1,96 @@
+{
+  "channel": "#project-sakura",
+  "messages": [
+    {
+      "id": "C-001",
+      "channel": "#project-sakura",
+      "user": "Tanaka",
+      "ts": "2026-05-15T09:10:00",
+      "text": "Morning all, starting on the search API today. SAKURA-1 on track."
+    },
+    {
+      "id": "C-002",
+      "channel": "#project-sakura",
+      "user": "Suzuki",
+      "ts": "2026-05-15T10:30:00",
+      "text": "Payment gateway sandbox is slow but progressing on SAKURA-9."
+    },
+    {
+      "id": "C-003",
+      "channel": "#project-sakura",
+      "user": "Nguyen",
+      "ts": "2026-05-16T11:00:00",
+      "text": "Order history screen SAKURA-6 is done and merged."
+    },
+    {
+      "id": "C-004",
+      "channel": "#project-sakura",
+      "user": "Pham",
+      "ts": "2026-05-16T14:20:00",
+      "text": "We are blocked on the payment gateway sandbox access from the customer side, cannot proceed with end-to-end testing."
+    },
+    {
+      "id": "C-005",
+      "channel": "#project-sakura",
+      "user": "Sato",
+      "ts": "2026-05-17T09:45:00",
+      "text": "Product detail page SAKURA-4 finished, moving to CDN config."
+    },
+    {
+      "id": "C-006",
+      "channel": "#project-sakura",
+      "user": "Tanaka",
+      "ts": "2026-05-18T13:00:00",
+      "text": "Search API SAKURA-1 merged. Demo ready."
+    },
+    {
+      "id": "C-007",
+      "channel": "#project-sakura",
+      "user": "Suzuki",
+      "ts": "2026-05-18T16:10:00",
+      "text": "Heads up: checkout crashes on Safari, raised SAKURA-26 as Severity-1."
+    },
+    {
+      "id": "C-008",
+      "channel": "#project-sakura",
+      "user": "Nguyen",
+      "ts": "2026-05-19T10:05:00",
+      "text": "Inventory sync SAKURA-10 needs another day, integration is tricky."
+    },
+    {
+      "id": "C-009",
+      "channel": "#project-sakura",
+      "user": "Pham",
+      "ts": "2026-05-19T15:30:00",
+      "text": "Coupon validation SAKURA-7 done."
+    },
+    {
+      "id": "C-010",
+      "channel": "#project-sakura",
+      "user": "Tanaka",
+      "ts": "2026-05-20T09:00:00",
+      "text": "Checkout API SAKURA-3 merged, wishlist SAKURA-5 almost there."
+    },
+    {
+      "id": "C-011",
+      "channel": "#project-sakura",
+      "user": "Sato",
+      "ts": "2026-05-20T11:40:00",
+      "text": "Email receipt SAKURA-8 completed."
+    },
+    {
+      "id": "C-012",
+      "channel": "#project-sakura",
+      "user": "Suzuki",
+      "ts": "2026-05-21T14:00:00",
+      "text": "Safari crash SAKURA-26 still under investigation, escalation likely if not fixed Monday."
+    },
+    {
+      "id": "C-013",
+      "channel": "#project-sakura",
+      "user": "Nguyen",
+      "ts": "2026-05-21T17:00:00",
+      "text": "Wrapping up the week, good progress overall."
+    }
+  ]
+}

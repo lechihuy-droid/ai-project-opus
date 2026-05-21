@@ -1,0 +1,36 @@
+{
+  "expected_rules": [
+    "ANOM-PG-001",
+    "ANOM-PG-002",
+    "ANOM-PG-003",
+    "ANOM-PG-004",
+    "ANOM-PG-005",
+    "ANOM-BG-001",
+    "ANOM-BG-002",
+    "ANOM-BG-003",
+    "ANOM-RK-001",
+    "ANOM-RK-002",
+    "ANOM-SC-001",
+    "ANOM-QL-001",
+    "ANOM-QL-002",
+    "ANOM-RS-001",
+    "ANOM-CS-001"
+  ],
+  "seeded": {
+    "ANOM-PG-001": "SAKURA-12 (Done, no commit/PR)",
+    "ANOM-PG-002": "SAKURA-15 (In Progress, PR #5 merged)",
+    "ANOM-PG-003": "P2-T05 / SAKURA-20 (planned end 2026-05-18, not Done)",
+    "ANOM-PG-004": "Phase 2 Development (planned ~85% vs actual ~50%)",
+    "ANOM-PG-005": "SAKURA-30 (orphan, no WBS parent)",
+    "ANOM-BG-001": "SAKURA-25 (bug open since 2026-04-20)",
+    "ANOM-BG-002": "SAKURA-26 (Severity-1 unresolved)",
+    "ANOM-BG-003": "SAKURA-27/28/29 reopened",
+    "ANOM-RK-001": "Slack C-004 blocker not in Jira",
+    "ANOM-RK-002": "Guest-checkout decision not actioned",
+    "ANOM-SC-001": "Sprint 7 & Sprint 8 both below 70%",
+    "ANOM-QL-001": "PR #7 merged with no reviewer",
+    "ANOM-QL-002": "PR #8 failing CI on main",
+    "ANOM-RS-001": "Tanaka closed >40% of completed story points",
+    "ANOM-CS-001": "Customer load-test question unanswered"
+  }
+}
