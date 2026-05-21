@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
-from insighthub.__main__ import _detect, _load_state, _reconcile
+from insighthub.__main__ import _load_state
+from insighthub.anomalies import detect
 from insighthub.facts import build_facts
+from insighthub.reconcile import reconcile
 from insighthub.report import generate
 from insighthub.schema import Report, ReportSection
 from insighthub.validate import validate
@@ -11,8 +13,8 @@ from insighthub.validate import validate
 
 def test_template_pipeline_validates_clean():
     state = _load_state()
-    rec = _reconcile(state)
-    anomalies = _detect(state, rec)
+    rec = reconcile(state)
+    anomalies = detect(state, rec)
     facts = build_facts(state, rec, anomalies)
     report = generate(facts, use_llm=False)
 
@@ -21,8 +23,8 @@ def test_template_pipeline_validates_clean():
 
 def test_validate_rejects_fake_number():
     state = _load_state()
-    rec = _reconcile(state)
-    facts = build_facts(state, rec, _detect(state, rec))
+    rec = reconcile(state)
+    facts = build_facts(state, rec, detect(state, rec))
     report = Report(
         project_name=facts.project_name,
         period_start=facts.period_start,

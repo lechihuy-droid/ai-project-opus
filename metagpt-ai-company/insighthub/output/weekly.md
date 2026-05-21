@@ -7,13 +7,13 @@ Overall Status: Red
 
 - Overall status: Red [jira:SAKURA-1] [jira:SAKURA-2] [jira:SAKURA-3] [jira:SAKURA-4] [jira:SAKURA-5] [jira:SAKURA-6] [jira:SAKURA-7] [jira:SAKURA-8] [jira:SAKURA-12] [jira:SAKURA-31] [jira:SAKURA-32] [jira:SAKURA-33]
 - Completed work items: 12 completed work items [jira:SAKURA-1] [jira:SAKURA-2] [jira:SAKURA-3] [jira:SAKURA-4] [jira:SAKURA-5] [jira:SAKURA-6] [jira:SAKURA-7] [jira:SAKURA-8] [jira:SAKURA-12] [jira:SAKURA-31] [jira:SAKURA-32] [jira:SAKURA-33]
-- High risks: 11 High anomalies [jira:SAKURA-12] [wbs:P1-T01] [wbs:P1-T02] [wbs:P1-T03] [wbs:P2-T05] [jira:SAKURA-26] [github:PR-8] [minutes:minutes_2026-05-15_sprint-planning.docx#question-1]
+- High risks: 11 High anomalies [jira:SAKURA-12] [wbs:P1-T01] [wbs:P1-T02] [wbs:P1-T03] [wbs:P2-T05] [wbs:P1-T01] [wbs:P1-T02] [wbs:P1-T03] [wbs:P2-T04] [wbs:P2-T05] [wbs:P2-T06] [wbs:P2-T07] [wbs:P2-T08] [wbs:P2-T09] [jira:SAKURA-26] [github:PR-8] [minutes:minutes_2026-05-15_sprint-planning.docx#question-1]
 
 ## Progress
 
-- Overall progress: 33.3% actual vs 67.1% planned [wbs:P1-T01] [wbs:P1-T02] [wbs:P1-T03] [wbs:P2-T04] [wbs:P2-T05] [wbs:P2-T06] [wbs:P2-T07] [wbs:P2-T08] [wbs:P2-T09] [wbs:P3-T10] [wbs:P3-T11] [wbs:P3-T12]
+- Overall progress: 29.4% actual vs 70.4% planned [wbs:P1-T01] [wbs:P1-T02] [wbs:P1-T03] [wbs:P2-T04] [wbs:P2-T05] [wbs:P2-T06] [wbs:P2-T07] [wbs:P2-T08] [wbs:P2-T09] [wbs:P3-T10] [wbs:P3-T11] [wbs:P3-T12]
 - Phase 1 Design: 0.0% actual vs 100.0% planned, variance -100.0% [wbs:P1-T01] [wbs:P1-T02] [wbs:P1-T03]
-- Phase 2 Development: 66.7% actual vs 84.2% planned, variance -17.5% [wbs:P2-T04] [wbs:P2-T05] [wbs:P2-T06] [wbs:P2-T07] [wbs:P2-T08] [wbs:P2-T09]
+- Phase 2 Development: 35.6% actual vs 84.2% planned, variance -48.6% [wbs:P2-T04] [wbs:P2-T05] [wbs:P2-T06] [wbs:P2-T07] [wbs:P2-T08] [wbs:P2-T09]
 - Phase 3 Testing: 0.0% actual vs 0.0% planned, variance 0.0% [wbs:P3-T10] [wbs:P3-T11] [wbs:P3-T12]
 
 ## Completed
@@ -66,22 +66,22 @@ Overall Status: Red
 
 ## Blockers
 
-- Blockers and schedule risks: 19 blocker or schedule risk items [jira:SAKURA-12] [github:PR-5] [jira:SAKURA-15] [github:PR-8] [jira:SAKURA-9] [wbs:P1-T01] [wbs:P1-T02] [wbs:P1-T03] [wbs:P2-T05] [slack:C-004] [minutes:minutes_2026-05-15_sprint-planning.docx#decision-1] [minutes:minutes_2026-05-15_sprint-planning.docx#action_item-1] [minutes:minutes_2026-05-16_customer-sync.docx#decision-1] [minutes:minutes_2026-05-16_customer-sync.docx#action_item-1] [wbs:P1-T01] [wbs:P1-T02] [wbs:P1-T03] [wbs:P2-T05]
-- High Progress: SAKURA-12 - Done issue has no linked commit [jira:SAKURA-12]
+- Blockers and schedule risks: 19 blocker or schedule risk items [jira:SAKURA-12] [github:PR-5] [jira:SAKURA-15] [github:PR-8] [jira:SAKURA-9] [wbs:P1-T01] [wbs:P1-T02] [wbs:P1-T03] [wbs:P2-T05] [wbs:P1-T01] [wbs:P1-T02] [wbs:P1-T03] [wbs:P2-T04] [wbs:P2-T05] [wbs:P2-T06] [wbs:P2-T07] [wbs:P2-T08] [wbs:P2-T09] [slack:C-004] [minutes:minutes_2026-05-15_sprint-planning.docx#decision-1] [minutes:minutes_2026-05-15_sprint-planning.docx#action_item-1] [minutes:minutes_2026-05-16_customer-sync.docx#decision-1] [minutes:minutes_2026-05-16_customer-sync.docx#action_item-1] [wbs:P1-T01] [wbs:P1-T02] [wbs:P1-T03] [wbs:P2-T05]
+- High Progress: SAKURA-12 - Done issue has no linked commit or PR [jira:SAKURA-12]
 - Medium Progress: PR#5 - SAKURA-15 is In Progress [github:PR-5] [jira:SAKURA-15]
 - Medium Progress: PR#8 - SAKURA-9 is In Progress [github:PR-8] [jira:SAKURA-9]
-- High Progress: P1-T01 -  not Done by planned end [wbs:P1-T01]
-- High Progress: P1-T02 -  not Done by planned end [wbs:P1-T02]
-- High Progress: P1-T03 -  not Done by planned end [wbs:P1-T03]
-- High Progress: P2-T05 - SAKURA-20 not Done by planned end [wbs:P2-T05]
-- High Progress: Phase 1 Design - variance -100.0%
-- High Progress: Phase 2 Development - variance -17.5%
+- High Progress: P1-T01 - P1-T01 is not Done by planned end [wbs:P1-T01]
+- High Progress: P1-T02 - P1-T02 is not Done by planned end [wbs:P1-T02]
+- High Progress: P1-T03 - P1-T03 is not Done by planned end [wbs:P1-T03]
+- High Progress: P2-T05 - SAKURA-20 is not Done by planned end [wbs:P2-T05]
+- High Progress: Phase 1 Design - planned 100.0% vs actual 0.0% [wbs:P1-T01] [wbs:P1-T02] [wbs:P1-T03]
+- High Progress: Phase 2 Development - planned 84.2% vs actual 35.6% [wbs:P2-T04] [wbs:P2-T05] [wbs:P2-T06] [wbs:P2-T07] [wbs:P2-T08] [wbs:P2-T09]
 - Medium Risk: C-004 - Blocker message has no Jira key [slack:C-004]
-- Medium Risk: minutes_2026-05-15_sprint-planning.docx#decision-1 - No matching issue or Slack follow-up [minutes:minutes_2026-05-15_sprint-planning.docx#decision-1]
-- Medium Risk: minutes_2026-05-15_sprint-planning.docx#action_item-1 - No matching issue or Slack follow-up [minutes:minutes_2026-05-15_sprint-planning.docx#action_item-1]
-- Medium Risk: minutes_2026-05-16_customer-sync.docx#decision-1 - No matching issue or Slack follow-up [minutes:minutes_2026-05-16_customer-sync.docx#decision-1]
-- Medium Risk: minutes_2026-05-16_customer-sync.docx#action_item-1 - No matching issue or Slack follow-up [minutes:minutes_2026-05-16_customer-sync.docx#action_item-1]
-- High Schedule: Sprint 7,Sprint 8 - 2 consecutive sprints below 70%
+- Medium Risk: minutes_2026-05-15_sprint-planning.docx#decision-1 - No matching issue or Slack mention after the meeting [minutes:minutes_2026-05-15_sprint-planning.docx#decision-1]
+- Medium Risk: minutes_2026-05-15_sprint-planning.docx#action_item-1 - No matching issue or Slack mention after the meeting [minutes:minutes_2026-05-15_sprint-planning.docx#action_item-1]
+- Medium Risk: minutes_2026-05-16_customer-sync.docx#decision-1 - No matching issue or Slack mention after the meeting [minutes:minutes_2026-05-16_customer-sync.docx#decision-1]
+- Medium Risk: minutes_2026-05-16_customer-sync.docx#action_item-1 - No matching issue or Slack mention after the meeting [minutes:minutes_2026-05-16_customer-sync.docx#action_item-1]
+- High Schedule: Sprint 7,Sprint 8 - At least 2 consecutive sprints below 70%
 - P1-T01: slipped task Requirements finalization [wbs:P1-T01]
 - P1-T02: slipped task UI/UX wireframes [wbs:P1-T02]
 - P1-T03: slipped task Technical architecture [wbs:P1-T03]

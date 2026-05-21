@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InsightHub Agent - System Architecture (MVP)</title>
+  <style>
+:root {
+  --navy:#051C2C; --blue:#0047AB; --blue-mid:#2563EB; --blue-light:#E8F1FB;
+  --teal:#00968A; --red:#C9002B; --green:#00875A; --gray-50:#F7F8FA;
+  --gray-100:#ECEEF1; --gray-200:#D0D4DB; --gray-500:#6B7280; --gray-800:#1F2937;
+  --white:#FFFFFF; --font-serif:Georgia,"Times New Roman",serif;
+  --font-sans:"Segoe UI",system-ui,-apple-system,sans-serif;
+  --font-mono:"Cascadia Code","Fira Code",Consolas,monospace;
+  --radius:4px; --shadow:0 1px 4px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { font-size:16px; -webkit-font-smoothing:antialiased; }
+body { font-family:var(--font-sans); color:var(--gray-800); background:var(--white);
+  line-height:1.6; max-width:980px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+h1,h2,h3 { font-family:var(--font-serif); color:var(--navy); line-height:1.25; }
+h1 { font-size:2rem; font-weight:700; margin-bottom:.5rem; }
+h2 { font-size:1.375rem; font-weight:700; margin:2rem 0 .75rem; border-bottom:2px solid var(--navy); padding-bottom:.25rem; }
+h3 { font-size:1.05rem; font-weight:700; margin:1.25rem 0 .5rem; }
+p { margin-bottom:.875rem; }
+.lead { font-size:1.125rem; color:var(--gray-500); margin-bottom:1.5rem; }
+.doc-header { border-left:4px solid var(--blue); padding-left:1rem; margin-bottom:2rem; }
+.doc-header .meta { font-size:.8rem; color:var(--gray-500); margin-top:.5rem; }
+.badge { display:inline-block; font-size:.7rem; font-weight:700; text-transform:uppercase;
+  letter-spacing:.08em; padding:.2em .6em; border-radius:var(--radius);
+  background:var(--blue-light); color:var(--blue); margin-bottom:.5rem; }
+.badge.red{background:#FDECEA;color:var(--red);} .badge.green{background:#E6F6F0;color:var(--green);}
+.badge.gray{background:var(--gray-100);color:var(--gray-500);} .badge.navy{background:var(--navy);color:var(--white);}
+.card { background:var(--white); border:1px solid var(--gray-200); border-radius:var(--radius);
+  padding:1.1rem 1.35rem; margin-bottom:1rem; box-shadow:var(--shadow); }
+.card-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+table { width:100%; border-collapse:collapse; margin-bottom:1.5rem; font-size:.88rem; }
+thead tr { background:var(--navy); color:var(--white); }
+thead th { padding:.55rem .8rem; text-align:left; font-weight:600; font-size:.78rem; text-transform:uppercase; letter-spacing:.05em; }
+tbody tr:nth-child(even) { background:var(--gray-50); }
+tbody td { padding:.5rem .8rem; border-bottom:1px solid var(--gray-100); vertical-align:top; }
+code { font-family:var(--font-mono); font-size:.85em; background:var(--gray-50);
+  border:1px solid var(--gray-200); padding:.08em .35em; border-radius:3px; color:var(--navy); }
+.callout { padding:1rem 1.25rem; border-radius:var(--radius); border-left:4px solid var(--blue);
+  background:var(--blue-light); margin-bottom:1.25rem; }
+.callout.warn { border-color:#D97706; background:#FFFBEB; }
+.callout.risk { border-color:var(--red); background:#FEF2F2; }
+.diagram { margin:1.25rem 0; overflow-x:auto; background:var(--gray-50);
+  border:1px solid var(--gray-200); border-radius:var(--radius); padding:1rem; }
+ul { margin:0 0 .875rem 1.25rem; } li { margin-bottom:.3rem; }
+  </style>
+</head>
+<body>
+
+  <header class="doc-header">
+    <span class="badge">Architecture</span>
+    <h1>InsightHub Agent — Kiến trúc hệ thống (MVP)</h1>
+    <p class="lead">AI co-pilot sinh báo cáo tuần truy vết được cho Front PM. Pipeline tất định + LLM bị ràng buộc.</p>
+    <p class="meta">2026-05-22 · FPT Japan AI Hackathon 2026 · phiên bản MVP 1 ngày</p>
+  </header>
+
+  <main>
+
+    <div class="callout">
+      <strong>Nguyên lý kiến trúc:</strong> <em>Python tất định tính mọi con số; LLM chỉ
+      viết câu chữ.</em> Dữ liệu 5 nguồn được gom, đối soát chéo, mọi fact gắn nguồn (citation),
+      rồi LLM diễn đạt thành báo cáo — và một bộ validator chặn mọi số/mã bịa trước khi xuất.
+    </div>
+
+    <!-- ── Component diagram ── -->
+    <h2>1. Sơ đồ kiến trúc</h2>
+    <div class="diagram" data-chart='{
+      "type":"flow",
+      "nodes":[
+        {"id":"src1","label":"Jira · Chat · GitHub","shape":"rect"},
+        {"id":"mcp","label":"MCP Server (3 tool)","shape":"rect"},
+        {"id":"src2","label":"WBS · Biên bản họp","shape":"rect"},
+        {"id":"ds","label":"datasource → ProjectState","shape":"rect"},
+        {"id":"rec","label":"Reconcile (đối soát chéo)","shape":"rect"},
+        {"id":"ano","label":"Anomaly engine · 15 rule","shape":"rect"},
+        {"id":"facts","label":"Facts builder (+ citation)","shape":"rect"},
+        {"id":"rep","label":"Report · LLM Claude","shape":"rect"},
+        {"id":"val","label":"Validate: số có thật?","shape":"diamond"},
+        {"id":"exp","label":"Template + Export","shape":"rect"},
+        {"id":"out","label":"docx · md · traceability","shape":"terminal"}
+      ],
+      "edges":[
+        {"from":"src1","to":"mcp"},
+        {"from":"mcp","to":"ds"},
+        {"from":"src2","to":"ds"},
+        {"from":"ds","to":"rec"},
+        {"from":"rec","to":"ano"},
+        {"from":"ano","to":"facts"},
+        {"from":"facts","to":"rep"},
+        {"from":"rep","to":"val"},
+        {"from":"val","to":"exp","label":"Đạt"},
+        {"from":"val","to":"rep","label":"bịa → retry"},
+        {"from":"exp","to":"out"}
+      ]
+    }'></div>
+    <p style="color:#6B7280;font-size:.88em">Ô vuông = thành phần xử lý · ô thoi = cổng kiểm tra · ô bo tròn = kết quả.</p>
+
+    <!-- ── Layers ── -->
+    <h2>2. Bốn tầng kiến trúc</h2>
+    <table>
+      <thead><tr><th>Tầng</th><th>Thành phần (file)</th><th>Nhiệm vụ</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>1 · Data</strong></td>
+          <td><code>insighthub_mcp/</code>, <code>datasource.py</code></td>
+          <td>Gom 5 nguồn → một <code>ProjectState</code> chuẩn hoá, mỗi bản ghi gắn <code>source_ref</code>.</td>
+        </tr>
+        <tr>
+          <td><strong>2 · Reconcile</strong></td>
+          <td><code>reconcile.py</code>, <code>anomalies.py</code></td>
+          <td>Đối soát chéo: map Jira↔WBS, tính tiến độ, chạy 15 rule phát hiện bất thường.</td>
+        </tr>
+        <tr>
+          <td><strong>3 · Reporting</strong></td>
+          <td><code>facts.py</code>, <code>report.py</code>, <code>validate.py</code></td>
+          <td>Tính sẵn mọi fact + citation → LLM viết narrative → validator chặn số bịa.</td>
+        </tr>
+        <tr>
+          <td><strong>4 · Output</strong></td>
+          <td><code>templating.py</code>, <code>export.py</code></td>
+          <td>Đổ narrative vào template DOCX, xuất <code>.docx / .md / traceability.json</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ── Anti-hallucination ── -->
+    <h2>3. Thiết kế chống "bịa số" (lõi kiến trúc)</h2>
+    <div class="callout risk">
+      Cuộc thi <strong>loại thẳng</strong> bài có số liệu / ticket không tồn tại. Đây là
+      ràng buộc kiến trúc số 1 — quyết định cách toàn bộ tầng 3 được thiết kế.
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <span class="badge navy">1</span>
+        <h3>Python tính, LLM không tính</h3>
+        <p>Mọi con số (tiến độ %, số bug, velocity…) do code Python tất định tính.
+        LLM <strong>không bao giờ thấy dữ liệu thô</strong> và không tự cộng trừ.</p>
+      </div>
+      <div class="card">
+        <span class="badge navy">2</span>
+        <h3>Facts có sẵn nguồn</h3>
+        <p><code>facts.py</code> xuất một object <code>Facts</code>: mỗi con số đi kèm
+        <code>citation</code> trỏ về Jira key / commit / tin nhắn / dòng biên bản.</p>
+      </div>
+      <div class="card">
+        <span class="badge navy">3</span>
+        <h3>LLM chỉ diễn đạt</h3>
+        <p><code>report.py</code> đưa LLM <em>chỉ object Facts</em>. LLM viết câu chữ
+        quanh các giá trị có sẵn — không được sinh số mới.</p>
+      </div>
+      <div class="card">
+        <span class="badge red">4</span>
+        <h3>Validator chặn cửa</h3>
+        <p><code>validate.py</code> trích mọi số &amp; mã ID trong bài viết → bắt buộc
+        nằm trong "danh sách cho phép" của Facts. Sai → chặn xuất, bắt LLM viết lại.</p>
+      </div>
+    </div>
+
+    <!-- ── MCP layer ── -->
+    <h2>4. Tầng MCP — kết nối hệ thống ngoài</h2>
+    <p>Ba hệ thống ngoài (Jira, Chat, GitHub) được bọc sau <strong>một MCP server</strong>
+    duy nhất — <code>insighthub-mcp</code> với 3 tool:</p>
+    <ul>
+      <li><code>list_jira_issues</code> · <code>list_chat_messages</code> · <code>list_code_activity</code></li>
+      <li><strong>Adapter 2 tầng:</strong> <code>FileAdapter</code> (đọc file export — dùng cho MVP)
+      và <code>ApiAdapter</code> (chỗ trống, sau cắm API thật). Đổi nguồn không đụng pipeline.</li>
+      <li><code>connections.yaml</code> khai báo "đã kết nối" + tham chiếu biến môi trường cho
+      credential — <strong>không lưu secret</strong> trong mã.</li>
+      <li>Pipeline gọi MCP qua <strong>in-memory client</strong> → đúng giao thức nhưng không
+      cần tiến trình phụ → demo ổn định.</li>
+    </ul>
+    <p>WBS Excel và biên bản họp là <em>file upload</em> theo bản chất (không có API) nên nạp
+    trực tiếp, không qua MCP.</p>
+
+    <!-- ── Sequence ── -->
+    <h2>5. Luồng chạy một báo cáo</h2>
+    <div class="diagram" data-chart='{
+      "type":"sequence",
+      "actors":["Bạn","CLI","Data","Reconcile","Facts/LLM","Export"],
+      "steps":[
+        {"from":"Bạn","to":"CLI","msg":"generate weekly"},
+        {"from":"CLI","to":"Data","msg":"load()"},
+        {"from":"Data","to":"CLI","msg":"ProjectState","return":true},
+        {"from":"CLI","to":"Reconcile","msg":"reconcile + 15 rule"},
+        {"from":"Reconcile","to":"CLI","msg":"result + anomalies","return":true},
+        {"from":"CLI","to":"Facts/LLM","msg":"build + narrate"},
+        {"from":"Facts/LLM","to":"CLI","msg":"Report 9 muc","return":true},
+        {"from":"CLI","to":"CLI","msg":"validate"},
+        {"from":"CLI","to":"Export","msg":"render"},
+        {"from":"Export","to":"Bạn","msg":"docx + json","return":true}
+      ]
+    }'></div>
+    <p style="color:#6B7280;font-size:.88em">Mục tiêu hiệu năng: báo cáo tuần &lt; 60 giây.</p>
+
+    <!-- ── Tech stack ── -->
+    <h2>6. Tech stack</h2>
+    <table>
+      <thead><tr><th>Lớp</th><th>Công nghệ</th><th>Vai trò</th></tr></thead>
+      <tbody>
+        <tr><td>Ngôn ngữ</td><td>Python 3.11</td><td>Toàn bộ pipeline</td></tr>
+        <tr><td>MCP</td><td><code>fastmcp</code></td><td>Server + 3 tool kết nối hệ thống ngoài</td></tr>
+        <tr><td>Đọc dữ liệu</td><td><code>openpyxl</code>, <code>python-docx</code></td><td>Excel (Jira/WBS), DOCX (biên bản)</td></tr>
+        <tr><td>Hợp đồng dữ liệu</td><td><code>pydantic</code> v2</td><td>Kiểu dữ liệu cố định giữa các tầng</td></tr>
+        <tr><td>Đối soát</td><td><code>rapidfuzz</code></td><td>So khớp mờ Jira ↔ WBS</td></tr>
+        <tr><td>LLM</td><td>Claude Opus 4.7 (<code>anthropic</code>)</td><td>Viết narrative; có prompt caching</td></tr>
+        <tr><td>Xuất bản</td><td><code>jinja2</code>, <code>python-docx</code></td><td>Đổ template, xuất DOCX/MD</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ── Contracts ── -->
+    <h2>7. Hợp đồng dữ liệu</h2>
+    <p>Mọi tầng giao tiếp qua kiểu dữ liệu cố định trong <code>schema.py</code> (pydantic) —
+    "đóng băng" từ đầu để các phần code song song không lệch nhau:</p>
+    <ul>
+      <li><code>ProjectState</code> — toàn bộ dữ liệu thô đã chuẩn hoá (tầng 1 → 2).</li>
+      <li><code>ReconcileResult</code> + <code>Anomaly</code> — kết quả đối soát (tầng 2 → 3).</li>
+      <li><code>Facts</code> — số liệu tính sẵn + citation + danh sách giá trị cho phép (tầng 3 → LLM).</li>
+      <li><code>Report</code> — narrative 9 mục (tầng 3 → 4).</li>
+      <li><code>SourceRef</code> — con trỏ truy vết gắn vào <em>mọi</em> bản ghi.</li>
+    </ul>
+
+    <div class="callout">
+      <strong>Tóm tắt:</strong> kiến trúc là một <em>dây chuyền tất định</em> với LLM được
+      "nhốt" ở đúng một mắt xích (viết câu chữ) và được bao bởi 2 lớp bảo vệ: facts có
+      nguồn ở đầu vào, validator chặn bịa ở đầu ra.
+    </div>
+
+  </main>
+
+  <script>
+/* diagram.js - self-contained SVG renderer (flowchart + sequence), inlined */
+(function () {
+  'use strict';
+  const C = { navy:'#051C2C', blue:'#0047AB', blueMid:'#2563EB', blueLight:'#E8F1FB',
+    teal:'#00968A', red:'#C9002B', green:'#00875A', gray:'#6B7280',
+    gray100:'#ECEEF1', gray200:'#D0D4DB', white:'#FFFFFF' };
+  const FONT = 'Segoe UI,system-ui,sans-serif';
+
+  function el(tag, attrs, ...children) {
+    const ns = 'http://www.w3.org/2000/svg';
+    const e = document.createElementNS(ns, tag);
+    Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v));
+    children.forEach(c => e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c));
+    return e;
+  }
+  function arrowMarker(id, color) {
+    const m = el('marker', { id, markerWidth:'10', markerHeight:'7', refX:'9', refY:'3.5', orient:'auto' });
+    m.appendChild(el('polygon', { points:'0 0,10 3.5,0 7', fill:color }));
+    return m;
+  }
+  function renderFlow(container, { nodes, edges }) {
+    const NW = 180, NH = 48, GX = 54, GY = 56;
+    const lvl = {}; nodes.forEach(n => (lvl[n.id] = -1));
+    const inDeg = {}; nodes.forEach(n => (inDeg[n.id] = 0));
+    edges.forEach(e => (inDeg[e.to] = (inDeg[e.to] || 0) + 1));
+    const queue = nodes.filter(n => !inDeg[n.id]).map(n => ({ id:n.id, lv:0 }));
+    while (queue.length) {
+      const { id, lv } = queue.shift();
+      if (lvl[id] >= lv) continue;
+      lvl[id] = lv;
+      edges.filter(e => e.from === id).forEach(e => queue.push({ id:e.to, lv:lv + 1 }));
+    }
+    nodes.forEach(n => { if (lvl[n.id] < 0) lvl[n.id] = 0; });
+    const byLv = {}; nodes.forEach(n => ((byLv[lvl[n.id]] = byLv[lvl[n.id]] || []).push(n)));
+    const maxLv = Math.max(...Object.keys(byLv).map(Number));
+    const maxCols = Math.max(...Object.values(byLv).map(a => a.length));
+    const svgW = maxCols * (NW + GX) - GX + 80;
+    const svgH = (maxLv + 1) * (NH + GY) - GY + 80;
+    const pos = {};
+    Object.entries(byLv).forEach(([lv, ns]) => {
+      const rowW = ns.length * (NW + GX) - GX;
+      const ox = (svgW - rowW) / 2;
+      ns.forEach((n, i) => { pos[n.id] = { x:ox + i * (NW + GX) + NW / 2, y:+lv * (NH + GY) + 40 + NH / 2 }; });
+    });
+    const root = el('svg', { width:svgW, height:svgH, xmlns:'http://www.w3.org/2000/svg', style:'display:block' });
+    const defs = el('defs', {}); defs.appendChild(arrowMarker('fa', C.gray)); root.appendChild(defs);
+    edges.forEach(({ from, to, label }) => {
+      const f = pos[from], t = pos[to]; if (!f || !t) return;
+      const dy = t.y - f.y;
+      const cy1 = f.y + NH / 2 + dy * 0.35, cy2 = t.y - NH / 2 - dy * 0.35;
+      root.appendChild(el('path', {
+        d:`M${f.x},${f.y + NH / 2} C${f.x},${cy1} ${t.x},${cy2} ${t.x},${t.y - NH / 2 - 7}`,
+        fill:'none', stroke:C.gray200, 'stroke-width':'1.5', 'marker-end':'url(#fa)' }));
+      if (label) {
+        const lx = (f.x + t.x) / 2, ly = (f.y + t.y) / 2;
+        root.appendChild(el('rect', { x:lx - 32, y:ly - 9, width:64, height:16, rx:3, fill:C.white }));
+        root.appendChild(el('text', { x:lx, y:ly + 3, 'text-anchor':'middle', fill:C.gray, 'font-size':'10', 'font-family':FONT }, label));
+      }
+    });
+    nodes.forEach(n => {
+      const p = pos[n.id]; if (!p) return;
+      const { x, y } = p; const shape = n.shape || 'rect';
+      if (shape === 'terminal' || shape === 'oval') {
+        root.appendChild(el('rect', { x:x - NW / 2, y:y - NH / 2, width:NW, height:NH, rx:NH / 2, fill:C.navy }));
+        root.appendChild(el('text', { x, y:y + 4, 'text-anchor':'middle', fill:C.white, 'font-size':'12', 'font-family':FONT, 'font-weight':'600' }, n.label));
+      } else if (shape === 'diamond') {
+        root.appendChild(el('polygon', {
+          points:`${x},${y - NH / 2} ${x + NW / 2},${y} ${x},${y + NH / 2} ${x - NW / 2},${y}`,
+          fill:C.blueLight, stroke:C.blue, 'stroke-width':'1.5' }));
+        root.appendChild(el('text', { x, y:y + 4, 'text-anchor':'middle', fill:C.navy, 'font-size':'11', 'font-family':FONT, 'font-weight':'600' }, n.label));
+      } else {
+        root.appendChild(el('rect', { x:x - NW / 2, y:y - NH / 2, width:NW, height:NH, rx:4, fill:C.blueLight, stroke:C.blue, 'stroke-width':'1.5' }));
+        root.appendChild(el('text', { x, y:y + 4, 'text-anchor':'middle', fill:C.navy, 'font-size':'12', 'font-family':FONT, 'font-weight':'600' }, n.label));
+      }
+    });
+    container.appendChild(root);
+  }
+  function renderSequence(container, { actors, steps }) {
+    const CW = 160, RH = 52, PX = 40, PT = 64;
+    const W = actors.length * CW + PX * 2;
+    const H = steps.length * RH + PT + 48;
+    const root = el('svg', { width:W, height:H, xmlns:'http://www.w3.org/2000/svg', style:'display:block' });
+    const defs = el('defs', {});
+    defs.appendChild(arrowMarker('sa', C.blue));
+    defs.appendChild(arrowMarker('sr', C.teal));
+    root.appendChild(defs);
+    const cx = i => PX + i * CW + CW / 2;
+    actors.forEach((a, i) => {
+      const x = cx(i);
+      root.appendChild(el('rect', { x:x - 60, y:8, width:120, height:32, rx:4, fill:C.navy }));
+      root.appendChild(el('text', { x, y:29, 'text-anchor':'middle', fill:C.white, 'font-size':'12', 'font-family':FONT, 'font-weight':'600' }, a));
+    });
+    actors.forEach((_, i) => {
+      root.appendChild(el('line', { x1:cx(i), y1:40, x2:cx(i), y2:H - 16, stroke:C.gray200, 'stroke-width':'2', 'stroke-dasharray':'6,4' }));
+    });
+    steps.forEach((s, i) => {
+      const fi = actors.indexOf(s.from), ti = actors.indexOf(s.to);
+      if (fi < 0 || ti < 0) return;
+      const y = PT + i * RH + RH / 2;
+      const x1 = cx(fi), x2 = cx(ti);
+      const isReturn = !!s.return;
+      const arrowColor = isReturn ? C.teal : C.blue;
+      const markerId = isReturn ? 'url(#sr)' : 'url(#sa)';
+      if (fi === ti) {
+        root.appendChild(el('path', {
+          d:`M${x1},${y} C${x1 + 50},${y} ${x1 + 50},${y + 28} ${x1},${y + 28}`,
+          fill:'none', stroke:arrowColor, 'stroke-width':'1.5', 'marker-end':markerId }));
+      } else {
+        const dir = x2 > x1 ? -8 : 8;
+        const lineAttrs = { x1, y1:y, x2:x2 + dir, y2:y, stroke:arrowColor, 'stroke-width':'1.5', 'marker-end':markerId };
+        if (isReturn) lineAttrs['stroke-dasharray'] = '5,3';
+        root.appendChild(el('line', lineAttrs));
+      }
+      const lx = fi === ti ? x1 + 28 : (x1 + x2) / 2;
+      root.appendChild(el('rect', { x:lx - 46, y:y - 17, width:92, height:14, rx:2, fill:C.white }));
+      root.appendChild(el('text', { x:lx, y:y - 5, 'text-anchor':'middle', fill:C.navy, 'font-size':'10', 'font-family':FONT, 'font-weight':'500' }, s.msg));
+    });
+    container.appendChild(root);
+  }
+  function init() {
+    document.querySelectorAll('.diagram[data-chart]').forEach(container => {
+      try {
+        const data = JSON.parse(container.dataset.chart);
+        if (data.type === 'flow') renderFlow(container, data);
+        else if (data.type === 'sequence') renderSequence(container, data);
+        else container.textContent = 'Unknown diagram type: ' + data.type;
+      } catch (e) {
+        container.style.cssText = 'color:red;font-size:.85rem;padding:.5rem';
+        container.textContent = 'Diagram error: ' + e.message;
+      }
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+  </script>
+
+</body>
+</html>
