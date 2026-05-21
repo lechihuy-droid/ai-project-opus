@@ -21,6 +21,12 @@ personal-wiki/Personal/reskill-roadmap.md
 personal-wiki/Stock/investment-theses.md
 ```
 
+For fixed daily and weekly review runs, follow:
+
+```text
+workflows/consilium-review.md
+```
+
 For the Opus Home FDE tab, read this wiki area:
 
 ```text
@@ -114,4 +120,16 @@ Start from README.md and AGENTS.md, then read the relevant decision pages.
 Update only the smallest necessary Markdown page.
 Do not create a new folder unless SCHEMA.md and INDEX.md are updated too.
 Return changed files, commit hash, and decision label.
+```
+
+Recommended daily/weekly review prompt:
+
+```text
+Use opus-consilium.
+Read lechihuy-droid/opus-consilium.
+Follow workflows/consilium-review.md.
+Run the daily review.
+Update only the smallest necessary Markdown page or pages.
+Commit and push to main only if the vault changed.
+Return what changed, changed files, commit hash, and decision label.
 ```

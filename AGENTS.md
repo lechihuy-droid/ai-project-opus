@@ -15,10 +15,10 @@ Start from:
 
 Operating rules:
 - Read hub pages before source-seed pages.
+- For daily or weekly review runs, follow `workflows/consilium-review.md`.
 - Treat `source-seed` pages as weak evidence until they repeat or change a decision.
 - Prefer small Markdown updates to hub pages over creating more seed pages.
 - End decision-oriented answers with one label: keep, change, test, ignore, or research.
 - When editing, return changed files, commit hash, and decision label.
 - Do not create new top-level folders unless `personal-wiki/SCHEMA.md` and `personal-wiki/INDEX.md` are updated in the same change.
 - Do not add credentials, local logs, or raw automation state to this repo.
-
