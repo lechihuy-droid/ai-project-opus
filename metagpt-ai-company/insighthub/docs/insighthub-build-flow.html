@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InsightHub - Quy trình build bằng "công ty AI"</title>
+  <link rel="stylesheet" href="../../../html-kit/styles.css">
+  <script src="../../../html-kit/diagram.js" defer></script>
+</head>
+<body>
+
+  <header class="doc-header">
+    <span class="badge">Giải thích đơn giản</span>
+    <h1>InsightHub được xây như thế nào</h1>
+    <p class="lead">Một "công ty AI" làm việc theo dây chuyền: Claude lập kế hoạch, Codex viết code song song. Giải thích cho người không rành kỹ thuật.</p>
+    <p class="meta">2026-05-22 · Dự án InsightHub Agent</p>
+  </header>
+
+  <main>
+
+    <div class="callout">
+      <strong>Hình dung nhanh:</strong> giống xây một căn nhà. Có một <em>kiến trúc sư</em>
+      vẽ bản thiết kế và chia việc, rồi nhiều <em>đội thợ</em> cùng thi công một lúc.
+      Ở đây kiến trúc sư là <strong>Claude</strong>, các đội thợ là <strong>Codex</strong>.
+    </div>
+
+    <!-- ── Flowchart ── -->
+    <h2>Toàn cảnh quy trình</h2>
+    <div class="diagram" data-chart='{
+      "type": "flow",
+      "nodes": [
+        {"id": "s",    "label": "Đề bài: cần tự động hoá báo cáo tuần", "shape": "terminal"},
+        {"id": "plan", "label": "① Claude lập kế hoạch + vẽ bản thiết kế", "shape": "rect"},
+        {"id": "w0",   "label": "② Chốt bản thiết kế chung (chuẩn dùng chung)", "shape": "rect"},
+        {"id": "sa1",  "label": "③ Codex A: Lấy dữ liệu", "shape": "rect"},
+        {"id": "sa2",  "label": "③ Codex B: Đối soát, tìm bất thường", "shape": "rect"},
+        {"id": "sa3",  "label": "③ Codex C: Dựng và xuất báo cáo", "shape": "rect"},
+        {"id": "w2",   "label": "④ Ghép 3 phần + chạy thử toàn bộ", "shape": "rect"},
+        {"id": "qa",   "label": "Chạy được và không bịa số?", "shape": "diamond"},
+        {"id": "fix",  "label": "Quay lại sửa lỗi", "shape": "rect"},
+        {"id": "e",    "label": "Báo cáo tuần tự động - xong", "shape": "terminal"}
+      ],
+      "edges": [
+        {"from": "s",    "to": "plan"},
+        {"from": "plan", "to": "w0"},
+        {"from": "w0",   "to": "sa1", "label": "giao song song"},
+        {"from": "w0",   "to": "sa2", "label": "giao song song"},
+        {"from": "w0",   "to": "sa3", "label": "giao song song"},
+        {"from": "sa1",  "to": "w2"},
+        {"from": "sa2",  "to": "w2"},
+        {"from": "sa3",  "to": "w2"},
+        {"from": "w2",   "to": "qa"},
+        {"from": "qa",   "to": "fix", "label": "Chưa đạt"},
+        {"from": "fix",  "to": "w2"},
+        {"from": "qa",   "to": "e",   "label": "Đạt"}
+      ]
+    }'></div>
+
+    <p style="color:#667085;font-size:0.9em">
+      Cách đọc hình: ô bo tròn = điểm bắt đầu/kết thúc · ô vuông = một bước làm ·
+      ô hình thoi = một câu hỏi kiểm tra rẽ nhánh.
+    </p>
+
+    <!-- ── Key points ── -->
+    <h2>6 điểm quan trọng nhất</h2>
+    <div class="card-grid">
+
+      <div class="card">
+        <span class="badge navy">1</span>
+        <h3>Dây chuyền, không phải một người ôm hết</h3>
+        <p>Giống nhà máy: sản phẩm phức tạp đi qua từng trạm, mỗi trạm một chuyên môn.
+        Cách này đáng tin hơn nhiều so với một người làm tất cả mọi thứ.</p>
+      </div>
+
+      <div class="card">
+        <span class="badge navy">2</span>
+        <h3>Claude nghĩ, Codex làm</h3>
+        <p><strong>Claude</strong> là kiến trúc sư: nghĩ, vẽ bản thiết kế, chia việc.
+        <strong>Codex</strong> (chạy bằng GPT-5.5) là đội thợ: viết code. Tách bạch
+        "nghĩ" khỏi "làm" để mỗi bên làm tốt phần của mình.</p>
+      </div>
+
+      <div class="card">
+        <span class="badge red">3</span>
+        <h3>Chốt bản thiết kế chung TRƯỚC khi xây</h3>
+        <p>Đây là mấu chốt. Nếu 3 đội thợ xây mà không thống nhất kích thước, các mảnh
+        ghép lại sẽ bị vênh. Chốt một bản chuẩn chung trước thì 3 đội mới làm
+        song song được mà vẫn khớp.</p>
+      </div>
+
+      <div class="card">
+        <span class="badge green">4</span>
+        <h3>3 đội làm cùng lúc = nhanh gấp 3</h3>
+        <p>Như thợ điện, thợ nước, thợ mái cùng làm một lúc thay vì chờ nhau.
+        Làm được điều này chính là nhờ đã có bản thiết kế chung ở điểm 3.</p>
+      </div>
+
+      <div class="card">
+        <span class="badge navy">5</span>
+        <h3>Mỗi việc kèm sẵn "bài kiểm tra"</h3>
+        <p>Mỗi đội có một checklist tự chấm: "phần của tôi đã đúng chưa?". Nhờ vậy
+        máy tự chạy và tự kiểm tra được, không cần người ngồi canh từng bước.</p>
+      </div>
+
+      <div class="card">
+        <span class="badge red">6</span>
+        <h3>Cơ chế "không bịa số"</h3>
+        <p>Báo cáo chỉ được dùng những con số <strong>có thật</strong> trong dữ liệu gốc.
+        Một bộ kiểm tra tự động chặn mọi số bịa. Rất quan trọng vì cuộc thi
+        loại thẳng bài nào có số liệu sai.</p>
+      </div>
+
+    </div>
+
+    <!-- ── Who does what ── -->
+    <h2>Ai làm gì</h2>
+    <table>
+      <thead>
+        <tr><th>Ai</th><th>Vai trò</th><th>Công việc</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Bạn</strong></td>
+          <td>Chủ dự án</td>
+          <td>Bấm nút chạy, xem kết quả, quyết định hướng đi</td>
+        </tr>
+        <tr>
+          <td><strong>Claude</strong></td>
+          <td>Kiến trúc sư / quản lý</td>
+          <td>Lập kế hoạch, vẽ bản thiết kế, chia việc, duyệt kết quả cuối</td>
+        </tr>
+        <tr>
+          <td><strong>Codex</strong> (GPT-5.5)</td>
+          <td>Đội thợ viết code</td>
+          <td>Nhận từng bản mô tả việc, tự viết code và tự kiểm tra</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ── Why ── -->
+    <h2>Vì sao chọn cách này</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>Nhanh</h3>
+        <p>3 đội làm song song + có máy tự code → gói gọn ra sản phẩm demo
+        trong khoảng <strong>1 ngày</strong>.</p>
+      </div>
+      <div class="card">
+        <h3>An toàn</h3>
+        <p>Mỗi bước có bài kiểm tra riêng + cơ chế chặn bịa số → khó sai,
+        và sai thì phát hiện ngay.</p>
+      </div>
+      <div class="card">
+        <h3>Dễ kiểm soát</h3>
+        <p>Bạn duyệt ở các điểm chốt; phần việc nặng để máy làm. Bạn nắm
+        hướng, không phải lo chi tiết kỹ thuật.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Tóm một câu:</strong> thay vì giao "làm cả sản phẩm" cho một AI,
+      ta chia thành nhiều việc nhỏ rõ ràng — mỗi việc có sẵn cách tự chấm điểm —
+      rồi cho nhiều AI làm song song. Đó là lý do nó vừa nhanh, vừa khó sai.
+    </div>
+
+  </main>
+
+</body>
+</html>
