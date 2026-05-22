@@ -74,7 +74,7 @@ def _cached_facts():
     return facts
 
 
-def _report_from_sections(sections: list[dict], lang: str = "en") -> Report | dict:
+def _report_from_sections(sections: list[dict], lang: str = "ja") -> Report | dict:
     facts = _cached_facts()
     if facts is None:
         return {"error": "call get_project_facts first"}
@@ -163,7 +163,7 @@ def validate_report(sections: list[dict]) -> dict:
 
 
 @mcp.tool
-def export_report(sections: list[dict], lang: str = "en") -> dict:
+def export_report(sections: list[dict], lang: str = "ja") -> dict:
     """Validate and export a report from cached Facts."""
 
     _audit("export_report", {"section_count": len(sections), "lang": lang})

@@ -95,9 +95,10 @@ Xử lý: fallback sang template-only; báo cho PM "narrative dùng bản templa
 | **FR-MCP-004** | Giữ 3 data tool gốc (`list_jira_issues`, `list_chat_messages`, `list_code_activity`) để demo "agent tự lấy dữ liệu nguồn" | P1 | Đã build |
 | **FR-MCP-005** | MCP server ghi log mọi lần gọi tool (timestamp, tool, tham số) vào audit log | P1 | FR-AUDIT-002 |
 | **FR-GEN-001** | Sinh báo cáo tuần đủ 9 section (exec summary, progress, completed, in-progress, next week, blockers, bugs, decisions, metrics) | P0 | US-012, FR-RGEN-001 |
-| **FR-GEN-002** | Hỗ trợ ngôn ngữ **EN + VN** (P0 — demo bằng tiếng Việt) và JA keigo (P1) | P0 | US-016/017, FR-LANG-* |
+| **FR-GEN-002** | Ngôn ngữ báo cáo: **JP keigo là mặc định** (brief §3.4); EN + VN vẫn hỗ trợ khi PM yêu cầu | P0 | US-016/017, CR-002 |
 | **FR-GEN-003** | Mọi câu chứa số/ticket/ngày phải kèm citation `[system:ref]` truy được về source record | P0 | US-015, FR-AUDIT-001 |
 | **FR-GEN-004** | Đường template-only (CLI, không LLM) cũng localize section title + fact label + từ khóa cấu trúc theo `lang` (EN/JA/VN); số và ID giữ nguyên để validator pass | P0 | CR-001 |
+| **FR-GEN-005** | Đường Copilot dịch mọi văn bản lấy từ nguồn (Jira summary, Slack, commit msg, minute item, task name, mô tả anomaly) sang ngôn ngữ báo cáo; giữ verbatim ID/số/ngày/citation; báo cáo không lẫn ngôn ngữ | P0 | CR-002 |
 | **FR-VAL-001** | Validator chặn số/ticket bịa: narrative phát hiện số ∉ Facts → trả vi phạm, Copilot bắt buộc sửa lại; sai mãi → fallback template-only | P0 | Brief: hallucination = disqualify |
 | **FR-VAL-002** | Sinh `traceability.json` — mỗi fact map về source record (Jira key / commit SHA / Slack id / đoạn biên bản) | P0 | US-015 |
 | **FR-EXP-001** | Xuất báo cáo ra **PDF** (chuyển từ DOCX). Môi trường không có Word/LibreOffice → bỏ qua PDF, vẫn giữ DOCX+MD (degrade gracefully, không làm gãy E2E) | P0 | Brief §7 yêu cầu PDF |

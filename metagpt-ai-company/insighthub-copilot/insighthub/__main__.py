@@ -19,7 +19,7 @@ def main() -> None:
     subparsers = parser.add_subparsers(dest="command", required=True)
     generate_parser = subparsers.add_parser("generate")
     generate_parser.add_argument("--type", default="weekly", choices=["weekly"])
-    generate_parser.add_argument("--lang", default="en", choices=["en", "ja", "vn"])
+    generate_parser.add_argument("--lang", default="ja", choices=["en", "ja", "vn"])
     generate_parser.add_argument("--no-llm", action="store_true")
     generate_parser.add_argument("--out", default="output")
 
@@ -28,7 +28,7 @@ def main() -> None:
         generate(args.type, args.lang, not args.no_llm, args.out)
 
 
-def generate(report_type: str = "weekly", lang: str = "en", use_llm: bool = True, out: str = "output") -> dict[str, str]:
+def generate(report_type: str = "weekly", lang: str = "ja", use_llm: bool = True, out: str = "output") -> dict[str, str]:
     """Run the deterministic InsightHub pipeline and export artifacts."""
 
     if report_type != "weekly":
