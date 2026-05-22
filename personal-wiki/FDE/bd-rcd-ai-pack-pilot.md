@@ -13,7 +13,7 @@ open_questions:
   - "Which human gates are necessary versus too heavy for a 2-3 person pilot team?"
   - "Which skill prompts should be optimized first after the first sample failure log?"
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-21
 ---
 
 # BD RCD AI Pack Pilot
@@ -30,6 +30,7 @@ This is a micro FDE pilot. The goal is not to let AI produce BD autonomously, bu
 - Human-in-the-loop should be designed as pass / revise / blocked gates, not vague manual review.
 - AI self-review can check consistency, coverage, assumptions, and traceability, but it must not approve final output.
 - The recommended setup for the current pilot is 8 core skills and 6 human gates.
+- LLM wiki / Karpathy-style wiki is not part of the BD/RCD MVP; the MVP should use structured RCD, EARS, source labels, and human gates instead.
 
 ## Why It Matters
 BD/RCD is an upstream delivery artifact. If the RCD or BD is wrong, downstream design, development, testing, and customer clarification will also be wrong. This makes human-in-the-loop design more important than pure automation speed.
@@ -52,6 +53,20 @@ Input documents
 → human gate review
 → final BD output
 ```
+
+### MVP boundary: no LLM wiki layer for RCD
+LLM-readable wiki / Karpathy-style wiki is useful for research, reskill, and long-term knowledge management, but it is out of scope for the first delivery-oriented BD/RCD MVP.
+
+For the pilot, RCD should remain a controlled structured artifact, not a free-form wiki layer. The minimum viable control stack is:
+- structured RCD table
+- EARS-style requirement normalization
+- source labels and source references
+- confidence / status fields
+- open questions and assumptions
+- human approval gates
+- failure log and measurement
+
+This boundary prevents over-engineering and keeps the pilot focused on problem-solving-first AI adoption rather than knowledge-architecture research.
 
 ### Recommended skills
 
@@ -356,6 +371,7 @@ If repeatable, this can become a diagnostic sprint or pilot offer for offshore-t
 
 ## Applied
 - 2026-05-19 — Captured the BD/RCD AI Pack pilot architecture after discussion of skills, prompts, AI self-review, and human-in-the-loop gates.
+- 2026-05-21 — Added MVP boundary: LLM wiki layer is out of scope for delivery-oriented RCD; use structured RCD + EARS + source labels + human gates instead.
 
 ## See Also
 - [[outcome-based-fde-model]]
