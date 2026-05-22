@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InsightHub — So sánh Concept: Web vs GitHub Copilot</title>
+<style>
+  :root{
+    --navy:#1a2b4a; --navy2:#2c3e63; --ink:#1f2430; --mute:#5b6472;
+    --line:#e2e5ea; --bg:#f4f5f7; --card:#fff;
+    --green:#1f8a4c; --greenbg:#e7f5ec; --red:#c0392b; --redbg:#fbeae8;
+    --gray:#6b7280; --graybg:#eef0f3; --gold:#b7791f; --goldbg:#fdf3e0;
+    --blue:#1f5fa8; --bluebg:#e8f1fb;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.6;font-size:15px}
+  .wrap{max-width:1080px;margin:0 auto;padding:48px 32px 80px}
+  header{border-bottom:3px solid var(--navy);padding-bottom:20px;margin-bottom:36px}
+  h1{font-size:27px;color:var(--navy);font-weight:700;letter-spacing:-.3px}
+  .sub{color:var(--mute);font-size:14px;margin-top:6px}
+  h2{font-size:19px;color:var(--navy);margin:42px 0 14px;font-weight:700;
+    display:flex;align-items:center;gap:10px}
+  h2 .n{background:var(--navy);color:#fff;width:26px;height:26px;border-radius:6px;
+    display:inline-flex;align-items:center;justify-content:center;font-size:14px;flex:none}
+  h3{font-size:15px;color:var(--navy2);margin:22px 0 8px;font-weight:700}
+  p{margin:8px 0}
+  .lead{font-size:15.5px;color:var(--ink)}
+  .mute{color:var(--mute)}
+  /* cards */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px 22px}
+  .card.a{border-top:4px solid var(--gray)}
+  .card.b{border-top:4px solid var(--green)}
+  .card h3{margin-top:0;font-size:16px}
+  .card .tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+    padding:3px 8px;border-radius:4px;display:inline-block;margin-bottom:6px}
+  .tag.gray{background:var(--graybg);color:var(--gray)}
+  .tag.green{background:var(--greenbg);color:var(--green)}
+  .card ul{margin:10px 0 0;padding-left:18px}
+  .card li{margin:5px 0}
+  /* table */
+  table{width:100%;border-collapse:collapse;margin-top:12px;background:var(--card);
+    border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:13.5px}
+  th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--navy);color:#fff;font-weight:600;font-size:12.5px}
+  tr:last-child td{border-bottom:none}
+  tbody tr:nth-child(even){background:#fafbfc}
+  td.dim{font-weight:600;color:var(--navy2);width:20%}
+  .win{color:var(--green);font-weight:700}
+  .lose{color:var(--red);font-weight:700}
+  .badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap}
+  .b-green{background:var(--greenbg);color:var(--green)}
+  .b-red{background:var(--redbg);color:var(--red)}
+  .b-gray{background:var(--graybg);color:var(--gray)}
+  .b-gold{background:var(--goldbg);color:var(--gold)}
+  /* diagram */
+  .diagram{background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:26px;margin-top:14px}
+  .actor{text-align:center;font-weight:700;color:var(--navy);margin-bottom:6px}
+  .layer{border:2px solid var(--line);border-radius:10px;padding:14px 16px;margin:10px 0;position:relative}
+  .layer.l1{border-color:#cdbf8f;background:#fdfaf0}
+  .layer.l2{border-color:#9fc3a8;background:#f1f8f3}
+  .layer-name{position:absolute;top:-11px;left:14px;background:var(--card);
+    font-size:11.5px;font-weight:700;padding:0 8px;letter-spacing:.3px}
+  .l1 .layer-name{color:var(--gold)}
+  .l2 .layer-name{color:var(--green)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:7px;
+    padding:9px 13px;font-size:12.5px;font-weight:600;text-align:center;flex:1;min-width:120px}
+  .box .d{font-weight:400;color:var(--mute);font-size:11px;display:block;margin-top:2px}
+  .arrow{text-align:center;color:var(--navy);font-size:13px;font-weight:700;margin:4px 0}
+  .arrow span{background:var(--navy);color:#fff;border-radius:20px;padding:2px 12px;font-size:11px}
+  .cli{border:1px dashed var(--blue);background:var(--bluebg);border-radius:7px;
+    padding:8px 12px;font-size:12px;text-align:center;margin-top:10px;color:var(--blue);font-weight:600}
+  /* callout */
+  .callout{border-left:4px solid var(--navy);background:var(--card);border:1px solid var(--line);
+    border-left-width:4px;border-radius:6px;padding:14px 18px;margin-top:14px}
+  .callout.win{border-left-color:var(--green)}
+  .callout.warn{border-left-color:var(--gold)}
+  .callout h3{margin-top:0}
+  code{background:var(--graybg);padding:1px 6px;border-radius:4px;font-size:12.5px;
+    font-family:"SF Mono",Consolas,monospace}
+  .files{background:var(--card);border:1px solid var(--line);border-radius:8px;
+    padding:6px 0;margin-top:12px;font-family:"SF Mono",Consolas,monospace;font-size:12.5px}
+  .files div{padding:5px 16px;border-bottom:1px solid var(--line)}
+  .files div:last-child{border-bottom:none}
+  .files .new{color:var(--green);font-weight:700}
+  .files .mod{color:var(--gold);font-weight:700}
+  .files .keep{color:var(--mute)}
+  footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);
+    color:var(--mute);font-size:12.5px;text-align:center}
+  @media(max-width:760px){.cards{grid-template-columns:1fr}.wrap{padding:28px 18px 60px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>InsightHub Reporting Co-pilot — So sánh 2 Concept</h1>
+  <div class="sub">Web App (theo SRS/User Stories) &nbsp;vs&nbsp; GitHub Copilot trong VS Code &nbsp;·&nbsp;
+  FPT Japan AI Hackathon 2026 &nbsp;·&nbsp; 2026-05-22</div>
+</header>
+
+<p class="lead">Tài liệu này so sánh <strong>cách đóng gói &amp; giao</strong> sản phẩm InsightHub.
+Cùng một lõi xử lý (pipeline Python: gom dữ liệu → đối soát → bắt bất thường → tính facts →
+viết narrative → chặn số bịa → xuất file) — nhưng 2 cách "bọc" khác nhau cho người dùng cuối.</p>
+
+<!-- 1 -->
+<h2><span class="n">1</span>"Reporting Co-pilot" là gì</h2>
+<p>Một phần mềm tự ráp <strong>bản nháp</strong> báo cáo từ dữ liệu dự án có sẵn, gắn nguồn cho
+từng con số, rồi giao PM <strong>duyệt-và-gửi</strong>. "Co-pilot" = lái phụ: nó soạn nháp,
+<strong>PM vẫn là người quyết và chịu trách nhiệm</strong> — khác "autopilot" tự gửi khách.
+Câu hỏi của doc này: <em>lái phụ đó ngồi trong "buồng lái" nào?</em></p>
+
+<!-- 2 -->
+<h2><span class="n">2</span>Hai concept</h2>
+<div class="cards">
+  <div class="card a">
+    <span class="tag gray">Concept A</span>
+    <h3>Web App standalone</h3>
+    <p class="mute" style="font-size:13px">Kiến trúc mà SRS &amp; User Stories mô tả.</p>
+    <ul>
+      <li>PM mở <strong>trình duyệt</strong>, đăng nhập, upload file / nối API, bấm "Generate".</li>
+      <li>Frontend React + backend Python/Node + <strong>PostgreSQL</strong> + REST API.</li>
+      <li>UI review <strong>split-pane</strong> tự xây, citation bấm được, widget chat tự xây.</li>
+      <li>LLM gọi từ backend qua endpoint → <strong>cần API key</strong> (trả phí).</li>
+      <li>Deploy server: AWS/Azure/on-prem + secret manager + SSO/SAML + cron scheduler.</li>
+    </ul>
+  </div>
+  <div class="card b">
+    <span class="tag green">Concept B — chọn cho MVP</span>
+    <h3>GitHub Copilot trong VS Code</h3>
+    <p class="mute" style="font-size:13px">Bộ "skill" nạp vào Copilot — không phải app rời.</p>
+    <ul>
+      <li>PM mở <strong>VS Code</strong>, chat với Copilot (model <strong>Claude Sonnet</strong>).</li>
+      <li><strong>MCP server</strong> (Python) + <code>.vscode/mcp.json</code> + file <code>.github</code> prompt.</li>
+      <li>UI review = <strong>chính VS Code</strong>; refine = Copilot Chat có sẵn.</li>
+      <li>LLM = <strong>license Copilot</strong> → <strong>không cần API key</strong>.</li>
+      <li>Không deploy: chỉ là file trong repo. Kèm <strong>CLI headless</strong> chạy mọi nơi.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 3 -->
+<h2><span class="n">3</span>Bảng so sánh</h2>
+<table>
+  <thead><tr><th>Tiêu chí</th><th>Concept A — Web App</th><th>Concept B — Copilot/VS Code</th></tr></thead>
+  <tbody>
+    <tr><td class="dim">Công sức build (timebox 1 ngày)</td>
+      <td><span class="badge b-red">Rất cao</span> full-stack app, gần như không kịp</td>
+      <td><span class="badge b-green">Thấp</span> tái dùng ~80% code đã có + vỏ MCP</td></tr>
+    <tr><td class="dim">Credential LLM</td>
+      <td><span class="lose">Cần API key</span> trả phí, phải duyệt vendor</td>
+      <td><span class="win">Không cần</span> — dùng license Copilot</td></tr>
+    <tr><td class="dim">Review &amp; refine UX</td>
+      <td>Phải tự xây React split-pane + chat widget</td>
+      <td><span class="win">Miễn phí</span> — VS Code editor + Copilot Chat</td></tr>
+    <tr><td class="dim">Triển khai</td>
+      <td>Server + DB + secret manager + SSO</td>
+      <td><span class="win">Không có gì để deploy</span>; CLI chạy mọi nơi có Python</td></tr>
+    <tr><td class="dim">Bảo mật dữ liệu (brief §4)</td>
+      <td>Tùy endpoint LLM chọn — phải xin duyệt</td>
+      <td><span class="win">Copilot enterprise</span> — endpoint FPT đã duyệt sẵn</td></tr>
+    <tr><td class="dim">Audit log</td>
+      <td>Bảng trong DB</td>
+      <td>Log mọi MCP tool call ra file</td></tr>
+    <tr><td class="dim">Scheduled mode (chạy tự động thứ Sáu)</td>
+      <td><span class="win">Hợp</span> — cron sẵn trong server</td>
+      <td><span class="lose">Yếu</span> — VS Code là tương tác; phải nhờ CLI + scheduler ngoài</td></tr>
+    <tr><td class="dim">Đa người dùng / RBAC</td>
+      <td><span class="win">Có sẵn</span></td>
+      <td>Không — 1 PM, chạy local</td></tr>
+    <tr><td class="dim">BGK chấm được không</td>
+      <td>Phải dựng được app/server lúc chấm — rủi ro</td>
+      <td><span class="win">CLI headless</span> chạy E2E mọi máy + video VS Code</td></tr>
+    <tr><td class="dim">Sức thuyết phục khi demo</td>
+      <td>UI web bóng bẩy (nếu kịp xây)</td>
+      <td>PM nói chuyện với VS Code — mới lạ, đúng "tinh thần AI agent"</td></tr>
+    <tr><td class="dim">Rủi ro chính</td>
+      <td><span class="badge b-red">Không kịp 1 ngày → E2E không chạy → DISQUALIFY</span></td>
+      <td><span class="badge b-gold">Cần license Copilot để demo; agent loop khó ép tất định</span></td></tr>
+  </tbody>
+</table>
+
+<!-- 4 -->
+<h2><span class="n">4</span>Sơ đồ 2 lớp — Concept B</h2>
+<div class="diagram">
+  <div class="actor">👤 PM (chỉ có license Copilot, không API key)</div>
+  <div class="arrow">↓</div>
+
+  <div class="layer l1">
+    <span class="layer-name">LỚP 1 · UX — VS Code + GitHub Copilot</span>
+    <div class="row">
+      <div class="box">Copilot Chat<span class="d">model = Claude Sonnet (license Copilot)</span></div>
+      <div class="box">.github prompt file<span class="d">persona Co-pilot + luật chống bịa số</span></div>
+    </div>
+  </div>
+
+  <div class="arrow"><span>kết nối qua MCP · .vscode/mcp.json</span></div>
+
+  <div class="layer l2">
+    <span class="layer-name">LỚP 2 · ENGINE — insighthub-mcp (Python, headless, không cần LLM)</span>
+    <div class="row">
+      <div class="box">get_project_facts<span class="d">datasource→reconcile→anomalies→facts</span></div>
+      <div class="box">validate_report<span class="d">chặn số/ticket bịa</span></div>
+      <div class="box">export_report<span class="d">DOCX · MD · traceability</span></div>
+    </div>
+    <div class="cli">⎘ Đường song song: <code>python -m insighthub generate</code> — CLI gọi thẳng Lớp 2,
+      chạy E2E không cần Copilot (lưới an toàn chống disqualify)</div>
+  </div>
+
+  <div class="arrow">↓</div>
+  <div class="actor" style="font-weight:600;color:var(--mute);font-size:13px">
+    📄 weekly.docx &nbsp;·&nbsp; weekly.md &nbsp;·&nbsp; traceability.json &nbsp;·&nbsp; audit_log.md</div>
+</div>
+<p class="mute" style="font-size:13px">Lõi chống hallucination nằm ở Lớp 2 (Python tính mọi số +
+<code>validate_report</code> gác) — <strong>không phụ thuộc LLM nào</strong>. Đổi Copilot hay API key
+cũng không phá được lớp an toàn này.</p>
+
+<!-- 5 -->
+<h2><span class="n">5</span>Map với rubric chấm điểm (100đ)</h2>
+<p>Lõi pipeline giống nhau → các tiêu chí về dữ liệu/đối soát/citation <strong>bằng nhau</strong>.
+Khác biệt nằm ở 3 tiêu chí + điều kiện disqualify:</p>
+<table>
+  <thead><tr><th>Tiêu chí</th><th>Điểm</th><th>Concept A — Web</th><th>Concept B — Copilot</th></tr></thead>
+  <tbody>
+    <tr><td>1–3 · Data / Reconciliation / Content</td><td>45</td>
+      <td colspan="2" style="text-align:center" class="mute">Bằng nhau — cùng pipeline Python (~38/45)</td></tr>
+    <tr><td>4 · Tone &amp; Language (JP keigo)</td><td>10</td>
+      <td colspan="2" style="text-align:center" class="mute">Bằng nhau — ~6–7/10</td></tr>
+    <tr><td>6 · Citation &amp; Traceability</td><td>10</td>
+      <td colspan="2" style="text-align:center" class="mute">Bằng nhau — ~9/10</td></tr>
+    <tr><td>7 · Review &amp; Refinement UX</td><td>5</td>
+      <td><span class="badge b-red">~1</span> khó kịp xây UI 1 ngày</td>
+      <td><span class="badge b-green">~4</span> VS Code + Copilot Chat sẵn</td></tr>
+    <tr><td>10 · Architecture &amp; Security</td><td>5</td>
+      <td><span class="badge b-gold">~3</span> nhiều bề mặt, phải duyệt endpoint</td>
+      <td><span class="badge b-green">~4–5</span> endpoint duyệt sẵn, không thêm secret</td></tr>
+    <tr><td>11 · Pitch &amp; Demo</td><td>5</td>
+      <td><span class="badge b-gold">~3</span> nếu app kịp chạy</td>
+      <td><span class="badge b-green">~5</span> E2E đã chạy + câu chuyện khác biệt</td></tr>
+    <tr><td colspan="4" style="background:#fafbfc">
+      <strong>Điều kiện DISQUALIFY</strong> — "E2E không chạy lúc chấm":
+      &nbsp; Web <span class="badge b-red">Rủi ro cao</span> (1 ngày không xong)
+      &nbsp;·&nbsp; Copilot <span class="badge b-green">An toàn</span> (pipeline + CLI đã chạy)</td></tr>
+  </tbody>
+</table>
+
+<!-- 6 -->
+<h2><span class="n">6</span>File cần thêm — Concept B (MVP)</h2>
+<p>Phần lớn đã có; chỉ thêm vỏ MCP + file cấu hình:</p>
+<div class="files">
+  <div><span class="mod">SỬA</span> &nbsp;insighthub_mcp/server.py &nbsp;— thêm 3 tool: get_project_facts · validate_report · export_report</div>
+  <div><span class="new">MỚI</span> &nbsp;.vscode/mcp.json &nbsp;— để VS Code/Copilot tự phát hiện server</div>
+  <div><span class="new">MỚI</span> &nbsp;.github/copilot-instructions.md &nbsp;— persona Co-pilot + luật anti-hallucination</div>
+  <div><span class="new">MỚI</span> &nbsp;.github/prompts/weekly-report.prompt.md &nbsp;— lệnh "sinh báo cáo tuần"</div>
+  <div><span class="keep">GIỮ</span> &nbsp;datasource · reconcile · anomalies · facts · validate · export · __main__ (CLI) &nbsp;— đã build, đã chạy E2E</div>
+</div>
+
+<!-- 7 -->
+<h2><span class="n">7</span>Kết luận</h2>
+<div class="callout win">
+  <h3>✅ MVP hackathon → Concept B (Copilot/VS Code)</h3>
+  <p>Trong timebox 1 ngày, Concept B không chỉ ghi điểm cao hơn (gỡ lại tiêu chí 7/10/11 ~+8đ)
+  mà còn <strong>tránh được điều kiện disqualify</strong>: pipeline + CLI đã chạy E2E. Không tốn
+  API key. Câu chuyện "zero-key, chạy bằng license Copilot có sẵn" là điểm khác biệt khi pitch.</p>
+</div>
+<div class="callout warn">
+  <h3>⚠️ Concept A (Web) — không vứt đi, để fast-follow</h3>
+  <p>Web App là hình hài "sản phẩm thật" mà SRS/User Stories mô tả, và là thứ FPT cần để
+  triển khai diện rộng (đa người dùng, RBAC, scheduled, portfolio). Brief §9 cho 3 tuần — nếu
+  có thêm thời gian sau MVP, Concept A là đích v2. <strong>MVP = Copilot · v2 = Web.</strong></p>
+</div>
+
+<footer>
+  InsightHub Reporting Co-pilot · Concept Comparison v1.0 · Gắn với <code>RD-insighthub-copilot-mvp.md</code>
+  · Bước SDD kế tiếp: duyệt RD (Gate 1) → SD ngắn (Gate 2) → BD (Gate 3)
+</footer>
+
+</div>
+</body>
+</html>
