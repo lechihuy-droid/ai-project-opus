@@ -7,10 +7,10 @@ status: evergreen
 confidence: medium
 sources: ["config.yaml:collect_sources", "run_collect.py", "tools/collect_tool.py", "api/intel.py", "run_weekly.py"]
 related: ["[[intel-to-wiki-promotion]]", "[[ai-trend-radar]]", "[[competitor-business-model-radar]]", "[[fde-adoption-radar]]", "[[investment-theses]]"]
-applied: ["2026-05-19 - Created after auditing research sources and Intel/wiki sync."]
-open_questions: ["Which source families should trigger automatic wiki promotion?", "Which sources are too noisy and should only remain raw evidence?"]
+applied: ["2026-05-19 - Created after auditing research sources and Intel/wiki sync.", "2026-05-23 - Added CEO Business Model Research as a parallel channel to Tech Learning Research."]
+open_questions: ["Which source families should trigger automatic wiki promotion?", "Which sources are too noisy and should only remain raw evidence?", "Which CEO/business sources should be added for Japan SIer, offshore, pricing, and enterprise budget signals?"]
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-23
 ---
 
 # Research Source Map
@@ -18,18 +18,45 @@ updated: 2026-05-19
 ## Summary
 This page maps the research inputs that feed Opus Home Intel and Consilium. It separates raw source collection from durable wiki knowledge.
 
+Consilium research now has two parallel channels:
+- **Tech Learning Research**: helps Huy learn tools, skills, AI workflows, and agent governance.
+- **CEO Business Model Research**: helps Huy think like a tech-firm CEO: customer budget, competitor business model, offer/pricing, enterprise adoption, vertical opportunity, talent/operating model, and strategic risk.
+
 ## Key Points
 - `raw/articles/` is the durable event log for collected sources.
 - `api/intel.py` enriches and ranks collected sources for Opus Home; it is not the long-term knowledge layer.
 - `logs/intel_reviews/`, `logs/weekly/`, and `logs/business_briefs/` store synthesized reports, but those reports are not automatically durable wiki pages.
 - `personal-wiki/` is the decision brain. Important Intel signals must be promoted into hub pages.
 - Current config has `collect.auto_ingest: true`, so raw articles can become seed pages automatically; this still does not replace hub-page synthesis.
+- Tech Learning Research and CEO Business Model Research should be separated in daily briefs to avoid over-weighting technical news.
 
 ## Why It Matters
 Without a source map, Consilium mixes four different things: raw evidence, dashboard review, synthesized reports, and durable wiki conclusions. This page keeps them distinct.
 
+Huy already has enough technology-learning coverage. The next research gap is CEO-level business model sensing: what customers buy, what competitors sell, how AI changes pricing, where enterprise adoption is blocked, which verticals are opening, how delivery teams should be redesigned, and what risks delay purchasing.
+
 ## Details
-Current source families from `config.yaml`:
+
+### Research channels
+
+| Channel | Purpose | Primary Question | Primary Wiki Routes |
+|---|---|---|---|
+| Tech Learning Research | Learn skills, tools, workflow patterns, and AI-native operations | What should Huy learn, test, or improve? | [[ai-trend-radar]], [[reskill-roadmap]], [[fde-adoption-radar]] |
+| CEO Business Model Research | Support business strategy, offer design, competitor understanding, and investment/business thesis formation | If Huy were CEO of a tech firm, what should change in strategy, offer, market focus, or operating model? | [[competitor-business-model-radar]], [[fde-adoption-radar]], [[fde-japan-gap-analysis]], [[fde-model]], [[investment-theses]], [[open-questions]] |
+
+### CEO Business Model Research categories
+
+| Category | What To Track | CEO Question | Primary Wiki Route |
+|---|---|---|---|
+| Customer pain & budget shift | IT budget movement, outsourcing pressure, AI automation demand, buyer ownership, paid PoC vs ROI-based purchase | Are customers still buying man-months, or shifting toward outcome and automation? | [[fde-adoption-radar]], [[competitor-business-model-radar]], [[investment-theses]] |
+| Competitor business model | SIer, offshore, consulting, and product-company monetization models; AI transformation packages; platform/pod/managed-service/outcome offers | How are competitors moving from labor arbitrage to AI-enabled delivery or outcome models? | [[competitor-business-model-radar]], [[fde-japan-gap-analysis]], [[fde-model]] |
+| Offer & pricing intelligence | AI PoC package, diagnostic sprint, AI-SDLC modernization, governance/audit package, managed AI workflow, outcome-based pricing | What offer can customers pay for in the next 3-6 months? | [[competitor-business-model-radar]], [[fde-model]], [[investment-theses]] |
+| Enterprise adoption patterns | Use cases moving from PoC to production, department-level adoption, blockers, failure reasons, ROI evidence | Where is AI adoption stuck, and can a tech firm sell a solution to that bottleneck? | [[fde-adoption-radar]], [[competitor-business-model-radar]] |
+| Vertical / industry opportunities | Japan enterprise IT, SI/offshore, manufacturing, logistics, finance, HR, education, public sector, content automation | Which vertical has strong pain, visible budget, and manageable adoption barriers? | [[fde-japan-gap-analysis]], [[fde-adoption-radar]], [[investment-theses]] |
+| Talent & operating model | New roles, FDE, AI workflow architect, solution consultant, AI product manager, AI-native delivery pods, junior developer training | What team model should a tech firm build to win AI delivery? | [[fde-model]], [[reskill-roadmap]], [[competitor-business-model-radar]] |
+| Strategic risk & regulation | AI governance, data privacy, IP/copyright, security incidents, procurement rules, provider dependency, Japan policy | Which risks could delay customer buying or force a different delivery model? | [[open-questions]], [[investment-theses]], [[fde-adoption-radar]] |
+
+### Current source families from `config.yaml`
 
 | Family | Source IDs | Target Evidence Type | Default Wiki Route |
 |---|---|---|---|
@@ -65,13 +92,17 @@ Current storage counts from audit:
 ## Application To OPUS ANIMUS
 When a new research source is added, update this page and decide which hub page should receive durable synthesis. New sources should not only appear in `config.yaml`.
 
+For daily use, keep Tech Learning Research and CEO Business Model Research as separate briefs. A technology item should not dominate the CEO channel unless it changes offer design, customer budget, competitor strategy, operating model, or investment/business thesis.
+
 ## Open Questions
 - Should Tier 0 sources automatically propose hub updates after each collect run?
 - Should GitHub trending produce weekly tool-watch synthesis in [[reskill-roadmap]]?
 - Which competitor sources are noisy enough to require stricter filters?
+- Which additional CEO/business sources should be added for pricing, Japan SIer movement, offshore transformation, and enterprise procurement?
 
 ## Applied
 - 2026-05-19 - Audited collector, Intel API, weekly reports, and current raw/log storage.
+- 2026-05-23 - Added CEO Business Model Research channel and seven CEO research categories.
 
 ## See Also
 - [[intel-to-wiki-promotion]]
