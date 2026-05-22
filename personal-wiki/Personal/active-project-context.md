@@ -8,7 +8,7 @@ confidence: medium
 sources: []
 related: ["[[current-beliefs]]", "[[decisions]]", "[[ai-trend-radar]]", "[[reskill-roadmap]]", "[[investment-theses]]"]
 applied: []
-open_questions: ["Which active project should receive AI trend synthesis first?", "Should the personal health log idea become a lightweight Opus Animus MVP or stay as a later reskill/research project?"]
+open_questions: ["Which active project should receive AI trend synthesis first?"]
 created: 2026-05-19
 updated: 2026-05-21
 ---
@@ -23,7 +23,7 @@ This page tells Codex what the wiki should optimize for when turning sources int
 - Opus Consilium: decision brain and research memory.
 - Opus Lucida: production workflow for Japanese learning content and automation.
 - User focus: AI trends, re-skill, and investment thinking.
-- Candidate idea: Personal Health Log MVP — use ChatGPT food-photo interpretation plus raw activity data to create a structured personal health memory and weekly reflection loop.
+- Health management is a separate app/project for now. Consilium may keep lightweight context only, but should not expand Health into a main wiki domain unless explicitly requested.
 
 ## Why It Matters
 Generic AI news is not enough. Sources should be judged by whether they affect the current operating context.
@@ -36,16 +36,10 @@ When reading wiki sources, Codex should ask:
 - Does this strengthen or weaken an investment thesis?
 - Is this only interesting, or actually useful?
 
-### Candidate: Personal Health Log MVP
-This is not yet an active build project. Treat it as a candidate Opus Animus / reskill experiment.
+### Project Boundary: Health Management
+Health management is currently a separate app/project, not a Consilium domain.
 
-Initial framing:
-- Goal: turn fragmented personal health signals into a structured weekly feedback loop.
-- Inputs: food photos interpreted by ChatGPT, raw activity data, optional sleep/energy/body notes.
-- Storage: GitHub-backed Markdown or structured data, preferably private and lightweight.
-- Outputs: daily health log, weekly review, habit experiment for the next week.
-- MVP boundary: reflection and habit tracking only; no diagnosis, medical advice, or precise calorie claims.
-- Method lesson: this is another example of problem-solving-first AI adoption — ambiguous personal workflow → structured data → AI-assisted reflection → human decision.
+Consilium can temporarily record lightweight strategic context about the health app when needed, but it should not create Health folders, data schemas, or operating pages unless Huy explicitly asks. This prevents Consilium from expanding beyond its role as a decision brain for AI trends, re-skill, investment thinking, FDE-lite, Opus Animus, and Lucida.
 
 ## Application To OPUS ANIMUS
 Use this page as the context preface for daily and weekly wiki chats.
@@ -53,11 +47,9 @@ Use this page as the context preface for daily and weekly wiki chats.
 ## Open Questions
 - Which active workflow is the best testbed for coding agents?
 - Which AI trend should be converted into a Lucida production experiment?
-- Should Personal Health Log MVP become a lightweight Opus Animus experiment after the BD/RCD pilot, or remain a reskill/research idea?
-- What minimum data schema is enough for health reflection without over-engineering or creating privacy risk?
 
 ## Applied
-- 2026-05-21 — Added Personal Health Log MVP as a candidate Opus Animus / reskill experiment, not an active build commitment.
+- 2026-05-21 — Added Health Management as a separate project boundary so Consilium does not expand into Health unless explicitly requested.
 
 ## See Also
 - [[current-beliefs]]
