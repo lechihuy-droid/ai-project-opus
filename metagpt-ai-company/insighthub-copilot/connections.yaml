@@ -12,6 +12,10 @@ period:
   start: "2026-05-15"
   end: "2026-05-21"
 
+base_urls:
+  jira: "https://example.atlassian.net/browse"
+  github: "https://github.com/fpt-japan/project-sakura"
+
 systems:
   jira:
     adapter: file            # file | api

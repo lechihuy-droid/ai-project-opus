@@ -173,6 +173,14 @@ class SectionFacts(BaseModel):
     facts: list[Fact] = Field(default_factory=list)
     bullet_items: list[Fact] = Field(default_factory=list)
 
+
+class MonthlySectionFacts(BaseModel):
+    """Additional computed sections for monthly reports."""
+
+    phase_trend: SectionFacts
+    budget_effort: SectionFacts
+    quality_kpis: SectionFacts
+
 class Facts(BaseModel):
     project_name: str
     period_start: date
@@ -182,6 +190,25 @@ class Facts(BaseModel):
     anomalies: list[Anomaly] = Field(default_factory=list)
     allowed_keys: list[str] = Field(default_factory=list)
     allowed_numbers: list[str] = Field(default_factory=list)
+
+
+class PortfolioProjectSummary(BaseModel):
+    """Roll-up summary for one project in a portfolio dashboard."""
+
+    project_name: str
+    overall_status: str
+    period_start: date
+    period_end: date
+    top_risks: list[str] = Field(default_factory=list)
+    headline_metrics: list[str] = Field(default_factory=list)
+    weekly_docx_path: str = ""
+    weekly_md_path: str = ""
+
+
+class PortfolioFacts(Facts):
+    """Portfolio-level facts built from multiple project reports."""
+
+    projects: list[PortfolioProjectSummary] = Field(default_factory=list)
 
 # --- Report (đầu ra LLM) ---------------------------------------------------
 class ReportSection(BaseModel):

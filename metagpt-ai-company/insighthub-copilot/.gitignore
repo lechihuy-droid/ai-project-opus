@@ -5,3 +5,4 @@ output-*/
 *.log
 .codex/
 .pytest_cache/
+output_*/

@@ -10,11 +10,13 @@ Run:  python scripts/gen_sample_data.py
 
 from __future__ import annotations
 
+import argparse
 import json
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
 import openpyxl
+import yaml
 from docx import Document
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -181,6 +183,32 @@ def write_jira(issues: list[dict]) -> None:
     wb.save(SAMPLE / "Sample_Jira_Export.xlsx")
 
 
+def write_variant_jira() -> None:
+    """Write a smaller second Jira shape with no bug rows and zero-commit sprint data."""
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Issues"
+    ws.append(["Key", "Summary", "Type", "Status", "Priority", "Assignee",
+               "Story Points", "Created", "Updated", "Resolved", "Sprint",
+               "Labels", "Reopened"])
+    rows = [
+        ["KIKU-1", "Requirement workshop notes", "Task", "Done", "Medium", "Ito", None,
+         d("2026-06-01"), d("2026-06-02"), d("2026-06-02"), "Kiku Sprint Alpha", "", "No"],
+        ["KIKU-2", "Data migration dry run", "Story", "In Progress", "High", "Yamada", 5,
+         d("2026-06-03"), d("2026-06-05"), None, "Kiku Sprint Alpha", "", "No"],
+        ["KIKU-3", "Operations checklist", "Task", "To Do", "Low", "", 0,
+         d("2026-06-05"), d("2026-06-05"), None, "Kiku Sprint Beta", "", "No"],
+    ]
+    for row in rows:
+        ws.append(row)
+
+    sp = wb.create_sheet("Sprints")
+    sp.append(["Sprint", "Start", "End", "Committed SP", "Completed SP"])
+    sp.append(["Kiku Sprint Alpha", d("2026-06-01"), d("2026-06-14"), 0, 0])
+    SAMPLE.mkdir(parents=True, exist_ok=True)
+    wb.save(SAMPLE / "Sample_Jira_Export.xlsx")
+
+
 # --------------------------------------------------------------------------
 # WBS
 # --------------------------------------------------------------------------
@@ -211,6 +239,19 @@ def write_wbs() -> None:
     wb.save(SAMPLE / "Sample_WBS.xlsx")
 
 
+def write_variant_wbs() -> None:
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "WBS"
+    ws.append(["Task ID", "Phase", "Task Name", "Planned Start", "Planned End",
+               "Planned MM", "Planned %", "Owner", "Jira Key"])
+    ws.append(["K1-T01", "Discovery", "Requirement workshop notes", d("2026-06-01"),
+               d("2026-06-02"), 0, 100, "Ito", "KIKU-1"])
+    ws.append(["K2-T01", "Pilot Build", "Data migration dry run", d("2026-06-03"),
+               d("2026-06-20"), 1.0, 30, "Yamada", "KIKU-2"])
+    wb.save(SAMPLE / "Sample_WBS.xlsx")
+
+
 # --------------------------------------------------------------------------
 # Slack messages
 # --------------------------------------------------------------------------
@@ -234,6 +275,12 @@ def write_slack() -> None:
         {"id": cid, "channel": "#project-sakura", "user": u, "ts": ts, "text": tx}
         for cid, u, ts, tx in msgs
     ]}
+    (SAMPLE / "Sample_Slack_Messages.json").write_text(
+        json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+
+
+def write_variant_slack() -> None:
+    data = {"channel": "#project-kiku", "messages": []}
     (SAMPLE / "Sample_Slack_Messages.json").write_text(
         json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
 
@@ -290,6 +337,12 @@ def write_github() -> None:
         json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
+def write_variant_github() -> None:
+    data = {"repo": "fpt-japan/project-kiku", "default_branch": "main", "commits": [], "pull_requests": []}
+    (SAMPLE / "Sample_GitHub_Activity.json").write_text(
+        json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+
+
 # --------------------------------------------------------------------------
 # Meeting minutes (DOCX)
 # --------------------------------------------------------------------------
@@ -331,6 +384,49 @@ def write_minutes() -> None:
     )
 
 
+def write_variant_minutes() -> None:
+    MINUTES.mkdir(parents=True, exist_ok=True)
+    for path in MINUTES.glob("*.docx"):
+        path.unlink()
+
+
+def write_connections(project: str, start: str, end: str) -> None:
+    config = {
+        "project": project,
+        "period": {"start": start, "end": end},
+        "base_urls": {
+            "jira": "https://example.atlassian.net/browse",
+            "github": "https://github.com/fpt-japan/project-sakura",
+        },
+        "systems": {
+            "jira": {
+                "adapter": "file",
+                "auth": "env:JIRA_TOKEN",
+                "file": str((SAMPLE / "Sample_Jira_Export.xlsx").relative_to(ROOT)).replace("\\", "/"),
+                "api_base": "https://example.atlassian.net",
+            },
+            "chat": {
+                "adapter": "file",
+                "auth": "env:SLACK_TOKEN",
+                "provider": "slack",
+                "file": str((SAMPLE / "Sample_Slack_Messages.json").relative_to(ROOT)).replace("\\", "/"),
+                "api_base": "https://slack.com/api",
+            },
+            "github": {
+                "adapter": "file",
+                "auth": "env:GITHUB_TOKEN",
+                "file": str((SAMPLE / "Sample_GitHub_Activity.json").relative_to(ROOT)).replace("\\", "/"),
+                "api_base": "https://api.github.com",
+            },
+        },
+        "uploads": {
+            "wbs": str((SAMPLE / "Sample_WBS.xlsx").relative_to(ROOT)).replace("\\", "/"),
+            "minutes_dir": str(MINUTES.relative_to(ROOT)).replace("\\", "/"),
+        },
+    }
+    (SAMPLE / "connections.yaml").write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
+
+
 # --------------------------------------------------------------------------
 # Ground truth — which rules were seeded
 # --------------------------------------------------------------------------
@@ -362,12 +458,34 @@ GROUND_TRUTH = {
 
 
 def main() -> None:
+    global SAMPLE, MINUTES
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--seed", type=int, default=0, help="Reserved for reproducible future variants.")
+    parser.add_argument("--variant", choices=["default", "variant"], default="default")
+    args = parser.parse_args()
+
+    if args.variant == "variant":
+        SAMPLE = ROOT / "data" / "sample-variant"
+        MINUTES = SAMPLE / "minutes"
+        write_variant_jira()
+        write_variant_wbs()
+        write_variant_slack()
+        write_variant_github()
+        write_variant_minutes()
+        write_connections("Project Kiku", "2026-06-01", "2026-06-07")
+        print(f"Variant data written to {SAMPLE}")
+        print("  Jira issues : 3")
+        print("  Empty categories: chat, commits, pull requests, minutes, bugs")
+        return
+
     issues = build_issues()
     write_jira(issues)
     write_wbs()
     write_slack()
     write_github()
     write_minutes()
+    write_connections("Project Sakura", "2026-05-15", "2026-05-21")
     (SAMPLE / "_ground_truth.json").write_text(
         json.dumps(GROUND_TRUTH, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"Sample data written to {SAMPLE}")

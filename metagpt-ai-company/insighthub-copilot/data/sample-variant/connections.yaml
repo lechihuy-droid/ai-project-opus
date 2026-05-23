@@ -1,0 +1,27 @@
+project: Project Kiku
+period:
+  start: '2026-06-01'
+  end: '2026-06-07'
+base_urls:
+  jira: https://example.atlassian.net/browse
+  github: https://github.com/fpt-japan/project-sakura
+systems:
+  jira:
+    adapter: file
+    auth: env:JIRA_TOKEN
+    file: data/sample-variant/Sample_Jira_Export.xlsx
+    api_base: https://example.atlassian.net
+  chat:
+    adapter: file
+    auth: env:SLACK_TOKEN
+    provider: slack
+    file: data/sample-variant/Sample_Slack_Messages.json
+    api_base: https://slack.com/api
+  github:
+    adapter: file
+    auth: env:GITHUB_TOKEN
+    file: data/sample-variant/Sample_GitHub_Activity.json
+    api_base: https://api.github.com
+uploads:
+  wbs: data/sample-variant/Sample_WBS.xlsx
+  minutes_dir: data/sample-variant/minutes

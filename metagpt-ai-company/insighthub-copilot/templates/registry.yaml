@@ -1,0 +1,52 @@
+templates:
+  - name: weekly-default
+    report_type: weekly
+    path: templates/weekly_template.docx
+    default: true
+    placeholders:
+      - project_name
+      - period
+      - overall_status
+      - exec_summary
+      - progress
+      - completed
+      - in_progress
+      - next_week
+      - blockers
+      - bugs
+      - decisions
+      - metrics
+  - name: monthly-default
+    report_type: monthly
+    path: templates/weekly_template.docx
+    default: true
+    placeholders:
+      - project_name
+      - period
+      - overall_status
+      - exec_summary
+      - progress
+      - completed
+      - in_progress
+      - next_week
+      - blockers
+      - bugs
+      - decisions
+      - metrics
+  - name: weekly-compact
+    report_type: weekly
+    path: templates/weekly_compact.docx
+    default: false
+    placeholders:
+      - project_name
+      - period
+      - overall_status
+      - exec_summary
+      - progress
+      - completed
+      - in_progress
+      - next_week
+      - blockers
+      - bugs
+      - decisions
+      - metrics

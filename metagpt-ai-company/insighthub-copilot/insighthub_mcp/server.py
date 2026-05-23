@@ -47,7 +47,7 @@ def _adapter(system: str, connections_path: str = "connections.yaml"):
             "jira": JiraApiAdapter,
             "chat": ChatApiAdapter,
             "github": GithubApiAdapter,
-        }[system]()
+        }[system](system_config)
 
     path = _resolve_path(system_config["file"])
     return {
@@ -99,31 +99,31 @@ def _report_from_sections(sections: list[dict], lang: str = "ja") -> Report | di
 
 
 @mcp.tool
-def list_jira_issues(period_start: str, period_end: str) -> dict:
+def list_jira_issues(period_start: str, period_end: str, connections_path: str = "connections.yaml") -> dict:
     """List Jira issues and sprint metrics for a reporting period."""
 
     _audit("list_jira_issues", {"period_start": period_start, "period_end": period_end})
     start, end = _period(period_start, period_end)
-    payload = _adapter("jira").fetch(start, end)[0]
+    payload = _adapter("jira", connections_path).fetch(start, end)[0]
     return payload
 
 
 @mcp.tool
-def list_chat_messages(period_start: str, period_end: str) -> dict:
+def list_chat_messages(period_start: str, period_end: str, connections_path: str = "connections.yaml") -> dict:
     """List chat messages for a reporting period."""
 
     _audit("list_chat_messages", {"period_start": period_start, "period_end": period_end})
     start, end = _period(period_start, period_end)
-    return {"messages": _adapter("chat").fetch(start, end)}
+    return {"messages": _adapter("chat", connections_path).fetch(start, end)}
 
 
 @mcp.tool
-def list_code_activity(period_start: str, period_end: str) -> dict:
+def list_code_activity(period_start: str, period_end: str, connections_path: str = "connections.yaml") -> dict:
     """List GitHub commits and pull requests for a reporting period."""
 
     _audit("list_code_activity", {"period_start": period_start, "period_end": period_end})
     start, end = _period(period_start, period_end)
-    return _adapter("github").fetch(start, end)[0]
+    return _adapter("github", connections_path).fetch(start, end)[0]
 
 
 @mcp.tool

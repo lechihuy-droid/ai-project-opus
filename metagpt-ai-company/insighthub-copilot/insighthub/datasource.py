@@ -76,21 +76,40 @@ def _tool_payload(result: Any) -> dict:
     raise TypeError(f"Unsupported MCP result: {type(result)!r}")
 
 
-async def _fetch_mcp(period_start: date, period_end: date) -> tuple[dict, dict, dict]:
+async def _fetch_mcp(period_start: date, period_end: date, connections_path: str) -> tuple[dict, dict, dict]:
     async with Client(mcp) as client:
         start = period_start.isoformat()
         end = period_end.isoformat()
-        jira = _tool_payload(await client.call_tool("list_jira_issues", {"period_start": start, "period_end": end}))
-        chat = _tool_payload(await client.call_tool("list_chat_messages", {"period_start": start, "period_end": end}))
-        github = _tool_payload(await client.call_tool("list_code_activity", {"period_start": start, "period_end": end}))
+        args = {"period_start": start, "period_end": end, "connections_path": connections_path}
+        jira = _tool_payload(await client.call_tool("list_jira_issues", args))
+        chat = _tool_payload(await client.call_tool("list_chat_messages", args))
+        github = _tool_payload(await client.call_tool("list_code_activity", args))
         return jira, chat, github
 
 
-def _jira_issues(payload: dict) -> list[Issue]:
+def _source_url(base_urls: dict[str, str], system: str, ref_id: str) -> str | None:
+    base = (base_urls.get(system) or "").rstrip("/")
+    if not base:
+        return None
+    if system == "jira":
+        return f"{base}/{ref_id}"
+    if system == "github":
+        if ref_id.startswith("PR-"):
+            return f"{base}/pull/{ref_id.removeprefix('PR-')}"
+        return f"{base}/commit/{ref_id}"
+    return f"{base}/{ref_id}"
+
+
+def _jira_issues(payload: dict, base_urls: dict[str, str]) -> list[Issue]:
     return [
         Issue(
             **item,
-            source_ref=SourceRef(system="jira", ref_id=item["key"], label=item["summary"]),
+            source_ref=SourceRef(
+                system="jira",
+                ref_id=item["key"],
+                label=item["summary"],
+                url=_source_url(base_urls, "jira", item["key"]),
+            ),
         )
         for item in payload["issues"]
     ]
@@ -108,37 +127,54 @@ def _sprints(payload: dict) -> list[SprintMetric]:
     ]
 
 
-def _messages(payload: dict) -> list[ChatMessage]:
+def _messages(payload: dict, base_urls: dict[str, str]) -> list[ChatMessage]:
     return [
         ChatMessage(
             **item,
-            source_ref=SourceRef(system="slack", ref_id=item["msg_id"], label=item["text"][:80]),
+            source_ref=SourceRef(
+                system="slack",
+                ref_id=item["msg_id"],
+                label=item["text"][:80],
+                url=_source_url(base_urls, "slack", item["msg_id"]),
+            ),
         )
         for item in payload["messages"]
     ]
 
 
-def _commits(payload: dict) -> list[Commit]:
+def _commits(payload: dict, base_urls: dict[str, str]) -> list[Commit]:
     commits = []
     for item in payload["commits"]:
+        ref_id = item["sha"][:7]
         commits.append(
             Commit(
                 **item,
                 jira_keys=JIRA_KEY_RE.findall(item["message"]),
-                source_ref=SourceRef(system="github", ref_id=item["sha"][:7], label=item["message"]),
+                source_ref=SourceRef(
+                    system="github",
+                    ref_id=ref_id,
+                    label=item["message"],
+                    url=_source_url(base_urls, "github", ref_id),
+                ),
             )
         )
     return commits
 
 
-def _pull_requests(payload: dict) -> list[PullRequest]:
+def _pull_requests(payload: dict, base_urls: dict[str, str]) -> list[PullRequest]:
     prs = []
     for item in payload["pull_requests"]:
+        ref_id = f"PR-{item['number']}"
         prs.append(
             PullRequest(
                 **item,
                 jira_keys=JIRA_KEY_RE.findall(item["title"]),
-                source_ref=SourceRef(system="github", ref_id=f"PR-{item['number']}", label=item["title"]),
+                source_ref=SourceRef(
+                    system="github",
+                    ref_id=ref_id,
+                    label=item["title"],
+                    url=_source_url(base_urls, "github", ref_id),
+                ),
             )
         )
     return prs
@@ -228,21 +264,39 @@ def load(connections_path: str = "connections.yaml") -> ProjectState:
     period_start = date.fromisoformat(str(config["period"]["start"]))
     period_end = date.fromisoformat(str(config["period"]["end"]))
 
-    jira_payload, chat_payload, github_payload = asyncio.run(_fetch_mcp(period_start, period_end))
+    base_urls = config.get("base_urls") or {}
+    jira_payload, chat_payload, github_payload = asyncio.run(_fetch_mcp(period_start, period_end, connections_path))
     uploads = config["uploads"]
 
     return ProjectState(
         project_name=config["project"],
         period_start=period_start,
         period_end=period_end,
-        issues=_jira_issues(jira_payload),
+        issues=_jira_issues(jira_payload, base_urls),
         wbs_tasks=_wbs_tasks(_resolve_path(uploads["wbs"])),
-        messages=_messages(chat_payload),
-        commits=_commits(github_payload),
-        prs=_pull_requests(github_payload),
+        messages=_messages(chat_payload, base_urls),
+        commits=_commits(github_payload, base_urls),
+        prs=_pull_requests(github_payload, base_urls),
         minute_items=_minutes_items(_resolve_path(uploads["minutes_dir"])),
         sprints=_sprints(jira_payload),
     )
+
+
+def load_previous_reports(connections_path: str = "connections.yaml") -> list[str]:
+    """Load previous Markdown reports for LLM tone reference only."""
+
+    config_path = _resolve_path(connections_path)
+    config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    previous_dir = _resolve_path(
+        str(config.get("previous_reports_dir") or "data/sample/previous_reports")
+    )
+    if not previous_dir.exists():
+        return []
+    return [
+        path.read_text(encoding="utf-8")
+        for path in sorted(previous_dir.glob("*.md"))
+        if path.is_file()
+    ]
 
 
 if __name__ == "__main__":

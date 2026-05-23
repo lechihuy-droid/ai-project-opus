@@ -16,18 +16,22 @@ _SECTION_TITLES: dict[str, dict[str, str]] = {
         "completed": "Completed", "in_progress": "In Progress",
         "next_week": "Next Week", "blockers": "Blockers",
         "bugs": "Bugs", "decisions": "Decisions", "metrics": "Metrics",
+        "phase_trend": "Phase Trend", "budget_effort": "Budget and Effort",
+        "quality_kpis": "Quality KPIs", "changes_vs_last_report": "Changes vs last report",
     },
     "ja": {
         "exec_summary": "エグゼクティブサマリー", "progress": "進捗状況",
         "completed": "完了項目", "in_progress": "進行中の項目",
         "next_week": "来週の予定", "blockers": "障害・リスク",
         "bugs": "バグ状況", "decisions": "決定事項", "metrics": "メトリクス",
+        "changes_vs_last_report": "前回報告からの変更点",
     },
     "vn": {
         "exec_summary": "Tóm tắt điều hành", "progress": "Tiến độ",
         "completed": "Hạng mục hoàn thành", "in_progress": "Đang thực hiện",
         "next_week": "Kế hoạch tuần tới", "blockers": "Vướng mắc & Rủi ro",
         "bugs": "Tình hình lỗi", "decisions": "Quyết định", "metrics": "Chỉ số",
+        "changes_vs_last_report": "Thay đổi so với báo cáo trước",
     },
 }
 
@@ -48,6 +52,10 @@ _LABELS: dict[str, dict[str, str]] = {
         "Velocity": "ベロシティ", "Throughput": "スループット",
         "GitHub activity": "GitHubアクティビティ",
         "Decision": "決定事項", "Action Item": "アクションアイテム",
+        "Newly closed since last report": "前回報告以降に完了",
+        "Status changed since last report": "前回報告以降のステータス変更",
+        "Metric delta since last report": "前回報告以降の指標差分",
+        "Changes vs last report": "前回報告との比較",
     },
     "vn": {
         "Overall status": "Trạng thái tổng thể",
@@ -63,6 +71,10 @@ _LABELS: dict[str, dict[str, str]] = {
         "Velocity": "Velocity", "Throughput": "Throughput",
         "GitHub activity": "Hoạt động GitHub",
         "Decision": "Quyết định", "Action Item": "Hạng mục hành động",
+        "Newly closed since last report": "Hạng mục vừa đóng từ báo cáo trước",
+        "Status changed since last report": "Hạng mục đổi trạng thái từ báo cáo trước",
+        "Metric delta since last report": "Biến động chỉ số từ báo cáo trước",
+        "Changes vs last report": "So sánh với báo cáo trước",
     },
 }
 
@@ -116,6 +128,25 @@ _PHRASES: dict[str, dict[str, str]] = {
 _NO_DATA = {"en": "(no data)", "ja": "(データなし)", "vn": "(không có dữ liệu)"}
 
 
+_HEADERS: dict[str, dict[str, str]] = {
+    "en": {
+        "report_title": "Weekly Status Report",
+        "period": "Period",
+        "overall_status": "Overall Status",
+    },
+    "ja": {
+        "report_title": "週次ステータス報告書",
+        "period": "対象期間",
+        "overall_status": "全体ステータス",
+    },
+    "vn": {
+        "report_title": "Báo cáo trạng thái tuần",
+        "period": "Kỳ báo cáo",
+        "overall_status": "Trạng thái tổng thể",
+    },
+}
+
+
 def section_title(section_id: str, lang: str) -> str:
     """Localized section heading; falls back to English then to the raw id."""
     table = _SECTION_TITLES.get(lang, _SECTION_TITLES["en"])
@@ -142,3 +173,9 @@ def localize_value(value: str, lang: str) -> str:
 def no_data(lang: str) -> str:
     """Localized empty-section placeholder."""
     return _NO_DATA.get(lang, _NO_DATA["en"])
+
+
+def header(key: str, lang: str) -> str:
+    """Localized report header label."""
+    table = _HEADERS.get(lang, _HEADERS["en"])
+    return table.get(key) or _HEADERS["en"].get(key, key)

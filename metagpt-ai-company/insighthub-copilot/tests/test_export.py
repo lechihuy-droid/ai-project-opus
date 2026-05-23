@@ -90,6 +90,12 @@ def test_export_writes_all_artifacts(tmp_path):
         assert Path(path).exists()
 
     Document(paths["weekly_docx"])
+    markdown = tmp_path.joinpath("weekly.md").read_text(encoding="utf-8")
+    assert "[jira:SAKURA-1](https://example.test/browse/SAKURA-1)" in markdown
+
+    relationships = Document(paths["weekly_docx"]).part.rels.values()
+    assert any(rel.target_ref == "https://example.test/browse/SAKURA-1" for rel in relationships)
+
     traceability = json.loads(tmp_path.joinpath("traceability.json").read_text(encoding="utf-8"))
     assert traceability["summary.status"]["citations"][0]["system"] == "jira"
     assert traceability["summary.status"]["citations"][0]["ref_id"] == "SAKURA-1"
