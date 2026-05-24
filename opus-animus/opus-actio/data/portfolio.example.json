@@ -1,0 +1,84 @@
+{
+  "$schema": "./portfolio.schema.md",
+  "owner": "HUY",
+  "base_currency": "JPY",
+  "fx_rate": { "USDJPY": 150.0, "updated": "2026-05-20" },
+  "target_allocation": {
+    "us_equity": 0.50,
+    "jp_equity": 0.30,
+    "cash_jpy": 0.10,
+    "cash_usd": 0.10
+  },
+  "accounts": {
+    "nisa_growth": { "limit_yearly": 2400000, "limit_lifetime": 18000000, "used_yearly": 0, "used_lifetime": 0 },
+    "nisa_tsumitate": { "limit_yearly": 1200000, "used_yearly": 0 },
+    "tokutei": { "loss_carry": 0, "realized_gain_ytd": 0 },
+    "ideco": { "monthly": 23000, "ytd": 0 }
+  },
+  "positions": [
+    {
+      "ticker": "7203",
+      "market": "JP",
+      "name": "Toyota Motor",
+      "qty": 100,
+      "avg_price_jpy": 2800,
+      "account": "nisa_growth",
+      "added": "2025-08-12",
+      "thesis": "Hybrid leader, undervalued vs BEV peers, ¥-weak tailwind",
+      "stop_loss": 2400,
+      "target_1y": 3500
+    },
+    {
+      "ticker": "6758",
+      "market": "JP",
+      "name": "Sony Group",
+      "qty": 50,
+      "avg_price_jpy": 12500,
+      "account": "tokutei",
+      "added": "2025-11-03",
+      "thesis": "Imaging + game + music conglomerate, content moat",
+      "stop_loss": 10000,
+      "target_1y": 16000
+    },
+    {
+      "ticker": "AAPL",
+      "market": "US",
+      "name": "Apple",
+      "qty": 10,
+      "avg_price_usd": 180,
+      "account": "nisa_growth",
+      "added": "2025-09-15",
+      "thesis": "Services growth + buyback, low-div so NISA OK",
+      "stop_loss": 150,
+      "target_1y": 240
+    },
+    {
+      "ticker": "NVDA",
+      "market": "US",
+      "name": "NVIDIA",
+      "qty": 5,
+      "avg_price_usd": 480,
+      "account": "tokutei",
+      "added": "2025-06-01",
+      "thesis": "AI compute monopoly — but watch valuation",
+      "stop_loss": 380,
+      "target_1y": 800
+    },
+    {
+      "ticker": "MSFT",
+      "market": "US",
+      "name": "Microsoft",
+      "qty": 8,
+      "avg_price_usd": 320,
+      "account": "nisa_growth",
+      "added": "2025-07-20",
+      "thesis": "Azure + OpenAI partnership, enterprise stickiness",
+      "stop_loss": 280,
+      "target_1y": 450
+    }
+  ],
+  "watchlist": [
+    { "ticker": "9984", "market": "JP", "name": "SoftBank Group", "note": "Wait for Vision Fund mark-down catalyst" },
+    { "ticker": "SCHD", "market": "US", "name": "Schwab US Dividend ETF", "note": "Wait re-entry, prefer 特定 account" }
+  ]
+}

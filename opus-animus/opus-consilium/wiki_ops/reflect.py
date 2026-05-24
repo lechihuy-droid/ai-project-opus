@@ -9,8 +9,8 @@ import re
 from datetime import datetime, date, timedelta
 from pathlib import Path
 
-from groq import Groq
 from utils.config import personal_wiki_dir, raw_dir
+from utils.llm import claude_cli
 
 
 def _get_week_str() -> str:
@@ -88,8 +88,6 @@ def run_reflect(send_telegram: bool = True) -> str:
             page_contexts.append(f"[{page_path}]\n{snippet}\n")
     context_text = "\n---\n".join(page_contexts) if page_contexts else recent_summary
 
-    # Groq call
-    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
     prompt = f"""You are a personal knowledge curator helping someone reflect on their weekly learning.
 
 Week: {week}
@@ -122,13 +120,7 @@ Write a concise weekly reflection in Vietnamese. Format:
 Keep it tight — 200-300 words max. Be specific, not generic."""
 
     try:
-        resp = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=600,
-            temperature=0.5,
-        )
-        reflection_text = resp.choices[0].message.content.strip()
+        reflection_text = claude_cli(prompt, timeout=120)
     except Exception as e:
         reflection_text = f"(LLM error: {e})\n\nPages this week:\n{recent_summary}"
 

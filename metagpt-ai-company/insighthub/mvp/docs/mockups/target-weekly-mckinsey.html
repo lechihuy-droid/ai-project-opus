@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>[TARGET] Weekly Dashboard — Project Sakura</title>
+<link rel="stylesheet" href="../../../../../html-kit/styles.css">
+<style>
+  body { font-family: 'Segoe UI', sans-serif; }
+  .rag-band { display:flex; align-items:center; gap:24px; padding:18px 22px; background:#c0392b; color:#fff; border-radius:6px; margin:16px 0 24px; }
+  .rag-band .rag-status { font-size:28px; font-weight:700; letter-spacing:2px; }
+  .rag-band .rag-meta { font-size:13px; opacity:.95; }
+  .rag-band .rag-meta strong { display:inline-block; min-width:90px; }
+  .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:16px 0; }
+  .kpi { background:#f4f6f8; border-left:4px solid #1a3a6e; padding:12px 14px; border-radius:4px; }
+  .kpi .label { font-size:11px; color:#666; text-transform:uppercase; letter-spacing:1px; }
+  .kpi .value { font-size:24px; font-weight:700; color:#1a3a6e; margin:4px 0; }
+  .kpi .delta { font-size:12px; }
+  .kpi .delta.bad { color:#c0392b; }
+  .kpi .delta.good { color:#2e7d32; }
+  .kpi.red { border-left-color:#c0392b; }
+  .kpi.amber { border-left-color:#e67e22; }
+  .kpi.green { border-left-color:#2e7d32; }
+  .answer { background:#fff8e1; border-left:4px solid #f39c12; padding:14px 18px; margin:16px 0; font-size:14px; }
+  .answer strong { color:#1a3a6e; }
+  table.dense { width:100%; border-collapse:collapse; font-size:12.5px; margin:12px 0; }
+  table.dense th { background:#1a3a6e; color:#fff; text-align:left; padding:8px 10px; font-weight:600; font-size:12px; }
+  table.dense td { padding:7px 10px; border-bottom:1px solid #e5e8eb; vertical-align:top; }
+  table.dense tr:nth-child(even) td { background:#fafbfc; }
+  .sev-high { color:#c0392b; font-weight:700; }
+  .sev-med { color:#e67e22; font-weight:700; }
+  .sev-low { color:#7f8c8d; }
+  .section-h { font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; color:#1a3a6e; border-bottom:2px solid #1a3a6e; padding-bottom:4px; margin:24px 0 10px; }
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .bar-chart { font-size:11.5px; }
+  .bar-row { display:flex; align-items:center; gap:8px; margin:4px 0; }
+  .bar-row .name { width:140px; text-align:right; color:#444; }
+  .bar-row .bar-bg { flex:1; height:18px; background:#eef1f4; border-radius:2px; position:relative; }
+  .bar-row .bar-actual { height:100%; background:#1a3a6e; border-radius:2px; }
+  .bar-row .bar-planned { position:absolute; top:0; width:2px; height:100%; background:#e67e22; }
+  .bar-row .num { width:80px; font-family:'Consolas',monospace; color:#666; }
+  .src-col { font-family:'Consolas',monospace; font-size:11px; color:#888; }
+  .doc-footer-note { color:#888; font-size:11px; margin-top:32px; padding-top:12px; border-top:1px solid #e5e8eb; }
+</style>
+</head>
+<body>
+
+<!-- TOP STATUS BAND -->
+<div class="rag-band">
+  <div class="rag-status">RED</div>
+  <div class="rag-meta">
+    <div><strong>Project:</strong> Sakura · E-commerce platform</div>
+    <div><strong>Period:</strong> 2026-05-15 → 2026-05-21 (Week 21)</div>
+    <div><strong>DM:</strong> HUY Le · <strong>Generated:</strong> 2026-05-23</div>
+  </div>
+  <div style="margin-left:auto; text-align:right;">
+    <div style="font-size:11px; opacity:.85;">PREVIOUS</div>
+    <div><span class="badge red" style="background:#fff; color:#c0392b;">Red</span> → <span class="badge red" style="background:#fff; color:#c0392b;">Red</span></div>
+  </div>
+</div>
+
+<!-- THE ANSWER (BLUF — bottom line up front) -->
+<div class="answer">
+  <strong>The answer:</strong> Phase 1 đã trượt 100% (0% actual vs 100% planned) và Phase 2 chậm 48.6pp so với plan; velocity 3 sprint liên tiếp dưới 70% commit. <strong>Cần escalation tới sponsor để re-baseline scope hoặc bổ sung 2 dev cho Phase 2 trước 2026-05-27.</strong>
+</div>
+
+<!-- KPI TILES -->
+<div class="kpi-grid">
+  <div class="kpi red">
+    <div class="label">Schedule (SPI)</div>
+    <div class="value">0.42</div>
+    <div class="delta bad">−0.18 vs last week · 29.4% actual / 70.4% plan</div>
+  </div>
+  <div class="kpi amber">
+    <div class="label">Velocity</div>
+    <div class="value">42 SP</div>
+    <div class="delta bad">61.6% commit rate · 3 sprints below 70%</div>
+  </div>
+  <div class="kpi red">
+    <div class="label">High-sev risks</div>
+    <div class="value">11</div>
+    <div class="delta bad">+3 vs last week</div>
+  </div>
+  <div class="kpi amber">
+    <div class="label">Open bugs</div>
+    <div class="value">7</div>
+    <div class="delta">1 High · 4 Med · 1 Sev-1 · MTTF 7d</div>
+  </div>
+</div>
+
+<!-- PROGRESS VS PLAN -->
+<div class="section-h">Progress vs plan — by phase</div>
+<div class="bar-chart">
+  <div class="bar-row">
+    <div class="name">Phase 1 Design</div>
+    <div class="bar-bg"><div class="bar-actual" style="width:0%;"></div><div class="bar-planned" style="left:100%;"></div></div>
+    <div class="num">0% / 100%</div>
+  </div>
+  <div class="bar-row">
+    <div class="name">Phase 2 Dev</div>
+    <div class="bar-bg"><div class="bar-actual" style="width:35.6%;"></div><div class="bar-planned" style="left:84.2%;"></div></div>
+    <div class="num">35.6% / 84.2%</div>
+  </div>
+  <div class="bar-row">
+    <div class="name">Phase 3 Testing</div>
+    <div class="bar-bg"><div class="bar-actual" style="width:0%;"></div><div class="bar-planned" style="left:0%;"></div></div>
+    <div class="num">0% / 0%</div>
+  </div>
+  <div style="font-size:11px; color:#888; margin-top:6px;">
+    <span style="display:inline-block; width:10px; height:10px; background:#1a3a6e; vertical-align:middle;"></span> Actual &nbsp;
+    <span style="display:inline-block; width:2px; height:10px; background:#e67e22; vertical-align:middle; margin:0 4px;"></span> Planned milestone
+  </div>
+</div>
+
+<!-- TOP RISKS MATRIX -->
+<div class="section-h">Top risks &amp; mitigations (8 of 11)</div>
+<table class="dense">
+  <thead>
+    <tr>
+      <th style="width:40px;">#</th>
+      <th style="width:70px;">Sev</th>
+      <th>Risk</th>
+      <th style="width:130px;">Impact</th>
+      <th style="width:120px;">Owner</th>
+      <th style="width:200px;">Mitigation</th>
+      <th style="width:90px;">ETA</th>
+      <th style="width:80px;">Source</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td><td><span class="sev-high">HIGH</span></td>
+      <td>Phase 1 Design 0% actual vs 100% planned — Requirements / UX wireframes / Architecture all slipped</td>
+      <td>Blocks Phase 2 acceptance</td>
+      <td>HUY (DM) — needs sponsor</td>
+      <td>Re-baseline scope; OR + 2 senior FE for catch-up sprint</td>
+      <td>2026-05-27</td>
+      <td class="src-col">wbs:P1-T01–03</td>
+    </tr>
+    <tr>
+      <td>2</td><td><span class="sev-high">HIGH</span></td>
+      <td>Phase 2 Dev 48.6pp below plan (35.6% vs 84.2%)</td>
+      <td>2-week schedule slip; UAT at risk</td>
+      <td>Tanaka (Tech Lead)</td>
+      <td>Cut Loyalty + Multi-currency from Sprint 10 scope</td>
+      <td>2026-05-24</td>
+      <td class="src-col">wbs:P2-T04–09</td>
+    </tr>
+    <tr>
+      <td>3</td><td><span class="sev-high">HIGH</span></td>
+      <td>3 consecutive sprints below 70% velocity (Sprint 7/8/9 at 60/60/64.6%)</td>
+      <td>Forecast EAC + 18%</td>
+      <td>Tanaka + HUY</td>
+      <td>Sprint retro + reduce sprint commit by 20% from S10</td>
+      <td>2026-05-26</td>
+      <td class="src-col">facts.metrics</td>
+    </tr>
+    <tr>
+      <td>4</td><td><span class="sev-high">HIGH</span></td>
+      <td>SAKURA-12 Done but no linked commit/PR — potential ghost-Done</td>
+      <td>Quality gate failure</td>
+      <td>Nguyen (QA)</td>
+      <td>Re-open + verify; add CI gate blocking Done without PR link</td>
+      <td>2026-05-24</td>
+      <td class="src-col">jira:SAKURA-12</td>
+    </tr>
+    <tr>
+      <td>5</td><td><span class="sev-med">MED</span></td>
+      <td>SAKURA-26 Checkout crashes on Safari (Sev-1 bug open 4d)</td>
+      <td>Revenue impact at launch</td>
+      <td>Tanaka</td>
+      <td>Hotfix targeting Safari 17 + regression test</td>
+      <td>2026-05-25</td>
+      <td class="src-col">jira:SAKURA-26, github:PR-8</td>
+    </tr>
+    <tr>
+      <td>6</td><td><span class="sev-med">MED</span></td>
+      <td>SAKURA-15 Order webhook In Progress despite PR#5 merged</td>
+      <td>Status drift; orphan PR</td>
+      <td>Nguyen</td>
+      <td>Sync Jira status with PR merge state via webhook</td>
+      <td>2026-05-26</td>
+      <td class="src-col">jira:SAKURA-15, github:PR-5</td>
+    </tr>
+    <tr>
+      <td>7</td><td><span class="sev-med">MED</span></td>
+      <td>Slack blocker C-004 mentioned no Jira key — untracked risk</td>
+      <td>Visibility gap</td>
+      <td>HUY</td>
+      <td>Reach out to author; create tracking ticket</td>
+      <td>2026-05-24</td>
+      <td class="src-col">slack:C-004</td>
+    </tr>
+    <tr>
+      <td>8</td><td><span class="sev-med">MED</span></td>
+      <td>4 meeting decisions/actions with no matching Jira/Slack mention</td>
+      <td>Action items may be dropped</td>
+      <td>HUY</td>
+      <td>Reconcile minutes vs Jira weekly</td>
+      <td>Ongoing</td>
+      <td class="src-col">minutes:2026-05-15, 05-16</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="two-col">
+  <!-- DECISIONS MADE -->
+  <div>
+    <div class="section-h">Decisions made this week</div>
+    <table class="dense">
+      <thead><tr><th>Decision</th><th style="width:90px;">Owner</th><th style="width:80px;">Source</th></tr></thead>
+      <tbody>
+        <tr><td>Sprint 9 scope confirmed: checkout, payments, inventory</td><td>HUY</td><td class="src-col">min:05-15</td></tr>
+        <tr><td>Add guest-checkout flow as new scope item</td><td>Nguyen</td><td class="src-col">min:05-16</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ASKS / DECISIONS NEEDED -->
+  <div>
+    <div class="section-h">Decisions needed from sponsor</div>
+    <table class="dense">
+      <thead><tr><th>Ask</th><th style="width:90px;">By</th></tr></thead>
+      <tbody>
+        <tr><td>Approve Phase 2 scope cut (Loyalty + Multi-currency → Phase 3)</td><td>2026-05-24</td></tr>
+        <tr><td>Approve +2 senior FE allocation for Phase 1 catch-up</td><td>2026-05-27</td></tr>
+        <tr><td>Confirm new UAT target date if scope re-baseline</td><td>2026-05-30</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- THROUGHPUT TABLE -->
+<div class="section-h">Sprint velocity trend</div>
+<table class="dense">
+  <thead><tr><th>Sprint</th><th>Committed SP</th><th>Completed SP</th><th>Completion</th><th>Trend</th></tr></thead>
+  <tbody>
+    <tr><td>Sprint 7</td><td>40</td><td>24</td><td>60.0%</td><td><span class="sev-high">▼ below threshold</span></td></tr>
+    <tr><td>Sprint 8</td><td>45</td><td>27</td><td>60.0%</td><td><span class="sev-high">▼ flat low</span></td></tr>
+    <tr><td>Sprint 9 (current)</td><td>48</td><td>31</td><td>64.6%</td><td><span class="sev-med">▲ slight up but still below 70% gate</span></td></tr>
+  </tbody>
+</table>
+
+<!-- NEXT WEEK COMMITMENTS -->
+<div class="section-h">Next week commitments</div>
+<table class="dense">
+  <thead><tr><th style="width:90px;">WBS</th><th>Task</th><th style="width:110px;">Planned start</th><th style="width:100px;">Owner</th></tr></thead>
+  <tbody>
+    <tr><td>P2-T05</td><td>Tax calculation module</td><td>2026-05-05 <span class="sev-high">(2w late)</span></td><td>Tanaka</td></tr>
+    <tr><td>P2-T06</td><td>Payment gateway integration</td><td>2026-05-06 <span class="sev-high">(2w late)</span></td><td>Tanaka</td></tr>
+    <tr><td>P2-T07</td><td>Inventory sync service</td><td>2026-05-08 <span class="sev-med">(2w late)</span></td><td>Nguyen</td></tr>
+    <tr><td>P3-T10</td><td>Performance load testing</td><td>2026-05-25</td><td>Nguyen</td></tr>
+    <tr><td>P3-T11</td><td>Accessibility audit</td><td>2026-05-27</td><td>TBD</td></tr>
+  </tbody>
+</table>
+
+<!-- APPENDIX -->
+<details style="margin-top:24px;">
+  <summary style="cursor:pointer; font-weight:600; color:#1a3a6e;">Appendix · Completed (12), In Progress (19), Full citation index</summary>
+  <div style="margin-top:12px; font-size:12px;">
+    <p><strong>Completed (12):</strong> SAKURA-1, 2, 3, 4, 5, 6, 7, 8, 12, 31, 32, 33 — link to Jira</p>
+    <p><strong>In Progress (19):</strong> SAKURA-9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 25, 26, 27, 28, 29, 30, 35</p>
+    <p><strong>GitHub activity:</strong> 13 commits, 10 PRs</p>
+    <p><strong>Source index:</strong> jira (36 issues), wbs (12 tasks), chat (13 msgs), github (23 events), minutes (5 docs)</p>
+  </div>
+</details>
+
+<div class="doc-footer-note">
+  <strong>Design notes (sẽ remove khi production):</strong>
+  • BLUF answer ở top thay cho "Overall status: Red [12 citations]" cũ<br>
+  • 4 KPI tile thay cho 3-bullet executive summary<br>
+  • Risk matrix có owner/impact/mitigation/ETA — action-ready<br>
+  • Citation gom về cột "Source" cuối table — không inline trong câu<br>
+  • Bar chart inline thay cho "0.0% actual vs 100.0% planned" text<br>
+  • "Decisions needed" tách khỏi "Decisions made" → quyết định chưa làm hiển thị rõ
+</div>
+
+</body>
+</html>

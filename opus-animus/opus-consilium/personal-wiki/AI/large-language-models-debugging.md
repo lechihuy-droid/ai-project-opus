@@ -45,6 +45,16 @@ This systematic approach for LLM debugging can be applied to OPUS ANIMUS by inte
 ## Sources
 - https://arxiv.org/abs/2604.23027
 ## See also
+- [[transformer-approximations-from-relus]] — Transformer Approximations from ReLUs
+- [[automated-ontology-generation-with-llms]] — Automated Ontology Generation with LLMs
+- [[rethinking-layer-redundancy-in-llms]] — Rethinking Layer Redundancy in Large Language Models
+- [[masked-diffusion-language-models]] — Masked Diffusion Language Models
+- [[nautile-370m-spectral-memory-meets-attention]] — Nautile-370M: Spectral Memory Meets Attention in a Small Reasoning Model
+- [[intrinsic-mutual-information-for-preference-optimization]] — Intrinsic Mutual Information for Preference Optimization
+- [[incompressible-knowledge-probes]] — Incompressible Knowledge Probes: Estimating Black-Box LLM Parameter Counts
+- [[dont-make-the-llm-read-the-graph]] — Don't Make the LLM Read the Graph: Make the Graph Think
+- [[compute-aligned-training]] — Compute Aligned Training: Optimizing for Test Time Inference
+- [[architecture-determines-observability-in-transformers]] — Architecture Determines Observability in Transformers
 - [[analytica-soft-propositional-reasoning]] — Analytica: Soft Propositional Reasoning for Robust and Scalable LLM-Driven Analysis
 - [[power-law-compositional-reasoning]] — The Power of Power Law: Asymmetry Enables Compositional Reasoning
 - [[formal-science-autoformalisation]] — Formal Science: Scalable Human-in-the-Loop Autoformalisation of Science

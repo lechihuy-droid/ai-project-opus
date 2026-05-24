@@ -36,3 +36,14 @@ Payload~
 # Nested Git workspace.
 opus-animus/opus-lucida/space/
 opus-animus/opus-lucida/production/00-active/wake-cluster/video/lucida_assembly_*/
+
+# Font binaries — moved to Drive raw assets at Phase 1 (deck_generator @font-face reads from disk locally).
+opus-animus/opus-lucida/production/02-assets/fonts/sf-pro/
+
+# Auto-generated daily intel review logs.
+opus-animus/opus-consilium/logs/
+
+# Obsidian per-machine state (workspace layout, cache) — config chung vẫn track.
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache

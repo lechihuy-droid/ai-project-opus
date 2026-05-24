@@ -5,11 +5,10 @@ If a source is short enough (<= THRESHOLD), pass it as-is.
 If longer, use one LLM call to extract key information before the main ingest call.
 This preserves signal from long papers/articles that would otherwise be truncated.
 """
-from groq import Groq
+from utils.llm import claude_cli
 
 COMPRESS_THRESHOLD = 3000   # chars — below this, no compression needed
 COMPRESS_INPUT_CAP = 6000   # chars fed to the compressor LLM (captures head + structure)
-COMPRESS_MAX_TOKENS = 700   # target ~2000 chars output
 
 
 _CATEGORY_HINTS = {
@@ -29,7 +28,7 @@ _CATEGORY_HINTS = {
 }
 
 
-def compress_source(content: str, category: str, client: Groq, model: str) -> tuple[str, bool]:
+def compress_source(content: str, category: str) -> tuple[str, bool]:
     """
     Returns (processed_content, was_compressed).
     processed_content is ready to paste into the ingest LLM prompt.
@@ -40,28 +39,13 @@ def compress_source(content: str, category: str, client: Groq, model: str) -> tu
     hint = _CATEGORY_HINTS.get(category, _CATEGORY_HINTS["articles"])
     input_text = content[:COMPRESS_INPUT_CAP]
 
-    resp = client.chat.completions.create(
-        model=model,
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                    "You are a precise content extractor. "
-                    "Extract key information faithfully. Never add information not in the source. "
-                    "Output plain text, no JSON, no markdown fences."
-                ),
-            },
-            {
-                "role": "user",
-                "content": (
-                    f"{hint}\n\n"
-                    f"Output a structured summary of ~1800 chars.\n\n"
-                    f"SOURCE ({len(content)} chars total, showing first {len(input_text)}):\n"
-                    f"{input_text}"
-                ),
-            },
-        ],
-        max_tokens=COMPRESS_MAX_TOKENS,
-        temperature=0.1,
+    prompt = (
+        "You are a precise content extractor. "
+        "Extract key information faithfully. Never add information not in the source. "
+        "Output plain text, no JSON, no markdown fences.\n\n"
+        f"{hint}\n\n"
+        f"Output a structured summary of ~1800 chars.\n\n"
+        f"SOURCE ({len(content)} chars total, showing first {len(input_text)}):\n"
+        f"{input_text}"
     )
-    return resp.choices[0].message.content.strip(), True
+    return claude_cli(prompt, timeout=120), True

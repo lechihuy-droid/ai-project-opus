@@ -188,38 +188,6 @@ def _handle_command(text: str, chat_id: str):
     _reply(chat_id, f"Unknown args: {args[:80]}\nSend /wiki help for usage.")
 
 
-def _transcribe_voice(file_id: str) -> str:
-    """Download Telegram voice → transcribe với Groq Whisper."""
-    import os, tempfile
-    from groq import Groq
-
-    token = _token()
-    # Lấy file path từ Telegram
-    r = requests.get(TG_API.format(token=token, method="getFile"),
-                     params={"file_id": file_id}, timeout=10)
-    file_path = r.json()["result"]["file_path"]
-
-    # Download file .ogg
-    audio_url = f"https://api.telegram.org/file/bot{token}/{file_path}"
-    audio_data = requests.get(audio_url, timeout=30).content
-
-    # Transcribe với Groq Whisper
-    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-    with tempfile.NamedTemporaryFile(suffix=".ogg", delete=False) as tmp:
-        tmp.write(audio_data)
-        tmp_path = tmp.name
-
-    try:
-        with open(tmp_path, "rb") as f:
-            result = client.audio.transcriptions.create(
-                file=(Path(tmp_path).name, f.read()),
-                model="whisper-large-v3-turbo",
-                language="vi",
-            )
-        return result.text.strip()
-    finally:
-        Path(tmp_path).unlink(missing_ok=True)
-
 
 def _ideas_file() -> Path:
     from utils.config import raw_dir
@@ -243,6 +211,99 @@ def _capture_idea(text: str, chat_id: str):
     _reply(chat_id, f"✓ Saved — wiki sẽ tổng hợp lúc 05:30")
 
 
+def _decision_context() -> tuple[str, list[str]]:
+    """Read the core decision-brain pages for mobile Consilium chat."""
+    from utils.config import personal_wiki_dir
+
+    wiki = personal_wiki_dir()
+    page_paths = [
+        "Personal/wiki-chat-protocol.md",
+        "Personal/current-beliefs.md",
+        "Personal/open-questions.md",
+        "Personal/decisions.md",
+        "Personal/active-project-context.md",
+        "AI/ai-trend-radar.md",
+        "Personal/reskill-roadmap.md",
+        "Stock/investment-theses.md",
+    ]
+    chunks = []
+    read = []
+    for rel in page_paths:
+        p = wiki / rel
+        if not p.exists():
+            continue
+        text = p.read_text(encoding="utf-8", errors="replace")
+        stem = p.stem
+        chunks.append(f"=== [[{stem}]] ===\n{text[:2200]}")
+        read.append(stem)
+    return "\n\n".join(chunks), read
+
+
+def _run_consilium_brief(question: str) -> dict:
+    """Single-call decision brief for iPhone/Telegram use."""
+    from utils.llm import claude_cli
+
+    context, pages_read = _decision_context()
+
+    if not question.strip():
+        question = (
+            "Give me today's AI trend, re-skill, and investment brief. "
+            "Answer: what changed, what it means for AI trends, what it means "
+            "for re-skill, what it means for investment thinking, what to do, "
+            "what to ignore, and which wiki pages should be updated."
+        )
+
+    prompt = (
+        "You are Opus Consilium, Huy's decision brain. "
+        "Use the provided wiki pages only. Do not summarize all news. "
+        "Focus on AI trends, re-skill planning, investment thinking, "
+        "Opus Animus strategy, and Lucida workflow implications. "
+        "Separate evidence from speculation. Plain text, no emojis. "
+        "Cite pages as [[page-name]].\n\n"
+        f"DECISION WIKI CONTEXT:\n{context}\n\nQUESTION:\n{question}"
+    )
+    answer = claude_cli(prompt, timeout=180)
+    return {
+        "status": "ok",
+        "answer": answer,
+        "pages_read": pages_read,
+    }
+
+
+def _handle_consilium_command(text: str, chat_id: str):
+    text = text.strip()
+    if not text.startswith("/consilium"):
+        return
+
+    args = text[len("/consilium"):].strip()
+
+    if args == "help":
+        _reply(chat_id, (
+            "<b>Consilium commands:</b>\n"
+            "/consilium - AI trend + re-skill + investment brief\n"
+            "/consilium ask &lt;question&gt; - decision-brain Q&A\n"
+            "/consilium brief - same as /consilium\n"
+            "/wiki help - raw wiki commands"
+        ))
+        return
+
+    if args == "brief":
+        args = ""
+    elif args.startswith("ask "):
+        args = args[4:].strip()
+
+    _reply(chat_id, "Reading Consilium decision brain...")
+    try:
+        result = _run_consilium_brief(args)
+        answer = result["answer"]
+        if result.get("pages_read"):
+            answer += "\n\nDecision pages: " + ", ".join(f"[[{p}]]" for p in result["pages_read"])
+        _reply(chat_id, answer)
+    except Exception as e:
+        print(f"[consilium] error: {e}")
+        _reply(chat_id, f"Consilium error: {e}")
+
+
 def poll_once():
     """Process all pending messages since last offset."""
     if not _token():
@@ -260,10 +321,15 @@ def poll_once():
         text = msg.get("text", "")
         chat_id = str(msg.get("chat", {}).get("id", _chat_id()))
 
-        voice = msg.get("voice") or msg.get("audio")
-
-        if not text and not voice:
+        if not text:
             pass
+        elif text.startswith("/consilium"):
+            print(f"[poll] Consilium command from {chat_id}: {text[:60]}")
+            try:
+                _handle_consilium_command(text, chat_id)
+            except Exception as e:
+                print(f"[poll] Consilium handler error: {e}")
+                _reply(chat_id, f"Error: {e}")
         elif text and text.startswith("/wiki"):
             print(f"[poll] Command from {chat_id}: {text[:60]}")
             try:
@@ -271,19 +337,6 @@ def poll_once():
             except Exception as e:
                 print(f"[poll] Handler error: {e}")
                 _reply(chat_id, f"Error: {e}")
-        elif voice:
-            # Voice message → Whisper → capture to ideas.md
-            print(f"[poll] Voice message from {chat_id}")
-            try:
-                _reply(chat_id, "🎙 Đang transcribe...")
-                transcript = _transcribe_voice(voice["file_id"])
-                if transcript:
-                    _capture_idea(f"[voice] {transcript}", chat_id)
-                else:
-                    _reply(chat_id, "Không nhận ra giọng nói, thử lại.")
-            except Exception as e:
-                print(f"[poll] Voice error: {e}")
-                _reply(chat_id, f"Lỗi transcribe: {e}")
         elif text:
             # Free text → capture to ideas.md
             print(f"[poll] Capturing idea: {text[:60]}")

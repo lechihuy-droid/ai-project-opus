@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lucida — Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="lucida-ds-components.jsx"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #111; font-family: 'DM Sans', sans-serif; }
+</style>
+</head>
+<body>
+
+<script type="text/babel">
+const t = LucidaD;
+const tL = LucidaL;
+const F = LucidaFonts;
+
+// ── Color swatch ────────────────────────────────────────────────
+function Swatch({ color, name, value, theme }) {
+  const dark = theme === 'dark';
+  return (
+    <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
+      <div style={{
+        width:'100%', height:64, borderRadius:10, background:color,
+        border:'1px solid rgba(128,128,128,0.18)',
+      }}/>
+      <div style={{ fontSize:11, fontWeight:600, color: dark ? '#e8e8f0' : '#1a1714', fontFamily:F.body, letterSpacing:'0.05em' }}>{name}</div>
+      <div style={{ fontSize:10, color: dark ? '#7070a0' : '#8a7f6f', fontFamily:F.mono }}>{value}</div>
+    </div>
+  );
+}
+
+// ── PALETTE BOARD ───────────────────────────────────────────────
+function PaletteBoard({ theme, t }) {
+  const dark = theme === 'dark';
+  const tokens = [
+    ['bg',        t.bg],
+    ['card',      t.card],
+    ['card2',     t.card2],
+    ['card3',     t.card3],
+    ['fg',        t.fg],
+    ['fgMuted',   t.fgMuted],
+    ['fgSub',     t.fgSub],
+    ['accent',    t.accent],
+    ['accentDim', t.accentDim],
+    ['red',       t.red],
+    ['blue',      t.blue],
+    ['green',     t.green],
+  ];
+  return (
+    <div style={{ background:t.bg, padding:32, height:'100%', display:'flex', flexDirection:'column', gap:24 }}>
+      <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between' }}>
+        <div>
+          <div style={{ fontSize:11, color:t.fgMuted, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:F.body, marginBottom:6 }}>Color Tokens</div>
+          <div style={{ fontSize:28, fontWeight:700, color:t.fg, fontFamily:F.display, letterSpacing:'-0.01em' }}>{dark ? 'Video Mode' : 'Study Mode'}</div>
+          <div style={{ fontSize:13, color:t.fgMuted, fontFamily:F.body, marginTop:4 }}>{dark ? 'Dark + Amber · for video / screen' : 'Cream + Crimson · for worksheet / print'}</div>
+        </div>
+        <Chip t={t} variant="accent">{theme}</Chip>
+      </div>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:14 }}>
+        {tokens.map(([name, value]) => (
+          <Swatch key={name} color={value} name={name} value={value.length > 18 ? value.slice(0,18)+'…' : value} theme={theme} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── TYPE SPECIMEN ───────────────────────────────────────────────
+function TypeSpecimen({ t }) {
+  return (
+    <div style={{ background:t.bg, padding:32, height:'100%', display:'flex', flexDirection:'column', gap:20 }}>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+        <div>
+          <div style={{ fontSize:11, color:t.fgMuted, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:F.body, marginBottom:6 }}>Typography</div>
+          <div style={{ fontSize:24, fontWeight:700, color:t.fg, fontFamily:F.display }}>Three families</div>
+        </div>
+        <Chip t={t} variant="accent">Type</Chip>
+      </div>
+
+      <div style={{ display:'flex', flexDirection:'column', gap:18 }}>
+        {/* Display */}
+        <div style={{ background:t.card, padding:'18px 22px', borderRadius:10, border:`1px solid ${t.border}` }}>
+          <div style={{ display:'flex', alignItems:'baseline', gap:12, marginBottom:10 }}>
+            <span style={{ fontSize:11, fontWeight:700, color:t.accent, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:F.body }}>Display</span>
+            <span style={{ fontSize:11, color:t.fgMuted, fontFamily:F.mono }}>Space Grotesk</span>
+          </div>
+          <div style={{ fontSize:36, fontWeight:700, color:t.fg, fontFamily:F.display, letterSpacing:'-0.02em', lineHeight:1.1 }}>Học theo mạch logic</div>
+          <div style={{ fontSize:18, fontWeight:500, color:t.fg, fontFamily:F.display, marginTop:6 }}>Slide titles · headlines · wordmark</div>
+        </div>
+
+        {/* Body */}
+        <div style={{ background:t.card, padding:'18px 22px', borderRadius:10, border:`1px solid ${t.border}` }}>
+          <div style={{ display:'flex', alignItems:'baseline', gap:12, marginBottom:10 }}>
+            <span style={{ fontSize:11, fontWeight:700, color:t.accent, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:F.body }}>Body</span>
+            <span style={{ fontSize:11, color:t.fgMuted, fontFamily:F.mono }}>DM Sans</span>
+          </div>
+          <div style={{ fontSize:16, color:t.fg, fontFamily:F.body, lineHeight:1.6 }}>4 mẫu わけ là 4 hành động khác nhau của người nói: kết luận, phủ định, bác bỏ, hoặc bị ràng buộc.</div>
+          <div style={{ fontSize:13, color:t.fgMuted, fontFamily:F.body, marginTop:6 }}>Captions, labels, UI text, paragraphs.</div>
+        </div>
+
+        {/* JP */}
+        <div style={{ background:t.card, padding:'18px 22px', borderRadius:10, border:`1px solid ${t.border}` }}>
+          <div style={{ display:'flex', alignItems:'baseline', gap:12, marginBottom:10 }}>
+            <span style={{ fontSize:11, fontWeight:700, color:t.accent, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:F.body }}>Japanese</span>
+            <span style={{ fontSize:11, color:t.fgMuted, fontFamily:F.mono }}>Noto Sans JP</span>
+          </div>
+          <div style={{ fontSize:28, color:t.fg, fontFamily:F.jp, letterSpacing:'0.04em', lineHeight:1.5 }}>行きたくない<span style={{ color:t.accent, fontWeight:700 }}>わけではありません</span>。</div>
+          <div style={{ fontSize:13, color:t.fgMuted, fontFamily:F.body, marginTop:6 }}>Example sentences · grammar tokens · vocabulary</div>
+        </div>
+
+        {/* Mono */}
+        <div style={{ background:t.card, padding:'18px 22px', borderRadius:10, border:`1px solid ${t.border}` }}>
+          <div style={{ display:'flex', alignItems:'baseline', gap:12, marginBottom:10 }}>
+            <span style={{ fontSize:11, fontWeight:700, color:t.accent, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:F.body }}>Mono · Pattern</span>
+            <span style={{ fontSize:11, color:t.fgMuted, fontFamily:F.mono }}>Space Mono</span>
+          </div>
+          <div style={{ fontSize:18, color:t.fg, fontFamily:F.mono, letterSpacing:'0.04em' }}>普通形 + わけではない</div>
+          <div style={{ fontSize:13, color:t.fgMuted, fontFamily:F.body, marginTop:6 }}>Grammar patterns · structures · technical tokens</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── BRAND BOARD ─────────────────────────────────────────────────
+function BrandBoard({ t }) {
+  return (
+    <div style={{ background:t.bg, padding:40, height:'100%', display:'flex', flexDirection:'column', gap:32 }}>
+      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between' }}>
+        <div>
+          <div style={{ fontSize:11, color:t.fgMuted, letterSpacing:'0.18em', textTransform:'uppercase', fontFamily:F.body, marginBottom:14 }}>Brand</div>
+          <LucidaWordmark t={t} size={72} />
+          <div style={{ fontSize:14, color:t.fgMuted, fontFamily:F.body, fontStyle:'italic', marginTop:14, letterSpacing:'0.02em' }}>
+            Tiếng Nhật rõ ràng. Học theo mạch logic, không học theo bảng dịch.
+          </div>
+        </div>
+        <div style={{ display:'flex', flexDirection:'column', gap:8, alignItems:'flex-end' }}>
+          <Chip t={t} variant="solid">v1.0</Chip>
+          <Chip t={t}>JP × VN</Chip>
+        </div>
+      </div>
+
+      {/* Brand principles */}
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:14 }}>
+        {[
+          { num:'01', label:'Mạch logic',  desc:'Mỗi mẫu ngữ pháp là một hành động của người nói.' },
+          { num:'02', label:'3 cách nhìn', desc:'Nghĩa – Hình – Dụng. Luôn đủ ba góc, không thiếu.' },
+          { num:'03', label:'Dấu hiệu',     desc:'Học để chọn đúng mẫu khi vào đề, không chỉ để hiểu.' },
+        ].map(p => (
+          <div key={p.num} style={{ background:t.card, padding:'18px 20px', borderRadius:10, border:`1px solid ${t.border}` }}>
+            <div style={{ fontSize:11, color:t.accent, fontFamily:F.mono, fontWeight:700, marginBottom:8 }}>{p.num}</div>
+            <div style={{ fontSize:16, fontWeight:700, color:t.fg, fontFamily:F.display, marginBottom:6 }}>{p.label}</div>
+            <div style={{ fontSize:12, color:t.fgMuted, fontFamily:F.body, lineHeight:1.5 }}>{p.desc}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Wordmark lockups */}
+      <div>
+        <div style={{ fontSize:11, color:t.fgMuted, letterSpacing:'0.14em', textTransform:'uppercase', fontFamily:F.body, marginBottom:14 }}>Wordmark lockups</div>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+          <div style={{ background:t.card, padding:'24px 24px', borderRadius:10, border:`1px solid ${t.border}`, display:'flex', alignItems:'center', justifyContent:'center', height:120, flexDirection:'column', gap:10 }}>
+            <LucidaWordmark t={t} size={36} />
+            <div style={{ fontSize:10, color:t.fgMuted, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:F.body }}>日本語 · N2 method</div>
+          </div>
+          <div style={{ background:t.accent, padding:'24px 24px', borderRadius:10, display:'flex', alignItems:'center', justifyContent:'center', height:120, flexDirection:'column', gap:10 }}>
+            <div style={{ display:'flex', alignItems:'baseline', gap:3, fontFamily:F.display }}>
+              <span style={{ fontSize:36, fontWeight:700, color: t.mode==='dark' ? '#0d0d16' : '#fff', letterSpacing:'-0.035em', lineHeight:1 }}>lucida</span>
+              <span style={{ display:'inline-block', width:5, height:5, borderRadius:'50%', background: t.mode==='dark' ? '#0d0d16' : '#fff', marginBottom:2 }}/>
+            </div>
+            <div style={{ fontSize:10, color: t.mode==='dark' ? '#0d0d16' : '#fff', opacity:0.7, letterSpacing:'0.22em', textTransform:'uppercase', fontFamily:F.body }}>日本語 · N2 method</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── SLIDE TEMPLATE THUMBNAIL ────────────────────────────────────
+function SlideTemplate({ t, kind }) {
+  const W = 480, H = 270;
+  if (kind === 'hook') {
+    return (
+      <div style={{ width:W, height:H, background:t.bg, padding:'20px 26px', borderRadius:10, position:'relative', fontFamily:F.body, overflow:'hidden' }}>
+        <div style={{ position:'absolute', top:14, right:18, fontSize:9, color:t.fgMuted, letterSpacing:'0.1em' }}>01 / 17</div>
+        <div style={{ position:'absolute', bottom:14, right:18, fontSize:9, color:t.fgMuted, letterSpacing:'0.18em', textTransform:'uppercase' }}>lucida</div>
+        <div style={{ fontSize:9, color:t.accent, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:6, marginTop:14 }}>わけ Family</div>
+        <div style={{ width:24, height:2, background:t.accent, marginBottom:18 }}/>
+        <div style={{ fontSize:17, fontFamily:F.jp, color:t.fg, letterSpacing:'0.03em', marginBottom:8 }}>行きたくない<span style={{ color:t.accent, fontWeight:700 }}>わけではありません</span>。</div>
+        <div style={{ fontSize:17, fontFamily:F.jp, color:t.fg, letterSpacing:'0.03em', marginBottom:18 }}>今日は行く<span style={{ color:t.red, fontWeight:700 }}>わけにはいきません</span>。</div>
+        <div style={{ fontSize:11, color:t.fgMuted }}>Cùng có わけ — nhưng không cùng mạch logic</div>
+      </div>
+    );
+  }
+  if (kind === 'grammar') {
+    return (
+      <div style={{ width:W, height:H, background:t.bg, padding:'20px 26px', borderRadius:10, position:'relative', fontFamily:F.body, overflow:'hidden', display:'flex', gap:18 }}>
+        <div style={{ position:'absolute', top:14, right:18, fontSize:9, color:t.fgMuted, letterSpacing:'0.1em' }}>06 / 17</div>
+        <div style={{ position:'absolute', bottom:14, right:18, fontSize:9, color:t.fgMuted, letterSpacing:'0.18em', textTransform:'uppercase' }}>lucida</div>
+        <div style={{ flex:1 }}>
+          <div style={{ fontSize:9, color:t.accent, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:6, marginTop:14 }}>Mẫu 1</div>
+          <div style={{ width:24, height:2, background:t.accent, marginBottom:12 }}/>
+          <div style={{ fontSize:22, fontFamily:F.display, color:t.accent, fontWeight:700, marginBottom:14 }}>わけではない</div>
+          <div style={{ fontSize:9, color:t.fgMuted, letterSpacing:'0.1em', textTransform:'uppercase', marginBottom:4 }}>Nghĩa</div>
+          <div style={{ fontSize:11, color:t.fg, marginBottom:8 }}>không phải là…</div>
+          <div style={{ fontSize:9, color:t.fgMuted, letterSpacing:'0.1em', textTransform:'uppercase', marginBottom:4 }}>Hình</div>
+          <div style={{ fontSize:11, color:t.fg, fontFamily:F.mono }}>普通形 + わけではない</div>
+        </div>
+        <div style={{ flex:1, paddingTop:18 }}>
+          <div style={{ background:t.card, borderRadius:8, padding:'14px 16px', borderLeft:`3px solid ${t.accent}`, border:`1px solid ${t.border}` }}>
+            <div style={{ fontSize:9, color:t.accent, letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:8 }}>Ví dụ</div>
+            <div style={{ fontSize:14, fontFamily:F.jp, color:t.fg, letterSpacing:'0.02em', marginBottom:6 }}>行きたくない<span style={{ color:t.accent, fontWeight:700 }}>わけではありません</span>。</div>
+            <div style={{ fontSize:10, color:t.fgMuted }}>Không phải là không muốn đi.</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  if (kind === 'recap') {
+    const rows = [
+      { jp:'わけだ', vn:'kết luận hợp lý', color:t.blue },
+      { jp:'わけではない', vn:'không phải là…', color:t.accent },
+      { jp:'わけがない', vn:'không thể nào…', color:t.green },
+      { jp:'わけにはいかない', vn:'ràng buộc', color:t.red },
+    ];
+    return (
+      <div style={{ width:W, height:H, background:t.bg, padding:'20px 26px', borderRadius:10, position:'relative', fontFamily:F.body, overflow:'hidden' }}>
+        <div style={{ position:'absolute', top:14, right:18, fontSize:9, color:t.fgMuted, letterSpacing:'0.1em' }}>16 / 17</div>
+        <div style={{ position:'absolute', bottom:14, right:18, fontSize:9, color:t.fgMuted, letterSpacing:'0.18em', textTransform:'uppercase' }}>lucida</div>
+        <div style={{ fontSize:9, color:t.accent, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:6, marginTop:14 }}>Recap</div>
+        <div style={{ width:24, height:2, background:t.accent, marginBottom:14 }}/>
+        <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
+          {rows.map(r => (
+            <div key={r.jp} style={{ display:'flex', alignItems:'center', gap:14, padding:'8px 14px', background:t.card, borderRadius:6, border:`1px solid ${t.border}` }}>
+              <div style={{ fontSize:13, fontFamily:F.jp, fontWeight:700, color:r.color, minWidth:120 }}>{r.jp}</div>
+              <div style={{ width:1, height:14, background:t.border }}/>
+              <div style={{ fontSize:11, color:t.fg }}>{r.vn}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  return null;
+}
+
+// ── APPLICATIONS: worksheet, landing, thumbnail ─────────────────
+function WorksheetPreview({ t }) {
+  return (
+    <div style={{ background:'#fff', width:'100%', height:'100%', padding:36, fontFamily:F.body, display:'flex', flexDirection:'column', gap:18, color:'#1a1714' }}>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', borderBottom:`2px solid ${tL.accent}`, paddingBottom:14 }}>
+        <div style={{ display:'flex', alignItems:'baseline', gap:3 }}>
+          <span style={{ fontSize:28, fontWeight:700, fontFamily:F.display, letterSpacing:'-0.035em', color:'#1a1714' }}>lucida</span>
+          <span style={{ display:'inline-block', width:5, height:5, borderRadius:'50%', background:tL.accent }}/>
+        </div>
+        <div style={{ fontSize:11, color:'#8a7f6f', letterSpacing:'0.14em', textTransform:'uppercase' }}>Worksheet · N2</div>
+      </div>
+      <div>
+        <div style={{ fontSize:11, color:tL.accent, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:6 }}>Bài わけ</div>
+        <div style={{ fontSize:24, fontWeight:700, fontFamily:F.display, color:'#1a1714', lineHeight:1.2 }}>4 mẫu — 4 mạch logic</div>
+      </div>
+      <div>
+        <div style={{ fontSize:11, color:'#8a7f6f', letterSpacing:'0.1em', textTransform:'uppercase', fontWeight:600, marginBottom:8 }}>Bảng Nghĩa – Hình – Dụng</div>
+        <div style={{ display:'grid', gridTemplateColumns:'90px 1fr 1fr', gap:0, border:`1px solid #d6cfc0` }}>
+          {[
+            ['', 'Nghĩa', 'Hình'],
+            ['わけだ', 'kết luận hợp lý', '普通形 + わけだ'],
+            ['わけではない', 'không phải là…', '普通形 + わけではない'],
+            ['わけがない', 'không thể nào…', '普通形 + わけがない'],
+            ['わけにはいかない', 'ràng buộc', 'V辞書形 + わけにはいかない'],
+          ].map((row, i) => row.map((cell, j) => (
+            <div key={`${i}-${j}`} style={{
+              padding:'8px 10px',
+              borderRight: j<2 ? `1px solid #e4ddd0` : 'none',
+              borderBottom: i<4 ? `1px solid #e4ddd0` : 'none',
+              fontSize: i===0 ? 10 : 11,
+              fontWeight: i===0 ? 700 : 400,
+              color: i===0 ? '#8a7f6f' : '#1a1714',
+              letterSpacing: i===0 ? '0.1em' : 'normal',
+              textTransform: i===0 ? 'uppercase' : 'none',
+              fontFamily: j===0 && i>0 ? F.jp : (j===2 && i>0 ? F.mono : F.body),
+              background: i===0 ? '#f5f2eb' : '#fff',
+            }}>{cell}</div>
+          )))}
+        </div>
+      </div>
+      <div style={{ marginTop:'auto', fontSize:10, color:'#8a7f6f', textAlign:'center', letterSpacing:'0.1em' }}>lucida.vn/worksheet/wake</div>
+    </div>
+  );
+}
+
+function LandingPreview({ t }) {
+  return (
+    <div style={{ background:t.bg, width:'100%', height:'100%', padding:'24px 28px', fontFamily:F.body, color:t.fg, display:'flex', flexDirection:'column', gap:18, position:'relative', overflow:'hidden' }}>
+      {/* Nav */}
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+        <LucidaWordmark t={t} size={22} />
+        <div style={{ display:'flex', gap:18, fontSize:11, color:t.fgMuted }}>
+          <span>Khoá học</span><span>Worksheet</span><span>Method</span>
+          <span style={{ color:t.accent, fontWeight:700 }}>Đăng ký</span>
+        </div>
+      </div>
+      <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', gap:14 }}>
+        <Chip t={t} variant="accent">N2 · わけ Family</Chip>
+        <div style={{ fontSize:34, fontWeight:700, fontFamily:F.display, color:t.fg, lineHeight:1.1, letterSpacing:'-0.02em', maxWidth:380 }}>
+          Học ngữ pháp N2 theo <span style={{ color:t.accent }}>mạch logic</span>, không học bảng dịch.
+        </div>
+        <div style={{ fontSize:13, color:t.fgMuted, maxWidth:380, lineHeight:1.5 }}>4 mẫu わけ trong một video 12 phút. Nghĩa – Hình – Dụng cho từng mẫu. Worksheet đi kèm.</div>
+        <div style={{ display:'flex', gap:10, marginTop:6 }}>
+          <button style={{ background:t.accent, color:t.mode==='dark'?'#0d0d16':'#fff', border:'none', padding:'10px 18px', fontSize:12, fontWeight:700, borderRadius:7, fontFamily:F.body }}>Tải worksheet</button>
+          <button style={{ background:'transparent', color:t.fg, border:`1.5px solid ${t.border}`, padding:'10px 18px', fontSize:12, fontWeight:600, borderRadius:7, fontFamily:F.body }}>Xem video</button>
+        </div>
+      </div>
+      <div style={{ display:'flex', gap:8, fontSize:10, color:t.fgMuted, paddingTop:14, borderTop:`1px solid ${t.border}` }}>
+        <span>4 mẫu</span><span>·</span><span>JLPT N2</span><span>·</span><span>Phương pháp Nghĩa–Hình–Dụng</span>
+      </div>
+    </div>
+  );
+}
+
+function ThumbnailPreview({ t }) {
+  return (
+    <div style={{ background:t.bg, width:'100%', height:'100%', padding:'28px 32px', fontFamily:F.body, color:t.fg, display:'flex', flexDirection:'column', gap:14, position:'relative', overflow:'hidden' }}>
+      {/* Accent bar */}
+      <div style={{ position:'absolute', top:0, left:0, width:6, height:'100%', background:t.accent }}/>
+      <div style={{ marginLeft:8 }}>
+        <Chip t={t} variant="accent">N2 Grammar</Chip>
+      </div>
+      <div style={{ marginLeft:8, fontSize:46, fontWeight:700, fontFamily:F.display, lineHeight:1.0, letterSpacing:'-0.03em' }}>
+        わけ<span style={{ color:t.accent }}>×4</span>
+      </div>
+      <div style={{ marginLeft:8, fontSize:14, color:t.fgMuted, lineHeight:1.4, maxWidth:280 }}>
+        Phân biệt わけだ · わけではない · わけがない · わけにはいかない trong 12 phút.
+      </div>
+      <div style={{ marginTop:'auto', marginLeft:8, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+        <LucidaWordmark t={t} size={20} />
+        <div style={{ fontSize:10, color:t.fgMuted, letterSpacing:'0.12em', textTransform:'uppercase' }}>EP 01</div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ROOT
+// ═══════════════════════════════════════════════════════════════
+function App() {
+  return (
+    <DesignCanvas title="Lucida — Design System">
+
+      {/* SECTION 1: Brand foundation */}
+      <DCSection id="brand" title="Brand Foundation" subtitle="Wordmark, principles, tone">
+        <DCArtboard id="brand-board" label="Brand Board" width={780} height={620}>
+          <BrandBoard t={t} />
+        </DCArtboard>
+      </DCSection>
+
+      {/* SECTION 2: Color */}
+      <DCSection id="color" title="Color Tokens" subtitle="Dual-mode system">
+        <DCArtboard id="palette-dark" label="Video Mode (Dark)" width={620} height={400}>
+          <PaletteBoard theme="dark" t={t} />
+        </DCArtboard>
+        <DCArtboard id="palette-light" label="Study Mode (Light)" width={620} height={400}>
+          <PaletteBoard theme="light" t={tL} />
+        </DCArtboard>
+      </DCSection>
+
+      {/* SECTION 3: Typography */}
+      <DCSection id="type" title="Typography" subtitle="Display · Body · Japanese · Mono">
+        <DCArtboard id="type-dark" label="On Dark" width={560} height={680}>
+          <TypeSpecimen t={t} />
+        </DCArtboard>
+        <DCArtboard id="type-light" label="On Light" width={560} height={680}>
+          <TypeSpecimen t={tL} />
+        </DCArtboard>
+      </DCSection>
+
+      {/* SECTION 4: Learning components */}
+      <DCSection id="components" title="Learning Components" subtitle="11 patterns built for grammar teaching">
+        <DCArtboard id="c-hook" label="01 · Hook Contrast" width={520} height={460}>
+          <HookContrast t={t} />
+        </DCArtboard>
+        <DCArtboard id="c-quiz" label="02 · Quiz" width={520} height={460}>
+          <QuizCard t={t} />
+        </DCArtboard>
+        <DCArtboard id="c-grammar" label="03 · Grammar Card" width={520} height={580}>
+          <GrammarCardComponent t={t} />
+        </DCArtboard>
+        <DCArtboard id="c-action" label="04 · Action Label" width={520} height={460}>
+          <ActionLabel t={t} />
+        </DCArtboard>
+        <DCArtboard id="c-signal" label="05 · Exam Signal" width={520} height={580}>
+          <ExamSignal t={t} />
+        </DCArtboard>
+        <DCArtboard id="c-trap" label="06 · Trap Warning" width={520} height={460}>
+          <TrapWarning t={t} />
+        </DCArtboard>
+        <DCArtboard id="c-comp" label="07 · Comparison" width={620} height={460}>
+          <ComparisonCard t={t} />
+        </DCArtboard>
+        <DCArtboard id="c-practice" label="08 · Practice" width={520} height={460}>
+          <PracticeCard t={t} />
+        </DCArtboard>
+        <DCArtboard id="c-answer" label="09 · Answer Reveal" width={520} height={460}>
+          <AnswerReveal t={t} />
+        </DCArtboard>
+        <DCArtboard id="c-recap" label="10 · Recap Table" width={520} height={520}>
+          <RecapTable t={t} />
+        </DCArtboard>
+        <DCArtboard id="c-cta" label="11 · CTA Worksheet" width={520} height={520}>
+          <CTAWorksheet t={t} />
+        </DCArtboard>
+      </DCSection>
+
+      {/* SECTION 5: Light variants */}
+      <DCSection id="light-variants" title="Light Mode — Print/Worksheet" subtitle="Same components, cream + crimson">
+        <DCArtboard id="cl-hook" label="Hook · Light" width={520} height={460}>
+          <HookContrast t={tL} />
+        </DCArtboard>
+        <DCArtboard id="cl-grammar" label="Grammar · Light" width={520} height={580}>
+          <GrammarCardComponent t={tL} />
+        </DCArtboard>
+        <DCArtboard id="cl-recap" label="Recap · Light" width={520} height={520}>
+          <RecapTable t={tL} />
+        </DCArtboard>
+      </DCSection>
+
+      {/* SECTION 6: Slide templates */}
+      <DCSection id="slides" title="Slide Templates" subtitle="1920×1080 → preview at 480×270">
+        <DCArtboard id="s-hook" label="Hook Slide" width={480} height={270}>
+          <SlideTemplate t={t} kind="hook" />
+        </DCArtboard>
+        <DCArtboard id="s-grammar" label="Grammar Slide" width={480} height={270}>
+          <SlideTemplate t={t} kind="grammar" />
+        </DCArtboard>
+        <DCArtboard id="s-recap" label="Recap Slide" width={480} height={270}>
+          <SlideTemplate t={t} kind="recap" />
+        </DCArtboard>
+      </DCSection>
+
+      {/* SECTION 7: Applications */}
+      <DCSection id="apps" title="Applications" subtitle="Where this design system shows up">
+        <DCArtboard id="a-worksheet" label="Worksheet PDF" width={420} height={560}>
+          <WorksheetPreview t={tL} />
+        </DCArtboard>
+        <DCArtboard id="a-landing" label="Landing Page" width={520} height={400}>
+          <LandingPreview t={t} />
+        </DCArtboard>
+        <DCArtboard id="a-thumb" label="YouTube Thumbnail" width={520} height={290}>
+          <ThumbnailPreview t={t} />
+        </DCArtboard>
+      </DCSection>
+
+    </DesignCanvas>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+<div id="root"></div>
+</body>
+</html>

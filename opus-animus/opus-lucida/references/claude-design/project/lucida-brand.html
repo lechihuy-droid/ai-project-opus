@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lucida — Brand Design Exploration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Serif+Display:ital@0;1&family=Noto+Sans+JP:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #111; font-family: 'DM Sans', sans-serif; }
+</style>
+</head>
+<body>
+<script type="text/babel">
+
+/* ─── DIRECTION A: Dark Precision ───────────────────────────
+   Dark navy + warm amber. Structured, systematic, video-first.
+   Current deck direction — refined into a full system.
+──────────────────────────────────────────────────────────── */
+
+const dirA = {
+  bg:       '#0d0d16',
+  bgCard:   '#16161f',
+  bgCard2:  '#1c1c28',
+  fg:       '#e8e8f0',
+  fgMuted:  '#7878a0',
+  accent:   'oklch(74% 0.18 76)',
+  accentDim:'oklch(55% 0.12 76)',
+  border:   'rgba(255,255,255,0.08)',
+  font:     "'Space Grotesk', 'Noto Sans JP', sans-serif",
+  name:     'Dark Precision',
+  tagline:  'Systematic. Video-first. Night-mode native.',
+};
+
+/* ─── DIRECTION B: Warm Ink ──────────────────────────────────
+   Off-white parchment + deep crimson + charcoal ink.
+   Editorial, book-like — worksheet and PDF first.
+──────────────────────────────────────────────────────────── */
+
+const dirB = {
+  bg:       '#f5f2eb',
+  bgCard:   '#ffffff',
+  bgCard2:  '#eeeae0',
+  fg:       '#1a1714',
+  fgMuted:  '#8a8070',
+  accent:   'oklch(44% 0.20 22)',
+  accentDim:'oklch(60% 0.14 22)',
+  border:   'rgba(0,0,0,0.1)',
+  font:     "'DM Serif Display', 'Noto Sans JP', serif",
+  fontBody: "'DM Sans', 'Noto Sans JP', sans-serif",
+  name:     'Warm Ink',
+  tagline:  'Editorial. Print-ready. Scholar tone.',
+};
+
+/* ─── DIRECTION C: Night Scholar ─────────────────────────────
+   Deep navy almost black + electric indigo.
+   Premium SaaS, serious learner energy.
+──────────────────────────────────────────────────────────── */
+
+const dirC = {
+  bg:       '#080c18',
+  bgCard:   '#0e1422',
+  bgCard2:  '#141c30',
+  fg:       '#e2e8f8',
+  fgMuted:  '#6070a0',
+  accent:   'oklch(68% 0.20 260)',
+  accentDim:'oklch(50% 0.16 260)',
+  border:   'rgba(255,255,255,0.07)',
+  font:     "'DM Sans', 'Noto Sans JP', sans-serif",
+  name:     'Night Scholar',
+  tagline:  'Premium. Indigo-deep. Serious learner.',
+};
+
+/* ─── Shared sub-components ────────────────────────────────── */
+
+function Swatch({ color, label, dark }) {
+  return (
+    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
+      <div style={{ width:52, height:52, borderRadius:12, background:color, border:'1.5px solid rgba(128,128,128,0.2)' }} />
+      <div style={{ fontSize:11, color: dark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)', fontFamily:'monospace', letterSpacing:'0.05em' }}>{label}</div>
+    </div>
+  );
+}
+
+function Tag({ children, accent, border, fg }) {
+  return (
+    <span style={{
+      display:'inline-block',
+      padding:'4px 14px',
+      borderRadius:6,
+      border:`1.5px solid ${border}`,
+      fontSize:11,
+      fontWeight:600,
+      color:accent,
+      letterSpacing:'0.1em',
+      textTransform:'uppercase',
+    }}>{children}</span>
+  );
+}
+
+/* ─── GRAMMAR CARD component (used by all 3 directions) ───── */
+
+function GrammarCard({ d, jp, meaning, form, example, exVn }) {
+  const dark = d.bg.startsWith('#0') || d.bg.startsWith('#08');
+  const bodyFont = d.fontBody || d.font;
+  return (
+    <div style={{
+      background: d.bgCard,
+      border: `1px solid ${d.border}`,
+      borderRadius: 14,
+      padding: '28px 32px',
+      fontFamily: bodyFont,
+    }}>
+      <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:20 }}>
+        <Tag accent={d.accent} border={d.accentDim} fg={d.fg}>Nghĩa</Tag>
+      </div>
+      <div style={{ fontSize:32, fontWeight:700, color:d.accent, letterSpacing:'0.04em', marginBottom:8, fontFamily: d.font }}>{jp}</div>
+      <div style={{ fontSize:15, color:d.fg, marginBottom:20, lineHeight:1.5 }}>{meaning}</div>
+      <div style={{
+        background: d.bgCard2,
+        borderRadius:8,
+        padding:'14px 18px',
+        fontSize:13,
+        color:d.fgMuted,
+        marginBottom:16,
+        fontFamily:'monospace',
+        letterSpacing:'0.04em',
+      }}>{form}</div>
+      <div style={{ fontSize:16, color:d.fg, fontFamily:d.font, letterSpacing:'0.04em', marginBottom:6 }}>{example}</div>
+      <div style={{ fontSize:13, color:d.fgMuted }}>{exVn}</div>
+    </div>
+  );
+}
+
+/* ─── WORDMARK ──────────────────────────────────────────────── */
+
+function Wordmark({ d, size = 48 }) {
+  const dark = d.bg.startsWith('#0') || d.bg.startsWith('#08');
+  return (
+    <div style={{ display:'flex', alignItems:'baseline', gap:2, fontFamily:d.font }}>
+      <span style={{ fontSize:size, fontWeight:700, color:d.fg, letterSpacing:'-0.02em' }}>lucida</span>
+      <span style={{
+        width:size*0.12,
+        height:size*0.12,
+        borderRadius:'50%',
+        background:d.accent,
+        display:'inline-block',
+        marginLeft:3,
+        marginBottom:size*0.06,
+      }} />
+    </div>
+  );
+}
+
+/* ─── SLIDE THUMBNAIL ───────────────────────────────────────── */
+
+function SlideThumbnail({ d }) {
+  const dark = d.bg.startsWith('#0') || d.bg.startsWith('#08');
+  const bodyFont = d.fontBody || d.font;
+  return (
+    <div style={{
+      background: d.bg,
+      borderRadius:10,
+      padding:'24px 28px',
+      fontFamily: bodyFont,
+      border:`1px solid ${d.border}`,
+      aspectRatio:'16/9',
+      display:'flex',
+      flexDirection:'column',
+      justifyContent:'center',
+      gap:10,
+      position:'relative',
+      overflow:'hidden',
+    }}>
+      {/* Slide number */}
+      <div style={{ position:'absolute', top:12, right:16, fontSize:10, color:d.fgMuted, letterSpacing:'0.1em' }}>01</div>
+      {/* Brand dot */}
+      <div style={{ position:'absolute', bottom:12, right:16, fontSize:10, color:d.fgMuted, letterSpacing:'0.12em', textTransform:'uppercase', fontFamily:d.font }}>lucida</div>
+
+      <div style={{ fontSize:10, color:d.accent, letterSpacing:'0.12em', textTransform:'uppercase', fontWeight:600, marginBottom:4 }}>わけ Family</div>
+      <div style={{
+        fontSize:18,
+        color:d.fg,
+        fontFamily:d.font,
+        letterSpacing:'0.03em',
+        lineHeight:1.4,
+      }}>
+        行きたくない<span style={{ color:d.accent, fontWeight:700 }}>わけではない</span>
+      </div>
+      <div style={{
+        fontSize:18,
+        color:d.fg,
+        fontFamily:d.font,
+        letterSpacing:'0.03em',
+        lineHeight:1.4,
+      }}>
+        今日は行く<span style={{ color:dark ? 'oklch(65% 0.20 22)' : 'oklch(44% 0.20 22)', fontWeight:700 }}>わけにはいかない</span>
+      </div>
+      <div style={{ fontSize:11, color:d.fgMuted, marginTop:4 }}>Cùng có わけ — nhưng không cùng mạch logic</div>
+    </div>
+  );
+}
+
+/* ─── DIRECTION ARTBOARD ────────────────────────────────────── */
+
+function DirectionArtboard({ d, letter }) {
+  const dark = d.bg.startsWith('#0') || d.bg.startsWith('#08');
+  const bodyFont = d.fontBody || d.font;
+
+  return (
+    <div style={{ background:d.bg, width:'100%', padding:40, fontFamily:bodyFont, color:d.fg }}>
+
+      {/* Header */}
+      <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', marginBottom:40, paddingBottom:28, borderBottom:`1px solid ${d.border}` }}>
+        <div>
+          <div style={{ fontSize:11, color:d.fgMuted, letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:12 }}>Direction {letter}</div>
+          <Wordmark d={d} size={40} />
+          <div style={{ fontSize:14, color:d.fgMuted, marginTop:8, fontStyle:'italic' }}>{d.tagline}</div>
+        </div>
+        <div style={{ fontSize:22, fontWeight:700, color:d.accent, fontFamily:d.font }}>{d.name}</div>
+      </div>
+
+      {/* Two column layout */}
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:32, marginBottom:32 }}>
+
+        {/* Left col */}
+        <div style={{ display:'flex', flexDirection:'column', gap:24 }}>
+
+          {/* Colors */}
+          <div>
+            <div style={{ fontSize:11, color:d.fgMuted, letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:16 }}>Bảng màu</div>
+            <div style={{ display:'flex', gap:14, flexWrap:'wrap' }}>
+              <Swatch color={d.bg} label="bg" dark={dark} />
+              <Swatch color={d.bgCard} label="card" dark={dark} />
+              <Swatch color={d.bgCard2} label="card2" dark={dark} />
+              <Swatch color={d.fg} label="fg" dark={dark} />
+              <Swatch color={d.fgMuted} label="muted" dark={dark} />
+              <Swatch color={d.accent} label="accent" dark={dark} />
+            </div>
+          </div>
+
+          {/* Typography */}
+          <div style={{ background:d.bgCard, borderRadius:12, padding:'24px 28px', border:`1px solid ${d.border}` }}>
+            <div style={{ fontSize:11, color:d.fgMuted, letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:20 }}>Typography</div>
+            <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+              <div style={{ fontSize:32, fontWeight:700, color:d.fg, fontFamily:d.font, lineHeight:1.1 }}>わけではない</div>
+              <div style={{ fontSize:22, fontWeight:600, color:d.accent, fontFamily:d.font, letterSpacing:'0.02em' }}>Học theo mạch logic</div>
+              <div style={{ fontSize:16, color:d.fg, lineHeight:1.6 }}>4 mẫu わけ = 4 hành động của người nói. Không học như 4 công thức rời rạc.</div>
+              <div style={{ fontSize:13, color:d.fgMuted, lineHeight:1.6 }}>N2 · JLPT · Grammar · Lucida Method · Nghĩa – Hình – Dụng</div>
+            </div>
+          </div>
+
+          {/* Slide thumbnail */}
+          <div>
+            <div style={{ fontSize:11, color:d.fgMuted, letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:12 }}>Slide thumbnail</div>
+            <SlideThumbnail d={d} />
+          </div>
+        </div>
+
+        {/* Right col */}
+        <div style={{ display:'flex', flexDirection:'column', gap:24 }}>
+
+          {/* Grammar card */}
+          <div>
+            <div style={{ fontSize:11, color:d.fgMuted, letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:12 }}>Grammar card</div>
+            <GrammarCard
+              d={d}
+              jp="わけではない"
+              meaning="không phải là… / không có nghĩa là…"
+              form="普通形 + わけではない"
+              example="行きたくないわけではありません。"
+              exVn="Không phải là tôi không muốn đi."
+            />
+          </div>
+
+          {/* UI components */}
+          <div style={{ background:d.bgCard, borderRadius:12, padding:'24px 28px', border:`1px solid ${d.border}` }}>
+            <div style={{ fontSize:11, color:d.fgMuted, letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:20 }}>UI Components</div>
+
+            {/* Buttons */}
+            <div style={{ display:'flex', gap:12, marginBottom:20, flexWrap:'wrap' }}>
+              <button style={{
+                background:d.accent,
+                color: dark ? '#0d0d16' : '#fff',
+                border:'none',
+                borderRadius:8,
+                padding:'10px 22px',
+                fontSize:14,
+                fontWeight:600,
+                fontFamily:bodyFont,
+                cursor:'pointer',
+              }}>Tải Worksheet</button>
+              <button style={{
+                background:'transparent',
+                color:d.accent,
+                border:`1.5px solid ${d.accent}`,
+                borderRadius:8,
+                padding:'10px 22px',
+                fontSize:14,
+                fontWeight:600,
+                fontFamily:bodyFont,
+                cursor:'pointer',
+              }}>Xem khoá học</button>
+            </div>
+
+            {/* Tags */}
+            <div style={{ display:'flex', gap:8, marginBottom:20, flexWrap:'wrap' }}>
+              {['N2','JLPT','わけ','Grammar'].map(t => (
+                <span key={t} style={{
+                  padding:'4px 12px',
+                  borderRadius:6,
+                  background:d.bgCard2,
+                  border:`1px solid ${d.border}`,
+                  fontSize:12,
+                  color:d.fgMuted,
+                  fontFamily:bodyFont,
+                }}>{t}</span>
+              ))}
+            </div>
+
+            {/* Progress bar */}
+            <div style={{ marginBottom:6 }}>
+              <div style={{ display:'flex', justifyContent:'space-between', fontSize:12, color:d.fgMuted, marginBottom:8 }}>
+                <span>Tiến độ</span>
+                <span style={{ color:d.accent }}>3 / 4 mẫu</span>
+              </div>
+              <div style={{ height:4, background:d.bgCard2, borderRadius:2, overflow:'hidden' }}>
+                <div style={{ width:'75%', height:'100%', background:d.accent, borderRadius:2 }} />
+              </div>
+            </div>
+          </div>
+
+          {/* Dấu hiệu pill */}
+          <div style={{
+            display:'flex',
+            alignItems:'center',
+            gap:14,
+            padding:'18px 24px',
+            borderRadius:10,
+            background: dark ? `rgba(255,255,255,0.03)` : `rgba(0,0,0,0.04)`,
+            border:`1px solid ${d.border}`,
+          }}>
+            <div style={{ width:8, height:8, borderRadius:'50%', background:d.accent, flexShrink:0 }} />
+            <div style={{ fontSize:13, color:d.fgMuted }}>
+              <span style={{ color:d.accent, fontWeight:600 }}>Dấu hiệu chọn mẫu:</span>{' '}
+              cụm từ đi trước · cụm từ đi sau · mạch logic
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Footer strip */}
+      <div style={{
+        paddingTop:20,
+        borderTop:`1px solid ${d.border}`,
+        display:'flex',
+        gap:24,
+        alignItems:'center',
+      }}>
+        <Tag accent={d.accent} border={d.accentDim}>{d.name}</Tag>
+        <div style={{ fontSize:12, color:d.fgMuted }}>Font: {d.font.split(',')[0].replace(/'/g,'')}</div>
+        <div style={{ fontSize:12, color:d.fgMuted }}>Accent: {d.accent}</div>
+        <div style={{ fontSize:12, color:d.fgMuted }}>Mode: {dark ? 'Dark' : 'Light'}</div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── ROOT ──────────────────────────────────────────────────── */
+
+function App() {
+  return (
+    <DesignCanvas title="Lucida — Brand Direction">
+
+      <DCSection id="directions" title="Brand Directions">
+        <DCArtboard id="dir-a" label="A · Dark Precision" width={860} height={980}>
+          <DirectionArtboard d={dirA} letter="A" />
+        </DCArtboard>
+        <DCArtboard id="dir-b" label="B · Warm Ink" width={860} height={980}>
+          <DirectionArtboard d={dirB} letter="B" />
+        </DCArtboard>
+        <DCArtboard id="dir-c" label="C · Night Scholar" width={860} height={980}>
+          <DirectionArtboard d={dirC} letter="C" />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection id="components" title="Grammar Card Variants">
+        <DCArtboard id="card-a" label="わけだ — Dark" width={420} height={280}>
+          <div style={{ background:dirA.bg, padding:24, height:'100%' }}>
+            <GrammarCard
+              d={dirA}
+              jp="わけだ"
+              meaning="kết luận hợp lý / thảo nào"
+              form="普通形 + わけだ"
+              example="それで行けないわけですね。"
+              exVn="Thảo nào không đi được."
+            />
+          </div>
+        </DCArtboard>
+        <DCArtboard id="card-b" label="わけがない — Warm" width={420} height={280}>
+          <div style={{ background:dirB.bg, padding:24, height:'100%' }}>
+            <GrammarCard
+              d={dirB}
+              jp="わけがない"
+              meaning="không thể nào…"
+              form="普通形 + わけがない"
+              example="嫌いなわけがない。"
+              exVn="Không thể nào ghét được."
+            />
+          </div>
+        </DCArtboard>
+        <DCArtboard id="card-c" label="わけにはいかない — Night" width={420} height={280}>
+          <div style={{ background:dirC.bg, padding:24, height:'100%' }}>
+            <GrammarCard
+              d={dirC}
+              jp="わけにはいかない"
+              meaning="không thể làm vì ràng buộc"
+              form="V辞書形 + わけにはいかない"
+              example="行くわけにはいきません。"
+              exVn="Không thể đi vì có deadline."
+            />
+          </div>
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection id="wordmarks" title="Wordmark Treatment">
+        <DCArtboard id="wm-a" label="Wordmark A — Dark" width={360} height={140}>
+          <div style={{ background:dirA.bg, width:'100%', height:'100%', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:12 }}>
+            <Wordmark d={dirA} size={52} />
+            <div style={{ fontSize:12, color:dirA.fgMuted, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:dirA.font }}>日本語 · N2 · Lucida Method</div>
+          </div>
+        </DCArtboard>
+        <DCArtboard id="wm-b" label="Wordmark B — Warm" width={360} height={140}>
+          <div style={{ background:dirB.bg, width:'100%', height:'100%', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:12 }}>
+            <Wordmark d={dirB} size={52} />
+            <div style={{ fontSize:12, color:dirB.fgMuted, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:dirB.fontBody }}>日本語 · N2 · Lucida Method</div>
+          </div>
+        </DCArtboard>
+        <DCArtboard id="wm-c" label="Wordmark C — Night" width={360} height={140}>
+          <div style={{ background:dirC.bg, width:'100%', height:'100%', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:12 }}>
+            <Wordmark d={dirC} size={52} />
+            <div style={{ fontSize:12, color:dirC.fgMuted, letterSpacing:'0.2em', textTransform:'uppercase', fontFamily:dirC.font }}>日本語 · N2 · Lucida Method</div>
+          </div>
+        </DCArtboard>
+      </DCSection>
+
+    </DesignCanvas>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+<div id="root"></div>
+</body>
+</html>

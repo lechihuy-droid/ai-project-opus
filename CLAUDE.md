@@ -47,6 +47,20 @@ Parent-level context for all projects under `C:/Users/HUY/AI/`.
 - Self-check: "Would a staff engineer approve this?" — if not, fix it first
 - Run tests, check logs, demonstrate correctness — never assume
 
+### Model & Agent Routing
+Phân tuyến công việc theo loại task:
+
+| Loại task | Thực thi bằng |
+|---|---|
+| Plan, kiến trúc, SDD docs (RD/SD/BD/CR), review, quyết định trade-off | **Opus 4.7** — main session |
+| Task thông thường (search, đọc, verify, sửa nhỏ, status, giải thích) | **Sonnet** |
+| Coding (implement) + viết test | **Codex** (`codex exec`) — Claude viết BD/brief rồi giao, KHÔNG tự code |
+
+- Main session chạy MỘT model tại một thời điểm — user đổi bằng `/model`. Claude không tự đổi được.
+- Đầu mỗi task lớn, Claude báo task thuộc tuyến nào để user `/model` cho đúng.
+- Coding/test: luôn giao Codex; Claude chỉ viết spec/BD và review kết quả — không code trực tiếp trừ khi user yêu cầu.
+- Routine fan-out lớn (search rộng, verify hàng loạt) có thể tách ra Sonnet subagent để khỏi tốn Opus.
+
 ---
 
 ## Coding Behavior (Karpathy Principles)

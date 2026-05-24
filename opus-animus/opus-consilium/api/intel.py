@@ -928,6 +928,151 @@ FDE_KEYWORDS = [
     "services as software", "service as software",
 ]
 
+# News tracking: actor keyword groups for FDE model adoption news
+FDE_NEWS_ACTOR_GROUPS = [
+    {
+        "id": "palantir",
+        "label": "Palantir",
+        "color": "#C9A84C",
+        "keywords": [
+            "palantir", "foundry", "gotham", "aip palantir", "karp",
+            "forward deployed engineer", "fdse", "delta engineer",
+        ],
+    },
+    {
+        "id": "openai",
+        "label": "OpenAI",
+        "color": "#4ade80",
+        "keywords": [
+            "openai", "chatgpt enterprise", "gpt-4o enterprise", "o1 enterprise",
+            "openai pwc", "openai deloitte", "openai accenture", "openai mckinsey",
+            "openai bcg", "openai kpmg", "openai consulting", "openai partner",
+            "openai applied", "openai deployment",
+        ],
+    },
+    {
+        "id": "anthropic",
+        "label": "Anthropic",
+        "color": "#60a5fa",
+        "keywords": [
+            "anthropic", "claude enterprise", "claude for work",
+            "anthropic partner", "anthropic consulting", "anthropic deployment",
+            "claude deployment", "claude implementation",
+        ],
+    },
+    {
+        "id": "microsoft",
+        "label": "Microsoft",
+        "color": "#818cf8",
+        "keywords": [
+            "microsoft copilot enterprise", "copilot for microsoft 365",
+            "azure openai enterprise", "github copilot enterprise",
+            "microsoft consulting services", "microsoft ai partner",
+        ],
+    },
+    {
+        "id": "google",
+        "label": "Google",
+        "color": "#f87171",
+        "keywords": [
+            "google cloud ai enterprise", "vertex ai enterprise",
+            "gemini enterprise", "google professional services",
+            "google cloud partner", "gemini for workspace",
+        ],
+    },
+    {
+        "id": "consulting",
+        "label": "Consulting + AI",
+        "color": "#a78bfa",
+        "keywords": [
+            # Bare firm names (Big 4 + MBB + offshore SI)
+            "pwc", "pricewaterhousecoopers",
+            "deloitte", "accenture", "mckinsey", "bcg", "boston consulting",
+            "kpmg", "bain & company", "bain capital",
+            "ibm consulting", "capgemini", "infosys", "cognizant",
+            "tata consultancy", "tcs ", "wipro", "ey ai", "ernst & young",
+            # Patterns
+            "consulting partner", "consulting firm", "big four", "big 4",
+        ],
+    },
+    {
+        "id": "sier_japan",
+        "label": "SIer Japan",
+        "color": "#fb923c",
+        "keywords": [
+            "fujitsu ai", "ntt ai", "nec ai", "hitachi ai",
+            "nomura ai", "recruit ai", "nri ai", "softbank ai",
+            "ntt data ai", "tis ai", "dts ai", "ctc ai",
+            "sier ai", "system integrator ai", "japanese ai enterprise",
+        ],
+    },
+    {
+        "id": "fde_model",
+        "label": "FDE Model",
+        "color": "#34d399",
+        "keywords": [
+            "forward deployed", "embedded engineer", "implementation engineer",
+            "customer success engineer", "service as software", "services as software",
+            "ai deployment model", "enterprise ai deployment", "ai implementation team",
+            "pilot to production", "poc to production", "ai proof of concept",
+            # Agentic + AI-native patterns (OpenAI+PwC style)
+            "ai-native", "ai native finance", "ai native function",
+            "agentic ai", "agentic workflow", "agentic finance",
+            "customer zero", "human-in-the-loop", "human in the loop",
+            "office of the cfo", "office of the cto", "office of the coo",
+            "ai operating model", "first ai-native", "ai-first operating",
+            "model context protocol", "workspace agents",
+        ],
+    },
+]
+
+# Cross-actor partnership signals — bumps to Featured tier
+FDE_PARTNERSHIP_KEYWORDS = [
+    "partner", "partnership", "partnering",
+    "collaboration", "collaborate",
+    "joint", "alliance", "strategic alliance",
+    "team up", "team-up", "teaming",
+]
+
+# AI labs that are FDE-relevant when combined with consulting/sier
+FDE_AI_LAB_IDS = {"palantir", "openai", "anthropic", "microsoft", "google"}
+FDE_SERVICE_IDS = {"consulting", "sier_japan"}
+
+
+def _score_fde_article(text: str, matched_actor_ids: list[str]) -> dict:
+    """
+    Tier system for FDE news:
+      tier 1 (featured) — cross-actor partnership (AI lab + consulting/SIer)
+                          OR 3+ actor groups
+                          OR strong FDE pattern + partnership keyword
+      tier 2 (relevant) — 2 actor groups OR FDE model keyword
+      tier 3 (background) — 1 actor group
+    Returns {tier: 1|2|3, reasons: [str]}.
+    """
+    matched = set(matched_actor_ids)
+    reasons = []
+    has_lab = bool(matched & FDE_AI_LAB_IDS)
+    has_service = bool(matched & FDE_SERVICE_IDS)
+    has_fde_model = "fde_model" in matched
+    has_partnership_kw = any(kw in text for kw in FDE_PARTNERSHIP_KEYWORDS)
+
+    if has_lab and has_service:
+        reasons.append("AI lab × consulting/SIer partnership")
+        return {"tier": 1, "reasons": reasons}
+    if len(matched) >= 3:
+        reasons.append(f"{len(matched)} actor groups matched")
+        return {"tier": 1, "reasons": reasons}
+    if has_fde_model and has_partnership_kw:
+        reasons.append("FDE pattern + partnership signal")
+        return {"tier": 1, "reasons": reasons}
+    if len(matched) >= 2:
+        reasons.append(f"{len(matched)} actor groups matched")
+        return {"tier": 2, "reasons": reasons}
+    if has_fde_model:
+        reasons.append("FDE model keyword")
+        return {"tier": 2, "reasons": reasons}
+    return {"tier": 3, "reasons": ["single actor mention"]}
+
 FDE_ACTORS = [
     {
         "name": "Palantir",
@@ -979,48 +1124,181 @@ FDE_ACTORS = [
     },
 ]
 
+FDE_STRATEGY_THESIS = {
+    "headline": "Tại sao FDE là cơ hội cho IT Nhật ngay lúc này",
+    "body": (
+        "AI adoption ở Nhật chậm vì 3 lý do: (1) khách hàng Nhật yêu cầu zero-risk delivery, "
+        "không chấp nhận POC fail; (2) SIer truyền thống bán 人月 (man-month) — không scale được "
+        "AI capability vì kiến thức mất sau mỗi project; (3) language + culture barrier với vendor nước ngoài.\n\n"
+        "FDE model trả lời cả 3: embedded engineers giảm risk vì FDE chịu trách nhiệm outcome; "
+        "outcome-based aligns interests với khách hàng; local presence handles language + culture. "
+        "Đây là cửa sổ cơ hội 12-24 tháng cho doanh nghiệp IT có engineering depth + Japan fit."
+    ),
+    "why_now": [
+        "OpenAI và Anthropic đang tuyển FDE — pattern đã được validate ở thị trường Mỹ",
+        "Doanh nghiệp Nhật mắc kẹt giai đoạn POC AI — cần FDE-style activation",
+        "SIer Nhật truyền thống (人月 model) không thể bán AI vì không có outcome accountability",
+        "Cửa sổ first-mover advantage: 1-2 SIer Nhật chuyển đổi sớm sẽ chiếm lĩnh enterprise AI deals",
+    ],
+}
+
 FDE_CONCEPTS = [
     {
-        "id": "delta_echo",
-        "title": "Delta / Echo Model",
-        "icon": "⚙",
-        "body": "Delta = FDE (kỹ sư code, cấu hình Foundry). Echo = Deployment Strategist (chuyên gia nghiệp vụ, không code). Cặp Delta-Echo làm việc song song để đảm bảo giải pháp đúng kỹ thuật lẫn phù hợp tổ chức.",
-        "source": "Palantir Blog 2020",
+        "id": "service_as_software",
+        "title": "Service-as-Software",
+        "icon": "🔄",
+        "body": "Khái niệm trung tâm. Không phải SaaS (software-as-a-service), mà ngược lại: dịch vụ được delivered như software — outcome đo đếm được, compound theo thời gian. 93% doanh nghiệp mắc kẹt POC vì thiếu lớp activation này.",
+        "business_impact": "Pricing model thay đổi: từ 人月 → outcome contract. Margin gross của Palantir > 80% vì platform leverage.",
+        "source": "HFS Research 2026",
     },
     {
-        "id": "bootcamp",
-        "title": "Bootcamp Sprint",
-        "icon": "⚡",
-        "body": "Sprint 1–5 ngày với dữ liệu thật của khách hàng để demo giải pháp khả thi. Khác PoC: Palantir tự build, không để khách tự làm. Mục tiêu: chứng minh giá trị trước khi ký hợp đồng dài hạn.",
-        "source": "Everest Group 2023",
+        "id": "delta_echo",
+        "title": "Delta + Echo Embedded Pair",
+        "icon": "👥",
+        "body": "Delta = engineer (cấu hình platform, code). Echo = deployment strategist (chuyên gia domain, không code). Cặp Delta-Echo nhúng tại khách hàng — đảm bảo solution đúng kỹ thuật lẫn fit với workflow thực.",
+        "business_impact": "Hiring profile mới: cần kỹ sư senior có business sense, không phải developer thuần. Lương cao hơn nhưng productivity ×3-5.",
+        "source": "Palantir Blog 2020",
     },
     {
         "id": "outcomes",
         "title": "Outcome-based Contract",
         "icon": "🎯",
-        "body": "Hợp đồng tied to KPI kinh doanh, không phải tính năng. Ví dụ: giảm 10% tồn kho, giảm 20% downtime. FDE không thành công nếu KPI không đạt — đây là điểm khác biệt với tư vấn truyền thống.",
-        "source": "LinkedIn / Palantir",
+        "body": "Hợp đồng gắn với KPI business (giảm tồn kho 10%, giảm downtime 20%), không phải hours/features. FDE không được paid nếu KPI không đạt. Khác biệt cốt lõi với tư vấn truyền thống.",
+        "business_impact": "Skin-in-the-game positioning. Khách hàng Nhật risk-averse sẽ thích model này vì không lo POC fail. Upside cao hơn 人月 nếu deliver được.",
+        "source": "SVPG / Palantir",
     },
     {
         "id": "ontology",
-        "title": "Ontology (Enterprise Data Model)",
+        "title": "Ontology — Knowledge Layer",
         "icon": "🗂",
-        "body": "FDE xây ontology phản ánh cách doanh nghiệp vận hành: objects, relationships, permissions. Đây là bước đầu tiên mọi FDE làm khi nhúng vào khách hàng, trước khi build bất cứ thứ gì.",
-        "source": "Palantir Docs / Lê Huy 2026",
+        "body": "FDE xây ontology phản ánh cách doanh nghiệp vận hành: objects, relationships, permissions. Compounding asset: ontology của 1 khách hàng manufacturing có thể tái sử dụng cho khách hàng khác cùng ngành.",
+        "business_impact": "Đây là moat. Project sau cost giảm 50%+ vì có ontology base. Knowledge KHÔNG mất sau project như SIer truyền thống.",
+        "source": "Palantir Docs",
+    },
+    {
+        "id": "bootcamp",
+        "title": "Bootcamp — De-risk Sales Motion",
+        "icon": "⚡",
+        "body": "Sprint 1-5 ngày với dữ liệu THẬT của khách hàng để demo solution khả thi. Khác POC: vendor tự build, không để khách tự làm. Mục tiêu: chứng minh giá trị TRƯỚC KHI ký hợp đồng dài hạn.",
+        "business_impact": "Sales cycle ngắn lại từ 6-12 tháng → 1-2 tháng. Khách hàng Nhật cần proof trước khi commit — bootcamp giải đúng pain này.",
+        "source": "Everest Group 2023",
     },
     {
         "id": "ai_fde",
-        "title": "AI FDE (Agent Layer)",
+        "title": "AI FDE — Automation Layer",
         "icon": "🤖",
-        "body": "Palantir đang tự động hóa vai trò FDE bằng AI agent: dịch lệnh ngôn ngữ tự nhiên thành thao tác Foundry. AI FDE tuân thủ đúng quyền truy cập của user, có vòng kiểm tra trước khi thay đổi hệ thống.",
-        "source": "Palantir Docs — AI FDE Overview 2024",
+        "body": "Palantir đang tự động hóa role FDE bằng AI agent: dịch lệnh ngôn ngữ tự nhiên thành thao tác platform. Tương lai: 1 FDE human + AI FDE = leverage của 5-10 FDE.",
+        "business_impact": "Phòng thủ tương lai: nếu không build AI FDE layer, mô hình human-only FDE sẽ bị disrupt trong 3-5 năm tới.",
+        "source": "Palantir Docs — AI FDE 2024",
+    },
+]
+
+FDE_GAP_ANALYSIS = [
+    {
+        "dimension": "Pricing Model",
+        "current_sier": "人月 (man-month) — bán giờ kỹ sư",
+        "fde_model": "Outcome-based — gắn KPI business",
+        "gap_action": "Build outcome contract template + risk model cho 1-2 use case pilot",
+        "difficulty": "high",
     },
     {
-        "id": "flywheel",
-        "title": "Services-as-Software Flywheel",
-        "icon": "🔄",
-        "body": "93% doanh nghiệp mắc kẹt giai đoạn thử nghiệm AI vì thiếu lớp FDE. FDE là activation layer chuyển AI từ pilot sang production. Palantir thành công vì gần gũi vận hành thực tế, không chỉ vì AI mạnh hơn.",
-        "source": "HFS Research / Lê Huy 2026",
+        "dimension": "Engineer Profile",
+        "current_sier": "Spec-follower, làm theo design có sẵn",
+        "fde_model": "Problem-solver, embedded, có business sense",
+        "gap_action": "Hiring profile mới + retrain 5-10 senior engineers thành FDE-grade",
+        "difficulty": "high",
+    },
+    {
+        "dimension": "Customer Position",
+        "current_sier": "二次/三次請け (sub-contractor)",
+        "fde_model": "Strategic partner — trực tiếp với business owner",
+        "gap_action": "Đầu tư BD layer để pitch lên CTO/COO, không qua prime contractor",
+        "difficulty": "high",
+    },
+    {
+        "dimension": "Knowledge Capture",
+        "current_sier": "Project docs (rarely reused sau delivery)",
+        "fde_model": "Ontology + AI FDE — compounding asset",
+        "gap_action": "Build internal ontology platform cho 2-3 ngành mục tiêu (manufacturing, logistics)",
+        "difficulty": "medium",
+    },
+    {
+        "dimension": "Sales Motion",
+        "current_sier": "RFP → SOW → 6-12 tháng cycle",
+        "fde_model": "Bootcamp 1-5 ngày → embed → outcome",
+        "gap_action": "Design bootcamp methodology cho 1 vertical, train sales team",
+        "difficulty": "medium",
+    },
+    {
+        "dimension": "Risk Profile",
+        "current_sier": "Time-bound, low risk, low upside",
+        "fde_model": "Outcome-bound, medium risk, high upside",
+        "gap_action": "Risk capital + outcome insurance model cho 3-5 pilot deals",
+        "difficulty": "medium",
+    },
+    {
+        "dimension": "Tech Leverage",
+        "current_sier": "Per-project, mất sau delivery",
+        "fde_model": "Platform + ontology, compounding",
+        "gap_action": "Đầu tư platform engineering team — build internal Foundry-lite",
+        "difficulty": "high",
+    },
+]
+
+FDE_ROADMAP = [
+    {
+        "phase": "Phase 1 — POC",
+        "duration": "Q1-Q2 (3-6 tháng)",
+        "goal": "Validate FDE model với 1-2 khách hàng hiện tại",
+        "color": "#60a5fa",
+        "actions": [
+            "Chọn 1-2 khách hàng đã có quan hệ tốt + có 1 use case AI rõ ràng",
+            "Pitch outcome-based pilot: '1 use case AI, embed 1 FDE pair (Delta+Echo) 3 tháng, KPI cụ thể'",
+            "Build minimum domain ontology cho 1 ngành (vd: manufacturing scheduling)",
+            "Define outcome metrics chi tiết + risk-sharing clause trong contract",
+            "Document toàn bộ playbook: hiring criteria, bootcamp format, daily routine của FDE",
+        ],
+        "success_criteria": [
+            "1 khách hàng sign outcome-based renewal sau pilot",
+            "FDE pair hoàn thành 80%+ KPI đã commit",
+            "Ontology layer reusable cho 2nd khách hàng cùng ngành",
+        ],
+    },
+    {
+        "phase": "Phase 2 — Capability",
+        "duration": "Q3-Q4 (6-12 tháng)",
+        "goal": "Build internal capability để scale FDE delivery",
+        "color": "#C9A84C",
+        "actions": [
+            "Tuyển/train 5-10 FDE-grade engineers (mix Delta + Echo)",
+            "Build internal platform tooling: ontology builder, deployment automation",
+            "Develop Japan-specific bootcamp methodology (language + culture fit)",
+            "Publish 2-3 case studies bằng tiếng Nhật để credentialing",
+            "Tạo partnership với 1-2 Japanese SIer làm channel để access enterprise deals",
+        ],
+        "success_criteria": [
+            "3-5 khách hàng đang chạy outcome-based model",
+            "Internal platform support 2x throughput so với manual",
+            "Brand recognition: 1-2 industry events keynote về FDE Japan",
+        ],
+    },
+    {
+        "phase": "Phase 3 — Scale",
+        "duration": "Year 2",
+        "goal": "Productize methodology + AI FDE automation",
+        "color": "#4ade80",
+        "actions": [
+            "Build AI FDE layer trên top of internal platform",
+            "Productize bootcamp + ontology cho 3-5 vertical (manufacturing, logistics, finance)",
+            "Migrate 30%+ revenue sang outcome-based contracts",
+            "Open up channel partner program cho smaller SIer",
+            "Expand sang Đông Nam Á dùng Japan track record làm credential",
+        ],
+        "success_criteria": [
+            "30%+ revenue từ outcome contracts",
+            "Gross margin > 50% (vs 20-30% của 人月 model)",
+            "Become category-defining brand trong Japan AI services market",
+        ],
     },
 ]
 
@@ -1063,9 +1341,51 @@ FDE_RESEARCH_QUEUE = [
 ]
 
 
+def _tag_article_actors(text: str) -> list[str]:
+    """Return list of actor group IDs that match article text."""
+    matched = []
+    for group in FDE_NEWS_ACTOR_GROUPS:
+        if any(kw in text for kw in group["keywords"]):
+            matched.append(group["id"])
+    return matched
+
+
+def _enrich_fde_news(articles: list[dict]) -> list[dict]:
+    """Tag each article with matching actor groups + tier score for FDE news feed."""
+    result = []
+    all_group_kw = [kw for g in FDE_NEWS_ACTOR_GROUPS for kw in g["keywords"]]
+    for a in articles:
+        text = " ".join([
+            (a.get("title") or ""),
+            (a.get("summary") or ""),
+            (a.get("relevance") or ""),
+            (a.get("source") or ""),
+        ]).lower()
+        if not any(kw in text for kw in all_group_kw):
+            continue
+        actors = _tag_article_actors(text)
+        if not actors:
+            continue
+        score = _score_fde_article(text, actors)
+        result.append({
+            "title": a.get("title", ""),
+            "url": a.get("url", ""),
+            "source": a.get("source", ""),
+            "date": a.get("date", ""),
+            "summary": (a.get("relevance") or a.get("summary") or "")[:280],
+            "goal_score": a.get("goal_score"),
+            "actors": actors,
+            "tier": score["tier"],
+            "tier_reasons": score["reasons"],
+        })
+    # Sort by date desc; tier sorting handled separately in endpoint
+    result.sort(key=lambda x: (x.get("date") or ""), reverse=True)
+    return result
+
+
 @router.get("/intel/fde")
 def get_fde_intel(days_back: int = 60):
-    """FDE research tab: articles + concepts + actor adoption tracker."""
+    """FDE research tab: concepts + actor adoption tracker + recent articles."""
     all_articles = list_articles(limit=500, days_back=days_back)
 
     fde_articles = []
@@ -1092,9 +1412,67 @@ def get_fde_intel(days_back: int = 60):
         "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "article_count": len(fde_articles),
         "articles": fde_articles[:20],
+        "strategy_thesis": FDE_STRATEGY_THESIS,
         "concepts": FDE_CONCEPTS,
+        "gap_analysis": FDE_GAP_ANALYSIS,
+        "roadmap": FDE_ROADMAP,
         "actors": FDE_ACTORS,
         "research_queue": FDE_RESEARCH_QUEUE,
+    }
+
+
+@router.get("/intel/fde/news")
+def get_fde_news(days_back: int = 30, actor: str | None = None, tier: int | None = None):
+    """
+    Daily FDE model news feed with tier scoring.
+    Tier 1 (Featured): cross-actor partnerships (e.g., OpenAI + PwC) — highest signal.
+    Tier 2 (Relevant): 2+ actor groups OR strong FDE pattern.
+    Tier 3 (Background): single actor mention.
+    Filter via ?actor=openai or ?tier=1.
+    """
+    all_articles = list_articles(limit=1000, days_back=days_back)
+    news = _enrich_fde_news(all_articles)
+
+    if actor and isinstance(actor, str):
+        news = [a for a in news if actor in a.get("actors", [])]
+    if isinstance(tier, int) and tier in (1, 2, 3):
+        news = [a for a in news if a.get("tier") == tier]
+
+    # Featured = tier 1 articles (cross-actor partnerships), sorted by date desc, capped
+    featured = [a for a in news if a.get("tier") == 1][:8]
+
+    # Group all by date for the main feed
+    by_date: dict[str, list] = {}
+    for a in news:
+        d = a.get("date") or "unknown"
+        by_date.setdefault(d, []).append(a)
+
+    grouped = [
+        {"date": d, "articles": items}
+        for d, items in sorted(by_date.items(), reverse=True)
+    ]
+
+    actor_groups = [
+        {"id": g["id"], "label": g["label"], "color": g["color"]}
+        for g in FDE_NEWS_ACTOR_GROUPS
+    ]
+
+    tier_counts = {
+        1: sum(1 for a in news if a.get("tier") == 1),
+        2: sum(1 for a in news if a.get("tier") == 2),
+        3: sum(1 for a in news if a.get("tier") == 3),
+    }
+
+    return {
+        "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "total": len(news),
+        "days_back": days_back,
+        "active_actor": actor,
+        "active_tier": tier,
+        "actor_groups": actor_groups,
+        "tier_counts": tier_counts,
+        "featured": featured,
+        "grouped": grouped,
     }
 
 

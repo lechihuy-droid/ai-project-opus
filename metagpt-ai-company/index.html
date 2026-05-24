@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MetaGPT AI Company</title>
+  <link rel="stylesheet" href="../html-kit/styles.css">
+  <script src="../html-kit/diagram.js" defer></script>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">AI workspace</p>
+      <h1>MetaGPT AI Company</h1>
+      <p class="lead">Folder wrapper de ap dung mo hinh MetaGPT: bien mot yeu cau thanh workflow nhieu vai tro theo SOP.</p>
+    </section>
+
+    <section>
+      <h2>Muc tieu</h2>
+      <div class="card-grid">
+        <article class="card">
+          <h3>Source sach</h3>
+          <p>Repo upstream duoc clone tai <code>../MetaGPT</code>; folder nay chi chua phan ap dung rieng.</p>
+        </article>
+        <article class="card">
+          <h3>Chay nhu cong ty phan mem</h3>
+          <p>Script goi <code>metagpt.software_company.generate_repo</code> voi cac role TeamLeader, ProductManager, Architect, Engineer2 va DataAnalyst.</p>
+        </article>
+        <article class="card">
+          <h3>Output tach rieng</h3>
+          <p>San pham MetaGPT tao ra se nam trong <code>workspace/</code> cua project nay.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Luong xu ly</h2>
+      <div class="diagram" data-chart='{
+        "type": "flow",
+        "nodes": [
+          {"id": "idea", "label": "One-line requirement", "shape": "terminal"},
+          {"id": "team", "label": "MetaGPT Team", "shape": "rect"},
+          {"id": "sop", "label": "SOP rounds", "shape": "rect"},
+          {"id": "docs", "label": "Requirements, design, APIs", "shape": "rect"},
+          {"id": "code", "label": "Project repo in workspace", "shape": "terminal"}
+        ],
+        "edges": [
+          {"from": "idea", "to": "team"},
+          {"from": "team", "to": "sop"},
+          {"from": "sop", "to": "docs"},
+          {"from": "docs", "to": "code"}
+        ]
+      }'></div>
+    </section>
+
+    <section>
+      <h2>Cach dung nhanh</h2>
+      <div class="card">
+        <pre><code>cd C:\Users\HUY\AI\metagpt-ai-company
+C:\Users\HUY\AppData\Local\Programs\Python\Python311\python.exe scripts\check_setup.py
+.\scripts\install.ps1
+copy config\config2.yaml.example %USERPROFILE%\.metagpt\config2.yaml
+.\.venv\Scripts\python.exe scripts\run_company.py --idea "Create a 2048 game" --project-name game_2048</code></pre>
+      </div>
+      <p class="callout warn">Hay sua API key trong <code>%USERPROFILE%\.metagpt\config2.yaml</code>. Khong commit secret vao repo. Lenh <code>python</code> hien co the tro toi 3.14, nen dung Python 3.11 o tren cho MetaGPT.</p>
+    </section>
+
+    <section>
+      <h2>Chay voi folder da co</h2>
+      <div class="card">
+        <pre><code>.\.venv\Scripts\python.exe scripts\run_company.py ^
+  --existing-path "C:\Users\HUY\AI\metagpt-ai-company\workspace\workspace (2)\workspace" ^
+  --idea "Build the InsightHub Agent MVP from the existing SRS and user stories. Focus on file upload connectors, reconciliation, anomaly detection, report generation, review UI, and export." ^
+  --project-name insighthub_agent_mvp</code></pre>
+      </div>
+      <p>Lenh ngan gon cho workspace da upload:</p>
+      <div class="card">
+        <pre><code>.\scripts\run_insighthub.ps1</code></pre>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

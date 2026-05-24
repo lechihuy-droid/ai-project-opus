@@ -43,3 +43,5 @@ The implementation of this HITL system can enhance the autonomy and decision-mak
 
 ## Sources
 - https://arxiv.org/abs/2604.23049
+## See also
+- [[amortized-agentic-workflow-design]] — Amortized Agentic Workflow Design from Structural Priors

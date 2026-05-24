@@ -6,12 +6,10 @@ Runs periodically (e.g. weekly) to:
   2. Archive stale skills (uses=0, older than STALE_DAYS)
 """
 import json
-import os
 import re
 from datetime import date, timedelta
 
-from groq import Groq
-from utils.config import llm_config
+from utils.llm import claude_cli_json
 from wiki_ops.skill_manager import (
     list_skills, get_skill, save_skill, archive_skill, _parse_frontmatter
 )
@@ -74,47 +72,22 @@ def curate(dry_run: bool = False) -> dict:
     for s in skills:
         skills_text += f"\n---\nslug: {s['slug']}\ntitle: {s['title']}\ncategory: {s['category']}\ntags: {', '.join(s['tags'])}\nbody:\n{s['body'][:400]}\n"
 
-    llm = llm_config()
-    client = Groq(api_key=llm["api_key"])
-
-    prompt = f"""You are reviewing a skills library to find overlaps and suggest consolidations.
-
-SKILLS:
-{skills_text}
-
-Task:
-1. Identify groups of skills with significant overlap (same procedure, same context).
-   Only suggest merging when overlap is clear and substantial — be conservative.
-2. For each group, propose one umbrella skill that replaces them.
-3. Do NOT suggest merging skills that are genuinely distinct.
-
-Return ONLY valid JSON:
-{{
-  "consolidations": [
-    {{
-      "umbrella_title": "Human Readable Title",
-      "umbrella_category": "wiki",
-      "umbrella_tags": ["tag1", "tag2"],
-      "merge_slugs": ["slug-a", "slug-b"],
-      "body": "## When to use\\n...\\n\\n## Procedure\\n1. ...\\n\\n## Notes\\n- ..."
-    }}
-  ]
-}}
-
-If no clear overlaps exist, return: {{"consolidations": []}}"""
+    prompt = (
+        "You are a knowledge curator. Be conservative — only merge when overlap is clear. Return valid JSON only.\n\n"
+        "You are reviewing a skills library to find overlaps and suggest consolidations.\n\n"
+        f"SKILLS:\n{skills_text}\n\n"
+        "Task:\n"
+        "1. Identify groups of skills with significant overlap (same procedure, same context).\n"
+        "   Only suggest merging when overlap is clear and substantial — be conservative.\n"
+        "2. For each group, propose one umbrella skill that replaces them.\n"
+        "3. Do NOT suggest merging skills that are genuinely distinct.\n\n"
+        "Return ONLY valid JSON:\n"
+        '{"consolidations": [{"umbrella_title": "Human Readable Title","umbrella_category": "wiki","umbrella_tags": ["tag1", "tag2"],"merge_slugs": ["slug-a", "slug-b"],"body": "## When to use\\n...\\n\\n## Procedure\\n1. ...\\n\\n## Notes\\n- ..."}]}\n\n'
+        'If no clear overlaps exist, return: {"consolidations": []}'
+    )
 
     try:
-        resp = client.chat.completions.create(
-            model=llm["model"],
-            messages=[
-                {"role": "system", "content": "You are a knowledge curator. Be conservative — only merge when overlap is clear. Return valid JSON only."},
-                {"role": "user", "content": prompt},
-            ],
-            max_tokens=800,
-            temperature=0.1,
-        )
-        raw = _strip_json(resp.choices[0].message.content.strip())
-        result = json.loads(raw)
+        result = claude_cli_json(prompt, timeout=120, expect="object")
     except Exception as e:
         print(f"[curator] LLM error: {e}")
         return {"merged": 0, "archived": 0, "skipped": str(e)}

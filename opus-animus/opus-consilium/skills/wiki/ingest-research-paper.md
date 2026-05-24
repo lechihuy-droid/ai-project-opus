@@ -4,7 +4,7 @@ category: wiki
 tags: [ingest, pdf, research, arxiv]
 status: active
 created: 2026-05-01
-uses: 18
+uses: 1768
 ---
 
 ## When to use

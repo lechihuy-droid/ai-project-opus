@@ -1,0 +1,5 @@
+data/portfolio.json
+data/cache/
+finopt/node_modules/
+finopt/dist/
+.env

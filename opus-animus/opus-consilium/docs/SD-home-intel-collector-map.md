@@ -15,7 +15,7 @@ It still collects articles into `raw/articles/`, but the main product surface is
 external sources -> raw article files -> Intel API enrichment -> Opus Home dashboard -> user action
 ```
 
-`personal-wiki/` remains the long-term brain, but `collect.auto_ingest` is currently disabled. Intel review happens before anything becomes durable wiki knowledge.
+`personal-wiki/` remains the long-term brain. Current `config.yaml` has `collect.auto_ingest: true`, so raw articles can be compiled into seed wiki pages after collection. That still does not make Intel synthesis durable: conclusions from the Intel tab must be promoted into hub pages using `personal-wiki/Research/intel-to-wiki-promotion.md`.
 
 ---
 
@@ -109,6 +109,8 @@ State:
 | `logs/intel_state.json` | Used/unused status keyed by article slug |
 | `logs/intel_reviews/YYYY-MM-DD.json` | Optional LLM-written daily market review |
 | `logs/business_briefs/YYYY-MM-DD.json` | Optional Business Knowledge section |
+| `personal-wiki/Research/research-source-map.md` | Source map for collector, Intel, weekly, and research surfaces |
+| `personal-wiki/Research/intel-to-wiki-promotion.md` | Rules for promoting Intel signals into durable wiki hubs |
 
 ---
 
@@ -136,10 +138,11 @@ C:/Users/HUY/AppData/Local/Programs/Python/Python311/python.exe run_collect.py
 ```
 
 - Do not assume `python run_collect.py` uses the right environment.
-- Keep `collect.auto_ingest: false` unless explicitly changing the wiki ingestion policy.
+- `collect.auto_ingest` is currently `true`; raw articles may become seed pages automatically.
 - Treat `raw/articles/` as the durable event log for Intel.
 - Treat `api/intel.py` as deterministic synthesis, not source collection.
 - Business brief generation is separate from collect; collect only provides source material.
+- Treat Intel synthesis as provisional until promoted into the right hub page.
 
 ---
 
@@ -149,5 +152,5 @@ C:/Users/HUY/AppData/Local/Programs/Python/Python311/python.exe run_collect.py
 |---|---|---|
 | LLM-written daily Intel review | Optional JSON in `logs/intel_reviews/` | Decide whether to add a generation command |
 | Business Knowledge brief | Manual/sidecar JSON | Decide generation cadence and owner |
-| Wiki promotion | Disabled by `auto_ingest: false` | Define when an Intel item becomes wiki knowledge |
+| Wiki promotion | Defined in `personal-wiki/Research/intel-to-wiki-promotion.md` | Add tooling or dashboard affordance for a pending promotion queue |
 | Web search sources | Listed as pending in config comments | Add implementation only if RSS is insufficient |

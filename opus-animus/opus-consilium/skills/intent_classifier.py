@@ -4,7 +4,6 @@ Maps natural language input → structured intent for wiki operations.
 
 Standalone — works without Hermes runtime. Hermes wraps this when available.
 """
-import os
 import re
 from dataclasses import dataclass, field
 
@@ -95,31 +94,18 @@ def classify(text: str, has_attachment: bool = False) -> Intent:
 
 
 def _llm_classify(text: str) -> Intent:
-    """LLM fallback for ambiguous natural language input."""
+    """LLM fallback for ambiguous natural language input — via Claude CLI."""
     try:
-        import json
-        from groq import Groq
-        client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-        resp = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "Classify this message into one wiki operation. "
-                        "Return JSON only: {\"operation\": \"ingest|query|lint|digest|unknown\", "
-                        "\"args\": {\"source\": \"...\", \"question\": \"...\"}, \"confidence\": 0.0-1.0}"
-                    ),
-                },
-                {"role": "user", "content": text},
-            ],
-            max_tokens=150,
-            temperature=0.1,
+        from utils.llm import claude_cli_json
+        prompt = (
+            "Classify this message into one wiki operation. "
+            "Return JSON ONLY (no other text): "
+            '{"operation":"ingest|query|lint|digest|unknown",'
+            '"args":{"source":"...","question":"..."},'
+            '"confidence":0.0-1.0}\n\n'
+            f"Message: {text}"
         )
-        raw = resp.choices[0].message.content.strip()
-        raw = re.sub(r"^```(?:json)?\s*", "", raw)
-        raw = re.sub(r"\s*```$", "", raw)
-        data = json.loads(raw)
+        data = claude_cli_json(prompt, timeout=60, expect="object")
         return Intent(
             operation=data.get("operation", "unknown"),
             args=data.get("args", {}),

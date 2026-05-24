@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>N2 · Tương phản: に反して / 反面 / 一方 / 一方だ</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --card: #22263a;
+      --accent:  #6c7fff;
+      --accent2: #ff6b8a;
+      --accent3: #4ecdc4;
+      --accent4: #f7c948;
+      --text: #e8eaf0;
+      --muted: #8b8fa8;
+      --border: #2e3250;
+      --green: #4caf89;
+      --red: #e05c72;
+      --jp: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Yu Gothic', sans-serif;
+      --vi: 'Inter', 'Segoe UI', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--vi);
+      min-height: 100vh;
+    }
+
+    /* Progress */
+    .progress-bar {
+      position: fixed; top: 0; left: 0; height: 3px;
+      background: var(--accent); transition: width .3s ease; z-index: 200;
+    }
+
+    /* Slides */
+    .slide {
+      display: none; min-height: 100vh;
+      padding: 3.5rem 2rem 6rem;
+      max-width: 860px; margin: 0 auto; width: 100%;
+      flex-direction: column; justify-content: center;
+    }
+    .slide.active { display: flex; }
+
+    /* Nav */
+    .nav {
+      position: fixed; bottom: 1.75rem; left: 50%; transform: translateX(-50%);
+      display: flex; gap: .75rem; align-items: center;
+      background: var(--surface); border: 1px solid var(--border);
+      padding: .65rem 1.25rem; border-radius: 50px; z-index: 200;
+      box-shadow: 0 4px 24px rgba(0,0,0,.4);
+    }
+    .nav button {
+      background: none; border: none; color: var(--text);
+      cursor: pointer; font-size: 1.1rem; padding: .25rem .7rem;
+      border-radius: 8px; transition: background .15s;
+    }
+    .nav button:hover { background: var(--card); }
+    .nav button:disabled { opacity: .3; cursor: not-allowed; }
+    .slide-counter { color: var(--muted); font-size: .82rem; min-width: 52px; text-align: center; }
+
+    /* Typography */
+    .chip {
+      display: inline-block;
+      font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      padding: .28rem .75rem; border-radius: 4px; margin-bottom: 1.4rem;
+    }
+    .chip-blue  { background: rgba(108,127,255,.15); color: var(--accent);  border: 1px solid rgba(108,127,255,.3); }
+    .chip-pink  { background: rgba(255,107,138,.15); color: var(--accent2); border: 1px solid rgba(255,107,138,.3); }
+    .chip-teal  { background: rgba(78,205,196,.15);  color: var(--accent3); border: 1px solid rgba(78,205,196,.3);  }
+    .chip-gold  { background: rgba(247,201,72,.15);  color: var(--accent4); border: 1px solid rgba(247,201,72,.3);  }
+    .chip-gray  { background: rgba(139,143,168,.1);  color: var(--muted);   border: 1px solid rgba(139,143,168,.2); }
+
+    .slide-title {
+      font-size: 2.2rem; font-weight: 800; line-height: 1.2; margin-bottom: .65rem;
+    }
+    .slide-sub {
+      font-size: 1.05rem; color: var(--muted); line-height: 1.65; margin-bottom: 2rem;
+    }
+    .jp { font-family: var(--jp); }
+
+    .hl  { color: var(--accent);  font-weight: 700; }
+    .hl2 { color: var(--accent2); font-weight: 700; }
+    .hl3 { color: var(--accent3); font-weight: 700; }
+    .hl4 { color: var(--accent4); font-weight: 700; }
+
+    /* Example block */
+    .ex {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.1rem 1.4rem; margin: .65rem 0;
+    }
+    .ex-jp { font-family: var(--jp); font-size: 1.15rem; margin-bottom: .35rem; }
+    .ex-vi { color: var(--muted); font-size: .88rem; line-height: 1.5; }
+
+    /* 3-view */
+    .three-view {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: .85rem; margin: 1.25rem 0;
+    }
+    .view-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.15rem;
+    }
+    .view-label {
+      font-size: .72rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: .65rem;
+    }
+    .view-body { font-size: .92rem; line-height: 1.65; }
+
+    /* Callout */
+    .callout {
+      border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0;
+      background: rgba(108,127,255,.08); padding: .9rem 1.1rem;
+      margin: .85rem 0; font-size: .92rem; line-height: 1.6;
+    }
+    .callout.warn  { border-color: var(--accent4); background: rgba(247,201,72,.08); }
+    .callout.trap  { border-color: var(--red);     background: rgba(224,92,114,.08); }
+    .callout.teal  { border-color: var(--accent3); background: rgba(78,205,196,.08); }
+
+    /* Card grid */
+    .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; margin-bottom: 1.25rem; }
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.25rem;
+    }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: .88rem; }
+    th {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: .65rem .9rem; text-align: left;
+      font-weight: 600; color: var(--muted); font-size: .76rem; letter-spacing: .05em;
+    }
+    td { border: 1px solid var(--border); padding: .65rem .9rem; vertical-align: top; line-height: 1.5; }
+    tr:hover td { background: rgba(255,255,255,.02); }
+
+    /* Form pattern */
+    .form-block {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: .85rem 1.1rem;
+      font-family: var(--jp); font-size: .9rem; line-height: 2;
+      margin: .65rem 0;
+    }
+
+    /* Quiz */
+    .quiz-q {
+      font-family: var(--jp); font-size: 1.15rem; line-height: 1.9;
+      padding: 1.1rem 1.3rem; background: var(--surface);
+      border-radius: 10px; border: 1px solid var(--border); margin-bottom: 1rem;
+    }
+    .quiz-opts { display: flex; flex-direction: column; gap: .65rem; margin-bottom: .75rem; }
+    .qbtn {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 8px; padding: .8rem 1.1rem;
+      color: var(--text); font-family: var(--jp); font-size: 1rem;
+      cursor: pointer; text-align: left; transition: all .15s;
+    }
+    .qbtn:hover { border-color: var(--accent); background: rgba(108,127,255,.1); }
+    .qbtn.correct { border-color: var(--green); background: rgba(76,175,137,.15); color: var(--green); }
+    .qbtn.wrong   { border-color: var(--red);   background: rgba(224,92,114,.15);  color: var(--red); }
+    .qbtn:disabled { cursor: default; }
+
+    .q-explain { display: none; }
+    .q-explain.show { display: block; }
+    .q-block { display: none; }
+    .q-block.active { display: block; }
+
+    /* Example note */
+    .ex-note {
+      margin-top: .5rem;
+      padding-top: .5rem;
+      border-top: 1px solid var(--border);
+      font-size: .83rem;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+    .ex-note strong { color: var(--text); }
+    .ex-note .jp { font-size: .88rem; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .slide-title { font-size: 1.7rem; }
+      .three-view  { grid-template-columns: 1fr; }
+      .card-grid   { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="progress-bar" id="pbar"></div>
+
+<!-- ─────────────────── SLIDE 1: Mở đầu ─────────────────── -->
+<div class="slide active" id="s1">
+  <div class="chip chip-gray">N2 Grammar · Tương phản &amp; Chiều hướng</div>
+  <h1 class="slide-title">4 mẫu tưởng giống nhau.<br>Nhưng không giống nhau.</h1>
+  <p class="slide-sub">
+    Cùng nói về "một mặt / mặt kia" — nhưng ý người nói ở bốn câu này không giống nhau.<br>
+    Nhìn qua thì khá giống nhau. Nhưng khi vào đề, rất dễ chọn nhầm ở chỗ này.
+  </p>
+
+  <div class="ex">
+    <div class="ex-jp">専門家の予想<span class="hl">に反して</span>、景気は回復し始めた。</div>
+    <div class="ex-vi">Trái với dự đoán của chuyên gia, kinh tế bắt đầu hồi phục.</div>
+  </div>
+  <div class="ex">
+    <div class="ex-jp">パソコンは便利な<span class="hl2">反面</span>、トラブルも多い。</div>
+    <div class="ex-vi">PC thì tiện, nhưng mặt kia hay xảy ra vấn đề.</div>
+  </div>
+  <div class="ex">
+    <div class="ex-jp">この布は水に強い<span class="hl3">一方</span>、熱に弱い。</div>
+    <div class="ex-vi">Vải này bền với nước, nhưng lại yếu với nhiệt.</div>
+  </div>
+  <div class="ex">
+    <div class="ex-jp">野菜の値段は上がる<span class="hl4">一方だ</span>。</div>
+    <div class="ex-vi">Giá rau cứ tăng mãi.</div>
+  </div>
+</div>
+
+<!-- ─────────────────── SLIDE 2: Bài này giúp gì ─────────────────── -->
+<div class="slide" id="s2">
+  <div class="chip chip-gray">Bài này giúp gì?</div>
+  <h2 class="slide-title">Bài này giúp gì?</h2>
+  <p class="slide-sub">Học xong, bạn sẽ đỡ nhầm ở 3 chỗ khi làm đề N2.</p>
+
+  <div class="card-grid" style="grid-template-columns: 1fr 1fr;">
+    <div class="card">
+      <div class="jp" style="font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:.65rem;">① に反して</div>
+      <p style="color:var(--muted);font-size:.9rem;line-height:1.6;">So sánh kết quả với kỳ vọng / dự đoán <strong style="color:var(--text);">đã có từ trước</strong></p>
+    </div>
+    <div class="card">
+      <div class="jp" style="font-size:1.4rem;font-weight:700;color:var(--accent2);margin-bottom:.65rem;">② 反面</div>
+      <p style="color:var(--muted);font-size:.9rem;line-height:1.6;"><strong style="color:var(--text);">Cùng 1 chủ thể</strong> có 2 mặt đối lập song song</p>
+    </div>
+    <div class="card">
+      <div class="jp" style="font-size:1.4rem;font-weight:700;color:var(--accent3);margin-bottom:.65rem;">③ 一方（で）</div>
+      <p style="color:var(--muted);font-size:.9rem;line-height:1.6;">2 sự việc / 2 góc nhìn <strong style="color:var(--text);">song song</strong> — có thể khác chủ thể</p>
+    </div>
+    <div class="card">
+      <div class="jp" style="font-size:1.4rem;font-weight:700;color:var(--accent4);margin-bottom:.65rem;">④ 〜一方だ</div>
+      <p style="color:var(--muted);font-size:.9rem;line-height:1.6;">Xu hướng <strong style="color:var(--text);">1 chiều không đảo ngược</strong> — thường lo ngại</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    Khi làm đề N2 gặp "tương phản" — <strong>đừng chọn ngay theo cảm giác.</strong><br>
+    Hãy nhìn ý người nói đang nghiêng về hướng nào.
+  </div>
+</div>
+
+<!-- ─────────────────── SLIDE 3: に反して ─────────────────── -->
+<div class="slide" id="s3">
+  <div class="chip chip-blue">Mẫu 1</div>
+  <h2 class="slide-title jp" style="color:var(--accent);">N に反して</h2>
+  <p class="slide-sub">Kết quả xảy ra ngược lại với N (kỳ vọng / dự đoán / ý chí có từ trước)</p>
+
+  <div class="three-view">
+    <div class="view-card">
+      <div class="view-label">Ý nghĩa</div>
+      <div class="view-body">
+        Kết quả / sự việc xảy ra <strong>ngược lại hoàn toàn</strong> so với điều N chỉ ra.<br><br>
+        <span style="color:var(--muted);font-size:.85rem;">N ở đây là thứ đã tồn tại trước: kỳ vọng, dự đoán, ý chí, hy vọng...</span>
+      </div>
+    </div>
+    <div class="view-card">
+      <div class="view-label">Dạng</div>
+      <div class="view-body jp" style="line-height:2.2;">
+        N + <span class="hl">に反して</span><br>
+        N + <span class="hl">に反し</span><br>
+        N + <span class="hl">に反する</span> + N
+      </div>
+    </div>
+    <div class="view-card">
+      <div class="view-label">Cách dùng</div>
+      <div class="view-body">
+        Văn viết / trang trọng.<br><br>
+        Thường đi với:<br>
+        <span class="jp hl" style="font-size:.9rem;">予想・期待・意志・希望・意見</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-jp">専門家の<span class="hl">予想に反して</span>、景気は回復し始めた。</div>
+    <div class="ex-vi">Trái với dự đoán của chuyên gia, kinh tế bắt đầu hồi phục.</div>
+    <div class="ex-note">
+      <strong>N = <span class="jp">予想</span> (dự đoán của chuyên gia)</strong> — đây là thứ đã tồn tại trước làm nền so sánh.<br>
+      Kết quả thực tế: <span class="jp">景気が回復した</span> → ngược lại hoàn toàn với dự đoán đó.
+    </div>
+  </div>
+  <div class="ex">
+    <div class="ex-jp">我々の<span class="hl">期待に反して</span>、新商品はあまり売れなかった。</div>
+    <div class="ex-vi">Trái với kỳ vọng của chúng tôi, sản phẩm mới bán không được mấy.</div>
+    <div class="ex-note">
+      <strong>N = <span class="jp">期待</span> (kỳ vọng của chúng tôi)</strong> — kỳ vọng ban đầu: sản phẩm sẽ bán chạy.<br>
+      Thực tế: <span class="jp">あまり売れなかった</span> → ngược lại. Không có kỳ vọng này thì không dùng に反して được.
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <strong>Dấu hiệu nhận ra:</strong> Luôn có N cụ thể trước に反して — N đó là <em>thứ đã có trước</em>, làm nền so sánh.<br>
+    Kết quả sau phải ngược lại N. Nếu không có N rõ ràng → không phải に反して.
+  </div>
+</div>
+
+<!-- ─────────────────── SLIDE 4: 反面 ─────────────────── -->
+<div class="slide" id="s4">
+  <div class="chip chip-pink">Mẫu 2</div>
+  <h2 class="slide-title jp" style="color:var(--accent2);">〜反面</h2>
+  <p class="slide-sub">Cùng 1 người/vật — có 2 mặt đối lập cùng tồn tại</p>
+
+  <div class="three-view">
+    <div class="view-card">
+      <div class="view-label">Ý nghĩa</div>
+      <div class="view-body">
+        Cùng 1 chủ thể có <strong>2 tính chất trái ngược</strong> đều đúng.<br><br>
+        <span style="color:var(--muted);font-size:.85rem;">Không phải so sánh với kỳ vọng — mà là 2 mặt thật song song.</span>
+      </div>
+    </div>
+    <div class="view-card">
+      <div class="view-label">Dạng</div>
+      <div class="view-body jp" style="line-height:2.3;font-size:.88rem;">
+        N + <span class="hl2">である反面</span><br>
+        naな + <span class="hl2">反面</span><br>
+        Aい + <span class="hl2">反面</span><br>
+        Vる + <span class="hl2">反面</span>
+      </div>
+    </div>
+    <div class="view-card">
+      <div class="view-label">Cách dùng</div>
+      <div class="view-body">
+        Bắt buộc <strong>cùng 1 chủ thể</strong>.<br><br>
+        Hai vế phải là tính chất <strong>đối lập / mâu thuẫn</strong> — không phải 2 sự việc tách rời.
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-jp">パソコンは便利な<span class="hl2">反面</span>、トラブルも多い。</div>
+    <div class="ex-vi">PC thì tiện, nhưng mặt kia hay xảy ra vấn đề.</div>
+    <div class="ex-note">
+      <strong>Chủ thể duy nhất = <span class="jp">パソコン</span></strong><br>
+      Mặt 1: <span class="jp">便利だ</span> (tiện lợi) · Mặt 2: <span class="jp">トラブルも多い</span> (hay có vấn đề)<br>
+      Hai tính chất đối lập nhưng cùng đúng với cùng 1 vật → 反面.
+    </div>
+  </div>
+  <div class="ex">
+    <div class="ex-jp">彼は優れた学者<span class="hl2">である反面</span>、精神的に弱い人間だ。</div>
+    <div class="ex-vi">Anh ấy là học giả xuất sắc, nhưng mặt kia lại yếu về tinh thần.</div>
+    <div class="ex-note">
+      <strong>Chủ thể duy nhất = <span class="jp">彼</span></strong> — N nên dùng dạng <span class="jp">である反面</span><br>
+      Mặt 1: <span class="jp">優れた学者</span> (học giả xuất sắc) · Mặt 2: <span class="jp">精神的に弱い</span> (yếu tinh thần)<br>
+      Hai mặt trái ngược nhau nhưng cùng là sự thật về cùng 1 người.
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <strong>Hỏi thử:</strong> "Ai / cái gì có 2 mặt đó?" — nếu là <strong>cùng 1 thứ</strong> → 反面 phù hợp.<br>
+    Nếu là 2 thứ riêng biệt khác nhau → cần xem lại.
+  </div>
+</div>
+
+<!-- ─────────────────── SLIDE 5: 一方（で） ─────────────────── -->
+<div class="slide" id="s5">
+  <div class="chip chip-teal">Mẫu 3</div>
+  <h2 class="slide-title jp" style="color:var(--accent3);">〜一方（で）</h2>
+  <p class="slide-sub">2 sự việc / 2 góc nhìn song song — rộng hơn 反面</p>
+
+  <div class="three-view">
+    <div class="view-card">
+      <div class="view-label">Ý nghĩa</div>
+      <div class="view-body">
+        Đặt 2 sự việc / 2 trạng thái <strong>song song</strong> để đối chiếu.<br><br>
+        <span style="color:var(--muted);font-size:.85rem;">Có thể cùng chủ thể hoặc 2 chủ thể khác nhau.</span>
+      </div>
+    </div>
+    <div class="view-card">
+      <div class="view-label">Dạng</div>
+      <div class="view-body jp" style="line-height:2.3;font-size:.88rem;">
+        N + <span class="hl3">である一方</span><br>
+        naな + <span class="hl3">一方</span><br>
+        Aい + <span class="hl3">一方</span><br>
+        Vる + <span class="hl3">一方</span>
+      </div>
+    </div>
+    <div class="view-card">
+      <div class="view-label">Cách dùng</div>
+      <div class="view-body">
+        Rộng hơn 反面 — dùng được cho <strong>2 chủ thể khác nhau</strong>.<br><br>
+        Cũng dùng để chuyển góc nhìn trong văn viết.
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-jp">このあたりは、静かな<span class="hl3">一方</span>、不便である。</div>
+    <div class="ex-vi">Khu vực này yên tĩnh, nhưng mặt kia lại bất tiện.</div>
+    <div class="ex-note">
+      Cùng 1 chủ thể (<span class="jp">このあたり</span>) có 2 mặt — câu này cũng dùng được 反面.<br>
+      Điểm khác: <strong>一方 nhẹ hơn, trung tính hơn</strong>; 反面 nhấn mạnh hơn sự mâu thuẫn.
+    </div>
+  </div>
+  <div class="ex">
+    <div class="ex-jp">予算がないと言われている<span class="hl3">一方では</span>、予算がむだに使われている。</div>
+    <div class="ex-vi">Trong khi người ta nói không có ngân sách, thì ngân sách lại đang bị lãng phí.</div>
+    <div class="ex-note">
+      <strong>2 sự việc ở 2 phía khác nhau</strong> — không phải cùng 1 chủ thể.<br>
+      Phía 1: người nói "không có ngân sách" · Phía 2: thực tế ngân sách bị lãng phí<br>
+      Đây là lý do 反面 <em>không phù hợp</em> ở câu này → phải dùng 一方で.
+    </div>
+  </div>
+
+  <div class="callout teal">
+    <strong>Mở rộng:</strong> 一方で còn dùng để chuyển chủ đề trong văn viết trang trọng.<br>
+    <span class="jp" style="font-size:.93rem;">「一方で、こんな見方もある。」</span><br>
+    <span style="color:var(--muted);font-size:.88rem;">Mặt khác, cũng có cách nhìn như thế này.</span>
+  </div>
+</div>
+
+<!-- ─────────────────── SLIDE 6: 一方だ ─────────────────── -->
+<div class="slide" id="s6">
+  <div class="chip chip-gold">Mẫu 4</div>
+  <h2 class="slide-title jp" style="color:var(--accent4);">Vる 一方だ</h2>
+  <p class="slide-sub">Cứ mãi... / Ngày càng... — xu hướng 1 chiều, không đảo ngược</p>
+
+  <div class="three-view">
+    <div class="view-card">
+      <div class="view-label">Ý nghĩa</div>
+      <div class="view-body">
+        Sự việc <strong>tiếp tục theo 1 hướng duy nhất</strong>, không có dấu hiệu dừng lại hay đảo chiều.<br><br>
+        <span style="color:var(--muted);font-size:.85rem;">Khác hoàn toàn 3 mẫu trên — không phải tương phản.</span>
+      </div>
+    </div>
+    <div class="view-card">
+      <div class="view-label">Dạng</div>
+      <div class="view-body jp" style="line-height:2.2;">
+        Vる + <span class="hl4">一方だ</span><br><br>
+        <span style="color:var(--muted);font-size:.85rem;">= 「Vるばかりだ」</span>
+      </div>
+    </div>
+    <div class="view-card">
+      <div class="view-label">Cách dùng</div>
+      <div class="view-body">
+        Chỉ dùng với <strong>động từ biến đổi</strong>.<br><br>
+        Thường mang <strong>sắc thái lo ngại.</strong><br><br>
+        <span class="jp" style="font-size:.85rem;">増える・悪くなる・進む・減る・変わる</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex">
+    <div class="ex-jp">大気中のCO₂濃度の上昇とともに、地球温暖化は<span class="hl4">進む一方だ</span>。</div>
+    <div class="ex-vi">Cùng với nồng độ CO₂ tăng, nóng lên toàn cầu cứ tiếp tục tiến triển.</div>
+    <div class="ex-note">
+      Động từ biến đổi: <span class="jp"><strong>進む</strong></span> (tiến triển)<br>
+      Không có vế đối lập — chỉ 1 chiều duy nhất đang tiếp diễn, không có dấu hiệu dừng.<br>
+      Sắc thái: <strong>lo ngại, đáng lo</strong> — người nói không kiểm soát được xu hướng này.
+    </div>
+  </div>
+  <div class="ex">
+    <div class="ex-jp">天候のせいで、野菜の値段は<span class="hl4">上がる一方だ</span>。</div>
+    <div class="ex-vi">Do thời tiết, giá rau cứ tăng mãi không ngừng.</div>
+    <div class="ex-note">
+      Động từ biến đổi: <span class="jp"><strong>上がる</strong></span> (tăng)<br>
+      <span class="jp">天候のせいで</span> = nguyên nhân bên ngoài → người nói bất lực, không thể thay đổi.<br>
+      So sánh: <span class="jp">値段が上がっている</span> chỉ mô tả trạng thái đang tăng — <span class="jp">上がる一方だ</span> nhấn mạnh <em>không ngừng, không đảo ngược</em>.
+    </div>
+  </div>
+
+  <div class="callout trap">
+    <strong>Dễ nhầm:</strong> <span class="jp">「悪い一方だ」</span> ❌ — không dùng được. 悪い là tính từ, không phải động từ biến đổi.<br>
+    Phải nói: <span class="jp hl4">悪くなる一方だ</span> ✓
+  </div>
+</div>
+
+<!-- ─────────────────── SLIDE 7: Phân biệt ─────────────────── -->
+<div class="slide" id="s7">
+  <div class="chip chip-gray">Cách nhìn để phân biệt</div>
+  <h2 class="slide-title">4 mẫu — 4 hướng khác nhau</h2>
+  <p class="slide-sub">Gặp câu dạng này, đừng nhìn chữ trước. Hãy nhìn ý của câu.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Mẫu</th>
+        <th>Ở đây, câu đang nghiêng về ý nào?</th>
+        <th>Sắc thái</th>
+        <th>Dấu hiệu</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="jp hl" style="font-size:1.05rem;">に反して</span></td>
+        <td>Có N cụ thể (kỳ vọng/dự đoán) làm nền không? Kết quả có ngược lại N không?</td>
+        <td>Bất ngờ, ngược chiều</td>
+        <td><span class="jp">予想・期待・意志・希望</span></td>
+      </tr>
+      <tr>
+        <td><span class="jp hl2" style="font-size:1.05rem;">反面</span></td>
+        <td>Cùng 1 chủ thể có 2 tính chất đối lập không?</td>
+        <td>2 mặt mâu thuẫn nhưng cùng đúng</td>
+        <td>Cùng N/V ở cả 2 vế</td>
+      </tr>
+      <tr>
+        <td><span class="jp hl3" style="font-size:1.05rem;">一方（で）</span></td>
+        <td>2 sự việc / 2 góc nhìn đang song song không?</td>
+        <td>Đối chiếu, đặt cạnh nhau</td>
+        <td>Có thể khác chủ thể</td>
+      </tr>
+      <tr>
+        <td><span class="jp hl4" style="font-size:1.05rem;">〜一方だ</span></td>
+        <td>Xu hướng có 1 chiều duy nhất không? Không đảo ngược?</td>
+        <td>Lo ngại / không kiểm soát được</td>
+        <td>Vる (động từ biến đổi)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Chỗ dễ nhầm nhất: 反面 vs 一方</strong><br>
+    Một bên — cùng 1 chủ thể, 2 tính chất thật cùng tồn tại.<br>
+    Bên kia — có thể 2 chủ thể, hoặc 2 sự việc riêng đang song song.
+  </div>
+</div>
+
+<!-- ─────────────────── SLIDE 8: Quiz ─────────────────── -->
+<div class="slide" id="s8">
+  <div class="chip chip-gray">Thử chọn nhanh</div>
+  <h2 class="slide-title">Thử chọn nhanh</h2>
+  <p class="slide-sub">Đọc chỗ trống trước đã. Nhìn ý của câu — đừng chọn theo cảm giác.</p>
+
+  <!-- Q1 -->
+  <div class="q-block active" id="qb1">
+    <div class="quiz-q">
+      <span style="color:var(--muted);font-size:.82rem;">Câu 1 / 3</span><br><br>
+      みんなの期待___、彼は試験に落ちてしまった。
+    </div>
+    <div class="quiz-opts" id="qo1">
+      <button class="qbtn" data-correct="false" onclick="check(1,this)">に反した</button>
+      <button class="qbtn" data-correct="true"  onclick="check(1,this)">に反して</button>
+      <button class="qbtn" data-correct="false" onclick="check(1,this)">一方で</button>
+      <button class="qbtn" data-correct="false" onclick="check(1,this)">反面</button>
+    </div>
+    <div class="q-explain" id="qe1">
+      <div class="callout">
+        ✓ <strong>に反して</strong> — Ở đây dấu hiệu nằm ở <span class="jp">期待</span> (kỳ vọng). N cụ thể làm nền so sánh, kết quả ngược lại → に反して.<br>
+        <span style="color:var(--muted);font-size:.88rem;">に反した là dạng thuộc tính (修飾) đứng trước N, không nối được câu như vị trí này.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="q-block" id="qb2">
+    <div class="quiz-q">
+      <span style="color:var(--muted);font-size:.82rem;">Câu 2 / 3</span><br><br>
+      この薬は効果がある___、副作用も強い。
+    </div>
+    <div class="quiz-opts" id="qo2">
+      <button class="qbtn" data-correct="false" onclick="check(2,this)">に反して</button>
+      <button class="qbtn" data-correct="false" onclick="check(2,this)">一方だ</button>
+      <button class="qbtn" data-correct="true"  onclick="check(2,this)">反面</button>
+      <button class="qbtn" data-correct="false" onclick="check(2,this)">一方では</button>
+    </div>
+    <div class="q-explain" id="qe2">
+      <div class="callout">
+        ✓ <strong>反面</strong> — Cùng 1 chủ thể (loại thuốc này) có 2 tính chất đối lập: hiệu quả cao nhưng tác dụng phụ mạnh → 反面.<br>
+        <span style="color:var(--muted);font-size:.88rem;">一方では cũng dùng được nhưng 反面 tự nhiên hơn khi rõ ràng là cùng 1 chủ thể có 2 mặt.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="q-block" id="qb3">
+    <div class="quiz-q">
+      <span style="color:var(--muted);font-size:.82rem;">Câu 3 / 3</span><br><br>
+      最近、若者の読書量は減る___。
+    </div>
+    <div class="quiz-opts" id="qo3">
+      <button class="qbtn" data-correct="false" onclick="check(3,this)">反面</button>
+      <button class="qbtn" data-correct="false" onclick="check(3,this)">に反して</button>
+      <button class="qbtn" data-correct="false" onclick="check(3,this)">一方で</button>
+      <button class="qbtn" data-correct="true"  onclick="check(3,this)">一方だ</button>
+    </div>
+    <div class="q-explain" id="qe3">
+      <div class="callout">
+        ✓ <strong>一方だ</strong> — Xu hướng 1 chiều duy nhất: lượng đọc sách giảm dần và không đảo chiều → Vる一方だ.<br>
+        <span style="color:var(--muted);font-size:.88rem;">Dấu hiệu: 減る là động từ biến đổi, câu mang sắc thái lo ngại về xu hướng hiện tại.</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="quiz-done" style="display:none;margin-top:.75rem;">
+    <div class="callout" style="text-align:center;font-size:1rem;">
+      Xong cả 3 câu. Sang slide cuối để xem tổng kết. →
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────── SLIDE 9: Tổng kết ─────────────────── -->
+<div class="slide" id="s9">
+  <div class="chip chip-gray">Tổng kết nhanh</div>
+  <h2 class="slide-title">Tổng kết nhanh</h2>
+  <p class="slide-sub">
+    Nếu quên nghĩa, quay lại câu hỏi này:<br>
+    <em>"Ở đây, câu này đang nghiêng về ý nào?"</em>
+  </p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="jp" style="font-size:1.25rem;font-weight:700;color:var(--accent);margin-bottom:.6rem;">に反して</div>
+      <p style="font-size:.88rem;line-height:1.6;color:var(--muted);">Kết quả <strong style="color:var(--text);">ngược lại</strong> N (kỳ vọng/dự đoán có trước)</p>
+      <div class="form-block" style="margin-top:.75rem;font-size:.82rem;line-height:1.8;color:var(--accent);">予想・期待・意志 + に反して</div>
+    </div>
+    <div class="card">
+      <div class="jp" style="font-size:1.25rem;font-weight:700;color:var(--accent2);margin-bottom:.6rem;">反面</div>
+      <p style="font-size:.88rem;line-height:1.6;color:var(--muted);">Cùng 1 thứ — <strong style="color:var(--text);">2 mặt đối lập</strong> cùng đúng</p>
+      <div class="form-block" style="margin-top:.75rem;font-size:.82rem;line-height:1.8;color:var(--accent2);">N/na/Aい/Vる + 反面</div>
+    </div>
+    <div class="card">
+      <div class="jp" style="font-size:1.25rem;font-weight:700;color:var(--accent3);margin-bottom:.6rem;">一方（で）</div>
+      <p style="font-size:.88rem;line-height:1.6;color:var(--muted);">2 sự việc <strong style="color:var(--text);">song song</strong> — rộng hơn 反面</p>
+      <div class="form-block" style="margin-top:.75rem;font-size:.82rem;line-height:1.8;color:var(--accent3);">N/na/Aい/Vる + 一方（で）</div>
+    </div>
+    <div class="card">
+      <div class="jp" style="font-size:1.25rem;font-weight:700;color:var(--accent4);margin-bottom:.6rem;">〜一方だ</div>
+      <p style="font-size:.88rem;line-height:1.6;color:var(--muted);">Xu hướng <strong style="color:var(--text);">1 chiều</strong> không đảo ngược</p>
+      <div class="form-block" style="margin-top:.75rem;font-size:.82rem;line-height:1.8;color:var(--accent4);">Vる + 一方だ（= ばかりだ）</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    Bài này không chỉ để nhớ nghĩa.<br>
+    Mục tiêu là: vào đề N2 gặp 4 mẫu này — <strong>bớt chọn theo cảm giác.</strong>
+  </div>
+  <p style="color:var(--muted);font-size:.88rem;margin-top:1.25rem;">
+    Nếu hiểu bài rồi mà vào đề vẫn còn lưỡng lự — thử làm thêm worksheet để luyện tiếp đúng kiểu dễ nhầm nhất.
+  </p>
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+  <button id="prev-btn" onclick="go(-1)" disabled>←</button>
+  <span class="slide-counter" id="ctr">1 / 9</span>
+  <button id="next-btn" onclick="go(1)">→</button>
+</div>
+
+<script>
+  const TOTAL = 9;
+  let cur = 1;
+
+  function go(dir) {
+    document.getElementById('s' + cur).classList.remove('active');
+    cur = Math.max(1, Math.min(TOTAL, cur + dir));
+    document.getElementById('s' + cur).classList.add('active');
+    document.getElementById('prev-btn').disabled = cur === 1;
+    document.getElementById('next-btn').disabled = cur === TOTAL;
+    document.getElementById('ctr').textContent = cur + ' / ' + TOTAL;
+    document.getElementById('pbar').style.width = (cur / TOTAL * 100) + '%';
+    window.scrollTo(0, 0);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(-1);
+  });
+
+  // Quiz
+  const quizDone = { 1: false, 2: false, 3: false };
+
+  function check(q, btn) {
+    if (quizDone[q]) return;
+    quizDone[q] = true;
+    const isCorrect = btn.dataset.correct === 'true';
+    const opts = document.querySelectorAll('#qo' + q + ' .qbtn');
+    opts.forEach(b => {
+      b.disabled = true;
+      if (b.dataset.correct === 'true') b.classList.add('correct');
+    });
+    if (!isCorrect) btn.classList.add('wrong');
+    document.getElementById('qe' + q).classList.add('show');
+
+    const next = q + 1;
+    setTimeout(() => {
+      if (next <= 3) {
+        document.getElementById('qb' + q).classList.remove('active');
+        document.getElementById('qb' + next).classList.add('active');
+      } else {
+        document.getElementById('qb' + q).classList.remove('active');
+        document.getElementById('quiz-done').style.display = 'block';
+      }
+    }, 2000);
+  }
+
+  // Init
+  document.getElementById('pbar').style.width = (1 / TOTAL * 100) + '%';
+</script>
+</body>
+</html>

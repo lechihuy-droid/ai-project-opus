@@ -8,8 +8,8 @@ import re
 from datetime import datetime, date
 from pathlib import Path
 
-from groq import Groq
-from utils.config import personal_wiki_dir, raw_dir, llm_config
+from utils.config import personal_wiki_dir, raw_dir
+from utils.llm import claude_cli_json
 
 _TOPICS = ["AI", "Stock", "Personal", "Tech"]
 
@@ -262,27 +262,24 @@ def run_ingest(source: str, verbose: bool = True, dry_run: bool = False) -> dict
     candidates = _candidate_pages_context(index, source_text=content)
 
     # Step 5: LLM call
-    llm = llm_config()
-    client = Groq(api_key=llm["api_key"])
-
     from wiki_ops.skill_manager import get_skills_context
     from wiki_ops.context_compressor import compress_source
     skills_context = get_skills_context(f"ingest {category} {source[:80]}")
 
-    source_for_llm, was_compressed = compress_source(content, category, client, llm["model"])
+    source_for_llm, was_compressed = compress_source(content, category)
     if verbose and was_compressed:
         print(f"[ingest] Compressed: {len(content)} → {len(source_for_llm)} chars")
 
-    system_msg = (
+    prompt = (
         "You are a personal knowledge librarian. "
         "Compile sources into a concept-first Obsidian wiki. "
         "Prefer updating an existing concept page over creating a duplicate. "
         "Return only one valid JSON object. The first character must be { and the last character must be }. "
         "No markdown fences, no explanation, no prose outside JSON."
         + (f"\n\n{skills_context}" if skills_context else "")
-    )
+        + f"""
 
-    user_msg = f"""SCHEMA:
+SCHEMA:
 {schema}
 
 EXISTING INDEX:
@@ -311,28 +308,12 @@ Return ONLY valid JSON, no markdown fences. Your entire response must be parseab
   "content": "---\\ntitle: \\"Title\\"\\naliases: []\\ntopic: AI\\ntags: [tag1, tag2]\\nstatus: seed\\nconfidence: medium\\nsources: [\\"{raw_path.as_posix()}\\"]\\nrelated: []\\napplied: []\\nopen_questions: []\\ncreated: {date.today().isoformat()}\\nupdated: {date.today().isoformat()}\\n---\\n\\n# Title\\n\\n## Summary\\n...\\n\\n## Key Points\\n- ...\\n\\n## Why It Matters\\n...\\n\\n## Details\\n...\\n\\n## Application To OPUS ANIMUS\\n...\\n\\n## Open Questions\\n- ...\\n\\n## Applied\\n\\n## See Also\\n- [[related-page]]\\n\\n## Sources\\n- {raw_path.as_posix()}\\n- {source[:100]}\\n",
   "backlink_pages": ["existing-page-that-should-link-here.md"]
 }}"""
+    )
 
     try:
-        request = {
-            "model": llm["model"],
-            "messages": [
-                {"role": "system", "content": system_msg},
-                {"role": "user", "content": user_msg},
-            ],
-            "max_tokens": 1200,
-            "temperature": 0.1,
-        }
-        try:
-            resp = client.chat.completions.create(
-                **request,
-                response_format={"type": "json_object"},
-            )
-        except TypeError:
-            resp = client.chat.completions.create(**request)
-        raw_json = resp.choices[0].message.content.strip()
-        result = json.loads(_strip_json(raw_json))
+        result = claude_cli_json(prompt, timeout=180, expect="object")
     except json.JSONDecodeError as e:
-        print(f"[ingest] JSON parse error: {e}\nRaw: {raw_json[:300]}")
+        print(f"[ingest] JSON parse error: {e}")
         return {"status": "error", "error": str(e)}
     except Exception as e:
         print(f"[ingest] LLM error: {e}")

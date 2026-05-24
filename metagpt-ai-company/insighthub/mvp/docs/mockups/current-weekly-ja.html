@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>[CURRENT] Weekly JA — Project Sakura</title>
+<link rel="stylesheet" href="../../../../../html-kit/styles.css">
+<style>
+  .raw-md { font-family: 'Segoe UI', sans-serif; font-size: 13px; line-height: 1.55; }
+  .raw-md ul { padding-left: 20px; }
+  .raw-md li { margin: 6px 0; }
+  .cite-token { color: #888; font-size: 11px; font-family: 'Consolas', monospace; }
+  .pain-banner { background: #fdecea; border-left: 4px solid #c0392b; padding: 10px 14px; margin: 16px 0; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<header class="doc-header">
+  <span class="badge red">CURRENT STATE</span>
+  <h1>Project Sakura — 週次ステータス報告書</h1>
+  <p><strong>対象期間:</strong> 2026-05-15 → 2026-05-21 · <strong>全体:</strong> <span class="badge red">Red</span> · <strong>Lang:</strong> JA · <strong>Source:</strong> <code>output-test-weekly-ja/weekly.md</code></p>
+</header>
+
+<div class="pain-banner">
+  <strong>Pain illustration (JA variant):</strong> CR-001/002 đã localize được nhãn tiếng Nhật ("完了", "進行中", "障害・リスク") nhưng <strong>structure y hệt EN</strong> — vẫn fact dump bullet, vẫn citation trail. Đặc biệt: Jira summary giữ nguyên tiếng Anh ("Implement product search API 完了") → mixed-language reading khó chịu cho stakeholder JA.
+</div>
+
+<section class="raw-md">
+  <h2>エグゼクティブサマリー</h2>
+  <ul>
+    <li>全体ステータス: 赤：危険 <span class="cite-token">[jira:SAKURA-1] [jira:SAKURA-2] [jira:SAKURA-3] [jira:SAKURA-4] [jira:SAKURA-5] [jira:SAKURA-6] [jira:SAKURA-7] [jira:SAKURA-8] [jira:SAKURA-12] [jira:SAKURA-31] [jira:SAKURA-32] [jira:SAKURA-33]</span></li>
+    <li>完了作業項目: 12 件の完了作業項目 <span class="cite-token">[12 citations]</span></li>
+    <li>重大リスク: 11 件の重大な異常 <span class="cite-token">[13 citations]</span></li>
+  </ul>
+
+  <h2>進捗状況</h2>
+  <ul>
+    <li>全体進捗: 29.4% 実績／ 70.4% 計画 <span class="cite-token">[12 wbs citations]</span></li>
+    <li>Phase 1 Design: 0.0% 実績／ 100.0% 計画, 差異 -100.0% <span class="cite-token">[wbs:P1-T01] [wbs:P1-T02] [wbs:P1-T03]</span></li>
+    <li>Phase 2 Development: 35.6% 実績／ 84.2% 計画, 差異 -48.6% <span class="cite-token">[6 wbs citations]</span></li>
+  </ul>
+
+  <h2>完了項目 (12 件)</h2>
+  <ul>
+    <li>SAKURA-1: Implement product search API <strong>完了</strong> <span class="cite-token">[jira:SAKURA-1]</span> <em style="color:#c0392b">← mixed JA/EN</em></li>
+    <li>SAKURA-2: Build cart page UI <strong>完了</strong> <span class="cite-token">[jira:SAKURA-2]</span></li>
+    <li>… 10 more identical pattern, summary trong tiếng Anh nguyên si …</li>
+  </ul>
+
+  <h2>進行中の項目 (19 件)</h2>
+  <ul>
+    <li>SAKURA-9: Payment gateway integration <strong>is In Progress</strong> <span class="cite-token">[jira:SAKURA-9]</span> <em style="color:#c0392b">← "is In Progress" chưa localize</em></li>
+    <li>SAKURA-10: Inventory sync service is In Progress <span class="cite-token">[jira:SAKURA-10]</span></li>
+    <li>… 17 more, tất cả vẫn "is In Progress" tiếng Anh …</li>
+  </ul>
+
+  <h2>障害・リスク (19 件)</h2>
+  <ul>
+    <li>障害・スケジュールリスク: 19 件の障害・スケジュールリスク <span class="cite-token">[19 mixed citations]</span></li>
+    <li>高 Progress: SAKURA-12 - <em>Done issue has no linked commit or PR</em> <span class="cite-token">[jira:SAKURA-12]</span> <em style="color:#c0392b">← anomaly message EN</em></li>
+    <li>高 Progress: Phase 1 Design - 計画 100.0% vs 実績 0.0% <span class="cite-token">[3 wbs]</span></li>
+    <li>中 Risk: C-004 - <em>Blocker message has no Jira key</em> <span class="cite-token">[slack:C-004]</span></li>
+    <li>P1-T01: 遅延タスク <em>Requirements finalization</em> <span class="cite-token">[wbs:P1-T01]</span></li>
+  </ul>
+
+  <h2>バグ状況</h2>
+  <ul>
+    <li>新規バグ: 3 件の新規バグ <span class="cite-token">[10 citations]</span></li>
+    <li>解決済みバグ: 3 件の解決済みバグ <span class="cite-token">[10 citations]</span></li>
+    <li>未解決バグ: 7 件の未解決バグ <span class="cite-token">[10 citations]</span></li>
+    <li>重大度別の未解決バグ: 重大度別の未解決バグ件数： 高 1, 低 1, 中 4, <strong>Severity-1</strong> 1 <span class="cite-token">[10 citations]</span> <em style="color:#c0392b">← "Severity-1" không dịch</em></li>
+  </ul>
+
+  <h2>メトリクス</h2>
+  <ul>
+    <li>ベロシティ: 42 ストーリーポイント完了 <span class="cite-token">[12 jira citations]</span></li>
+    <li>スループット: 12 件の課題完了 <span class="cite-token">[12 jira citations]</span></li>
+    <li>GitHubアクティビティ: 13 件のコミット、 10 件のPR <span class="cite-token">[23 github citations]</span></li>
+    <li>Sprint 7: 24 完了SP／ 40 コミットSP, 60.0% 達成</li>
+    <li>Sprint 8: 27 完了SP／ 45 コミットSP, 60.0% 達成</li>
+    <li>Sprint 9: 31 完了SP／ 48 コミットSP, 64.6% 達成</li>
+  </ul>
+
+  <h2>前回報告からの変更点</h2>
+  <ul>
+    <li><em>No previous snapshot available.</em> <em style="color:#c0392b">← câu trống tiếng Anh trong báo cáo JA</em></li>
+  </ul>
+</section>
+
+<footer class="doc-footer">
+  <p style="margin-top: 32px; color: #888; font-size: 12px;">
+    <strong>JA-specific pain:</strong>
+    (1) Chrome localized nhưng Jira summary giữ EN → mixed language reading<br>
+    (2) Phrase "is In Progress" còn sót tiếng Anh trong section "進行中"<br>
+    (3) Anomaly message ("Done issue has no linked commit or PR") chưa dịch<br>
+    (4) "Severity-1" hardcoded, không có 重大度1<br>
+    (5) Fallback "No previous snapshot available." tiếng Anh trong báo cáo JA<br>
+    (6) Plus tất cả pain của EN version (fact dump, citation noise, no risk matrix)
+  </p>
+</footer>
+
+</body>
+</html>

@@ -51,3 +51,8 @@ The LLM wiki agent research and build plan can be applied to OPUS ANIMUS by usin
 - https://blog.starmorph.com/blog/karpathy-llm-wiki-knowledge-base-guide
 - C:/Users/HUY/AI/OPUS ANIMUS/personal-agent/raw/articles/2026-04-29-2026-04-27-2026-04-26-karpathy-llm-wiki-pattern.md
 - C:/Users/HUY/AI/opus-animus/opus-consilium/raw/inbox/ideas.md
+
+## See also
+- [[amortized-agentic-workflow-design]] — Amortized Agentic Workflow Design from Structural Priors
+- [[automated-ontology-generation-with-llms]] — Automated Ontology Generation with LLMs
+- [[polykv-asymmetric-kv-cache]] — PolyKV: Asymmetrically-Compressed KV Cache for Multi-Agent LLM Inference

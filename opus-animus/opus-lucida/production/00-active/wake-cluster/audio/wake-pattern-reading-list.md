@@ -8,21 +8,24 @@
 
 ```text
 わけ -> quà kê
-わけだ -> quà kê da
-わけです -> quà kê đê su
-わけですね -> quà kê đê su nê
-わけではない -> quà kê đê há nà ì
-わけじゃない -> quà kê dá nà ì
-わけではありません -> quà kê đê ha a ri ma sê n
-わけがない -> quà kê gá nà ì
-わけにはいかない -> quà kê ni ha i cá nà ì
-わけにはいきません -> quà kê ni ha i ki ma sê n
-Vないわけにはいかない -> thể nai quà kê ni ha i cá nà ì
-普通形 + わけだ -> thể thường cộng quà kê da
-普通形 + わけではない -> thể thường cộng quà kê đê há nà ì
-普通形 + わけがない -> thể thường cộng quà kê gá nà ì
-V辞書形 + わけにはいかない -> V thể từ điển cộng quà kê ni ha i cá nà ì
-Vない + わけにはいかない -> thể nai cộng quà kê ni ha i cá nà ì
+わけだ -> quà kê đa
+わけです -> quà kê đês
+わけですね -> quà kê đês nê
+わけでは -> quà kê đê qua
+わけではない -> quà kê đê qua nai
+わけじゃない -> quà kê ja nai
+わけではありません -> quà kê đê qua a ri ma sen
+わけが -> quà kê ga
+わけがない -> quà kê ga nai
+わけには -> quà kê ni qua
+わけにはいかない -> quà kê ni qua i ca nai
+わけにはいきません -> quà kê ni qua i ki ma sen
+Vないわけにはいかない -> V nai quà kê ni qua i ca nai
+普通形 + わけだ -> thể thường cộng quà kê đa
+普通形 + わけではない -> thể thường cộng quà kê đê qua nai
+普通形 + わけがない -> thể thường cộng quà kê ga nai
+V辞書形 + わけにはいかない -> V thể từ điển cộng quà kê ni qua i ca nai
+Vない + わけにはいかない -> thể nai cộng quà kê ni qua i ca nai
 ```
 
 **Script:**
@@ -33,39 +36,45 @@ Vない + わけにはいかない -> thể nai cộng quà kê ni ha i cá nà 
 
 Một. wake. đọc là: quà kê.
 
-Hai. wake da. đọc là: quà kê da.
+Hai. wake da. đọc là: quà kê đa.
 
-Ba. wake desu. đọc là: quà kê đê su.
+Ba. wake desu. đọc là: quà kê đês.
 
-Bốn. wake desu ne. đọc là: quà kê đê su nê.
+Bốn. wake desu ne. đọc là: quà kê đês nê.
 
-Năm. wake dewa nai. đọc là: quà kê đê há nà ì.
+Năm. wake dewa. đọc là: quà kê đê qua.
 
-Sáu. wake ja nai. đọc là: quà kê dá nà ì.
+Sáu. wake dewa nai. đọc là: quà kê đê qua nai.
 
-Bảy. wake dewa arimasen. đọc là: quà kê đê ha a ri ma sê n.
+Bảy. wake ja nai. đọc là: quà kê ja nai.
 
-Tám. wake ga nai. đọc là: quà kê gá nà ì.
+Tám. wake dewa arimasen. đọc là: quà kê đê qua a ri ma sen.
 
-Chín. wake niwa ikanai. đọc là: quà kê ni ha i cá nà ì.
+Chín. wake ga. đọc là: quà kê ga.
 
-Mười. wake niwa ikimasen. đọc là: quà kê ni ha i ki ma sê n.
+Mười. wake ga nai. đọc là: quà kê ga nai.
+
+Mười một. wake niwa. đọc là: quà kê ni qua.
+
+Mười hai. wake niwa ikanai. đọc là: quà kê ni qua i ca nai.
+
+Mười ba. wake niwa ikimasen. đọc là: quà kê ni qua i ki ma sen.
 
 [TTS_PAUSE_SHORT]
 
 Dạng công thức.
 
-V nai wake niwa ikanai. đọc là: thể nai quà kê ni ha i cá nà ì.
+V nai wake niwa ikanai. đọc là: V nai quà kê ni qua i ca nai.
 
-Futsuu kei cộng wake da. đọc là: thể thường cộng quà kê da.
+Futsuu kei cộng wake da. đọc là: thể thường cộng quà kê đa.
 
-Futsuu kei cộng wake dewa nai. đọc là: thể thường cộng quà kê đê há nà ì.
+Futsuu kei cộng wake dewa nai. đọc là: thể thường cộng quà kê đê qua nai.
 
-Futsuu kei cộng wake ga nai. đọc là: thể thường cộng quà kê gá nà ì.
+Futsuu kei cộng wake ga nai. đọc là: thể thường cộng quà kê ga nai.
 
-V jisho kei cộng wake niwa ikanai. đọc là: V thể từ điển cộng quà kê ni ha i cá nà ì.
+V jisho kei cộng wake niwa ikanai. đọc là: V thể từ điển cộng quà kê ni qua i ca nai.
 
-V nai cộng wake niwa ikanai. đọc là: thể nai cộng quà kê ni ha i cá nà ì.
+V nai cộng wake niwa ikanai. đọc là: thể nai cộng quà kê ni qua i ca nai.
 
 [TTS_PAUSE_SHORT]
 

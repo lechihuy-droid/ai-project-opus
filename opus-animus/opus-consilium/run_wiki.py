@@ -164,7 +164,9 @@ def main():
             return
         cmd_query(" ".join(sys.argv[2:]))
     elif cmd == "lint":
-        cmd_lint()
+        send_telegram = "--no-telegram" not in sys.argv[2:]
+        from wiki_ops.lint import run_lint
+        run_lint(send_telegram=send_telegram)
     elif cmd == "poll":
         cmd_poll()
     elif cmd == "reflect":

@@ -2,13 +2,11 @@
 Module C — query operation.
 2-call pattern: INDEX → find relevant pages → synthesize answer.
 """
-import os
-import json
 import re
 from pathlib import Path
 
-from groq import Groq
 from utils.config import personal_wiki_dir
+from utils.llm import claude_cli, claude_cli_json
 
 
 def _read_index() -> str:
@@ -36,31 +34,16 @@ def run_query(question: str, verbose: bool = True) -> dict:
             "pages_read": [],
         }
 
-    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-
     # Call 1: find relevant pages from INDEX
-    resp1 = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[
-            {
-                "role": "system",
-                "content": "You are a search assistant. Given a wiki index and a question, return the 2-4 most relevant page slugs as a JSON array. Return ONLY the JSON array, no explanation.",
-            },
-            {
-                "role": "user",
-                "content": f"INDEX:\n{index}\n\nQUESTION: {question}\n\nReturn JSON array of relevant page slugs (e.g. [\"llm-agents\", \"rag-vs-wiki\"]):",
-            },
-        ],
-        max_tokens=200,
-        temperature=0.1,
+    prompt1 = (
+        "You are a search assistant. Given a wiki index and a question, return the 2-4 most "
+        "relevant page slugs as a JSON array. Return ONLY the JSON array, no explanation.\n\n"
+        f"INDEX:\n{index}\n\n"
+        f"QUESTION: {question}\n\n"
+        'Return JSON array of relevant page slugs (e.g. ["llm-agents", "rag-vs-wiki"]):'
     )
-
-    raw = resp1.choices[0].message.content.strip()
-    raw = re.sub(r"^```(?:json)?\s*", "", raw)
-    raw = re.sub(r"\s*```$", "", raw)
-
     try:
-        page_slugs = json.loads(raw)
+        page_slugs = claude_cli_json(prompt1, timeout=60, expect="array")
         if not isinstance(page_slugs, list):
             page_slugs = []
     except Exception:
@@ -88,27 +71,13 @@ def run_query(question: str, verbose: bool = True) -> dict:
     # Call 2: synthesize answer
     from wiki_ops.skill_manager import get_skills_context
     skills_context = get_skills_context(question)
-    synthesis_system = "You are a personal knowledge assistant. Answer the question based ONLY on the wiki content provided. Cite sources using [[page-name]]. Plain text, no emojis."
-    if skills_context:
-        synthesis_system += f"\n\n{skills_context}"
-
-    resp2 = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[
-            {
-                "role": "system",
-                "content": synthesis_system,
-            },
-            {
-                "role": "user",
-                "content": f"WIKI CONTENT:{pages_content}\n\nQUESTION: {question}\n\nAnswer concisely, cite [[sources]]:",
-            },
-        ],
-        max_tokens=600,
-        temperature=0.3,
+    synthesis_prompt = (
+        "You are a personal knowledge assistant. Answer the question based ONLY on the wiki "
+        "content provided. Cite sources using [[page-name]]. Plain text, no emojis."
+        + (f"\n\n{skills_context}" if skills_context else "")
+        + f"\n\nWIKI CONTENT:{pages_content}\n\nQUESTION: {question}\n\nAnswer concisely, cite [[sources]]:"
     )
-
-    answer = resp2.choices[0].message.content.strip()
+    answer = claude_cli(synthesis_prompt, timeout=120)
 
     return {
         "status": "ok",

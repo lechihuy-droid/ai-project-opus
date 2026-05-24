@@ -100,6 +100,7 @@ function Sidebar({ view, setView, date, lastRefresh }) {
     { key:"actions", label:"Actions" },
     { key:"pmp",     label:"PMP Quiz" },
     { key:"lucida",  label:"Lucida" },
+    { key:"actio",   label:"Actio" },
   ];
   return (
     <div style={{width:200,background:"var(--surface)",borderRight:"1px solid var(--border-subtle)",display:"flex",flexDirection:"column",flexShrink:0,minHeight:"100vh"}}>
@@ -1182,10 +1183,155 @@ function BusinessKnowledgeBrief({ open, onToggle, brief }) {
   );
 }
 
+// ── FDE News Feed ───────────────────────────────────────────
+function FDENewsTab({ actorGroups }) {
+  const [news, setNews] = useState(null);
+  const [activeActor, setActiveActor] = useState(null);
+  const [activeTier, setActiveTier] = useState(null);
+  const [daysBack, setDaysBack] = useState(30);
+  const [loading, setLoading] = useState(false);
+
+  function loadNews(actor, days, tier) {
+    setLoading(true);
+    const qs = new URLSearchParams({ days_back: days });
+    if (actor) qs.set("actor", actor);
+    if (tier) qs.set("tier", tier);
+    api(`/api/intel/fde/news?${qs}`).then(r => setNews(r)).catch(console.error).finally(() => setLoading(false));
+  }
+
+  useEffect(() => { loadNews(activeActor, daysBack, activeTier); }, [activeActor, daysBack, activeTier]);
+
+  const groups = (news?.actor_groups || actorGroups || []);
+
+  const TIER_META = {
+    1: {label:"★ Featured", color:"#C9A84C", desc:"Cross-actor partnership (AI lab × Consulting/SIer)"},
+    2: {label:"Relevant",   color:"#60a5fa", desc:"2+ actor groups hoặc FDE pattern"},
+    3: {label:"Background", color:"#64748b", desc:"Single actor mention"},
+  };
+
+  function renderArticle(a, i) {
+    const matchedGroups = groups.filter(g => (a.actors||[]).includes(g.id));
+    const tierMeta = TIER_META[a.tier] || TIER_META[3];
+    const isFeatured = a.tier === 1;
+    return (
+      <div key={i} style={{
+        background:"var(--surface)",
+        border:isFeatured ? `1px solid ${tierMeta.color}66` : "1px solid var(--border-subtle)",
+        borderLeft:isFeatured ? `3px solid ${tierMeta.color}` : "1px solid var(--border-subtle)",
+        borderRadius:6, padding:"12px 14px"
+      }}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6,gap:10}}>
+          <a href={a.url||"#"} target="_blank" style={{fontSize:13,fontWeight:650,color:"var(--text)",textDecoration:"none",lineHeight:1.4,flex:1}}>{a.title}</a>
+          <div style={{display:"flex",gap:6,alignItems:"center",flexShrink:0}}>
+            <span style={{fontSize:10,fontWeight:700,color:tierMeta.color}}>{tierMeta.label}</span>
+            {a.goal_score && <span style={{fontSize:11,color:"var(--gold)"}}>{a.goal_score}/5</span>}
+          </div>
+        </div>
+        {a.summary && <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.6,marginBottom:8}}>{a.summary}</div>}
+        {isFeatured && a.tier_reasons && a.tier_reasons.length > 0 && (
+          <div style={{fontSize:10,color:tierMeta.color,marginBottom:6,fontStyle:"italic"}}>
+            Why featured: {a.tier_reasons.join(" · ")}
+          </div>
+        )}
+        <div style={{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap"}}>
+          <span style={{fontSize:10,color:"var(--muted)"}}>{a.source} · {a.date}</span>
+          {matchedGroups.map(g => (
+            <span key={g.id} style={{fontSize:10,fontWeight:600,padding:"2px 7px",borderRadius:10,border:`1px solid ${g.color}55`,color:g.color}}>{g.label}</span>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+      {/* Controls row 1: time + tier */}
+      <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
+        {[7,14,30,60].map(d => (
+          <button key={d} onClick={() => setDaysBack(d)} style={{
+            padding:"4px 10px",borderRadius:4,cursor:"pointer",fontSize:11,fontWeight:600,
+            background: daysBack===d ? "rgba(201,168,76,0.14)" : "transparent",
+            border: daysBack===d ? "1px solid rgba(201,168,76,0.45)" : "1px solid var(--border)",
+            color: daysBack===d ? "var(--gold)" : "var(--muted)",
+          }}>{d}d</button>
+        ))}
+        <span style={{color:"var(--border-subtle)",fontSize:12,margin:"0 2px"}}>|</span>
+        {[1,2,3].map(t => {
+          const m = TIER_META[t];
+          const count = news?.tier_counts?.[t] ?? 0;
+          return (
+            <button key={t} onClick={() => setActiveTier(activeTier===t ? null : t)} style={{
+              padding:"4px 10px",borderRadius:4,cursor:"pointer",fontSize:11,fontWeight:600,
+              background: activeTier===t ? `${m.color}22` : "transparent",
+              border: activeTier===t ? `1px solid ${m.color}88` : "1px solid var(--border)",
+              color: activeTier===t ? m.color : "var(--muted)",
+            }} title={m.desc}>{m.label} ({count})</button>
+          );
+        })}
+      </div>
+
+      {/* Controls row 2: actor chips */}
+      <div style={{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap"}}>
+        {groups.map(g => (
+          <button key={g.id} onClick={() => setActiveActor(activeActor===g.id ? null : g.id)} style={{
+            padding:"4px 10px",borderRadius:10,cursor:"pointer",fontSize:11,fontWeight:600,
+            background: activeActor===g.id ? `${g.color}22` : "transparent",
+            border: activeActor===g.id ? `1px solid ${g.color}88` : "1px solid var(--border)",
+            color: activeActor===g.id ? g.color : "var(--muted)",
+          }}>{g.label}</button>
+        ))}
+      </div>
+
+      {news && (
+        <div style={{fontSize:11,color:"var(--muted)"}}>
+          {news.total} bài trong {daysBack} ngày qua · Featured: {news.tier_counts?.[1] ?? 0}
+          {activeActor ? ` · ${groups.find(g=>g.id===activeActor)?.label||activeActor}` : ""}
+          {activeTier ? ` · tier ${activeTier}` : ""}
+          {" · "}Updated {news.updated_at}
+        </div>
+      )}
+
+      {loading && <div style={{color:"var(--muted)",fontSize:12,padding:8}}>Đang tải…</div>}
+
+      {news && news.total === 0 && !loading && (
+        <div style={{background:"var(--surface)",border:"1px solid var(--border-subtle)",borderRadius:6,padding:"24px 16px",textAlign:"center"}}>
+          <div style={{color:"var(--muted)",fontSize:13,marginBottom:6}}>Chưa có news liên quan trong {daysBack} ngày qua.</div>
+          <div style={{color:"var(--muted)",fontSize:11}}>Chạy Collect để fetch thêm · Nguồn: TechCrunch, VentureBeat, Reuters, Nikkei</div>
+        </div>
+      )}
+
+      {/* ── FEATURED SECTION (Cross-actor partnerships) ── */}
+      {news && news.featured && news.featured.length > 0 && !activeTier && !activeActor && (
+        <div style={{background:"linear-gradient(135deg, rgba(201,168,76,0.06), rgba(201,168,76,0.01))",border:"1px solid rgba(201,168,76,0.3)",borderRadius:6,padding:"14px 16px"}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+            <span style={{fontSize:11,fontWeight:700,color:"var(--gold)",letterSpacing:"0.07em",textTransform:"uppercase"}}>★ Featured Partnerships</span>
+            <span style={{fontSize:10,color:"var(--muted)"}}>AI lab × Consulting/SIer — pattern OpenAI+PwC</span>
+          </div>
+          <div style={{display:"flex",flexDirection:"column",gap:8}}>
+            {news.featured.map((a, i) => renderArticle(a, `f-${i}`))}
+          </div>
+        </div>
+      )}
+
+      {/* ── DATE-GROUPED FEED ── */}
+      {news && news.grouped && news.grouped.map(day => (
+        <div key={day.date}>
+          <div style={{fontSize:11,fontWeight:700,color:"var(--gold)",letterSpacing:"0.07em",textTransform:"uppercase",marginBottom:8,paddingBottom:4,borderBottom:"1px solid var(--border-subtle)"}}>
+            {day.date} <span style={{color:"var(--muted)",fontWeight:400,textTransform:"none",letterSpacing:"normal"}}>· {day.articles.length} bài</span>
+          </div>
+          <div style={{display:"flex",flexDirection:"column",gap:8}}>
+            {day.articles.map((a, i) => renderArticle(a, `${day.date}-${i}`))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ── FDE Research Hub ────────────────────────────────────────
 function FDEView() {
   const [data, setData] = useState(null);
-  const [tab, setTab] = useState("concepts");
+  const [tab, setTab] = useState("strategy");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -1203,61 +1349,156 @@ function FDEView() {
   const PRIORITY_COLOR = {high:"#4ade80", medium:"#C9A84C", low:"#64748b"};
 
   const tabs = [
-    {key:"concepts", label:"Key Concepts"},
-    {key:"actors",   label:"Adoption Map"},
-    {key:"articles", label:"Articles"},
-    {key:"queue",    label:"Research Queue"},
+    {key:"strategy",  label:"Strategy", desc:"Why FDE cho IT Nhật"},
+    {key:"gap",       label:"Gap Analysis", desc:"SIer Nhật vs FDE"},
+    {key:"roadmap",   label:"Roadmap", desc:"3-phase áp dụng"},
+    {key:"benchmark", label:"Benchmark", desc:"Adoption Map"},
+    {key:"news",      label:"Daily News", desc:"Track signals"},
+    {key:"resources", label:"Resources", desc:"Đọc thêm"},
   ];
+
+  const DIFFICULTY_COLOR = {high:"#f87171", medium:"#C9A84C", low:"#4ade80"};
 
   return (
     <div style={{display:"flex",flexDirection:"column",gap:18}}>
       {/* Header */}
       <div style={{borderBottom:"1px solid var(--border-subtle)",paddingBottom:14}}>
-        <div style={{fontSize:17,fontWeight:750,color:"var(--text)",marginBottom:4}}>Forward Deployed Engineer</div>
-        <div style={{fontSize:12,color:"var(--muted)",lineHeight:1.5}}>
-          Mô hình Palantir: kỹ sư nhúng trực tiếp vào khách hàng để cấu hình platform và deliver kết quả.
-          Demand tăng 42× (2023–2025). OpenAI, Anthropic đang adopt.
+        <div style={{fontSize:11,fontWeight:700,color:"var(--gold)",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:6}}>Business Transformation Playbook</div>
+        <div style={{fontSize:17,fontWeight:750,color:"var(--text)",marginBottom:6}}>FDE Model — Chuyển đổi mô hình IT Nhật</div>
+        <div style={{fontSize:12,color:"var(--muted)",lineHeight:1.55}}>
+          Mục đích: nghiên cứu mô hình Forward Deployed Engineer của Palantir để áp dụng cho doanh nghiệp IT
+          tại thị trường Nhật. Từ 人月 (man-month) → outcome-based services.
         </div>
-        {data && (
-          <div style={{marginTop:8,fontSize:11,color:"var(--muted)"}}>
-            {data.article_count} articles liên quan trong 60 ngày qua · Updated {data.updated_at}
-          </div>
-        )}
       </div>
 
       {/* Sub-tabs */}
-      <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+      <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
         {tabs.map(t => (
           <button key={t.key} onClick={() => setTab(t.key)} style={{
-            padding:"6px 14px",borderRadius:4,cursor:"pointer",fontSize:12,fontWeight:600,
+            padding:"7px 12px",borderRadius:4,cursor:"pointer",fontSize:11,fontWeight:600,textAlign:"left",
             background: tab===t.key ? "rgba(201,168,76,0.14)" : "transparent",
             border: tab===t.key ? "1px solid rgba(201,168,76,0.45)" : "1px solid var(--border)",
             color: tab===t.key ? "var(--gold)" : "var(--muted)",
-          }}>{t.label}</button>
+            display:"flex",flexDirection:"column",gap:2,
+          }}>
+            <span style={{fontSize:12,color:tab===t.key ? "var(--gold)" : "var(--text)",fontWeight:700}}>{t.label}</span>
+            <span style={{fontSize:9,color:"var(--muted)",fontWeight:500}}>{t.desc}</span>
+          </button>
         ))}
       </div>
 
-      {loading && <div style={{color:"var(--muted)",fontSize:12}}>Loading…</div>}
+      {loading && tab !== "news" && <div style={{color:"var(--muted)",fontSize:12}}>Loading…</div>}
 
-      {/* Key Concepts */}
-      {tab === "concepts" && data && (
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-          {data.concepts.map(c => (
-            <div key={c.id} style={{background:"var(--surface)",border:"1px solid var(--border-subtle)",borderRadius:6,padding:"14px 16px"}}>
-              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-                <span style={{fontSize:18}}>{c.icon}</span>
-                <span style={{fontSize:13,fontWeight:700,color:"var(--text)"}}>{c.title}</span>
+      {/* ── STRATEGY: Thesis + Concepts ── */}
+      {tab === "strategy" && data && (
+        <div style={{display:"flex",flexDirection:"column",gap:18}}>
+          {/* Thesis */}
+          <div style={{background:"linear-gradient(135deg, rgba(201,168,76,0.08), rgba(201,168,76,0.02))",border:"1px solid rgba(201,168,76,0.35)",borderRadius:6,padding:"16px 18px"}}>
+            <div style={{fontSize:13,fontWeight:750,color:"var(--gold)",marginBottom:10}}>{data.strategy_thesis.headline}</div>
+            <div style={{fontSize:12,color:"var(--text)",lineHeight:1.7,marginBottom:12,whiteSpace:"pre-line"}}>{data.strategy_thesis.body}</div>
+            <div style={{fontSize:11,fontWeight:700,color:"var(--muted)",letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:6}}>Why now</div>
+            <ul style={{margin:0,paddingLeft:18,color:"var(--text-soft)",fontSize:12,lineHeight:1.7}}>
+              {data.strategy_thesis.why_now.map((w, i) => <li key={i}>{w}</li>)}
+            </ul>
+          </div>
+
+          {/* Concepts */}
+          <div>
+            <div style={{fontSize:11,fontWeight:700,color:"var(--gold)",letterSpacing:"0.07em",textTransform:"uppercase",marginBottom:10}}>Key Concepts — với góc nhìn business</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+              {data.concepts.map(c => (
+                <div key={c.id} style={{background:"var(--surface)",border:"1px solid var(--border-subtle)",borderRadius:6,padding:"14px 16px"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+                    <span style={{fontSize:18}}>{c.icon}</span>
+                    <span style={{fontSize:13,fontWeight:700,color:"var(--text)"}}>{c.title}</span>
+                  </div>
+                  <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.6,marginBottom:10}}>{c.body}</div>
+                  {c.business_impact && (
+                    <div style={{background:"rgba(74,222,128,0.06)",borderLeft:"3px solid rgba(74,222,128,0.5)",padding:"8px 10px",borderRadius:3,marginBottom:8}}>
+                      <div style={{fontSize:9,fontWeight:700,color:"#4ade80",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:4}}>Business Impact</div>
+                      <div style={{fontSize:11,color:"var(--text-soft)",lineHeight:1.55}}>{c.business_impact}</div>
+                    </div>
+                  )}
+                  <div style={{fontSize:10,color:"var(--muted)",fontStyle:"italic"}}>{c.source}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── GAP ANALYSIS ── */}
+      {tab === "gap" && data && (
+        <div style={{display:"flex",flexDirection:"column",gap:12}}>
+          <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.6,padding:"10px 14px",background:"rgba(96,165,250,0.06)",borderLeft:"3px solid rgba(96,165,250,0.5)",borderRadius:3}}>
+            So sánh mô hình SIer Nhật truyền thống với FDE model trên 7 chiều quan trọng.
+            Mỗi gap có action cụ thể cần làm và mức độ khó để chuyển đổi.
+          </div>
+          {data.gap_analysis.map((g, i) => (
+            <div key={i} style={{background:"var(--surface)",border:"1px solid var(--border-subtle)",borderRadius:6,padding:"14px 16px"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+                <span style={{fontSize:13,fontWeight:700,color:"var(--text)"}}>{g.dimension}</span>
+                <span style={{fontSize:10,fontWeight:600,padding:"2px 8px",borderRadius:10,color:DIFFICULTY_COLOR[g.difficulty],border:`1px solid ${DIFFICULTY_COLOR[g.difficulty]}66`}}>
+                  {g.difficulty === "high" ? "Khó" : g.difficulty === "medium" ? "Trung bình" : "Dễ"}
+                </span>
               </div>
-              <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.6,marginBottom:8}}>{c.body}</div>
-              <div style={{fontSize:10,color:"var(--muted)",fontStyle:"italic"}}>{c.source}</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
+                <div style={{background:"rgba(248,113,113,0.05)",border:"1px solid rgba(248,113,113,0.2)",borderRadius:4,padding:"8px 10px"}}>
+                  <div style={{fontSize:9,fontWeight:700,color:"#f87171",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:4}}>SIer Nhật hiện tại</div>
+                  <div style={{fontSize:11,color:"var(--text-soft)",lineHeight:1.5}}>{g.current_sier}</div>
+                </div>
+                <div style={{background:"rgba(74,222,128,0.05)",border:"1px solid rgba(74,222,128,0.2)",borderRadius:4,padding:"8px 10px"}}>
+                  <div style={{fontSize:9,fontWeight:700,color:"#4ade80",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:4}}>FDE Model</div>
+                  <div style={{fontSize:11,color:"var(--text-soft)",lineHeight:1.5}}>{g.fde_model}</div>
+                </div>
+              </div>
+              <div style={{background:"rgba(201,168,76,0.06)",borderLeft:"3px solid var(--gold)",padding:"8px 10px",borderRadius:3}}>
+                <div style={{fontSize:9,fontWeight:700,color:"var(--gold)",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:4}}>Action cần làm</div>
+                <div style={{fontSize:11,color:"var(--text)",lineHeight:1.55}}>{g.gap_action}</div>
+              </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Adoption Map */}
-      {tab === "actors" && data && (
+      {/* ── ROADMAP ── */}
+      {tab === "roadmap" && data && (
+        <div style={{display:"flex",flexDirection:"column",gap:14}}>
+          <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.6,padding:"10px 14px",background:"rgba(96,165,250,0.06)",borderLeft:"3px solid rgba(96,165,250,0.5)",borderRadius:3}}>
+            Lộ trình 3 phase chuyển đổi từ SIer truyền thống sang FDE-based business model.
+            Mỗi phase có goal, actions cụ thể, và success criteria đo được.
+          </div>
+          {data.roadmap.map((phase, i) => (
+            <div key={i} style={{background:"var(--surface)",border:`1px solid ${phase.color}55`,borderRadius:6,padding:"16px 18px",position:"relative"}}>
+              <div style={{position:"absolute",top:0,left:0,width:4,height:"100%",background:phase.color,borderRadius:"6px 0 0 6px"}}/>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+                <div>
+                  <div style={{fontSize:14,fontWeight:750,color:phase.color,marginBottom:2}}>{phase.phase}</div>
+                  <div style={{fontSize:11,color:"var(--muted)"}}>{phase.duration}</div>
+                </div>
+              </div>
+              <div style={{fontSize:12,color:"var(--text)",lineHeight:1.6,marginBottom:14,fontStyle:"italic"}}>{phase.goal}</div>
+
+              <div style={{fontSize:10,fontWeight:700,color:"var(--gold)",letterSpacing:"0.07em",textTransform:"uppercase",marginBottom:8}}>Actions</div>
+              <ol style={{margin:"0 0 14px 0",paddingLeft:20,color:"var(--text-soft)",fontSize:12,lineHeight:1.7}}>
+                {phase.actions.map((a, j) => <li key={j} style={{marginBottom:4}}>{a}</li>)}
+              </ol>
+
+              <div style={{fontSize:10,fontWeight:700,color:"#4ade80",letterSpacing:"0.07em",textTransform:"uppercase",marginBottom:8}}>Success Criteria</div>
+              <ul style={{margin:0,paddingLeft:20,color:"var(--text-soft)",fontSize:11,lineHeight:1.65}}>
+                {phase.success_criteria.map((s, j) => <li key={j} style={{marginBottom:3}}>{s}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ── BENCHMARK: Adoption Map ── */}
+      {tab === "benchmark" && data && (
         <div style={{display:"flex",flexDirection:"column",gap:10}}>
+          <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.6,padding:"10px 14px",background:"rgba(96,165,250,0.06)",borderLeft:"3px solid rgba(96,165,250,0.5)",borderRadius:3}}>
+            Ai đang dùng FDE model và ở mức độ nào. So sánh để định vị mình.
+          </div>
           {data.actors.map(actor => {
             const badge = STATUS_BADGE[actor.status] || STATUS_BADGE.Partial;
             return (
@@ -1290,41 +1531,47 @@ function FDEView() {
         </div>
       )}
 
-      {/* Articles */}
-      {tab === "articles" && data && (
-        <div style={{display:"flex",flexDirection:"column",gap:8}}>
-          {data.articles.length === 0 && (
-            <div style={{color:"var(--muted)",fontSize:12,padding:12}}>
-              Chưa có articles liên quan FDE trong 60 ngày qua. Chạy Collect để fetch thêm.
+      {/* ── NEWS ── */}
+      {tab === "news" && <FDENewsTab actorGroups={data?.actor_groups || []}/>}
+
+      {/* ── RESOURCES: Research Queue + FDE Articles ── */}
+      {tab === "resources" && data && (
+        <div style={{display:"flex",flexDirection:"column",gap:18}}>
+          <div>
+            <div style={{fontSize:11,fontWeight:700,color:"var(--gold)",letterSpacing:"0.07em",textTransform:"uppercase",marginBottom:10}}>Priority Reading</div>
+            <div style={{display:"flex",flexDirection:"column",gap:8}}>
+              {data.research_queue.map((item, i) => (
+                <div key={i} style={{background:"var(--surface)",border:"1px solid var(--border-subtle)",borderRadius:6,padding:"12px 14px",display:"flex",gap:12,alignItems:"flex-start"}}>
+                  <div style={{fontSize:11,fontWeight:700,color:PRIORITY_COLOR[item.priority]||"var(--muted)",minWidth:42,marginTop:1}}>{item.priority}</div>
+                  <div style={{flex:1}}>
+                    <a href={item.url||"#"} target="_blank" style={{fontSize:13,fontWeight:600,color:"var(--text)",textDecoration:"none",lineHeight:1.4,display:"block",marginBottom:4}}>{item.title}</a>
+                    <div style={{fontSize:11,color:"var(--text-soft)",lineHeight:1.5,marginBottom:6}}>{item.note}</div>
+                    <span style={{fontSize:10,color:"var(--muted)",padding:"2px 7px",border:"1px solid var(--border)",borderRadius:10}}>{item.type}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {data.articles && data.articles.length > 0 && (
+            <div>
+              <div style={{fontSize:11,fontWeight:700,color:"var(--gold)",letterSpacing:"0.07em",textTransform:"uppercase",marginBottom:10}}>
+                FDE Articles trong raw/ ({data.article_count})
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {data.articles.map((a, i) => (
+                  <div key={i} style={{background:"var(--surface)",border:"1px solid var(--border-subtle)",borderRadius:6,padding:"12px 14px"}}>
+                    <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
+                      <a href={a.url||"#"} target="_blank" style={{fontSize:13,fontWeight:600,color:"var(--text)",textDecoration:"none",flex:1,marginRight:12,lineHeight:1.4}}>{a.title}</a>
+                      {a.goal_score && <span style={{fontSize:11,color:"var(--gold)",flexShrink:0}}>{a.goal_score}/5</span>}
+                    </div>
+                    <div style={{fontSize:11,color:"var(--text-soft)",lineHeight:1.55,marginBottom:6}}>{a.summary}</div>
+                    <div style={{fontSize:10,color:"var(--muted)"}}>{a.source} · {a.date}</div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
-          {data.articles.map((a, i) => (
-            <div key={i} style={{background:"var(--surface)",border:"1px solid var(--border-subtle)",borderRadius:6,padding:"12px 14px"}}>
-              <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
-                <a href={a.url||"#"} target="_blank" style={{fontSize:13,fontWeight:600,color:"var(--text)",textDecoration:"none",flex:1,marginRight:12,lineHeight:1.4}}>{a.title}</a>
-                {a.goal_score && <span style={{fontSize:11,color:"var(--gold)",flexShrink:0}}>{a.goal_score}/5</span>}
-              </div>
-              <div style={{fontSize:11,color:"var(--text-soft)",lineHeight:1.55,marginBottom:6}}>{a.summary}</div>
-              <div style={{fontSize:10,color:"var(--muted)"}}>{a.source} · {a.date}</div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Research Queue */}
-      {tab === "queue" && data && (
-        <div style={{display:"flex",flexDirection:"column",gap:8}}>
-          <div style={{fontSize:11,color:"var(--muted)",marginBottom:4}}>Danh sách tài liệu cần đọc để nắm vững FDE model</div>
-          {data.research_queue.map((item, i) => (
-            <div key={i} style={{background:"var(--surface)",border:"1px solid var(--border-subtle)",borderRadius:6,padding:"12px 14px",display:"flex",gap:12,alignItems:"flex-start"}}>
-              <div style={{fontSize:11,fontWeight:700,color:PRIORITY_COLOR[item.priority]||"var(--muted)",minWidth:38,marginTop:1}}>{item.priority}</div>
-              <div style={{flex:1}}>
-                <a href={item.url||"#"} target="_blank" style={{fontSize:13,fontWeight:600,color:"var(--text)",textDecoration:"none",lineHeight:1.4,display:"block",marginBottom:4}}>{item.title}</a>
-                <div style={{fontSize:11,color:"var(--text-soft)",lineHeight:1.5,marginBottom:6}}>{item.note}</div>
-                <span style={{fontSize:10,color:"var(--muted)",padding:"2px 7px",border:"1px solid var(--border)",borderRadius:10}}>{item.type}</span>
-              </div>
-            </div>
-          ))}
         </div>
       )}
     </div>
@@ -1996,6 +2243,121 @@ function LucidaView() {
   );
 }
 
+// ── Actio (Investing — US + JP stocks) ────────────────────────
+const ACTIO_SKILLS = [
+  {
+    name: "edinet-fetcher",
+    kind: "custom-jp",
+    desc: "Pull JP corporate filings (有価証券報告書, 四半期報告書, 臨時報告書) from EDINET API. Ticker → financials + MD&A.",
+    when: "Cần earnings/filing data của cty Nhật (e.g. 7203 Toyota, 6758 Sony)",
+  },
+  {
+    name: "jp-tax-account",
+    kind: "custom-jp",
+    desc: "Apply JP tax rules (新NISA / iDeCo / 特定口座) + foreign tax credit cho US holdings. Quyết định mua account nào.",
+    when: "Trước khi đặt lệnh, year-end tax planning, loss-harvesting",
+  },
+  {
+    name: "jp-fiscal-calendar",
+    kind: "custom-jp",
+    desc: "Resolve JP fiscal year, earnings windows, 権利落ち (ex-div), AGM dates. Handle FY-end exceptions ngoài Apr-Mar.",
+    when: "Schedule earnings reviews, dividend capture, thesis-tracker alerts",
+  },
+];
+
+const ACTIO_CORE_PLUGINS = [
+  { name:"equity-research", cmds:["/catalysts","/earnings","/earnings-preview","/initiate","/model-update","/morning-note","/screen","/sector","/thesis"] },
+  { name:"financial-analysis", cmds:["/3-statement-model","/competitive-analysis","/comps","/dcf","/debug-model","/lbo","/ppt-template"] },
+];
+
+const ACTIO_WORKFLOWS = [
+  { id:1, title:"Earnings prep cty JP", flow:"jp-fiscal-calendar → edinet-fetcher → /earnings-preview → /thesis" },
+  { id:2, title:"Mua US stock — account nào?", flow:"jp-tax-account → so sánh NISA vs 特定口座 + foreign tax credit" },
+  { id:3, title:"Screen ideas tuần", flow:"/screen → edinet-fetcher (verify JP fundamentals) → /initiate top 3" },
+  { id:4, title:"Year-end tax planning", flow:"jp-tax-account → audit loss-harvest + NISA quota + 損益通算" },
+  { id:5, title:"M&A / TOB event", flow:"edinet-fetcher (extraordinary) → /catalysts → tender decision tree" },
+];
+
+function ActioView() {
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+      <Card gold>
+        <Label style={{color:"var(--gold-dim)",marginBottom:6}}>opus-actio — Investing (US + JP)</Label>
+        <div style={{fontSize:17,color:"var(--text)",fontWeight:600,letterSpacing:"0.01em",lineHeight:1.3}}>Cổ phần · cổ phiếu · phần chia <span style={{fontStyle:"italic",fontWeight:400,color:"var(--muted)"}}>(Lat. actio)</span></div>
+        <div style={{fontSize:12,color:"var(--muted)",marginTop:8,lineHeight:1.6}}>
+          Workflow đầu tư cá nhân kết hợp <b style={{color:"var(--text-soft)"}}>Anthropic financial-services</b> core skills + 3 custom skill cho thị trường Nhật.
+          Skills draft analyst work — <span style={{color:"var(--warn)"}}>không phải investment advice</span>.
+        </div>
+      </Card>
+
+      <Card>
+        <Label style={{marginBottom:12}}>Custom JP Skills (3)</Label>
+        <div style={{display:"flex",flexDirection:"column",gap:10}}>
+          {ACTIO_SKILLS.map(s => (
+            <div key={s.name} style={{padding:"10px 12px",background:"var(--elevated)",borderRadius:3,border:"1px solid var(--border-subtle)"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
+                <span style={{fontSize:13,fontWeight:700,color:"var(--gold)",fontFamily:"monospace"}}>{s.name}</span>
+                <span style={{fontSize:10,padding:"2px 7px",background:"rgba(201,168,76,0.12)",border:"1px solid rgba(201,168,76,0.25)",borderRadius:2,color:"var(--gold)",letterSpacing:"0.05em",textTransform:"uppercase",fontWeight:600}}>{s.kind}</span>
+              </div>
+              <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.5,marginBottom:4}}>{s.desc}</div>
+              <div style={{fontSize:11,color:"var(--muted)",fontStyle:"italic"}}>Trigger: {s.when}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card>
+        <Label style={{marginBottom:12}}>Core Plugins (Anthropic financial-services)</Label>
+        <div style={{display:"flex",flexDirection:"column",gap:10}}>
+          {ACTIO_CORE_PLUGINS.map(p => (
+            <div key={p.name} style={{padding:"10px 12px",background:"var(--elevated)",borderRadius:3,border:"1px solid var(--border-subtle)"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                <span style={{fontSize:13,fontWeight:700,color:"var(--text)",fontFamily:"monospace"}}>{p.name}</span>
+                <span style={{fontSize:10,padding:"2px 7px",background:"rgba(61,170,136,0.14)",border:"1px solid rgba(61,170,136,0.35)",borderRadius:2,color:"var(--verdigris)",letterSpacing:"0.05em",textTransform:"uppercase",fontWeight:600}}>installed</span>
+              </div>
+              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                {p.cmds.map(c => (
+                  <span key={c} style={{fontSize:11,padding:"2px 7px",background:"rgba(255,255,255,0.04)",border:"1px solid var(--border)",borderRadius:2,color:"var(--text-soft)",fontFamily:"monospace"}}>{c}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{marginTop:10,fontSize:11,color:"var(--muted)",fontStyle:"italic"}}>
+          Cloned from <span style={{fontFamily:"monospace",color:"var(--text-soft)"}}>anthropics/financial-services</span> → <span style={{fontFamily:"monospace",color:"var(--text-soft)"}}>opus-actio/plugins/</span>
+        </div>
+      </Card>
+
+      <Card>
+        <Label style={{marginBottom:12}}>Workflow gợi ý (5)</Label>
+        <div style={{display:"flex",flexDirection:"column",gap:8}}>
+          {ACTIO_WORKFLOWS.map(w => (
+            <div key={w.id} style={{display:"flex",gap:12,alignItems:"flex-start",padding:"8px 4px",borderBottom:"1px solid var(--border-subtle)"}}>
+              <span style={{fontSize:11,fontWeight:700,color:"var(--gold)",minWidth:18}}>{String(w.id).padStart(2,"0")}</span>
+              <div style={{flex:1}}>
+                <div style={{fontSize:12,fontWeight:600,color:"var(--text)",marginBottom:2}}>{w.title}</div>
+                <div style={{fontSize:11,color:"var(--muted)",fontFamily:"monospace"}}>{w.flow}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card>
+        <Label style={{marginBottom:10}}>Files</Label>
+        <div style={{fontSize:11,fontFamily:"monospace",color:"var(--text-soft)",lineHeight:1.8}}>
+          <div>opus-animus/opus-actio/CLAUDE.md</div>
+          <div>opus-animus/opus-actio/USAGE.md  <span style={{color:"var(--muted)"}}>← cách dùng + setup</span></div>
+          <div>opus-animus/opus-actio/skills/edinet-fetcher/SKILL.md</div>
+          <div>opus-animus/opus-actio/skills/jp-tax-account/SKILL.md</div>
+          <div>opus-animus/opus-actio/skills/jp-fiscal-calendar/SKILL.md</div>
+          <div>opus-animus/opus-actio/ai/status.md</div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
 // ── Loading / Error ───────────────────────────────────────────
 function Loading() {
   return <div style={{padding:"40px 0",textAlign:"center",color:"var(--muted)",fontSize:13}}>Loading…</div>;
@@ -2033,6 +2395,7 @@ function App() {
     actions: <ActionsView/>,
     pmp:     <iframe src="/pmp/" style={{width:"100%",height:"100%",border:"none"}} title="PMP Quiz" allow="clipboard-write"/>,
     lucida:  <LucidaView/>,
+    actio:   <ActioView/>,
   };
 
   return (

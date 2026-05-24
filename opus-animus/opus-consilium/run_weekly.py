@@ -201,23 +201,8 @@ def weekly_synthesis(groups: dict, groq_api_key: str, week_str: str, period: str
     )
 
     try:
-        _CLAUDE = r"C:\Users\HUY\AppData\Roaming\npm\claude.cmd"
-        result = subprocess.run(
-            ["cmd", "/c", _CLAUDE],
-            input=prompt,
-            capture_output=True, text=True, encoding="utf-8",
-            timeout=180,
-        )
-        if result.returncode != 0:
-            raise RuntimeError(result.stderr[:300])
-        text = result.stdout.strip()
-        # Strip markdown fences if present
-        text = re.sub(r"^```json\s*", "", text)
-        text = re.sub(r"\s*```$", "", text)
-        m = re.search(r"\{.*\}", text, re.DOTALL)
-        if not m:
-            raise ValueError(f"No JSON in response: {text[:200]}")
-        parsed = json.loads(m.group())
+        from utils.llm import claude_cli_json
+        parsed = claude_cli_json(prompt, timeout=240, expect="object")
         return {
             "week": week_str,
             "period": period,

@@ -1,43 +1,41 @@
 # STATUS - opus-animus
-**Updated:** 2026-05-12
-**Current owner:** Codex
+**Updated:** 2026-05-20
+**Current owner:** Claude
 
 ## Active sub-systems
 
 | Sub-system | Status | Note |
 |---|---|---|
-| CONS / News Research Tool | Active | Local dashboard + Intel/Reading views at `http://127.0.0.1:8765` |
-| CONS / Content Collector | Active | Goal-aligned collect layer in `opus-consilium/run_collect.py` + `tools/collect_tool.py` |
-| CONS / Module C Wiki | Running | wiki-poll + wiki-lint-weekly |
-| LUCIDA / Wake Lane | Paused | Previous handoff remains in `opus-lucida/ai/handoff-codex.md` |
-| HOME Dashboard | Merged into Consilium | FastAPI dashboard lives in `opus-consilium/run_dashboard.py` |
+| CONS / News Research Tool | Active | Local dashboard + Intel/FDE/Reading views at `http://127.0.0.1:8765` |
+| CONS / Content Collector | Active | Daily 05:30 JST — collect → synthesis → wiki ingest |
+| CONS / Weekly Synthesizer | Active | Chủ nhật 06:00 JST — Task Scheduler `opus-weekly-research` |
+| CONS / Module C Wiki | Running | wiki-poll (5min) + wiki-lint-weekly |
+| CONS / FDE Research Tab | Active | Dashboard tab theo dõi FDE model adoption, 8 actor groups |
+| HOME Dashboard | Active | FastAPI + React, `run_dashboard.py` → localhost:8765 |
+| LUCIDA / Wake Lane | Paused | Previous handoff in `opus-lucida/ai/handoff-codex.md` |
 
 ## Current objective
 
-> **CONS-RESEARCH-TOOL**: make the local news/research dashboard reliable enough to use daily: collect goal-aligned articles, inspect Intel/Reading views, and trigger collect/research actions without hanging the UI.
+> **CONS-LLM-MIGRATION**: Migrate toàn bộ LLM calls từ Groq → Claude CLI (`claude.cmd -p`). **Hoàn thành 2026-05-20.**
 
-## Current state
+## Current state (2026-05-20)
 
-- FastAPI app imports cleanly with Python 3.11.
-- `/api/dashboard` returns 200.
-- `/api/articles?limit=3&days_back=7` returns 200 with article data.
-- Dashboard is available at `http://127.0.0.1:8765` when `run_dashboard.py` is running.
-- Action polling was fixed so long-running jobs do not block the poll request.
+- **Zero Groq dependency** trong pipeline chính — tất cả filter/synthesis dùng Claude CLI.
+- Migrated: `tools/collect_tool.py`, `run_weekly.py`, `run_daily.py`, `skills/intent_classifier.py`, `wiki_ops/ingest.py`, `wiki_ops/query.py`, `wiki_ops/reflect.py`, `wiki_ops/context_compressor.py`, `wiki_ops/skill_curator.py`, `wiki_ops/telegram_handler.py`, `tools/research_radar_tool.py`.
+- Helper centralized: `utils/llm.py` — `claude_cli()` + `claude_cli_json()`.
+- Voice transcription (Groq Whisper) đã xóa khỏi Telegram handler — bot text-only.
+- CrewAI còn trong `crews/` + `tools/*.py` (BaseTool) — legacy Module A, chạy tay, không ảnh hưởng pipeline.
+- FDE tab dashboard: 5 sub-tabs, tier scoring (Tier 1 = AI lab × consulting cross-actor), 8 actor groups.
 
 ## Next step
 
-1. Verify the dashboard visually in browser: Home, Intel, Reading, Actions.
-2. Test a safe action flow from `/api/run/{action}` without triggering unwanted wiki writes.
-3. Update `TODO.md` to mark completed Consilium dashboard/API steps and list remaining collect-layer work.
-4. Continue CONS-REBUILD: source verification, digest engine design, then broken-loop fixes.
+1. Kiểm tra pipeline thực tế: chạy `python run_collect.py --dry-run` → verify không còn Groq error.
+2. Xem xét `crews/` + Module A có cần giữ hay xóa hẳn.
+3. Tiếp tục backlog theo `docs/BACKLOG.md`.
 
 ## Constraints
 
 - Do not edit files in `opus-consilium/raw/`; raw sources are immutable.
-- Follow `C:/Users/HUY/AI/opus-animus/AGENTS.md`.
 - Use Python 3.11 at `C:/Users/HUY/AppData/Local/Programs/Python/Python311/python.exe`.
-- Windows Task Scheduler is the production scheduler.
-
-## If interrupted
-
-Read `ai/handoff-codex.md` first. The current active task is Consilium/news research tooling, not Lucida.
+- Windows Task Scheduler là production scheduler.
+- Mọi LLM call dùng `utils/llm.py:claude_cli_json()` — không dùng Groq.

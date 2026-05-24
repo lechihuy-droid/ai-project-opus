@@ -70,6 +70,7 @@ class JsonRuleAdapter:
         self.patterns_path = patterns_path
         self.patterns = json.loads(patterns_path.read_text(encoding="utf-8"))
         self.grammar_targets = sorted(self.patterns["grammar_targets"], key=len, reverse=True)
+        self.reading_overrides = dict(self.patterns.get("reading_overrides", {}))
         self.metalanguage = dict(self.patterns["grammar_metalanguage_gloss"])
         self.vocab = dict(self.patterns["example_vocab_gloss"])
 
@@ -149,6 +150,9 @@ class JsonRuleAdapter:
         )
 
     def replace_short_jp(self, text: str) -> str:
+        if text in self.reading_overrides:
+            return self.reading_overrides[text]
+
         out = text
         for source, replacement in sorted(self.metalanguage.items(), key=lambda item: len(item[0]), reverse=True):
             if len(source) == 1:
@@ -160,7 +164,8 @@ class JsonRuleAdapter:
             out = out.replace(source, replacement)
         for source in self.grammar_targets:
             if source in out:
-                out = out.replace(source, f" {self.to_vromaji(source)} ")
+                reading = self.reading_overrides.get(source) or self.to_vromaji(source)
+                out = out.replace(source, f" {reading} ")
         out = out.replace("な", " na ")
         out = out.replace("+", " cộng ")
         out = re.sub(r"\s+", " ", out)

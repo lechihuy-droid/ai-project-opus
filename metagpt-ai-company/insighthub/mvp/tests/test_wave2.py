@@ -34,13 +34,16 @@ def test_monthly_report_has_three_extra_sections_and_validates(tmp_path):
 def test_previous_reports_feed_tone_reference_prompt_only():
     previous_reports = load_previous_reports()
     assert previous_reports
+    style_reference = next(
+        report for report in previous_reports if "Keep the summary concise" in report
+    )
 
     prompt = _system_prompt(
         "en",
         None,
         report_type="weekly",
         section_order=("exec_summary",),
-        style_reference=previous_reports[0],
+        style_reference=style_reference,
     )
 
     assert "tone only" in prompt

@@ -4,10 +4,8 @@ Research Radar — fetch GitHub trending + arXiv recent papers,
 
 Pipeline: fetch → round1_heuristic → round2_llm_score → select_top → format_report
 """
-import os
 import re
 import json
-import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -154,58 +152,49 @@ Skills user has: Intermediate AI engineering, Intermediate Finance, Basic Busine
 
 
 def round2_llm_score(items: list[dict]) -> list[dict]:
-    """Per-item LLM score. Adds apply_to_opus, skill_value, apply_suggestion, skip_reason."""
-    from groq import Groq
-    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-    scored = []
+    """Batch LLM score via Claude CLI. Adds apply_to_opus, skill_value, apply_suggestion, skip_reason."""
+    from utils.llm import claude_cli_json
 
-    for i, item in enumerate(items):
-        prompt = f"""{OPUS_CONTEXT}
+    if not items:
+        return items
 
-Item:
-- Type: {item['type']}
-- Title: {item['title']}
-- URL: {item['url']}
-- Description: {item.get('description','')[:500]}
+    items_text = ""
+    for i, item in enumerate(items, 1):
+        items_text += (
+            f"{i}. [{item['type']}] {item['title']}\n"
+            f"   {item.get('description', '')[:200]}\n"
+        )
 
-Task: Score this item against OPUS ANIMUS roadmap. Return ONLY JSON, no markdown:
-{{
-  "apply_to_opus": 0-10,
-  "skill_value": 0-10,
-  "apply_suggestion": "1-2 sentences if apply_to_opus >= 6, else empty string",
-  "skip_reason": "1 sentence if both scores < 5, else empty string"
-}}
+    prompt = (
+        f"{OPUS_CONTEXT}\n\n"
+        f"Items to score ({len(items)} total):\n{items_text}\n\n"
+        "Task: Score each item against OPUS ANIMUS roadmap. Return ONLY a JSON array:\n"
+        '[{"idx":1,"apply_to_opus":0-10,"skill_value":0-10,'
+        '"apply_suggestion":"1-2 sentences if apply_to_opus>=6 else empty",'
+        '"skip_reason":"1 sentence if both <5 else empty"}, ...]\n\n'
+        "apply_to_opus = directly fork/integrate into a module (10 = drop-in replacement).\n"
+        "skill_value = expands L1 knowledge or L2 skill (10 = paradigm-shifting)."
+    )
 
-apply_to_opus = directly fork/integrate vào module nào (10 = drop-in replacement / new module).
-skill_value = expands user's L1 knowledge or L2 skill (10 = paradigm-shifting concept)."""
-
-        try:
-            resp = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=300,
-                temperature=0.2,
-            )
-            raw = resp.choices[0].message.content.strip()
-            raw = re.sub(r"^```(?:json)?\s*", "", raw)
-            raw = re.sub(r"\s*```$", "", raw)
-            data = json.loads(raw)
-            item["apply_to_opus"] = int(data.get("apply_to_opus", 0))
-            item["skill_value"] = int(data.get("skill_value", 0))
-            item["apply_suggestion"] = data.get("apply_suggestion", "")[:200]
-            item["skip_reason"] = data.get("skip_reason", "")[:200]
-        except Exception as e:
-            # Fallback: heuristic score based on stars
+    try:
+        scored_list = claude_cli_json(prompt, timeout=180, expect="array")
+        for entry in scored_list:
+            idx = entry.get("idx", 0) - 1
+            if 0 <= idx < len(items):
+                items[idx]["apply_to_opus"] = int(entry.get("apply_to_opus", 0))
+                items[idx]["skill_value"] = int(entry.get("skill_value", 0))
+                items[idx]["apply_suggestion"] = entry.get("apply_suggestion", "")[:200]
+                items[idx]["skip_reason"] = entry.get("skip_reason", "")[:200]
+    except Exception as e:
+        print(f"[radar] LLM score error: {e} — using heuristic fallback")
+        for item in items:
+            item.setdefault("apply_to_opus", 0)
             stars = item.get("stars_period", 0)
-            item["apply_to_opus"] = 0
-            item["skill_value"] = min(10, stars // 50) if item["type"] == "repo" else 3
-            item["apply_suggestion"] = ""
-            item["skip_reason"] = f"LLM fail: {e}"
+            item.setdefault("skill_value", min(10, stars // 50) if item.get("type") == "repo" else 3)
+            item.setdefault("apply_suggestion", "")
+            item.setdefault("skip_reason", f"LLM fail: {e}")
 
-        scored.append(item)
-        time.sleep(0.3)  # gentle rate limit
-
-    return scored
+    return items
 
 
 # ── Select top + format ──────────────────────────────────────────

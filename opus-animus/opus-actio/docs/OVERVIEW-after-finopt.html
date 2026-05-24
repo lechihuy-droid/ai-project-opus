@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>opus-actio — Overview sau FINOPT integration</title>
+  <link rel="stylesheet" href="../../../html-kit/styles.css">
+  <script src="../../../html-kit/diagram.js" defer></script>
+</head>
+<body>
+
+  <header class="doc-header">
+    <span class="badge navy">opus-actio</span>
+    <h1>Overview sau FINOPT integration</h1>
+    <p class="lead">Hình ảnh tổng thể: skill registry + plugin Anthropic + FINOPT mobile PWA — trước khi execute 9-step plan.</p>
+    <p class="meta">2026-05-20 · Decisions locked 2026-05-19</p>
+  </header>
+
+  <main>
+
+    <!-- ── Status badges ── -->
+    <h2>Component status</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>Custom JP skills</h3>
+        <p>edinet-fetcher · jp-tax-account · jp-fiscal-calendar</p>
+        <span class="badge green">3/3 đã viết</span>
+      </div>
+      <div class="card">
+        <h3>Anthropic core plugins</h3>
+        <p>equity-research · financial-analysis · wealth-management</p>
+        <span class="badge green">2/3 cloned</span>
+        <span class="badge gray">1 chờ step 1</span>
+      </div>
+      <div class="card">
+        <h3>FINOPT mobile PWA</h3>
+        <p>Vite + React, iPhone Add-to-Home, 4 agents → skill paths</p>
+        <span class="badge gray">⬜ scaffold (step 2)</span>
+      </div>
+      <div class="card">
+        <h3>opus home dashboard</h3>
+        <p>Tab "Actio" tại localhost:8765 (đã có)</p>
+        <span class="badge green">Live</span>
+      </div>
+    </div>
+
+    <!-- ── Folder tree ── -->
+    <h2>Folder structure (post-integration)</h2>
+    <p>Phương án A: FINOPT nested trong opus-actio. Mục đánh <span class="badge gray">NEW</span> sẽ được tạo trong 9-step plan.</p>
+<pre><code>opus-actio/
+├── CLAUDE.md, USAGE.md
+├── ai/                                  status, handoff-*, sessions/
+├── docs/                                MAP-finopt-integration.md, OVERVIEW-after-finopt.html
+├── skills/                              <span class="diff-ctx">3 custom JP — đã có</span>
+│   ├── edinet-fetcher/SKILL.md
+│   ├── jp-tax-account/SKILL.md
+│   └── jp-fiscal-calendar/SKILL.md
+├── plugins/                             <span class="diff-ctx">Anthropic financial-services</span>
+│   ├── equity-research/                 <span class="diff-add">✓ cloned (9 cmd / 9 skill)</span>
+│   ├── financial-analysis/              <span class="diff-add">✓ cloned (7 cmd / 13 skill)</span>
+│   └── wealth-management/               <span class="diff-add">⬜ step 1 (6 cmd / 6 skill)</span>
+├── finopt/                              <span class="diff-add">⬜ step 2 — Vite + React PWA</span>
+│   ├── src/
+│   │   ├── App.jsx                      (từ investment-optimizer.jsx)
+│   │   ├── screens/{Portfolio,AI,Alerts,Settings}.jsx
+│   │   ├── agents/agents.config.js      4 prompts ref skill paths
+│   │   ├── services/{claude,yahoo,intel}.service.js
+│   │   └── theme.js
+│   ├── vite.config.js, vercel.json
+│   └── package.json                     yahoo-finance2, axios
+└── server/                              <span class="diff-add">⬜ step 4 — quote proxy</span>
+    └── yahoo-proxy.js                   Node/Express port 5001
+</code></pre>
+
+    <!-- ── Architecture flowchart ── -->
+    <h2>Architecture flow</h2>
+    <p>Data flow giữa iPhone PWA, Claude API, skill registry, và external sources.</p>
+    <div class="diagram" data-chart='{
+      "type": "flow",
+      "nodes": [
+        {"id":"user","label":"User (iPhone PWA)","shape":"terminal"},
+        {"id":"screens","label":"FINOPT screens\nPortfolio · AI · Alerts · Settings","shape":"rect"},
+        {"id":"agents","label":"agents.config.js\n4 system prompts","shape":"rect"},
+        {"id":"claude","label":"Claude API\nSonnet 4 / Opus 4.7","shape":"rect"},
+        {"id":"skills","label":"opus-actio skill registry\n(custom + plugins)","shape":"rect"},
+        {"id":"yahoo_proxy","label":"yahoo-proxy\n:5001","shape":"rect"},
+        {"id":"yahoo","label":"Yahoo Finance","shape":"rect"},
+        {"id":"intel","label":"opus-consilium\n/api/intel/simple","shape":"rect"},
+        {"id":"edinet","label":"EDINET API\n(JP filings)","shape":"rect"}
+      ],
+      "edges": [
+        {"from":"user","to":"screens","label":"tap"},
+        {"from":"screens","to":"agents","label":"invoke"},
+        {"from":"agents","to":"claude","label":"messages"},
+        {"from":"agents","to":"skills","label":"ref paths"},
+        {"from":"skills","to":"claude","label":"embed content"},
+        {"from":"screens","to":"yahoo_proxy","label":"GET /quote"},
+        {"from":"yahoo_proxy","to":"yahoo","label":"fetch"},
+        {"from":"screens","to":"intel","label":"GET news"},
+        {"from":"skills","to":"edinet","label":"edinet-fetcher\n(Claude Code only)"}
+      ]
+    }'></div>
+
+    <!-- ── Mapping table ── -->
+    <h2>FINOPT agent ↔ opus-actio component</h2>
+    <table>
+      <thead>
+        <tr><th>FINOPT agent</th><th>Skill / endpoint</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>📈 <b>Market Analyst</b><br><span class="meta">BUY/HOLD/SELL + P/E + targets + risks</span></td>
+          <td><code>plugins/equity-research/skills/earnings-analysis</code><br><code>plugins/equity-research/skills/morning-note</code><br><code>plugins/financial-analysis/skills/comps-analysis</code></td>
+          <td><span class="badge green">✓ ready</span></td>
+        </tr>
+        <tr>
+          <td>🛡️ <b>Risk Manager</b><br><span class="meta">VaR · Sharpe · FX · concentration</span></td>
+          <td><code>skills/risk-manager/SKILL.md</code> (custom)</td>
+          <td><span class="badge gray">⏸ defer (step 9)</span></td>
+        </tr>
+        <tr>
+          <td>⚖️ <b>Portfolio Optimizer</b><br><span class="meta">MPT · rebalance · stop-loss · tax</span></td>
+          <td><code>plugins/wealth-management/skills/portfolio-rebalance</code><br><code>plugins/wealth-management/skills/tax-loss-harvesting</code><br><code>plugins/wealth-management/skills/financial-plan</code></td>
+          <td><span class="badge gray">⬜ step 1</span></td>
+        </tr>
+        <tr>
+          <td>📰 <b>News Sentiment</b><br><span class="meta">mood · sector rotation · Fed/BOJ</span></td>
+          <td><code>opus-consilium /api/intel/simple</code><br>(daily Claude synthesis, đã chạy 05:30 JST)</td>
+          <td><span class="badge green">✓ reuse</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout">JP-specific skills (<code>edinet-fetcher</code>, <code>jp-tax-account</code>, <code>jp-fiscal-calendar</code>) chỉ invoke trong Claude Code desktop — FINOPT mobile dùng skill paths chung với core plugins, KHÔNG trực tiếp gọi EDINET từ browser (CORS + API key).</div>
+
+    <!-- ── Sequence diagram ── -->
+    <h2>End-to-end use case</h2>
+    <p>User mở Portfolio screen sáng 9:00 JST, xem giá → chạy Market Analyst → xem News.</p>
+    <div class="diagram" data-chart='{
+      "type": "sequence",
+      "actors": ["iPhone PWA","yahoo-proxy","Yahoo Finance","Claude API","opus-consilium"],
+      "steps": [
+        {"from":"iPhone PWA","to":"yahoo-proxy","msg":"GET /quote?symbols=7203.T,AAPL,..."},
+        {"from":"yahoo-proxy","to":"Yahoo Finance","msg":"fetch quotes"},
+        {"from":"Yahoo Finance","to":"yahoo-proxy","msg":"prices JSON","return":true},
+        {"from":"yahoo-proxy","to":"iPhone PWA","msg":"normalized JSON","return":true},
+        {"from":"iPhone PWA","to":"Claude API","msg":"Market Analyst prompt + portfolio"},
+        {"from":"Claude API","to":"iPhone PWA","msg":"verdict + targets + risks","return":true},
+        {"from":"iPhone PWA","to":"opus-consilium","msg":"GET /api/intel/simple"},
+        {"from":"opus-consilium","to":"iPhone PWA","msg":"cached daily synthesis","return":true}
+      ]
+    }'></div>
+
+    <!-- ── Execute order timeline ── -->
+    <h2>Execute order — 9 steps</h2>
+    <ul class="timeline">
+      <li>
+        <span class="time">Step 1</span>
+        <p><b>Clone wealth-management plugin</b> → <code>plugins/wealth-management/</code> <span class="badge green">✓ done (2026-05-20)</span></p>
+      </li>
+      <li>
+        <span class="time">Step 2</span>
+        <p><b>Scaffold FINOPT</b>: <code>npm create vite@latest finopt -- --template react</code>, copy <code>investment-optimizer.jsx → src/App.jsx</code>, install <code>yahoo-finance2 axios</code> <span class="badge gray">⬜ next</span></p>
+      </li>
+      <li>
+        <span class="time">Step 3</span>
+        <p><b>Refactor agents.config.js</b>: 4 system prompt reference skill paths thay vì hardcode content <span class="badge gray">⬜</span></p>
+      </li>
+      <li>
+        <span class="time">Step 4</span>
+        <p><b>Build yahoo-proxy.js</b> (Node/Express, port 5001) → quote API cho <code>7203.T</code>, <code>AAPL</code>, etc. <span class="badge gray">⬜</span></p>
+      </li>
+      <li>
+        <span class="time">Step 5</span>
+        <p><b>Settings screen</b>: input Claude API key (localStorage) + portfolio input (symbol/qty/avgPrice) <span class="badge gray">⬜</span></p>
+      </li>
+      <li>
+        <span class="time">Step 6</span>
+        <p><b>Wire News Sentiment</b> → fetch <code>http://localhost:8765/api/intel/simple</code> <span class="badge gray">⬜</span></p>
+      </li>
+      <li>
+        <span class="time">Step 7</span>
+        <p><b>Deploy Vercel</b> + iPhone Add-to-Home Screen <span class="badge gray">⬜</span></p>
+      </li>
+      <li>
+        <span class="time">Step 8</span>
+        <p><b>(Parallel) Register EDINET API key</b> — manual tại <code>disclosure2.edinet-fi.go.jp</code> <span class="badge gray">⬜</span></p>
+      </li>
+      <li>
+        <span class="time">Step 9</span>
+        <p><b>(Defer) risk-manager custom skill</b> — chờ FINOPT chạy thực tế rồi scope <span class="badge gray">⏸ later</span></p>
+      </li>
+    </ul>
+
+    <!-- ── Risks ── -->
+    <h2>Risks / open questions</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>Token cost</h3>
+        <p>4 agent call Claude API daily. Mitigate: cache + chỉ call khi user mở screen.</p>
+        <span class="badge gray">monitor</span>
+      </div>
+      <div class="card">
+        <h3>API key exposure</h3>
+        <p>Anthropic key trong localStorage = unsafe nếu phone compromise. Revisit khi deploy.</p>
+        <span class="badge red">deferred</span>
+      </div>
+      <div class="card">
+        <h3>Skill drift</h3>
+        <p>Skill markdown vs agents.config.js dễ lệch nếu manual copy. Mitigate: build sync script.</p>
+        <span class="badge gray">open</span>
+      </div>
+      <div class="card">
+        <h3>JPY/USD conversion</h3>
+        <p>FINOPT hardcode 0.0067. Mitigate: fetch live rate từ exchangerate-api.</p>
+        <span class="badge gray">open</span>
+      </div>
+    </div>
+
+    <div class="callout warn"><b>Disclaimer:</b> opus-actio + FINOPT là personal tool, KHÔNG phải investment advice. Mọi quyết định đầu tư là trách nhiệm cá nhân của user.</div>
+
+  </main>
+
+</body>
+</html>

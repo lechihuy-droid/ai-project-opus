@@ -1,0 +1,3521 @@
+<!DOCTYPE html>
+<!--
+  ═════════════════════════════════════════════════════════════════════════════
+  LUCIDA · N2 SLIDE TEMPLATES
+  ═════════════════════════════════════════════════════════════════════════════
+
+  PURPOSE
+  ───────
+  15 core templates + 5 production + 5 JLPT exam (1920×1080) covering the
+  full Lucida N2 lesson architecture plus exam-prep specific patterns.
+  Demoed with the Wake (わけ) cluster, but any future N2 cluster
+  (kai/gai/temade · ばかり family · etc.) should clone this file and replace
+  content only — layout, tokens, and type stay fixed.
+
+  TEMPLATE INDEX → role
+  ─────────────────────
+  T01 · Hook Situation       — anchor line + tension tag. Pain point in 5–15s.
+  T02 · Hook Contrast        — 2 sentences, vs stamp, takeaway strip.
+  T03 · Quiz Before/After    — question with blanks + 3 options, correct hi.
+  T04 · Promise Board        — topic + pattern strip + 2 outcomes + guide.
+  T05 · Story Context        — 3 beats: setting → constraint → tension.
+  T06 · Method Board         — 3-card method (Ý nghĩa · Dạng · Cách dùng).
+  T07 · Grammar Card         — 1 pattern, full speaker-intent + ví dụ + trap.
+  T08 · Minimal Pair         — 2 patterns + contrast axis + minimal pair.
+  T09 · Comparison Matrix    — 4 patterns in decision map (table OR cards).
+  T10 · Clue Map             — 3-step checklist + signal→pattern table.
+  T11 · Worked Example       — question + 5-step think-aloud + trap.
+  T12 · Diagnostic Practice  — quiz with trap tag per wrong option.
+  T13 · Trap Explanation     — "looks right" / "actually wrong" + rule.
+  T14 · Recap Map            — 4 patterns as memory map + bonus.
+  T15 · CTA Diagnostic       — problem → asset → diagnostic items.
+  T16 · Form Table           — connection rules + irregular forms + mistake.
+  T17 · Example Stack        — 3 examples across contexts (work / study / home).
+  T18 · Section Divider      — chapter break for long videos.
+  T19 · Common Mistake       — "Người Việt hay sai" branded misconception.
+  T20 · Outro                — takeaway + next episode teaser + subscribe.
+  T21 · JLPT Item Card       — 文法形式 format (4 options 1/2/3/4 + time hint).
+  T22 · Sentence Assembly    — 文の組み立て (4 fragments + ★ position).
+  T23 · Passage Grammar      — 文章の文法 (linked blanks in passage).
+  T24 · Distractor Analysis  — 4 options + trap-type chip per option.
+  T25 · Time Strategy        — section budget + skip/invest rules.
+
+  DESIGN SYSTEM
+  ─────────────
+  COLOR — Dark (Video) mode is canonical for screen recording.
+    bg        #0d0d16     fg        #e8e8f0
+    bg-card   #16161f     fg-muted  #8888a8
+    bg-card2  #1c1c28     fg-sub    #5a5a78
+    amber     oklch(75% 0.18 78)   — primary accent, 1 mẫu / 1 highlight
+    red       oklch(62% 0.22 22)   — trap / bị ràng buộc / wrong path
+    blue      oklch(70% 0.16 255)  — kết luận hợp lý
+    green     oklch(68% 0.16 155)  — bác bỏ khả năng
+
+  COLOR — Light (Print) mode: same hue family, accent shifts to crimson.
+    bg        #f5f2eb     fg        #1a1714
+    amber     oklch(48% 0.22 22)   — crimson
+
+  TYPE — locked to Be Vietnam Pro (display + body) — designed for VN.
+    display  Be Vietnam Pro 700/800   — slide titles, pattern hero
+    body     Be Vietnam Pro 400/500   — explanations, captions
+    jp       Noto Sans JP 400/700     — all Japanese characters
+    mono     JetBrains Mono 400/700   — grammar patterns (普通形 + わけだ)
+
+    Other pairings exposed via Tweaks for A/B testing:
+      auto       — Be Vietnam Pro (dark) / Newsreader + Source Sans (light)
+      clean      — Manrope + DM Sans
+      apple      — Plus Jakarta Sans
+      editorial  — Newsreader (serif) + Source Sans 3
+
+  TYPE SCALE — px on 1920×1080 canvas.
+    hero    96   — single dominant statement
+    title   64   — slide titles
+    sub     44   — secondary headings, JP lines
+    body    34   — explanation paragraphs
+    small   28   — labels, captions, ví dụ vn
+    xs      24   — meta, chrome (template badge, slide num, brand)
+    micro   24   — minimum allowed; never go below.
+
+  SPACING — comfortable mode (default).
+    px (slide horizontal): 120px
+    py (slide vertical):   88px
+    gap-title (rule → content): 48px
+    gap-item  (between cards):  24px
+    Compact mode tightens to 64×96 / 32 / 18.
+
+  CHROME — every slide must have:
+    .tmpl-badge   top-left   — "T## · template name" (template identity)
+    .slide-num    top-right  — "NN / 15" position
+    .brand        bottom-right — lucida wordmark
+
+  TEACHING CONVENTIONS (do not violate when cloning for new cluster)
+  ────────────────────────────────────────────────────────────────────
+  1. NEVER label a grammar slide with English terms (Meaning / Form / Usage).
+     Use Vietnamese: Ý nghĩa · Dạng · Cách dùng.
+  2. Every grammar card must answer: "Ở câu này, người nói đang muốn nói gì?"
+     The speaker-intent line is the thesis, not the translation.
+  3. Every minimal pair / comparison must declare an explicit contrast axis.
+     E.g. "gỡ lại cách hiểu" vs "bác hẳn khả năng" — not just "khác nhau".
+  4. Worked Example must include trap elimination, not just the correct answer.
+  5. Diagnostic Practice attaches a trap tag to each wrong option, explaining
+     what misconception that choice reveals.
+  6. Recap is screenshot-friendly. No new info, only consolidation.
+  7. CTA is learning-first ("hiểu rồi nhưng vào đề vẫn phân vân?") — not
+     salesy. Worksheet positions as diagnosis, not as PDF summary.
+
+  COLOR ASSIGNMENT FOR 4-PATTERN CLUSTERS
+  ────────────────────────────────────────
+  Recap (T14) and Comparison Matrix (T09) assign one color per pattern.
+  Order is by speaker-action archetype, not by JP alphabetic order:
+    Slot 1  blue   — "đi đến kết luận hợp lý"      (e.g. わけだ)
+    Slot 2  amber  — "đính chính / phủ định mềm"   (e.g. わけではない)
+    Slot 3  green  — "bác bỏ khả năng rất mạnh"    (e.g. わけがない)
+    Slot 4  red    — "bị ràng buộc, không thể làm" (e.g. わけにはいかない)
+  Map your new cluster's patterns to the same speaker-action slots so the
+  learner builds a stable color-to-action memory across all clusters.
+
+  REUSE WORKFLOW (for next cluster, e.g. ばかり family)
+  ────────────────────────────────────────────────────
+  1. Duplicate this file → <cluster-name>-deck.html.
+  2. Replace Japanese content in each <section> with new cluster data.
+     Keep .tmpl-badge labels (T01–T15) and all class names intact.
+  3. Re-color highlight tokens per pattern (hi / hi-red / hi-blue / hi-green)
+     using the color-to-action mapping above.
+  4. Keep slide-num range "NN / 15" — adjust only if templates are skipped.
+  5. Speaker-intent line on grammar cards is mandatory. Rewrite, don't copy.
+  6. Re-validate against the Master Teaching Skeleton (01-…-skeleton.md).
+
+  TWEAKS PANEL (bottom-right when active)
+  ───────────────────────────────────────
+  Mode      — Video (dark) ↔ Print (light)
+  Density   — Comfortable ↔ Compact
+  Pairing   — Auto / Clean / Apple / Vietnamese (locked default) / Editorial
+  T09 var.  — Table ↔ Cards (Comparison Matrix layout)
+
+  ═════════════════════════════════════════════════════════════════════════════
+-->
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lucida · N2 Slide Templates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700;6..72,800&family=Noto+Sans+JP:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<script src="deck-stage.js"></script>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+
+<style>
+  /* ── Design tokens ─────────────────────────────────────────── */
+  :root {
+    --bg:        #0d0d16;
+    --bg-card:   #16161f;
+    --bg-card2:  #1c1c28;
+    --bg-card3:  #222235;
+    --fg:        #e8e8f0;
+    --fg-muted:  #8888a8;
+    --fg-sub:    #5a5a78;
+    --amber:     oklch(75% 0.18 78);
+    --amber-dim: oklch(60% 0.14 78);
+    --amber-soft: oklch(75% 0.18 78 / 0.10);
+    --red:       oklch(62% 0.22 22);
+    --red-soft:  oklch(62% 0.22 22 / 0.10);
+    --blue:      oklch(70% 0.16 255);
+    --blue-soft: oklch(70% 0.16 255 / 0.10);
+    --green:     oklch(68% 0.16 155);
+    --green-soft: oklch(68% 0.16 155 / 0.10);
+    --border:    rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.14);
+
+    /* TYPE SCALE (px on 1920×1080) */
+    --t-hero:    96px;
+    --t-title:   64px;
+    --t-sub:     44px;
+    --t-body:    34px;
+    --t-small:   28px;
+    --t-xs:      24px;
+    --t-micro:   24px;
+
+    /* SPACING */
+    --px: 120px;
+    --py: 88px;
+    --gap-title: 48px;
+    --gap-item:  24px;
+
+    /* FONTS — default pairing: Clean. Override via [data-type] attr. */
+    --f-display: 'Manrope', system-ui, -apple-system, 'Segoe UI', 'Roboto', sans-serif;
+    --f-body:    'DM Sans', system-ui, -apple-system, 'Segoe UI', 'Roboto', sans-serif;
+    --f-jp:      'Noto Sans JP', sans-serif;
+    --f-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', 'Consolas', monospace;
+  }
+
+  /* ── TYPE PAIRINGS ────────────────────────────────── */
+  /* Auto: follows theme — Video uses Vietnamese, Print uses Editorial */
+  body[data-type="auto"][data-theme="dark"] {
+    --f-display: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+    --f-body:    'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+  }
+  body[data-type="auto"][data-theme="light"] {
+    --f-display: 'Newsreader', Georgia, 'Times New Roman', serif;
+    --f-body:    'Source Sans 3', system-ui, -apple-system, sans-serif;
+  }
+  body[data-type="apple"] {
+    --f-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, 'Segoe UI', sans-serif;
+    --f-body:    'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, 'Segoe UI', sans-serif;
+  }
+  body[data-type="vietnamese"] {
+    --f-display: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+    --f-body:    'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+  }
+  body[data-type="editorial"] {
+    --f-display: 'Newsreader', Georgia, 'Times New Roman', serif;
+    --f-body:    'Source Sans 3', system-ui, -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--f-body); background: #000; transition: background 0.3s ease; }
+  body[data-theme="light"] { background: #d6cfc0; }
+  deck-stage { --deck-bg: #000; }
+  body[data-theme="light"] deck-stage { --deck-bg: #d6cfc0; }
+
+  /* ── LIGHT THEME OVERRIDES ─────────────────────────────────── */
+  body[data-theme="light"] {
+    --bg:        #f5f2eb;
+    --bg-card:   #ffffff;
+    --bg-card2:  #f0ece1;
+    --bg-card3:  #e4e0d5;
+    --fg:        #1a1714;
+    --fg-muted:  #8a7f6f;
+    --fg-sub:    #b0a898;
+    --amber:     oklch(48% 0.22 22);     /* crimson */
+    --amber-dim: oklch(60% 0.18 22);
+    --amber-soft: oklch(48% 0.22 22 / 0.07);
+    --red:       oklch(45% 0.22 22);
+    --red-soft:  oklch(45% 0.22 22 / 0.06);
+    --blue:      oklch(42% 0.18 255);
+    --blue-soft: oklch(42% 0.18 255 / 0.06);
+    --green:     oklch(40% 0.16 155);
+    --green-soft: oklch(40% 0.16 155 / 0.06);
+    --border:    rgba(0,0,0,0.10);
+    --border-strong: rgba(0,0,0,0.18);
+  }
+
+  /* ── DENSITY: COMPACT (print/worksheet) ────────────────────── */
+  body[data-density="compact"] section {
+    padding: 64px 96px;
+  }
+  body[data-density="compact"] {
+    --gap-title: 32px;
+    --gap-item: 18px;
+  }
+
+  /* ── T09 VARIANT: CARDS (2×2 grid instead of table) ────────── */
+  body[data-variant="cards"] #s09 .matrix {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+  }
+  body[data-variant="cards"] #s09 .head { display: none; }
+  body[data-variant="cards"] #s09 .row {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    border-left-width: 4px;
+    border-radius: 16px;
+    padding: 32px 36px;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  body[data-variant="cards"] #s09 .row:nth-child(2) { border-left-color: var(--blue); }
+  body[data-variant="cards"] #s09 .row:nth-child(3) { border-left-color: var(--amber); }
+  body[data-variant="cards"] #s09 .row:nth-child(4) { border-left-color: var(--green); }
+  body[data-variant="cards"] #s09 .row:nth-child(5) { border-left-color: var(--red); }
+  body[data-variant="cards"] #s09 .row .cell { padding: 0; }
+  body[data-variant="cards"] #s09 .row .cell.pat { font-size: 44px; }
+  body[data-variant="cards"] #s09 .row .swatch { display: none; }
+
+  /* ── Slide shell ───────────────────────────────────────────── */
+  section {
+    width: 1920px;
+    height: 1080px;
+    background: var(--bg);
+    color: var(--fg);
+    display: flex;
+    flex-direction: column;
+    padding: var(--py) var(--px);
+    overflow: hidden;
+    position: relative;
+    font-family: var(--f-body);
+  }
+
+  /* ── Universal chrome ──────────────────────────────────────── */
+  .tmpl-badge {
+    position: absolute;
+    top: 40px;
+    left: var(--px);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--amber);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    z-index: 5;
+  }
+  .tmpl-badge .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--amber);
+  }
+  .tmpl-badge .name {
+    color: var(--fg-muted);
+    font-family: var(--f-body);
+    letter-spacing: 0.18em;
+    font-weight: 500;
+  }
+
+  .slide-num {
+    position: absolute;
+    top: 44px;
+    right: var(--px);
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--fg-sub);
+    letter-spacing: 0.16em;
+  }
+  .brand {
+    position: absolute;
+    bottom: 40px;
+    right: var(--px);
+    display: flex; align-items: baseline; gap: 5px;
+    font-family: var(--f-display);
+  }
+  .brand .word {
+    font-size: var(--t-xs); font-weight: 700; color: var(--fg-muted); letter-spacing: -0.03em;
+  }
+  .brand .dot {
+    width: 5px; height: 5px; border-radius: 50%; background: var(--amber);
+  }
+
+  /* ── Typography helpers ────────────────────────────────────── */
+  .eyebrow {
+    font-family: var(--f-body);
+    font-size: var(--t-small);
+    color: var(--amber);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .rule {
+    width: 56px; height: 3px; background: var(--amber); border-radius: 2px;
+    margin-bottom: var(--gap-title);
+  }
+  .title {
+    font-family: var(--f-display);
+    font-size: var(--t-title);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+  }
+  .subtitle {
+    font-size: var(--t-sub);
+    font-weight: 300;
+    color: var(--fg-muted);
+    line-height: 1.4;
+  }
+  .body {
+    font-size: var(--t-body);
+    line-height: 1.6;
+    color: var(--fg);
+  }
+  .jp {
+    font-family: var(--f-jp);
+    font-size: var(--t-sub);
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    color: var(--fg);
+  }
+  .mono {
+    font-family: var(--f-mono);
+    letter-spacing: 0.04em;
+  }
+  .hi       { color: var(--amber); font-weight: 700; }
+  .hi-red   { color: var(--red);   font-weight: 700; }
+  .hi-blue  { color: var(--blue);  font-weight: 700; }
+  .hi-green { color: var(--green); font-weight: 700; }
+
+  .micro-label {
+    font-family: var(--f-body);
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  /* ── Reusable shapes ───────────────────────────────────────── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 48px;
+  }
+  .card.accent { border-left: 4px solid var(--amber); }
+  .card.outline {
+    background: transparent;
+    border: 1.5px solid var(--border-strong);
+  }
+
+  .chip {
+    display: inline-flex; align-items: center;
+    padding: 10px 22px;
+    border-radius: 999px;
+    background: var(--amber-soft);
+    border: 1.5px solid var(--amber-dim);
+    color: var(--amber);
+    font-family: var(--f-body);
+    font-size: var(--t-xs);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* ── SHARED · PER-OPTION REASONING LIST ─────────────────── */
+  .reason-list {
+    display: flex; flex-direction: column;
+    gap: 8px;
+  }
+  .reason-list .head {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--amber);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .reason-list .item {
+    display: grid;
+    grid-template-columns: 48px 300px 1fr;
+    grid-template-areas:
+      "num pat why"
+      "num vn  why";
+    gap: 2px 24px;
+    padding: 14px 22px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--fg-sub);
+    border-radius: 10px;
+    align-items: center;
+  }
+  .reason-list .item.correct {
+    background: var(--amber-soft);
+    border-color: var(--amber-dim);
+    border-left-color: var(--amber);
+  }
+  .reason-list .item.wrong {
+    border-left-color: var(--red);
+  }
+  .reason-list .item .num {
+    grid-area: num;
+    font-family: var(--f-mono);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--fg-sub);
+    letter-spacing: 0.06em;
+    line-height: 1;
+    align-self: center;
+  }
+  .reason-list .item.correct .num { color: var(--amber); }
+  .reason-list .item.wrong .num { color: var(--red); }
+  .reason-list .item .pat {
+    grid-area: pat;
+    font-family: var(--f-jp);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--fg);
+    letter-spacing: 0.03em;
+    line-height: 1.2;
+    align-self: end;
+  }
+  .reason-list .item.correct .pat { color: var(--amber); }
+  .reason-list .item .vn {
+    grid-area: vn;
+    font-family: var(--f-body);
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    font-style: italic;
+    line-height: 1.3;
+    margin-top: 4px;
+    align-self: start;
+  }
+  .reason-list .item.correct .vn { color: var(--amber); font-style: normal; font-weight: 600; }
+  .reason-list .item .why {
+    grid-area: why;
+    align-self: center;
+    font-size: var(--t-xs);
+    color: var(--fg);
+    line-height: 1.55;
+  }
+  .reason-list .item .why .jp-inline {
+    font-family: var(--f-jp);
+    font-weight: 700;
+    color: var(--amber);
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     SLIDE 01 — HOOK SITUATION
+     One concrete situation, anchor line, surfaced tension.
+  ═══════════════════════════════════════════════════════════ */
+  #s01 { justify-content: center; align-items: flex-start; }
+  #s01 .eyebrow { margin-bottom: 18px; }
+  #s01 .anchor {
+    font-family: var(--f-jp);
+    font-size: 80px;
+    line-height: 1.45;
+    letter-spacing: 0.04em;
+    font-weight: 400;
+    max-width: 1500px;
+    margin-bottom: 56px;
+  }
+  #s01 .anchor .line2 { display:block; margin-top: 8px; }
+  #s01 .tension {
+    display: flex; align-items: center; gap: 28px;
+  }
+  #s01 .tension .tag {
+    padding: 14px 28px;
+    background: var(--amber-soft);
+    border: 1px solid var(--amber-dim);
+    border-radius: 10px;
+    font-size: var(--t-small);
+    color: var(--amber);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  #s01 .tension .vn {
+    font-size: var(--t-body);
+    color: var(--fg-muted);
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     SLIDE 02 — HOOK CONTRAST
+     Two near-identical sentences, different speaker logic.
+  ═══════════════════════════════════════════════════════════ */
+  #s02 { justify-content: center; }
+  #s02 .pair { display: flex; flex-direction: column; gap: 24px; margin-bottom: 56px; }
+  #s02 .row {
+    display: flex; gap: 32px; align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 56px;
+  }
+  #s02 .row .num {
+    font-family: var(--f-display);
+    font-size: var(--t-sub);
+    color: var(--fg-sub);
+    font-weight: 700;
+    min-width: 60px;
+  }
+  #s02 .row .jp {
+    font-size: 50px;
+    flex: 1;
+  }
+  #s02 .vs-stamp {
+    align-self: center;
+    padding: 12px 28px;
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  #s02 .takeaway {
+    display: flex; align-items: center; gap: 20px;
+    padding: 28px 40px;
+    background: rgba(255,255,255,0.03);
+    border-left: 3px solid var(--amber);
+    border-radius: 6px;
+    font-size: var(--t-body);
+    color: var(--fg);
+  }
+  #s02 .takeaway .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
+
+  /* ═══════════════════════════════════════════════════════════
+     SLIDE 03 — QUIZ BEFORE / AFTER
+     Question with blanks + 3 options, one correct highlighted.
+  ═══════════════════════════════════════════════════════════ */
+  #s03 { justify-content: center; }
+  #s03 .question {
+    background: var(--bg-card);
+    border-left: 4px solid var(--amber);
+    border-radius: 16px;
+    padding: 52px 64px;
+    margin-bottom: 44px;
+  }
+  #s03 .question .jp {
+    font-size: 48px;
+    line-height: 1.7;
+  }
+  .blank {
+    display: inline-block;
+    min-width: 80px; height: 4px;
+    border-bottom: 4px solid var(--amber);
+    margin: 0 8px;
+    vertical-align: 4px;
+  }
+  #s03 .options { display: flex; flex-direction: column; gap: 20px; }
+  #s03 .opt {
+    display: flex; align-items: center; gap: 28px;
+    padding: 24px 40px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    font-size: var(--t-small);
+  }
+  #s03 .opt.correct {
+    border-color: var(--amber-dim);
+    background: var(--amber-soft);
+  }
+  #s03 .opt .label {
+    font-family: var(--f-display);
+    font-size: var(--t-sub);
+    font-weight: 700;
+    color: var(--fg-sub);
+    min-width: 36px;
+  }
+  #s03 .opt.correct .label { color: var(--amber); }
+  #s03 .opt .text { font-family: var(--f-jp); letter-spacing: 0.04em; flex: 1; }
+  #s03 .opt .check {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--amber);
+    color: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 800;
+  }
+  /* end .check */
+
+  /* ═══════════════════════════════════════════════════════════
+     SLIDE 04 — PROMISE BOARD
+     Title + 2 outcome cards + guiding question.
+  ═══════════════════════════════════════════════════════════ */
+  #s04 { justify-content: center; }
+  #s04 .topic { font-size: 50px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; }
+  #s04 .pattern-strip {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    margin-bottom: 44px;
+  }
+  #s04 .pattern-strip .p {
+    font-family: var(--f-jp);
+    font-size: var(--t-small);
+    padding: 12px 22px;
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--fg);
+  }
+  #s04 .outcomes { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 36px; }
+  #s04 .out {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 44px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  #s04 .out .num {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--amber);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+  }
+  #s04 .out h3 {
+    font-family: var(--f-display);
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  #s04 .out p { font-size: var(--t-small); color: var(--fg-muted); line-height: 1.5; }
+  #s04 .guide {
+    padding: 24px 40px;
+    background: var(--amber-soft);
+    border: 1px solid var(--amber-dim);
+    border-radius: 12px;
+    font-size: var(--t-body);
+    color: var(--fg);
+    text-align: center;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     SLIDE 05 — STORY CONTEXT
+     Setting → constraint → tension. 3 beats.
+  ═══════════════════════════════════════════════════════════ */
+  #s05 { justify-content: center; }
+  #s05 .beats {
+    display: flex;
+    align-items: stretch;
+    gap: 32px;
+    margin-bottom: 56px;
+  }
+  #s05 .beat {
+    flex: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 44px 36px;
+    display: flex; flex-direction: column; gap: 20px;
+    position: relative;
+  }
+  #s05 .beat .stage {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--amber);
+    letter-spacing: 0.14em;
+    font-weight: 700;
+  }
+  #s05 .beat .heading {
+    font-family: var(--f-display);
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  #s05 .beat .jp {
+    font-size: 30px;
+    margin-top: auto;
+  }
+  #s05 .beat .vn { font-size: var(--t-xs); color: var(--fg-muted); line-height: 1.4; }
+  #s05 .beat.tense { border-color: var(--amber-dim); background: var(--amber-soft); }
+  #s05 .beat .arrow {
+    position: absolute; right: -34px; top: 50%; transform: translateY(-50%);
+    width: 36px; height: 2px; background: var(--border-strong);
+  }
+  #s05 .beat:last-child .arrow { display: none; }
+  #s05 .closing { font-size: var(--t-body); color: var(--fg-muted); text-align: center; }
+
+  /* ═══════════════════════════════════════════════════════════
+     SLIDE 06 — METHOD BOARD
+     3 cách nhìn: Ý nghĩa – Dạng – Cách dùng + mantra
+  ═══════════════════════════════════════════════════════════ */
+  #s06 { justify-content: center; }
+  #s06 .views { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-bottom: 40px; }
+  #s06 .view {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 44px 40px;
+    display: flex; flex-direction: column; gap: 16px;
+    min-height: 360px;
+  }
+  #s06 .view .glyph {
+    font-family: var(--f-jp);
+    font-size: 96px;
+    color: var(--amber);
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0.9;
+  }
+  #s06 .view .h {
+    font-family: var(--f-display);
+    font-size: 40px;
+    font-weight: 700;
+    margin-top: 8px;
+  }
+  #s06 .view .q { font-size: var(--t-small); color: var(--fg-muted); line-height: 1.5; }
+  #s06 .mantra {
+    padding: 28px 48px;
+    background: rgba(255,255,255,0.03);
+    border-left: 3px solid var(--amber);
+    border-radius: 6px;
+    font-size: var(--t-body);
+    color: var(--fg);
+    line-height: 1.5;
+  }
+  #s06 .mantra .accent { color: var(--amber); font-weight: 700; }
+
+  /* ═══════════════════════════════════════════════════════════
+     SLIDE 07 — GRAMMAR CARD (Ý nghĩa – Dạng – Cách dùng)
+     One pattern, full speaker-intent card.
+  ═══════════════════════════════════════════════════════════ */
+  #s07 { flex-direction: row; gap: 64px; padding-top: 130px; }
+  #s07 .left { flex: 1; display: flex; flex-direction: column; }
+  #s07 .right { width: 720px; display: flex; flex-direction: column; gap: 20px; }
+  #s07 .pattern {
+    font-family: var(--f-display);
+    font-size: 82px;
+    font-weight: 700;
+    color: var(--amber);
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    margin-bottom: 14px;
+  }
+  #s07 .speaker {
+    font-size: var(--t-sub);
+    color: var(--fg);
+    font-weight: 300;
+    line-height: 1.4;
+    margin-bottom: 36px;
+    max-width: 760px;
+  }
+  #s07 .three {
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  #s07 .three .row {
+    display: flex; gap: 24px; align-items: flex-start;
+    padding: 22px 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  #s07 .three .row .k {
+    font-family: var(--f-jp);
+    font-size: 36px;
+    color: var(--amber);
+    font-weight: 700;
+    min-width: 44px;
+    line-height: 1;
+  }
+  #s07 .three .row .content { flex: 1; }
+  #s07 .three .row .label {
+    font-family: var(--f-body);
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  #s07 .three .row .val { font-size: var(--t-small); color: var(--fg); line-height: 1.4; }
+  #s07 .three .row .val.mono { font-family: var(--f-mono); font-size: 26px; }
+  #s07 .example {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--amber);
+    border-radius: 14px;
+    padding: 32px 36px;
+  }
+  #s07 .example .label {
+    font-family: var(--f-body);
+    font-size: var(--t-xs);
+    color: var(--amber);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  #s07 .example .jp { font-size: 38px; margin-bottom: 12px; line-height: 1.4; }
+  #s07 .example .vn { font-size: var(--t-small); color: var(--fg-muted); }
+  #s07 .trap {
+    background: var(--red-soft);
+    border: 1px solid color-mix(in oklab, var(--red) 40%, transparent);
+    border-radius: 12px;
+    padding: 22px 28px;
+    display: flex; align-items: center; gap: 18px;
+  }
+  #s07 .trap .ico { font-size: 30px; }
+  #s07 .trap .text { font-size: var(--t-small); color: var(--fg); line-height: 1.4; }
+
+  /* ═══════════════════════════════════════════════════════════
+     SLIDE 08 — MINIMAL PAIR
+     Two patterns, contrast axis, minimal pair example.
+  ═══════════════════════════════════════════════════════════ */
+  #s08 { justify-content: center; }
+  #s08 .pair-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 32px;
+    align-items: stretch;
+    margin-bottom: 36px;
+  }
+  #s08 .side {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 44px 40px;
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  #s08 .side.a { border-top: 4px solid var(--amber); }
+  #s08 .side.b { border-top: 4px solid var(--green); }
+  #s08 .side .pat {
+    font-family: var(--f-jp);
+    font-size: 50px;
+    font-weight: 700;
+  }
+  #s08 .side.a .pat { color: var(--amber); }
+  #s08 .side.b .pat { color: var(--green); }
+  #s08 .side .meaning {
+    font-size: var(--t-small);
+    color: var(--fg);
+    line-height: 1.4;
+  }
+  #s08 .side .nuance {
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    line-height: 1.5;
+  }
+  #s08 .side .ex {
+    margin-top: auto;
+    padding: 20px 24px;
+    background: var(--bg-card2);
+    border-radius: 10px;
+  }
+  #s08 .side .ex .jp { font-size: 28px; margin-bottom: 8px; line-height: 1.4; }
+  #s08 .side .ex .vn { font-size: var(--t-xs); color: var(--fg-muted); }
+  #s08 .axis {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px;
+    padding: 0 4px;
+    min-width: 80px;
+  }
+  #s08 .axis .vs {
+    font-family: var(--f-display);
+    font-size: 36px;
+    color: var(--fg-sub);
+    font-weight: 700;
+  }
+  #s08 .axis .line { width: 2px; height: 80px; background: var(--border); }
+  #s08 .footer {
+    padding: 22px 36px;
+    background: var(--bg-card2);
+    border-radius: 12px;
+    font-size: var(--t-small);
+    color: var(--fg-muted);
+    text-align: center;
+  }
+  #s08 .footer .a-tag { color: var(--amber); font-weight: 700; }
+  #s08 .footer .b-tag { color: var(--green); font-weight: 700; }
+
+  /* ═══════════════════════════════════════════════════════════
+     SLIDE 09 — COMPARISON MATRIX
+     4 patterns in one decision map.
+  ═══════════════════════════════════════════════════════════ */
+  #s09 { justify-content: center; }
+  #s09 .matrix {
+    display: flex; flex-direction: column;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+  #s09 .head, #s09 .row {
+    display: grid;
+    grid-template-columns: 1.9fr 1fr 1.5fr;
+    gap: 0;
+  }
+  #s09 .head {
+    background: var(--bg-card2);
+    border-bottom: 1px solid var(--border);
+  }
+  #s09 .head .cell {
+    padding: 22px 32px;
+    font-family: var(--f-body);
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  #s09 .row { background: var(--bg-card); border-top: 1px solid var(--border); }
+  #s09 .row:first-of-type { border-top: 0; }
+  #s09 .row .cell {
+    padding: 26px 32px;
+    display: flex; align-items: center; gap: 18px;
+  }
+  #s09 .row .cell.pat {
+    font-family: var(--f-jp);
+    font-size: 34px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  #s09 .row .cell.act {
+    font-size: var(--t-small);
+    font-weight: 600;
+    color: var(--fg);
+  }
+  #s09 .row .cell.note {
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    line-height: 1.45;
+  }
+  #s09 .row .swatch {
+    width: 6px; height: 36px; border-radius: 3px; flex-shrink: 0;
+  }
+  #s09 .closing {
+    padding: 24px 40px;
+    background: var(--amber-soft);
+    border: 1px solid var(--amber-dim);
+    border-radius: 12px;
+    font-size: var(--t-body);
+    color: var(--fg);
+    text-align: center;
+  }
+  #s09 .closing .accent { color: var(--amber); font-weight: 700; }
+
+  /* ═══════════════════════════════════════════════════════════
+     SLIDE 10 — CLUE MAP / DECISION RULE
+     3-step checklist + signal → pattern table.
+  ═══════════════════════════════════════════════════════════ */
+  #s10 { justify-content: center; }
+  #s10 .layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: 48px; }
+  #s10 .steps { display: flex; flex-direction: column; gap: 20px; }
+  #s10 .step {
+    display: flex; gap: 24px;
+    padding: 26px 32px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  #s10 .step .n {
+    font-family: var(--f-mono);
+    font-size: var(--t-small);
+    color: var(--amber);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    min-width: 40px;
+  }
+  #s10 .step .h {
+    font-family: var(--f-display);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  #s10 .step .d { font-size: var(--t-xs); color: var(--fg-muted); line-height: 1.5; }
+  #s10 .signals {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px 36px;
+  }
+  #s10 .signals .h {
+    font-family: var(--f-body);
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  #s10 .signals .map { display: flex; flex-direction: column; gap: 14px; }
+  #s10 .signals .map .item {
+    display: flex; gap: 18px; align-items: center;
+    padding: 14px 18px;
+    background: var(--bg-card2);
+    border-radius: 8px;
+  }
+  #s10 .signals .map .clue {
+    font-family: var(--f-jp);
+    font-size: var(--t-small);
+    color: var(--fg);
+    flex: 1;
+  }
+  #s10 .signals .map .arr { color: var(--fg-sub); font-family: var(--f-mono); font-size: 26px; line-height: 1; }
+  #s10 .signals .map .pat {
+    font-family: var(--f-jp);
+    font-size: var(--t-small);
+    color: var(--amber);
+    font-weight: 700;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     SLIDE 11 — WORKED EXAMPLE BOARD
+     Question + step-by-step reasoning + answer.
+  ═══════════════════════════════════════════════════════════ */
+  #s11 { padding-top: 130px; flex-direction: row; gap: 56px; }
+  #s11 .left { width: 700px; display: flex; flex-direction: column; gap: 24px; }
+  #s11 .right { flex: 1; display: flex; flex-direction: column; gap: 18px; }
+  #s11 .q-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--amber);
+    border-radius: 14px;
+    padding: 36px 40px;
+  }
+  #s11 .q-card .jp { font-size: 36px; line-height: 1.7; }
+  #s11 .options { display: flex; flex-direction: column; gap: 14px; }
+  #s11 .options .opt {
+    display: flex; align-items: center; gap: 20px;
+    padding: 18px 28px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-size: var(--t-small);
+  }
+  #s11 .options .opt.correct {
+    border-color: var(--amber-dim);
+    background: var(--amber-soft);
+  }
+  #s11 .options .opt .label {
+    font-family: var(--f-display);
+    font-weight: 700; color: var(--fg-sub);
+    min-width: 30px;
+  }
+  #s11 .options .opt.correct .label { color: var(--amber); }
+  #s11 .options .opt .text { font-family: var(--f-jp); flex: 1; }
+  #s11 .answer-final {
+    display: flex; align-items: center; gap: 16px;
+    padding: 24px 32px;
+    background: var(--amber-soft);
+    border: 1.5px solid var(--amber-dim);
+    border-radius: 12px;
+    font-size: var(--t-body);
+  }
+  #s11 .answer-final .check {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--amber); color: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 800;
+  }
+  #s11 .step {
+    display: flex; gap: 22px;
+    padding: 20px 26px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  #s11 .step .n {
+    font-family: var(--f-mono);
+    font-size: var(--t-small);
+    color: var(--amber);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    min-width: 70px;
+  }
+  #s11 .step .content { flex: 1; }
+  #s11 .step .h { font-size: var(--t-small); font-weight: 600; color: var(--fg); margin-bottom: 6px; line-height: 1.4; }
+  #s11 .step .d { font-size: var(--t-xs); color: var(--fg-muted); line-height: 1.5; }
+  #s11 .step.trap { border-left: 3px solid var(--red); background: var(--red-soft); }
+  #s11 .step.trap .n { color: var(--red); }
+
+  /* ═══════════════════════════════════════════════════════════
+     SLIDE 12 — DIAGNOSTIC PRACTICE
+     Question, choices, answer + trap diagnosis per wrong option.
+  ═══════════════════════════════════════════════════════════ */
+  #s12 { justify-content: center; }
+  #s12 .q-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--amber);
+    border-radius: 14px;
+    padding: 36px 48px;
+    margin-bottom: 28px;
+  }
+  #s12 .q-card .jp { font-size: 46px; line-height: 1.6; }
+  #s12 .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 28px; }
+  #s12 .opt {
+    padding: 24px 28px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  #s12 .opt.correct {
+    border-color: var(--amber-dim);
+    background: var(--amber-soft);
+  }
+  #s12 .opt .label {
+    font-family: var(--f-display);
+    font-size: var(--t-sub);
+    font-weight: 700;
+    color: var(--fg-sub);
+  }
+  #s12 .opt.correct .label { color: var(--amber); }
+  #s12 .opt .pat {
+    font-family: var(--f-jp);
+    font-size: 32px;
+    color: var(--fg);
+    font-weight: 600;
+  }
+  #s12 .opt.correct .pat { color: var(--amber); }
+  #s12 .opt .trap-tag {
+    margin-top: auto;
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--red);
+    font-weight: 700;
+  }
+  #s12 .opt.correct .trap-tag { color: var(--amber); }
+  #s12 .opt .diag {
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    line-height: 1.5;
+  }
+  #s12 .reason {
+    padding: 22px 32px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    border-radius: 10px;
+    font-size: var(--t-small);
+    color: var(--fg);
+    line-height: 1.5;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     SLIDE 13 — TRAP EXPLANATION
+     "Looks right" / "Actually wrong" + correct rule.
+  ═══════════════════════════════════════════════════════════ */
+  #s13 { justify-content: center; }
+  #s13 .traps { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px; }
+  #s13 .panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 40px;
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  #s13 .panel.wrong { border-top: 4px solid var(--red); }
+  #s13 .panel.right { border-top: 4px solid var(--amber); }
+  #s13 .panel .label {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    letter-spacing: 0.16em;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  #s13 .panel.wrong .label { color: var(--red); }
+  #s13 .panel.right .label { color: var(--amber); }
+  #s13 .panel .pat {
+    font-family: var(--f-jp);
+    font-size: 50px;
+    font-weight: 700;
+  }
+  #s13 .panel.wrong .pat { color: var(--red); }
+  #s13 .panel.right .pat { color: var(--amber); }
+  #s13 .panel .body { font-size: var(--t-small); color: var(--fg); line-height: 1.5; }
+  #s13 .panel .body .strike { text-decoration: line-through; text-decoration-color: var(--red); opacity: 0.6; }
+  #s13 .rule-strip {
+    padding: 28px 40px;
+    background: var(--amber-soft);
+    border: 1px solid var(--amber-dim);
+    border-radius: 12px;
+    display: flex; align-items: center; gap: 24px;
+  }
+  #s13 .rule-strip .key {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--amber);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  #s13 .rule-strip .text { font-size: var(--t-body); color: var(--fg); flex: 1; }
+
+  /* ═══════════════════════════════════════════════════════════
+     SLIDE 14 — RECAP MAP
+     4 patterns laid out as memory map.
+  ═══════════════════════════════════════════════════════════ */
+  #s14 { justify-content: center; }
+  #s14 .map { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+  #s14 .cell {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 40px;
+    display: flex; flex-direction: column; gap: 14px;
+    border-left: 4px solid var(--amber);
+  }
+  #s14 .cell.c1 { border-left-color: var(--blue); }
+  #s14 .cell.c2 { border-left-color: var(--amber); }
+  #s14 .cell.c3 { border-left-color: var(--green); }
+  #s14 .cell.c4 { border-left-color: var(--red); }
+  #s14 .cell .pat {
+    font-family: var(--f-jp);
+    font-size: 46px;
+    font-weight: 700;
+  }
+  #s14 .cell.c1 .pat { color: var(--blue); }
+  #s14 .cell.c2 .pat { color: var(--amber); }
+  #s14 .cell.c3 .pat { color: var(--green); }
+  #s14 .cell.c4 .pat { color: var(--red); }
+  #s14 .cell .vn { font-size: var(--t-small); color: var(--fg); line-height: 1.4; }
+  #s14 .cell .nuance { font-size: var(--t-xs); color: var(--fg-muted); line-height: 1.4; }
+  #s14 .bonus {
+    padding: 20px 32px;
+    background: var(--bg-card2);
+    border: 1px dashed var(--border-strong);
+    border-radius: 10px;
+    display: flex; align-items: baseline; gap: 16px;
+    font-size: var(--t-small);
+    color: var(--fg-muted);
+  }
+  #s14 .bonus .tag {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--amber);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  #s14 .bonus .jp { font-family: var(--f-jp); color: var(--fg); }
+
+  /* ═══════════════════════════════════════════════════════════
+     SLIDE 15 — CTA DIAGNOSTIC
+     Problem → asset → what it diagnoses.
+  ═══════════════════════════════════════════════════════════ */
+  #s15 { flex-direction: row; gap: 80px; padding-top: 130px; }
+  #s15 .left { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  #s15 .right { width: 720px; display: flex; flex-direction: column; gap: 18px; }
+  #s15 .problem {
+    font-family: var(--f-display);
+    font-size: 60px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 24px;
+    letter-spacing: -0.01em;
+  }
+  #s15 .problem .accent { color: var(--amber); }
+  #s15 .lead {
+    font-size: var(--t-body);
+    color: var(--fg-muted);
+    line-height: 1.5;
+    max-width: 720px;
+    margin-bottom: 36px;
+  }
+  #s15 .cta-btn {
+    display: inline-flex; align-items: center; gap: 16px;
+    padding: 24px 36px;
+    background: var(--amber);
+    color: var(--bg);
+    border-radius: 14px;
+    font-family: var(--f-body);
+    font-size: var(--t-small);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    width: fit-content;
+  }
+  #s15 .cta-btn .arrow { font-size: 32px; }
+  #s15 .item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 28px;
+    display: flex; gap: 20px; align-items: flex-start;
+  }
+  #s15 .item .icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--amber-soft);
+    border: 1px solid var(--amber-dim);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--amber);
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  #s15 .item .text {
+    font-size: var(--t-small);
+    color: var(--fg);
+    line-height: 1.4;
+  }
+  #s15 .item .text .sub { font-size: var(--t-xs); color: var(--fg-muted); margin-top: 4px; display: block; }
+
+  /* ══════════════════════════════════════════════════════════════════
+     SLIDE 16 — FORM TABLE
+     Connection rules + irregular forms + 1 common mistake.
+  ══════════════════════════════════════════════════════════════════ */
+  #s16 { flex-direction: row; gap: 64px; padding-top: 130px; }
+  #s16 .left { flex: 1.2; display: flex; flex-direction: column; }
+  #s16 .right { width: 640px; display: flex; flex-direction: column; gap: 18px; }
+  #s16 .pattern-hero {
+    font-family: var(--f-display);
+    font-size: 64px;
+    font-weight: 700;
+    color: var(--amber);
+    line-height: 1.05;
+    margin-bottom: 36px;
+  }
+  #s16 .form-table {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  #s16 .form-table .row {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    border-top: 1px solid var(--border);
+  }
+  #s16 .form-table .row:first-child { border-top: none; background: var(--bg-card2); }
+  #s16 .form-table .row:not(:first-child) { background: var(--bg-card); }
+  #s16 .form-table .cell {
+    padding: 22px 28px;
+  }
+  #s16 .form-table .cell.k {
+    font-family: var(--f-body);
+    font-size: var(--t-small);
+    color: var(--fg-muted);
+    font-weight: 600;
+    border-right: 1px solid var(--border);
+  }
+  #s16 .form-table .row:first-child .cell.k { color: var(--amber); letter-spacing: 0.14em; text-transform: uppercase; font-size: var(--t-xs); }
+  #s16 .form-table .row:first-child .cell.v { color: var(--amber); letter-spacing: 0.14em; text-transform: uppercase; font-size: var(--t-xs); font-weight: 700; }
+  #s16 .form-table .cell.v {
+    font-family: var(--f-mono);
+    font-size: var(--t-small);
+    color: var(--fg);
+  }
+  #s16 .mistake {
+    background: var(--red-soft);
+    border: 1px solid color-mix(in oklab, var(--red) 40%, transparent);
+    border-radius: 12px;
+    padding: 26px 32px;
+  }
+  #s16 .mistake .label {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--red);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  #s16 .mistake .wrong {
+    font-family: var(--f-jp);
+    font-size: 32px;
+    color: var(--fg);
+    text-decoration: line-through;
+    text-decoration-color: var(--red);
+    margin-bottom: 8px;
+  }
+  #s16 .mistake .right-form {
+    font-family: var(--f-jp);
+    font-size: 32px;
+    color: var(--fg);
+    margin-bottom: 12px;
+  }
+  #s16 .mistake .right-form .hi { color: var(--amber); font-weight: 700; }
+  #s16 .mistake .why { font-size: var(--t-xs); color: var(--fg-muted); line-height: 1.5; }
+  #s16 .tip {
+    padding: 22px 28px;
+    background: var(--bg-card2);
+    border-radius: 10px;
+    border-left: 3px solid var(--amber);
+    font-size: var(--t-small);
+    color: var(--fg);
+    line-height: 1.5;
+  }
+  #s16 .tip .accent { color: var(--amber); font-weight: 700; font-family: var(--f-jp); }
+
+  /* ══════════════════════════════════════════════════════════════════
+     SLIDE 17 — EXAMPLE STACK
+     3 examples showing range across contexts.
+  ══════════════════════════════════════════════════════════════════ */
+  #s17 { justify-content: center; }
+  #s17 .stack { display: flex; flex-direction: column; gap: 22px; }
+  #s17 .ex {
+    display: grid;
+    grid-template-columns: 200px 1fr 280px;
+    align-items: center;
+    gap: 36px;
+    padding: 32px 40px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    border-left: 4px solid var(--amber);
+  }
+  #s17 .ex .ctx {
+    display: flex; align-items: center; gap: 14px;
+  }
+  #s17 .ex .ctx .icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--amber-soft);
+    border: 1px solid var(--amber-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--f-jp);
+    font-size: 22px;
+    color: var(--amber);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  #s17 .ex .ctx .tag {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--amber);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  #s17 .ex .jp {
+    font-size: 34px;
+    line-height: 1.5;
+  }
+  #s17 .ex .nuance {
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    line-height: 1.5;
+    text-align: right;
+  }
+  #s17 .shared {
+    margin-top: 28px;
+    padding: 22px 36px;
+    background: var(--amber-soft);
+    border: 1px solid var(--amber-dim);
+    border-radius: 12px;
+    text-align: center;
+    font-size: var(--t-body);
+    color: var(--fg);
+  }
+  #s17 .shared .accent { color: var(--amber); font-weight: 700; }
+
+  /* ══════════════════════════════════════════════════════════════════
+     SLIDE 18 — SECTION DIVIDER
+     Chapter break for long videos.
+  ══════════════════════════════════════════════════════════════════ */
+  #s18 { justify-content: center; align-items: center; text-align: center; }
+  #s18 .chapter-num {
+    font-family: var(--f-mono);
+    font-size: var(--t-body);
+    color: var(--amber);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 32px;
+  }
+  #s18 .chapter-rule {
+    width: 80px; height: 4px;
+    background: var(--amber);
+    border-radius: 2px;
+    margin: 0 auto 48px;
+  }
+  #s18 .chapter-title {
+    font-family: var(--f-display);
+    font-size: 140px;
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin-bottom: 32px;
+    max-width: 1400px;
+  }
+  #s18 .chapter-title .accent { color: var(--amber); }
+  #s18 .chapter-desc {
+    font-size: var(--t-sub);
+    color: var(--fg-muted);
+    line-height: 1.4;
+    font-weight: 300;
+    max-width: 1100px;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     SLIDE 19 — COMMON MISTAKE
+     "Người Việt hay sai thế này" — branded misconception slide.
+  ══════════════════════════════════════════════════════════════════ */
+  #s19 { justify-content: center; }
+  #s19 .badge-row { display: flex; align-items: center; gap: 14px; margin-bottom: 32px; }
+  #s19 .badge-row .vn-flag {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--red);
+    display: flex; align-items: center; justify-content: center;
+    color: oklch(98% 0.02 78);
+    font-size: 22px;
+    font-weight: 800;
+  }
+  #s19 .badge-row .text {
+    font-family: var(--f-display);
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--fg);
+    letter-spacing: -0.01em;
+  }
+  #s19 .mistake-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 32px;
+    align-items: stretch;
+    margin-bottom: 32px;
+  }
+  #s19 .col {
+    padding: 40px 40px;
+    border-radius: 16px;
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  #s19 .col.wrong {
+    background: var(--red-soft);
+    border: 1.5px solid color-mix(in oklab, var(--red) 40%, transparent);
+  }
+  #s19 .col.right {
+    background: var(--amber-soft);
+    border: 1.5px solid var(--amber-dim);
+  }
+  #s19 .col .tag {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+  }
+  #s19 .col.wrong .tag { color: var(--red); }
+  #s19 .col.right .tag { color: var(--amber); }
+  #s19 .col .jp {
+    font-size: 36px;
+    line-height: 1.5;
+  }
+  #s19 .col.wrong .jp .strike {
+    text-decoration: line-through;
+    text-decoration-color: var(--red);
+    color: var(--fg);
+  }
+  #s19 .col .vn { font-size: var(--t-small); color: var(--fg-muted); line-height: 1.5; }
+  #s19 .arrow-cell {
+    display: flex; align-items: center; justify-content: center;
+    min-width: 60px;
+  }
+  #s19 .arrow-cell .arr {
+    font-family: var(--f-mono);
+    font-size: 56px;
+    color: var(--fg-sub);
+    font-weight: 700;
+  }
+  #s19 .why {
+    padding: 26px 36px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    border-radius: 10px;
+  }
+  #s19 .why .label {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--amber);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  #s19 .why .text { font-size: var(--t-small); color: var(--fg); line-height: 1.5; }
+
+  /* ══════════════════════════════════════════════════════════════════
+     SLIDE 20 — OUTRO
+     Recap takeaway + next video + subscribe CTA.
+  ══════════════════════════════════════════════════════════════════ */
+  #s20 { justify-content: center; }
+  #s20 .takeaway {
+    font-family: var(--f-display);
+    font-size: 80px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 48px;
+    max-width: 1400px;
+  }
+  #s20 .takeaway .accent { color: var(--amber); }
+  #s20 .outro-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 32px; }
+  #s20 .next {
+    padding: 36px 40px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  #s20 .next .label {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--amber);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  #s20 .next .title {
+    font-family: var(--f-display);
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--fg);
+  }
+  #s20 .next .pat {
+    font-family: var(--f-jp);
+    font-size: 32px;
+    color: var(--amber);
+    font-weight: 700;
+    margin-top: 8px;
+  }
+  #s20 .next .desc { font-size: var(--t-small); color: var(--fg-muted); line-height: 1.5; margin-top: 8px; }
+  #s20 .subscribe {
+    padding: 36px 40px;
+    background: var(--amber-soft);
+    border: 1.5px solid var(--amber-dim);
+    border-radius: 16px;
+    display: flex; flex-direction: column; gap: 18px;
+    justify-content: center;
+  }
+  #s20 .subscribe .heading {
+    font-family: var(--f-display);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--fg);
+    line-height: 1.3;
+  }
+  #s20 .subscribe .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  #s20 .subscribe .btn {
+    padding: 14px 22px;
+    border-radius: 10px;
+    font-family: var(--f-body);
+    font-size: var(--t-small);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  #s20 .subscribe .btn.primary {
+    background: var(--amber);
+    color: var(--bg);
+  }
+  #s20 .subscribe .btn.ghost {
+    background: transparent;
+    color: var(--fg);
+    border: 1.5px solid var(--border-strong);
+  }
+  #s20 .subscribe .handles {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    letter-spacing: 0.14em;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     SLIDE 21 — JLPT ITEM CARD (文法形式の判断)
+  ══════════════════════════════════════════════════════════════════ */
+  #s21 { justify-content: center; }
+  #s21 .jlpt-header {
+    display: flex; align-items: center; gap: 20px;
+    margin-bottom: 22px;
+  }
+  #s21 .jlpt-header .qnum {
+    font-family: var(--f-jp);
+    font-size: var(--t-body);
+    color: var(--amber);
+    font-weight: 700;
+    padding: 8px 22px;
+    background: var(--amber-soft);
+    border: 1px solid var(--amber-dim);
+    border-radius: 8px;
+  }
+  #s21 .jlpt-header .qtype {
+    font-family: var(--f-jp);
+    font-size: var(--t-small);
+    color: var(--fg-muted);
+    letter-spacing: 0.04em;
+  }
+  #s21 .jlpt-header .time {
+    margin-left: auto;
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--fg-sub);
+    letter-spacing: 0.14em;
+  }
+  #s21 .stem {
+    padding: 28px 40px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 22px;
+  }
+  #s21 .stem .jp {
+    font-size: 36px;
+    line-height: 1.6;
+  }
+  #s21 .stem .blank-num {
+    display: inline-block;
+    min-width: 100px;
+    border-bottom: 4px solid var(--amber);
+    margin: 0 6px;
+    text-align: center;
+    font-family: var(--f-mono);
+    color: var(--amber);
+    font-weight: 700;
+  }
+  #s21 .jlpt-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  #s21 .jlpt-opt {
+    display: flex; align-items: center; gap: 18px;
+    padding: 14px 24px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-card);
+    font-size: var(--t-small);
+  }
+  #s21 .jlpt-opt.correct {
+    border-color: var(--amber);
+    background: var(--amber-soft);
+  }
+  #s21 .jlpt-opt .circle {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--fg-sub);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--f-mono);
+    font-size: var(--t-small);
+    font-weight: 700;
+    color: var(--fg-sub);
+    flex-shrink: 0;
+  }
+  #s21 .jlpt-opt.correct .circle {
+    border-color: var(--amber);
+    background: var(--amber);
+    color: var(--bg);
+  }
+  #s21 .jlpt-opt .text {
+    font-family: var(--f-jp);
+    color: var(--fg);
+    letter-spacing: 0.02em;
+  }
+  #s21 .jlpt-opt.correct .text { color: var(--amber); font-weight: 700; }
+  #s21 .answer-strip {
+    display: flex; align-items: center; gap: 20px;
+    padding: 22px 32px;
+    background: var(--amber-soft);
+    border: 1.5px solid var(--amber-dim);
+    border-radius: 12px;
+  }
+  #s21 .answer-strip .label {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--amber);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  #s21 .answer-strip .reason {
+    font-size: var(--t-small);
+    color: var(--fg);
+    flex: 1;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     SLIDE 22 — SENTENCE ASSEMBLY (文の組み立て)
+  ══════════════════════════════════════════════════════════════════ */
+  #s22 { justify-content: center; }
+  #s22 .qhead {
+    display: flex; align-items: center; gap: 18px;
+    margin-bottom: 28px;
+  }
+  #s22 .qhead .qnum {
+    font-family: var(--f-jp);
+    font-size: var(--t-small);
+    color: var(--amber);
+    font-weight: 700;
+    padding: 6px 18px;
+    background: var(--amber-soft);
+    border: 1px solid var(--amber-dim);
+    border-radius: 6px;
+  }
+  #s22 .qhead .qtype {
+    font-family: var(--f-jp);
+    font-size: var(--t-small);
+    color: var(--fg-muted);
+  }
+  #s22 .assemble {
+    padding: 36px 44px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 24px;
+  }
+  #s22 .assemble .jp {
+    font-size: 36px;
+    line-height: 2.0;
+  }
+  #s22 .frag-slot {
+    display: inline-block;
+    min-width: 130px;
+    padding: 6px 12px;
+    margin: 0 4px;
+    border-bottom: 3px solid var(--fg-sub);
+    text-align: center;
+    font-family: var(--f-mono);
+    font-size: var(--t-small);
+    color: var(--fg-sub);
+  }
+  #s22 .frag-slot.star {
+    color: var(--amber);
+    border-bottom-color: var(--amber);
+    font-weight: 700;
+    background: var(--amber-soft);
+    border-radius: 4px 4px 0 0;
+    position: relative;
+  }
+  #s22 .frag-slot.star::after {
+    content: '★';
+    position: absolute;
+    top: -28px; left: 50%;
+    transform: translateX(-50%);
+    color: var(--amber);
+    font-size: 26px;
+  }
+  #s22 .layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 28px; }
+  #s22 .frags {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 28px;
+  }
+  #s22 .frags .label {
+    font-family: var(--f-jp);
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    letter-spacing: 0.04em;
+    margin-bottom: 16px;
+  }
+  #s22 .frags .frag {
+    display: flex; align-items: center; gap: 16px;
+    padding: 12px 14px;
+    border-radius: 6px;
+  }
+  #s22 .frags .frag .n {
+    font-family: var(--f-mono);
+    font-size: var(--t-small);
+    color: var(--fg-sub);
+    font-weight: 700;
+    min-width: 24px;
+  }
+  #s22 .frags .frag.star .n { color: var(--amber); }
+  #s22 .frags .frag .text {
+    font-family: var(--f-jp);
+    font-size: 26px;
+    letter-spacing: 0.03em;
+  }
+  #s22 .frags .frag.star { background: var(--amber-soft); }
+  #s22 .frags .frag.star .text { color: var(--amber); font-weight: 700; }
+  #s22 .solution {
+    background: var(--amber-soft);
+    border: 1.5px solid var(--amber-dim);
+    border-radius: 12px;
+    padding: 22px 28px;
+  }
+  #s22 .solution .order-label {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--amber);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  #s22 .solution .order {
+    font-family: var(--f-jp);
+    font-size: 28px;
+    color: var(--fg);
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  #s22 .solution .star-answer {
+    display: flex; align-items: center; gap: 12px;
+    font-size: var(--t-small);
+    color: var(--fg);
+  }
+  #s22 .solution .star-answer .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px;
+    background: var(--amber);
+    color: var(--bg);
+    border-radius: 6px;
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    font-weight: 700;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     SLIDE 23 — PASSAGE GRAMMAR (文章の文法)
+  ══════════════════════════════════════════════════════════════════ */
+  #s23 { justify-content: center; }
+  #s23 .qhead {
+    display: flex; align-items: center; gap: 18px;
+    margin-bottom: 24px;
+  }
+  #s23 .qhead .qnum {
+    font-family: var(--f-jp);
+    font-size: var(--t-small);
+    color: var(--amber);
+    font-weight: 700;
+    padding: 6px 18px;
+    background: var(--amber-soft);
+    border: 1px solid var(--amber-dim);
+    border-radius: 6px;
+  }
+  #s23 .qhead .qtype {
+    font-family: var(--f-jp);
+    font-size: var(--t-small);
+    color: var(--fg-muted);
+  }
+  #s23 .passage {
+    padding: 32px 40px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 28px;
+  }
+  #s23 .passage .text {
+    font-family: var(--f-jp);
+    font-size: 30px;
+    line-height: 2.0;
+    color: var(--fg);
+  }
+  #s23 .passage .text .bl {
+    display: inline-block;
+    min-width: 80px;
+    padding: 2px 16px;
+    margin: 0 4px;
+    border-bottom: 3px solid var(--fg-sub);
+    text-align: center;
+    font-family: var(--f-mono);
+    font-size: 22px;
+    color: var(--fg-sub);
+  }
+  #s23 .passage .text .bl.focus {
+    color: var(--amber);
+    border-bottom-color: var(--amber);
+    background: var(--amber-soft);
+    font-weight: 700;
+  }
+  #s23 .focus-row {
+    display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: center;
+  }
+  #s23 .focus-row .lookup {
+    padding: 18px 22px;
+    background: var(--amber-soft);
+    border: 1.5px solid var(--amber-dim);
+    border-radius: 10px;
+    text-align: center;
+  }
+  #s23 .focus-row .lookup .label {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--amber);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  #s23 .focus-row .lookup .num {
+    font-family: var(--f-jp);
+    font-size: 44px;
+    color: var(--amber);
+    font-weight: 700;
+    line-height: 1;
+  }
+  #s23 .focus-row .opts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  #s23 .focus-row .opt {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 20px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+  }
+  #s23 .focus-row .opt.correct { border-color: var(--amber-dim); background: var(--amber-soft); }
+  #s23 .focus-row .opt .n { font-family: var(--f-mono); font-size: var(--t-small); color: var(--fg-sub); font-weight: 700; min-width: 22px; }
+  #s23 .focus-row .opt.correct .n { color: var(--amber); }
+  #s23 .focus-row .opt .text { font-family: var(--f-jp); font-size: 22px; }
+  #s23 .focus-row .opt.correct .text { color: var(--amber); font-weight: 700; }
+  #s23 .key-note {
+    margin-top: 22px;
+    padding: 18px 28px;
+    background: var(--bg-card2);
+    border-radius: 10px;
+    border-left: 3px solid var(--amber);
+    font-size: var(--t-small);
+    color: var(--fg);
+    line-height: 1.5;
+  }
+  #s23 .key-note .accent { color: var(--amber); font-weight: 700; font-family: var(--f-jp); }
+
+  /* ══════════════════════════════════════════════════════════════════
+     SLIDE 24 — DISTRACTOR ANALYSIS (4 options + trap taxonomy)
+  ══════════════════════════════════════════════════════════════════ */
+  #s24 { justify-content: center; }
+  #s24 .q {
+    padding: 28px 36px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--amber);
+    border-radius: 12px;
+    margin-bottom: 24px;
+  }
+  #s24 .q .jp { font-size: 32px; line-height: 1.6; }
+  #s24 .distractor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  #s24 .dis {
+    padding: 22px 28px;
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  #s24 .dis.correct { border-color: var(--amber); background: var(--amber-soft); }
+  #s24 .dis .row {
+    display: flex; align-items: center; gap: 14px;
+  }
+  #s24 .dis .n {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--fg-sub);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    font-weight: 700;
+    color: var(--fg-sub);
+  }
+  #s24 .dis.correct .n {
+    background: var(--amber); border-color: var(--amber); color: var(--bg);
+  }
+  #s24 .dis .pat {
+    font-family: var(--f-jp);
+    font-size: 28px;
+    color: var(--fg);
+    font-weight: 600;
+  }
+  #s24 .dis.correct .pat { color: var(--amber); font-weight: 700; }
+  #s24 .dis .trap-chip {
+    align-self: flex-start;
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 6px;
+    background: var(--red-soft);
+    color: var(--red);
+    border: 1px solid color-mix(in oklab, var(--red) 30%, transparent);
+  }
+  #s24 .dis.correct .trap-chip {
+    background: var(--amber-soft);
+    color: var(--amber);
+    border-color: var(--amber-dim);
+  }
+  #s24 .dis .diag { font-size: var(--t-xs); color: var(--fg-muted); line-height: 1.5; }
+  #s24 .taxonomy {
+    margin-top: 22px;
+    padding: 20px 32px;
+    background: var(--bg-card2);
+    border-radius: 10px;
+    display: flex; flex-wrap: wrap; gap: 16px; align-items: center;
+    font-size: var(--t-xs);
+  }
+  #s24 .taxonomy .label {
+    font-family: var(--f-mono);
+    color: var(--fg-muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  #s24 .taxonomy .ttype {
+    font-family: var(--f-jp);
+    color: var(--fg-muted);
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: var(--bg);
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     SLIDE 25 — TIME STRATEGY (Pacing budget cho số́ phần thi)
+  ══════════════════════════════════════════════════════════════════ */
+  #s25 { justify-content: center; }
+  #s25 .strategy-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 32px;
+    margin-bottom: 28px;
+  }
+  #s25 .total {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 36px;
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  #s25 .total .header {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    color: var(--amber);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  #s25 .total .big {
+    font-family: var(--f-display);
+    font-size: 64px;
+    font-weight: 700;
+    line-height: 1.05;
+  }
+  #s25 .total .big .accent { color: var(--amber); }
+  #s25 .total .sub { font-size: var(--t-small); color: var(--fg-muted); line-height: 1.5; }
+  #s25 .total .bars { display: flex; flex-direction: column; gap: 10px; }
+  #s25 .bar {
+    display: grid;
+    grid-template-columns: 130px 1fr 80px;
+    gap: 14px; align-items: center;
+    font-size: var(--t-xs);
+  }
+  #s25 .bar .name { font-family: var(--f-jp); color: var(--fg); }
+  #s25 .bar .track {
+    height: 14px;
+    background: var(--bg-card2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  #s25 .bar .fill {
+    height: 100%;
+    background: var(--amber);
+    border-radius: 4px;
+  }
+  #s25 .bar .min { font-family: var(--f-mono); color: var(--fg-muted); text-align: right; }
+  #s25 .rules {
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  #s25 .rule-card {
+    padding: 20px 26px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex; gap: 18px; align-items: flex-start;
+  }
+  #s25 .rule-card .icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--amber-soft);
+    border: 1px solid var(--amber-dim);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--amber);
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  #s25 .rule-card .h {
+    font-family: var(--f-display);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  #s25 .rule-card .d { font-size: var(--t-xs); color: var(--fg-muted); line-height: 1.5; }
+  #s25 .mantra {
+    padding: 22px 36px;
+    background: var(--amber-soft);
+    border: 1px solid var(--amber-dim);
+    border-radius: 12px;
+    font-size: var(--t-body);
+    color: var(--fg);
+    text-align: center;
+  }
+  #s25 .mantra .accent { color: var(--amber); font-weight: 700; }
+
+</style>
+</head>
+<body>
+
+<deck-stage>
+
+  <!-- ════════════════════════════════════════════════════════
+       T01 · HOOK SITUATION
+  ════════════════════════════════════════════════════════ -->
+  <section id="s01" data-screen-label="01 Hook Situation">
+    <div class="tmpl-badge"><span class="dot"></span><span>T01</span><span class="name">Hook Situation</span></div>
+    <div class="slide-num">01 / 25</div>
+
+    <div class="eyebrow">Tình huống mở đầu</div>
+    <div class="rule"></div>
+
+    <div class="anchor">
+      <span>「<span class="hi">行きたくないわけじゃない</span>んだけど、</span>
+      <span class="line2">明日N2だから、<span class="hi-red">行くわけにはいかない</span>んだ。」</span>
+    </div>
+
+    <div class="tension">
+      <div class="tag">Cùng có わけ — nhưng không cùng mạch logic</div>
+      <div class="vn">Bạn đã chọn được mẫu nào chưa?</div>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       T02 · HOOK CONTRAST
+  ════════════════════════════════════════════════════════ -->
+  <section id="s02" data-screen-label="02 Hook Contrast">
+    <div class="tmpl-badge"><span class="dot"></span><span>T02</span><span class="name">Hook Contrast</span></div>
+    <div class="slide-num">02 / 25</div>
+
+    <div class="eyebrow">Hai câu — Hai mạch logic</div>
+    <div class="rule"></div>
+
+    <div class="pair">
+      <div class="row">
+        <div class="num">①</div>
+        <div class="jp">行きたくない<span class="hi">わけではありません</span>。</div>
+      </div>
+      <div class="vs-stamp">vs</div>
+      <div class="row">
+        <div class="num">②</div>
+        <div class="jp">今夜は行く<span class="hi-red">わけにはいきません</span>。</div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <span class="dot"></span>
+      <span>Câu ① đang <span class="hi">đính chính lại cách hiểu</span> — Câu ② đang nói <span class="hi-red">bị ràng buộc nên không thể làm</span></span>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       T03 · QUIZ BEFORE / AFTER
+  ════════════════════════════════════════════════════════ -->
+  <section id="s03" data-screen-label="03 Quiz">
+    <div class="tmpl-badge"><span class="dot"></span><span>T03</span><span class="name">Quiz Before / After</span></div>
+    <div class="slide-num">03 / 25</div>
+
+    <div class="eyebrow">Thử chọn nhanh</div>
+    <div class="rule"></div>
+
+    <div class="question">
+      <div class="jp">
+        行きたくない<span class="blank"></span>んだけど、明日N2だから、今夜は遊びに行く<span class="blank"></span>。
+      </div>
+    </div>
+
+    <div class="options">
+      <div class="opt correct">
+        <span class="label">A</span>
+        <span class="text">わけでは ／ わけには</span>
+        <span class="check">✓</span>
+      </div>
+      <div class="opt">
+        <span class="label">B</span>
+        <span class="text">わけが ／ わけでは</span>
+      </div>
+      <div class="opt">
+        <span class="label">C</span>
+        <span class="text">わけだ ／ わけが</span>
+      </div>
+    </div>
+
+    <div class="reason-list" style="margin-top: 28px;">
+      <div class="head">Lý do</div>
+      <div class="item correct">
+        <div class="num">A</div>
+        <div class="pat">わけでは ／ わけには</div>
+        <div class="vn">đính chính + ràng buộc</div>
+        <div class="why">Blank 1 đang đính chính cách hiểu → <span class="jp-inline">わけでは</span>. Blank 2 có ràng buộc (mai N2) → <span class="jp-inline">わけには</span>. Hai mạch logic khớp.</div>
+      </div>
+      <div class="item wrong">
+        <div class="num">B</div>
+        <div class="pat">わけが ／ わけでは</div>
+        <div class="vn">tone blank 1 quá mạnh</div>
+        <div class="why"><span class="jp-inline">わけが</span> ở blank 1 = "không thể nào không muốn đi" — bác khả năng, lệch mạch đính chính.</div>
+      </div>
+      <div class="item wrong">
+        <div class="num">C</div>
+        <div class="pat">わけだ ／ わけが</div>
+        <div class="vn">sai cả hai mạch</div>
+        <div class="why"><span class="jp-inline">わけだ</span> = kết luận, không đính chính. <span class="jp-inline">わけが</span> = bác khả năng, không nói về ràng buộc.</div>
+      </div>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       T04 · PROMISE BOARD
+  ════════════════════════════════════════════════════════ -->
+  <section id="s04" data-screen-label="04 Promise">
+    <div class="tmpl-badge"><span class="dot"></span><span>T04</span><span class="name">Promise Board</span></div>
+    <div class="slide-num">04 / 25</div>
+
+    <div class="eyebrow">Bài này giúp gì</div>
+    <div class="rule"></div>
+
+    <div class="topic">JLPT N2: 4 mẫu <span class="hi">わけ</span> hay nhầm</div>
+    <div class="pattern-strip">
+      <div class="p">わけだ</div>
+      <div class="p">わけではない</div>
+      <div class="p">わけがない</div>
+      <div class="p">わけにはいかない</div>
+    </div>
+
+    <div class="outcomes">
+      <div class="out">
+        <div class="num">01 — KHI LÀM ĐỀ</div>
+        <h3>Đỡ chọn theo<br/>cảm giác na ná</h3>
+        <p>Phân biệt được 4 mạch logic, không bị bẫy bởi các đáp án nghe gần nhau.</p>
+      </div>
+      <div class="out">
+        <div class="num">02 — NGOÀI ĐỜI</div>
+        <h3>Nghe ra ý người nói<br/>tự nhiên hơn</h3>
+        <p>Biết người nói đang kết luận, đính chính, bác bỏ hay bị ràng buộc.</p>
+      </div>
+    </div>
+
+    <div class="guide">
+      Câu hỏi xuyên suốt: <span class="hi">Ở câu này, người nói đang muốn nói gì?</span>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       T05 · STORY CONTEXT
+  ════════════════════════════════════════════════════════ -->
+  <section id="s05" data-screen-label="05 Story">
+    <div class="tmpl-badge"><span class="dot"></span><span>T05</span><span class="name">Story Context</span></div>
+    <div class="slide-num">05 / 25</div>
+
+    <div class="eyebrow">Tình huống thực tế</div>
+    <div class="rule"></div>
+
+    <div class="beats">
+      <div class="beat">
+        <div class="stage">01 — SETTING</div>
+        <div class="heading">Tối thứ Sáu</div>
+        <div class="vn">Đồng nghiệp rủ đi ăn tối sau giờ làm.</div>
+        <div class="jp">飲みに行かない？</div>
+        <div class="arrow"></div>
+      </div>
+      <div class="beat">
+        <div class="stage">02 — CONSTRAINT</div>
+        <div class="heading">Có deadline</div>
+        <div class="vn">Tối nay còn phải gửi tài liệu cho khách.</div>
+        <div class="jp">資料を送らないと…</div>
+        <div class="arrow"></div>
+      </div>
+      <div class="beat tense">
+        <div class="stage">03 — TENSION</div>
+        <div class="heading">Không phải<br/>không muốn đi</div>
+        <div class="vn">Muốn đi, nhưng không thể đi.</div>
+        <div class="jp"><span class="hi">わけにはいかない</span></div>
+      </div>
+    </div>
+
+    <div class="closing">Cùng một chữ <span class="hi">わけ</span> — nhưng người nói đang muốn nhấn vào hai chuyện khác nhau.</div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       T06 · METHOD BOARD
+  ════════════════════════════════════════════════════════ -->
+  <section id="s06" data-screen-label="06 Method">
+    <div class="tmpl-badge"><span class="dot"></span><span>T06</span><span class="name">Method Board</span></div>
+    <div class="slide-num">06 / 25</div>
+
+    <div class="eyebrow">3 cách nhìn — cho mọi mẫu N2</div>
+    <div class="rule"></div>
+
+    <div class="views">
+      <div class="view">
+        <div class="glyph">意</div>
+        <div class="h">Ý nghĩa</div>
+        <div class="q">Ở câu này, mẫu này đang dùng để nói ý gì?</div>
+      </div>
+      <div class="view">
+        <div class="glyph">形</div>
+        <div class="h">Dạng</div>
+        <div class="q">Mẫu này đi với động từ / tính từ / danh từ ở dạng nào?</div>
+      </div>
+      <div class="view">
+        <div class="glyph">用</div>
+        <div class="h">Cách dùng</div>
+        <div class="q">Thường dùng trong tình huống nào? Nghe có sắc thái gì?</div>
+      </div>
+    </div>
+
+    <div class="mantra">
+      Đừng nhìn chữ <span class="accent">わけ</span> trước.
+      Hãy hỏi: <span class="accent">Người nói đang muốn nói gì?</span>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       T07 · GRAMMAR CARD
+  ════════════════════════════════════════════════════════ -->
+  <section id="s07" data-screen-label="07 Grammar Card">
+    <div class="tmpl-badge"><span class="dot"></span><span>T07</span><span class="name">Grammar Card</span></div>
+    <div class="slide-num">07 / 25</div>
+
+    <div class="left">
+      <div class="pattern">わけではない</div>
+      <div class="speaker">Người nói đang <span class="hi">đính chính</span> lại một cách hiểu chưa đúng — gỡ lại nhận định, không phải bác bỏ hoàn toàn.</div>
+
+      <div class="three">
+        <div class="row">
+          <div class="k">意</div>
+          <div class="content">
+            <div class="label">Ý nghĩa</div>
+            <div class="val">không phải là… / không có nghĩa là…</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="k">形</div>
+          <div class="content">
+            <div class="label">Dạng</div>
+            <div class="val mono">普通形 + わけではない</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="k">用</div>
+          <div class="content">
+            <div class="label">Cách dùng</div>
+            <div class="val">Sửa lại cách hiểu sai. Tone mềm, không phủ định cực đoan.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="example">
+        <div class="label">Ví dụ</div>
+        <div class="jp">行きたくない<span class="hi">わけではありません</span>。</div>
+        <div class="vn">Không phải là tôi không muốn đi.</div>
+      </div>
+      <div class="example">
+        <div class="label">Đời thật</div>
+        <div class="jp">既読無視した<span class="hi">わけじゃない</span>よ。<br/>会議中だっただけ。</div>
+        <div class="vn">Không phải mình seen rồi lơ đâu — lúc đó đang họp thôi.</div>
+      </div>
+      <div class="trap">
+        <div class="ico">⚠</div>
+        <div class="text">Đừng kéo sang <span class="hi-red">わけがない</span> nếu câu chỉ đang đính chính.</div>
+      </div>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       T08 · MINIMAL PAIR
+  ════════════════════════════════════════════════════════ -->
+  <section id="s08" data-screen-label="08 Minimal Pair">
+    <div class="tmpl-badge"><span class="dot"></span><span>T08</span><span class="name">Minimal Pair</span></div>
+    <div class="slide-num">08 / 25</div>
+
+    <div class="eyebrow">Cặp dễ nhầm</div>
+    <div class="rule"></div>
+
+    <div class="pair-grid">
+      <div class="side a">
+        <div class="pat">わけではない</div>
+        <div class="meaning">Đính chính lại cách hiểu</div>
+        <div class="nuance">Tone mềm. Còn khả năng A một phần — chỉ là không phải hoàn toàn như vậy.</div>
+        <div class="ex">
+          <div class="jp">嫌いな<span class="hi">わけではない</span>。</div>
+          <div class="vn">Không phải là ghét theo nghĩa đó.</div>
+        </div>
+      </div>
+
+      <div class="axis">
+        <div class="vs">vs</div>
+        <div class="line"></div>
+      </div>
+
+      <div class="side b">
+        <div class="pat">わけがない</div>
+        <div class="meaning">Bác bỏ khả năng rất mạnh</div>
+        <div class="nuance">Tone mạnh. Người nói gần như chắc chắn — không thể nào lại như vậy.</div>
+        <div class="ex">
+          <div class="jp">嫌いな<span class="hi-green">わけがない</span>。</div>
+          <div class="vn">Không thể nào lại ghét được.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Trục so sánh: <span class="a-tag">gỡ lại cách hiểu</span> &nbsp;—&nbsp; <span class="b-tag">bác hẳn khả năng</span>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       T09 · COMPARISON MATRIX
+  ════════════════════════════════════════════════════════ -->
+  <section id="s09" data-screen-label="09 Comparison Matrix">
+    <div class="tmpl-badge"><span class="dot"></span><span>T09</span><span class="name">Comparison Matrix</span></div>
+    <div class="slide-num">09 / 25</div>
+
+    <div class="eyebrow">Bản đồ 4 mẫu</div>
+    <div class="rule"></div>
+
+    <div class="matrix">
+      <div class="head">
+        <div class="cell">Mẫu</div>
+        <div class="cell">Người nói đang…</div>
+        <div class="cell">Ghi chú</div>
+      </div>
+      <div class="row">
+        <div class="cell pat"><div class="swatch" style="background:var(--blue)"></div><span class="hi-blue">わけだ</span></div>
+        <div class="cell act">rút ra kết luận hợp lý</div>
+        <div class="cell note">Có dữ kiện / lý do ở trước → "thảo nào / ra là vậy".</div>
+      </div>
+      <div class="row">
+        <div class="cell pat"><div class="swatch" style="background:var(--amber)"></div><span class="hi">わけではない</span></div>
+        <div class="cell act">đính chính cách hiểu</div>
+        <div class="cell note">Sửa lại một nhận định. Tone mềm, không bác hoàn toàn.</div>
+      </div>
+      <div class="row">
+        <div class="cell pat"><div class="swatch" style="background:var(--green)"></div><span class="hi-green">わけがない</span></div>
+        <div class="cell act">bác bỏ rất mạnh</div>
+        <div class="cell note">"Không thể nào / làm gì có chuyện". Chắc gần như tuyệt đối.</div>
+      </div>
+      <div class="row">
+        <div class="cell pat"><div class="swatch" style="background:var(--red)"></div><span class="hi-red">わけにはいかない</span></div>
+        <div class="cell act">bị ràng buộc nên không thể làm</div>
+        <div class="cell note">Có deadline / trách nhiệm / quy tắc. Muốn cũng không làm được.</div>
+      </div>
+    </div>
+
+    <div class="closing">
+      Khi thấy nghĩa Việt nghe na ná — hỏi: <span class="accent">người nói đang muốn nói theo hướng nào?</span>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       T10 · CLUE MAP / DECISION RULE
+  ════════════════════════════════════════════════════════ -->
+  <section id="s10" data-screen-label="10 Clue Map">
+    <div class="tmpl-badge"><span class="dot"></span><span>T10</span><span class="name">Clue Map / Decision Rule</span></div>
+    <div class="slide-num">10 / 25</div>
+
+    <div class="eyebrow">Dấu hiệu chọn mẫu</div>
+    <div class="rule"></div>
+
+    <div class="layout">
+      <div class="steps">
+        <div class="step">
+          <div class="n">01</div>
+          <div>
+            <div class="h">Cụm từ đi trước</div>
+            <div class="d">Trước chỗ trống có từ / cụm nào quan trọng? Có lý do, deadline, hay đang sửa hiểu nhầm?</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="n">02</div>
+          <div>
+            <div class="h">Cụm từ đi sau</div>
+            <div class="d">Sau chỗ trống dẫn đến kết luận, sắc thái phủ nhận, hay chốt là không làm được?</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="n">03</div>
+          <div>
+            <div class="h">Mạch logic</div>
+            <div class="d">Người nói đang kết luận, đính chính, bác bỏ, hay đang nói bị ràng buộc?</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="signals">
+        <div class="h">Tín hiệu → mẫu</div>
+        <div class="map">
+          <div class="item">
+            <div class="clue">明日試験 / 締切 / 責任</div>
+            <div class="arr">→</div>
+            <div class="pat">わけにはいかない</div>
+          </div>
+          <div class="item">
+            <div class="clue">絶対 / ありえない / そんな</div>
+            <div class="arr">→</div>
+            <div class="pat">わけがない</div>
+          </div>
+          <div class="item">
+            <div class="clue">10年住んでいる / だから</div>
+            <div class="arr">→</div>
+            <div class="pat">わけだ</div>
+          </div>
+          <div class="item">
+            <div class="clue">そういう意味じゃない / 別に</div>
+            <div class="arr">→</div>
+            <div class="pat">わけではない</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       T11 · WORKED EXAMPLE BOARD
+  ════════════════════════════════════════════════════════ -->
+  <section id="s11" data-screen-label="11 Worked Example">
+    <div class="tmpl-badge"><span class="dot"></span><span>T11</span><span class="name">Worked Example Board</span></div>
+    <div class="slide-num">11 / 25</div>
+
+    <div class="left">
+      <div class="q-card">
+        <div class="jp">
+          行きたくない<span class="blank"></span>んだけど、<br/>
+          明日N2だから、今夜は遊びに行く<span class="blank"></span>。
+        </div>
+      </div>
+      <div class="options">
+        <div class="opt correct"><span class="label">A</span><span class="text">わけでは ／ わけには</span></div>
+        <div class="opt"><span class="label">B</span><span class="text">わけが ／ わけでは</span></div>
+        <div class="opt"><span class="label">C</span><span class="text">わけだ ／ わけが</span></div>
+      </div>
+      <div class="answer-final">
+        <div class="check">✓</div>
+        <div>Đáp án: <span class="hi">A</span> — <span class="hi">わけでは ／ わけには</span></div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="step">
+        <div class="n">STEP 1</div>
+        <div class="content">
+          <div class="h">Đọc blank 1: <span class="hi">＿んだけど</span></div>
+          <div class="d">Đang sửa lại một cách hiểu → mẫu thuộc nhóm đính chính.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="n">STEP 2</div>
+        <div class="content">
+          <div class="h">Chọn blank 1: <span class="hi">わけでは</span></div>
+          <div class="d">"Không phải là không muốn đi" — tone mềm, đang gỡ hiểu nhầm.</div>
+        </div>
+      </div>
+      <div class="step trap">
+        <div class="n">TRAP</div>
+        <div class="content">
+          <div class="h">B sai: わけが nghe quá mạnh</div>
+          <div class="d">"Không thể nào không muốn đi" — bác hẳn khả năng. Lệch ý người nói.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="n">STEP 3</div>
+        <div class="content">
+          <div class="h">Đọc blank 2: <span class="hi">明日N2だから</span></div>
+          <div class="d">Có ràng buộc rõ ràng → mẫu phải nói được "không thể làm vì kẹt".</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="n">STEP 4</div>
+        <div class="content">
+          <div class="h">Chọn blank 2: <span class="hi">わけには</span></div>
+          <div class="d">Đây mới là mẫu nói được "muốn cũng không thể làm vì bị giữ lại".</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       T12 · DIAGNOSTIC PRACTICE
+  ════════════════════════════════════════════════════════ -->
+  <section id="s12" data-screen-label="12 Diagnostic">
+    <div class="tmpl-badge"><span class="dot"></span><span>T12</span><span class="name">Diagnostic Practice</span></div>
+    <div class="slide-num">12 / 25</div>
+
+    <div class="eyebrow">Luyện chẩn đoán</div>
+    <div class="rule"></div>
+
+    <div class="q-card">
+      <div class="jp">あの人がみんなを嫌いな<span class="blank"></span>。</div>
+    </div>
+
+    <div class="options">
+      <div class="opt">
+        <div class="label">A</div>
+        <div class="pat">わけではない</div>
+        <div class="trap-tag">BẪY · TONE NHẸ</div>
+        <div class="diag">Chỉ đang đính chính — chưa đủ lực với "không thể nào".</div>
+      </div>
+      <div class="opt correct">
+        <div class="label">B</div>
+        <div class="pat">わけがない</div>
+        <div class="trap-tag">ĐÁP ÁN</div>
+        <div class="diag">Bác bỏ khả năng rất mạnh — "làm gì có chuyện".</div>
+      </div>
+      <div class="opt">
+        <div class="label">C</div>
+        <div class="pat">わけだ</div>
+        <div class="trap-tag">BẪY · KẾT LUẬN</div>
+        <div class="diag">Đây là kết luận hợp lý — không phải phủ định.</div>
+      </div>
+    </div>
+
+    <div class="reason">
+      <strong>Lưu ý hình thức:</strong> <span class="mono">嫌い</span> là tính từ な → cần "<span class="hi">嫌いな</span>わけがない", không phải "嫌いわけがない".
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       T13 · TRAP EXPLANATION
+  ════════════════════════════════════════════════════════ -->
+  <section id="s13" data-screen-label="13 Trap Explanation">
+    <div class="tmpl-badge"><span class="dot"></span><span>T13</span><span class="name">Trap Explanation</span></div>
+    <div class="slide-num">13 / 25</div>
+
+    <div class="eyebrow">Vì sao đáp án sai nghe vẫn đúng</div>
+    <div class="rule"></div>
+
+    <div class="traps">
+      <div class="panel wrong">
+        <div class="label">⚠ NGHE CÓ VẺ ĐÚNG</div>
+        <div class="pat">わけがない</div>
+        <div class="body">
+          Thấy cụm <span class="strike">“không thể”</span> nên người học dễ nghĩ ngay đến mẫu bác khả năng.
+          <br/><br/>
+          Nhưng <span class="hi-red">わけがない</span> là <strong>bác bỏ khả năng</strong> — phán đoán về sự thật, không phải về ràng buộc.
+        </div>
+      </div>
+      <div class="panel right">
+        <div class="label">✓ THỰC RA CẦN</div>
+        <div class="pat">わけにはいかない</div>
+        <div class="body">
+          Câu này nói <strong>hành động bị giữ lại</strong> — muốn đi nhưng có deadline.
+          <br/><br/>
+          Không phải “không thể có chuyện đi”, mà là “có việc phải làm nên không thể đi”.
+        </div>
+      </div>
+    </div>
+
+    <div class="rule-strip">
+      <div class="key">DECISION</div>
+      <div class="text">Thấy "không thể" → hỏi tiếp: <span class="hi">khả năng có thật hay không</span>, hay <span class="hi">hành động bị ràng buộc</span>?</div>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       T14 · RECAP MAP
+  ════════════════════════════════════════════════════════ -->
+  <section id="s14" data-screen-label="14 Recap">
+    <div class="tmpl-badge"><span class="dot"></span><span>T14</span><span class="name">Recap Map</span></div>
+    <div class="slide-num">14 / 25</div>
+
+    <div class="eyebrow">Tổng kết · 4 mẫu — 4 mạch logic</div>
+    <div class="rule"></div>
+
+    <div class="map">
+      <div class="cell c1">
+        <div class="pat">わけだ</div>
+        <div class="vn">Nghe thông tin rồi rút ra kết luận hợp lý.</div>
+        <div class="nuance">"Thảo nào / ra là vậy" — có dữ kiện → có kết luận.</div>
+      </div>
+      <div class="cell c2">
+        <div class="pat">わけではない</div>
+        <div class="vn">Không phải là theo nghĩa đó / không hẳn là vậy.</div>
+        <div class="nuance">Đính chính cách hiểu. Tone mềm, không bác hoàn toàn.</div>
+      </div>
+      <div class="cell c3">
+        <div class="pat">わけがない</div>
+        <div class="vn">Không thể nào lại như thế / làm gì có chuyện.</div>
+        <div class="nuance">Bác khả năng rất mạnh. Tone chắc.</div>
+      </div>
+      <div class="cell c4">
+        <div class="pat">わけにはいかない</div>
+        <div class="vn">Muốn cũng không làm được vì có ràng buộc.</div>
+        <div class="nuance">Có deadline / trách nhiệm / quy tắc giữ lại.</div>
+      </div>
+    </div>
+
+    <div class="bonus">
+      <span class="tag">BONUS</span>
+      <span class="jp">Vない + わけにはいかない</span>
+      <span>= buộc phải làm (không thể không làm).</span>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       T15 · CTA DIAGNOSTIC
+  ════════════════════════════════════════════════════════ -->
+  <section id="s15" data-screen-label="15 CTA">
+    <div class="tmpl-badge"><span class="dot"></span><span>T15</span><span class="name">CTA Diagnostic</span></div>
+    <div class="slide-num">15 / 25</div>
+
+    <div class="left">
+      <div class="problem">Hiểu rồi —<br/>nhưng vào đề<br/>vẫn <span class="accent">phân vân?</span></div>
+      <div class="lead">Worksheet + Diagnostic Quiz cho bài わけ giúp bạn xem mình hay rơi vào bẫy nào — không chỉ là tóm tắt lý thuyết.</div>
+      <div class="cta-btn">Tải Worksheet · わけ Family <span class="arrow">→</span></div>
+    </div>
+
+    <div class="right">
+      <div class="item">
+        <div class="icon">01</div>
+        <div class="text">Bảng Ý nghĩa – Dạng – Cách dùng cho 4 mẫu<span class="sub">Memory map screenshot-friendly</span></div>
+      </div>
+      <div class="item">
+        <div class="icon">02</div>
+        <div class="text">Bộ minimal pair drills cho cặp dễ nhầm<span class="sub">わけではない vs わけがない · わけがない vs わけにはいかない</span></div>
+      </div>
+      <div class="item">
+        <div class="icon">03</div>
+        <div class="text">Bài tập kiểu JLPT, có trap tag cho đáp án sai<span class="sub">Biết mình hay sập bẫy nào</span></div>
+      </div>
+      <div class="item">
+        <div class="icon">04</div>
+        <div class="text">Answer key giải thích lý do — không chỉ chấm đúng/sai<span class="sub">Diagnostic, không phải PDF tóm tắt</span></div>
+      </div>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ═════════════════════════════════════════════════════════
+       T16 · FORM TABLE
+  ═════════════════════════════════════════════════════════ -->
+  <section id="s16" data-screen-label="16 Form Table">
+    <div class="tmpl-badge"><span class="dot"></span><span>T16</span><span class="name">Form Table</span></div>
+    <div class="slide-num">16 / 25</div>
+
+    <div class="left">
+      <div class="eyebrow">Dạng · Kết nối</div>
+      <div class="rule"></div>
+      <div class="pattern-hero">わけにはいかない</div>
+
+      <div class="form-table">
+        <div class="row">
+          <div class="cell k">Dạng đi trước</div>
+          <div class="cell v">+ わけにはいかない</div>
+        </div>
+        <div class="row">
+          <div class="cell k">V 辞書形</div>
+          <div class="cell v">行く · 休む · 転職する</div>
+        </div>
+        <div class="row">
+          <div class="cell k">Vない</div>
+          <div class="cell v">行かない · 勉強しない</div>
+        </div>
+        <div class="row">
+          <div class="cell k">Bổ sung</div>
+          <div class="cell v">Vない + わけにはいかない = buộc phải làm</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="mistake">
+        <div class="label">⚠ Lỗi form hay gặp</div>
+        <div class="wrong">行ったわけにはいかない</div>
+        <div class="right-form">行く<span class="hi">わけにはいかない</span></div>
+        <div class="why">Mẫu này đi với <strong>V 辞書形</strong> (行く), không phải Vた形 (行った) hay Vて形. Sai form là tự loại đáp án dù hiểu nghĩa.</div>
+      </div>
+      <div class="tip">
+        Tính từ な và danh từ → cần <span class="accent">な / である</span> ở giữa.
+      </div>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ═════════════════════════════════════════════════════════
+       T17 · EXAMPLE STACK
+  ═════════════════════════════════════════════════════════ -->
+  <section id="s17" data-screen-label="17 Example Stack">
+    <div class="tmpl-badge"><span class="dot"></span><span>T17</span><span class="name">Example Stack</span></div>
+    <div class="slide-num">17 / 25</div>
+
+    <div class="eyebrow">3 ngữ cảnh — cùng 1 mạch logic</div>
+    <div class="rule"></div>
+
+    <div class="stack">
+      <div class="ex">
+        <div class="ctx">
+          <div class="icon">社</div>
+          <div class="tag">Công ty</div>
+        </div>
+        <div class="jp">今夜は資料を送らないといけないので、<span class="hi-red">飲みに行くわけにはいきません</span>。</div>
+        <div class="nuance">Tone formal, công việc. Từ chối nhưng vẫn giữ quan hệ.</div>
+      </div>
+      <div class="ex">
+        <div class="ctx">
+          <div class="icon">学</div>
+          <div class="tag">Học tập</div>
+        </div>
+        <div class="jp">明日はN2の試験だから、<span class="hi-red">今夜は遊ばるわけにはいかない</span>よ。</div>
+        <div class="nuance">Casual với bạn, nói về deadline cá nhân.</div>
+      </div>
+      <div class="ex">
+        <div class="ctx">
+          <div class="icon">家</div>
+          <div class="tag">Gia đình</div>
+        </div>
+        <div class="jp">子供が熱を出したんだ。今日は<span class="hi-red">会社に行くわけにはいかない</span>。</div>
+        <div class="nuance">Trách nhiệm gia đình đặt lên trên lịch làm việc.</div>
+      </div>
+    </div>
+
+    <div class="shared">
+      Cả 3 câu đều cùng 1 mạch: <span class="accent">có ràng buộc → muốn cũng không làm được.</span>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ═════════════════════════════════════════════════════════
+       T18 · SECTION DIVIDER
+  ═════════════════════════════════════════════════════════ -->
+  <section id="s18" data-screen-label="18 Section Divider">
+    <div class="tmpl-badge"><span class="dot"></span><span>T18</span><span class="name">Section Divider</span></div>
+    <div class="slide-num">18 / 25</div>
+
+    <div class="chapter-num">Phần 02 · Chapter 02</div>
+    <div class="chapter-rule"></div>
+    <div class="chapter-title">Dấu hiệu <span class="accent">chọn mẫu</span><br/>khi làm đề</div>
+    <div class="chapter-desc">Trước cụm — sau cụm — mạch logic. Ba câu hỏi quyết định đáp án N2.</div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ═════════════════════════════════════════════════════════
+       T19 · COMMON MISTAKE (Người Việt hay sai)
+  ═════════════════════════════════════════════════════════ -->
+  <section id="s19" data-screen-label="19 Common Mistake">
+    <div class="tmpl-badge"><span class="dot"></span><span>T19</span><span class="name">Common Mistake</span></div>
+    <div class="slide-num">19 / 25</div>
+
+    <div class="badge-row">
+      <div class="vn-flag">VN</div>
+      <div class="text">Người Việt hay sai thế này</div>
+    </div>
+
+    <div class="mistake-grid">
+      <div class="col wrong">
+        <div class="tag">✕ SAI</div>
+        <div class="jp"><span class="strike">行きたくないわけがありません。</span></div>
+        <div class="vn">Dịch thẳng từ “không phải là” theo cảm giác Việt → chọn わけがありません vì thấy “không có”.</div>
+      </div>
+      <div class="arrow-cell"><div class="arr">→</div></div>
+      <div class="col right">
+        <div class="tag">✓ ĐÚNG</div>
+        <div class="jp">行きたくない<span class="hi">わけではありません</span>。</div>
+        <div class="vn">Mẫu đính chính cách hiểu — “không phải là không muốn đi” — dùng わけではない.</div>
+      </div>
+    </div>
+
+    <div class="why">
+      <div class="label">Vì sao người Việt hay sai</div>
+      <div class="text">Tiếng Việt không phân biệt rõ “không phải là A” và “không có A”. Tiếng Nhật tách ra: <span class="hi">わけではない</span> = đính chính; <span class="hi-red">わけがない</span> = bác khả năng; <span class="hi-red">わけがありません</span> chỉ là dạng khác của câu sau.</div>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ═════════════════════════════════════════════════════════
+       T20 · OUTRO
+  ═════════════════════════════════════════════════════════ -->
+  <section id="s20" data-screen-label="20 Outro">
+    <div class="tmpl-badge"><span class="dot"></span><span>T20</span><span class="name">Outro</span></div>
+    <div class="slide-num">20 / 25</div>
+
+    <div class="eyebrow">Bài sau · Episode 02</div>
+    <div class="rule"></div>
+
+    <div class="takeaway">Đừng nhìn chữ <span class="accent">わけ</span>. Hãy hỏi: người nói đang muốn nói gì?</div>
+
+    <div class="outro-grid">
+      <div class="next">
+        <div class="label">EP 02 · next cluster</div>
+        <div class="title">ばかり family</div>
+        <div class="pat">ばかりだ · ばかりに · ばかりにも</div>
+        <div class="desc">3 mẫu ばかり nhìn na ná, nhưng mạch logic hoàn toàn khác.</div>
+      </div>
+      <div class="subscribe">
+        <div class="heading">Theo dõi để<br/>nhận bài mới mỗi tuần.</div>
+        <div class="btn-row">
+          <span class="btn primary">Subscribe →</span>
+          <span class="btn ghost">Worksheet</span>
+        </div>
+        <div class="handles">@lucida.vn · lucida.vn/n2</div>
+      </div>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ═════════════════════════════════════════════════════════
+       T21 · JLPT ITEM CARD
+  ═════════════════════════════════════════════════════════ -->
+  <section id="s21" data-screen-label="21 JLPT Item Card">
+    <div class="tmpl-badge"><span class="dot"></span><span>T21</span><span class="name">JLPT Item Card</span></div>
+    <div class="slide-num">21 / 25</div>
+
+    <div class="jlpt-header">
+      <div class="qnum">問 12</div>
+      <div class="qtype">文法形式の判断 · N2 official format</div>
+      <div class="time">Mục tiêu: 45 giây</div>
+    </div>
+
+    <div class="stem">
+      <div class="jp">明日はN2の試験だから、今夜は遊びに行く<span class="blank-num"> </span>。</div>
+    </div>
+
+    <div class="jlpt-options">
+      <div class="jlpt-opt">
+        <div class="circle">1</div>
+        <div class="text">わけだ</div>
+      </div>
+      <div class="jlpt-opt">
+        <div class="circle">2</div>
+        <div class="text">わけではない</div>
+      </div>
+      <div class="jlpt-opt">
+        <div class="circle">3</div>
+        <div class="text">わけがない</div>
+      </div>
+      <div class="jlpt-opt correct">
+        <div class="circle">4</div>
+        <div class="text">わけにはいかない</div>
+      </div>
+    </div>
+
+    <div class="reason-list" style="margin-top: 22px;">
+      <div class="head">Vì sao không chọn options còn lại</div>
+      <div class="item wrong">
+        <div class="num">1</div>
+        <div class="pat">わけだ</div>
+        <div class="vn">kết luận hợp lý</div>
+        <div class="why">Nói “thảo nào đi chơi” — lệch hoàn toàn. Câu này đang nói không đi được, không phải kết luận.</div>
+      </div>
+      <div class="item wrong">
+        <div class="num">2</div>
+        <div class="pat">わけではない</div>
+        <div class="vn">đính chính nhẹ</div>
+        <div class="why">“Không phải là đi chơi” — tone mềm, sai sắc thái. Câu cần nói về ràng buộc cụ thể.</div>
+      </div>
+      <div class="item wrong">
+        <div class="num">3</div>
+        <div class="pat">わけがない</div>
+        <div class="vn">bác khả năng</div>
+        <div class="why">“Không thể nào có chuyện đi” — mạnh quá, lệch logic. Câu không bác khả năng, chỉ nói bị giữ lại.</div>
+      </div>
+      <div class="item correct">
+        <div class="num">4</div>
+        <div class="pat">わけにはいかない</div>
+        <div class="vn">ràng buộc, không thể làm</div>
+        <div class="why">Muốn cũng không đi được vì có việc bắt buộc (mai thi N2). Mạch logic khớp hoàn toàn.</div>
+      </div>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ═════════════════════════════════════════════════════════
+       T22 · SENTENCE ASSEMBLY (文の組み立て)
+  ═════════════════════════════════════════════════════════ -->
+  <section id="s22" data-screen-label="22 Sentence Assembly">
+    <div class="tmpl-badge"><span class="dot"></span><span>T22</span><span class="name">Sentence Assembly</span></div>
+    <div class="slide-num">22 / 25</div>
+
+    <div class="qhead">
+      <div class="qnum">問 17</div>
+      <div class="qtype">文の組み立て · ★に入るものはどれか。</div>
+    </div>
+
+    <div class="assemble">
+      <div class="jp">今夜中に資料を<span class="frag-slot">1</span><span class="frag-slot">2</span><span class="frag-slot star">3</span><span class="frag-slot">4</span>。</div>
+    </div>
+
+    <div class="layout">
+      <div class="frags">
+        <div class="label">選択肢 · 4 mảnh để sắp xếp</div>
+        <div class="frag"><div class="n">1</div><div class="text">送らない</div></div>
+        <div class="frag"><div class="n">2</div><div class="text">といけない</div></div>
+        <div class="frag star"><div class="n">3</div><div class="text">飲みに行く</div></div>
+        <div class="frag"><div class="n">4</div><div class="text">わけにはいかない</div></div>
+      </div>
+      <div class="solution">
+        <div class="order-label">Thứ tự đúng</div>
+        <div class="order">送らない → といけない → 飲みに行く → わけにはいかない</div>
+        <div class="star-answer">
+          <span class="pill">★ = 3</span>
+          <span>飲みに行く đi vá̆o vị trí sao</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="reason-list" style="margin-top: 22px;">
+      <div class="head">Vì sao sắp xếp như vậy</div>
+      <div class="item correct">
+        <div class="num">1+2</div>
+        <div class="pat">送らない + といけない</div>
+        <div class="vn">cặp cố định · bắt buộc</div>
+        <div class="why">Mẫu <span class="jp-inline">ないといけない</span> (bắt buộc phải làm) — collocation không tách được, luôn đi cùng nhau.</div>
+      </div>
+      <div class="item correct">
+        <div class="num">3 ★</div>
+        <div class="pat">飲みに行く</div>
+        <div class="vn">action bị giữ lại</div>
+        <div class="why">V辞書形 — bắt buộc đứng ngay trước mẫu <span class="jp-inline">わけにはいかない</span>. Đây là vị trí sao.</div>
+      </div>
+      <div class="item correct">
+        <div class="num">4</div>
+        <div class="pat">わけにはいかない</div>
+        <div class="vn">kết mẫu · không thể làm</div>
+        <div class="why">Đóng câu: có ràng buộc (1+2) → muốn làm (3) cũng không được (4). Toàn câu thành 1 chain.</div>
+      </div>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ═════════════════════════════════════════════════════════
+       T23 · PASSAGE GRAMMAR (文章の文法)
+  ═════════════════════════════════════════════════════════ -->
+  <section id="s23" data-screen-label="23 Passage Grammar">
+    <div class="tmpl-badge"><span class="dot"></span><span>T23</span><span class="name">Passage Grammar</span></div>
+    <div class="slide-num">23 / 25</div>
+
+    <div class="qhead">
+      <div class="qnum">問 19–22</div>
+      <div class="qtype">文章の文法 · blank fills theo mạch đoạn văn</div>
+    </div>
+
+    <div class="passage">
+      <div class="text">私は日本で働いている。毎日とても忙しい<span class="bl">19</span>、ジムにだけは週三回行こうと思っている。<br/>今夜も資料を送らないといけないので、ジムに行く<span class="bl focus">20</span>。<br/>だが、明日は休みだから、明日の朝は絶対に<span class="bl">21</span>。</div>
+    </div>
+
+    <div class="focus-row">
+      <div class="lookup">
+        <div class="label">Focus blank</div>
+        <div class="num">20</div>
+      </div>
+      <div class="opts">
+        <div class="opt"><div class="n">1</div><div class="text">わけだ</div></div>
+        <div class="opt"><div class="n">2</div><div class="text">わけではない</div></div>
+        <div class="opt correct"><div class="n">3</div><div class="text">わけにはいかない</div></div>
+        <div class="opt"><div class="n">4</div><div class="text">わけがない</div></div>
+      </div>
+    </div>
+
+    <div class="key-note">
+      Mạch văn: câu trước là "資料を送らないといけない" (bắt buộc). Câu sau là hiện thực "không được" — cần mẫu nói về ràng buộc → <span class="accent">わけにはいかない</span>. Trong dạng 文章の文法, phải đọc mạch trước, không quyết định chỉ dựa vào câu chứa blank.
+    </div>
+
+    <div class="reason-list" style="margin-top: 16px;">
+      <div class="head">Lý do từng option</div>
+      <div class="item wrong">
+        <div class="num">1</div>
+        <div class="pat">わけだ</div>
+        <div class="vn">kết luận hợp lý</div>
+        <div class="why">Nói "thảo nào" — không đúng mạch ràng buộc mà câu trước đã thiết lập.</div>
+      </div>
+      <div class="item wrong">
+        <div class="num">2</div>
+        <div class="pat">わけではない</div>
+        <div class="vn">đính chính nhẹ</div>
+        <div class="why">Tone quá mềm; passage đang nói về việc bắt buộc phải làm → không cần sửa hiểu lầm.</div>
+      </div>
+      <div class="item correct">
+        <div class="num">3</div>
+        <div class="pat">わけにはいかない</div>
+        <div class="vn">ràng buộc, không thể làm</div>
+        <div class="why">Khớp với <span class="jp-inline">送らないといけない</span> ở câu trước — ràng buộc → không đi được.</div>
+      </div>
+      <div class="item wrong">
+        <div class="num">4</div>
+        <div class="pat">わけがない</div>
+        <div class="vn">bác bỏ khả năng</div>
+        <div class="why">"Không thể nào có chuyện đi" — sai logic. Câu không bác khả năng, chỉ nói bị ràng buộc.</div>
+      </div>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ═════════════════════════════════════════════════════════
+       T24 · DISTRACTOR ANALYSIS
+  ═════════════════════════════════════════════════════════ -->
+  <section id="s24" data-screen-label="24 Distractor Analysis">
+    <div class="tmpl-badge"><span class="dot"></span><span>T24</span><span class="name">Distractor Analysis</span></div>
+    <div class="slide-num">24 / 25</div>
+
+    <div class="eyebrow">Mỗi bẫy — một loại misconception</div>
+    <div class="rule"></div>
+
+    <div class="q">
+      <div class="jp">明日はN2だから、今夜は遊びに行く<span class="hi">    </span>。</div>
+    </div>
+
+    <div class="distractor-grid">
+      <div class="dis">
+        <div class="row">
+          <div class="n">1</div>
+          <div class="pat">わけだ</div>
+        </div>
+        <span class="trap-chip">同じ機能 · sai mạch</span>
+        <div class="diag">Là kết luận hợp lý — nhưng câu này muốn nói "không thể đi", không phải "thảo nào".</div>
+      </div>
+      <div class="dis">
+        <div class="row">
+          <div class="n">2</div>
+          <div class="pat">わけではない</div>
+        </div>
+        <span class="trap-chip">似た意味 · gần nghĩa</span>
+        <div class="diag">Đính chính cách hiểu — tone quá mềm cho câu nói về ràng buộc cụ thể.</div>
+      </div>
+      <div class="dis">
+        <div class="row">
+          <div class="n">3</div>
+          <div class="pat">わけがない</div>
+        </div>
+        <span class="trap-chip">反対意味 · sai sắc thái</span>
+        <div class="diag">Bác bỏ khả năng rất mạnh — "không thể nào có chuyện đi chơi". Sai logic.</div>
+      </div>
+      <div class="dis correct">
+        <div class="row">
+          <div class="n">4</div>
+          <div class="pat">わけにはいかない</div>
+        </div>
+        <span class="trap-chip">正解 · đúng</span>
+        <div class="diag">Ràng buộc (mai thi N2) → muốn cũng không đi được. Mạch logic khớp.</div>
+      </div>
+    </div>
+
+    <div class="taxonomy">
+      <span class="label">5 loại bẫy thường gặp:</span>
+      <span class="ttype">形違い</span>
+      <span class="ttype">似た意味</span>
+      <span class="ttype">同じ機能</span>
+      <span class="ttype">反対意味</span>
+      <span class="ttype">部分一致</span>
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+
+  <!-- ═════════════════════════════════════════════════════════
+       T25 · TIME STRATEGY
+  ═════════════════════════════════════════════════════════ -->
+  <section id="s25" data-screen-label="25 Time Strategy">
+    <div class="tmpl-badge"><span class="dot"></span><span>T25</span><span class="name">Time Strategy</span></div>
+    <div class="slide-num">25 / 25</div>
+
+    <div class="eyebrow">Chiến thuật thời gian · JLPT N2 言語知識・読解</div>
+    <div class="rule"></div>
+
+    <div class="strategy-grid">
+      <div class="total">
+        <div class="header">Section budget</div>
+        <div class="big">105 <span class="accent">phút</span></div>
+        <div class="sub">cho cả văn phạm + đọc hiểu. 語彙 rời có 30 phút riêng.</div>
+        <div class="bars">
+          <div class="bar">
+            <div class="name">文法形式</div>
+            <div class="track"><div class="fill" style="width:14%"></div></div>
+            <div class="min">~15 ph</div>
+          </div>
+          <div class="bar">
+            <div class="name">組み立て</div>
+            <div class="track"><div class="fill" style="width:8%"></div></div>
+            <div class="min">~8 ph</div>
+          </div>
+          <div class="bar">
+            <div class="name">文章の文法</div>
+            <div class="track"><div class="fill" style="width:10%"></div></div>
+            <div class="min">~10 ph</div>
+          </div>
+          <div class="bar">
+            <div class="name">読解</div>
+            <div class="track"><div class="fill" style="width:68%"></div></div>
+            <div class="min">~72 ph</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rules">
+        <div class="rule-card">
+          <div class="icon">45s</div>
+          <div>
+            <div class="h">Mỗi câu văn phạm</div>
+            <div class="d">Nếu quá 60s chưa ra → mark và quay lại sau.</div>
+          </div>
+        </div>
+        <div class="rule-card">
+          <div class="icon">2'</div>
+          <div>
+            <div class="h">Skip rule</div>
+            <div class="d">Đọc 2 lần một đáp án mà chưa tự tin → bỏ qua. Quay lại sau khi xong tất cả.</div>
+          </div>
+        </div>
+        <div class="rule-card">
+          <div class="icon">★</div>
+          <div>
+            <div class="h">Invest rule</div>
+            <div class="d">組み立て đáng đầu tư — 1 câu đúng = đủ điểm bù cho 2 câu sai 語彙.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mantra">
+      Khi bị rối: <span class="accent">hỏi người nói đang muốn nói gì</span> trước, không đoán theo keyword.
+    </div>
+
+    <div class="brand"><span class="word">lucida</span><span class="dot"></span></div>
+  </section>
+
+</deck-stage>
+
+<div id="tweaks-root"></div>
+
+<script type="text/babel">
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "theme": "dark",
+    "density": "comfortable",
+    "matrixVariant": "table",
+    "type": "vietnamese"
+  }/*EDITMODE-END*/;
+
+  function applyTweaks(t) {
+    document.body.setAttribute('data-theme', t.theme);
+    document.body.setAttribute('data-density', t.density);
+    document.body.setAttribute('data-variant', t.matrixVariant);
+    document.body.setAttribute('data-type', t.type);
+  }
+
+  // Apply defaults immediately so the deck loads in the correct theme
+  applyTweaks(TWEAK_DEFAULTS);
+
+  function TweaksApp() {
+    const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+    React.useEffect(() => { applyTweaks(t); }, [t.theme, t.density, t.matrixVariant, t.type]);
+
+    return (
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Theme" />
+        <TweakRadio
+          label="Mode"
+          value={t.theme}
+          options={[
+            { value: 'dark',  label: 'Video' },
+            { value: 'light', label: 'Print' },
+          ]}
+          onChange={(v) => setTweak('theme', v)}
+        />
+
+        <TweakSection label="Type pairing" />
+        <TweakSelect
+          label="Pairing"
+          value={t.type}
+          options={[
+            { value: 'auto',       label: 'Auto · follow theme' },
+            { value: 'clean',      label: 'Clean · Manrope + DM Sans' },
+            { value: 'apple',      label: 'Apple-feel · Plus Jakarta Sans' },
+            { value: 'vietnamese', label: 'Vietnamese · Be Vietnam Pro' },
+            { value: 'editorial',  label: 'Editorial · Newsreader + Source Sans' },
+          ]}
+          onChange={(v) => setTweak('type', v)}
+        />
+
+        <TweakSection label="Layout" />
+        <TweakRadio
+          label="Density"
+          value={t.density}
+          options={[
+            { value: 'comfortable', label: 'Comfortable' },
+            { value: 'compact',     label: 'Compact' },
+          ]}
+          onChange={(v) => setTweak('density', v)}
+        />
+
+        <TweakSection label="T09 · Comparison Matrix" />
+        <TweakRadio
+          label="Variant"
+          value={t.matrixVariant}
+          options={[
+            { value: 'table', label: 'Table' },
+            { value: 'cards', label: 'Cards' },
+          ]}
+          onChange={(v) => setTweak('matrixVariant', v)}
+        />
+      </TweaksPanel>
+    );
+  }
+
+  const tweaksRoot = ReactDOM.createRoot(document.getElementById('tweaks-root'));
+  tweaksRoot.render(<TweaksApp />);
+</script>
+
+</body>
+</html>

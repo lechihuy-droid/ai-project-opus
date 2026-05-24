@@ -3,7 +3,6 @@ Daily brief — triggered by Windows Task Scheduler at 06:00 ICT.
 Queries personal-wiki/ (Karpathy) → calls LLM → publishes Telegraph → sends Telegram.
 Falls back to reading wiki/ folder if wiki has insufficient content.
 """
-import os
 import sys
 import io
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
@@ -13,8 +12,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from datetime import date
-from groq import Groq
 from utils.config import wiki_dir, logs_dir
+from utils.llm import claude_cli
 from utils.telegram import send_message, send_error
 from tools.telegraph_tool import publish
 
@@ -59,37 +58,21 @@ def read_wiki_fallback() -> dict[str, str]:
 
 def write_brief(context: str) -> str:
     today = date.today().strftime("%d/%m/%Y")
-    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-    resp = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[
-            {
-                "role": "system",
-                "content": "You are a concise morning briefer. Write in plain text, no emojis. Be specific and factual.",
-            },
-            {
-                "role": "user",
-                "content": f"""Write a morning brief for {today} (8:00 JST) based on this context.
-Under 400 words. Format:
-
-Brief {today} | 8:00 JST
-
-[AI]
-- key point 1
-- key point 2
-- key point 3
-
-[JP STOCK - Previous Close]
-- N225: price and change
-- key market news
-
-Context:
-{context[:3000]}""",
-            },
-        ],
-        max_tokens=600,
+    prompt = (
+        "You are a concise morning briefer. Write in plain text, no emojis. Be specific and factual.\n\n"
+        f"Write a morning brief for {today} (8:00 JST) based on this context.\n"
+        "Under 400 words. Format:\n\n"
+        f"Brief {today} | 8:00 JST\n\n"
+        "[AI]\n"
+        "- key point 1\n"
+        "- key point 2\n"
+        "- key point 3\n\n"
+        "[JP STOCK - Previous Close]\n"
+        "- N225: price and change\n"
+        "- key market news\n\n"
+        f"Context:\n{context[:3000]}"
     )
-    return resp.choices[0].message.content.strip()
+    return claude_cli(prompt, timeout=120)
 
 
 def main():

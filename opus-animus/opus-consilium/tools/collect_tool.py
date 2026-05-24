@@ -269,60 +269,48 @@ def goal_align_filter(
     batch_size: int = 20,
 ) -> list[dict]:
     """
-    Score articles for goal alignment via Claude API (Haiku — cheap, fast).
-    Returns articles with goal_score >= min_score. Falls back on API failure.
+    Score articles for goal alignment via Claude CLI.
+    Returns articles with goal_score >= min_score. Falls back to score=3 on error.
     """
     if not articles:
         return articles
 
-    import json
-    import re
-    import os
-    from groq import Groq
+    from utils.llm import claude_cli_json
 
-    client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
     scored_articles = list(articles)
+    total_batches = (len(scored_articles) + batch_size - 1) // batch_size
 
-    for batch_start in range(0, len(scored_articles), batch_size):
+    for batch_idx, batch_start in enumerate(range(0, len(scored_articles), batch_size), 1):
         batch = scored_articles[batch_start : batch_start + batch_size]
         items = "\n".join(
             f"{i + 1}. [{a['source_id']}] {a['title']} — {a.get('summary', '')[:120]}"
             for i, a in enumerate(batch)
         )
+        prompt = (
+            f"Context: {goal}\n\n"
+            "For each article, provide:\n"
+            "1. score: 1-5 relevance (5=changes what I should do next, 3=useful background, 1=noise/off-topic)\n"
+            "2. note: Vietnamese, max 200 chars, 2 parts separated by ' -> ':\n"
+            "   Part 1: concrete takeaway (what happened, what was released, what was found)\n"
+            "   Part 2: specific next-step for me as the reader: read, test, compare, save, skip, or watch\n"
+            "   Do not mention FPT, FleziPT, COBOL PARK, CTO pitch, sales pitch, or customer conversations.\n"
+            "   Be specific, not generic. Avoid vague phrases like 'nen quan tam'.\n\n"
+            f"Articles:\n{items}\n\n"
+            "Respond ONLY with JSON array:\n"
+            '[{"idx":1,"score":4,"note":"Anthropic improves tool-use accuracy in Claude. '
+            '-> Compare it with OpenAI and decide whether to test Claude in my workflow this week."}, ...]\n'
+            "No other text."
+        )
         try:
-            response = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
-                max_tokens=1200,
-                messages=[{
-                    "role": "user",
-                    "content": (
-                        f"Context: {goal}\n\n"
-                        "For each article, provide:\n"
-                        "1. score: 1-5 relevance (5=changes what I should do next, 3=useful background, 1=noise/off-topic)\n"
-                        "2. note: Vietnamese, max 200 chars, 2 parts separated by ' -> ':\n"
-                        "   Part 1: concrete takeaway (what happened, what was released, what was found)\n"
-                        "   Part 2: specific next-step for me as the reader: read, test, compare, save, skip, or watch\n"
-                        "   Do not mention FPT, FleziPT, COBOL PARK, CTO pitch, sales pitch, or customer conversations.\n"
-                        "   Be specific, not generic. Avoid vague phrases like 'nen quan tam'.\n\n"
-                        f"Articles:\n{items}\n\n"
-                        "Respond ONLY with JSON array:\n"
-                        '[{"idx":1,"score":4,"note":"Anthropic improves tool-use accuracy in Claude. '
-                        '-> Compare it with OpenAI and decide whether to test Claude in my workflow this week."}, ...]\n'
-                        "No other text."
-                    ),
-                }],
-            )
-            text = response.choices[0].message.content.strip()
-            m = re.search(r"\[.*?\]", text, re.DOTALL)
-            if m:
-                parsed = json.loads(m.group())
-                for item in parsed:
-                    idx = item["idx"] - 1
-                    if 0 <= idx < len(batch):
-                        batch[idx]["goal_score"] = item.get("score", 3)
-                        batch[idx]["relevance"]   = item.get("note", "")
+            print(f"[collect] Goal filter batch {batch_idx}/{total_batches} (Claude CLI)...")
+            parsed = claude_cli_json(prompt, timeout=120, expect="array")
+            for item in parsed:
+                idx = item.get("idx", 0) - 1
+                if 0 <= idx < len(batch):
+                    batch[idx]["goal_score"] = item.get("score", 3)
+                    batch[idx]["relevance"]  = item.get("note", "")
         except Exception as e:
-            print(f"[collect] Goal filter batch {batch_start}: {e} — fallback score=3")
+            print(f"[collect] Goal filter batch {batch_idx}: {e} — fallback score=3")
             for article in batch:
                 article.setdefault("goal_score", 3)
                 article.setdefault("relevance", "")
@@ -409,9 +397,6 @@ def daily_synthesis(articles: list[dict], groq_api_key: str) -> dict:
     Returns a dict saved to logs/intel_reviews/YYYY-MM-DD.json.
     Format matches what _llm_market_review() in api/intel.py reads.
     """
-    import json as _json
-    import subprocess as _sub
-
     date_str = _today_local()
     now_str = datetime.now(LOCAL_TZ).strftime("%Y-%m-%dT%H:%M:%S%z")
 
@@ -454,23 +439,8 @@ def daily_synthesis(articles: list[dict], groq_api_key: str) -> dict:
     )
 
     try:
-        _CLAUDE = r"C:\Users\HUY\AppData\Roaming\npm\claude.cmd"
-        result = _sub.run(
-            ["cmd", "/c", _CLAUDE],
-            input=prompt,
-            capture_output=True, text=True, encoding="utf-8",
-            timeout=120,
-        )
-        if result.returncode != 0:
-            raise RuntimeError(result.stderr[:300])
-        text = result.stdout.strip()
-        # Strip markdown fences if present
-        text = re.sub(r"^```json\s*", "", text)
-        text = re.sub(r"\s*```$", "", text)
-        m = re.search(r"\{.*\}", text, re.DOTALL)
-        if not m:
-            raise ValueError(f"No JSON in response: {text[:200]}")
-        parsed = _json.loads(m.group())
+        from utils.llm import claude_cli_json
+        parsed = claude_cli_json(prompt, timeout=180, expect="object")
         parsed["status"] = "current_llm"
         parsed["date"] = date_str
         parsed["generated_at"] = now_str

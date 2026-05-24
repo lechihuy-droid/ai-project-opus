@@ -15,11 +15,15 @@
 | MVP | Module C — Personal Wiki Agent | Karpathy LLM Wiki pattern, Groq direct | ✅ Done (2026-04-27 M1-M5) |
 | Opt-1 | AI Research Input | Nguồn chất lượng cao cho AI topic | ✅ Replaced by Content Collector (8/12 sources active) |
 | Opt-2 | Markitdown Pipeline | Download + convert full document → wiki | ✅ Done (markitdown-agent integrated mode) |
+| Feature | Daily LLM Synthesis | Claude CLI → daily brief JSON | ✅ Done (2026-05-18) |
+| Feature | Weekly LLM Synthesis | Claude CLI → weekly report JSON | ✅ Done (2026-05-18) |
+| Feature | FDE Research Tab | Dashboard tab theo dõi FDE model adoption | ✅ Done (2026-05-18) |
 | Opt-3 | Hermes Skill Layer (A+B) | Wrap Module A+B thành Hermes skills | 🗂️ Idea — sau khi pipeline stable ≥ 2 tuần |
 | Idea | JP Stock Deep Dive | Thêm nguồn chứng khoán Nhật chất lượng | 🗂️ Idea (TODO root [IDEA-1]) |
 | Idea | Multi-topic Expansion | Thêm topic mới (macro, crypto...) | 🗂️ Idea (TODO root [IDEA-2]) |
 | Idea | Interactive Brief | Telegram inline buttons, webhook mode | 🗂️ Idea (TODO root [IDEA-3]) |
 | Idea | Research Radar | GitHub trending + papers → LLM filter apply OPUS | 🔵 Promoted to Immediate (TODO root, 2026-04-28) |
+| Idea | FDE Source Expansion | Thêm RSS sources cho FDE news (consulting firms blog, Palantir blog) | 🗂️ Idea |
 
 ---
 
@@ -234,6 +238,26 @@ RSS/API → URL list → download_tool → markitdown_tool → input/YYYY-MM-DD-
 ---
 
 ## ✅ Done
+
+### [2026-05-18] Daily + Weekly AI Synthesis Pipeline
+- `daily_synthesis()` trong `tools/collect_tool.py` — Claude CLI via subprocess stdin
+- `run_collect.py` tự động gọi synthesis sau save, output `logs/intel_reviews/YYYY-MM-DD.json`
+- `run_weekly.py` (NEW) — tổng hợp 7 ngày → Claude → `logs/weekly/YYYY-Www.json`
+- Task Scheduler: `opus-weekly-research` (Chủ nhật 06:00 JST)
+- Dashboard startup: bat file trong Windows Startup folder (auto-start khi login)
+- `config.yaml`: `auto_ingest: true` (wiki ingest chạy tự động)
+
+### [2026-05-18] Dashboard Intel → Weekly tab
+- `/api/intel/weekly` endpoint trong `api/intel.py`
+- `WeeklyReportView` component trong `dashboard/index.html`
+- Week picker, signal trend bars, actor moves, action plan
+
+### [2026-05-18] FDE Research Tab
+- `/api/intel/fde` — concepts, actors, articles (60-day window)
+- `/api/intel/fde/news` — daily news tagged by 8 actor groups
+- `FDEView` + `FDENewsTab` components trong `dashboard/index.html`
+- 5 sub-tabs: Daily News / Key Concepts / Adoption Map / FDE Articles / Research Queue
+- Actor groups: Palantir, OpenAI, Anthropic, Microsoft, Google, Consulting+AI, SIer Japan, FDE Model
 
 ### [MVP] Module A + B — Personal AI Agent
 - ResearchCrew (Researcher + Writer, Groq Llama-3.3-70b)
