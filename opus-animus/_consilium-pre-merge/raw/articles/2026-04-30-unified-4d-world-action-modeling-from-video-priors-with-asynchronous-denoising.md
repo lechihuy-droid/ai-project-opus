@@ -1,8 +1,0 @@
-# Unified 4D World Action Modeling from Video Priors with Asynchronous Denoising
-
-**Source:** hf-papers
-**URL:** https://huggingface.co/papers/2604.26694
-**Published:** 2026-04-30 03:37 UTC
-**Topic:** AI
-
-We propose X-WAM, a Unified 4D World Model that unifies real-time robotic action execution and high-fidelity 4D world synthesis (video + 3D reconstruction) in a single framework, addressing the critical limitations of prior unified world models (e.g., UWM) that only model 2D pixel-space and fail to balance action efficiency and world modeling quality. To leverage the strong visual priors of pretrained video diffusion models, X-WAM imagines the future world by predicting multi-view RGB-D videos, and obtains spatial information efficiently through a lightweight structural adaptation: replicating the final few blocks of the pretrained Diffusion Transformer into a dedicated depth prediction branch for the reconstruction of future spatial information. Moreover, we propose Asynchronous Noise Sam

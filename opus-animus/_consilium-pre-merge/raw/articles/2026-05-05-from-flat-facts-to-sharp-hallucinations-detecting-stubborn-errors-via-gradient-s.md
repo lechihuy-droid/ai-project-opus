@@ -1,9 +1,0 @@
-# From Flat Facts to Sharp Hallucinations: Detecting Stubborn Errors via Gradient Sensitivity
-
-**Source:** arxiv-lg
-**URL:** https://arxiv.org/abs/2605.00939
-**Published:** 2026-05-05 04:00 UTC
-**Topic:** AI
-
-arXiv:2605.00939v1 Announce Type: new 
-Abstract: Traditional hallucination detection fails on "Stubborn Hallucinations" -- errors where LLMs are confidently wrong. We propose a geometric solution: Embedding-Perturbed Gradient Sensitivity (EPGS). We hypothesize that while robust facts reside in flat minima, stubborn hallucinations sit in sharp minima, supported by brittle memorization. EPGS detects this sharpness by perturbing input embeddings with Gaussian noise and measuring the resulting spike in gradient magnitude. This acts as an efficient proxy for the Hessian spectrum, differentiating stable knowledge from unstable memorization. Our experiments show that EPGS significantly outperforms entropy-based and representation-based baselines, providing a robust signal for detecting high-confi
