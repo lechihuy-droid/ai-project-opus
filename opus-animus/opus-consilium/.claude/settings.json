@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cmd //c \"schtasks /query *)",
+      "PowerShell(schtasks /query *)",
+      "PowerShell(Get-ChildItem *)"
+    ]
+  }
+}

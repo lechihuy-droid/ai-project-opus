@@ -1,0 +1,179 @@
+# Claude Prompt Harvest — 2026-W17
+*Period: 2020-01-01 → 2026-05-01 | 169 prompts*
+
+Capture of meaningful prompts reflecting thinking patterns, problem framing, and AI usage.
+
+## OPUS ANIMUS
+- [04-28] check app pmp và add thêm chức năng giải thích lí do sai thông qua api với AI miễn phí như gemini
+- [04-28] check app pmp và add thêm chức năng giải thích lí do sai thông qua api với AI miễn phí như gemini
+- [04-28] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\markitdown-agent\CLAUDE.md in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [04-28] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\markitdown-agent\CLAUDE.md in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [04-28] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\markitdown-agent\CLAUDE.md in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [04-28] Lỗi: models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+- [04-28] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\markitdown-agent\CLAUDE.md in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [04-28] Lỗi: models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+- [04-28] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\markitdown-agent\CLAUDE.md in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [04-28] Lỗi: models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+- [04-28] Lỗi: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your curren
+- [04-28] Lỗi: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your curren
+- [04-28] Lỗi: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your curren
+- [04-28] Lỗi: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your curren
+- [04-28] Lỗi: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your curren
+- [04-28] Lỗi: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your curren
+- [04-28] add hướng dẫn này vào khi gọi API AI trả lời You are a PMP exam coach.
+- [04-28] add hướng dẫn này vào khi gọi API AI trả lời You are a PMP exam coach.
+- [04-28] add hướng dẫn này vào khi gọi API AI trả lời You are a PMP exam coach.
+- [04-28] mở rộng màn hình, tách ra làm 2 khung làm bài bên trái và giải thích AI bên phải, bổ sung là cho AI giải thích bằng tiếng Việt và giữ những keyword PMP là tiếng anh
+- [04-28] mở rộng màn hình, tách ra làm 2 khung làm bài bên trái và giải thích AI bên phải, bổ sung là cho AI giải thích bằng tiếng Việt và giữ những keyword PMP là tiếng anh
+- [04-28] mở rộng màn hình, tách ra làm 2 khung làm bài bên trái và giải thích AI bên phải, bổ sung là cho AI giải thích bằng tiếng Việt và giữ những keyword PMP là tiếng anh
+- [04-28] 1. **B – Daily standup meetings were not held or enforced**
+- [04-28] 1. **B – Daily standup meetings were not held or enforced**
+- [04-28] 1. **B – Daily standup meetings were not held or enforced**
+- [04-28] quay lại thiết kế trên dưới, AI chỉ giải thích khi có yêu cầu, thêm 1 nút chụp màn hình bên canh nút tiếp tục
+- [04-28] quay lại thiết kế trên dưới, AI chỉ giải thích khi có yêu cầu, thêm 1 nút chụp màn hình bên canh nút tiếp tục
+- [04-28] quay lại thiết kế trên dưới, AI chỉ giải thích khi có yêu cầu, thêm 1 nút chụp màn hình bên canh nút tiếp tục
+- [04-28] Nút 📷 (secondary, nhỏ) cho to bằng nút câu tiếp, và lưu vào để tôi ctrl V vào cửa sổ copilot chứ k download về
+- [04-28] Nút 📷 (secondary, nhỏ) cho to bằng nút câu tiếp, và lưu vào để tôi ctrl V vào cửa sổ copilot chứ k download về
+- [04-28] Nút 📷 (secondary, nhỏ) cho to bằng nút câu tiếp, và lưu vào để tôi ctrl V vào cửa sổ copilot chứ k download về
+- [04-28] tạo thêm 1 file ghi lại history mỗi lần add file vào để tracking tình trạng của wiki, define lại logic của search data
+- [04-28] tạo thêm 1 file ghi lại history mỗi lần add file vào để tracking tình trạng của wiki, define lại logic của search data
+- [04-28] tạo thêm 1 file ghi lại history mỗi lần add file vào để tracking tình trạng của wiki, define lại logic của search data
+- [04-28] tôi muốn thêm 1 số nguồn uy tín, top 10 git liên quan tới AI hàng tuần, top 10 hugging face liên quan AI
+- [04-28] tôi muốn thêm 1 số nguồn uy tín, top 10 git liên quan tới AI hàng tuần, top 10 hugging face liên quan AI
+- [04-28] tôi muốn thêm 1 số nguồn uy tín, top 10 git liên quan tới AI hàng tuần, top 10 hugging face liên quan AI
+- [04-29] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\start-home.bat in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [04-29] về giao diện của opus add logo define ở đây Fetch this design file, read its readme, and implement the relevant aspects of the design. https://api.anthropic.com/v1/design/h/bvKBGlhbO-u3RBWSTJteyg?open
+- [04-29] đồng bộ cách hiển thị của opus với tab pmp, ví dụ hiển thị giữa trang, đồng bộ font và cỡ text
+- [04-29] app pmp có những câu yêu cầu chọn 2-3 đáp án nhưng hiện tại bạn chỉ cho chọn 1, hãy fix bug này
+- [04-29] tôi muốn tạo thêm 1 project để moneytize hãy suggest architecture phù hợp ý tưởng là đây
+- [04-29] project này như 1 phần của opus, hãy tìm architecture của opus và xem xét cách đưa vào phù hợp, tôi nghĩ nó ngang hàng với wiki agents
+- [04-29] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-consilium\docs\SD-central-inbox-routing.md in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [04-29] tôi cần bạn làm 1 bảng nghiên cứu về ý tưởng và cách thức tạo video tự động bằng nhiều agent/AI trong đó có cả tạo video bằng giọng nói cho folder lucida. trong bảng đó tôi cần các thông tin đối chiếu
+- [04-29] nghĩ cách kết hợp với flow tạo video của lucida và đưa ra tiêu chí lựa chọn cho option
+- [04-29] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-consilium\.env in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [04-29] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-consilium\docs\SD-central-inbox-routing.md in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [04-29] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\production\decks\02-script-writing-requirements-kai-gai-temade.md in the IDE. This may or may not be related to the cu
+- [04-29] trong màn hình home của web opus animus tạo thêm 1 tab bên trái cho app lucida, trên giao diện của app thể hiện các bước lớn của quy trình làm video
+- [04-29] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\production\decks\02-review-prompts\02-copy-to-chatgpt-review-hook-flow-cta-step-by-step.md in the IDE. This may or may
+- [04-29] loix màn hình đen Hay dong vai 1 YouTube education strategist + instructional designer cho video day tieng Nhat.
+- [04-29] lỗi màn hình đen react-dom.development.js:29905 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+- [04-29] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\lessons\samples\07-master-teaching-skeleton-wake-cluster.md in the IDE. This may or may not be related to the current 
+- [04-29] đọc folder C:\Users\HUY\AI\OPUS ANIMUS\opus-lucida để detect flow copy pate từ claude qua chatgpt, hãy suy nghĩ cách để đưa các input/output đó lên màn hình app opus và tôi chỉ cần bấm button để copy 
+- [04-29] khi copy lên chat gpt cần 3 thông tin 1. path của file cần đc review, 2. path của file chưa quan điểm review, 3. prompt để chatgpt dùng 2 review 1. hãy thử ý tưởng này lên wireframe
+- [04-29] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\production\decks\02-review-prompts\03-copy-to-chatgpt-review-teaching-skeleton-step-by-step.md in the IDE. This may or
+- [04-29] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\automation\prompts\01-review-script-content-prompt.md in the IDE. This may or may not be related to the current task.<
+- [04-29] prompt 01 02 03 k cần tôi nhầm chỉ cần copy file đối tượng và script review có sẵn vào là dc
+- [04-29] ok cái này thì cứ chuẩn bị. Timing — mỗi slide hiển thị đúng bằng thời lượng audio của slide đó (auto từ mp3 duration), hay có slide nào cần hold lâu hơn? -> cái này trong các file dưới đây k quy định
+- [04-30] Repo này **rất hợp với wiki AI agent bạn đang build**, đặc biệt nếu bạn dùng **Obsidian làm knowledge base / vault** và dùng **Codex CLI, Claude Code, OpenCode** để agent đọc–ghi–tổ chức nội dung.
+- [04-30] dùng cái gì để giao tiếp với vault này, có cần obsidian k hay chỉ cần mở chat trên vs code hoặc cli
+- [04-30] có vẻ tôi đã hiểu sai cách dùng của wiki. hãy đánh giá câu trả lời này và phân tích lại cấu  trúc của  consilium và cả opus animus thế thì tôi cần ghi tất cả ý tưởng nháp của mình nghĩ ra là được đúng
+- [04-30] ok. tôi nghĩ có 2 cách 1 là tạo trên telegram, còn nếu khi đang dùng máy tính này thì tôi sẽ input qua app opus animus bằng cáhc tạo thêm chỗ nạp ý tưởng
+- [04-30] k cần cầu kì. bạn làm cái tele cho tôi đi. raw input bạn cập nhật vào 1 file md. tôi để shortcut tới file đó ở desktop rảnh rỗi tôi mở ra ghi thêm vào. bạn tự tổng hợp vào index v.v
+- [04-30] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-consilium\raw\inbox\ideas.md in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [04-30] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\production\00-active\wake-cluster\00-CONTEXT-resume-next-session.md in the IDE. This may or may not be related to the 
+- [04-30] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-consilium\raw\inbox\ideas.md in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [04-30] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\production\00-active\wake-cluster\00-CONTEXT-resume-next-session.md in the IDE. This may or may not be related to the 
+- [04-30] cần nạp ý tưởng qua giọng nói cho nó nhanh. kiểu như tôi nói chuyện rồi bạn tự lưu vào file input
+- [04-30] ok ổn. quay lại việc gen tts từ script tôi có nhận xét -> quá tệ. giọng đọc như rôbot k có nhấn nhá, k đọc được từ tiếng Nhật. suy nghĩ cách giải quyết
+- [04-30] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\production\00-active\wake-cluster\04-urgent-improvement-plan.md in the IDE. This may or may not be related to the curr
+- [04-30] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\analytics\feedback\01-feedback-log.md in the IDE. This may or may not be related to the current task.</ide_opened_file
+- [04-30] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\automation\workflows\12-standard-process-teaching-lane-mvp.md in the IDE. This may or may not be related to the curren
+- [04-30] cái tôi muốn là 1 giọng đọc nhẹ nhàng hợp phong cách giáo dục, và 1 giọng đọc được cả 2 ngôn ngữ. hãy plan cụ tthể cho tôi trước khi build. bạn quên sdd rồi à
+- [04-30] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\automation\workflows\12-standard-process-teaching-lane-mvp.md in the IDE. This may or may not be related to the curren
+- [04-30] review thử 3 phương án này Bạn nên chọn cái nào? (theo nhu cầu của bạn)
+- [04-30] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\production\00-active\wake-cluster\02-script.md in the IDE. This may or may not be related to the current task.</ide_op
+- [04-30] <ide_selection>The user selected the lines 73 to 87 from c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\production\00-active\wake-cluster\02-script.md:
+- [04-30] file hỏng rồi trả backup lại dc k  khÃ³ lÃ :
+- [05-01] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\production\00-active\wake-cluster\02-script.md in the IDE. This may or may not be related to the current task.</ide_op
+- [05-01] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\production\00-active\wake-cluster\02-script.md in the IDE. This may or may not be related to the current task.</ide_op
+- [05-01] PS C:\Users\HUY\AI> cn -p tóm tắt file này
+- [05-01] nghiên cứu build tool gen voice theo flow sau Để tối ưu chi phí xuống mức **gần như bằng 0**, phương án tốt nhất là xây dựng tool này dưới dạng một **Local CLI (Script Python chạy trực tiếp trên máy t
+- [05-01] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\00-OPUS-LUCIDA-PRODUCTION-ARCHITECTURE.md in the IDE. This may or may not be related to the current task.</ide_opened_
+- [05-01] thử stack mới # PROJECT: Automated Code-Switching Audio Generation Agent
+- [05-01] Chào bạn, với định hướng thiết kế **Automated Code-Switching Audio Generation Agent** mà chúng ta đang xây dựng (đặc biệt là bài toán "nhúng" tiếng Nhật vào kịch bản tiếng Việt), đây là hai câu hỏi cự
+- [05-01] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\automation\workflows\12-standard-process-teaching-lane-mvp.md in the IDE. This may or may not be related to the curren
+- [05-01] cập nhật thêm # PROJECT: Automated Code-Switching Audio Generation Agent
+- [05-01] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\docs\reference\lucida-flow-streamline-mermaid.md in the IDE. This may or may not be related to the current task.</ide_
+- [05-01] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\automation\workflows\12-standard-process-teaching-lane-mvp.md in the IDE. This may or may not be related to the curren
+- [05-01] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\automation\workflows\12-standard-process-teaching-lane-mvp.md in the IDE. This may or may not be related to the curren
+- [05-01] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\automation\video\assembly_agent.py in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [05-01] khoan, phần slide chưa chốt được vì nó là 1 pipeline khác, bạn làm tiếp phần rvc. file rd sd của bạn đâu add cái này vào # PROJECT: Automated Code-Switching Audio Generation Agent
+- [05-01] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\automation\video\assembly_agent.py in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [05-01] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-consilium\CLAUDE.md in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [05-01] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\00-OPUS-LUCIDA-PRODUCTION-ARCHITECTURE.md in the IDE. This may or may not be related to the current task.</ide_opened_
+- [05-01] ý tôi là mỗi làn tôi nhập 1 prompt nó cũng thể hiện suy nghĩ và cách tôi dùng ai, có liệt kê history prompt để làm input cho wiki k
+- [05-01] <ide_opened_file>The user opened the file c:\Users\HUY\AI\OPUS ANIMUS\opus-lucida\automation\workflows\34-runner-production.md in the IDE. This may or may not be related to the current task.</ide_open
+
+## PMP Quiz
+- [04-21] <ide_opened_file>The user opened the file c:\Users\HUY\PMP-Quiz-App\REQUIREMENTS.md in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [04-21] tôi muốn lưu session này lại để lần sau claude nạp tiếp mà k tốn token context có được k
+- [04-21] tiếp theo tôi muốn dùng tính năng tự động approve trên màn hình này, lần trước tôi làm thì có nhưng nay k có
+- [04-21] tôi có 1 dự án cần làm Requirement definition -> BD, hãy suggest framework thích hợp. nếu cần thông tin hãy hỏi thêm tuần tự
+- [04-21] a từ winform -> web, trong đó RD làm enhance cho việc chuyển RPA lên system, team -> 1
+- [04-21] # Update Config Skill
+- [04-22] project quizz app tôi muốn sharing qua device khác để mở app thì làm thế nào hãy guide
+- [04-22] cụ thể là làm gì Máy đích cần Python (có sẵn trên macOS/Linux, Windows tải từ python.org). Sau đó:
+- [04-24] tôi muốn lên kế hoạch du lịch trong golden week, hãy cho 2 option overview osaka - shikoku - hiroshima 3 ngày 2 đêm option 2 là hiroshima 2 ngày 1 đêm
+- [04-24] tôi có option 1 như sau hãy lưu 1 file md # Roadtrip Kansai → Shikoku → Setouchi → Hiroshima (01–03/05)
+- [04-24] Hey bạn, rủ đi chơi cuối tuần lễ nhé — mình định làm chuyến roadtrip + camping + onsen như sau, đi nhẹ, lái luân phiên, vui và thư giãn:
+- [04-24] khoan đã, trên đảo có chỗ dựng lều k, k thì suggest 1 số bãi khác chill chill gần hiroshima hoặc khu vực xung quanh
+- [04-24] <ide_opened_file>The user opened the file c:\Users\HUY\PMP-Quiz-App\CLAUDE.md in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [04-24] option B tốt nhưng tôi ngày đầu k lái xe nhanh như thế, hãy sửa lịch trình để chỉ đi camp xong đi miyajima. ngày 2 có thể về trễ
+- [04-24] ok hãy update file MD như là option 2 rồi cho tôi 1 bảng so sánh 2 option để rủ bạn
+- [04-24] để e xem chỗ nào đẹp hơn
+- [04-26] bạn hãy tạo 1 folder c:\Users\HUY\AI\WIKI\markitdown-agent hãy so sánh 3 cách trên
+- [04-26] ý tôi là 2 cái này 1) CrewAI vs Hermes Agent — Điểm mạnh & điểm yếu
+- [04-26] tôi muốn dùng hướng C, giờ hãy plan 1 AI agent thích hợp cho mục tiêu sử dụng cá nhân
+- [04-26] tôi cần đi các bước plan này như 1 quy trình phát triển phần mềm từ các bước RD - BD - test
+- [04-26] module A tôi cần tổng hợp theo 2 chủ đề, 1 là AI 2 là chứng khoán nhật bản. hãy define cách thức lấy input phù hợp nhất cho từng chủ đề
+- [04-26] Standalone trước — có working agent trong vài ngày. Add Hermes skill layer sau khi đã validate output chất lượng. add vào backlog để nhắc thực thi
+- [04-26] chỗ inform qua tele tôi muốn chốt thêm 1 tính năng gửi link qua tele tôi click vào xem có được l
+- [04-26] phương án Telegraph -> R3 Báo "chưa có data" R6 Gửi Telegram khi fail nhưng nhớ tránh spam
+- [04-26] <ide_opened_file>The user opened the file c:\Users\HUY\PMP-Quiz-App\CLAUDE.md in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [04-26] <ide_opened_file>The user opened the file c:\Users\HUY\PMP-Quiz-App\CLAUDE.md in the IDE. This may or may not be related to the current task.</ide_opened_file>
+- [04-26] ANTHROPIC_API_KEY=sk-ant-...        ← lấy từ console.anthropic.com
+- [04-26] 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
+- [04-26] hãy update lại toàn bộ tính năng và cấu trúc hệ thống theo những chỉnh sửa đã thực hiện
+- [04-26] hãy update lại toàn bộ tài liệu tính năng và cấu trúc hệ thống theo những chỉnh sửa đã thực hiện
+- [04-26] tôi muốn làm các tối ưu hóa sau, hãy sắp xếp thứ tự. 1. phương pháp research input chuẩn cho AI, bao gồm các bài báo, bài viết khoa học về các model AI như claude, openAI, cách sử dụng/use case, 2. dù
+- [04-26] hãy input thông tin dưới đây như nguồn để build Personal Wiki Agent. tôi muốn cái này là function MVP tiếp theo. -> nguồn Các bài viết của Andrej Karpathy về cách build AI Wiki / Skill AI (LLM Wiki Pa
+- [04-26] module C hãy làm 1 research về cách build wiki, dựa trên input là tất cả các source wiki/2026-04-26-karpathy-llm-wiki-pattern.md
+- [04-26] hãy lên 1 plan cho build phần này theo từng bước, và đối chiếu với các thông tin đã research được
+- [04-26] tiếp tục với wiki/2026-04-26-module-c-wiki-agent-research.md hãy xây dựng kiến trúc tổng quan tối ưu của agent. trong đó dựa trên 2 nhân tố chính là Karpathy LLM Wiki, sau đó bổ sung với Hermes Skill
+- [04-26] câu hỏi cuối, tôi muốn tích hợp wiki này với input lấy từ module A là bot research thông tin
+- [04-26] ok hãy add thêm, ngoài ra tìm toàn bộ những repo/bải viết nghiên cứu khoa học về AI đang nổi để add thêm vào
+- [04-27] Tune RSS sources  hãy làm 1 plan tạo thêm 1 batch chạy tự động collect input với các yêu cầu sau: input list up, thời gian chạy, xử lí với input ví dụ add vào raw data của wiki agent, list up những bà
+- [04-27] hãy tạo 1 file plan để điều chỉnh trước, đi từ thiết kế và cách dùng của batch để build theo phương pháp luận requirement driven development
+- [04-27] tìm 1 vài repo về cách xây dựng phần mềm theo phương pháp RDD requirement driven development
+- [04-27] làm 1 số việc sau. 1 add tất cả các resource trên vào wiki cá nhân của tôi, 2. xây dựng 1  Spec-Driven Development skill-set và toolkit để apply cho toàn bộ các dự án từ nay về sau
+- [04-27] bộ toolki này tôi muốn áp dụng cho dự án personal agent trong thư mục C:\Users\HUY\AI PROJECT PERSONAL AGENT
+- [04-27] hiện nó có trong flow của chuẩn bị input cho LLM hoặc ingest vào personal wiki chưa. nghĩa là khi bạn research 1 nguồn trên web -> có file PDF, Word, PowerPoint, Excel, HTML, ảnh, audio, ZIP thì tự độ
+- [04-27] Hướng B — đầy đủ hơn. hãy phân tích thêm xem có cách nào tận dụng tool để tối ưu hóa đầu vào input
+- [04-27] Muốn đi thẳng vào build hay cần điều chỉnh design trước. nhân cơ hội này hãy làm thêm 1 số việc. 1 thêm 1 file System architechture? vào cấu trúc folder dưới đây. chỉnh lí lại personal-agent -> các fu
+- [04-27] tiếp theo thêm 1 số việc sau: format Spec-driven là phương pháp luận phát triển -> cấu trúc thành folder riêng là dev-approach, luôn tham khảo nó khi dev 1 function mới, add thêm to-do của toàn dự án 
+- [04-27] tốt. hãy đổi tên folder AI/PROJECT PERSONAL AGENT/ -> AI/PROJECT PERSONAL DEVELOPMENT AGENT/ hoăc bạn có tên nào hay cho project này mang hơi hướng cổ điển
+- [04-27] mục đích của project là tích lũy kiến thức để xây dựng và transform bản thân, hãy suggest 1 vài tên theo thần la mã/hy lạp hoặc tiếng latinh cho ngầu nhưng dễ nhớ
+- [04-27] tạo 1 file ghi kim chỉ nam cho project, từ đó suy ngược lại nhứng điểm project còn thiếu để phục vụ mục đích
+- [04-27] tốt. tôi muốn làm thêm 1 việc là ghi lại toàn bộ quá trình phát triển app này trên clau từ những app đơn lẻ đầu tiên cho tới thời điểm hiện tại như là 1 history để chia sẻ kinh nghiệm cho cộng đồng
+- [04-27] ok hãy update journey thường xuyên sau mỗi tuần. sau đó quay lại item có priority cao nhất. ngoài ra tôi còn nhờ bạn làm 1 việc là SDD toolkit đang để ngoài folder riêng, nó có ảnh hưởng tới việc tham
+- [04-27] quay lại todo xem còn gì chưa làm, cái này thì sao 7 gaps suy ngược từ mục đích:
+- [04-27] mục tiêu cuối tự do tài chính -> cần kiến thức và công cụ kiếm tiền -> công cụ dùng AI build, kiến thức dùng AI để học -> cần có 1 agent tốt toàn diện đó là Opus animus. bạn hãy thêm câu hỏi để làm rõ
+- [04-27] bạn hãy suggest 1 frame work để phát triển bản thân với nhiều layer rồi từ đó áp nhưunxg câu hỏi này vào
+- [04-27] tôi muốn add thêm ngoài tự do tài chính thì cần tracking tình trạng tài chính bản thân hiện tại, cần 1 mục riêng về xây dựng bản thân khỏe mạnh và thăng tiến trong công việc nữa. hãy add thêm vào các 
+- [04-27] target passive income/tháng và timeline -> 10 man yên/tháng, timeline 12 tháng thêm cho bạn 10p để ghi thêm ý tưởng của tôi. muốn build 1 triết lí xây dựng bản thân, 1 app với HOME hiển thị toàn bộ nộ
+- [04-27] tiếp 1 tí nữa. hãy chạy các task gap mà bạn có thể cover được theo phương châm sống của tôi
+- [04-27] ghi lại thêm 1 số việc tôi đang nghĩ vào todo hoăc backlog để làm dần từ ngày mai -> tạo 1 app ghi lại toàn bộ những ý tưởng của tôi mỗi khi tôi có, gửi từ tele, 2 tối ưu hóa đầu vào của wiki vì nó là
+- [04-27] ok, add vào todo nhé. à thêm cho tôi 1 việc nữa là review lại toàn bộ các gaps mà bạn đã điền tự động
+- [04-27] gộp app pmp quiz vào để thực hiện mục tiêu cá nhân gần nhất là thi PMP và ngày 29/5
+- [04-27] yep. hãy ghi vào todo. ngoài ra tái cấu trúc lại PM quiz vào 1 thư mục riêng của OPUS, không để ngoài được k
+
+## Continue
+- [04-20] trường hợp tôi có sẵn ngân hàng đề thi chỉ cần giải thích vì sao chọn đúng sai thì sao
+- [04-20] Device name	CHI-HUY-SURFACE
+- [04-20] định nghĩa yêu cầu lại. tôi muốn tạo 1 web app giải quiz PMP dựa trên ngân hàng đề có sẵn dùng continue, tôi có mua subcription Pro của claude
+- [04-20] Bạn OK bỏ Continue, chuyển sang dùng Claude Code CLI (đang chat đây) để build app? có 
+- [04-20] 1500 câu, (a) Có, ghi ngay sau mỗi câu (VD: "Answer: B")(b) Chỉ đáp án, không giải thích (b) Không — sẽ nhờ Claude phân loại khi pre-generate
+- [04-20] cập nhật lại đây là file pdf bạn có thể check "C:\Users\HUY\PMP-Quiz-App\PMP Exam - Lasted version.pdf"
+- [04-20] (c) Giữ làm tham khảo UI, nhưng rebuild cấu trúc
+- [04-20] cải thiện ->UI màu của text đáp án hơi khó dùng, hãy apply palette màu của mckinsey cho tôi, thứ 2 là click chọn đáp án k next sang step tiếp theo -> bug
+- [04-20] tốt, giờ bỏ chức năng giải thích theo pmbok vì tốn thời gian. thay vào đó thêm vài chức năng 1. suggest lịch học khi người dùng chọn ngày thi. 2. hiển thị nhanh tiến độ học 3. tìm 1 bộ button thật đẹp
