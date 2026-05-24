@@ -47,7 +47,23 @@ opus-animus/_consilium-pre-merge/logs/
 # Claude Code local worktrees — per-session state, not source code.
 .claude/worktrees/
 
+# Credential and key files — never commit.
+auth.json
+credentials.json
+*.key
+*.pem
+*.p12
+*.pfx
+*.sqlite-shm
+*.sqlite-wal
+
+# OS and editor noise.
+.vscode/
+.DS_Store
+Thumbs.db
+
 # Obsidian per-machine state (workspace layout, cache) — config chung vẫn track.
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
 .obsidian/cache
+.obsidian/graph.json
