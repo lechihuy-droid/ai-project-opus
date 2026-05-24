@@ -1,6 +1,6 @@
 # AI Workspace — Global Rules
 
-Parent-level context for all projects under `C:/Users/HUY/AI/`.
+Parent-level context for all projects under `C:/Users/HUY/workspace/ai-workspace/`.
 
 ---
 
@@ -8,7 +8,7 @@ Parent-level context for all projects under `C:/Users/HUY/AI/`.
 
 **Rule:** Do not code any new feature without an approved Requirements Doc (RD).
 
-**Toolkit:** `C:/Users/HUY/AI/SDD-toolkit/`
+**Toolkit:** `C:/Users/HUY/workspace/ai-workspace/SDD-toolkit/`
 - Process: `SDD-toolkit/workflow/sdd-process.md`
 - Checklist: `SDD-toolkit/workflow/checklist.md`
 - Templates: `SDD-toolkit/templates/` (RD, SD, BD, BACKLOG)
@@ -117,7 +117,7 @@ Phân tuyến công việc theo loại task:
 
 **Rule:** Khi tạo documentation, report, diagram, comparison, hoặc bất kỳ structured output — ưu tiên single self-contained HTML file thay vì markdown.
 
-**Kit location:** `C:/Users/HUY/AI/html-kit/`
+**Kit location:** `C:/Users/HUY/workspace/ai-workspace/html-kit/`
 
 | File | Vai trò |
 |---|---|

@@ -89,7 +89,7 @@ Current operating rule:
 Run command:
 
 ```bash
-cd "C:/Users/HUY/AI/opus-animus/opus-consilium"
+cd "C:/Users/HUY/workspace/ai-workspace/opus-animus/opus-consilium"
 python run_collect.py              # daily collect + synthesis + wiki ingest
 python run_weekly.py               # weekly synthesis (thường qua Task Scheduler)
 python run_weekly.py --dry-run     # preview, no save
@@ -124,7 +124,7 @@ OUTPUTS ← query wiki, không đọc raw
 ## Chạy
 
 ```bash
-cd "C:/Users/HUY/AI/OPUS ANIMUS/opus-consilium"
+cd "C:/Users/HUY/workspace/ai-workspace/opus-animus/opus-consilium"
 
 python run_research.py AI          # Module A — research + Telegraph
 python run_daily.py                # Module B — daily brief → Telegram
