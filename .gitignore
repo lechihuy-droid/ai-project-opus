@@ -42,6 +42,7 @@ opus-animus/opus-lucida/production/02-assets/fonts/sf-pro/
 
 # Auto-generated daily intel review logs.
 opus-animus/opus-consilium/logs/
+opus-animus/_consilium-pre-merge/logs/
 
 # Claude Code local worktrees — per-session state, not source code.
 .claude/worktrees/
