@@ -51,7 +51,9 @@ def personal_wiki_dir() -> Path:
 
 
 def raw_dir(category: str = "") -> Path:
-    d = ROOT / "raw" / category if category else ROOT / "raw"
+    raw_assets_root = os.getenv("RAW_ASSETS_ROOT")
+    base = Path(raw_assets_root) if raw_assets_root else ROOT
+    d = base / "raw" / category if category else base / "raw"
     d.mkdir(parents=True, exist_ok=True)
     return d
 
