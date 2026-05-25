@@ -1,3 +1,3 @@
-@echo off
-cd /d "C:\Users\HUY\AI\opus-animus\opus-consilium"
+﻿@echo off
+cd /d "C:\Users\HUY\workspace\ai-workspace\opus-animus\opus-consilium"
 "C:\Users\HUY\AppData\Local\Programs\Python\Python311\python.exe" run_journey_reminder.py
