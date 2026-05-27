@@ -185,7 +185,8 @@ async function ghGet(path) {
   });
   if (!r.ok) { if (r.status===404) return null; throw new Error(`${r.status}: ${path}`); }
   const d = await r.json();
-  return JSON.parse(atob(d.content.replace(/\n/g,'')));
+  const bytes = Uint8Array.from(atob(d.content.replace(/\n/g,'')), c => c.charCodeAt(0));
+  return JSON.parse(new TextDecoder().decode(bytes));
 }
 
 // ── Data loading ──
@@ -522,7 +523,8 @@ async function debugFetch() {
     out.textContent += `HTTP ${r.status} ${r.statusText}\n`;
     const body = await r.json();
     if (r.ok) {
-      const parsed = JSON.parse(atob(body.content.replace(/\n/g,'')));
+      const bytes2 = Uint8Array.from(atob(body.content.replace(/\n/g,'')), c => c.charCodeAt(0));
+      const parsed = JSON.parse(new TextDecoder().decode(bytes2));
       out.textContent += `index.json: ${JSON.stringify(parsed)}`;
     } else {
       out.textContent += `Error: ${body.message}`;
