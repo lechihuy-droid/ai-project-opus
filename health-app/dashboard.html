@@ -192,7 +192,7 @@ async function ghGet(path) {
 function datesInRange(n) {
   return Array.from({length:n}, (_,i) => {
     const d = new Date(); d.setDate(d.getDate()-i);
-    return d.toISOString().slice(0,10);
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   });
 }
 async function loadModule(prefix, range) {
@@ -324,16 +324,19 @@ function renderWorkout(logs) {
   const totMin   = sessions.reduce((s,x)=>s+(x.duration_min||0),0);
   const totKcal  = sessions.reduce((s,x)=>s+(x.calories||0),0);
   const rows = sessions.slice(0,20).map(s => {
-    const m = TYPE_META[s.type]||TYPE_META.other;
+    const m = TYPE_META[s.type.split(' ')[0]]||TYPE_META.other;
     const ex = (s.exercises||[]).map(e => {
-      const sets = e.sets.map(st=>`${st.reps}×${st.weight_kg}kg`).join(', ');
-      return `<div class="hi-extra">${e.name}: ${sets}</div>`;
+      const detail = Array.isArray(e.sets)
+        ? e.sets.map(st=>`${st.reps}×${st.weight_kg}kg`).join(', ')
+        : [e.sets&&`${e.sets} sets`, e.reps&&`${e.reps} reps`, e.duration_per_set_sec&&`${e.duration_per_set_sec}s/set`, e.notes].filter(Boolean).join(' · ');
+      return `<div class="hi-extra">${e.name}${detail?' — '+detail:''}</div>`;
     }).join('');
+    const dur = s.duration_min ? `${s.duration_min} phút · ` : '';
     return `<div class="hi">
       <div class="hi-ico" style="background:${m.color}22">${m.ico}</div>
       <div class="hi-info">
         <div class="hi-title">${s.type.toUpperCase()} · ${fmt(s.date)}</div>
-        <div class="hi-sub">${s.duration_min} phút · ${s.calories||0} kcal</div>${ex}
+        <div class="hi-sub">${dur}${s.calories||0} kcal đốt</div>${ex}
       </div>
     </div>`;
   }).join('');
