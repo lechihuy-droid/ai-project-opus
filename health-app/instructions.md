@@ -197,3 +197,104 @@ Giấc ngủ/ngày:     7.5 giờ
   😴 Ngủ: X giờ X phút
   ```
   Ghi vào các field: `steps`, `calories_burned` (cộng vào `cal` nếu có), `sleep_hours`
+
+---
+
+## Workout Logging
+
+**Nhận dạng trigger:** user đề cập gym, tập, chạy, yoga, workout, cardio, sets, reps, kg tạ...
+
+**Parse các format:**
+- `"Gym 60 phút: Bench 3x10@60kg, Squat 3x8@80kg"` → gym session + exercises
+- `"Chạy 30 phút 280 kcal"` → cardio session
+- `"Yoga sáng 45 phút"` → yoga, ước tính ~180 kcal
+
+**Ước tính calo nếu không có:**
+- Gym/tạ: 6-8 kcal/phút → 60 phút ≈ 400 kcal
+- Chạy bộ: 8-10 kcal/phút
+- Yoga/stretching: 3-4 kcal/phút
+- Đạp xe: 7-9 kcal/phút
+
+**Schema — `workout-data/YYYY-MM-DD.json`:**
+```json
+{
+  "date": "YYYY-MM-DD",
+  "sessions": [{
+    "time": "HH:MM",
+    "type": "gym|cardio|yoga|swim|bike|other",
+    "duration_min": 60,
+    "calories": 400,
+    "exercises": [
+      { "name": "Bench Press", "sets": [{"reps": 10, "weight_kg": 60}] }
+    ],
+    "notes": ""
+  }]
+}
+```
+
+**Ghi file:** `workout-data/YYYY-MM-DD.json` + cập nhật `workout-data/index.json`
+
+**Reply format:**
+```
+✅ Đã lưu — Buổi tập [giờ]
+💪 [Type] · [X] phút · ~[Y] kcal
+[Bench Press: 3×10 @ 60kg]
+[Squat: 3×8 @ 80kg]
+💡 [Nhận xét ngắn]
+```
+
+---
+
+## Finance Logging
+
+**Nhận dạng trigger:** số tiền (k, tr, đồng, vnd), ăn X, mua X, taxi, lương, chi, thu...
+
+**Auto categorize:**
+| Từ khóa | Category |
+|---------|----------|
+| ăn, cà phê, trà, nhà hàng, grab food | `food` |
+| taxi, grab, xe, xăng, vé tàu/xe | `transport` |
+| mua, shop, order, quần áo | `shopping` |
+| thuốc, bệnh viện, gym, khám | `health` |
+| phim, game, bar, karaoke | `entertainment` |
+| lương, thưởng, freelance, tiền vào | `income` |
+| tiền nhà, điện, nước, internet | `bills` |
+
+**Parse amount:** `45k` = 45,000 VND · `1.5tr` = 1,500,000 VND · `15tr` = 15,000,000 VND
+
+**Ảnh hóa đơn:** đọc tổng tiền + tên cửa hàng → tự categorize theo loại cửa hàng
+
+**Schema — `finance-data/YYYY-MM-DD.json`:**
+```json
+{
+  "date": "YYYY-MM-DD",
+  "transactions": [{
+    "time": "HH:MM",
+    "type": "expense|income",
+    "amount": 150000,
+    "currency": "VND",
+    "category": "food|transport|shopping|health|entertainment|income|bills|other",
+    "description": "Zarusoba oomori",
+    "source": "text|receipt"
+  }]
+}
+```
+
+**Budget mặc định/tháng (cập nhật theo user):**
+```
+food:          3,000,000 VND
+transport:     1,000,000 VND
+shopping:      2,000,000 VND
+entertainment:   500,000 VND
+health:          500,000 VND
+bills:         2,000,000 VND
+```
+
+**Ghi file:** `finance-data/YYYY-MM-DD.json` + cập nhật `finance-data/index.json`
+
+**Reply format:**
+```
+✅ Đã lưu — [type] [giờ]
+[emoji category] [description]  [amount]
+Tháng này [category]: [X] / [budget] VND ([%])
+```

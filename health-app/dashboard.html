@@ -178,6 +178,14 @@ canvas { display: block; }
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z"/></svg>
         <span>Sức khỏe</span>
       </button>
+      <button class="nav-btn" id="nav-workout" onclick="showTab('workout')">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6.5 6.5h11M6.5 17.5h11M3 12h18M7 3v4M17 3v4M7 17v4M17 17v4"/></svg>
+        <span>Tập luyện</span>
+      </button>
+      <button class="nav-btn" id="nav-finance" onclick="showTab('finance')">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        <span>Tài chính</span>
+      </button>
     </nav>
   </div>
 </div>
@@ -196,6 +204,8 @@ let CFG = {
 let currentRange = 7;
 let currentTab = 'overview';
 let cachedLogs = [];
+let cachedWorkouts = [];
+let cachedFinance = [];
 
 // ═══════════════════════════════
 //  SETUP
@@ -276,30 +286,199 @@ function showTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('nav-' + tab).classList.add('active');
-  renderContent(cachedLogs);
+  renderContent();
+}
+
+async function loadModuleLogs(prefix, range) {
+  const index = await ghGet(`${prefix}/index.json`);
+  if (!index || !index.length) return [];
+  const needed = datesInRange(range);
+  const available = needed.filter(d => index.includes(d));
+  const logs = await Promise.all(available.map(d => ghGet(`${prefix}/${d}.json`)));
+  return logs.filter(Boolean).sort((a, b) => b.date.localeCompare(a.date));
 }
 
 async function reload() {
   const el = document.getElementById('content');
   el.innerHTML = '<div class="loading"><span class="spin">🌿</span>Đang tải...</div>';
   try {
-    cachedLogs = await loadLogs(currentRange);
-    renderContent(cachedLogs);
+    const [health, workouts, finance] = await Promise.all([
+      loadLogs(currentRange),
+      loadModuleLogs('workout-data', currentRange).catch(() => []),
+      loadModuleLogs('finance-data', currentRange).catch(() => [])
+    ]);
+    cachedLogs = health;
+    cachedWorkouts = workouts;
+    cachedFinance = finance;
+    renderContent();
   } catch (e) {
     el.innerHTML = `<div class="error-box">❌ Lỗi kết nối GitHub:<br><strong>${e.message}</strong><br><br>Kiểm tra PAT và kết nối mạng.</div>`;
   }
 }
 
-function renderContent(logs) {
+function renderContent() {
   const el = document.getElementById('content');
-  if (!logs.length) {
+  if (currentTab === 'workout') {
+    el.innerHTML = cachedWorkouts.length ? renderWorkout(cachedWorkouts) : '<div class="loading">😶 Chưa có buổi tập nào</div>';
+    setTimeout(() => drawWorkoutCharts(cachedWorkouts), 30);
+    return;
+  }
+  if (currentTab === 'finance') {
+    el.innerHTML = renderFinance(cachedFinance);
+    setTimeout(() => drawFinanceCharts(cachedFinance), 30);
+    return;
+  }
+  if (!cachedLogs.length) {
     el.innerHTML = '<div class="loading">😶 Không có dữ liệu trong khoảng này</div>';
     return;
   }
-  if (currentTab === 'overview') el.innerHTML = renderOverview(logs);
-  else if (currentTab === 'food')  el.innerHTML = renderFood(logs);
-  else if (currentTab === 'body')  el.innerHTML = renderBody(logs);
-  drawCharts(logs);
+  if (currentTab === 'overview') el.innerHTML = renderOverview(cachedLogs);
+  else if (currentTab === 'food')  el.innerHTML = renderFood(cachedLogs);
+  else if (currentTab === 'body')  el.innerHTML = renderBody(cachedLogs);
+  drawCharts(cachedLogs);
+}
+
+// ── Workout tab ──
+function renderWorkout(logs) {
+  const totalSessions = logs.reduce((s, l) => s + (l.sessions||[]).length, 0);
+  const totalMin = logs.reduce((s, l) => s + (l.sessions||[]).reduce((a, ss) => a + (ss.duration_min||0), 0), 0);
+  const totalKcalW = logs.reduce((s, l) => s + (l.sessions||[]).reduce((a, ss) => a + (ss.calories||0), 0), 0);
+
+  const TYPE_META = {
+    gym: {icon:'💪', color:'#8B5CF6'}, cardio: {icon:'🏃', color:'#EF4444'},
+    yoga: {icon:'🧘', color:'#EC4899'}, swim: {icon:'🏊', color:'#3B82F6'},
+    bike: {icon:'🚴', color:'#F59E0B'}, other: {icon:'⚡', color:'#6B7280'}
+  };
+
+  const sessions = logs.slice(0,7).flatMap(l =>
+    (l.sessions||[]).map(s => ({...s, date: l.date}))
+  );
+
+  const sessionRows = sessions.map(s => {
+    const m = TYPE_META[s.type] || TYPE_META.other;
+    const exList = (s.exercises||[]).map(e => {
+      const setStr = e.sets.map(st => `${st.reps}×${st.weight_kg}kg`).join(', ');
+      return `<div style="font-size:10px;color:var(--muted);margin-top:1px">${e.name}: ${setStr}</div>`;
+    }).join('');
+    return `<div class="history-item">
+      <div class="h-icon" style="background:${m.color}22">${m.icon}</div>
+      <div class="h-info">
+        <div class="h-title">${s.type.toUpperCase()} · ${formatDate(s.date)}</div>
+        <div class="h-sub">${s.duration_min} phút · ${s.calories||0} kcal</div>
+        ${exList}
+      </div>
+    </div>`;
+  }).join('') || '<div class="loading" style="padding:20px">Chưa có buổi tập</div>';
+
+  return `
+    <div class="summary">
+      <div class="stat"><div class="v" style="color:var(--purple)">${totalSessions}</div><div class="l">buổi tập</div></div>
+      <div class="stat"><div class="v" style="color:var(--amber)">${totalMin}</div><div class="l">phút</div></div>
+      <div class="stat"><div class="v" style="color:var(--red)">${totalKcalW}</div><div class="l">kcal đốt</div></div>
+    </div>
+    <div class="card">
+      <div class="card-label">Tần suất tập (buổi/ngày)</div>
+      <div class="chart-wrap"><canvas id="c-workout-freq"></canvas></div>
+    </div>
+    <div class="section-title" style="font-size:13px;font-weight:700;margin:12px 0 8px">Lịch sử gần đây</div>
+    ${sessionRows}`;
+}
+
+function drawWorkoutCharts(logs) {
+  const ordered = [...logs].reverse();
+  const labels = ordered.map(l => shortDate(l.date));
+  const counts = ordered.map(l => (l.sessions||[]).length);
+  drawBar('c-workout-freq', labels, counts, '#8B5CF6');
+}
+
+// ── Finance tab ──
+const BUDGET = { food:3000000, transport:1000000, shopping:2000000, health:500000, entertainment:500000, bills:2000000, other:500000 };
+const CAT_META = {
+  food:{icon:'🍽️',color:'#F59E0B',label:'Ăn uống'},
+  transport:{icon:'🚗',color:'#3B82F6',label:'Đi lại'},
+  shopping:{icon:'🛍️',color:'#EC4899',label:'Mua sắm'},
+  health:{icon:'💊',color:'#10B981',label:'Sức khỏe'},
+  entertainment:{icon:'🎬',color:'#8B5CF6',label:'Giải trí'},
+  bills:{icon:'🏠',color:'#6B7280',label:'Hóa đơn'},
+  income:{icon:'💰',color:'#10B981',label:'Thu nhập'},
+  other:{icon:'📦',color:'#9CA3AF',label:'Khác'}
+};
+
+function renderFinance(logs) {
+  const txns = logs.flatMap(l => (l.transactions||[]).map(t => ({...t, date: l.date})));
+  const thisMonth = new Date().toISOString().slice(0,7);
+  const monthTxns = logs.filter(l => l.date.startsWith(thisMonth)).flatMap(l => l.transactions||[]);
+
+  const totalIncome  = monthTxns.filter(t => t.type==='income').reduce((s,t) => s+t.amount, 0);
+  const totalExpense = monthTxns.filter(t => t.type==='expense').reduce((s,t) => s+t.amount, 0);
+  const saved = totalIncome - totalExpense;
+
+  // Budget by category
+  const spentByCat = {};
+  monthTxns.filter(t => t.type==='expense').forEach(t => {
+    spentByCat[t.category] = (spentByCat[t.category]||0) + t.amount;
+  });
+
+  const budgetBars = Object.entries(BUDGET).map(([cat, budget]) => {
+    const spent = spentByCat[cat] || 0;
+    const pct = Math.min(100, (spent/budget)*100);
+    const m = CAT_META[cat] || CAT_META.other;
+    const over = spent > budget;
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
+        <span>${m.icon} ${m.label}</span>
+        <span style="color:${over?'var(--red)':'var(--muted)'}">
+          ${fmtVND(spent)} / ${fmtVND(budget)}
+        </span>
+      </div>
+      <div class="pbar"><div class="pfill" style="width:${pct}%;background:${over?'var(--red)':m.color}"></div></div>
+    </div>`;
+  }).join('');
+
+  const recentTxns = txns.slice(0,15).map(t => {
+    const m = CAT_META[t.category] || CAT_META.other;
+    const isInc = t.type === 'income';
+    return `<div class="history-item">
+      <div class="h-icon" style="background:${m.color}22">${m.icon}</div>
+      <div class="h-info">
+        <div class="h-title">${t.description||m.label}</div>
+        <div class="h-sub">${formatDate(t.date)} · ${t.time||''}</div>
+      </div>
+      <div class="h-val" style="color:${isInc?'var(--primary)':'var(--red)'}">${isInc?'+':'−'}${fmtVND(t.amount)}</div>
+    </div>`;
+  }).join('') || '<div class="loading" style="padding:20px">Chưa có giao dịch</div>';
+
+  return `
+    <div class="summary">
+      <div class="stat"><div class="v" style="color:var(--primary);font-size:14px">${fmtVND(totalIncome)}</div><div class="l">thu tháng này</div></div>
+      <div class="stat"><div class="v" style="color:var(--red);font-size:14px">${fmtVND(totalExpense)}</div><div class="l">chi tháng này</div></div>
+      <div class="stat"><div class="v" style="color:${saved>=0?'var(--primary)':'var(--red)'};font-size:14px">${fmtVND(Math.abs(saved))}</div><div class="l">${saved>=0?'tiết kiệm':'thâm hụt'}</div></div>
+    </div>
+    <div class="card">
+      <div class="card-label">Chi theo ngày (nghìn VND)</div>
+      <div class="chart-wrap"><canvas id="c-finance-daily"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-label">Ngân sách tháng này</div>
+      ${budgetBars}
+    </div>
+    <div class="section-title" style="font-size:13px;font-weight:700;margin:12px 0 8px">Giao dịch gần đây</div>
+    ${recentTxns}`;
+}
+
+function drawFinanceCharts(logs) {
+  const ordered = [...logs].reverse();
+  const labels = ordered.map(l => shortDate(l.date));
+  const dailyExp = ordered.map(l =>
+    (l.transactions||[]).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0) / 1000
+  );
+  drawBar('c-finance-daily', labels, dailyExp, '#EF4444');
+}
+
+function fmtVND(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'tr';
+  if (n >= 1000) return Math.round(n/1000) + 'k';
+  return n + '';
 }
 
 // ── Overview tab ──
