@@ -242,7 +242,9 @@ function renderContent() {
 
 // ══ TAB 1 — Sức khỏe ══
 function renderHealth(logs) {
-  if (!logs.length) return '<div class="loading">😶 Chưa có dữ liệu sức khỏe</div>';
+  if (!logs.length) return `<div class="loading">😶 Chưa có dữ liệu sức khỏe</div>
+    <button onclick="debugFetch()" style="display:block;margin:8px auto;padding:8px 16px;background:#E5E7EB;border:none;border-radius:8px;font-size:12px;cursor:pointer">🔍 Test API</button>
+    <pre id="dbg-out" style="display:none;background:#F9FAFB;border-radius:8px;padding:12px;font-size:11px;white-space:pre-wrap;margin:0 0 16px"></pre>`;
   const avgCal   = avg(logs, l => totalKcal(l));
   const avgSleep = avg(logs, l => l.sleep_hours||0);
   const avgSteps = avg(logs, l => l.steps||0);
@@ -506,6 +508,25 @@ function avg(arr,fn) { const v=arr.map(fn).filter(x=>x>0); return v.length?v.red
 function pc(v,max) { return Math.min(100,(v/max)*100).toFixed(1); }
 function vnd(n) { if(n>=1000000)return(n/1000000).toFixed(1)+'tr'; if(n>=1000)return Math.round(n/1000)+'k'; return n+''; }
 function toast(msg) { const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2500); }
+
+// ── Debug ──
+async function debugFetch() {
+  const out = document.getElementById('dbg-out');
+  out.style.display = 'block';
+  out.textContent = 'Testing...';
+  try {
+    const today = (()=>{ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })();
+    out.textContent = `Local date: ${today}\n`;
+    const idx = await ghGet('health-data/index.json');
+    out.textContent += `index.json: ${JSON.stringify(idx)}\n`;
+    if (idx?.length) {
+      const day = await ghGet(`health-data/${idx[0]}.json`);
+      out.textContent += `${idx[0]}.json: ${day ? '✅ OK, meals='+day.meals?.length : '❌ null'}`;
+    }
+  } catch(e) {
+    out.textContent += `Error: ${e.message}`;
+  }
+}
 
 // ── Boot ──
 if (checkPat()) reload();
