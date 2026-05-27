@@ -2,27 +2,31 @@
   "date": "2026-05-27",
   "meals": [
     {
-      "time": "07:30", "source": "text",
+      "time": "07:30", "source": "photo",
       "items": [
-        { "name": "Yogurt uống (Dairy-Milk 南日本)", "grams": 220, "kcal": 217, "protein": 6.8, "carb": 31.1, "fat": 7.3 },
-        { "name": "Bánh mì ngọt", "grams": 90, "kcal": 270, "protein": 7, "carb": 47, "fat": 8 }
+        { "name": "Phở bò tái", "grams": 500, "kcal": 430, "protein": 28, "carb": 52, "fat": 12 }
       ],
-      "total_kcal": 487, "total_protein": 13.8, "total_carb": 78.1, "total_fat": 15.3
+      "total_kcal": 430, "total_protein": 28, "total_carb": 52, "total_fat": 12
     },
     {
-      "time": "12:00", "source": "photo",
+      "time": "12:30", "source": "photo",
       "items": [
-        { "name": "Zaru Soba oomori (大盛り)", "grams": 420, "kcal": 520, "protein": 24, "carb": 102, "fat": 3 },
-        { "name": "Kakiage (tempura hỗn hợp)", "grams": 130, "kcal": 290, "protein": 8, "carb": 23, "fat": 18 },
-        { "name": "Hành lá + nori (topping)", "grams": 15, "kcal": 5, "protein": 0, "carb": 1, "fat": 0 },
-        { "name": "Mentsuyu (nước chấm)", "grams": 50, "kcal": 15, "protein": 1, "carb": 3, "fat": 0 }
+        { "name": "Cơm gà xối mỡ", "grams": 500, "kcal": 760, "protein": 42, "carb": 85, "fat": 28 }
       ],
-      "total_kcal": 830, "total_protein": 33, "total_carb": 129, "total_fat": 21
+      "total_kcal": 760, "total_protein": 42, "total_carb": 85, "total_fat": 28
+    },
+    {
+      "time": "19:00", "source": "photo",
+      "items": [
+        { "name": "Bún bò Huế", "grams": 500, "kcal": 520, "protein": 28, "carb": 62, "fat": 16 },
+        { "name": "Chả viên", "grams": 60, "kcal": 130, "protein": 8, "carb": 6, "fat": 8 }
+      ],
+      "total_kcal": 650, "total_protein": 36, "total_carb": 68, "total_fat": 24
     }
   ],
-  "water_ml": 0,
-  "steps": 0,
-  "sleep_hours": 0,
-  "weight_kg": 0,
-  "notes": ""
+  "water_ml": 1750,
+  "steps": 8500,
+  "sleep_hours": 7.0,
+  "weight_kg": 68.4,
+  "notes": "Hôm nay ổn"
 }

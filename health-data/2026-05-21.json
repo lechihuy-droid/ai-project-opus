@@ -1,0 +1,32 @@
+{
+  "date": "2026-05-21",
+  "meals": [
+    {
+      "time": "07:30", "source": "photo",
+      "items": [
+        { "name": "Bánh mì trứng", "grams": 200, "kcal": 380, "protein": 14, "carb": 45, "fat": 16 }
+      ],
+      "total_kcal": 380, "total_protein": 14, "total_carb": 45, "total_fat": 16
+    },
+    {
+      "time": "12:00", "source": "photo",
+      "items": [
+        { "name": "Cơm tấm sườn bì chả", "grams": 450, "kcal": 720, "protein": 35, "carb": 85, "fat": 24 }
+      ],
+      "total_kcal": 720, "total_protein": 35, "total_carb": 85, "total_fat": 24
+    },
+    {
+      "time": "19:00", "source": "photo",
+      "items": [
+        { "name": "Canh chua cá", "grams": 300, "kcal": 180, "protein": 22, "carb": 12, "fat": 5 },
+        { "name": "Cơm trắng", "grams": 200, "kcal": 260, "protein": 5, "carb": 57, "fat": 0 }
+      ],
+      "total_kcal": 440, "total_protein": 27, "total_carb": 69, "total_fat": 5
+    }
+  ],
+  "water_ml": 1500,
+  "steps": 7200,
+  "sleep_hours": 7.0,
+  "weight_kg": 68.5,
+  "notes": ""
+}
