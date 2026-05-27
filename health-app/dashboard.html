@@ -514,17 +514,21 @@ async function debugFetch() {
   const out = document.getElementById('dbg-out');
   out.style.display = 'block';
   out.textContent = 'Testing...';
+  const today = (()=>{ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })();
+  out.textContent = `Local date: ${today}\nPAT: ${PAT ? PAT.slice(0,20)+'...' : '(empty)'}\n\n`;
+  const url = `https://api.github.com/repos/${DATA_REPO}/contents/health-data/index.json?ref=${DATA_BRANCH}`;
   try {
-    const today = (()=>{ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })();
-    out.textContent = `Local date: ${today}\n`;
-    const idx = await ghGet('health-data/index.json');
-    out.textContent += `index.json: ${JSON.stringify(idx)}\n`;
-    if (idx?.length) {
-      const day = await ghGet(`health-data/${idx[0]}.json`);
-      out.textContent += `${idx[0]}.json: ${day ? '✅ OK, meals='+day.meals?.length : '❌ null'}`;
+    const r = await fetch(url, { headers: { 'Authorization': `Bearer ${PAT}`, 'Accept': 'application/vnd.github.v3+json' } });
+    out.textContent += `HTTP ${r.status} ${r.statusText}\n`;
+    const body = await r.json();
+    if (r.ok) {
+      const parsed = JSON.parse(atob(body.content.replace(/\n/g,'')));
+      out.textContent += `index.json: ${JSON.stringify(parsed)}`;
+    } else {
+      out.textContent += `Error: ${body.message}`;
     }
   } catch(e) {
-    out.textContent += `Error: ${e.message}`;
+    out.textContent += `Fetch failed: ${e.message}`;
   }
 }
 
