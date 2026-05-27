@@ -189,3 +189,11 @@ Giấc ngủ/ngày:     7.5 giờ
 - Khi ghi nhiều bữa cùng lúc → merge tất cả vào 1 lần ghi, không ghi từng bữa riêng
 - **Sau khi log thành công** → cuối reply thêm dòng: "📱 Đã lưu xong, bạn có thể xóa ảnh này."
 - **User thường đính kèm text gợi ý cùng ảnh** (vd: "zarusoba oomori", "phần lớn", "2 người ăn") → ưu tiên dùng thông tin đó để điều chỉnh khẩu phần và nhận diện chính xác hơn
+- **iOS Shortcut output** — khi user paste text có format sau, tự động log vào file ngay, không hỏi lại:
+  ```
+  📱 Health Shortcut — YYYY-MM-DD
+  👟 Bước chân: X bước
+  🔥 Calo đốt: X kcal
+  😴 Ngủ: X giờ X phút
+  ```
+  Ghi vào các field: `steps`, `calories_burned` (cộng vào `cal` nếu có), `sleep_hours`
