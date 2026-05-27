@@ -1,0 +1,32 @@
+{
+  "date": "2026-05-27",
+  "meals": [
+    {
+      "time": "07:30", "source": "photo",
+      "items": [
+        { "name": "Phở bò tái", "grams": 500, "kcal": 430, "protein": 28, "carb": 52, "fat": 12 }
+      ],
+      "total_kcal": 430, "total_protein": 28, "total_carb": 52, "total_fat": 12
+    },
+    {
+      "time": "12:30", "source": "photo",
+      "items": [
+        { "name": "Cơm gà xối mỡ", "grams": 500, "kcal": 760, "protein": 42, "carb": 85, "fat": 28 }
+      ],
+      "total_kcal": 760, "total_protein": 42, "total_carb": 85, "total_fat": 28
+    },
+    {
+      "time": "19:00", "source": "photo",
+      "items": [
+        { "name": "Bún bò Huế", "grams": 500, "kcal": 520, "protein": 28, "carb": 62, "fat": 16 },
+        { "name": "Chả viên", "grams": 60, "kcal": 130, "protein": 8, "carb": 6, "fat": 8 }
+      ],
+      "total_kcal": 650, "total_protein": 36, "total_carb": 68, "total_fat": 24
+    }
+  ],
+  "water_ml": 1750,
+  "steps": 8500,
+  "sleep_hours": 7.0,
+  "weight_kg": 68.4,
+  "notes": "Hôm nay ổn"
+}
