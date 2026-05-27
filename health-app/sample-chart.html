@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, sans-serif; background: #F9FAFB; color: #111827; padding: 16px; }
+
+h2 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.sub { font-size: 12px; color: #6B7280; margin-bottom: 16px; }
+
+.summary { display: flex; gap: 10px; margin-bottom: 16px; }
+.stat { flex: 1; background: white; border-radius: 12px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); text-align: center; }
+.stat .val { font-size: 20px; font-weight: 800; }
+.stat .lbl { font-size: 10px; color: #6B7280; margin-top: 2px; font-weight: 600; }
+
+.card { background: white; border-radius: 14px; padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 12px; }
+.card-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #9CA3AF; margin-bottom: 12px; }
+
+canvas { width: 100% !important; }
+
+.meal-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #F3F4F6; }
+.meal-row:last-child { border-bottom: none; }
+.meal-icon { font-size: 20px; }
+.meal-info { flex: 1; }
+.meal-name { font-size: 13px; font-weight: 600; }
+.meal-macro { font-size: 11px; color: #6B7280; margin-top: 1px; }
+.meal-kcal { font-size: 14px; font-weight: 800; color: #10B981; }
+
+.tip { background: #ECFDF5; border-left: 3px solid #10B981; border-radius: 10px; padding: 12px; font-size: 13px; color: #065F46; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<h2>📊 Báo cáo hôm nay</h2>
+<p class="sub">Thứ Ba, 27/5/2026</p>
+
+<!-- Summary stats -->
+<div class="summary">
+  <div class="stat">
+    <div class="val" style="color:#EF4444">1,840</div>
+    <div class="lbl">kcal</div>
+  </div>
+  <div class="stat">
+    <div class="val" style="color:#3B82F6">92g</div>
+    <div class="lbl">Protein</div>
+  </div>
+  <div class="stat">
+    <div class="val" style="color:#F59E0B">210g</div>
+    <div class="lbl">Carb</div>
+  </div>
+  <div class="stat">
+    <div class="val" style="color:#8B5CF6">54g</div>
+    <div class="lbl">Fat</div>
+  </div>
+</div>
+
+<!-- Calorie chart (7 ngày) -->
+<div class="card">
+  <div class="card-title">Calo 7 ngày qua (kcal)</div>
+  <canvas id="cChart" height="130"></canvas>
+</div>
+
+<!-- Macro chart -->
+<div class="card">
+  <div class="card-title">Macro hôm nay</div>
+  <canvas id="mChart" height="100"></canvas>
+</div>
+
+<!-- Meals log -->
+<div class="card">
+  <div class="card-title">Bữa ăn hôm nay</div>
+  <div class="meal-row">
+    <div class="meal-icon">🌅</div>
+    <div class="meal-info">
+      <div class="meal-name">Sáng — Phở bò tái</div>
+      <div class="meal-macro">P:28g · C:52g · F:12g · ~400g</div>
+    </div>
+    <div class="meal-kcal">430</div>
+  </div>
+  <div class="meal-row">
+    <div class="meal-icon">☀️</div>
+    <div class="meal-info">
+      <div class="meal-name">Trưa — Cơm gà xối mỡ</div>
+      <div class="meal-macro">P:42g · C:85g · F:28g · ~550g</div>
+    </div>
+    <div class="meal-kcal">760</div>
+  </div>
+  <div class="meal-row">
+    <div class="meal-icon">🌙</div>
+    <div class="meal-info">
+      <div class="meal-name">Tối — Bún bò Huế</div>
+      <div class="meal-macro">P:22g · C:73g · F:14g · ~500g</div>
+    </div>
+    <div class="meal-kcal">650</div>
+  </div>
+</div>
+
+<!-- AI tip -->
+<div class="tip">
+  💡 <strong>Nhận xét:</strong> Calo hôm nay ổn (1,840/2,000 kcal). Tuy nhiên protein hơi thấp so với mục tiêu 120g — bữa tối nên thêm trứng hoặc đậu phụ.
+</div>
+
+<script>
+function dpr() { return window.devicePixelRatio || 1; }
+
+function setupCanvas(id, h) {
+  const c = document.getElementById(id);
+  const W = c.parentElement.offsetWidth - 28;
+  c.style.width = W + 'px';
+  c.style.height = h + 'px';
+  c.width = W * dpr();
+  c.height = h * dpr();
+  const ctx = c.getContext('2d');
+  ctx.scale(dpr(), dpr());
+  return { ctx, W, H: h };
+}
+
+// ── Calorie bar chart ──
+(function() {
+  const { ctx, W, H } = setupCanvas('cChart', 130);
+  const data = [1650, 2100, 1420, 1980, 1750, 2200, 1840];
+  const labels = ['T3','T4','T5','T6','T7','CN','T2'];
+  const goal = 2000;
+  const pad = { t: 20, r: 8, b: 24, l: 8 };
+  const cw = W - pad.l - pad.r;
+  const ch = H - pad.t - pad.b;
+  const max = 2400;
+  const slotW = cw / data.length;
+  const barW = slotW * 0.55;
+
+  // Goal line
+  const gy = pad.t + ch - (goal / max) * ch;
+  ctx.setLineDash([4, 3]);
+  ctx.strokeStyle = '#FCA5A5';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(pad.l, gy); ctx.lineTo(W - pad.r, gy); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#EF4444';
+  ctx.font = `bold ${9 * dpr() / dpr()}px -apple-system`;
+  ctx.textAlign = 'right';
+  ctx.fillText('Mục tiêu', W - pad.r - 2, gy - 3);
+
+  data.forEach((v, i) => {
+    const x = pad.l + slotW * i + (slotW - barW) / 2;
+    const bh = (v / max) * ch;
+    const y = pad.t + ch - bh;
+    const isToday = i === data.length - 1;
+    const color = v > goal ? '#EF4444' : '#10B981';
+
+    ctx.fillStyle = isToday ? color : color + '88';
+    const r = 5;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + barW - r, y);
+    ctx.quadraticCurveTo(x + barW, y, x + barW, y + r);
+    ctx.lineTo(x + barW, pad.t + ch);
+    ctx.lineTo(x, pad.t + ch);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = '#374151';
+    ctx.font = `${isToday ? 'bold ' : ''}${9}px -apple-system`;
+    ctx.textAlign = 'center';
+    ctx.fillText(v >= 1000 ? (v/1000).toFixed(1)+'k' : v, x + barW/2, y - 4);
+
+    ctx.fillStyle = isToday ? '#111827' : '#9CA3AF';
+    ctx.font = `${isToday ? 'bold ' : ''}${9}px -apple-system`;
+    ctx.fillText(isToday ? 'HN' : labels[i], x + barW/2, H - 4);
+  });
+})();
+
+// ── Macro donut ──
+(function() {
+  const { ctx, W, H } = setupCanvas('mChart', 100);
+  const macros = [
+    { label: 'Protein', val: 92, color: '#3B82F6', max: 120 },
+    { label: 'Carb',    val: 210, color: '#F59E0B', max: 250 },
+    { label: 'Fat',     val: 54,  color: '#8B5CF6', max: 70  }
+  ];
+  const barH = 14;
+  const gap = 10;
+  const labelW = 52;
+  const valW = 42;
+  const barW = W - labelW - valW - 16;
+  const startY = (H - (macros.length * barH + (macros.length - 1) * gap)) / 2;
+
+  macros.forEach((m, i) => {
+    const y = startY + i * (barH + gap);
+    const pct = Math.min(1, m.val / m.max);
+
+    ctx.fillStyle = '#9CA3AF';
+    ctx.font = '10px -apple-system';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(m.label, 0, y + barH / 2);
+
+    // Track
+    ctx.fillStyle = '#F3F4F6';
+    ctx.beginPath();
+    ctx.roundRect(labelW, y, barW, barH, barH / 2);
+    ctx.fill();
+
+    // Fill
+    ctx.fillStyle = m.color;
+    ctx.beginPath();
+    ctx.roundRect(labelW, y, barW * pct, barH, barH / 2);
+    ctx.fill();
+
+    // Value
+    ctx.fillStyle = '#111827';
+    ctx.font = 'bold 11px -apple-system';
+    ctx.textAlign = 'right';
+    ctx.fillText(m.val + 'g', W, y + barH / 2);
+  });
+})();
+</script>
+</body>
+</html>
