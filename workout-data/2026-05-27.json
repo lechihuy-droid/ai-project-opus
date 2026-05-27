@@ -1,0 +1,33 @@
+{
+  "date": "2026-05-27",
+  "sessions": [
+    {
+      "type": "muay_thai + strength",
+      "time": "evening",
+      "exercises": [
+        {
+          "name": "Sparring (Muay Thai)",
+          "sets": 3,
+          "duration_per_set_sec": 120,
+          "notes": "3 rounds × 2 min"
+        },
+        {
+          "name": "Kéo đẩy máy (cable machine)",
+          "sets": 2,
+          "reps": 15
+        },
+        {
+          "name": "Gập bụng bánh xe (ab wheel rollout)",
+          "sets": 3,
+          "reps": null
+        },
+        {
+          "name": "Tập ngữ",
+          "sets": null,
+          "reps": null,
+          "notes": "chưa rõ — cần xác nhận"
+        }
+      ]
+    }
+  ]
+}
