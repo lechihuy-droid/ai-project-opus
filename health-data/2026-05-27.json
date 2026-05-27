@@ -2,6 +2,16 @@
   "date": "2026-05-27",
   "meals": [
     {
+      "time": "12:00", "source": "photo",
+      "items": [
+        { "name": "Zaru Soba (mì kiều mạch lạnh)", "grams": 280, "kcal": 360, "protein": 17, "carb": 70, "fat": 2 },
+        { "name": "Kakiage (tempura hỗn hợp)", "grams": 130, "kcal": 290, "protein": 8, "carb": 23, "fat": 18 },
+        { "name": "Hành lá + nori (topping)", "grams": 15, "kcal": 5, "protein": 0, "carb": 1, "fat": 0 },
+        { "name": "Mentsuyu (nước chấm)", "grams": 50, "kcal": 15, "protein": 1, "carb": 3, "fat": 0 }
+      ],
+      "total_kcal": 670, "total_protein": 26, "total_carb": 97, "total_fat": 20
+    },
+    {
       "time": "07:30", "source": "photo",
       "items": [
         { "name": "Phở bò tái", "grams": 500, "kcal": 430, "protein": 28, "carb": 52, "fat": 12 }
