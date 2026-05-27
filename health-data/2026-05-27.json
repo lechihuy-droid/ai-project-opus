@@ -4,10 +4,10 @@
     {
       "time": "07:30", "source": "text",
       "items": [
-        { "name": "Yogurt uống", "grams": 300, "kcal": 165, "protein": 7, "carb": 27, "fat": 4 },
+        { "name": "Yogurt uống (Dairy-Milk 南日本)", "grams": 220, "kcal": 217, "protein": 6.8, "carb": 31.1, "fat": 7.3 },
         { "name": "Bánh mì ngọt", "grams": 90, "kcal": 270, "protein": 7, "carb": 47, "fat": 8 }
       ],
-      "total_kcal": 435, "total_protein": 14, "total_carb": 74, "total_fat": 12
+      "total_kcal": 487, "total_protein": 13.8, "total_carb": 78.1, "total_fat": 15.3
     },
     {
       "time": "12:00", "source": "photo",
