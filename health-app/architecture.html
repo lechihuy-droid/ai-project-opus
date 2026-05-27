@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Architecture</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0F172A; color: #E2E8F0; min-height: 100vh; padding: 32px 16px; }
+h1 { text-align: center; font-size: 20px; font-weight: 800; letter-spacing: .5px; margin-bottom: 4px; color: #F8FAFC; }
+.sub { text-align: center; font-size: 12px; color: #64748B; margin-bottom: 36px; }
+
+.arch { max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 0; }
+
+/* Layer */
+.layer { display: flex; align-items: stretch; margin-bottom: 0; }
+.layer-label {
+  writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
+  font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;
+  color: #475569; padding: 0 10px; display: flex; align-items: center; justify-content: center;
+  min-width: 28px;
+}
+.layer-body { flex: 1; padding: 14px 0 14px 12px; }
+
+/* Connector arrow */
+.arrow { display: flex; align-items: center; justify-content: center; height: 32px; }
+.arrow-line {
+  width: 2px; height: 100%; background: linear-gradient(to bottom, #334155, #1E293B);
+  position: relative; margin: 0 auto;
+}
+.arrow svg { display: block; }
+
+/* Cards grid */
+.cards { display: flex; flex-wrap: wrap; gap: 8px; }
+.card {
+  background: #1E293B; border: 1px solid #334155; border-radius: 10px;
+  padding: 11px 13px; flex: 1; min-width: 130px;
+}
+.card.wide { min-width: 100%; }
+.card-icon { font-size: 20px; margin-bottom: 6px; }
+.card-title { font-size: 12px; font-weight: 700; color: #F1F5F9; margin-bottom: 3px; }
+.card-desc { font-size: 10px; color: #64748B; line-height: 1.5; }
+.tag { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; margin-top: 5px; margin-right: 3px; }
+
+/* Layer colors */
+.l-input  .layer-label { color: #60A5FA; }
+.l-input  .card { border-color: #1D4ED8; background: #172554; }
+.l-input  .card-title { color: #BFDBFE; }
+
+.l-ai     .layer-label { color: #A78BFA; }
+.l-ai     .card { border-color: #5B21B6; background: #1E1B4B; }
+.l-ai     .card-title { color: #DDD6FE; }
+
+.l-store  .layer-label { color: #34D399; }
+.l-store  .card { border-color: #065F46; background: #022C22; }
+.l-store  .card-title { color: #A7F3D0; }
+
+.l-view   .layer-label { color: #FB923C; }
+.l-view   .card { border-color: #9A3412; background: #1C0A00; }
+.l-view   .card-title { color: #FED7AA; }
+
+.l-config .layer-label { color: #94A3B8; }
+.l-config .card { border-color: #334155; background: #1E293B; }
+
+/* Arrow between layers */
+.connector {
+  display: flex; align-items: center; justify-content: center;
+  padding: 4px 0 4px 40px; gap: 8px;
+}
+.conn-line { flex: 0 0 2px; height: 24px; background: #334155; }
+.conn-label { font-size: 10px; color: #475569; }
+
+.arrow-down {
+  display: flex; flex-direction: column; align-items: center;
+  padding-left: 40px; margin: 2px 0;
+}
+.ad-line { width: 1.5px; height: 20px; background: #334155; }
+.ad-tip { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid #334155; }
+.ad-label { font-size: 9px; color: #475569; margin-top: 3px; }
+
+/* File tree */
+.filetree { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 10px; line-height: 1.8; color: #94A3B8; }
+.filetree .dir  { color: #60A5FA; }
+.filetree .file { color: #94A3B8; }
+.filetree .note { color: #475569; }
+
+/* Flow section */
+.flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin-top: 8px; }
+.flow-step { background: #0F172A; border: 1px solid #334155; border-radius: 8px; padding: 7px 10px; font-size: 10px; color: #CBD5E1; text-align: center; flex: 1; min-width: 80px; }
+.flow-arrow { color: #334155; font-size: 14px; padding: 0 4px; flex-shrink: 0; }
+
+/* Legend */
+.legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; max-width: 700px; margin-left: auto; margin-right: auto; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 10px; color: #64748B; }
+.legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<h1>🌿 Health Management — System Architecture</h1>
+<div class="sub">Claude Code Web · GitHub · GitHub Pages</div>
+
+<div class="arch">
+
+  <!-- INPUT LAYER -->
+  <div class="layer l-input">
+    <div class="layer-label">Input</div>
+    <div class="layer-body">
+      <div class="cards">
+        <div class="card">
+          <div class="card-icon">📸</div>
+          <div class="card-title">Ảnh bữa ăn</div>
+          <div class="card-desc">Upload photo vào Claude Code chat · AI nhận diện món, ước tính gram</div>
+          <span class="tag" style="background:#1D4ED8;color:#BFDBFE">photo</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">🧾</div>
+          <div class="card-title">Hóa đơn / Receipt</div>
+          <div class="card-desc">Scan hóa đơn nhà hàng, siêu thị · Đọc tên món + tổng tiền</div>
+          <span class="tag" style="background:#1D4ED8;color:#BFDBFE">receipt</span>
+          <span class="tag" style="background:#1D4ED8;color:#BFDBFE">bill</span>
+        </div>
+        <div class="card">
+          <div class="card-icon">⌨️</div>
+          <div class="card-title">Text thủ công</div>
+          <div class="card-desc">Nhập bước chân, nước uống, cân nặng, giấc ngủ, tài chính, workout</div>
+          <span class="tag" style="background:#1D4ED8;color:#BFDBFE">text</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- arrow -->
+  <div class="arrow-down">
+    <div class="ad-line"></div><div class="ad-tip"></div>
+    <div class="ad-label">Claude Code Web (claude.ai/code)</div>
+  </div>
+
+  <!-- AI LAYER -->
+  <div class="layer l-ai">
+    <div class="layer-label">AI</div>
+    <div class="layer-body">
+      <div class="cards">
+        <div class="card">
+          <div class="card-icon">🤖</div>
+          <div class="card-title">Claude Sonnet</div>
+          <div class="card-desc">Phân tích ảnh · Extract dinh dưỡng · Auto-categorize tài chính · Parse workout</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📋</div>
+          <div class="card-title">instructions.md</div>
+          <div class="card-desc">System prompt trong repo · Claude đọc qua <code style="font-size:9px;color:#A78BFA">/health</code> command · Chứa schema, rules, mục tiêu cá nhân</div>
+        </div>
+        <div class="card wide">
+          <div class="card-title" style="margin-bottom:6px">Logging flow</div>
+          <div class="flow">
+            <div class="flow-step">Nhận ảnh / text</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">Extract dữ liệu</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">Merge vào JSON</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">git commit + push</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">Reply confirm</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- arrow -->
+  <div class="arrow-down">
+    <div class="ad-line"></div><div class="ad-tip"></div>
+    <div class="ad-label">git push (MCP GitHub tools)</div>
+  </div>
+
+  <!-- STORAGE LAYER -->
+  <div class="layer l-store">
+    <div class="layer-label">Storage</div>
+    <div class="layer-body">
+      <div class="cards">
+        <div class="card">
+          <div class="card-icon">🗄️</div>
+          <div class="card-title">GitHub Repository</div>
+          <div class="card-desc">lechihuy-droid/ai-project-opus · branch: main · Public repo</div>
+          <br>
+          <div class="filetree">
+            <div><span class="dir">health-data/</span></div>
+            <div>&nbsp;&nbsp;<span class="file">index.json</span> <span class="note">← manifest</span></div>
+            <div>&nbsp;&nbsp;<span class="file">2026-05-27.json</span></div>
+            <div>&nbsp;&nbsp;<span class="file">YYYY-MM-DD.json</span></div>
+            <div><span class="dir">workout-data/</span></div>
+            <div>&nbsp;&nbsp;<span class="file">index.json</span></div>
+            <div><span class="dir">finance-data/</span></div>
+            <div>&nbsp;&nbsp;<span class="file">index.json</span></div>
+            <div><span class="dir">health-app/</span></div>
+            <div>&nbsp;&nbsp;<span class="file">dashboard.html</span></div>
+            <div>&nbsp;&nbsp;<span class="file">instructions.md</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📄</div>
+          <div class="card-title">JSON Schema / ngày</div>
+          <div class="card-desc" style="font-family:monospace;font-size:9px;line-height:1.8;color:#6EE7B7">
+            health: meals[] + water + steps + sleep + weight<br>
+            workout: sessions[] + exercises[] + sets[]<br>
+            finance: transactions[] + type + amount + category
+          </div>
+          <div style="margin-top:8px">
+            <span class="tag" style="background:#065F46;color:#A7F3D0">🌿 Sức khỏe</span>
+            <span class="tag" style="background:#065F46;color:#A7F3D0">💪 Workout</span>
+            <span class="tag" style="background:#065F46;color:#A7F3D0">💰 Finance</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- arrow -->
+  <div class="arrow-down">
+    <div class="ad-line"></div><div class="ad-tip"></div>
+    <div class="ad-label">raw.githubusercontent.com (no auth)</div>
+  </div>
+
+  <!-- VIEW LAYER -->
+  <div class="layer l-view">
+    <div class="layer-label">View</div>
+    <div class="layer-body">
+      <div class="cards">
+        <div class="card">
+          <div class="card-icon">📱</div>
+          <div class="card-title">dashboard.html</div>
+          <div class="card-desc">GitHub Pages · Bookmark trên iPhone · Fetch JSON trực tiếp · Không cần PAT</div>
+          <br>
+          <div style="display:flex;gap:6px;margin-top:4px">
+            <div style="flex:1;background:#0F172A;border-radius:6px;padding:7px;text-align:center;font-size:10px;color:#FED7AA;border:1px solid #9A3412">🌿<br>Sức khỏe</div>
+            <div style="flex:1;background:#0F172A;border-radius:6px;padding:7px;text-align:center;font-size:10px;color:#FED7AA;border:1px solid #9A3412">💪<br>Tập luyện</div>
+            <div style="flex:1;background:#0F172A;border-radius:6px;padding:7px;text-align:center;font-size:10px;color:#FED7AA;border:1px solid #9A3412">💰<br>Tài chính</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📊</div>
+          <div class="card-title">Features</div>
+          <div class="card-desc">
+            · Calorie + macro charts<br>
+            · Cân nặng / ngủ / bước chân trend<br>
+            · Workout session history<br>
+            · Finance budget bars<br>
+            · Range: 7 / 14 / 30 / 90 ngày<br>
+            · Canvas charts (no CDN)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIG LAYER -->
+  <div style="margin-top:24px">
+    <div style="font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-left:40px">Configuration</div>
+    <div class="layer l-config">
+      <div class="layer-label">Config</div>
+      <div class="layer-body">
+        <div class="cards">
+          <div class="card">
+            <div class="card-icon">⚡</div>
+            <div class="card-title">.claude/commands/health.md</div>
+            <div class="card-desc">Slash command <code style="font-size:9px;color:#94A3B8">/health</code> · Bootstrap assistant · Đọc instructions.md lúc start session</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🎯</div>
+            <div class="card-title">Mục tiêu cá nhân</div>
+            <div class="card-desc">Calo: 2000 kcal · Protein: 110g · Nước: 2000ml · Bước: 8000 · Ngủ: 7.5h · Cân: 66kg</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">💡</div>
+            <div class="card-title">AI auto-advice</div>
+            <div class="card-desc">Sau mỗi log: nhận xét 1-2 câu về protein/carb/calo · On-demand: phân tích xu hướng nhiều ngày</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Data flow summary -->
+<div style="max-width:700px;margin:28px auto 0;background:#1E293B;border:1px solid #334155;border-radius:12px;padding:16px 20px">
+  <div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Data Flow</div>
+  <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:11px">
+    <span style="background:#172554;color:#93C5FD;padding:4px 10px;border-radius:6px">📱 iPhone</span>
+    <span style="color:#334155">──upload──▶</span>
+    <span style="background:#1E1B4B;color:#C4B5FD;padding:4px 10px;border-radius:6px">🤖 Claude Code Web</span>
+    <span style="color:#334155">──push──▶</span>
+    <span style="background:#022C22;color:#6EE7B7;padding:4px 10px;border-radius:6px">🗄️ GitHub main</span>
+    <span style="color:#334155">──Pages──▶</span>
+    <span style="background:#1C0A00;color:#FCA06A;padding:4px 10px;border-radius:6px">📊 Dashboard</span>
+    <span style="color:#334155">──fetch──▶</span>
+    <span style="background:#172554;color:#93C5FD;padding:4px 10px;border-radius:6px">📱 iPhone view</span>
+  </div>
+</div>
+
+<div style="text-align:center;margin-top:24px;font-size:11px;color:#334155">
+  Claude Code Web · lechihuy-droid/ai-project-opus · 2026
+</div>
+
+</body>
+</html>

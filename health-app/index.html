@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>opus-vita</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green: #10B981; --green-d: #059669; --green-l: #D1FAE5;
+  --blue: #3B82F6; --amber: #F59E0B; --purple: #8B5CF6; --red: #EF4444;
+  --bg: #F3F4F6; --card: #fff; --text: #111827; --muted: #6B7280; --faint: #9CA3AF; --border: #E5E7EB;
+  --r: 14px;
+}
+html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); }
+#app { max-width: 430px; margin: 0 auto; min-height: 100vh; background: var(--bg); }
+
+/* ── Topbar ── */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--card); border-bottom: 1px solid var(--border);
+  padding: 12px 14px 0;
+  box-shadow: 0 1px 6px rgba(0,0,0,.05);
+}
+.tb-row1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.tb-row1 h1 { font-size: 17px; font-weight: 800; }
+.sync-btn { font-size: 12px; padding: 6px 11px; background: var(--green-l); color: var(--green-d); border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-family: inherit; }
+
+/* module tabs */
+.mod-tabs { display: flex; }
+.mtab { flex: 1; padding: 9px 4px 10px; text-align: center; font-size: 12px; font-weight: 700; border: none; background: none; cursor: pointer; font-family: inherit; color: var(--faint); border-bottom: 2.5px solid transparent; transition: color .18s, border-color .18s; }
+.mtab.active { color: var(--green); border-bottom-color: var(--green); }
+
+/* range tabs */
+.range-row { display: flex; gap: 6px; padding: 8px 0 10px; }
+.rtab { flex: 1; padding: 6px; text-align: center; font-size: 11px; font-weight: 600; border-radius: 7px; border: none; background: var(--bg); color: var(--muted); cursor: pointer; font-family: inherit; }
+.rtab.active { background: var(--green); color: #fff; }
+
+/* ── Content ── */
+.content { padding: 12px 12px 24px; }
+
+/* ── Cards ── */
+.card { background: var(--card); border-radius: var(--r); padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.06); margin-bottom: 10px; }
+.card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--faint); margin-bottom: 10px; }
+
+/* ── Stats ── */
+.stats { display: grid; gap: 7px; margin-bottom: 10px; }
+.stats.col4 { grid-template-columns: repeat(4,1fr); }
+.stats.col3 { grid-template-columns: repeat(3,1fr); }
+.stat { background: var(--card); border-radius: 12px; padding: 10px 6px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+.stat .v { font-size: 17px; font-weight: 900; line-height: 1.1; }
+.stat .l { font-size: 9px; color: var(--muted); margin-top: 3px; font-weight: 600; }
+
+/* ── Chart ── */
+.chart-wrap { height: 140px; }
+canvas { display: block; }
+
+/* ── Metric mini ── */
+.mgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.mm { background: var(--card); border-radius: 12px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+.mm .ico { font-size: 18px; margin-bottom: 5px; }
+.mm .val { font-size: 17px; font-weight: 800; }
+.mm .sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.pbar { height: 4px; background: var(--bg); border-radius: 2px; margin-top: 7px; }
+.pfill { height: 100%; border-radius: 2px; }
+
+.stitle { font-size: 13px; font-weight: 700; margin: 14px 0 8px; }
+
+/* ── Meal items ── */
+.mi { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.mi:last-child { border-bottom: none; }
+.mi-ico { font-size: 17px; flex-shrink: 0; }
+.mi-info { flex: 1; min-width: 0; }
+.mi-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mi-mac  { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.mi-kcal { font-size: 13px; font-weight: 800; color: var(--green); flex-shrink: 0; }
+
+/* ── History items ── */
+.hi { display: flex; align-items: center; gap: 11px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.hi:last-child { border-bottom: none; }
+.hi-ico { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.hi-info { flex: 1; min-width: 0; }
+.hi-title { font-size: 13px; font-weight: 600; }
+.hi-sub   { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.hi-extra { font-size: 10px; color: var(--muted); margin-top: 1px; }
+.hi-val   { font-size: 14px; font-weight: 800; flex-shrink: 0; }
+
+/* ── Weight delta ── */
+.wdelta { font-size: 12px; font-weight: 700; padding: 2px 7px; border-radius: 6px; display: inline-block; margin-top: 3px; }
+.dn { background: #D1FAE5; color: #065F46; }
+.up { background: #FEE2E2; color: #991B1B; }
+.fl { background: var(--bg); color: var(--muted); }
+
+/* ── Loading / error ── */
+.loading { text-align: center; padding: 48px 20px; color: var(--muted); font-size: 14px; }
+.spin { font-size: 26px; display: block; margin-bottom: 10px; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.err { background: #FEF2F2; border-left: 3px solid var(--red); border-radius: 10px; padding: 14px; font-size: 13px; color: #991B1B; line-height: 1.6; }
+
+/* ── Toast ── */
+.toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-80px); background: #111827; color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 999; transition: transform .3s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<!-- PAT Screen -->
+<div id="pat-screen" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;background:var(--bg)">
+  <div style="font-size:52px;margin-bottom:16px">🌿</div>
+  <div style="font-size:22px;font-weight:800;margin-bottom:6px">opus-vita</div>
+  <div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:28px">Nhập GitHub PAT để truy cập dữ liệu</div>
+  <div style="width:100%;background:var(--card);border-radius:var(--r);padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:14px">
+    <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:7px;display:block">GitHub PAT</label>
+    <input id="pat-input" type="password" placeholder="github_pat_..." style="width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;outline:none">
+    <p style="font-size:11px;color:var(--faint);margin-top:8px;line-height:1.6">Scope cần: <strong>Contents = Read-only</strong> cho repo <code>ai-project-opus</code></p>
+  </div>
+  <button onclick="savePat()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--green),var(--green-d));color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">Kết nối →</button>
+</div>
+
+<div id="app">
+  <div class="topbar">
+    <div class="tb-row1">
+      <h1>🌿 Dashboard</h1>
+      <button class="sync-btn" onclick="reload()">↻ Sync</button>
+      <button onclick="resetPat()" style="font-size:12px;padding:6px 10px;background:var(--bg);color:var(--muted);border:none;border-radius:8px;cursor:pointer;font-family:inherit">🔑</button>
+    </div>
+    <div class="mod-tabs">
+      <button class="mtab active" id="mt-health"  onclick="showTab('health')">🌿 Sức khỏe</button>
+      <button class="mtab"        id="mt-workout" onclick="showTab('workout')">💪 Tập luyện</button>
+      <button class="mtab"        id="mt-finance" onclick="showTab('finance')">💰 Tài chính</button>
+    </div>
+    <div class="range-row">
+      <button class="rtab active" onclick="setRange(7,this)">7 ngày</button>
+      <button class="rtab"        onclick="setRange(14,this)">14 ngày</button>
+      <button class="rtab"        onclick="setRange(30,this)">30 ngày</button>
+      <button class="rtab"        onclick="setRange(90,this)">3 tháng</button>
+    </div>
+  </div>
+  <div class="content" id="content">
+    <div class="loading"><span class="spin">🌿</span>Đang tải...</div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Config ──
+const DATA_REPO   = 'lechihuy-droid/ai-project-opus';
+const DATA_BRANCH = 'main';
+
+let PAT = localStorage.getItem('ov_pat') || '';
+let currentRange = 7;
+let currentTab   = 'health';
+let cHealth = [], cWorkout = [], cFinance = [];
+
+// ── PAT setup ──
+function checkPat() {
+  if (!PAT) {
+    document.getElementById('pat-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+    return false;
+  }
+  return true;
+}
+function savePat() {
+  const v = document.getElementById('pat-input').value.trim();
+  if (!v) return;
+  PAT = v;
+  localStorage.setItem('ov_pat', PAT);
+  document.getElementById('pat-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  reload();
+}
+function resetPat() {
+  localStorage.removeItem('ov_pat');
+  PAT = '';
+  document.getElementById('pat-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+// ── Fetch from private repo via GitHub API ──
+async function ghGet(path) {
+  const url = `https://api.github.com/repos/${DATA_REPO}/contents/${path}?ref=${DATA_BRANCH}`;
+  const r = await fetch(url, {
+    headers: { 'Authorization': `Bearer ${PAT}`, 'Accept': 'application/vnd.github.v3+json' }
+  });
+  if (!r.ok) { if (r.status===404) return null; throw new Error(`${r.status}: ${path}`); }
+  const d = await r.json();
+  return JSON.parse(atob(d.content.replace(/\n/g,'')));
+}
+
+// ── Data loading ──
+function datesInRange(n) {
+  return Array.from({length:n}, (_,i) => {
+    const d = new Date(); d.setDate(d.getDate()-i);
+    return d.toISOString().slice(0,10);
+  });
+}
+async function loadModule(prefix, range) {
+  const idx = await ghGet(`${prefix}/index.json`);
+  if (!idx?.length) return [];
+  const dates = datesInRange(range).filter(d => idx.includes(d));
+  const rows  = await Promise.all(dates.map(d => ghGet(`${prefix}/${d}.json`)));
+  return rows.filter(Boolean).sort((a,b) => b.date.localeCompare(a.date));
+}
+
+// ── Nav ──
+function setRange(n, btn) {
+  currentRange = n;
+  document.querySelectorAll('.rtab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  reload();
+}
+function showTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.mtab').forEach(b => b.classList.remove('active'));
+  document.getElementById('mt-'+tab).classList.add('active');
+  renderContent();
+}
+
+// ── Reload ──
+async function reload() {
+  document.getElementById('content').innerHTML =
+    '<div class="loading"><span class="spin">🌿</span>Đang tải...</div>';
+  try {
+    [cHealth, cWorkout, cFinance] = await Promise.all([
+      loadModule('health-data',  currentRange),
+      loadModule('workout-data', currentRange).catch(()=>[]),
+      loadModule('finance-data', currentRange).catch(()=>[])
+    ]);
+    renderContent();
+  } catch(e) {
+    document.getElementById('content').innerHTML =
+      `<div class="err">❌ Lỗi tải dữ liệu:<br><strong>${e.message}</strong><br><br>Kiểm tra PAT hoặc kết nối mạng. <span style="text-decoration:underline;cursor:pointer" onclick="resetPat()">Đổi PAT</span></div>`;
+  }
+}
+function renderContent() {
+  const el = document.getElementById('content');
+  if (currentTab==='health')  { el.innerHTML=renderHealth(cHealth);  setTimeout(()=>drawHealth(cHealth),30); }
+  if (currentTab==='workout') { el.innerHTML=renderWorkout(cWorkout);setTimeout(()=>drawWorkout(cWorkout),30); }
+  if (currentTab==='finance') { el.innerHTML=renderFinance(cFinance);setTimeout(()=>drawFinance(cFinance),30); }
+}
+
+// ══ TAB 1 — Sức khỏe ══
+function renderHealth(logs) {
+  if (!logs.length) return '<div class="loading">😶 Chưa có dữ liệu sức khỏe</div>';
+  const avgCal   = avg(logs, l => totalKcal(l));
+  const avgSleep = avg(logs, l => l.sleep_hours||0);
+  const avgSteps = avg(logs, l => l.steps||0);
+  const withW    = logs.filter(l => l.weight_kg>0);
+  const latest   = withW[0], first = withW[withW.length-1];
+  const delta    = first&&latest ? +(latest.weight_kg-first.weight_kg).toFixed(1) : null;
+  const dc       = delta>0?'up':delta<0?'dn':'fl';
+
+  const foodSections = logs.slice(0,3).map(l => {
+    const rows = (l.meals||[]).flatMap(m => (m.items||[]).map(it => {
+      const ico = {receipt:'🧾',bill:'🛒'}[m.source]||'🍽️';
+      return `<div class="mi">
+        <div class="mi-ico">${ico}</div>
+        <div class="mi-info">
+          <div class="mi-name">${it.name}</div>
+          <div class="mi-mac">${it.grams}g · P:${it.protein}g C:${it.carb}g F:${it.fat}g</div>
+        </div>
+        <div class="mi-kcal">${it.kcal}</div>
+      </div>`;
+    })).join('');
+    return `<div class="card">
+      <div class="card-label">${fmt(l.date)} · ${totalKcal(l)} kcal</div>
+      ${rows||'<div style="color:var(--faint);font-size:13px;padding:4px 0">Chưa có</div>'}
+    </div>`;
+  }).join('');
+
+  return `
+    <div class="stats col4">
+      <div class="stat"><div class="v" style="color:var(--red)">${Math.round(avgCal)}</div><div class="l">avg kcal</div></div>
+      <div class="stat"><div class="v" style="color:var(--purple)">${avgSleep.toFixed(1)}h</div><div class="l">avg ngủ</div></div>
+      <div class="stat"><div class="v" style="color:var(--amber)">${(avgSteps/1000).toFixed(1)}k</div><div class="l">avg bước</div></div>
+      <div class="stat"><div class="v" style="color:var(--green)">${latest?latest.weight_kg:'--'}</div><div class="l">kg</div></div>
+    </div>
+    <div class="card">
+      <div class="card-label">Calo mỗi ngày (kcal)</div>
+      <div class="chart-wrap"><canvas id="c-cal"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-label">Macro trung bình / ngày</div>
+      <div style="display:flex;gap:8px;text-align:center">
+        <div style="flex:1"><div style="font-size:21px;font-weight:900;color:var(--blue)">${Math.round(avg(logs,l=>totalMacro(l,'protein')))}g</div><div style="font-size:11px;color:var(--muted)">Protein</div></div>
+        <div style="flex:1"><div style="font-size:21px;font-weight:900;color:var(--amber)">${Math.round(avg(logs,l=>totalMacro(l,'carb')))}g</div><div style="font-size:11px;color:var(--muted)">Carb</div></div>
+        <div style="flex:1"><div style="font-size:21px;font-weight:900;color:var(--purple)">${Math.round(avg(logs,l=>totalMacro(l,'fat')))}g</div><div style="font-size:11px;color:var(--muted)">Fat</div></div>
+      </div>
+    </div>
+    <div class="mgrid">
+      <div class="mm"><div class="ico">💧</div><div class="val">${(avg(logs,l=>l.water_ml||0)/1000).toFixed(1)}L</div><div class="sub">avg / ngày</div><div class="pbar"><div class="pfill" style="background:var(--blue);width:${pc(avg(logs,l=>l.water_ml||0),2000)}%"></div></div></div>
+      <div class="mm"><div class="ico">👟</div><div class="val">${(avgSteps/1000).toFixed(1)}k</div><div class="sub">avg / ngày</div><div class="pbar"><div class="pfill" style="background:var(--amber);width:${pc(avgSteps,8000)}%"></div></div></div>
+      <div class="mm"><div class="ico">😴</div><div class="val">${avgSleep.toFixed(1)}h</div><div class="sub">avg / đêm</div><div class="pbar"><div class="pfill" style="background:var(--purple);width:${pc(avgSleep,8)}%"></div></div></div>
+      <div class="mm">
+        <div class="ico">⚖️</div>
+        <div class="val">${latest?latest.weight_kg+'kg':'--'}</div>
+        ${delta!==null?`<div class="wdelta ${dc}">${delta>0?'+':''}${delta} kg</div>`:'<div class="sub">chưa có data</div>'}
+      </div>
+    </div>
+    ${withW.length>1?`<div class="card"><div class="card-label">Cân nặng (kg)</div><div class="chart-wrap"><canvas id="c-weight"></canvas></div></div>`:''}
+    <div class="card"><div class="card-label">Giấc ngủ (giờ)</div><div class="chart-wrap"><canvas id="c-sleep"></canvas></div></div>
+    <div class="card"><div class="card-label">Bước chân (nghìn)</div><div class="chart-wrap"><canvas id="c-steps"></canvas></div></div>
+    <div class="stitle">🍽️ Bữa ăn gần đây</div>
+    ${foodSections}`;
+}
+function drawHealth(logs) {
+  const o = [...logs].reverse(), lb = o.map(l=>shortDate(l.date));
+  drawBar('c-cal',    lb, o.map(l=>totalKcal(l)),         '#EF4444', 2000);
+  drawLine('c-weight',lb, o.map(l=>l.weight_kg||0),        '#10B981', 66);
+  drawLine('c-sleep', lb, o.map(l=>l.sleep_hours||0),       '#8B5CF6', 7.5);
+  drawBar('c-steps',  lb, o.map(l=>(l.steps||0)/1000),     '#F59E0B', 8);
+}
+
+// ══ TAB 2 — Tập luyện ══
+const TYPE_META = {
+  gym:{ico:'💪',color:'#8B5CF6'},cardio:{ico:'🏃',color:'#EF4444'},
+  yoga:{ico:'🧘',color:'#EC4899'},swim:{ico:'🏊',color:'#3B82F6'},
+  bike:{ico:'🚴',color:'#F59E0B'},other:{ico:'⚡',color:'#6B7280'}
+};
+function renderWorkout(logs) {
+  if (!logs.length) return '<div class="loading">😶 Chưa có buổi tập nào</div>';
+  const sessions = logs.flatMap(l=>(l.sessions||[]).map(s=>({...s,date:l.date})));
+  const totMin   = sessions.reduce((s,x)=>s+(x.duration_min||0),0);
+  const totKcal  = sessions.reduce((s,x)=>s+(x.calories||0),0);
+  const rows = sessions.slice(0,20).map(s => {
+    const m = TYPE_META[s.type]||TYPE_META.other;
+    const ex = (s.exercises||[]).map(e => {
+      const sets = e.sets.map(st=>`${st.reps}×${st.weight_kg}kg`).join(', ');
+      return `<div class="hi-extra">${e.name}: ${sets}</div>`;
+    }).join('');
+    return `<div class="hi">
+      <div class="hi-ico" style="background:${m.color}22">${m.ico}</div>
+      <div class="hi-info">
+        <div class="hi-title">${s.type.toUpperCase()} · ${fmt(s.date)}</div>
+        <div class="hi-sub">${s.duration_min} phút · ${s.calories||0} kcal</div>${ex}
+      </div>
+    </div>`;
+  }).join('');
+  return `
+    <div class="stats col3">
+      <div class="stat"><div class="v" style="color:var(--purple)">${sessions.length}</div><div class="l">buổi tập</div></div>
+      <div class="stat"><div class="v" style="color:var(--amber)">${totMin}</div><div class="l">phút</div></div>
+      <div class="stat"><div class="v" style="color:var(--red)">${totKcal}</div><div class="l">kcal đốt</div></div>
+    </div>
+    <div class="card"><div class="card-label">Số buổi / ngày</div><div class="chart-wrap"><canvas id="c-wfreq"></canvas></div></div>
+    <div class="stitle">Lịch sử buổi tập</div>
+    <div class="card">${rows}</div>`;
+}
+function drawWorkout(logs) {
+  const o = [...logs].reverse();
+  drawBar('c-wfreq', o.map(l=>shortDate(l.date)), o.map(l=>(l.sessions||[]).length), '#8B5CF6');
+}
+
+// ══ TAB 3 — Tài chính ══
+const BUDGET = {food:3000000,transport:1000000,shopping:2000000,health:500000,entertainment:500000,bills:2000000,other:500000};
+const CAT = {
+  food:{ico:'🍽️',color:'#F59E0B',lbl:'Ăn uống'},
+  transport:{ico:'🚗',color:'#3B82F6',lbl:'Đi lại'},
+  shopping:{ico:'🛍️',color:'#EC4899',lbl:'Mua sắm'},
+  health:{ico:'💊',color:'#10B981',lbl:'Sức khỏe'},
+  entertainment:{ico:'🎬',color:'#8B5CF6',lbl:'Giải trí'},
+  bills:{ico:'🏠',color:'#6B7280',lbl:'Hóa đơn'},
+  income:{ico:'💰',color:'#10B981',lbl:'Thu nhập'},
+  other:{ico:'📦',color:'#9CA3AF',lbl:'Khác'}
+};
+function renderFinance(logs) {
+  const mm     = new Date().toISOString().slice(0,7);
+  const monthT = logs.filter(l=>l.date.startsWith(mm)).flatMap(l=>l.transactions||[]);
+  const allT   = logs.flatMap(l=>(l.transactions||[]).map(t=>({...t,date:l.date})));
+  const income  = monthT.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const expense = monthT.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const saved   = income-expense;
+  const byCat   = {};
+  monthT.filter(t=>t.type==='expense').forEach(t=>{ byCat[t.category]=(byCat[t.category]||0)+t.amount; });
+  const budgetHtml = Object.entries(BUDGET).map(([cat,bud]) => {
+    const spent=byCat[cat]||0, pct=Math.min(100,(spent/bud)*100), c=CAT[cat]||CAT.other, over=spent>bud;
+    return `<div style="margin-bottom:11px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
+        <span>${c.ico} ${c.lbl}</span>
+        <span style="color:${over?'var(--red)':'var(--muted)'}">${vnd(spent)} / ${vnd(bud)}</span>
+      </div>
+      <div class="pbar"><div class="pfill" style="width:${pct}%;background:${over?'var(--red)':c.color}"></div></div>
+    </div>`;
+  }).join('');
+  const txRows = allT.slice(0,20).map(t => {
+    const c=CAT[t.category]||CAT.other, inc=t.type==='income';
+    return `<div class="hi">
+      <div class="hi-ico" style="background:${c.color}22">${c.ico}</div>
+      <div class="hi-info">
+        <div class="hi-title">${t.description||c.lbl}</div>
+        <div class="hi-sub">${fmt(t.date)}${t.time?' · '+t.time:''}</div>
+      </div>
+      <div class="hi-val" style="color:${inc?'var(--green)':'var(--red)'}">${inc?'+':'−'}${vnd(t.amount)}</div>
+    </div>`;
+  }).join('') || '<div class="loading" style="padding:16px">Chưa có giao dịch</div>';
+  return `
+    <div class="stats col3">
+      <div class="stat"><div class="v" style="color:var(--green);font-size:14px">${vnd(income)}</div><div class="l">thu tháng</div></div>
+      <div class="stat"><div class="v" style="color:var(--red);font-size:14px">${vnd(expense)}</div><div class="l">chi tháng</div></div>
+      <div class="stat"><div class="v" style="color:${saved>=0?'var(--green)':'var(--red)'};font-size:14px">${vnd(Math.abs(saved))}</div><div class="l">${saved>=0?'tiết kiệm':'thâm hụt'}</div></div>
+    </div>
+    <div class="card"><div class="card-label">Chi tiêu / ngày (nghìn đồng)</div><div class="chart-wrap"><canvas id="c-fday"></canvas></div></div>
+    <div class="card"><div class="card-label">Ngân sách tháng này</div>${budgetHtml}</div>
+    <div class="stitle">Giao dịch gần đây</div>
+    <div class="card">${txRows}</div>`;
+}
+function drawFinance(logs) {
+  const o = [...logs].reverse();
+  drawBar('c-fday', o.map(l=>shortDate(l.date)),
+    o.map(l=>(l.transactions||[]).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0)/1000),
+    '#EF4444');
+}
+
+// ══ CHART ENGINE ══
+function setupCanvas(id, h=140) {
+  const c=document.getElementById(id); if (!c) return null;
+  const dpr=window.devicePixelRatio||1, W=c.parentElement.offsetWidth||300;
+  c.style.width=W+'px'; c.style.height=h+'px'; c.width=W*dpr; c.height=h*dpr;
+  const ctx=c.getContext('2d'); ctx.scale(dpr,dpr);
+  return {ctx,W,H:h};
+}
+function noData(ctx,W,H) { ctx.fillStyle='#9CA3AF'; ctx.font='12px -apple-system'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('Chưa có dữ liệu',W/2,H/2); }
+
+function drawBar(id, labels, data, color, goal=null) {
+  const s=setupCanvas(id); if (!s) return;
+  const {ctx,W,H}=s; ctx.clearRect(0,0,W,H);
+  if (data.every(v=>!v)) { noData(ctx,W,H); return; }
+  const pad={t:22,r:10,b:26,l:32}, cw=W-pad.l-pad.r, ch=H-pad.t-pad.b;
+  const max=Math.max(...data,goal||0)*1.2||1;
+  if (goal) {
+    const gy=pad.t+ch-(goal/max)*ch;
+    ctx.setLineDash([4,3]); ctx.strokeStyle=color+'66'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(pad.l,gy); ctx.lineTo(W-pad.r,gy); ctx.stroke(); ctx.setLineDash([]);
+  }
+  [0,.5,1].forEach(t=>{
+    const y=pad.t+ch*t; ctx.strokeStyle='#F3F4F6'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y); ctx.stroke();
+    ctx.fillStyle='#9CA3AF'; ctx.font='9px -apple-system'; ctx.textAlign='right'; ctx.textBaseline='middle';
+    ctx.fillText((max*(1-t)).toFixed(max>10?0:1),pad.l-3,y);
+  });
+  const n=labels.length, slotW=cw/Math.max(n,1), barW=Math.min(slotW*.6,28);
+  data.forEach((v,i)=>{
+    const x=pad.l+slotW*i+(slotW-barW)/2, bh=(v/max)*ch, y=pad.t+ch-bh, now=i===n-1;
+    ctx.fillStyle=now?color:color+'77';
+    if (bh>0) {
+      ctx.beginPath(); const r=4; ctx.moveTo(x+r,y); ctx.lineTo(x+barW-r,y);
+      ctx.quadraticCurveTo(x+barW,y,x+barW,y+r); ctx.lineTo(x+barW,pad.t+ch);
+      ctx.lineTo(x,pad.t+ch); ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath(); ctx.fill();
+    }
+    if (v>0) { ctx.fillStyle='#374151'; ctx.font=`${now?'bold ':''} 9px -apple-system`; ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText(v%1===0?v:v.toFixed(1),x+barW/2,y-2); }
+    ctx.fillStyle=now?'#111827':'#9CA3AF'; ctx.font=`${now?'bold ':''} 9px -apple-system`; ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText(labels[i],x+barW/2,H-2);
+  });
+}
+
+function drawLine(id, labels, data, color, goal=null) {
+  const s=setupCanvas(id); if (!s) return;
+  const {ctx,W,H}=s; ctx.clearRect(0,0,W,H);
+  const nz=data.filter(v=>v>0); if (!nz.length) { noData(ctx,W,H); return; }
+  const pad={t:22,r:10,b:26,l:34}, cw=W-pad.l-pad.r, ch=H-pad.t-pad.b;
+  const max=Math.max(...nz,goal||0)*1.15, min=Math.min(...nz)*.85, rng=max-min||1;
+  if (goal) {
+    const gy=pad.t+ch-((goal-min)/rng)*ch; ctx.setLineDash([4,3]); ctx.strokeStyle=color+'55'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(pad.l,gy); ctx.lineTo(W-pad.r,gy); ctx.stroke(); ctx.setLineDash([]);
+  }
+  [0,.5,1].forEach(t=>{
+    const y=pad.t+ch*t; ctx.strokeStyle='#F3F4F6'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y); ctx.stroke();
+    ctx.fillStyle='#9CA3AF'; ctx.font='9px -apple-system'; ctx.textAlign='right'; ctx.textBaseline='middle';
+    ctx.fillText((max-rng*t).toFixed(1),pad.l-3,y);
+  });
+  const n=labels.length;
+  const pts=data.map((v,i)=>({x:pad.l+(n>1?(i/(n-1))*cw:cw/2), y:v>0?pad.t+ch-((v-min)/rng)*ch:null}));
+  const grad=ctx.createLinearGradient(0,pad.t,0,pad.t+ch);
+  grad.addColorStop(0,color+'30'); grad.addColorStop(1,color+'00');
+  ctx.beginPath(); let ok=false;
+  pts.forEach(p=>{ if(!p.y)return; if(!ok){ctx.moveTo(p.x,pad.t+ch);ctx.lineTo(p.x,p.y);ok=true;}else ctx.lineTo(p.x,p.y); });
+  const lp=[...pts].reverse().find(p=>p.y); if(lp) ctx.lineTo(lp.x,pad.t+ch);
+  ctx.closePath(); ctx.fillStyle=grad; ctx.fill();
+  ctx.beginPath(); ctx.strokeStyle=color; ctx.lineWidth=2.5; ctx.lineJoin='round';
+  let ls=false; pts.forEach(p=>{ if(!p.y){ls=false;return;} if(!ls){ctx.moveTo(p.x,p.y);ls=true;}else ctx.lineTo(p.x,p.y); });
+  ctx.stroke();
+  pts.forEach((p,i)=>{
+    if (!p.y) return;
+    ctx.beginPath(); ctx.arc(p.x,p.y,3.5,0,Math.PI*2); ctx.fillStyle='white'; ctx.strokeStyle=color; ctx.lineWidth=2; ctx.fill(); ctx.stroke();
+    ctx.fillStyle='#374151'; ctx.font='9px -apple-system'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+    if (data[i]) ctx.fillText(data[i]%1===0?data[i]:data[i].toFixed(1),p.x,p.y-5);
+  });
+  labels.forEach((l,i)=>{
+    const x=pad.l+(n>1?(i/(n-1))*cw:cw/2);
+    ctx.fillStyle=i===n-1?'#111827':'#9CA3AF'; ctx.font=`${i===n-1?'bold ':''} 9px -apple-system`;
+    ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText(l,x,H-2);
+  });
+}
+
+// ── Helpers ──
+const DAYS=['CN','T2','T3','T4','T5','T6','T7'];
+function shortDate(s) { const d=new Date(s+'T12:00:00'); return DAYS[d.getDay()]; }
+function fmt(s) { const d=new Date(s+'T12:00:00'); return `${DAYS[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`; }
+function totalKcal(log) { return (log.meals||[]).reduce((s,m)=>s+(m.total_kcal||0),0); }
+function totalMacro(log,k) { return (log.meals||[]).reduce((s,m)=>s+(m['total_'+k]||0),0); }
+function avg(arr,fn) { const v=arr.map(fn).filter(x=>x>0); return v.length?v.reduce((a,b)=>a+b,0)/v.length:0; }
+function pc(v,max) { return Math.min(100,(v/max)*100).toFixed(1); }
+function vnd(n) { if(n>=1000000)return(n/1000000).toFixed(1)+'tr'; if(n>=1000)return Math.round(n/1000)+'k'; return n+''; }
+function toast(msg) { const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2500); }
+
+// ── Boot ──
+if (checkPat()) reload();
+</script>
+</body>
+</html>
