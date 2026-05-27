@@ -2,6 +2,14 @@
   "date": "2026-05-27",
   "meals": [
     {
+      "time": "07:30", "source": "text",
+      "items": [
+        { "name": "Yogurt uống", "grams": 300, "kcal": 165, "protein": 7, "carb": 27, "fat": 4 },
+        { "name": "Bánh mì ngọt", "grams": 90, "kcal": 270, "protein": 7, "carb": 47, "fat": 8 }
+      ],
+      "total_kcal": 435, "total_protein": 14, "total_carb": 74, "total_fat": 12
+    },
+    {
       "time": "12:00", "source": "photo",
       "items": [
         { "name": "Zaru Soba oomori (大盛り)", "grams": 420, "kcal": 520, "protein": 24, "carb": 102, "fat": 3 },
