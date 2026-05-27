@@ -22,9 +22,9 @@
           "reps": null
         },
         {
-          "name": "Tập ngực (chest)",
-          "sets": null,
-          "reps": null
+          "name": "Chest press (máy)",
+          "sets": 3,
+          "reps": 15
         }
       ]
     }
