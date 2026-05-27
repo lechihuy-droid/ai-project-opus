@@ -3,190 +3,188 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Health Dashboard</title>
+<title>Dashboard</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --primary: #10B981; --primary-dark: #059669; --primary-light: #D1FAE5;
-  --bg: #F3F4F6; --card: #fff; --text: #111827; --muted: #6B7280; --faint: #9CA3AF;
-  --border: #E5E7EB;
+  --green: #10B981; --green-d: #059669; --green-l: #D1FAE5;
   --blue: #3B82F6; --amber: #F59E0B; --purple: #8B5CF6; --red: #EF4444;
-  --r: 14px; --nav: 68px;
+  --bg: #F3F4F6; --card: #fff; --text: #111827; --muted: #6B7280; --faint: #9CA3AF; --border: #E5E7EB;
+  --r: 14px;
 }
 html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); }
 #app { max-width: 430px; margin: 0 auto; min-height: 100vh; background: var(--bg); }
 
-/* ── Setup Screen ── */
-#setup {
-  min-height: 100vh; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; padding: 32px 24px;
-}
-.setup-icon { font-size: 56px; margin-bottom: 16px; }
-.setup-title { font-size: 22px; font-weight: 800; margin-bottom: 6px; text-align: center; }
-.setup-sub { font-size: 14px; color: var(--muted); text-align: center; line-height: 1.6; margin-bottom: 28px; }
-.setup-card { width: 100%; background: var(--card); border-radius: var(--r); padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 16px; }
-.field-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); margin-bottom: 8px; display: block; }
-.field-input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; font-family: inherit; outline: none; transition: border-color .2s; }
-.field-input:focus { border-color: var(--primary); }
+/* ── Setup ── */
+#setup { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 24px; }
+.sico { font-size: 52px; margin-bottom: 16px; }
+.stit { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+.ssub { font-size: 13px; color: var(--muted); text-align: center; line-height: 1.6; margin-bottom: 28px; }
+.scard { width: 100%; background: var(--card); border-radius: var(--r); padding: 18px; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 14px; }
+.slabel { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin-bottom: 7px; display: block; }
+.sinput { width: 100%; padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; font-family: inherit; outline: none; }
+.sinput:focus { border-color: var(--green); }
 .hint { font-size: 11px; color: var(--faint); margin-top: 6px; line-height: 1.5; }
-.btn-main { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; box-shadow: 0 4px 12px rgba(16,185,129,.35); }
-.btn-main:active { opacity: .9; }
+.sbtn { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--green), var(--green-d)); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; }
 
-/* ── Main Layout ── */
+/* ── Topbar ── */
 #main { display: none; }
-.topbar { position: sticky; top: 0; z-index: 50; background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 16px 10px; box-shadow: 0 1px 8px rgba(0,0,0,.06); }
-.topbar-row { display: flex; justify-content: space-between; align-items: center; }
-.topbar h1 { font-size: 18px; font-weight: 800; }
-.topbar-right { display: flex; align-items: center; gap: 8px; }
-.sync-btn { font-size: 13px; padding: 6px 12px; background: var(--primary-light); color: var(--primary-dark); border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-family: inherit; }
-.settings-btn { width: 32px; height: 32px; border: none; background: var(--bg); border-radius: 8px; cursor: pointer; font-size: 16px; }
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--card); border-bottom: 1px solid var(--border);
+  padding: 12px 14px 0;
+  box-shadow: 0 1px 6px rgba(0,0,0,.05);
+}
+.tb-row1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.tb-row1 h1 { font-size: 17px; font-weight: 800; }
+.tb-actions { display: flex; gap: 6px; }
+.tbtn { font-size: 12px; padding: 6px 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-family: inherit; }
+.tbtn-sync { background: var(--green-l); color: var(--green-d); }
+.tbtn-set  { background: var(--bg); color: var(--muted); }
 
-/* Range tabs */
-.range-tabs { display: flex; gap: 6px; margin-top: 10px; }
-.tab { flex: 1; padding: 7px; text-align: center; font-size: 12px; font-weight: 600; border-radius: 8px; border: none; background: var(--bg); color: var(--muted); cursor: pointer; transition: all .2s; font-family: inherit; }
-.tab.active { background: var(--primary); color: #fff; }
+/* module tabs (row 2) */
+.mod-tabs { display: flex; gap: 0; }
+.mtab {
+  flex: 1; padding: 9px 4px 10px; text-align: center; font-size: 12px; font-weight: 700;
+  border: none; background: none; cursor: pointer; font-family: inherit; color: var(--faint);
+  border-bottom: 2.5px solid transparent; transition: color .18s, border-color .18s;
+}
+.mtab.active { color: var(--green); border-bottom-color: var(--green); }
 
-/* Content */
-.content { padding: 14px 14px 90px; }
+/* range tabs (row 3) */
+.range-row { display: flex; gap: 6px; padding: 8px 0 10px; }
+.rtab { flex: 1; padding: 6px; text-align: center; font-size: 11px; font-weight: 600; border-radius: 7px; border: none; background: var(--bg); color: var(--muted); cursor: pointer; font-family: inherit; }
+.rtab.active { background: var(--green); color: #fff; }
 
-/* Cards */
-.card { background: var(--card); border-radius: var(--r); padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.07); margin-bottom: 12px; }
+/* ── Content ── */
+.content { padding: 12px 12px 24px; }
+
+/* ── Cards ── */
+.card { background: var(--card); border-radius: var(--r); padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.06); margin-bottom: 10px; }
 .card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--faint); margin-bottom: 10px; }
 
-/* Summary row */
-.summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
-.stat { background: var(--card); border-radius: 12px; padding: 11px 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,.07); }
-.stat .v { font-size: 18px; font-weight: 900; line-height: 1.1; }
+/* ── Stats ── */
+.stats { display: grid; gap: 7px; margin-bottom: 10px; }
+.stats.col4 { grid-template-columns: repeat(4,1fr); }
+.stats.col3 { grid-template-columns: repeat(3,1fr); }
+.stat { background: var(--card); border-radius: 12px; padding: 10px 6px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+.stat .v { font-size: 17px; font-weight: 900; line-height: 1.1; }
 .stat .l { font-size: 9px; color: var(--muted); margin-top: 3px; font-weight: 600; }
 
-/* Chart */
-.chart-wrap { position: relative; height: 140px; }
+/* ── Chart ── */
+.chart-wrap { height: 140px; }
 canvas { display: block; }
 
-/* Metrics grid */
-.metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.metric-mini { background: var(--card); border-radius: 12px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.07); }
-.metric-mini .icon { font-size: 18px; margin-bottom: 6px; }
-.metric-mini .val { font-size: 17px; font-weight: 800; line-height: 1; }
-.metric-mini .sub { font-size: 10px; color: var(--muted); margin-top: 3px; }
-.pbar { height: 4px; background: var(--bg); border-radius: 2px; margin-top: 7px; overflow: hidden; }
-.pfill { height: 100%; border-radius: 2px; transition: width .5s; }
+/* ── Metric mini ── */
+.mgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.mm { background: var(--card); border-radius: 12px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+.mm .ico { font-size: 18px; margin-bottom: 5px; }
+.mm .val { font-size: 17px; font-weight: 800; }
+.mm .sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.pbar { height: 4px; background: var(--bg); border-radius: 2px; margin-top: 7px; }
+.pfill { height: 100%; border-radius: 2px; }
 
-/* Meals */
-.meal-section { margin-bottom: 10px; }
-.meal-time-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 6px; padding-left: 2px; }
-.meal-item { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
-.meal-item:last-child { border-bottom: none; }
-.meal-emoji { font-size: 18px; flex-shrink: 0; }
-.meal-info { flex: 1; min-width: 0; }
-.meal-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.meal-macro { font-size: 10px; color: var(--muted); margin-top: 2px; }
-.meal-kcal { font-size: 13px; font-weight: 800; color: var(--primary); flex-shrink: 0; }
+/* ── Section title ── */
+.stitle { font-size: 13px; font-weight: 700; margin: 14px 0 8px; }
 
-/* Weight trend */
-.weight-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
-.weight-now { font-size: 28px; font-weight: 900; }
-.weight-delta { font-size: 13px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
-.delta-down { background: #D1FAE5; color: #065F46; }
-.delta-up { background: #FEE2E2; color: #991B1B; }
-.delta-flat { background: var(--bg); color: var(--muted); }
+/* ── Meal items ── */
+.mi { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.mi:last-child { border-bottom: none; }
+.mi-ico { font-size: 17px; flex-shrink: 0; }
+.mi-info { flex: 1; min-width: 0; }
+.mi-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mi-mac  { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.mi-kcal { font-size: 13px; font-weight: 800; color: var(--green); flex-shrink: 0; }
 
-/* Loading / error */
-.loading { text-align: center; padding: 48px 20px; color: var(--muted); }
-.loading .spin { font-size: 28px; display: block; margin-bottom: 10px; animation: spin 1s linear infinite; }
+/* ── History items ── */
+.hi { display: flex; align-items: center; gap: 11px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.hi:last-child { border-bottom: none; }
+.hi-ico { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.hi-info { flex: 1; min-width: 0; }
+.hi-title { font-size: 13px; font-weight: 600; }
+.hi-sub   { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.hi-extra { font-size: 10px; color: var(--muted); margin-top: 1px; }
+.hi-val   { font-size: 14px; font-weight: 800; flex-shrink: 0; }
+
+/* ── Weight ── */
+.wrow { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.wbig { font-size: 28px; font-weight: 900; }
+.wdelta { font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+.dn { background: #D1FAE5; color: #065F46; }
+.up { background: #FEE2E2; color: #991B1B; }
+.fl { background: var(--bg); color: var(--muted); }
+
+/* ── Loading / error ── */
+.loading { text-align: center; padding: 48px 20px; color: var(--muted); font-size: 14px; }
+.spin { font-size: 26px; display: block; margin-bottom: 10px; animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.error-box { background: #FEF2F2; border-left: 3px solid var(--red); border-radius: 10px; padding: 14px; font-size: 13px; color: #991B1B; line-height: 1.6; }
+.err { background: #FEF2F2; border-left: 3px solid var(--red); border-radius: 10px; padding: 14px; font-size: 13px; color: #991B1B; line-height: 1.6; }
 
-/* Toast */
-.toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-80px); background: #111827; color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 999; transition: transform .3s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,.2); }
+/* ── Toast ── */
+.toast {
+  position: fixed; top: 16px; left: 50%;
+  transform: translateX(-50%) translateY(-80px);
+  background: #111827; color: #fff; padding: 10px 18px; border-radius: 10px;
+  font-size: 13px; font-weight: 600; z-index: 999;
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+  white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,.2);
+}
 .toast.show { transform: translateX(-50%) translateY(0); }
-
-/* Bottom nav */
-.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; height: var(--nav); background: var(--card); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-around; padding: 0 8px 10px; z-index: 100; box-shadow: 0 -2px 16px rgba(0,0,0,.07); }
-.nav-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 12px; background: none; border: none; cursor: pointer; color: var(--faint); flex: 1; font-family: inherit; border-radius: 10px; transition: color .2s; }
-.nav-btn.active { color: var(--primary); }
-.nav-btn svg { width: 20px; height: 20px; }
-.nav-btn span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
-
-/* Screens */
-.screen { display: none; }
-.screen.active { display: block; }
 </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- ══ SETUP SCREEN ══ -->
-  <div id="setup">
-    <div class="setup-icon">🌿</div>
-    <div class="setup-title">Health Dashboard</div>
-    <div class="setup-sub">Nhập GitHub Personal Access Token để kết nối với dữ liệu sức khỏe của bạn.</div>
+<!-- ══ SETUP ══ -->
+<div id="setup">
+  <div class="sico">🌿</div>
+  <div class="stit">Health Dashboard</div>
+  <div class="ssub">Nhập GitHub PAT để kết nối dữ liệu</div>
+  <div class="scard">
+    <label class="slabel">GitHub PAT</label>
+    <input class="sinput" type="password" id="ipat" placeholder="github_pat_...">
+    <p class="hint">GitHub → Settings → Developer settings → Fine-grained tokens<br>Scope: <strong>Contents = Read-only</strong></p>
+  </div>
+  <div class="scard">
+    <label class="slabel">Repo</label>
+    <input class="sinput" type="text" id="irepo" value="lechihuy-droid/ai-project-opus">
+    <div style="height:10px"></div>
+    <label class="slabel">Branch</label>
+    <input class="sinput" type="text" id="ibranch" value="main">
+  </div>
+  <button class="sbtn" onclick="saveSetup()">Kết nối →</button>
+</div>
 
-    <div class="setup-card">
-      <label class="field-label">GitHub PAT</label>
-      <input class="field-input" type="password" id="pat-input" placeholder="github_pat_...">
-      <p class="hint">
-        Tạo tại: GitHub → Settings → Developer settings → Fine-grained tokens<br>
-        Scope cần: <strong>Contents = Read-only</strong> cho repo <code>ai-project-opus</code>
-      </p>
+<!-- ══ MAIN ══ -->
+<div id="main">
+  <div class="topbar">
+    <!-- Row 1: title + actions -->
+    <div class="tb-row1">
+      <h1>🌿 Dashboard</h1>
+      <div class="tb-actions">
+        <button class="tbtn tbtn-sync" onclick="reload()">↻ Sync</button>
+        <button class="tbtn tbtn-set"  onclick="openSetup()">⚙️</button>
+      </div>
     </div>
 
-    <div class="setup-card">
-      <label class="field-label">Repo</label>
-      <input class="field-input" type="text" id="repo-input" value="lechihuy-droid/ai-project-opus">
-      <div style="height:10px"></div>
-      <label class="field-label">Branch</label>
-      <input class="field-input" type="text" id="branch-input" value="main">
+    <!-- Row 2: module tabs -->
+    <div class="mod-tabs">
+      <button class="mtab active" id="mt-health"  onclick="showTab('health')">🌿 Sức khỏe</button>
+      <button class="mtab"        id="mt-workout" onclick="showTab('workout')">💪 Tập luyện</button>
+      <button class="mtab"        id="mt-finance" onclick="showTab('finance')">💰 Tài chính</button>
     </div>
 
-    <button class="btn-main" onclick="saveSetup()">Kết nối →</button>
+    <!-- Row 3: range -->
+    <div class="range-row">
+      <button class="rtab active" onclick="setRange(7,this)">7 ngày</button>
+      <button class="rtab"        onclick="setRange(14,this)">14 ngày</button>
+      <button class="rtab"        onclick="setRange(30,this)">30 ngày</button>
+      <button class="rtab"        onclick="setRange(90,this)">3 tháng</button>
+    </div>
   </div>
 
-  <!-- ══ MAIN DASHBOARD ══ -->
-  <div id="main">
-    <div class="topbar">
-      <div class="topbar-row">
-        <h1>🌿 Health</h1>
-        <div class="topbar-right">
-          <button class="sync-btn" onclick="reload()">↻ Sync</button>
-          <button class="settings-btn" onclick="openSetup()" title="Cài đặt">⚙️</button>
-        </div>
-      </div>
-      <div class="range-tabs">
-        <button class="tab active" onclick="setRange(7,this)">7 ngày</button>
-        <button class="tab" onclick="setRange(14,this)">14 ngày</button>
-        <button class="tab" onclick="setRange(30,this)">30 ngày</button>
-        <button class="tab" onclick="setRange(90,this)">3 tháng</button>
-      </div>
-    </div>
-
-    <div class="content" id="content">
-      <div class="loading"><span class="spin">🌿</span>Đang tải dữ liệu...</div>
-    </div>
-
-    <!-- Bottom Nav -->
-    <nav class="bottom-nav">
-      <button class="nav-btn active" id="nav-overview" onclick="showTab('overview')">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        <span>Tổng quan</span>
-      </button>
-      <button class="nav-btn" id="nav-food" onclick="showTab('food')">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
-        <span>Bữa ăn</span>
-      </button>
-      <button class="nav-btn" id="nav-body" onclick="showTab('body')">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z"/></svg>
-        <span>Sức khỏe</span>
-      </button>
-      <button class="nav-btn" id="nav-workout" onclick="showTab('workout')">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6.5 6.5h11M6.5 17.5h11M3 12h18M7 3v4M17 3v4M7 17v4M17 17v4"/></svg>
-        <span>Tập luyện</span>
-      </button>
-      <button class="nav-btn" id="nav-finance" onclick="showTab('finance')">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-        <span>Tài chính</span>
-      </button>
-    </nav>
+  <div class="content" id="content">
+    <div class="loading"><span class="spin">🌿</span>Đang tải...</div>
   </div>
 </div>
 
@@ -194,18 +192,12 @@ canvas { display: block; }
 
 <script>
 // ═══════════════════════════════
-//  CONFIG
+//  STATE
 // ═══════════════════════════════
-let CFG = {
-  pat: '',
-  repo: 'lechihuy-droid/ai-project-opus',
-  branch: 'main'
-};
+let CFG = { pat:'', repo:'lechihuy-droid/ai-project-opus', branch:'main' };
 let currentRange = 7;
-let currentTab = 'overview';
-let cachedLogs = [];
-let cachedWorkouts = [];
-let cachedFinance = [];
+let currentTab   = 'health';
+let cHealth = [], cWorkout = [], cFinance = [];
 
 // ═══════════════════════════════
 //  SETUP
@@ -215,23 +207,21 @@ function loadConfig() {
   if (s) { CFG = JSON.parse(s); return true; }
   return false;
 }
-
 function saveSetup() {
-  const pat = document.getElementById('pat-input').value.trim();
-  const repo = document.getElementById('repo-input').value.trim();
-  const branch = document.getElementById('branch-input').value.trim();
+  const pat    = document.getElementById('ipat').value.trim();
+  const repo   = document.getElementById('irepo').value.trim();
+  const branch = document.getElementById('ibranch').value.trim();
   if (!pat) { toast('⚠️ Nhập GitHub PAT'); return; }
   CFG = { pat, repo, branch };
   localStorage.setItem('hm_cfg', JSON.stringify(CFG));
   startApp();
 }
-
 function openSetup() {
-  document.getElementById('main').style.display = 'none';
+  document.getElementById('main').style.display  = 'none';
   document.getElementById('setup').style.display = 'flex';
-  document.getElementById('pat-input').value = CFG.pat;
-  document.getElementById('repo-input').value = CFG.repo;
-  document.getElementById('branch-input').value = CFG.branch;
+  document.getElementById('ipat').value    = CFG.pat;
+  document.getElementById('irepo').value   = CFG.repo;
+  document.getElementById('ibranch').value = CFG.branch;
 }
 
 // ═══════════════════════════════
@@ -242,270 +232,109 @@ async function ghGet(path) {
   const r = await fetch(url, {
     headers: { 'Authorization': `Bearer ${CFG.pat}`, 'Accept': 'application/vnd.github.v3+json' }
   });
-  if (!r.ok) {
-    if (r.status === 404) return null;
-    throw new Error(`GitHub API ${r.status}: ${path}`);
-  }
-  const data = await r.json();
-  return JSON.parse(atob(data.content.replace(/\n/g, '')));
+  if (!r.ok) { if (r.status===404) return null; throw new Error(`GitHub ${r.status}: ${path}`); }
+  const d = await r.json();
+  return JSON.parse(atob(d.content.replace(/\n/g,'')));
 }
 
 // ═══════════════════════════════
-//  DATA LOADING
+//  DATA
 // ═══════════════════════════════
 function datesInRange(n) {
-  const out = [];
-  for (let i = 0; i < n; i++) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    out.push(d.toISOString().slice(0, 10));
-  }
-  return out;
+  return Array.from({length:n}, (_,i) => {
+    const d = new Date(); d.setDate(d.getDate()-i);
+    return d.toISOString().slice(0,10);
+  });
 }
-
-async function loadLogs(range) {
-  const index = await ghGet('health-data/index.json');
-  if (!index) throw new Error('Không tìm thấy health-data/index.json');
-  const needed = datesInRange(range);
-  const available = needed.filter(d => index.includes(d));
-  const logs = await Promise.all(available.map(d => ghGet(`health-data/${d}.json`)));
-  return logs.filter(Boolean).sort((a, b) => b.date.localeCompare(a.date));
+async function loadModule(prefix, range) {
+  const idx = await ghGet(`${prefix}/index.json`);
+  if (!idx?.length) return [];
+  const dates = datesInRange(range).filter(d => idx.includes(d));
+  const rows  = await Promise.all(dates.map(d => ghGet(`${prefix}/${d}.json`)));
+  return rows.filter(Boolean).sort((a,b) => b.date.localeCompare(a.date));
 }
 
 // ═══════════════════════════════
-//  RENDER
+//  NAV
 // ═══════════════════════════════
 function setRange(n, btn) {
   currentRange = n;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.rtab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   reload();
 }
-
 function showTab(tab) {
   currentTab = tab;
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('nav-' + tab).classList.add('active');
+  document.querySelectorAll('.mtab').forEach(b => b.classList.remove('active'));
+  document.getElementById('mt-'+tab).classList.add('active');
   renderContent();
 }
 
-async function loadModuleLogs(prefix, range) {
-  const index = await ghGet(`${prefix}/index.json`);
-  if (!index || !index.length) return [];
-  const needed = datesInRange(range);
-  const available = needed.filter(d => index.includes(d));
-  const logs = await Promise.all(available.map(d => ghGet(`${prefix}/${d}.json`)));
-  return logs.filter(Boolean).sort((a, b) => b.date.localeCompare(a.date));
-}
-
+// ═══════════════════════════════
+//  RELOAD
+// ═══════════════════════════════
 async function reload() {
-  const el = document.getElementById('content');
-  el.innerHTML = '<div class="loading"><span class="spin">🌿</span>Đang tải...</div>';
+  document.getElementById('content').innerHTML =
+    '<div class="loading"><span class="spin">🌿</span>Đang tải...</div>';
   try {
-    const [health, workouts, finance] = await Promise.all([
-      loadLogs(currentRange),
-      loadModuleLogs('workout-data', currentRange).catch(() => []),
-      loadModuleLogs('finance-data', currentRange).catch(() => [])
+    [cHealth, cWorkout, cFinance] = await Promise.all([
+      loadModule('health-data',  currentRange),
+      loadModule('workout-data', currentRange).catch(()=>[]),
+      loadModule('finance-data', currentRange).catch(()=>[])
     ]);
-    cachedLogs = health;
-    cachedWorkouts = workouts;
-    cachedFinance = finance;
     renderContent();
-  } catch (e) {
-    el.innerHTML = `<div class="error-box">❌ Lỗi kết nối GitHub:<br><strong>${e.message}</strong><br><br>Kiểm tra PAT và kết nối mạng.</div>`;
+  } catch(e) {
+    document.getElementById('content').innerHTML =
+      `<div class="err">❌ Lỗi kết nối GitHub:<br><strong>${e.message}</strong><br><br>Kiểm tra PAT và kết nối mạng.</div>`;
   }
 }
-
 function renderContent() {
   const el = document.getElementById('content');
-  if (currentTab === 'workout') {
-    el.innerHTML = cachedWorkouts.length ? renderWorkout(cachedWorkouts) : '<div class="loading">😶 Chưa có buổi tập nào</div>';
-    setTimeout(() => drawWorkoutCharts(cachedWorkouts), 30);
-    return;
-  }
-  if (currentTab === 'finance') {
-    el.innerHTML = renderFinance(cachedFinance);
-    setTimeout(() => drawFinanceCharts(cachedFinance), 30);
-    return;
-  }
-  if (!cachedLogs.length) {
-    el.innerHTML = '<div class="loading">😶 Không có dữ liệu trong khoảng này</div>';
-    return;
-  }
-  if (currentTab === 'overview') el.innerHTML = renderOverview(cachedLogs);
-  else if (currentTab === 'food')  el.innerHTML = renderFood(cachedLogs);
-  else if (currentTab === 'body')  el.innerHTML = renderBody(cachedLogs);
-  drawCharts(cachedLogs);
+  if (currentTab==='health')  { el.innerHTML=renderHealth(cHealth);  setTimeout(()=>drawHealth(cHealth),30); }
+  if (currentTab==='workout') { el.innerHTML=renderWorkout(cWorkout);setTimeout(()=>drawWorkout(cWorkout),30); }
+  if (currentTab==='finance') { el.innerHTML=renderFinance(cFinance);setTimeout(()=>drawFinance(cFinance),30); }
 }
 
-// ── Workout tab ──
-function renderWorkout(logs) {
-  const totalSessions = logs.reduce((s, l) => s + (l.sessions||[]).length, 0);
-  const totalMin = logs.reduce((s, l) => s + (l.sessions||[]).reduce((a, ss) => a + (ss.duration_min||0), 0), 0);
-  const totalKcalW = logs.reduce((s, l) => s + (l.sessions||[]).reduce((a, ss) => a + (ss.calories||0), 0), 0);
+// ═══════════════════════════════
+//  TAB 1 — Sức khỏe
+// ═══════════════════════════════
+function renderHealth(logs) {
+  if (!logs.length) return '<div class="loading">😶 Chưa có dữ liệu sức khỏe</div>';
 
-  const TYPE_META = {
-    gym: {icon:'💪', color:'#8B5CF6'}, cardio: {icon:'🏃', color:'#EF4444'},
-    yoga: {icon:'🧘', color:'#EC4899'}, swim: {icon:'🏊', color:'#3B82F6'},
-    bike: {icon:'🚴', color:'#F59E0B'}, other: {icon:'⚡', color:'#6B7280'}
-  };
+  const avgCal   = avg(logs, l => totalKcal(l));
+  const avgSleep = avg(logs, l => l.sleep_hours||0);
+  const avgSteps = avg(logs, l => l.steps||0);
+  const withW    = logs.filter(l => l.weight_kg>0);
+  const latest   = withW[0];
+  const first    = withW[withW.length-1];
+  const delta    = first&&latest ? +(latest.weight_kg-first.weight_kg).toFixed(1) : null;
+  const dc       = delta>0?'up':delta<0?'dn':'fl';
+  const ds       = delta!==null?(delta>0?`+${delta}`:delta)+' kg':'';
 
-  const sessions = logs.slice(0,7).flatMap(l =>
-    (l.sessions||[]).map(s => ({...s, date: l.date}))
-  );
-
-  const sessionRows = sessions.map(s => {
-    const m = TYPE_META[s.type] || TYPE_META.other;
-    const exList = (s.exercises||[]).map(e => {
-      const setStr = e.sets.map(st => `${st.reps}×${st.weight_kg}kg`).join(', ');
-      return `<div style="font-size:10px;color:var(--muted);margin-top:1px">${e.name}: ${setStr}</div>`;
-    }).join('');
-    return `<div class="history-item">
-      <div class="h-icon" style="background:${m.color}22">${m.icon}</div>
-      <div class="h-info">
-        <div class="h-title">${s.type.toUpperCase()} · ${formatDate(s.date)}</div>
-        <div class="h-sub">${s.duration_min} phút · ${s.calories||0} kcal</div>
-        ${exList}
-      </div>
-    </div>`;
-  }).join('') || '<div class="loading" style="padding:20px">Chưa có buổi tập</div>';
-
-  return `
-    <div class="summary">
-      <div class="stat"><div class="v" style="color:var(--purple)">${totalSessions}</div><div class="l">buổi tập</div></div>
-      <div class="stat"><div class="v" style="color:var(--amber)">${totalMin}</div><div class="l">phút</div></div>
-      <div class="stat"><div class="v" style="color:var(--red)">${totalKcalW}</div><div class="l">kcal đốt</div></div>
-    </div>
-    <div class="card">
-      <div class="card-label">Tần suất tập (buổi/ngày)</div>
-      <div class="chart-wrap"><canvas id="c-workout-freq"></canvas></div>
-    </div>
-    <div class="section-title" style="font-size:13px;font-weight:700;margin:12px 0 8px">Lịch sử gần đây</div>
-    ${sessionRows}`;
-}
-
-function drawWorkoutCharts(logs) {
-  const ordered = [...logs].reverse();
-  const labels = ordered.map(l => shortDate(l.date));
-  const counts = ordered.map(l => (l.sessions||[]).length);
-  drawBar('c-workout-freq', labels, counts, '#8B5CF6');
-}
-
-// ── Finance tab ──
-const BUDGET = { food:3000000, transport:1000000, shopping:2000000, health:500000, entertainment:500000, bills:2000000, other:500000 };
-const CAT_META = {
-  food:{icon:'🍽️',color:'#F59E0B',label:'Ăn uống'},
-  transport:{icon:'🚗',color:'#3B82F6',label:'Đi lại'},
-  shopping:{icon:'🛍️',color:'#EC4899',label:'Mua sắm'},
-  health:{icon:'💊',color:'#10B981',label:'Sức khỏe'},
-  entertainment:{icon:'🎬',color:'#8B5CF6',label:'Giải trí'},
-  bills:{icon:'🏠',color:'#6B7280',label:'Hóa đơn'},
-  income:{icon:'💰',color:'#10B981',label:'Thu nhập'},
-  other:{icon:'📦',color:'#9CA3AF',label:'Khác'}
-};
-
-function renderFinance(logs) {
-  const txns = logs.flatMap(l => (l.transactions||[]).map(t => ({...t, date: l.date})));
-  const thisMonth = new Date().toISOString().slice(0,7);
-  const monthTxns = logs.filter(l => l.date.startsWith(thisMonth)).flatMap(l => l.transactions||[]);
-
-  const totalIncome  = monthTxns.filter(t => t.type==='income').reduce((s,t) => s+t.amount, 0);
-  const totalExpense = monthTxns.filter(t => t.type==='expense').reduce((s,t) => s+t.amount, 0);
-  const saved = totalIncome - totalExpense;
-
-  // Budget by category
-  const spentByCat = {};
-  monthTxns.filter(t => t.type==='expense').forEach(t => {
-    spentByCat[t.category] = (spentByCat[t.category]||0) + t.amount;
-  });
-
-  const budgetBars = Object.entries(BUDGET).map(([cat, budget]) => {
-    const spent = spentByCat[cat] || 0;
-    const pct = Math.min(100, (spent/budget)*100);
-    const m = CAT_META[cat] || CAT_META.other;
-    const over = spent > budget;
-    return `<div style="margin-bottom:10px">
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
-        <span>${m.icon} ${m.label}</span>
-        <span style="color:${over?'var(--red)':'var(--muted)'}">
-          ${fmtVND(spent)} / ${fmtVND(budget)}
-        </span>
-      </div>
-      <div class="pbar"><div class="pfill" style="width:${pct}%;background:${over?'var(--red)':m.color}"></div></div>
+  const foodSections = logs.slice(0,3).map(l => {
+    const rows = (l.meals||[]).flatMap(m => (m.items||[]).map(it => {
+      const ico = {receipt:'🧾',bill:'🛒'}[m.source]||'🍽️';
+      return `<div class="mi">
+        <div class="mi-ico">${ico}</div>
+        <div class="mi-info">
+          <div class="mi-name">${it.name}</div>
+          <div class="mi-mac">${it.grams}g · P:${it.protein}g C:${it.carb}g F:${it.fat}g</div>
+        </div>
+        <div class="mi-kcal">${it.kcal}</div>
+      </div>`;
+    })).join('');
+    return `<div class="card">
+      <div class="card-label">${fmt(l.date)} · ${totalKcal(l)} kcal</div>
+      ${rows||'<div style="color:var(--faint);font-size:13px;padding:4px 0">Chưa có</div>'}
     </div>`;
   }).join('');
 
-  const recentTxns = txns.slice(0,15).map(t => {
-    const m = CAT_META[t.category] || CAT_META.other;
-    const isInc = t.type === 'income';
-    return `<div class="history-item">
-      <div class="h-icon" style="background:${m.color}22">${m.icon}</div>
-      <div class="h-info">
-        <div class="h-title">${t.description||m.label}</div>
-        <div class="h-sub">${formatDate(t.date)} · ${t.time||''}</div>
-      </div>
-      <div class="h-val" style="color:${isInc?'var(--primary)':'var(--red)'}">${isInc?'+':'−'}${fmtVND(t.amount)}</div>
-    </div>`;
-  }).join('') || '<div class="loading" style="padding:20px">Chưa có giao dịch</div>';
-
   return `
-    <div class="summary">
-      <div class="stat"><div class="v" style="color:var(--primary);font-size:14px">${fmtVND(totalIncome)}</div><div class="l">thu tháng này</div></div>
-      <div class="stat"><div class="v" style="color:var(--red);font-size:14px">${fmtVND(totalExpense)}</div><div class="l">chi tháng này</div></div>
-      <div class="stat"><div class="v" style="color:${saved>=0?'var(--primary)':'var(--red)'};font-size:14px">${fmtVND(Math.abs(saved))}</div><div class="l">${saved>=0?'tiết kiệm':'thâm hụt'}</div></div>
-    </div>
-    <div class="card">
-      <div class="card-label">Chi theo ngày (nghìn VND)</div>
-      <div class="chart-wrap"><canvas id="c-finance-daily"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="card-label">Ngân sách tháng này</div>
-      ${budgetBars}
-    </div>
-    <div class="section-title" style="font-size:13px;font-weight:700;margin:12px 0 8px">Giao dịch gần đây</div>
-    ${recentTxns}`;
-}
-
-function drawFinanceCharts(logs) {
-  const ordered = [...logs].reverse();
-  const labels = ordered.map(l => shortDate(l.date));
-  const dailyExp = ordered.map(l =>
-    (l.transactions||[]).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0) / 1000
-  );
-  drawBar('c-finance-daily', labels, dailyExp, '#EF4444');
-}
-
-function fmtVND(n) {
-  if (n >= 1000000) return (n/1000000).toFixed(1) + 'tr';
-  if (n >= 1000) return Math.round(n/1000) + 'k';
-  return n + '';
-}
-
-// ── Overview tab ──
-function renderOverview(logs) {
-  const avgCal = avg(logs, l => totalKcal(l));
-  const avgSleep = avg(logs, l => l.sleep_hours || 0);
-  const avgSteps = avg(logs, l => l.steps || 0);
-  const latest = logs.find(l => l.weight_kg > 0);
-
-  return `
-    <div class="summary">
-      <div class="stat">
-        <div class="v" style="color:var(--red)">${Math.round(avgCal)}</div>
-        <div class="l">avg kcal</div>
-      </div>
-      <div class="stat">
-        <div class="v" style="color:var(--purple)">${avgSleep.toFixed(1)}</div>
-        <div class="l">avg giờ ngủ</div>
-      </div>
-      <div class="stat">
-        <div class="v" style="color:var(--amber)">${(avgSteps/1000).toFixed(1)}k</div>
-        <div class="l">avg bước</div>
-      </div>
-      <div class="stat">
-        <div class="v" style="color:var(--primary)">${latest ? latest.weight_kg : '--'}</div>
-        <div class="l">kg hiện tại</div>
-      </div>
+    <div class="stats col4">
+      <div class="stat"><div class="v" style="color:var(--red)">${Math.round(avgCal)}</div><div class="l">avg kcal</div></div>
+      <div class="stat"><div class="v" style="color:var(--purple)">${avgSleep.toFixed(1)}h</div><div class="l">avg ngủ</div></div>
+      <div class="stat"><div class="v" style="color:var(--amber)">${(avgSteps/1000).toFixed(1)}k</div><div class="l">avg bước</div></div>
+      <div class="stat"><div class="v" style="color:var(--green)">${latest?latest.weight_kg:'--'}</div><div class="l">kg</div></div>
     </div>
 
     <div class="card">
@@ -514,345 +343,261 @@ function renderOverview(logs) {
     </div>
 
     <div class="card">
-      <div class="card-label">Macro trung bình (g/ngày)</div>
-      <div class="chart-wrap"><canvas id="c-macro"></canvas></div>
+      <div class="card-label">Macro trung bình / ngày</div>
+      <div style="display:flex;gap:8px;text-align:center">
+        <div style="flex:1"><div style="font-size:21px;font-weight:900;color:var(--blue)">${Math.round(avg(logs,l=>totalMacro(l,'protein')))}g</div><div style="font-size:11px;color:var(--muted)">Protein</div></div>
+        <div style="flex:1"><div style="font-size:21px;font-weight:900;color:var(--amber)">${Math.round(avg(logs,l=>totalMacro(l,'carb')))}g</div><div style="font-size:11px;color:var(--muted)">Carb</div></div>
+        <div style="flex:1"><div style="font-size:21px;font-weight:900;color:var(--purple)">${Math.round(avg(logs,l=>totalMacro(l,'fat')))}g</div><div style="font-size:11px;color:var(--muted)">Fat</div></div>
+      </div>
     </div>
 
-    <div class="metric-grid">
-      <div class="metric-mini">
-        <div class="icon">💧</div>
-        <div class="val">${(avg(logs, l => l.water_ml || 0) / 1000).toFixed(1)}L</div>
-        <div class="sub">trung bình / ngày</div>
-        <div class="pbar"><div class="pfill" style="background:var(--blue);width:${Math.min(100,(avg(logs,l=>l.water_ml||0)/2000)*100)}%"></div></div>
+    <div class="mgrid">
+      <div class="mm"><div class="ico">💧</div><div class="val">${(avg(logs,l=>l.water_ml||0)/1000).toFixed(1)}L</div><div class="sub">avg / ngày</div><div class="pbar"><div class="pfill" style="background:var(--blue);width:${pc(avg(logs,l=>l.water_ml||0),2000)}%"></div></div></div>
+      <div class="mm"><div class="ico">👟</div><div class="val">${(avgSteps/1000).toFixed(1)}k</div><div class="sub">avg / ngày</div><div class="pbar"><div class="pfill" style="background:var(--amber);width:${pc(avgSteps,8000)}%"></div></div></div>
+      <div class="mm"><div class="ico">😴</div><div class="val">${avgSleep.toFixed(1)}h</div><div class="sub">avg / đêm</div><div class="pbar"><div class="pfill" style="background:var(--purple);width:${pc(avgSleep,8)}%"></div></div></div>
+      <div class="mm">
+        <div class="ico">⚖️</div>
+        <div class="val">${latest?latest.weight_kg+'kg':'--'}</div>
+        <div class="sub">${delta!==null?`<span class="wdelta ${dc}">${ds}</span>`:'chưa có cân nặng'}</div>
       </div>
-      <div class="metric-mini">
-        <div class="icon">👟</div>
-        <div class="val">${(avg(logs, l => l.steps || 0)/1000).toFixed(1)}k</div>
-        <div class="sub">trung bình / ngày</div>
-        <div class="pbar"><div class="pfill" style="background:var(--amber);width:${Math.min(100,(avg(logs,l=>l.steps||0)/8000)*100)}%"></div></div>
-      </div>
-      <div class="metric-mini">
-        <div class="icon">😴</div>
-        <div class="val">${avgSleep.toFixed(1)}h</div>
-        <div class="sub">trung bình / đêm</div>
-        <div class="pbar"><div class="pfill" style="background:var(--purple);width:${Math.min(100,(avgSleep/8)*100)}%"></div></div>
-      </div>
-      <div class="metric-mini">
-        <div class="icon">🔥</div>
-        <div class="val">${Math.round(avgCal)}</div>
-        <div class="sub">avg kcal / ngày</div>
-        <div class="pbar"><div class="pfill" style="background:var(--red);width:${Math.min(100,(avgCal/2000)*100)}%"></div></div>
-      </div>
-    </div>`;
+    </div>
+
+    ${withW.length>1?`<div class="card"><div class="card-label">Cân nặng (kg)</div><div class="chart-wrap"><canvas id="c-weight"></canvas></div></div>`:''}
+    <div class="card"><div class="card-label">Giấc ngủ (giờ)</div><div class="chart-wrap"><canvas id="c-sleep"></canvas></div></div>
+    <div class="card"><div class="card-label">Bước chân (nghìn)</div><div class="chart-wrap"><canvas id="c-steps"></canvas></div></div>
+
+    <div class="stitle">🍽️ Bữa ăn gần đây</div>
+    ${foodSections}`;
+}
+function drawHealth(logs) {
+  const o = [...logs].reverse();
+  const lb = o.map(l=>shortDate(l.date));
+  drawBar('c-cal',    lb, o.map(l=>totalKcal(l)),          '#EF4444', 2000);
+  drawLine('c-weight',lb, o.map(l=>l.weight_kg||0),         '#10B981', 66);
+  drawLine('c-sleep', lb, o.map(l=>l.sleep_hours||0),        '#8B5CF6', 7.5);
+  drawBar('c-steps',  lb, o.map(l=>(l.steps||0)/1000),      '#F59E0B', 8);
 }
 
-// ── Food tab ──
-function renderFood(logs) {
-  const recent = logs.slice(0, 5);
-  const avgP = avg(logs, l => totalMacro(l, 'protein'));
-  const avgC = avg(logs, l => totalMacro(l, 'carb'));
-  const avgF = avg(logs, l => totalMacro(l, 'fat'));
+// ═══════════════════════════════
+//  TAB 2 — Tập luyện
+// ═══════════════════════════════
+const TYPE_META = {
+  gym:{ico:'💪',color:'#8B5CF6'},cardio:{ico:'🏃',color:'#EF4444'},
+  yoga:{ico:'🧘',color:'#EC4899'},swim:{ico:'🏊',color:'#3B82F6'},
+  bike:{ico:'🚴',color:'#F59E0B'},other:{ico:'⚡',color:'#6B7280'}
+};
+function renderWorkout(logs) {
+  if (!logs.length) return '<div class="loading">😶 Chưa có buổi tập nào</div>';
+  const sessions = logs.flatMap(l=>(l.sessions||[]).map(s=>({...s,date:l.date})));
+  const totMin   = sessions.reduce((s,x)=>s+(x.duration_min||0),0);
+  const totKcal  = sessions.reduce((s,x)=>s+(x.calories||0),0);
 
-  const sections = recent.map(l => {
-    const meals = (l.meals || []);
-    const dayLabel = formatDate(l.date);
-    const rows = meals.map(m => {
-      const items = (m.items || []);
-      const emoji = m.source === 'receipt' ? '🧾' : m.source === 'bill' ? '🛒' : '📸';
-      return items.map(it => `
-        <div class="meal-item">
-          <div class="meal-emoji">${emoji}</div>
-          <div class="meal-info">
-            <div class="meal-name">${it.name}</div>
-            <div class="meal-macro">${it.grams}g · P:${it.protein}g C:${it.carb}g F:${it.fat}g</div>
-          </div>
-          <div class="meal-kcal">${it.kcal}</div>
-        </div>`).join('');
+  const rows = sessions.slice(0,20).map(s => {
+    const m = TYPE_META[s.type]||TYPE_META.other;
+    const ex = (s.exercises||[]).map(e => {
+      const sets = e.sets.map(st=>`${st.reps}×${st.weight_kg}kg`).join(', ');
+      return `<div class="hi-extra">${e.name}: ${sets}</div>`;
     }).join('');
-
-    return `<div class="card">
-      <div class="card-label">${dayLabel} · ${totalKcal(l)} kcal tổng</div>
-      ${rows || '<div style="color:var(--faint);font-size:13px;padding:8px 0">Không có dữ liệu</div>'}
+    return `<div class="hi">
+      <div class="hi-ico" style="background:${m.color}22">${m.ico}</div>
+      <div class="hi-info">
+        <div class="hi-title">${s.type.toUpperCase()} · ${fmt(s.date)}</div>
+        <div class="hi-sub">${s.duration_min} phút · ${s.calories||0} kcal</div>
+        ${ex}
+      </div>
     </div>`;
   }).join('');
 
   return `
-    <div class="card">
-      <div class="card-label">Macro trung bình / ngày</div>
-      <div style="display:flex;gap:10px;text-align:center">
-        <div style="flex:1"><div style="font-size:22px;font-weight:900;color:var(--blue)">${Math.round(avgP)}g</div><div style="font-size:11px;color:var(--muted)">Protein</div></div>
-        <div style="flex:1"><div style="font-size:22px;font-weight:900;color:var(--amber)">${Math.round(avgC)}g</div><div style="font-size:11px;color:var(--muted)">Carb</div></div>
-        <div style="flex:1"><div style="font-size:22px;font-weight:900;color:var(--purple)">${Math.round(avgF)}g</div><div style="font-size:11px;color:var(--muted)">Fat</div></div>
-      </div>
+    <div class="stats col3">
+      <div class="stat"><div class="v" style="color:var(--purple)">${sessions.length}</div><div class="l">buổi tập</div></div>
+      <div class="stat"><div class="v" style="color:var(--amber)">${totMin}</div><div class="l">phút</div></div>
+      <div class="stat"><div class="v" style="color:var(--red)">${totKcal}</div><div class="l">kcal đốt</div></div>
     </div>
-    ${sections}`;
+    <div class="card"><div class="card-label">Số buổi / ngày</div><div class="chart-wrap"><canvas id="c-wfreq"></canvas></div></div>
+    <div class="stitle">Lịch sử buổi tập</div>
+    <div class="card">${rows}</div>`;
+}
+function drawWorkout(logs) {
+  const o = [...logs].reverse();
+  drawBar('c-wfreq', o.map(l=>shortDate(l.date)), o.map(l=>(l.sessions||[]).length), '#8B5CF6');
 }
 
-// ── Body tab ──
-function renderBody(logs) {
-  const withWeight = logs.filter(l => l.weight_kg > 0);
-  const first = withWeight[withWeight.length - 1];
-  const last = withWeight[0];
-  const delta = first && last ? (last.weight_kg - first.weight_kg).toFixed(1) : null;
-  const deltaClass = delta > 0 ? 'delta-up' : delta < 0 ? 'delta-down' : 'delta-flat';
-  const deltaStr = delta > 0 ? `+${delta} kg` : `${delta} kg`;
+// ═══════════════════════════════
+//  TAB 3 — Tài chính
+// ═══════════════════════════════
+const BUDGET = {food:3000000,transport:1000000,shopping:2000000,health:500000,entertainment:500000,bills:2000000,other:500000};
+const CAT = {
+  food:{ico:'🍽️',color:'#F59E0B',lbl:'Ăn uống'},
+  transport:{ico:'🚗',color:'#3B82F6',lbl:'Đi lại'},
+  shopping:{ico:'🛍️',color:'#EC4899',lbl:'Mua sắm'},
+  health:{ico:'💊',color:'#10B981',lbl:'Sức khỏe'},
+  entertainment:{ico:'🎬',color:'#8B5CF6',lbl:'Giải trí'},
+  bills:{ico:'🏠',color:'#6B7280',lbl:'Hóa đơn'},
+  income:{ico:'💰',color:'#10B981',lbl:'Thu nhập'},
+  other:{ico:'📦',color:'#9CA3AF',lbl:'Khác'}
+};
+function renderFinance(logs) {
+  const mm     = new Date().toISOString().slice(0,7);
+  const monthT = logs.filter(l=>l.date.startsWith(mm)).flatMap(l=>l.transactions||[]);
+  const allT   = logs.flatMap(l=>(l.transactions||[]).map(t=>({...t,date:l.date})));
+  const income  = monthT.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const expense = monthT.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const saved   = income-expense;
+  const byCat   = {};
+  monthT.filter(t=>t.type==='expense').forEach(t=>{ byCat[t.category]=(byCat[t.category]||0)+t.amount; });
+
+  const budgetHtml = Object.entries(BUDGET).map(([cat,bud]) => {
+    const spent = byCat[cat]||0, pct=Math.min(100,(spent/bud)*100);
+    const c=CAT[cat]||CAT.other, over=spent>bud;
+    return `<div style="margin-bottom:11px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
+        <span>${c.ico} ${c.lbl}</span>
+        <span style="color:${over?'var(--red)':'var(--muted)'}">${vnd(spent)} / ${vnd(bud)}</span>
+      </div>
+      <div class="pbar"><div class="pfill" style="width:${pct}%;background:${over?'var(--red)':c.color}"></div></div>
+    </div>`;
+  }).join('');
+
+  const txRows = allT.slice(0,20).map(t => {
+    const c=CAT[t.category]||CAT.other, inc=t.type==='income';
+    return `<div class="hi">
+      <div class="hi-ico" style="background:${c.color}22">${c.ico}</div>
+      <div class="hi-info">
+        <div class="hi-title">${t.description||c.lbl}</div>
+        <div class="hi-sub">${fmt(t.date)}${t.time?' · '+t.time:''}</div>
+      </div>
+      <div class="hi-val" style="color:${inc?'var(--green)':'var(--red)'}">${inc?'+':'−'}${vnd(t.amount)}</div>
+    </div>`;
+  }).join('') || '<div class="loading" style="padding:16px">Chưa có giao dịch</div>';
 
   return `
-    <div class="card">
-      <div class="card-label">Cân nặng</div>
-      <div class="weight-row">
-        <div class="weight-now">${last ? last.weight_kg + ' kg' : '--'}</div>
-        ${delta !== null ? `<div class="weight-delta ${deltaClass}">${deltaStr}</div>` : ''}
-      </div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:10px">so với ${currentRange} ngày trước</div>
-      <div class="chart-wrap"><canvas id="c-weight"></canvas></div>
+    <div class="stats col3">
+      <div class="stat"><div class="v" style="color:var(--green);font-size:14px">${vnd(income)}</div><div class="l">thu tháng</div></div>
+      <div class="stat"><div class="v" style="color:var(--red);font-size:14px">${vnd(expense)}</div><div class="l">chi tháng</div></div>
+      <div class="stat"><div class="v" style="color:${saved>=0?'var(--green)':'var(--red)'};font-size:14px">${vnd(Math.abs(saved))}</div><div class="l">${saved>=0?'tiết kiệm':'thâm hụt'}</div></div>
     </div>
-
-    <div class="card">
-      <div class="card-label">Giấc ngủ (giờ/đêm)</div>
-      <div class="chart-wrap"><canvas id="c-sleep"></canvas></div>
-    </div>
-
-    <div class="card">
-      <div class="card-label">Bước chân / ngày</div>
-      <div class="chart-wrap"><canvas id="c-steps"></canvas></div>
-    </div>
-
-    <div class="card">
-      <div class="card-label">Nước uống / ngày</div>
-      <div class="chart-wrap"><canvas id="c-water"></canvas></div>
-    </div>`;
+    <div class="card"><div class="card-label">Chi tiêu / ngày (nghìn đồng)</div><div class="chart-wrap"><canvas id="c-fday"></canvas></div></div>
+    <div class="card"><div class="card-label">Ngân sách tháng này</div>${budgetHtml}</div>
+    <div class="stitle">Giao dịch gần đây</div>
+    <div class="card">${txRows}</div>`;
+}
+function drawFinance(logs) {
+  const o = [...logs].reverse();
+  drawBar('c-fday',
+    o.map(l=>shortDate(l.date)),
+    o.map(l=>(l.transactions||[]).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0)/1000),
+    '#EF4444');
 }
 
 // ═══════════════════════════════
-//  CHARTS
+//  CHART ENGINE
 // ═══════════════════════════════
-function drawCharts(logs) {
-  const ordered = [...logs].reverse();
-  const labels = ordered.map(l => shortDate(l.date));
-  setTimeout(() => {
-    if (currentTab === 'overview') {
-      drawBar('c-cal',   labels, ordered.map(l => totalKcal(l)),       '#EF4444', 2000);
-      drawHBar('c-macro', ['Protein','Carb','Fat'],
-        [avg(logs,l=>totalMacro(l,'protein')), avg(logs,l=>totalMacro(l,'carb')), avg(logs,l=>totalMacro(l,'fat'))],
-        ['#3B82F6','#F59E0B','#8B5CF6']);
-    } else if (currentTab === 'body') {
-      drawLine('c-weight', labels, ordered.map(l => l.weight_kg || 0), '#10B981');
-      drawLine('c-sleep',  labels, ordered.map(l => l.sleep_hours || 0), '#8B5CF6', 7.5);
-      drawBar('c-steps',   labels, ordered.map(l => (l.steps || 0)/1000), '#F59E0B', 8);
-      drawBar('c-water',   labels, ordered.map(l => (l.water_ml||0)/1000), '#3B82F6', 2);
-    }
-  }, 30);
-}
-
 function setupCanvas(id, h=140) {
-  const c = document.getElementById(id);
-  if (!c) return null;
-  const dpr = window.devicePixelRatio || 1;
-  const W = c.parentElement.offsetWidth || 300;
-  c.style.width = W + 'px'; c.style.height = h + 'px';
-  c.width = W * dpr; c.height = h * dpr;
-  const ctx = c.getContext('2d');
-  ctx.scale(dpr, dpr);
-  return { ctx, W, H: h, dpr };
+  const c = document.getElementById(id); if (!c) return null;
+  const dpr=window.devicePixelRatio||1, W=c.parentElement.offsetWidth||300;
+  c.style.width=W+'px'; c.style.height=h+'px';
+  c.width=W*dpr; c.height=h*dpr;
+  const ctx=c.getContext('2d'); ctx.scale(dpr,dpr);
+  return {ctx,W,H:h};
 }
-
-function noData(ctx, W, H) {
-  ctx.fillStyle = '#9CA3AF'; ctx.font = '12px -apple-system';
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText('Chưa có dữ liệu', W/2, H/2);
+function noData(ctx,W,H) {
+  ctx.fillStyle='#9CA3AF'; ctx.font='12px -apple-system';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('Chưa có dữ liệu',W/2,H/2);
 }
-
-function drawBar(id, labels, data, color, goalVal=null) {
-  const s = setupCanvas(id); if (!s) return;
-  const { ctx, W, H } = s;
-  ctx.clearRect(0, 0, W, H);
-  if (data.every(v => !v)) { noData(ctx, W, H); return; }
-
-  const pad = { t: 22, r: 10, b: 26, l: 32 };
-  const cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
-  const max = Math.max(...data, goalVal||0) * 1.2 || 1;
-
-  // Goal line
-  if (goalVal) {
-    const gy = pad.t + ch - (goalVal/max)*ch;
-    ctx.setLineDash([4,3]); ctx.strokeStyle = color + '66'; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.moveTo(pad.l, gy); ctx.lineTo(W-pad.r, gy); ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = color + '99'; ctx.font = '9px -apple-system'; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
-    ctx.fillText('目標', W-pad.r-2, gy-2);
+function drawBar(id, labels, data, color, goal=null) {
+  const s=setupCanvas(id); if (!s) return;
+  const {ctx,W,H}=s; ctx.clearRect(0,0,W,H);
+  if (data.every(v=>!v)) { noData(ctx,W,H); return; }
+  const pad={t:22,r:10,b:26,l:32}, cw=W-pad.l-pad.r, ch=H-pad.t-pad.b;
+  const max=Math.max(...data,goal||0)*1.2||1;
+  if (goal) {
+    const gy=pad.t+ch-(goal/max)*ch;
+    ctx.setLineDash([4,3]); ctx.strokeStyle=color+'66'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(pad.l,gy); ctx.lineTo(W-pad.r,gy); ctx.stroke(); ctx.setLineDash([]);
   }
-
-  // Grid
-  [0,.5,1].forEach(t => {
-    const y = pad.t + ch*t;
-    ctx.strokeStyle = '#F3F4F6'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W-pad.r, y); ctx.stroke();
-    ctx.fillStyle = '#9CA3AF'; ctx.font = '9px -apple-system'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-    ctx.fillText((max*(1-t)).toFixed(max>10?0:1), pad.l-3, y);
+  [0,.5,1].forEach(t=>{
+    const y=pad.t+ch*t;
+    ctx.strokeStyle='#F3F4F6'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y); ctx.stroke();
+    ctx.fillStyle='#9CA3AF'; ctx.font='9px -apple-system'; ctx.textAlign='right'; ctx.textBaseline='middle';
+    ctx.fillText((max*(1-t)).toFixed(max>10?0:1),pad.l-3,y);
   });
-
-  const n = labels.length;
-  const slotW = cw / Math.max(n,1);
-  const barW = Math.min(slotW * 0.6, 28);
-
-  data.forEach((v, i) => {
-    const x = pad.l + slotW*i + (slotW-barW)/2;
-    const bh = (v/max)*ch;
-    const y = pad.t + ch - bh;
-    const isToday = i === n-1;
-    ctx.fillStyle = isToday ? color : color + '77';
-    if (bh > 0) {
-      ctx.beginPath();
-      const r = 4;
+  const n=labels.length, slotW=cw/Math.max(n,1), barW=Math.min(slotW*.6,28);
+  data.forEach((v,i)=>{
+    const x=pad.l+slotW*i+(slotW-barW)/2, bh=(v/max)*ch, y=pad.t+ch-bh, now=i===n-1;
+    ctx.fillStyle=now?color:color+'77';
+    if (bh>0) {
+      ctx.beginPath(); const r=4;
       ctx.moveTo(x+r,y); ctx.lineTo(x+barW-r,y);
       ctx.quadraticCurveTo(x+barW,y,x+barW,y+r);
       ctx.lineTo(x+barW,pad.t+ch); ctx.lineTo(x,pad.t+ch); ctx.lineTo(x,y+r);
       ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath(); ctx.fill();
     }
-    if (v > 0) {
-      ctx.fillStyle = '#374151'; ctx.font = `${isToday?'bold ':''} 9px -apple-system`;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
-      ctx.fillText(v%1===0?v:v.toFixed(1), x+barW/2, y-2);
-    }
-    ctx.fillStyle = isToday ? '#111827' : '#9CA3AF';
-    ctx.font = `${isToday?'bold ':''} 9px -apple-system`;
-    ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
-    ctx.fillText(labels[i], x+barW/2, H-2);
+    if (v>0) { ctx.fillStyle='#374151'; ctx.font=`${now?'bold ':''} 9px -apple-system`; ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText(v%1===0?v:v.toFixed(1),x+barW/2,y-2); }
+    ctx.fillStyle=now?'#111827':'#9CA3AF'; ctx.font=`${now?'bold ':''} 9px -apple-system`; ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.fillText(labels[i],x+barW/2,H-2);
   });
 }
-
-function drawLine(id, labels, data, color, goalVal=null) {
-  const s = setupCanvas(id); if (!s) return;
-  const { ctx, W, H } = s;
-  ctx.clearRect(0, 0, W, H);
-  const nonZero = data.filter(v => v > 0);
-  if (!nonZero.length) { noData(ctx, W, H); return; }
-
-  const pad = { t: 22, r: 10, b: 26, l: 34 };
-  const cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
-  const max = Math.max(...nonZero, goalVal||0) * 1.15;
-  const min = Math.min(...nonZero) * 0.85;
-  const range = max - min || 1;
-
-  // Goal
-  if (goalVal) {
-    const gy = pad.t + ch - ((goalVal-min)/range)*ch;
-    ctx.setLineDash([4,3]); ctx.strokeStyle = color + '55'; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.moveTo(pad.l,gy); ctx.lineTo(W-pad.r,gy); ctx.stroke();
-    ctx.setLineDash([]);
+function drawLine(id, labels, data, color, goal=null) {
+  const s=setupCanvas(id); if (!s) return;
+  const {ctx,W,H}=s; ctx.clearRect(0,0,W,H);
+  const nz=data.filter(v=>v>0); if (!nz.length) { noData(ctx,W,H); return; }
+  const pad={t:22,r:10,b:26,l:34}, cw=W-pad.l-pad.r, ch=H-pad.t-pad.b;
+  const max=Math.max(...nz,goal||0)*1.15, min=Math.min(...nz)*.85, rng=max-min||1;
+  if (goal) {
+    const gy=pad.t+ch-((goal-min)/rng)*ch;
+    ctx.setLineDash([4,3]); ctx.strokeStyle=color+'55'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(pad.l,gy); ctx.lineTo(W-pad.r,gy); ctx.stroke(); ctx.setLineDash([]);
   }
-
-  [0,.5,1].forEach(t => {
-    const y = pad.t + ch*t;
-    ctx.strokeStyle = '#F3F4F6'; ctx.lineWidth = 1;
+  [0,.5,1].forEach(t=>{
+    const y=pad.t+ch*t;
+    ctx.strokeStyle='#F3F4F6'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y); ctx.stroke();
-    const v = max - range*t;
-    ctx.fillStyle = '#9CA3AF'; ctx.font = '9px -apple-system'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-    ctx.fillText(v.toFixed(1), pad.l-3, y);
+    ctx.fillStyle='#9CA3AF'; ctx.font='9px -apple-system'; ctx.textAlign='right'; ctx.textBaseline='middle';
+    ctx.fillText((max-rng*t).toFixed(1),pad.l-3,y);
   });
-
-  const n = labels.length;
-  const pts = data.map((v,i) => ({
-    x: pad.l + (n>1?(i/(n-1))*cw : cw/2),
-    y: v > 0 ? pad.t + ch - ((v-min)/range)*ch : null
-  }));
-
-  // Area
-  const grad = ctx.createLinearGradient(0,pad.t,0,pad.t+ch);
-  grad.addColorStop(0, color+'30'); grad.addColorStop(1, color+'00');
-  ctx.beginPath();
-  let started = false;
-  pts.forEach((p,i) => {
-    if (!p.y) return;
-    if (!started) { ctx.moveTo(p.x, pad.t+ch); ctx.lineTo(p.x,p.y); started=true; }
-    else ctx.lineTo(p.x,p.y);
-  });
-  const lastPt = [...pts].reverse().find(p=>p.y);
-  if (lastPt) ctx.lineTo(lastPt.x, pad.t+ch);
-  ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
-
-  // Line
-  ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.lineJoin = 'round';
-  let lStarted = false;
-  pts.forEach(p => {
-    if (!p.y) { lStarted = false; return; }
-    if (!lStarted) { ctx.moveTo(p.x,p.y); lStarted=true; }
-    else ctx.lineTo(p.x,p.y);
-  });
+  const n=labels.length;
+  const pts=data.map((v,i)=>({ x:pad.l+(n>1?(i/(n-1))*cw:cw/2), y:v>0?pad.t+ch-((v-min)/rng)*ch:null }));
+  const grad=ctx.createLinearGradient(0,pad.t,0,pad.t+ch);
+  grad.addColorStop(0,color+'30'); grad.addColorStop(1,color+'00');
+  ctx.beginPath(); let ok=false;
+  pts.forEach(p=>{ if(!p.y)return; if(!ok){ctx.moveTo(p.x,pad.t+ch);ctx.lineTo(p.x,p.y);ok=true;}else ctx.lineTo(p.x,p.y); });
+  const lp=[...pts].reverse().find(p=>p.y); if(lp) ctx.lineTo(lp.x,pad.t+ch);
+  ctx.closePath(); ctx.fillStyle=grad; ctx.fill();
+  ctx.beginPath(); ctx.strokeStyle=color; ctx.lineWidth=2.5; ctx.lineJoin='round';
+  let ls=false; pts.forEach(p=>{ if(!p.y){ls=false;return;} if(!ls){ctx.moveTo(p.x,p.y);ls=true;}else ctx.lineTo(p.x,p.y); });
   ctx.stroke();
-
-  // Dots
-  pts.forEach((p,i) => {
+  pts.forEach((p,i)=>{
     if (!p.y) return;
     ctx.beginPath(); ctx.arc(p.x,p.y,3.5,0,Math.PI*2);
     ctx.fillStyle='white'; ctx.strokeStyle=color; ctx.lineWidth=2; ctx.fill(); ctx.stroke();
     ctx.fillStyle='#374151'; ctx.font='9px -apple-system'; ctx.textAlign='center'; ctx.textBaseline='bottom';
-    if (data[i]) ctx.fillText(data[i]%1===0?data[i]:data[i].toFixed(1), p.x, p.y-5);
+    if (data[i]) ctx.fillText(data[i]%1===0?data[i]:data[i].toFixed(1),p.x,p.y-5);
   });
-
-  labels.forEach((l,i) => {
-    const x = pad.l + (n>1?(i/(n-1))*cw:cw/2);
-    ctx.fillStyle = i===n-1?'#111827':'#9CA3AF';
-    ctx.font = `${i===n-1?'bold ':''} 9px -apple-system`;
-    ctx.textAlign='center'; ctx.textBaseline='bottom';
-    ctx.fillText(l,x,H-2);
-  });
-}
-
-function drawHBar(id, labels, data, colors) {
-  const s = setupCanvas(id); if (!s) return;
-  const { ctx, W, H } = s;
-  ctx.clearRect(0,0,W,H);
-  const max = Math.max(...data) * 1.3 || 1;
-  const pad = { t:14, r:10, b:14, l:52 };
-  const cw = W-pad.l-pad.r, ch = H-pad.t-pad.b;
-  const rowH = ch / labels.length;
-
-  labels.forEach((lbl,i) => {
-    const y = pad.t + rowH*i + rowH*.15;
-    const bh = rowH*.55;
-    const pct = Math.min(1, data[i]/max);
-    ctx.fillStyle = '#F3F4F6'; ctx.beginPath();
-    ctx.roundRect(pad.l,y,cw,bh,bh/2); ctx.fill();
-    if (pct > 0) {
-      ctx.fillStyle = colors[i]; ctx.beginPath();
-      ctx.roundRect(pad.l,y,cw*pct,bh,bh/2); ctx.fill();
-    }
-    ctx.fillStyle='#374151'; ctx.font='10px -apple-system'; ctx.textAlign='right'; ctx.textBaseline='middle';
-    ctx.fillText(lbl, pad.l-6, y+bh/2);
-    ctx.fillStyle=colors[i]; ctx.font='bold 10px -apple-system'; ctx.textAlign='left';
-    ctx.fillText(Math.round(data[i])+'g', pad.l+cw*pct+5, y+bh/2);
+  labels.forEach((l,i)=>{
+    const x=pad.l+(n>1?(i/(n-1))*cw:cw/2);
+    ctx.fillStyle=i===n-1?'#111827':'#9CA3AF'; ctx.font=`${i===n-1?'bold ':''} 9px -apple-system`;
+    ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText(l,x,H-2);
   });
 }
 
 // ═══════════════════════════════
 //  HELPERS
 // ═══════════════════════════════
-function totalKcal(log) {
-  return (log.meals||[]).reduce((s,m) => s + (m.total_kcal||0), 0);
-}
-function totalMacro(log, key) {
-  return (log.meals||[]).reduce((s,m) => s + (m['total_'+key]||0), 0);
-}
-function avg(arr, fn) {
-  const vals = arr.map(fn).filter(v => v > 0);
-  return vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : 0;
-}
-function shortDate(str) {
-  const d = new Date(str+'T12:00:00');
-  const days = ['CN','T2','T3','T4','T5','T6','T7'];
-  return days[d.getDay()];
-}
-function formatDate(str) {
-  const d = new Date(str+'T12:00:00');
-  const days = ['CN','T2','T3','T4','T5','T6','T7'];
-  return `${days[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`;
-}
+const DAYS=['CN','T2','T3','T4','T5','T6','T7'];
+function shortDate(s) { const d=new Date(s+'T12:00:00'); return DAYS[d.getDay()]; }
+function fmt(s) { const d=new Date(s+'T12:00:00'); return `${DAYS[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`; }
+function totalKcal(log) { return (log.meals||[]).reduce((s,m)=>s+(m.total_kcal||0),0); }
+function totalMacro(log,k) { return (log.meals||[]).reduce((s,m)=>s+(m['total_'+k]||0),0); }
+function avg(arr,fn) { const v=arr.map(fn).filter(x=>x>0); return v.length?v.reduce((a,b)=>a+b,0)/v.length:0; }
+function pc(v,max) { return Math.min(100,(v/max)*100).toFixed(1); }
+function vnd(n) { if(n>=1000000)return(n/1000000).toFixed(1)+'tr'; if(n>=1000)return Math.round(n/1000)+'k'; return n+''; }
 function toast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg; el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2500);
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2500);
 }
 
 // ═══════════════════════════════
@@ -860,13 +605,10 @@ function toast(msg) {
 // ═══════════════════════════════
 function startApp() {
   document.getElementById('setup').style.display = 'none';
-  document.getElementById('main').style.display = 'block';
+  document.getElementById('main').style.display  = 'block';
   reload();
 }
-
-if (loadConfig() && CFG.pat) {
-  startApp();
-}
+if (loadConfig() && CFG.pat) startApp();
 </script>
 </body>
 </html>
