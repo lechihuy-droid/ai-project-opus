@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Dashboard</title>
+<title>opus-vita</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -103,11 +103,25 @@ canvas { display: block; }
 </style>
 </head>
 <body>
+<!-- PAT Screen -->
+<div id="pat-screen" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;background:var(--bg)">
+  <div style="font-size:52px;margin-bottom:16px">🌿</div>
+  <div style="font-size:22px;font-weight:800;margin-bottom:6px">opus-vita</div>
+  <div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:28px">Nhập GitHub PAT để truy cập dữ liệu</div>
+  <div style="width:100%;background:var(--card);border-radius:var(--r);padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:14px">
+    <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:7px;display:block">GitHub PAT</label>
+    <input id="pat-input" type="password" placeholder="github_pat_..." style="width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;outline:none">
+    <p style="font-size:11px;color:var(--faint);margin-top:8px;line-height:1.6">Scope cần: <strong>Contents = Read-only</strong> cho repo <code>ai-project-opus</code></p>
+  </div>
+  <button onclick="savePat()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--green),var(--green-d));color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">Kết nối →</button>
+</div>
+
 <div id="app">
   <div class="topbar">
     <div class="tb-row1">
       <h1>🌿 Dashboard</h1>
       <button class="sync-btn" onclick="reload()">↻ Sync</button>
+      <button onclick="resetPat()" style="font-size:12px;padding:6px 10px;background:var(--bg);color:var(--muted);border:none;border-radius:8px;cursor:pointer;font-family:inherit">🔑</button>
     </div>
     <div class="mod-tabs">
       <button class="mtab active" id="mt-health"  onclick="showTab('health')">🌿 Sức khỏe</button>
@@ -128,20 +142,49 @@ canvas { display: block; }
 <div class="toast" id="toast"></div>
 
 <script>
-// ── Config (hardcoded — repo must be public) ──
-const REPO   = 'lechihuy-droid/ai-project-opus';
-const BRANCH = 'main';
+// ── Config ──
+const DATA_REPO   = 'lechihuy-droid/ai-project-opus';
+const DATA_BRANCH = 'main';
 
+let PAT = localStorage.getItem('ov_pat') || '';
 let currentRange = 7;
 let currentTab   = 'health';
 let cHealth = [], cWorkout = [], cFinance = [];
 
-// ── Fetch raw JSON from public repo ──
+// ── PAT setup ──
+function checkPat() {
+  if (!PAT) {
+    document.getElementById('pat-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+    return false;
+  }
+  return true;
+}
+function savePat() {
+  const v = document.getElementById('pat-input').value.trim();
+  if (!v) return;
+  PAT = v;
+  localStorage.setItem('ov_pat', PAT);
+  document.getElementById('pat-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  reload();
+}
+function resetPat() {
+  localStorage.removeItem('ov_pat');
+  PAT = '';
+  document.getElementById('pat-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+// ── Fetch from private repo via GitHub API ──
 async function ghGet(path) {
-  const url = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${path}`;
-  const r = await fetch(url + '?t=' + Date.now()); // cache-bust
+  const url = `https://api.github.com/repos/${DATA_REPO}/contents/${path}?ref=${DATA_BRANCH}`;
+  const r = await fetch(url, {
+    headers: { 'Authorization': `Bearer ${PAT}`, 'Accept': 'application/vnd.github.v3+json' }
+  });
   if (!r.ok) { if (r.status===404) return null; throw new Error(`${r.status}: ${path}`); }
-  return r.json();
+  const d = await r.json();
+  return JSON.parse(atob(d.content.replace(/\n/g,'')));
 }
 
 // ── Data loading ──
@@ -186,7 +229,7 @@ async function reload() {
     renderContent();
   } catch(e) {
     document.getElementById('content').innerHTML =
-      `<div class="err">❌ Không load được dữ liệu:<br><strong>${e.message}</strong><br><br>Đảm bảo repo đã public và GitHub Pages đã bật.</div>`;
+      `<div class="err">❌ Lỗi tải dữ liệu:<br><strong>${e.message}</strong><br><br>Kiểm tra PAT hoặc kết nối mạng. <span style="text-decoration:underline;cursor:pointer" onclick="resetPat()">Đổi PAT</span></div>`;
   }
 }
 function renderContent() {
@@ -461,7 +504,7 @@ function vnd(n) { if(n>=1000000)return(n/1000000).toFixed(1)+'tr'; if(n>=1000)re
 function toast(msg) { const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2500); }
 
 // ── Boot ──
-reload();
+if (checkPat()) reload();
 </script>
 </body>
 </html>
