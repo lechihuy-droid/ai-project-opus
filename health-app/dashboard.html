@@ -98,6 +98,18 @@ canvas { display: block; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .err { background: #FEF2F2; border-left: 3px solid var(--red); border-radius: 10px; padding: 14px; font-size: 13px; color: #991B1B; line-height: 1.6; }
 
+/* ── Day accordion ── */
+.day-acc { background: var(--card); border-radius: 12px; margin-bottom: 7px; box-shadow: 0 1px 3px rgba(0,0,0,.06); overflow: hidden; }
+.day-acc summary { list-style: none; cursor: pointer; padding: 12px 14px; display: flex; align-items: center; gap: 10px; user-select: none; -webkit-tap-highlight-color: transparent; }
+.day-acc summary::-webkit-details-marker { display: none; }
+.day-acc summary:active { background: var(--bg); }
+.da-date { font-size: 13px; font-weight: 700; flex: 1; }
+.da-meta { font-size: 11px; color: var(--muted); }
+.da-kcal { font-size: 14px; font-weight: 800; color: var(--green); }
+.da-chev { font-size: 13px; color: var(--faint); transition: transform .2s; }
+.day-acc[open] .da-chev { transform: rotate(180deg); }
+.da-body { padding: 0 14px 12px; border-top: 1px solid var(--border); }
+
 /* ── Toast ── */
 .toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-80px); background: #111827; color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 999; transition: transform .3s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; }
 .toast.show { transform: translateX(-50%) translateY(0); }
@@ -267,7 +279,9 @@ function renderHealth(logs) {
   const delta    = first&&latest ? +(latest.weight_kg-first.weight_kg).toFixed(1) : null;
   const dc       = delta>0?'up':delta<0?'dn':'fl';
 
-  const foodSections = logs.slice(0,3).map(l => {
+  const foodSections = logs.map((l,i) => {
+    const kcal = totalKcal(l);
+    const mealCount = (l.meals||[]).length;
     const rows = (l.meals||[]).flatMap(m => (m.items||[]).map(it => {
       const ico = {receipt:'🧾',bill:'🛒'}[m.source]||'🍽️';
       return `<div class="mi">
@@ -279,10 +293,15 @@ function renderHealth(logs) {
         <div class="mi-kcal">${it.kcal}</div>
       </div>`;
     })).join('');
-    return `<div class="card">
-      <div class="card-label">${fmt(l.date)} · ${totalKcal(l)} kcal</div>
-      ${rows||'<div style="color:var(--faint);font-size:13px;padding:4px 0">Chưa có</div>'}
-    </div>`;
+    return `<details class="day-acc" ${i===0?'open':''}>
+      <summary>
+        <span class="da-date">${fmt(l.date)}</span>
+        <span class="da-meta">${mealCount} bữa</span>
+        <span class="da-kcal">${kcal} kcal</span>
+        <span class="da-chev">▾</span>
+      </summary>
+      <div class="da-body">${rows||'<div style="color:var(--faint);font-size:13px;padding:8px 0">Chưa có bữa nào</div>'}</div>
+    </details>`;
   }).join('');
 
   return `
