@@ -120,9 +120,11 @@ canvas { display: block; }
 <div id="app">
   <div class="topbar">
     <div class="tb-row1">
-      <h1>🌿 Dashboard</h1>
-      <button class="sync-btn" onclick="reload()">↻ Sync</button>
-      <button onclick="resetPat()" style="font-size:12px;padding:6px 10px;background:var(--bg);color:var(--muted);border:none;border-radius:8px;cursor:pointer;font-family:inherit">🔑</button>
+      <h1>🌿 <span id="streak-badge"></span></h1>
+      <div style="display:flex;gap:6px">
+        <button class="sync-btn" onclick="reload()">↻ Sync</button>
+        <button onclick="resetPat()" style="font-size:12px;padding:6px 10px;background:var(--bg);color:var(--muted);border:none;border-radius:8px;cursor:pointer;font-family:inherit">🔑</button>
+      </div>
     </div>
     <div class="mod-tabs">
       <button class="mtab active" id="mt-health"  onclick="showTab('health')">🌿 Sức khỏe</button>
@@ -151,6 +153,10 @@ let PAT = localStorage.getItem('ov_pat') || '';
 let currentRange = 7;
 let currentTab   = 'health';
 let cHealth = [], cWorkout = [], cFinance = [];
+let healthIdx = [], workoutIdx = [], financeIdx = [];
+
+// ── Targets ──
+const TARGET = { kcal: 2200, protein: 130, water_ml: 2000, steps: 8000, sleep: 7.5 };
 
 // ── PAT setup ──
 function checkPat() {
@@ -198,10 +204,13 @@ function datesInRange(n) {
 }
 async function loadModule(prefix, range) {
   const idx = await ghGet(`${prefix}/index.json`);
-  if (!idx?.length) return [];
+  if (!idx?.length) return { rows: [], idx: [] };
   const dates = datesInRange(range).filter(d => idx.includes(d));
   const rows  = await Promise.all(dates.map(d => ghGet(`${prefix}/${d}.json`)));
-  return rows.filter(Boolean).sort((a,b) => b.date.localeCompare(a.date));
+  return {
+    rows: rows.filter(Boolean).sort((a,b) => b.date.localeCompare(a.date)),
+    idx: [...idx].sort((a,b) => b.localeCompare(a))
+  };
 }
 
 // ── Nav ──
@@ -223,11 +232,15 @@ async function reload() {
   document.getElementById('content').innerHTML =
     '<div class="loading"><span class="spin">🌿</span>Đang tải...</div>';
   try {
-    [cHealth, cWorkout, cFinance] = await Promise.all([
+    const [h, w, f] = await Promise.all([
       loadModule('health-data',  currentRange),
-      loadModule('workout-data', currentRange).catch(()=>[]),
-      loadModule('finance-data', currentRange).catch(()=>[])
+      loadModule('workout-data', currentRange).catch(()=>({rows:[],idx:[]})),
+      loadModule('finance-data', currentRange).catch(()=>({rows:[],idx:[]}))
     ]);
+    cHealth = h.rows;  healthIdx  = h.idx;
+    cWorkout = w.rows; workoutIdx = w.idx;
+    cFinance = f.rows; financeIdx = f.idx;
+    renderStreakBadge();
     renderContent();
   } catch(e) {
     document.getElementById('content').innerHTML =
@@ -243,7 +256,7 @@ function renderContent() {
 
 // ══ TAB 1 — Sức khỏe ══
 function renderHealth(logs) {
-  if (!logs.length) return `<div class="loading">😶 Chưa có dữ liệu sức khỏe</div>
+  if (!logs.length) return `<div class="loading">😶 Chưa có dữ liệu sức khỏe<br><span style="font-size:12px;color:var(--faint);margin-top:8px;display:block">Gửi ảnh bữa ăn cho Claude để bắt đầu log</span></div>
     <button onclick="debugFetch()" style="display:block;margin:8px auto;padding:8px 16px;background:#E5E7EB;border:none;border-radius:8px;font-size:12px;cursor:pointer">🔍 Test API</button>
     <pre id="dbg-out" style="display:none;background:#F9FAFB;border-radius:8px;padding:12px;font-size:11px;white-space:pre-wrap;margin:0 0 16px"></pre>`;
   const avgCal   = avg(logs, l => totalKcal(l));
@@ -273,6 +286,8 @@ function renderHealth(logs) {
   }).join('');
 
   return `
+    ${renderTodayCard(logs)}
+    ${renderWeeklySummary(logs)}
     <div class="stats col4">
       <div class="stat"><div class="v" style="color:var(--red)">${Math.round(avgCal)}</div><div class="l">avg kcal</div></div>
       <div class="stat"><div class="v" style="color:var(--purple)">${avgSleep.toFixed(1)}h</div><div class="l">avg ngủ</div></div>
@@ -322,7 +337,7 @@ const TYPE_META = {
   bike:{ico:'🚴',color:'#F59E0B'},other:{ico:'⚡',color:'#6B7280'}
 };
 function renderWorkout(logs) {
-  if (!logs.length) return '<div class="loading">😶 Chưa có buổi tập nào</div>';
+  if (!logs.length) return '<div class="loading">😶 Chưa có buổi tập nào<br><span style="font-size:12px;color:var(--faint);margin-top:8px;display:block">Báo Claude khi tập xong: "tập gym 3x10 bench press 60kg"</span></div>';
   const sessions = logs.flatMap(l=>(l.sessions||[]).map(s=>({...s,date:l.date})));
   const totMin   = sessions.reduce((s,x)=>s+(x.duration_min||0),0);
   const totKcal  = sessions.reduce((s,x)=>s+(x.calories||0),0);
@@ -350,6 +365,7 @@ function renderWorkout(logs) {
       <div class="stat"><div class="v" style="color:var(--red)">${totKcal}</div><div class="l">kcal đốt</div></div>
     </div>
     <div class="card"><div class="card-label">Số buổi / ngày</div><div class="chart-wrap"><canvas id="c-wfreq"></canvas></div></div>
+    ${renderPRs(logs)}
     <div class="stitle">Lịch sử buổi tập</div>
     <div class="card">${rows}</div>`;
 }
@@ -533,6 +549,170 @@ async function debugFetch() {
     out.textContent += `Fetch failed: ${e.message}`;
   }
 }
+
+// ══════════════════════════════════════════════════════
+// ║  PHASE 1 — Streak, Today card, Weekly summary, PRs ║
+// ══════════════════════════════════════════════════════
+
+// ── 1.1 Streak counter ──
+function computeStreak(idxDesc) {
+  if (!idxDesc?.length) return 0;
+  const today = todayStr();
+  const y = new Date(); y.setDate(y.getDate()-1);
+  const yesterday = isoLocal(y);
+  let start = idxDesc.includes(today) ? today
+            : idxDesc.includes(yesterday) ? yesterday
+            : null;
+  if (!start) return 0;
+  let count = 0;
+  let cursor = new Date(start+'T12:00:00');
+  while (idxDesc.includes(isoLocal(cursor))) {
+    count++;
+    cursor.setDate(cursor.getDate()-1);
+  }
+  return count;
+}
+function renderStreakBadge() {
+  const all = [...new Set([...healthIdx, ...workoutIdx, ...financeIdx])].sort((a,b)=>b.localeCompare(a));
+  const s = computeStreak(all);
+  const el = document.getElementById('streak-badge');
+  if (!el) return;
+  el.innerHTML = s>0
+    ? `<span style="font-size:13px;font-weight:700;color:var(--amber);background:#FEF3C7;padding:3px 9px;border-radius:12px;margin-left:4px">🔥 ${s} ngày</span>`
+    : '';
+}
+
+// ── 1.2 Today card (Sức khỏe) ──
+function renderTodayCard(logs) {
+  const today = todayStr();
+  const t = logs.find(l => l.date === today);
+  if (!t) return `<div class="card" style="background:linear-gradient(135deg,#F0FDF4,#fff);border:1.5px dashed var(--green)">
+    <div class="card-label" style="color:var(--green-d)">📅 HÔM NAY · ${fmtFull(today)}</div>
+    <div style="font-size:13px;color:var(--muted);margin-top:4px">Chưa log gì hôm nay — gửi ảnh bữa ăn cho Claude để bắt đầu.</div>
+  </div>`;
+  const kcal = totalKcal(t);
+  const protein = totalMacro(t,'protein');
+  const items = [
+    { ico:'🔥', lbl:'Calo',    v:kcal,            tgt:TARGET.kcal,     unit:'kcal', color:'#EF4444' },
+    { ico:'💪', lbl:'Protein', v:Math.round(protein), tgt:TARGET.protein, unit:'g',    color:'#3B82F6' },
+    { ico:'💧', lbl:'Nước',    v:(t.water_ml||0)/1000, tgt:TARGET.water_ml/1000, unit:'L', color:'#3B82F6' },
+    { ico:'👟', lbl:'Bước',    v:t.steps||0,       tgt:TARGET.steps,    unit:'',     color:'#F59E0B' },
+    { ico:'😴', lbl:'Ngủ',     v:t.sleep_hours||0, tgt:TARGET.sleep,    unit:'h',    color:'#8B5CF6' }
+  ];
+  const rows = items.map(x => {
+    const pct = Math.min(100, (x.v/x.tgt)*100);
+    const ok  = pct >= 90;
+    return `<div style="margin-bottom:9px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+        <span>${x.ico} ${x.lbl}</span>
+        <span style="font-weight:700;color:${ok?'var(--green-d)':'var(--text)'}">${typeof x.v==='number' && x.v%1!==0 ? x.v.toFixed(1) : x.v}${x.unit} <span style="color:var(--faint);font-weight:500"> / ${x.tgt}${x.unit}</span></span>
+      </div>
+      <div class="pbar"><div class="pfill" style="background:${x.color};width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+  return `<div class="card" style="background:linear-gradient(135deg,#F0FDF4,#fff);border:1.5px solid var(--green-l)">
+    <div class="card-label" style="color:var(--green-d)">📅 HÔM NAY · ${fmtFull(today)}</div>
+    ${rows}
+  </div>`;
+}
+
+// ── 1.3 Weekly summary (this 7 vs prev 7) ──
+function renderWeeklySummary(logs) {
+  if (logs.length < 4) return '';
+  const today = new Date();
+  const cutThis  = isoLocal(addDays(today,-7));
+  const cutPrev  = isoLocal(addDays(today,-14));
+  const thisWk = logs.filter(l => l.date >  cutThis);
+  const prevWk = logs.filter(l => l.date <= cutThis && l.date > cutPrev);
+  if (!thisWk.length) return '';
+  const metrics = [
+    { lbl:'Kcal/ngày',    f:l=>totalKcal(l),         fmt:v=>Math.round(v),    unit:'' },
+    { lbl:'Protein',      f:l=>totalMacro(l,'protein'),fmt:v=>Math.round(v)+'g', unit:'' },
+    { lbl:'Ngủ',          f:l=>l.sleep_hours||0,     fmt:v=>v.toFixed(1)+'h', unit:'' },
+    { lbl:'Bước',         f:l=>l.steps||0,           fmt:v=>(v/1000).toFixed(1)+'k', unit:'' }
+  ];
+  const rows = metrics.map(m => {
+    const cur = avg(thisWk, m.f);
+    const prv = avg(prevWk, m.f);
+    const diff = prv>0 ? ((cur-prv)/prv*100) : 0;
+    const arrow = Math.abs(diff)<3 ? '→' : (diff>0?'↑':'↓');
+    const color = Math.abs(diff)<3 ? 'var(--muted)' : (diff>0?'var(--green-d)':'var(--red)');
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:12px;color:var(--muted)">${m.lbl}</span>
+      <span style="font-size:14px;font-weight:700">${m.fmt(cur)}</span>
+      <span style="font-size:11px;color:${color};font-weight:600;min-width:55px;text-align:right">${prvWkLabel(prv,m,arrow,diff)}</span>
+    </div>`;
+  }).join('');
+  return `<div class="card">
+    <div class="card-label">📊 TUẦN NÀY vs TUẦN TRƯỚC</div>
+    ${rows}
+  </div>`;
+}
+function prvWkLabel(prv, m, arrow, diff) {
+  if (!prv) return '<span style="color:var(--faint)">—</span>';
+  return `${arrow} ${Math.abs(diff).toFixed(0)}%`;
+}
+
+// ── 1.4 PR tracker ──
+function epley(weight, reps) { return weight * (1 + reps/30); }
+function extractSets(ex) {
+  // legacy schema: e.sets = array of {reps, weight_kg}
+  if (Array.isArray(ex.sets)) return ex.sets.filter(s => s.reps && s.weight_kg);
+  // new schema: numeric sets/reps + (optional) weight_kg
+  if (typeof ex.sets === 'number' && ex.reps && ex.weight_kg) {
+    return Array.from({length:ex.sets}, () => ({reps:ex.reps, weight_kg:ex.weight_kg}));
+  }
+  return [];
+}
+function computePRs(logs) {
+  const byEx = {}; // name -> { maxWeight: {w,d}, max1RM: {w,r,e,d} }
+  logs.slice().reverse().forEach(l => {
+    (l.sessions||[]).forEach(s => {
+      (s.exercises||[]).forEach(ex => {
+        const sets = extractSets(ex);
+        if (!sets.length) return;
+        const name = ex.name;
+        if (!byEx[name]) byEx[name] = { maxWeight: null, max1RM: null, lastDate: l.date };
+        byEx[name].lastDate = l.date;
+        sets.forEach(st => {
+          const e1 = epley(st.weight_kg, st.reps);
+          if (!byEx[name].maxWeight || st.weight_kg > byEx[name].maxWeight.w) {
+            const isNew = byEx[name].maxWeight && st.weight_kg > byEx[name].maxWeight.w;
+            byEx[name].maxWeight = { w: st.weight_kg, r: st.reps, d: l.date, isNew: isNew||false };
+          }
+          if (!byEx[name].max1RM || e1 > byEx[name].max1RM.e) {
+            const isNew = byEx[name].max1RM && e1 > byEx[name].max1RM.e;
+            byEx[name].max1RM = { e: e1, w: st.weight_kg, r: st.reps, d: l.date, isNew: isNew||false };
+          }
+        });
+      });
+    });
+  });
+  return byEx;
+}
+function renderPRs(logs) {
+  const prs = computePRs(logs);
+  const entries = Object.entries(prs);
+  if (!entries.length) return '';
+  const rows = entries.slice(0,10).map(([name,p]) => {
+    const recentPR = (p.maxWeight?.d === p.lastDate && p.maxWeight?.isNew) || (p.max1RM?.d === p.lastDate && p.max1RM?.isNew);
+    return `<div class="hi">
+      <div class="hi-ico" style="background:#FEF3C7">🏆</div>
+      <div class="hi-info">
+        <div class="hi-title">${name}${recentPR?' <span style="background:#FEE2E2;color:#991B1B;font-size:9px;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:800">NEW PR</span>':''}</div>
+        <div class="hi-sub">Heaviest: <strong>${p.maxWeight.w}kg × ${p.maxWeight.r}</strong> (${fmt(p.maxWeight.d)})</div>
+        <div class="hi-extra">Est. 1RM: <strong>${p.max1RM.e.toFixed(1)}kg</strong> (Epley)</div>
+      </div>
+    </div>`;
+  }).join('');
+  return `<div class="stitle">🏆 Personal Records</div><div class="card">${rows}</div>`;
+}
+
+// ── Helpers ──
+function todayStr() { return isoLocal(new Date()); }
+function isoLocal(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function addDays(d,n) { const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+function fmtFull(s) { const d=new Date(s+'T12:00:00'); return `${DAYS[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`; }
 
 // ── Boot ──
 if (checkPat()) reload();
