@@ -13,7 +13,11 @@
           "protein_g": 5.0,
           "carb_g": 74.2,
           "fat_g": 0.6,
-          "fiber_g": 3.0
+          "sugar_g": 0.2,
+          "fiber_g": 3.0,
+          "saturated_fat_g": 0.1,
+          "sodium_mg": 0,
+          "alcohol_g": 0
         },
         {
           "name": "Sườn heo xào chua ngọt",
@@ -21,13 +25,23 @@
           "kcal": 315,
           "protein_g": 16.5,
           "carb_g": 15.0,
-          "fat_g": 13.5
+          "fat_g": 13.5,
+          "sugar_g": 8.0,
+          "fiber_g": 0.5,
+          "saturated_fat_g": 4.5,
+          "sodium_mg": 600,
+          "alcohol_g": 0
         }
       ],
       "total_kcal": 627,
       "total_protein_g": 21.5,
       "total_carb_g": 89.2,
-      "total_fat_g": 14.1
+      "total_fat_g": 14.1,
+      "total_sugar_g": 8.2,
+      "total_fiber_g": 3.5,
+      "total_saturated_fat_g": 4.6,
+      "total_sodium_mg": 600,
+      "total_alcohol_g": 0
     },
     {
       "time": "15:00",
@@ -40,13 +54,23 @@
           "kcal": 3,
           "protein_g": 0.2,
           "carb_g": 0.5,
-          "fat_g": 0.0
+          "fat_g": 0.0,
+          "sugar_g": 0.0,
+          "fiber_g": 0.0,
+          "saturated_fat_g": 0.0,
+          "sodium_mg": 5,
+          "alcohol_g": 0
         }
       ],
       "total_kcal": 3,
       "total_protein_g": 0.2,
       "total_carb_g": 0.5,
-      "total_fat_g": 0.0
+      "total_fat_g": 0.0,
+      "total_sugar_g": 0.0,
+      "total_fiber_g": 0.0,
+      "total_saturated_fat_g": 0.0,
+      "total_sodium_mg": 5,
+      "total_alcohol_g": 0
     },
     {
       "time": "19:00",
@@ -59,7 +83,12 @@
           "kcal": 220,
           "protein_g": 0.0,
           "carb_g": 8.0,
-          "fat_g": 0.0
+          "fat_g": 0.0,
+          "sugar_g": 5.0,
+          "fiber_g": 0.0,
+          "saturated_fat_g": 0.0,
+          "sodium_mg": 15,
+          "alcohol_g": 28.0
         },
         {
           "name": "Instant yakisoba (1 gói)",
@@ -67,7 +96,12 @@
           "kcal": 460,
           "protein_g": 10.0,
           "carb_g": 70.0,
-          "fat_g": 17.0
+          "fat_g": 17.0,
+          "sugar_g": 8.0,
+          "fiber_g": 2.5,
+          "saturated_fat_g": 7.0,
+          "sodium_mg": 1500,
+          "alcohol_g": 0
         },
         {
           "name": "Hamburger patty",
@@ -75,13 +109,23 @@
           "kcal": 250,
           "protein_g": 13.0,
           "carb_g": 12.0,
-          "fat_g": 15.0
+          "fat_g": 15.0,
+          "sugar_g": 3.0,
+          "fiber_g": 0.5,
+          "saturated_fat_g": 6.0,
+          "sodium_mg": 400,
+          "alcohol_g": 0
         }
       ],
       "total_kcal": 930,
       "total_protein_g": 23.0,
       "total_carb_g": 90.0,
-      "total_fat_g": 32.0
+      "total_fat_g": 32.0,
+      "total_sugar_g": 16.0,
+      "total_fiber_g": 3.0,
+      "total_saturated_fat_g": 13.0,
+      "total_sodium_mg": 1915,
+      "total_alcohol_g": 28.0
     }
   ],
   "water_ml": 0,

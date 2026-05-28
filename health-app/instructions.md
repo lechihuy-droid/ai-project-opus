@@ -33,21 +33,32 @@ Manifest:health-data/index.json
   "meals": [
     {
       "time": "HH:MM",
-      "source": "photo|receipt|bill",
+      "name": "Sáng|Trưa|Tối|Snack|Đồ uống",
+      "source": "photo|receipt|bill|text",
       "items": [
         {
           "name": "Tên món",
-          "grams": 200,
+          "amount_g": 200,
           "kcal": 260,
-          "protein": 5,
-          "carb": 57,
-          "fat": 0.4
+          "protein_g": 5,
+          "carb_g": 57,
+          "fat_g": 0.4,
+          "sugar_g": 3,
+          "fiber_g": 2,
+          "saturated_fat_g": 1.5,
+          "sodium_mg": 300,
+          "alcohol_g": 0
         }
       ],
       "total_kcal": 260,
-      "total_protein": 5,
-      "total_carb": 57,
-      "total_fat": 0.4
+      "total_protein_g": 5,
+      "total_carb_g": 57,
+      "total_fat_g": 0.4,
+      "total_sugar_g": 3,
+      "total_fiber_g": 2,
+      "total_saturated_fat_g": 1.5,
+      "total_sodium_mg": 300,
+      "total_alcohol_g": 0
     }
   ],
   "water_ml": 1750,
@@ -57,6 +68,18 @@ Manifest:health-data/index.json
   "notes": ""
 }
 ```
+
+### Hướng dẫn extract từng field (belly fat focus)
+
+| Field | Cách tính | Ghi chú |
+|-------|-----------|---------|
+| `sugar_g` | Đường đơn + đường thêm (không gồm đường tự nhiên trong rau củ) | Label: "Sugars" hoặc "添加糖" |
+| `fiber_g` | Chất xơ tổng | Label: "Dietary Fiber" / "食物繊維" |
+| `saturated_fat_g` | Chất béo bão hòa | Label: "Saturated Fat" / "飽和脂肪酸" |
+| `sodium_mg` | Natri (mg) — nếu label ghi "muối (g)" thì ÷ 2.54 × 1000 | Instant noodles thường 1500-2000mg |
+| `alcohol_g` | Chỉ điền khi có rượu/bia — tính: `ml × ABV% × 0.789` | Bia 350ml 5% ≈ 14g; Whisky 30ml 40% ≈ 9.5g |
+
+**Ưu tiên:** lấy từ label trước, ước tính sau (ghi chú "est." nếu ước tính).
 
 ---
 
@@ -158,6 +181,13 @@ Nhận xét 1-2 câu ngắn, tập trung vào điểm nổi bật nhất:
 - Calo bữa này so với mục tiêu ngày (2000 kcal)
 - Gợi ý bữa tiếp theo nếu còn thiếu
 
+**Cảnh báo belly fat (tự động nếu vượt ngưỡng):**
+- 🍬 `sugar_g` tích lũy trong ngày > 30g → "Đường hôm nay cao, hạn chế đồ ngọt/nước có đường còn lại"
+- 🧂 `sodium_mg` tích lũy > 2000mg → "Natri cao, dễ giữ nước/phình bụng — uống thêm nước"
+- 🍺 `alcohol_g` > 0 → "Cồn ức chế đốt mỡ ~12-24h sau uống. Hôm nay/mai hạn chế calo bù lại"
+- 🔴 `saturated_fat_g` tích lũy > 20g → "Chất béo bão hòa cao — liên quan tích mỡ nội tạng"
+- 🌿 `fiber_g` tích lũy cuối ngày < 15g → "Fiber thấp — thêm rau xanh/legume cho bữa tiếp"
+
 ### On-demand (khi user hỏi)
 Phân tích sâu hơn dựa trên dữ liệu nhiều ngày:
 - Pattern ngủ (liên tục < 7h → cảnh báo)
@@ -176,6 +206,13 @@ Protein/ngày:      110 g
 Nước/ngày:         2000 ml
 Bước chân/ngày:    8000 bước
 Giấc ngủ/ngày:     7.5 giờ
+
+--- Belly fat targets ---
+Sugar/ngày:        < 25 g     (WHO: < 50g, fat loss: < 25g)
+Fiber/ngày:        ≥ 25 g
+Saturated fat/ngày:< 20 g
+Sodium/ngày:       < 2000 mg
+Alcohol:           0 g        (mục tiêu giảm mỡ)
 ```
 
 ---
