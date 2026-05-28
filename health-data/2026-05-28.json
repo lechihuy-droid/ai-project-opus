@@ -28,6 +28,25 @@
       "total_protein_g": 21.5,
       "total_carb_g": 89.2,
       "total_fat_g": 14.1
+    },
+    {
+      "time": "15:00",
+      "name": "Đồ uống",
+      "source": "photo",
+      "items": [
+        {
+          "name": "Cà phê drip Doutor (black)",
+          "amount_g": 7,
+          "kcal": 3,
+          "protein_g": 0.2,
+          "carb_g": 0.5,
+          "fat_g": 0.0
+        }
+      ],
+      "total_kcal": 3,
+      "total_protein_g": 0.2,
+      "total_carb_g": 0.5,
+      "total_fat_g": 0.0
     }
   ],
   "water_ml": 0,
