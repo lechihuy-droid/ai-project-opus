@@ -1,6 +1,35 @@
 {
   "date": "2026-05-28",
-  "meals": [],
+  "meals": [
+    {
+      "time": "12:00",
+      "name": "Trưa",
+      "source": "photo",
+      "items": [
+        {
+          "name": "Cơm hộp (packaged rice)",
+          "amount_g": 200,
+          "kcal": 312,
+          "protein_g": 5.0,
+          "carb_g": 74.2,
+          "fat_g": 0.6,
+          "fiber_g": 3.0
+        },
+        {
+          "name": "Sườn heo xào chua ngọt",
+          "amount_g": 150,
+          "kcal": 315,
+          "protein_g": 16.5,
+          "carb_g": 15.0,
+          "fat_g": 13.5
+        }
+      ],
+      "total_kcal": 627,
+      "total_protein_g": 21.5,
+      "total_carb_g": 89.2,
+      "total_fat_g": 14.1
+    }
+  ],
   "water_ml": 0,
   "steps": 0,
   "sleep_hours": 7.5,
