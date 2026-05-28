@@ -47,6 +47,41 @@
       "total_protein_g": 0.2,
       "total_carb_g": 0.5,
       "total_fat_g": 0.0
+    },
+    {
+      "time": "19:00",
+      "name": "Tối",
+      "source": "text",
+      "items": [
+        {
+          "name": "Highball (whisky + soda)",
+          "amount_ml": 500,
+          "kcal": 220,
+          "protein_g": 0.0,
+          "carb_g": 8.0,
+          "fat_g": 0.0
+        },
+        {
+          "name": "Instant yakisoba (1 gói)",
+          "amount_g": 120,
+          "kcal": 460,
+          "protein_g": 10.0,
+          "carb_g": 70.0,
+          "fat_g": 17.0
+        },
+        {
+          "name": "Hamburger patty",
+          "amount_g": 120,
+          "kcal": 250,
+          "protein_g": 13.0,
+          "carb_g": 12.0,
+          "fat_g": 15.0
+        }
+      ],
+      "total_kcal": 930,
+      "total_protein_g": 23.0,
+      "total_carb_g": 90.0,
+      "total_fat_g": 32.0
     }
   ],
   "water_ml": 0,
