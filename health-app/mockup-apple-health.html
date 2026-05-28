@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup — Apple Health style</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #F2F2F7;
+  --card: #FFFFFF;
+  --text: #000;
+  --muted: #6B7280;
+  --faint: #9CA3AF;
+  --sep: rgba(60,60,67,.13);
+
+  --activity: #FF375F;
+  --nutrition: #34C759;
+  --sleep: #5856D6;
+  --steps: #FF9500;
+  --water: #007AFF;
+  --weight: #00C7BE;
+}
+html, body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+#app { max-width: 430px; margin: 0 auto; padding: 0 0 32px; }
+
+/* Header */
+.hdr { padding: 14px 18px 8px; display: flex; justify-content: space-between; align-items: flex-end; }
+.hdr h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.5px; }
+.hdr .avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #34C759, #00C7BE); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+
+.date-row { padding: 0 18px 12px; font-size: 13px; color: var(--muted); font-weight: 500; }
+
+/* Section title */
+.section { padding: 18px 18px 8px; font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
+.section-sm { padding: 18px 18px 6px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); }
+
+/* Activity rings hero */
+.hero-card { background: var(--card); margin: 0 16px; border-radius: 18px; padding: 18px; display: flex; align-items: center; gap: 16px; }
+.hero-rings { width: 130px; height: 130px; flex-shrink: 0; position: relative; }
+.hero-rings svg { transform: rotate(-90deg); }
+.ring-track { fill: none; stroke-width: 12; }
+.ring-fill { fill: none; stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+.hero-stats { flex: 1; }
+.hero-stats .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+.hero-stats .value { font-size: 24px; font-weight: 800; margin-top: 2px; letter-spacing: -0.5px; }
+.hero-stats .target { font-size: 12px; color: var(--muted); font-weight: 500; }
+.ring-row { margin-bottom: 9px; }
+.ring-row:last-child { margin-bottom: 0; }
+
+/* Stat tile */
+.tile { background: var(--card); border-radius: 18px; padding: 14px 16px; }
+.tile-row { display: flex; gap: 10px; margin: 0 16px 10px; }
+.tile-row > .tile { flex: 1; min-width: 0; }
+.tile-head { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.tile-ico { font-size: 14px; }
+.tile-label { font-size: 13px; font-weight: 700; color: var(--muted); }
+.tile-val { font-size: 26px; font-weight: 800; letter-spacing: -0.7px; line-height: 1.1; }
+.tile-unit { font-size: 13px; font-weight: 600; color: var(--muted); margin-left: 2px; }
+.tile-sub { font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 500; }
+.tile-trend { font-size: 11px; font-weight: 700; margin-top: 4px; }
+
+/* Meals list (Apple Health style) */
+.list-card { background: var(--card); margin: 0 16px; border-radius: 18px; overflow: hidden; }
+.list-item { padding: 14px 16px; display: flex; align-items: center; gap: 12px; border-bottom: .5px solid var(--sep); }
+.list-item:last-child { border-bottom: none; }
+.list-ico { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; background: rgba(52,199,89,.12); }
+.list-title { flex: 1; }
+.list-name { font-size: 15px; font-weight: 600; }
+.list-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.list-right { font-size: 17px; font-weight: 700; color: var(--nutrition); }
+.list-chev { color: var(--faint); font-size: 14px; margin-left: 6px; }
+
+/* Trend chart */
+.chart-card { background: var(--card); margin: 0 16px; border-radius: 18px; padding: 16px; }
+.chart-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+.chart-head h3 { font-size: 15px; font-weight: 700; }
+.chart-head .delta { font-size: 13px; font-weight: 700; }
+.chart-svg { width: 100%; height: 100px; }
+
+/* Workout card */
+.wo-card { background: var(--card); margin: 0 16px; border-radius: 18px; padding: 16px; }
+.wo-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.wo-ico { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #FF375F, #FF9500); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.wo-title { font-size: 17px; font-weight: 700; }
+.wo-meta  { font-size: 12px; color: var(--muted); }
+.wo-ex { display: flex; justify-content: space-between; padding: 8px 0; border-top: .5px solid var(--sep); font-size: 14px; }
+.wo-ex-name { font-weight: 500; }
+.wo-ex-detail { color: var(--muted); font-weight: 600; }
+
+/* Tab bar */
+.tabbar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,.85); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border-top: .5px solid var(--sep); padding: 8px 0 22px; display: flex; }
+.tabbar > div { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 10px; font-weight: 600; color: var(--faint); }
+.tabbar > div.on { color: var(--nutrition); }
+.tabbar > div span { font-size: 20px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- Header -->
+  <div class="hdr">
+    <h1>Tóm tắt</h1>
+    <div class="avatar">H</div>
+  </div>
+  <div class="date-row">Thứ Tư, 27 tháng 5</div>
+
+  <!-- Hero: Activity rings -->
+  <div class="hero-card">
+    <div class="hero-rings">
+      <svg width="130" height="130" viewBox="0 0 130 130">
+        <!-- Outer ring: Move/Calo -->
+        <circle class="ring-track" cx="65" cy="65" r="56" stroke="#FF375F22"/>
+        <circle class="ring-fill"  cx="65" cy="65" r="56" stroke="#FF375F" stroke-dasharray="351.86" stroke-dashoffset="14"/>
+        <!-- Middle ring: Protein -->
+        <circle class="ring-track" cx="65" cy="65" r="42" stroke="#007AFF22"/>
+        <circle class="ring-fill"  cx="65" cy="65" r="42" stroke="#007AFF" stroke-dasharray="263.89" stroke-dashoffset="105"/>
+        <!-- Inner ring: Steps -->
+        <circle class="ring-track" cx="65" cy="65" r="28" stroke="#FF950022"/>
+        <circle class="ring-fill"  cx="65" cy="65" r="28" stroke="#FF9500" stroke-dasharray="175.93" stroke-dashoffset="77"/>
+      </svg>
+    </div>
+    <div class="hero-stats">
+      <div class="ring-row">
+        <div class="label" style="color:#FF375F">Calo</div>
+        <div class="value">2,112 <span style="font-size:14px;font-weight:600;color:var(--muted)">/ 2,200</span></div>
+      </div>
+      <div class="ring-row">
+        <div class="label" style="color:#007AFF">Protein</div>
+        <div class="value">78<span class="tile-unit">g</span> <span style="font-size:14px;font-weight:600;color:var(--muted)">/ 130g</span></div>
+      </div>
+      <div class="ring-row">
+        <div class="label" style="color:#FF9500">Bước</div>
+        <div class="value">6,116 <span style="font-size:14px;font-weight:600;color:var(--muted)">/ 8,000</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats tiles -->
+  <div class="section-sm">Sức khỏe hôm nay</div>
+  <div class="tile-row">
+    <div class="tile">
+      <div class="tile-head"><span class="tile-ico" style="color:var(--sleep)">😴</span><span class="tile-label">Giấc ngủ</span></div>
+      <div class="tile-val">7<span class="tile-unit">h</span></div>
+      <div class="tile-sub">01:30 – 08:30</div>
+    </div>
+    <div class="tile">
+      <div class="tile-head"><span class="tile-ico" style="color:var(--water)">💧</span><span class="tile-label">Nước</span></div>
+      <div class="tile-val">2.0<span class="tile-unit">L</span></div>
+      <div class="tile-sub" style="color:var(--nutrition);font-weight:700">✓ Đạt mục tiêu</div>
+    </div>
+  </div>
+  <div class="tile-row">
+    <div class="tile">
+      <div class="tile-head"><span class="tile-ico" style="color:var(--weight)">⚖️</span><span class="tile-label">Cân nặng</span></div>
+      <div class="tile-val">73.55<span class="tile-unit">kg</span></div>
+      <div class="tile-trend" style="color:var(--nutrition)">↓ 0.2 kg tuần này</div>
+    </div>
+    <div class="tile">
+      <div class="tile-head"><span class="tile-ico" style="color:#FF9500">🔥</span><span class="tile-label">Streak</span></div>
+      <div class="tile-val">2<span class="tile-unit">ngày</span></div>
+      <div class="tile-sub">log liên tiếp</div>
+    </div>
+  </div>
+
+  <!-- Trend chart -->
+  <div class="section-sm">Xu hướng calo · 7 ngày</div>
+  <div class="chart-card">
+    <div class="chart-head">
+      <h3>Trung bình 1,950 kcal</h3>
+      <span class="delta" style="color:var(--nutrition)">↓ 4%</span>
+    </div>
+    <svg class="chart-svg" viewBox="0 0 400 100" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#FF375F" stop-opacity=".25"/>
+          <stop offset="100%" stop-color="#FF375F" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path d="M 20 60 L 80 50 L 140 70 L 200 40 L 260 65 L 320 45 L 380 30 L 380 100 L 20 100 Z" fill="url(#grad)"/>
+      <path d="M 20 60 L 80 50 L 140 70 L 200 40 L 260 65 L 320 45 L 380 30" stroke="#FF375F" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="380" cy="30" r="5" fill="white" stroke="#FF375F" stroke-width="2.5"/>
+    </svg>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--faint);margin-top:6px;font-weight:600">
+      <span>T5</span><span>T6</span><span>T7</span><span>CN</span><span>T2</span><span>T3</span><span style="color:var(--text);font-weight:800">T4</span>
+    </div>
+  </div>
+
+  <!-- Meals list -->
+  <div class="section-sm">Bữa ăn · 2,112 kcal</div>
+  <div class="list-card">
+    <div class="list-item">
+      <div class="list-ico">🌅</div>
+      <div class="list-title">
+        <div class="list-name">Sáng</div>
+        <div class="list-sub">Yogurt + Bánh mì · 07:30</div>
+      </div>
+      <div class="list-right">487</div>
+      <div class="list-chev">›</div>
+    </div>
+    <div class="list-item">
+      <div class="list-ico">☀️</div>
+      <div class="list-title">
+        <div class="list-name">Trưa</div>
+        <div class="list-sub">Zaru Soba + Kakiage · 12:00</div>
+      </div>
+      <div class="list-right">830</div>
+      <div class="list-chev">›</div>
+    </div>
+    <div class="list-item">
+      <div class="list-ico">🌙</div>
+      <div class="list-title">
+        <div class="list-name">Tối</div>
+        <div class="list-sub">Sườn heo + Kaki no Tane · 19:00</div>
+      </div>
+      <div class="list-right">795</div>
+      <div class="list-chev">›</div>
+    </div>
+  </div>
+
+  <!-- Workout -->
+  <div class="section-sm">Tập luyện · 1 buổi</div>
+  <div class="wo-card">
+    <div class="wo-head">
+      <div class="wo-ico">🥊</div>
+      <div>
+        <div class="wo-title">Muay Thai + Strength</div>
+        <div class="wo-meta">Buổi tối · 4 bài tập</div>
+      </div>
+    </div>
+    <div class="wo-ex"><span class="wo-ex-name">🥊 Sparring</span><span class="wo-ex-detail">3 × 2 phút</span></div>
+    <div class="wo-ex"><span class="wo-ex-name">💪 Chest press</span><span class="wo-ex-detail">3 × 15</span></div>
+    <div class="wo-ex"><span class="wo-ex-name">🔗 Cable kéo đẩy</span><span class="wo-ex-detail">2 × 15</span></div>
+    <div class="wo-ex"><span class="wo-ex-name">⚙️ Ab wheel</span><span class="wo-ex-detail">3 sets</span></div>
+  </div>
+
+</div>
+
+<!-- Bottom tabbar -->
+<div class="tabbar">
+  <div class="on"><span>🌿</span>Sức khỏe</div>
+  <div><span>💪</span>Tập luyện</div>
+  <div><span>💰</span>Tài chính</div>
+</div>
+
+</body>
+</html>
