@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="vi">
-<!-- v2 -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -8,134 +7,186 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --green: #10B981; --green-d: #059669; --green-l: #D1FAE5;
-  --blue: #3B82F6; --amber: #F59E0B; --purple: #8B5CF6; --red: #EF4444;
-  --bg: #F3F4F6; --card: #fff; --text: #111827; --muted: #6B7280; --faint: #9CA3AF; --border: #E5E7EB;
-  --r: 14px;
+  --bg: #0A0A0F;
+  --card: #16161D;
+  --card-2: #1C1C24;
+  --text: #FFFFFF;
+  --muted: #8E8E93;
+  --faint: #5A5A66;
+  --line: rgba(255,255,255,.06);
+
+  --green: #30D158;
+  --green-d: #28B14B;
+  --blue: #0A84FF;
+  --orange: #FF9F0A;
+  --red: #FF453A;
+  --pink: #FF375F;
+  --purple: #BF5AF2;
+  --teal: #5AC8FA;
+  --yellow: #FFD60A;
 }
-html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); }
-#app { max-width: 430px; margin: 0 auto; min-height: 100vh; background: var(--bg); }
+html, body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+#app { max-width: 430px; margin: 0 auto; min-height: 100vh; }
 
 /* ── Topbar ── */
 .topbar {
   position: sticky; top: 0; z-index: 50;
-  background: var(--card); border-bottom: 1px solid var(--border);
+  background: rgba(10,10,15,.85);
+  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--line);
   padding: 12px 14px 0;
-  box-shadow: 0 1px 6px rgba(0,0,0,.05);
 }
 .tb-row1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.tb-row1 h1 { font-size: 17px; font-weight: 800; }
-.sync-btn { font-size: 12px; padding: 6px 11px; background: var(--green-l); color: var(--green-d); border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-family: inherit; }
+.tb-row1 h1 { font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
+.sync-btn { font-size: 12px; padding: 6px 11px; background: rgba(48,209,88,.15); color: var(--green); border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; }
+.pat-btn { font-size: 12px; padding: 6px 10px; background: rgba(255,255,255,.06); color: var(--muted); border: none; border-radius: 8px; cursor: pointer; font-family: inherit; }
 
-/* module tabs */
 .mod-tabs { display: flex; }
-.mtab { flex: 1; padding: 9px 4px 10px; text-align: center; font-size: 12px; font-weight: 700; border: none; background: none; cursor: pointer; font-family: inherit; color: var(--faint); border-bottom: 2.5px solid transparent; transition: color .18s, border-color .18s; }
+.mtab { flex: 1; padding: 9px 4px 10px; text-align: center; font-size: 12px; font-weight: 700; border: none; background: none; cursor: pointer; font-family: inherit; color: var(--faint); border-bottom: 2.5px solid transparent; transition: color .18s, border-bottom-color .18s; }
 .mtab.active { color: var(--green); border-bottom-color: var(--green); }
 
-/* range tabs */
 .range-row { display: flex; gap: 6px; padding: 8px 0 10px; }
-.rtab { flex: 1; padding: 6px; text-align: center; font-size: 11px; font-weight: 600; border-radius: 7px; border: none; background: var(--bg); color: var(--muted); cursor: pointer; font-family: inherit; }
-.rtab.active { background: var(--green); color: #fff; }
+.rtab { flex: 1; padding: 6px; text-align: center; font-size: 11px; font-weight: 700; border-radius: 7px; border: none; background: rgba(255,255,255,.05); color: var(--muted); cursor: pointer; font-family: inherit; }
+.rtab.active { background: var(--green); color: #000; }
 
 /* ── Content ── */
-.content { padding: 12px 12px 24px; }
+.content { padding: 12px 12px 32px; }
 
-/* ── Cards ── */
-.card { background: var(--card); border-radius: var(--r); padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.06); margin-bottom: 10px; }
-.card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--faint); margin-bottom: 10px; }
+/* ── Bento grid ── */
+.bento { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.b { background: var(--card); border-radius: 18px; padding: 14px; overflow: hidden; position: relative; min-height: 92px; }
+.b.span2 { grid-column: span 2; }
+.b.span3 { grid-column: span 3; }
+.b.span4 { grid-column: span 4; }
+.b.tall  { min-height: 168px; }
 
-/* ── Stats ── */
-.stats { display: grid; gap: 7px; margin-bottom: 10px; }
-.stats.col4 { grid-template-columns: repeat(4,1fr); }
-.stats.col3 { grid-template-columns: repeat(3,1fr); }
-.stat { background: var(--card); border-radius: 12px; padding: 10px 6px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
-.stat .v { font-size: 17px; font-weight: 900; line-height: 1.1; }
-.stat .l { font-size: 9px; color: var(--muted); margin-top: 3px; font-weight: 600; }
+.b-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin-bottom: 6px; }
+.b-val { font-size: 28px; font-weight: 800; line-height: 1; letter-spacing: -.5px; }
+.b-unit { font-size: 13px; font-weight: 600; color: var(--muted); margin-left: 2px; }
+.b-sub { font-size: 11px; color: var(--muted); margin-top: 5px; font-weight: 500; }
+.b-ico { position: absolute; top: 12px; right: 12px; font-size: 18px; opacity: .9; }
 
-/* ── Chart ── */
+/* ── Variants ── */
+.b-kcal   { background: linear-gradient(135deg, #1A1A24, #0F0F18); border: 1px solid rgba(255,69,58,.18); }
+.b-kcal .b-val { font-size: 36px; color: var(--red); }
+.b-kcal .progress { margin-top: 10px; height: 6px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
+.b-kcal .progress > div { height: 100%; background: linear-gradient(90deg, var(--red), var(--orange)); border-radius: 3px; }
+
+.b-sleep  { background: linear-gradient(135deg, #14142A, #0F0F1F); border: 1px solid rgba(191,90,242,.2); }
+.b-sleep .b-val { color: var(--purple); }
+.b-water  { background: linear-gradient(135deg, #0E1A2A, #0A1422); border: 1px solid rgba(10,132,255,.2); }
+.b-water .b-val { color: var(--blue); }
+.b-steps  { background: linear-gradient(135deg, #2A1F0E, #221A0A); border: 1px solid rgba(255,159,10,.2); }
+.b-steps .b-val { color: var(--orange); }
+.b-weight { background: linear-gradient(135deg, #0E2A1F, #0A2018); border: 1px solid rgba(48,209,88,.2); }
+.b-weight .b-val { color: var(--green); }
+.b-workout{ background: linear-gradient(135deg, #2A1A2E, #1A1A24); border: 1px solid rgba(191,90,242,.2); }
+.b-insight{ background: linear-gradient(135deg, #0E1A2A, #0F1A28); border: 1px solid rgba(90,200,250,.2); }
+.b-pr     { background: linear-gradient(135deg, #2A2014, #1F1810); border: 1px solid rgba(255,214,10,.2); }
+
+/* ── Macros mini ── */
+.macro-mini { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; }
+.macro-mini:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,.05); }
+.macro-mini .n { font-size: 12px; color: var(--muted); font-weight: 600; }
+.macro-mini .v { font-size: 14px; font-weight: 800; }
+
+/* ── Mini chart ── */
+.mini-chart { height: 32px; margin-top: 8px; }
+.mini-chart svg { width: 100%; height: 100%; }
+
+/* ── Chart card ── */
+.b-chart { padding: 14px; }
+.b-chart .b-label { margin-bottom: 8px; }
 .chart-wrap { height: 140px; }
 canvas { display: block; }
 
-/* ── Metric mini ── */
-.mgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-.mm { background: var(--card); border-radius: 12px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
-.mm .ico { font-size: 18px; margin-bottom: 5px; }
-.mm .val { font-size: 17px; font-weight: 800; }
-.mm .sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
-.pbar { height: 4px; background: var(--bg); border-radius: 2px; margin-top: 7px; }
-.pfill { height: 100%; border-radius: 2px; }
+/* ── Insight badges (workout) ── */
+.badges { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.badge { font-size: 11px; padding: 4px 9px; border-radius: 10px; background: rgba(191,90,242,.18); color: var(--purple); font-weight: 700; }
+.badge.amber { background: rgba(255,159,10,.18); color: var(--orange); }
+.badge.green { background: rgba(48,209,88,.18); color: var(--green); }
+.badge.red   { background: rgba(255,69,58,.18); color: var(--red); }
 
-.stitle { font-size: 13px; font-weight: 700; margin: 14px 0 8px; }
+/* ── Insight rows (weekly summary) ── */
+.is-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
+.is-row:last-child { border-bottom: none; }
+.is-lbl { font-size: 12px; color: var(--muted); font-weight: 600; }
+.is-val { font-size: 14px; font-weight: 800; }
+.is-delta { font-size: 11px; font-weight: 700; min-width: 55px; text-align: right; }
 
-/* ── Meal items ── */
-.mi { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
-.mi:last-child { border-bottom: none; }
-.mi-ico { font-size: 17px; flex-shrink: 0; }
-.mi-info { flex: 1; min-width: 0; }
-.mi-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mi-mac  { font-size: 10px; color: var(--muted); margin-top: 2px; }
-.mi-kcal { font-size: 13px; font-weight: 800; color: var(--green); flex-shrink: 0; }
-
-/* ── History items ── */
-.hi { display: flex; align-items: center; gap: 11px; padding: 10px 0; border-bottom: 1px solid var(--border); }
-.hi:last-child { border-bottom: none; }
-.hi-ico { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-.hi-info { flex: 1; min-width: 0; }
-.hi-title { font-size: 13px; font-weight: 600; }
-.hi-sub   { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.hi-extra { font-size: 10px; color: var(--muted); margin-top: 1px; }
-.hi-val   { font-size: 14px; font-weight: 800; flex-shrink: 0; }
-
-/* ── Weight delta ── */
-.wdelta { font-size: 12px; font-weight: 700; padding: 2px 7px; border-radius: 6px; display: inline-block; margin-top: 3px; }
-.dn { background: #D1FAE5; color: #065F46; }
-.up { background: #FEE2E2; color: #991B1B; }
-.fl { background: var(--bg); color: var(--muted); }
-
-/* ── Loading / error ── */
-.loading { text-align: center; padding: 48px 20px; color: var(--muted); font-size: 14px; }
-.spin { font-size: 26px; display: block; margin-bottom: 10px; animation: spin 1s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.err { background: #FEF2F2; border-left: 3px solid var(--red); border-radius: 10px; padding: 14px; font-size: 13px; color: #991B1B; line-height: 1.6; }
-
-/* ── Day accordion ── */
-.day-acc { background: var(--card); border-radius: 12px; margin-bottom: 7px; box-shadow: 0 1px 3px rgba(0,0,0,.06); overflow: hidden; }
-.day-acc summary { list-style: none; cursor: pointer; padding: 12px 14px; display: flex; align-items: center; gap: 10px; user-select: none; -webkit-tap-highlight-color: transparent; }
+/* ── Day accordion (bento) ── */
+.day-acc { background: var(--card); border-radius: 14px; margin-bottom: 7px; overflow: hidden; }
+.day-acc summary { list-style: none; cursor: pointer; padding: 13px 14px; display: flex; align-items: center; gap: 10px; user-select: none; -webkit-tap-highlight-color: transparent; }
 .day-acc summary::-webkit-details-marker { display: none; }
-.day-acc summary:active { background: var(--bg); }
+.day-acc summary:active { background: rgba(255,255,255,.03); }
 .da-date { font-size: 13px; font-weight: 700; flex: 1; }
 .da-meta { font-size: 11px; color: var(--muted); }
 .da-kcal { font-size: 14px; font-weight: 800; color: var(--green); }
 .da-chev { font-size: 13px; color: var(--faint); transition: transform .2s; }
 .day-acc[open] .da-chev { transform: rotate(180deg); }
-.da-body { padding: 0 14px 12px; border-top: 1px solid var(--border); }
+.da-body { padding: 0 14px 12px; border-top: 1px solid var(--line); }
+
+/* ── Meal item ── */
+.mi { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.mi:last-child { border-bottom: none; }
+.mi-ico { font-size: 16px; flex-shrink: 0; }
+.mi-info { flex: 1; min-width: 0; }
+.mi-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mi-mac  { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.mi-kcal { font-size: 13px; font-weight: 800; color: var(--green); flex-shrink: 0; }
+
+/* ── History items (workout / finance) ── */
+.hi { display: flex; align-items: center; gap: 11px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.hi:last-child { border-bottom: none; }
+.hi-ico { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.hi-info { flex: 1; min-width: 0; }
+.hi-title { font-size: 13px; font-weight: 700; }
+.hi-sub   { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.hi-extra { font-size: 10px; color: var(--muted); margin-top: 1px; }
+.hi-val   { font-size: 14px; font-weight: 800; flex-shrink: 0; }
+
+/* ── Section title ── */
+.stitle { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin: 16px 0 8px; padding-left: 2px; }
+
+/* ── Streak pill ── */
+.streak-pill { background: linear-gradient(135deg, var(--orange), var(--red)); padding: 5px 11px; border-radius: 14px; font-size: 12px; font-weight: 800; color: #fff; }
+
+/* ── Progress bar mini ── */
+.pbar { height: 5px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
+.pfill { height: 100%; border-radius: 3px; }
+
+/* ── Loading / error ── */
+.loading { text-align: center; padding: 48px 20px; color: var(--muted); font-size: 14px; }
+.spin { font-size: 26px; display: block; margin-bottom: 10px; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.err { background: rgba(255,69,58,.08); border-left: 3px solid var(--red); border-radius: 10px; padding: 14px; font-size: 13px; color: #FF7B6E; line-height: 1.6; }
 
 /* ── Toast ── */
-.toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-80px); background: #111827; color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 999; transition: transform .3s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; }
+.toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-80px); background: var(--card-2); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 999; transition: transform .3s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; border: 1px solid var(--line); }
 .toast.show { transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
 <!-- PAT Screen -->
-<div id="pat-screen" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;background:var(--bg)">
+<div id="pat-screen" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px">
   <div style="font-size:52px;margin-bottom:16px">🌿</div>
   <div style="font-size:22px;font-weight:800;margin-bottom:6px">opus-vita</div>
   <div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:28px">Nhập GitHub PAT để truy cập dữ liệu</div>
-  <div style="width:100%;background:var(--card);border-radius:var(--r);padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:14px">
+  <div style="width:100%;background:var(--card);border-radius:14px;padding:18px;margin-bottom:14px;border:1px solid var(--line)">
     <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:7px;display:block">GitHub PAT</label>
-    <input id="pat-input" type="password" placeholder="github_pat_..." style="width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;outline:none">
-    <p style="font-size:11px;color:var(--faint);margin-top:8px;line-height:1.6">Scope cần: <strong>Contents = Read-only</strong> cho repo <code>ai-project-opus</code></p>
+    <input id="pat-input" type="password" placeholder="github_pat_..." style="width:100%;padding:11px 13px;background:rgba(255,255,255,.04);border:1.5px solid var(--line);border-radius:10px;font-size:14px;font-family:inherit;outline:none;color:#fff">
+    <p style="font-size:11px;color:var(--faint);margin-top:8px;line-height:1.6">Scope cần: <strong style="color:var(--muted)">Contents = Read-only</strong> cho repo <code style="color:var(--green)">ai-project-opus</code></p>
   </div>
-  <button onclick="savePat()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--green),var(--green-d));color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">Kết nối →</button>
+  <button onclick="savePat()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--green),var(--green-d));color:#000;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit">Kết nối →</button>
 </div>
 
 <div id="app">
   <div class="topbar">
     <div class="tb-row1">
-      <h1>🌿 <span id="streak-badge"></span></h1>
+      <h1>🌿 opus-vita <span id="streak-badge"></span></h1>
       <div style="display:flex;gap:6px">
         <button class="sync-btn" onclick="reload()">↻ Sync</button>
-        <button onclick="resetPat()" style="font-size:12px;padding:6px 10px;background:var(--bg);color:var(--muted);border:none;border-radius:8px;cursor:pointer;font-family:inherit">🔑</button>
+        <button class="pat-btn" onclick="resetPat()">🔑</button>
       </div>
     </div>
     <div class="mod-tabs">
@@ -167,7 +218,6 @@ let currentTab   = 'health';
 let cHealth = [], cWorkout = [], cFinance = [];
 let healthIdx = [], workoutIdx = [], financeIdx = [];
 
-// ── Targets ──
 const TARGET = { kcal: 2200, protein: 130, water_ml: 2000, steps: 8000, sleep: 7.5 };
 
 // ── PAT setup ──
@@ -195,34 +245,24 @@ function resetPat() {
   document.getElementById('app').style.display = 'none';
 }
 
-// ── Fetch from private repo via GitHub API ──
+// ── Fetch ──
 async function ghGet(path) {
   const url = `https://api.github.com/repos/${DATA_REPO}/contents/${path}?ref=${DATA_BRANCH}`;
-  const r = await fetch(url, {
-    headers: { 'Authorization': `Bearer ${PAT}`, 'Accept': 'application/vnd.github.v3+json' }
-  });
+  const r = await fetch(url, { headers: { 'Authorization': `Bearer ${PAT}`, 'Accept': 'application/vnd.github.v3+json' } });
   if (!r.ok) { if (r.status===404) return null; throw new Error(`${r.status}: ${path}`); }
   const d = await r.json();
   const bytes = Uint8Array.from(atob(d.content.replace(/\n/g,'')), c => c.charCodeAt(0));
   return JSON.parse(new TextDecoder().decode(bytes));
 }
-
-// ── Data loading ──
 function datesInRange(n) {
-  return Array.from({length:n}, (_,i) => {
-    const d = new Date(); d.setDate(d.getDate()-i);
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  });
+  return Array.from({length:n}, (_,i) => { const d = new Date(); d.setDate(d.getDate()-i); return isoLocal(d); });
 }
 async function loadModule(prefix, range) {
   const idx = await ghGet(`${prefix}/index.json`);
   if (!idx?.length) return { rows: [], idx: [] };
   const dates = datesInRange(range).filter(d => idx.includes(d));
   const rows  = await Promise.all(dates.map(d => ghGet(`${prefix}/${d}.json`)));
-  return {
-    rows: rows.filter(Boolean).sort((a,b) => b.date.localeCompare(a.date)),
-    idx: [...idx].sort((a,b) => b.localeCompare(a))
-  };
+  return { rows: rows.filter(Boolean).sort((a,b)=>b.date.localeCompare(a.date)), idx: [...idx].sort((a,b)=>b.localeCompare(a)) };
 }
 
 // ── Nav ──
@@ -239,10 +279,8 @@ function showTab(tab) {
   renderContent();
 }
 
-// ── Reload ──
 async function reload() {
-  document.getElementById('content').innerHTML =
-    '<div class="loading"><span class="spin">🌿</span>Đang tải...</div>';
+  document.getElementById('content').innerHTML = '<div class="loading"><span class="spin">🌿</span>Đang tải...</div>';
   try {
     const [h, w, f] = await Promise.all([
       loadModule('health-data',  currentRange),
@@ -266,102 +304,199 @@ function renderContent() {
   if (currentTab==='finance') { el.innerHTML=renderFinance(cFinance);setTimeout(()=>drawFinance(cFinance),30); }
 }
 
-// ══ TAB 1 — Sức khỏe ══
+// ══════════════════════════════════════════════════════
+// ║  TAB 1 — Sức khỏe (Bento)                          ║
+// ══════════════════════════════════════════════════════
 function renderHealth(logs) {
-  if (!logs.length) return `<div class="loading">😶 Chưa có dữ liệu sức khỏe<br><span style="font-size:12px;color:var(--faint);margin-top:8px;display:block">Gửi ảnh bữa ăn cho Claude để bắt đầu log</span></div>
-    <button onclick="debugFetch()" style="display:block;margin:8px auto;padding:8px 16px;background:#E5E7EB;border:none;border-radius:8px;font-size:12px;cursor:pointer">🔍 Test API</button>
-    <pre id="dbg-out" style="display:none;background:#F9FAFB;border-radius:8px;padding:12px;font-size:11px;white-space:pre-wrap;margin:0 0 16px"></pre>`;
-  const avgCal   = avg(logs, l => totalKcal(l));
-  const avgSleep = avg(logs, l => l.sleep_hours||0);
-  const avgSteps = avg(logs, l => l.steps||0);
-  const withW    = logs.filter(l => l.weight_kg>0);
-  const latest   = withW[0], first = withW[withW.length-1];
-  const delta    = first&&latest ? +(latest.weight_kg-first.weight_kg).toFixed(1) : null;
-  const dc       = delta>0?'up':delta<0?'dn':'fl';
+  if (!logs.length) return `<div class="loading">😶 Chưa có dữ liệu sức khỏe<br><span style="font-size:12px;color:var(--faint);margin-top:8px;display:block">Gửi ảnh bữa ăn cho Claude để bắt đầu</span></div>
+    <button onclick="debugFetch()" style="display:block;margin:8px auto;padding:8px 16px;background:rgba(255,255,255,.06);color:var(--muted);border:none;border-radius:8px;font-size:12px;cursor:pointer">🔍 Test API</button>
+    <pre id="dbg-out" style="display:none;background:var(--card);border-radius:8px;padding:12px;font-size:11px;white-space:pre-wrap;margin:8px 0;color:var(--muted)"></pre>`;
 
-  const foodSections = logs.map((l,i) => {
-    const kcal = totalKcal(l);
-    const mealCount = (l.meals||[]).length;
-    const rows = (l.meals||[]).flatMap(m => (m.items||[]).map(it => {
-      const ico = {receipt:'🧾',bill:'🛒'}[m.source]||'🍽️';
-      return `<div class="mi">
-        <div class="mi-ico">${ico}</div>
-        <div class="mi-info">
-          <div class="mi-name">${it.name}</div>
-          <div class="mi-mac">${it.grams}g · P:${it.protein}g C:${it.carb}g F:${it.fat}g</div>
-        </div>
-        <div class="mi-kcal">${it.kcal}</div>
-      </div>`;
-    })).join('');
-    return `<details class="day-acc" ${i===0?'open':''}>
-      <summary>
-        <span class="da-date">${fmt(l.date)}</span>
-        <span class="da-meta">${mealCount} bữa</span>
-        <span class="da-kcal">${kcal} kcal</span>
-        <span class="da-chev">▾</span>
-      </summary>
-      <div class="da-body">${rows||'<div style="color:var(--faint);font-size:13px;padding:8px 0">Chưa có bữa nào</div>'}</div>
-    </details>`;
-  }).join('');
+  const latest    = logs[0];
+  const today     = todayStr();
+  const todayLog  = logs.find(l => l.date === today);
+  const shown     = todayLog || latest;
+  const isToday   = shown?.date === today;
+  const kcal      = totalKcal(shown);
+  const protein   = totalMacro(shown,'protein');
+  const carb      = totalMacro(shown,'carb');
+  const fat       = totalMacro(shown,'fat');
+  const fiber     = totalMacro(shown,'fiber');
+  const kcalPct   = Math.min(100, (kcal/TARGET.kcal)*100);
+  const remain    = TARGET.kcal - kcal;
+  const withW     = logs.filter(l => l.weight_kg>0);
+  const wLatest   = withW[0];
+  const wFirst    = withW[withW.length-1];
+  const wDelta    = wFirst&&wLatest ? +(wLatest.weight_kg-wFirst.weight_kg).toFixed(1) : null;
 
-  return `
-    ${renderTodayCard(logs)}
-    ${renderWeeklySummary(logs)}
-    <div class="stats col4">
-      <div class="stat"><div class="v" style="color:var(--red)">${Math.round(avgCal)}</div><div class="l">avg kcal</div></div>
-      <div class="stat"><div class="v" style="color:var(--purple)">${avgSleep.toFixed(1)}h</div><div class="l">avg ngủ</div></div>
-      <div class="stat"><div class="v" style="color:var(--amber)">${(avgSteps/1000).toFixed(1)}k</div><div class="l">avg bước</div></div>
-      <div class="stat"><div class="v" style="color:var(--green)">${latest?latest.weight_kg:'--'}</div><div class="l">kg</div></div>
+  return `<div class="bento">
+
+    <!-- HERO: Calo -->
+    <div class="b b-kcal span4">
+      <div class="b-label">${isToday?'CALO HÔM NAY':`CALO · ${fmtFull(shown.date).toUpperCase()}`}</div>
+      <div style="display:flex;align-items:baseline;gap:8px">
+        <div class="b-val">${kcal.toLocaleString()}</div>
+        <div style="font-size:14px;color:var(--muted);font-weight:700">/ ${TARGET.kcal.toLocaleString()} kcal</div>
+      </div>
+      <div class="progress"><div style="width:${kcalPct}%"></div></div>
+      <div class="b-sub">${remain>0?`Còn ${remain} kcal trong target`:`Vượt ${-remain} kcal`}</div>
+      <div class="b-ico">🔥</div>
     </div>
-    <div class="card">
-      <div class="card-label">Calo mỗi ngày (kcal)</div>
+
+    <!-- Macros -->
+    <div class="b span2 tall">
+      <div class="b-label">MACROS</div>
+      <div class="macro-mini"><div class="n">Protein</div><div class="v" style="color:var(--blue)">${Math.round(protein)}g</div></div>
+      <div class="macro-mini"><div class="n">Carb</div><div class="v" style="color:var(--orange)">${Math.round(carb)}g</div></div>
+      <div class="macro-mini"><div class="n">Fat</div><div class="v" style="color:var(--red)">${Math.round(fat)}g</div></div>
+      <div class="macro-mini"><div class="n">Chất xơ</div><div class="v" style="color:var(--green)">${fiber>0?Math.round(fiber)+'g':'—'}</div></div>
+    </div>
+
+    <!-- Sleep -->
+    <div class="b b-sleep span2">
+      <div class="b-label">NGỦ</div>
+      <div class="b-val">${(shown.sleep_hours||0).toFixed(1)}<span class="b-unit">h</span></div>
+      <div class="b-sub">${shown.sleep_hours?`${pc(shown.sleep_hours,TARGET.sleep)}% target`:'chưa log'}</div>
+      <div class="b-ico">😴</div>
+    </div>
+
+    <!-- Water -->
+    <div class="b b-water span2">
+      <div class="b-label">NƯỚC</div>
+      <div class="b-val">${((shown.water_ml||0)/1000).toFixed(1)}<span class="b-unit">L</span></div>
+      <div class="b-sub" style="color:${shown.water_ml>=TARGET.water_ml?'var(--green)':'var(--muted)'};font-weight:700">${shown.water_ml>=TARGET.water_ml?'✓ Đủ':`/ ${TARGET.water_ml/1000}L`}</div>
+      <div class="b-ico">💧</div>
+    </div>
+
+    <!-- Steps -->
+    <div class="b b-steps span2">
+      <div class="b-label">BƯỚC CHÂN</div>
+      <div class="b-val">${((shown.steps||0)/1000).toFixed(1)}<span class="b-unit">k</span></div>
+      <div class="b-sub">/ ${TARGET.steps/1000}k target</div>
+      <div class="b-ico">👟</div>
+    </div>
+
+    <!-- Weight -->
+    <div class="b b-weight span2">
+      <div class="b-label">CÂN NẶNG</div>
+      <div class="b-val">${wLatest?wLatest.weight_kg:'—'}<span class="b-unit">${wLatest?'kg':''}</span></div>
+      <div class="b-sub" style="color:${wDelta===null?'var(--muted)':wDelta<0?'var(--green)':wDelta>0?'var(--red)':'var(--muted)'};font-weight:700">${wDelta===null?'chưa có':`${wDelta>0?'↑':'↓'} ${Math.abs(wDelta)}kg / ${currentRange}d`}</div>
+      <div class="b-ico">⚖️</div>
+    </div>
+
+    ${renderWeeklySummary(logs)}
+
+    <!-- Chart: calo -->
+    <div class="b b-chart span4 tall">
+      <div class="b-label">📈 Calo / ngày · ${currentRange} ngày</div>
       <div class="chart-wrap"><canvas id="c-cal"></canvas></div>
     </div>
-    <div class="card">
-      <div class="card-label">Macro trung bình / ngày</div>
-      <div style="display:flex;gap:8px;text-align:center">
-        <div style="flex:1"><div style="font-size:21px;font-weight:900;color:var(--blue)">${Math.round(avg(logs,l=>totalMacro(l,'protein')))}g</div><div style="font-size:11px;color:var(--muted)">Protein</div></div>
-        <div style="flex:1"><div style="font-size:21px;font-weight:900;color:var(--amber)">${Math.round(avg(logs,l=>totalMacro(l,'carb')))}g</div><div style="font-size:11px;color:var(--muted)">Carb</div></div>
-        <div style="flex:1"><div style="font-size:21px;font-weight:900;color:var(--purple)">${Math.round(avg(logs,l=>totalMacro(l,'fat')))}g</div><div style="font-size:11px;color:var(--muted)">Fat</div></div>
-      </div>
+
+    ${withW.length>1?`<div class="b b-chart span4 tall">
+      <div class="b-label">⚖️ Cân nặng (kg)</div>
+      <div class="chart-wrap"><canvas id="c-weight"></canvas></div>
+    </div>`:''}
+
+    <div class="b b-chart span2 tall">
+      <div class="b-label">😴 Ngủ</div>
+      <div class="chart-wrap"><canvas id="c-sleep"></canvas></div>
     </div>
-    <div class="mgrid">
-      <div class="mm"><div class="ico">💧</div><div class="val">${(avg(logs,l=>l.water_ml||0)/1000).toFixed(1)}L</div><div class="sub">avg / ngày</div><div class="pbar"><div class="pfill" style="background:var(--blue);width:${pc(avg(logs,l=>l.water_ml||0),2000)}%"></div></div></div>
-      <div class="mm"><div class="ico">👟</div><div class="val">${(avgSteps/1000).toFixed(1)}k</div><div class="sub">avg / ngày</div><div class="pbar"><div class="pfill" style="background:var(--amber);width:${pc(avgSteps,8000)}%"></div></div></div>
-      <div class="mm"><div class="ico">😴</div><div class="val">${avgSleep.toFixed(1)}h</div><div class="sub">avg / đêm</div><div class="pbar"><div class="pfill" style="background:var(--purple);width:${pc(avgSleep,8)}%"></div></div></div>
-      <div class="mm">
-        <div class="ico">⚖️</div>
-        <div class="val">${latest?latest.weight_kg+'kg':'--'}</div>
-        ${delta!==null?`<div class="wdelta ${dc}">${delta>0?'+':''}${delta} kg</div>`:'<div class="sub">chưa có data</div>'}
-      </div>
+    <div class="b b-chart span2 tall">
+      <div class="b-label">👟 Bước</div>
+      <div class="chart-wrap"><canvas id="c-steps"></canvas></div>
     </div>
-    ${withW.length>1?`<div class="card"><div class="card-label">Cân nặng (kg)</div><div class="chart-wrap"><canvas id="c-weight"></canvas></div></div>`:''}
-    <div class="card"><div class="card-label">Giấc ngủ (giờ)</div><div class="chart-wrap"><canvas id="c-sleep"></canvas></div></div>
-    <div class="card"><div class="card-label">Bước chân (nghìn)</div><div class="chart-wrap"><canvas id="c-steps"></canvas></div></div>
-    <div class="stitle">🍽️ Bữa ăn gần đây</div>
-    ${foodSections}`;
-}
-function drawHealth(logs) {
-  const o = [...logs].reverse(), lb = o.map(l=>shortDate(l.date));
-  drawBar('c-cal',    lb, o.map(l=>totalKcal(l)),         '#EF4444', 2000);
-  drawLine('c-weight',lb, o.map(l=>l.weight_kg||0),        '#10B981', 66);
-  drawLine('c-sleep', lb, o.map(l=>l.sleep_hours||0),       '#8B5CF6', 7.5);
-  drawBar('c-steps',  lb, o.map(l=>(l.steps||0)/1000),     '#F59E0B', 8);
+
+  </div>
+
+  <div class="stitle">🍽️ Bữa ăn gần đây</div>
+  ${logs.map((l,i) => renderDayAcc(l, i===0)).join('')}`;
 }
 
-// ══ TAB 2 — Tập luyện ══
+function renderDayAcc(l, open) {
+  const kcal = totalKcal(l);
+  const mealCount = (l.meals||[]).length;
+  const rows = (l.meals||[]).flatMap(m => (m.items||[]).map(it => {
+    const ico = {receipt:'🧾',bill:'🛒'}[m.source]||'🍽️';
+    return `<div class="mi">
+      <div class="mi-ico">${ico}</div>
+      <div class="mi-info">
+        <div class="mi-name">${it.name}</div>
+        <div class="mi-mac">${it.grams}g · P:${it.protein}g C:${it.carb}g F:${it.fat}g</div>
+      </div>
+      <div class="mi-kcal">${it.kcal}</div>
+    </div>`;
+  })).join('');
+  return `<details class="day-acc" ${open?'open':''}>
+    <summary>
+      <span class="da-date">${fmt(l.date)}</span>
+      <span class="da-meta">${mealCount} bữa</span>
+      <span class="da-kcal">${kcal} kcal</span>
+      <span class="da-chev">▾</span>
+    </summary>
+    <div class="da-body">${rows||'<div style="color:var(--faint);font-size:13px;padding:8px 0">Chưa có bữa nào</div>'}</div>
+  </details>`;
+}
+
+function renderWeeklySummary(logs) {
+  if (logs.length < 4) return '';
+  const today = new Date();
+  const cutThis  = isoLocal(addDays(today,-7));
+  const cutPrev  = isoLocal(addDays(today,-14));
+  const thisWk = logs.filter(l => l.date >  cutThis);
+  const prevWk = logs.filter(l => l.date <= cutThis && l.date > cutPrev);
+  if (!thisWk.length) return '';
+  const metrics = [
+    { lbl:'Kcal/ngày',  f:l=>totalKcal(l),         fmt:v=>Math.round(v) },
+    { lbl:'Protein',    f:l=>totalMacro(l,'protein'),fmt:v=>Math.round(v)+'g' },
+    { lbl:'Ngủ',        f:l=>l.sleep_hours||0,     fmt:v=>v.toFixed(1)+'h' },
+    { lbl:'Bước',       f:l=>l.steps||0,           fmt:v=>(v/1000).toFixed(1)+'k' }
+  ];
+  const rows = metrics.map(m => {
+    const cur = avg(thisWk, m.f);
+    const prv = avg(prevWk, m.f);
+    const diff = prv>0 ? ((cur-prv)/prv*100) : 0;
+    const arrow = Math.abs(diff)<3 ? '→' : (diff>0?'↑':'↓');
+    const color = Math.abs(diff)<3 ? 'var(--muted)' : (diff>0?'var(--green)':'var(--red)');
+    const dlabel = prv>0 ? `${arrow} ${Math.abs(diff).toFixed(0)}%` : '—';
+    return `<div class="is-row">
+      <span class="is-lbl">${m.lbl}</span>
+      <span class="is-val">${m.fmt(cur)}</span>
+      <span class="is-delta" style="color:${color}">${dlabel}</span>
+    </div>`;
+  }).join('');
+  return `<div class="b b-insight span4">
+    <div class="b-label" style="color:var(--teal)">📊 TUẦN NÀY vs TUẦN TRƯỚC</div>
+    ${rows}
+  </div>`;
+}
+
+function drawHealth(logs) {
+  const o = [...logs].reverse(), lb = o.map(l=>shortDate(l.date));
+  drawBar('c-cal',    lb, o.map(l=>totalKcal(l)),      '#FF453A', TARGET.kcal);
+  drawLine('c-weight',lb, o.map(l=>l.weight_kg||0),    '#30D158', 73);
+  drawLine('c-sleep', lb, o.map(l=>l.sleep_hours||0),  '#BF5AF2', TARGET.sleep);
+  drawBar('c-steps',  lb, o.map(l=>(l.steps||0)/1000), '#FF9F0A', TARGET.steps/1000);
+}
+
+// ══════════════════════════════════════════════════════
+// ║  TAB 2 — Tập luyện (Bento)                         ║
+// ══════════════════════════════════════════════════════
 const TYPE_META = {
-  gym:{ico:'💪',color:'#8B5CF6'},cardio:{ico:'🏃',color:'#EF4444'},
-  yoga:{ico:'🧘',color:'#EC4899'},swim:{ico:'🏊',color:'#3B82F6'},
-  bike:{ico:'🚴',color:'#F59E0B'},other:{ico:'⚡',color:'#6B7280'}
+  gym:{ico:'💪',color:'#BF5AF2'},cardio:{ico:'🏃',color:'#FF453A'},
+  yoga:{ico:'🧘',color:'#FF375F'},swim:{ico:'🏊',color:'#0A84FF'},
+  bike:{ico:'🚴',color:'#FF9F0A'},muay_thai:{ico:'🥊',color:'#FF453A'},
+  other:{ico:'⚡',color:'#8E8E93'}
 };
 function renderWorkout(logs) {
-  if (!logs.length) return '<div class="loading">😶 Chưa có buổi tập nào<br><span style="font-size:12px;color:var(--faint);margin-top:8px;display:block">Báo Claude khi tập xong: "tập gym 3x10 bench press 60kg"</span></div>';
+  if (!logs.length) return '<div class="loading">😶 Chưa có buổi tập nào<br><span style="font-size:12px;color:var(--faint);margin-top:8px;display:block">Báo Claude khi tập xong</span></div>';
   const sessions = logs.flatMap(l=>(l.sessions||[]).map(s=>({...s,date:l.date})));
   const totMin   = sessions.reduce((s,x)=>s+(x.duration_min||0),0);
   const totKcal  = sessions.reduce((s,x)=>s+(x.calories||0),0);
-  const rows = sessions.slice(0,20).map(s => {
-    const m = TYPE_META[s.type.split(' ')[0]]||TYPE_META.other;
+  const prCard   = renderPRBento(logs);
+
+  const sessionRows = sessions.slice(0,20).map(s => {
+    const key = (s.type||'other').split(/[ _+]/)[0];
+    const m = TYPE_META[key]||TYPE_META.other;
     const ex = (s.exercises||[]).map(e => {
       const detail = Array.isArray(e.sets)
         ? e.sets.map(st=>`${st.reps}×${st.weight_kg}kg`).join(', ')
@@ -372,40 +507,75 @@ function renderWorkout(logs) {
     return `<div class="hi">
       <div class="hi-ico" style="background:${m.color}22">${m.ico}</div>
       <div class="hi-info">
-        <div class="hi-title">${s.type.toUpperCase()} · ${fmt(s.date)}</div>
+        <div class="hi-title">${(s.type||'').toUpperCase()} · ${fmt(s.date)}</div>
         <div class="hi-sub">${dur}${s.calories||0} kcal đốt</div>${ex}
       </div>
     </div>`;
   }).join('');
-  return `
-    <div class="stats col3">
-      <div class="stat"><div class="v" style="color:var(--purple)">${sessions.length}</div><div class="l">buổi tập</div></div>
-      <div class="stat"><div class="v" style="color:var(--amber)">${totMin}</div><div class="l">phút</div></div>
-      <div class="stat"><div class="v" style="color:var(--red)">${totKcal}</div><div class="l">kcal đốt</div></div>
+
+  return `<div class="bento">
+    <div class="b b-workout span4">
+      <div class="b-label" style="color:var(--purple)">📊 ${currentRange} NGÀY QUA</div>
+      <div style="display:flex;gap:16px;margin-top:8px">
+        <div><div style="font-size:28px;font-weight:800;color:var(--purple);line-height:1">${sessions.length}</div><div class="b-sub">buổi</div></div>
+        <div><div style="font-size:28px;font-weight:800;color:var(--orange);line-height:1">${totMin}</div><div class="b-sub">phút</div></div>
+        <div><div style="font-size:28px;font-weight:800;color:var(--red);line-height:1">${totKcal}</div><div class="b-sub">kcal</div></div>
+      </div>
     </div>
-    <div class="card"><div class="card-label">Số buổi / ngày</div><div class="chart-wrap"><canvas id="c-wfreq"></canvas></div></div>
-    ${renderPRs(logs)}
-    <div class="stitle">Lịch sử buổi tập</div>
-    <div class="card">${rows}</div>`;
-}
-function drawWorkout(logs) {
-  const o = [...logs].reverse();
-  drawBar('c-wfreq', o.map(l=>shortDate(l.date)), o.map(l=>(l.sessions||[]).length), '#8B5CF6');
+
+    <div class="b b-chart span4 tall">
+      <div class="b-label">📈 Số buổi / ngày</div>
+      <div class="chart-wrap"><canvas id="c-wfreq"></canvas></div>
+    </div>
+
+    ${prCard}
+  </div>
+
+  <div class="stitle">📋 Lịch sử buổi tập</div>
+  <div class="b span4" style="padding:4px 14px">${sessionRows}</div>`;
 }
 
-// ══ TAB 3 — Tài chính ══
+function renderPRBento(logs) {
+  const prs = computePRs(logs);
+  const entries = Object.entries(prs);
+  if (!entries.length) return '';
+  const rows = entries.slice(0,6).map(([name,p]) => {
+    const recentPR = (p.maxWeight?.d === p.lastDate && p.maxWeight?.isNew) || (p.max1RM?.d === p.lastDate && p.max1RM?.isNew);
+    return `<div class="hi" style="padding:9px 0">
+      <div class="hi-ico" style="background:rgba(255,214,10,.15);color:var(--yellow)">🏆</div>
+      <div class="hi-info">
+        <div class="hi-title">${name}${recentPR?' <span style="background:rgba(255,69,58,.18);color:var(--red);font-size:9px;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:800">NEW PR</span>':''}</div>
+        <div class="hi-sub">Heaviest: <strong>${p.maxWeight.w}kg × ${p.maxWeight.r}</strong> · 1RM ~${p.max1RM.e.toFixed(1)}kg</div>
+      </div>
+    </div>`;
+  }).join('');
+  return `<div class="b b-pr span4">
+    <div class="b-label" style="color:var(--yellow)">🏆 PERSONAL RECORDS</div>
+    <div style="margin-top:4px">${rows}</div>
+  </div>`;
+}
+
+function drawWorkout(logs) {
+  const o = [...logs].reverse();
+  drawBar('c-wfreq', o.map(l=>shortDate(l.date)), o.map(l=>(l.sessions||[]).length), '#BF5AF2');
+}
+
+// ══════════════════════════════════════════════════════
+// ║  TAB 3 — Tài chính (Bento)                         ║
+// ══════════════════════════════════════════════════════
 const BUDGET = {food:3000000,transport:1000000,shopping:2000000,health:500000,entertainment:500000,bills:2000000,other:500000};
 const CAT = {
-  food:{ico:'🍽️',color:'#F59E0B',lbl:'Ăn uống'},
-  transport:{ico:'🚗',color:'#3B82F6',lbl:'Đi lại'},
-  shopping:{ico:'🛍️',color:'#EC4899',lbl:'Mua sắm'},
-  health:{ico:'💊',color:'#10B981',lbl:'Sức khỏe'},
-  entertainment:{ico:'🎬',color:'#8B5CF6',lbl:'Giải trí'},
-  bills:{ico:'🏠',color:'#6B7280',lbl:'Hóa đơn'},
-  income:{ico:'💰',color:'#10B981',lbl:'Thu nhập'},
-  other:{ico:'📦',color:'#9CA3AF',lbl:'Khác'}
+  food:{ico:'🍽️',color:'#FF9F0A',lbl:'Ăn uống'},
+  transport:{ico:'🚗',color:'#0A84FF',lbl:'Đi lại'},
+  shopping:{ico:'🛍️',color:'#FF375F',lbl:'Mua sắm'},
+  health:{ico:'💊',color:'#30D158',lbl:'Sức khỏe'},
+  entertainment:{ico:'🎬',color:'#BF5AF2',lbl:'Giải trí'},
+  bills:{ico:'🏠',color:'#8E8E93',lbl:'Hóa đơn'},
+  income:{ico:'💰',color:'#30D158',lbl:'Thu nhập'},
+  other:{ico:'📦',color:'#5A5A66',lbl:'Khác'}
 };
 function renderFinance(logs) {
+  if (!logs.length) return '<div class="loading">😶 Chưa có giao dịch nào<br><span style="font-size:12px;color:var(--faint);margin-top:8px;display:block">Gửi ảnh hoá đơn / bill cho Claude</span></div>';
   const mm     = new Date().toISOString().slice(0,7);
   const monthT = logs.filter(l=>l.date.startsWith(mm)).flatMap(l=>l.transactions||[]);
   const allT   = logs.flatMap(l=>(l.transactions||[]).map(t=>({...t,date:l.date})));
@@ -419,7 +589,7 @@ function renderFinance(logs) {
     return `<div style="margin-bottom:11px">
       <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
         <span>${c.ico} ${c.lbl}</span>
-        <span style="color:${over?'var(--red)':'var(--muted)'}">${vnd(spent)} / ${vnd(bud)}</span>
+        <span style="color:${over?'var(--red)':'var(--muted)'};font-weight:700">${vnd(spent)} / ${vnd(bud)}</span>
       </div>
       <div class="pbar"><div class="pfill" style="width:${pct}%;background:${over?'var(--red)':c.color}"></div></div>
     </div>`;
@@ -434,26 +604,40 @@ function renderFinance(logs) {
       </div>
       <div class="hi-val" style="color:${inc?'var(--green)':'var(--red)'}">${inc?'+':'−'}${vnd(t.amount)}</div>
     </div>`;
-  }).join('') || '<div class="loading" style="padding:16px">Chưa có giao dịch</div>';
-  return `
-    <div class="stats col3">
-      <div class="stat"><div class="v" style="color:var(--green);font-size:14px">${vnd(income)}</div><div class="l">thu tháng</div></div>
-      <div class="stat"><div class="v" style="color:var(--red);font-size:14px">${vnd(expense)}</div><div class="l">chi tháng</div></div>
-      <div class="stat"><div class="v" style="color:${saved>=0?'var(--green)':'var(--red)'};font-size:14px">${vnd(Math.abs(saved))}</div><div class="l">${saved>=0?'tiết kiệm':'thâm hụt'}</div></div>
+  }).join('') || '<div style="text-align:center;color:var(--faint);padding:20px;font-size:13px">Chưa có giao dịch</div>';
+
+  return `<div class="bento">
+    <div class="b b-weight span4">
+      <div class="b-label" style="color:var(--green)">💰 THÁNG NÀY</div>
+      <div style="display:flex;gap:14px;margin-top:8px">
+        <div><div style="font-size:18px;font-weight:800;color:var(--green);line-height:1">${vnd(income)}</div><div class="b-sub">thu</div></div>
+        <div><div style="font-size:18px;font-weight:800;color:var(--red);line-height:1">${vnd(expense)}</div><div class="b-sub">chi</div></div>
+        <div><div style="font-size:18px;font-weight:800;color:${saved>=0?'var(--green)':'var(--red)'};line-height:1">${vnd(Math.abs(saved))}</div><div class="b-sub">${saved>=0?'tiết kiệm':'thâm hụt'}</div></div>
+      </div>
     </div>
-    <div class="card"><div class="card-label">Chi tiêu / ngày (nghìn đồng)</div><div class="chart-wrap"><canvas id="c-fday"></canvas></div></div>
-    <div class="card"><div class="card-label">Ngân sách tháng này</div>${budgetHtml}</div>
-    <div class="stitle">Giao dịch gần đây</div>
-    <div class="card">${txRows}</div>`;
+
+    <div class="b b-chart span4 tall">
+      <div class="b-label">📈 Chi tiêu / ngày (nghìn)</div>
+      <div class="chart-wrap"><canvas id="c-fday"></canvas></div>
+    </div>
+
+    <div class="b span4">
+      <div class="b-label">📊 Ngân sách tháng</div>
+      <div style="margin-top:6px">${budgetHtml}</div>
+    </div>
+  </div>
+
+  <div class="stitle">💸 Giao dịch gần đây</div>
+  <div class="b span4" style="padding:4px 14px">${txRows}</div>`;
 }
 function drawFinance(logs) {
   const o = [...logs].reverse();
   drawBar('c-fday', o.map(l=>shortDate(l.date)),
     o.map(l=>(l.transactions||[]).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0)/1000),
-    '#EF4444');
+    '#FF453A');
 }
 
-// ══ CHART ENGINE ══
+// ══ CHART ENGINE (dark theme) ══
 function setupCanvas(id, h=140) {
   const c=document.getElementById(id); if (!c) return null;
   const dpr=window.devicePixelRatio||1, W=c.parentElement.offsetWidth||300;
@@ -461,13 +645,13 @@ function setupCanvas(id, h=140) {
   const ctx=c.getContext('2d'); ctx.scale(dpr,dpr);
   return {ctx,W,H:h};
 }
-function noData(ctx,W,H) { ctx.fillStyle='#9CA3AF'; ctx.font='12px -apple-system'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('Chưa có dữ liệu',W/2,H/2); }
+function noData(ctx,W,H) { ctx.fillStyle='#5A5A66'; ctx.font='12px -apple-system'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('Chưa có dữ liệu',W/2,H/2); }
 
 function drawBar(id, labels, data, color, goal=null) {
   const s=setupCanvas(id); if (!s) return;
   const {ctx,W,H}=s; ctx.clearRect(0,0,W,H);
   if (data.every(v=>!v)) { noData(ctx,W,H); return; }
-  const pad={t:22,r:10,b:26,l:32}, cw=W-pad.l-pad.r, ch=H-pad.t-pad.b;
+  const pad={t:22,r:10,b:26,l:34}, cw=W-pad.l-pad.r, ch=H-pad.t-pad.b;
   const max=Math.max(...data,goal||0)*1.2||1;
   if (goal) {
     const gy=pad.t+ch-(goal/max)*ch;
@@ -475,22 +659,22 @@ function drawBar(id, labels, data, color, goal=null) {
     ctx.beginPath(); ctx.moveTo(pad.l,gy); ctx.lineTo(W-pad.r,gy); ctx.stroke(); ctx.setLineDash([]);
   }
   [0,.5,1].forEach(t=>{
-    const y=pad.t+ch*t; ctx.strokeStyle='#F3F4F6'; ctx.lineWidth=1;
+    const y=pad.t+ch*t; ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y); ctx.stroke();
-    ctx.fillStyle='#9CA3AF'; ctx.font='9px -apple-system'; ctx.textAlign='right'; ctx.textBaseline='middle';
+    ctx.fillStyle='#5A5A66'; ctx.font='9px -apple-system'; ctx.textAlign='right'; ctx.textBaseline='middle';
     ctx.fillText((max*(1-t)).toFixed(max>10?0:1),pad.l-3,y);
   });
   const n=labels.length, slotW=cw/Math.max(n,1), barW=Math.min(slotW*.6,28);
   data.forEach((v,i)=>{
     const x=pad.l+slotW*i+(slotW-barW)/2, bh=(v/max)*ch, y=pad.t+ch-bh, now=i===n-1;
-    ctx.fillStyle=now?color:color+'77';
+    ctx.fillStyle=now?color:color+'66';
     if (bh>0) {
       ctx.beginPath(); const r=4; ctx.moveTo(x+r,y); ctx.lineTo(x+barW-r,y);
       ctx.quadraticCurveTo(x+barW,y,x+barW,y+r); ctx.lineTo(x+barW,pad.t+ch);
       ctx.lineTo(x,pad.t+ch); ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath(); ctx.fill();
     }
-    if (v>0) { ctx.fillStyle='#374151'; ctx.font=`${now?'bold ':''} 9px -apple-system`; ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText(v%1===0?v:v.toFixed(1),x+barW/2,y-2); }
-    ctx.fillStyle=now?'#111827':'#9CA3AF'; ctx.font=`${now?'bold ':''} 9px -apple-system`; ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText(labels[i],x+barW/2,H-2);
+    if (v>0) { ctx.fillStyle='#E5E5EA'; ctx.font=`${now?'bold ':''} 9px -apple-system`; ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText(v%1===0?v:v.toFixed(1),x+barW/2,y-2); }
+    ctx.fillStyle=now?'#FFFFFF':'#8E8E93'; ctx.font=`${now?'bold ':''} 9px -apple-system`; ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText(labels[i],x+barW/2,H-2);
   });
 }
 
@@ -498,22 +682,22 @@ function drawLine(id, labels, data, color, goal=null) {
   const s=setupCanvas(id); if (!s) return;
   const {ctx,W,H}=s; ctx.clearRect(0,0,W,H);
   const nz=data.filter(v=>v>0); if (!nz.length) { noData(ctx,W,H); return; }
-  const pad={t:22,r:10,b:26,l:34}, cw=W-pad.l-pad.r, ch=H-pad.t-pad.b;
+  const pad={t:22,r:10,b:26,l:36}, cw=W-pad.l-pad.r, ch=H-pad.t-pad.b;
   const max=Math.max(...nz,goal||0)*1.15, min=Math.min(...nz)*.85, rng=max-min||1;
   if (goal) {
     const gy=pad.t+ch-((goal-min)/rng)*ch; ctx.setLineDash([4,3]); ctx.strokeStyle=color+'55'; ctx.lineWidth=1.5;
     ctx.beginPath(); ctx.moveTo(pad.l,gy); ctx.lineTo(W-pad.r,gy); ctx.stroke(); ctx.setLineDash([]);
   }
   [0,.5,1].forEach(t=>{
-    const y=pad.t+ch*t; ctx.strokeStyle='#F3F4F6'; ctx.lineWidth=1;
+    const y=pad.t+ch*t; ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y); ctx.stroke();
-    ctx.fillStyle='#9CA3AF'; ctx.font='9px -apple-system'; ctx.textAlign='right'; ctx.textBaseline='middle';
+    ctx.fillStyle='#5A5A66'; ctx.font='9px -apple-system'; ctx.textAlign='right'; ctx.textBaseline='middle';
     ctx.fillText((max-rng*t).toFixed(1),pad.l-3,y);
   });
   const n=labels.length;
   const pts=data.map((v,i)=>({x:pad.l+(n>1?(i/(n-1))*cw:cw/2), y:v>0?pad.t+ch-((v-min)/rng)*ch:null}));
   const grad=ctx.createLinearGradient(0,pad.t,0,pad.t+ch);
-  grad.addColorStop(0,color+'30'); grad.addColorStop(1,color+'00');
+  grad.addColorStop(0,color+'40'); grad.addColorStop(1,color+'00');
   ctx.beginPath(); let ok=false;
   pts.forEach(p=>{ if(!p.y)return; if(!ok){ctx.moveTo(p.x,pad.t+ch);ctx.lineTo(p.x,p.y);ok=true;}else ctx.lineTo(p.x,p.y); });
   const lp=[...pts].reverse().find(p=>p.y); if(lp) ctx.lineTo(lp.x,pad.t+ch);
@@ -523,168 +707,28 @@ function drawLine(id, labels, data, color, goal=null) {
   ctx.stroke();
   pts.forEach((p,i)=>{
     if (!p.y) return;
-    ctx.beginPath(); ctx.arc(p.x,p.y,3.5,0,Math.PI*2); ctx.fillStyle='white'; ctx.strokeStyle=color; ctx.lineWidth=2; ctx.fill(); ctx.stroke();
-    ctx.fillStyle='#374151'; ctx.font='9px -apple-system'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.beginPath(); ctx.arc(p.x,p.y,3.5,0,Math.PI*2); ctx.fillStyle='#0A0A0F'; ctx.strokeStyle=color; ctx.lineWidth=2; ctx.fill(); ctx.stroke();
+    ctx.fillStyle='#E5E5EA'; ctx.font='9px -apple-system'; ctx.textAlign='center'; ctx.textBaseline='bottom';
     if (data[i]) ctx.fillText(data[i]%1===0?data[i]:data[i].toFixed(1),p.x,p.y-5);
   });
   labels.forEach((l,i)=>{
     const x=pad.l+(n>1?(i/(n-1))*cw:cw/2);
-    ctx.fillStyle=i===n-1?'#111827':'#9CA3AF'; ctx.font=`${i===n-1?'bold ':''} 9px -apple-system`;
+    ctx.fillStyle=i===n-1?'#FFFFFF':'#8E8E93'; ctx.font=`${i===n-1?'bold ':''} 9px -apple-system`;
     ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText(l,x,H-2);
   });
 }
 
-// ── Helpers ──
-const DAYS=['CN','T2','T3','T4','T5','T6','T7'];
-function shortDate(s) { const d=new Date(s+'T12:00:00'); return DAYS[d.getDay()]; }
-function fmt(s) { const d=new Date(s+'T12:00:00'); return `${DAYS[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`; }
-function totalKcal(log) { return (log.meals||[]).reduce((s,m)=>s+(m.total_kcal||0),0); }
-function totalMacro(log,k) { return (log.meals||[]).reduce((s,m)=>s+(m['total_'+k]||0),0); }
-function avg(arr,fn) { const v=arr.map(fn).filter(x=>x>0); return v.length?v.reduce((a,b)=>a+b,0)/v.length:0; }
-function pc(v,max) { return Math.min(100,(v/max)*100).toFixed(1); }
-function vnd(n) { if(n>=1000000)return(n/1000000).toFixed(1)+'tr'; if(n>=1000)return Math.round(n/1000)+'k'; return n+''; }
-function toast(msg) { const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2500); }
-
-// ── Debug ──
-async function debugFetch() {
-  const out = document.getElementById('dbg-out');
-  out.style.display = 'block';
-  out.textContent = 'Testing...';
-  const today = (()=>{ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })();
-  out.textContent = `Local date: ${today}\nPAT: ${PAT ? PAT.slice(0,20)+'...' : '(empty)'}\n\n`;
-  const url = `https://api.github.com/repos/${DATA_REPO}/contents/health-data/index.json?ref=${DATA_BRANCH}`;
-  try {
-    const r = await fetch(url, { headers: { 'Authorization': `Bearer ${PAT}`, 'Accept': 'application/vnd.github.v3+json' } });
-    out.textContent += `HTTP ${r.status} ${r.statusText}\n`;
-    const body = await r.json();
-    if (r.ok) {
-      const bytes2 = Uint8Array.from(atob(body.content.replace(/\n/g,'')), c => c.charCodeAt(0));
-      const parsed = JSON.parse(new TextDecoder().decode(bytes2));
-      out.textContent += `index.json: ${JSON.stringify(parsed)}`;
-    } else {
-      out.textContent += `Error: ${body.message}`;
-    }
-  } catch(e) {
-    out.textContent += `Fetch failed: ${e.message}`;
-  }
-}
-
-// ══════════════════════════════════════════════════════
-// ║  PHASE 1 — Streak, Today card, Weekly summary, PRs ║
-// ══════════════════════════════════════════════════════
-
-// ── 1.1 Streak counter ──
-function computeStreak(idxDesc) {
-  if (!idxDesc?.length) return 0;
-  const today = todayStr();
-  const y = new Date(); y.setDate(y.getDate()-1);
-  const yesterday = isoLocal(y);
-  let start = idxDesc.includes(today) ? today
-            : idxDesc.includes(yesterday) ? yesterday
-            : null;
-  if (!start) return 0;
-  let count = 0;
-  let cursor = new Date(start+'T12:00:00');
-  while (idxDesc.includes(isoLocal(cursor))) {
-    count++;
-    cursor.setDate(cursor.getDate()-1);
-  }
-  return count;
-}
-function renderStreakBadge() {
-  const all = [...new Set([...healthIdx, ...workoutIdx, ...financeIdx])].sort((a,b)=>b.localeCompare(a));
-  const s = computeStreak(all);
-  const el = document.getElementById('streak-badge');
-  if (!el) return;
-  el.innerHTML = s>0
-    ? `<span style="font-size:13px;font-weight:700;color:var(--amber);background:#FEF3C7;padding:3px 9px;border-radius:12px;margin-left:4px">🔥 ${s} ngày</span>`
-    : '';
-}
-
-// ── 1.2 Today card (Sức khỏe) ──
-function renderTodayCard(logs) {
-  const today = todayStr();
-  const t = logs.find(l => l.date === today);
-  if (!t) return `<div class="card" style="background:linear-gradient(135deg,#F0FDF4,#fff);border:1.5px dashed var(--green)">
-    <div class="card-label" style="color:var(--green-d)">📅 HÔM NAY · ${fmtFull(today)}</div>
-    <div style="font-size:13px;color:var(--muted);margin-top:4px">Chưa log gì hôm nay — gửi ảnh bữa ăn cho Claude để bắt đầu.</div>
-  </div>`;
-  const kcal = totalKcal(t);
-  const protein = totalMacro(t,'protein');
-  const items = [
-    { ico:'🔥', lbl:'Calo',    v:kcal,            tgt:TARGET.kcal,     unit:'kcal', color:'#EF4444' },
-    { ico:'💪', lbl:'Protein', v:Math.round(protein), tgt:TARGET.protein, unit:'g',    color:'#3B82F6' },
-    { ico:'💧', lbl:'Nước',    v:(t.water_ml||0)/1000, tgt:TARGET.water_ml/1000, unit:'L', color:'#3B82F6' },
-    { ico:'👟', lbl:'Bước',    v:t.steps||0,       tgt:TARGET.steps,    unit:'',     color:'#F59E0B' },
-    { ico:'😴', lbl:'Ngủ',     v:t.sleep_hours||0, tgt:TARGET.sleep,    unit:'h',    color:'#8B5CF6' }
-  ];
-  const rows = items.map(x => {
-    const pct = Math.min(100, (x.v/x.tgt)*100);
-    const ok  = pct >= 90;
-    return `<div style="margin-bottom:9px">
-      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
-        <span>${x.ico} ${x.lbl}</span>
-        <span style="font-weight:700;color:${ok?'var(--green-d)':'var(--text)'}">${typeof x.v==='number' && x.v%1!==0 ? x.v.toFixed(1) : x.v}${x.unit} <span style="color:var(--faint);font-weight:500"> / ${x.tgt}${x.unit}</span></span>
-      </div>
-      <div class="pbar"><div class="pfill" style="background:${x.color};width:${pct}%"></div></div>
-    </div>`;
-  }).join('');
-  return `<div class="card" style="background:linear-gradient(135deg,#F0FDF4,#fff);border:1.5px solid var(--green-l)">
-    <div class="card-label" style="color:var(--green-d)">📅 HÔM NAY · ${fmtFull(today)}</div>
-    ${rows}
-  </div>`;
-}
-
-// ── 1.3 Weekly summary (this 7 vs prev 7) ──
-function renderWeeklySummary(logs) {
-  if (logs.length < 4) return '';
-  const today = new Date();
-  const cutThis  = isoLocal(addDays(today,-7));
-  const cutPrev  = isoLocal(addDays(today,-14));
-  const thisWk = logs.filter(l => l.date >  cutThis);
-  const prevWk = logs.filter(l => l.date <= cutThis && l.date > cutPrev);
-  if (!thisWk.length) return '';
-  const metrics = [
-    { lbl:'Kcal/ngày',    f:l=>totalKcal(l),         fmt:v=>Math.round(v),    unit:'' },
-    { lbl:'Protein',      f:l=>totalMacro(l,'protein'),fmt:v=>Math.round(v)+'g', unit:'' },
-    { lbl:'Ngủ',          f:l=>l.sleep_hours||0,     fmt:v=>v.toFixed(1)+'h', unit:'' },
-    { lbl:'Bước',         f:l=>l.steps||0,           fmt:v=>(v/1000).toFixed(1)+'k', unit:'' }
-  ];
-  const rows = metrics.map(m => {
-    const cur = avg(thisWk, m.f);
-    const prv = avg(prevWk, m.f);
-    const diff = prv>0 ? ((cur-prv)/prv*100) : 0;
-    const arrow = Math.abs(diff)<3 ? '→' : (diff>0?'↑':'↓');
-    const color = Math.abs(diff)<3 ? 'var(--muted)' : (diff>0?'var(--green-d)':'var(--red)');
-    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)">
-      <span style="font-size:12px;color:var(--muted)">${m.lbl}</span>
-      <span style="font-size:14px;font-weight:700">${m.fmt(cur)}</span>
-      <span style="font-size:11px;color:${color};font-weight:600;min-width:55px;text-align:right">${prvWkLabel(prv,m,arrow,diff)}</span>
-    </div>`;
-  }).join('');
-  return `<div class="card">
-    <div class="card-label">📊 TUẦN NÀY vs TUẦN TRƯỚC</div>
-    ${rows}
-  </div>`;
-}
-function prvWkLabel(prv, m, arrow, diff) {
-  if (!prv) return '<span style="color:var(--faint)">—</span>';
-  return `${arrow} ${Math.abs(diff).toFixed(0)}%`;
-}
-
-// ── 1.4 PR tracker ──
+// ══ PR helpers ══
 function epley(weight, reps) { return weight * (1 + reps/30); }
 function extractSets(ex) {
-  // legacy schema: e.sets = array of {reps, weight_kg}
   if (Array.isArray(ex.sets)) return ex.sets.filter(s => s.reps && s.weight_kg);
-  // new schema: numeric sets/reps + (optional) weight_kg
   if (typeof ex.sets === 'number' && ex.reps && ex.weight_kg) {
     return Array.from({length:ex.sets}, () => ({reps:ex.reps, weight_kg:ex.weight_kg}));
   }
   return [];
 }
 function computePRs(logs) {
-  const byEx = {}; // name -> { maxWeight: {w,d}, max1RM: {w,r,e,d} }
+  const byEx = {};
   logs.slice().reverse().forEach(l => {
     (l.sessions||[]).forEach(s => {
       (s.exercises||[]).forEach(ex => {
@@ -709,29 +753,60 @@ function computePRs(logs) {
   });
   return byEx;
 }
-function renderPRs(logs) {
-  const prs = computePRs(logs);
-  const entries = Object.entries(prs);
-  if (!entries.length) return '';
-  const rows = entries.slice(0,10).map(([name,p]) => {
-    const recentPR = (p.maxWeight?.d === p.lastDate && p.maxWeight?.isNew) || (p.max1RM?.d === p.lastDate && p.max1RM?.isNew);
-    return `<div class="hi">
-      <div class="hi-ico" style="background:#FEF3C7">🏆</div>
-      <div class="hi-info">
-        <div class="hi-title">${name}${recentPR?' <span style="background:#FEE2E2;color:#991B1B;font-size:9px;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:800">NEW PR</span>':''}</div>
-        <div class="hi-sub">Heaviest: <strong>${p.maxWeight.w}kg × ${p.maxWeight.r}</strong> (${fmt(p.maxWeight.d)})</div>
-        <div class="hi-extra">Est. 1RM: <strong>${p.max1RM.e.toFixed(1)}kg</strong> (Epley)</div>
-      </div>
-    </div>`;
-  }).join('');
-  return `<div class="stitle">🏆 Personal Records</div><div class="card">${rows}</div>`;
+
+// ══ Streak ══
+function computeStreak(idxDesc) {
+  if (!idxDesc?.length) return 0;
+  const today = todayStr();
+  const y = new Date(); y.setDate(y.getDate()-1);
+  const yesterday = isoLocal(y);
+  let start = idxDesc.includes(today) ? today : idxDesc.includes(yesterday) ? yesterday : null;
+  if (!start) return 0;
+  let count = 0;
+  let cursor = new Date(start+'T12:00:00');
+  while (idxDesc.includes(isoLocal(cursor))) { count++; cursor.setDate(cursor.getDate()-1); }
+  return count;
+}
+function renderStreakBadge() {
+  const all = [...new Set([...healthIdx, ...workoutIdx, ...financeIdx])].sort((a,b)=>b.localeCompare(a));
+  const s = computeStreak(all);
+  const el = document.getElementById('streak-badge');
+  if (!el) return;
+  el.innerHTML = s>0 ? `<span class="streak-pill">🔥 ${s}</span>` : '';
 }
 
-// ── Helpers ──
+// ══ Helpers ══
+const DAYS=['CN','T2','T3','T4','T5','T6','T7'];
+function shortDate(s) { const d=new Date(s+'T12:00:00'); return DAYS[d.getDay()]; }
+function fmt(s) { const d=new Date(s+'T12:00:00'); return `${DAYS[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`; }
+function fmtFull(s) { const d=new Date(s+'T12:00:00'); return `${DAYS[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`; }
 function todayStr() { return isoLocal(new Date()); }
 function isoLocal(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
 function addDays(d,n) { const x=new Date(d); x.setDate(x.getDate()+n); return x; }
-function fmtFull(s) { const d=new Date(s+'T12:00:00'); return `${DAYS[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`; }
+function totalKcal(log) { return (log.meals||[]).reduce((s,m)=>s+(m.total_kcal||0),0); }
+function totalMacro(log,k) { return (log.meals||[]).reduce((s,m)=>s+(m['total_'+k]||0),0); }
+function avg(arr,fn) { const v=arr.map(fn).filter(x=>x>0); return v.length?v.reduce((a,b)=>a+b,0)/v.length:0; }
+function pc(v,max) { return Math.min(100,(v/max)*100).toFixed(0); }
+function vnd(n) { if(n>=1000000)return(n/1000000).toFixed(1)+'tr'; if(n>=1000)return Math.round(n/1000)+'k'; return n+''; }
+function toast(msg) { const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2500); }
+
+// ── Debug ──
+async function debugFetch() {
+  const out = document.getElementById('dbg-out');
+  out.style.display = 'block';
+  const today = todayStr();
+  out.textContent = `Local date: ${today}\nPAT: ${PAT ? PAT.slice(0,20)+'...' : '(empty)'}\n\n`;
+  const url = `https://api.github.com/repos/${DATA_REPO}/contents/health-data/index.json?ref=${DATA_BRANCH}`;
+  try {
+    const r = await fetch(url, { headers: { 'Authorization': `Bearer ${PAT}`, 'Accept': 'application/vnd.github.v3+json' } });
+    out.textContent += `HTTP ${r.status} ${r.statusText}\n`;
+    const body = await r.json();
+    if (r.ok) {
+      const bytes = Uint8Array.from(atob(body.content.replace(/\n/g,'')), c => c.charCodeAt(0));
+      out.textContent += `index.json: ${new TextDecoder().decode(bytes)}`;
+    } else { out.textContent += `Error: ${body.message}`; }
+  } catch(e) { out.textContent += `Fetch failed: ${e.message}`; }
+}
 
 // ── Boot ──
 if (checkPat()) reload();
