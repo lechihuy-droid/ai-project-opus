@@ -13,48 +13,57 @@
 
 ---
 
-## Phase 1 — Quick wins (display-only, no new input)
-> Mục tiêu: tận dụng data đã có, không đổi schema phức tạp
+## Phase 1 ✅ DONE (2026-05-28)
+> Quick wins (display-only, no new input)
 
-| # | Feature | Effort | Impact |
-|---|---------|--------|--------|
-| 1.1 | **Streak counter** — số ngày log liên tiếp, hiển thị badge trên topbar | XS | High |
-| 1.2 | **Weekly summary card** — avg kcal/protein/ngủ/steps 7 ngày + so sánh tuần trước | S | High |
-| 1.3 | **PR tracker workout** — auto detect heaviest weight + 1RM ước tính per bài, badge "🏆 PR" | S | High |
-| 1.4 | **Today card** — hiển thị nổi bật ngày hôm nay (kcal target progress, water, steps ring) | S | Med |
-| 1.5 | **Empty states đẹp** — khi chưa log, gợi ý hành động cụ thể thay vì "😶 Chưa có" | XS | Med |
+| # | Feature | Status |
+|---|---------|--------|
+| 1.1 | Streak counter (badge topbar) | ✅ |
+| 1.2 | Weekly summary card (this 7d vs prev 7d) | ✅ |
+| 1.3 | PR tracker (heaviest weight + 1RM Epley) | ✅ |
+| 1.4 | Today card (kcal/protein/nước/bước/ngủ vs target) | ✅ |
+| 1.5 | Empty states với gợi ý action | ✅ |
 
-**Verify:** mở dashboard trên iPhone → thấy streak, weekly summary, PR badge.
-
----
-
-## Phase 2 — Schema extend (cần Claude log thêm field)
-> Mục tiêu: enrich data khi log, value ngay khi xem
-
-| # | Feature | Effort | Impact |
-|---|---------|--------|--------|
-| 2.1 | **Micronutrients** — extend meal item schema: thêm `fiber, calcium, iron, magnesium, zinc, vit_d, vit_b12, omega3` | M | High |
-| 2.2 | **RPE per workout set** — thêm field `rpe` (1-10) vào exercise | S | High |
-| 2.3 | **Mood tag** — thêm `mood: 1-5` vào daily log, vẽ chung với meals/sleep | S | Med |
-| 2.4 | **Fasting window** — auto-compute từ giờ bữa đầu/cuối, hiển thị actual vs 16:8 | S | Med |
-| 2.5 | **Cập nhật instructions.md** — Claude tự nhớ vi chất khi extract từ ảnh, hỏi RPE sau workout | S | High |
-
-**Verify:** log 1 bữa mới → JSON có đủ vi chất; log workout → có RPE.
+**Shipped commits:** `b7623c8` feat(dashboard): Phase 1
 
 ---
 
-## Phase 3 — Cross-module intelligence
-> Mục tiêu: phát hiện pattern, không chỉ hiển thị raw data
+## Phase 2 — TODO (next up)
+> Schema extend — enrich data khi log, value ngay khi xem
 
-| # | Feature | Effort | Impact |
-|---|---------|--------|--------|
-| 3.1 | **Adaptive TDEE** — tính TDEE thực từ trend cân + intake 14 ngày, đề xuất calo tuần tới | M | High |
-| 3.2 | **Volume per muscle group** — map exercise → muscle, biểu đồ tuần. Cần exercise DB | L | High |
-| 3.3 | **Muscle heatmap SVG** — body front/back tô màu theo volume 7 ngày | M | Med |
-| 3.4 | **ACWR load balance** — track aerobic (muay thai) vs anaerobic (tonnage), cảnh báo > 1.5 | M | High |
-| 3.5 | **Correlation insights** — sleep ↔ kcal, training ↔ cân, weekend ↔ chi tiêu. Hiển thị card "💡 Insight tuần này" | M | High |
+- [ ] **2.1 Micronutrients** — extend meal item schema: `fiber, calcium, iron, magnesium, zinc, vit_d, vit_b12, omega3`. Display: bar "5/8 vi chất đạt" hoặc heatmap tuần
+- [ ] **2.2 RPE per workout set** — thêm field `rpe` (1-10) vào exercise. Display: avg RPE/session, trend chart
+- [ ] **2.3 Mood/energy tag** — thêm `mood: 1-5`, `energy: 1-5` vào daily log. Display: vẽ chung với meals/sleep để tìm trigger
+- [ ] **2.4 Fasting window** — auto-compute từ `meals[0].time` đến `meals[last].time`, hiển thị actual vs 16:8 target
+- [ ] **2.5 Cập nhật instructions.md** — Claude prompt: tự extract vi chất khi log ảnh; hỏi RPE sau workout; gợi ý mood tag tối
 
-**Verify:** sau 4 tuần data → insight card hiện ít nhất 2-3 pattern thực.
+**Verify:** log 1 bữa mới → JSON có ≥5 vi chất; log workout → có RPE; cuối ngày có mood.
+
+**Effort tổng:** ~1 tuần (chủ yếu schema + Claude prompt, ít UI mới)
+
+---
+
+## Phase 3 — TODO (sau Phase 2, cần ≥4 tuần data)
+> Cross-module intelligence — phát hiện pattern, không chỉ hiển thị raw
+
+- [ ] **3.1 Adaptive TDEE** — tính TDEE thực từ trend cân (Δkg/tuần × 7700) + avg intake 14 ngày → đề xuất calo target tuần tới
+- [ ] **3.2 Volume per muscle group** — exercise → muscle DB (chest/back/legs/shoulders/arms/core). Tổng sets/tuần per muscle. So với MEV/MAV/MRV
+- [ ] **3.3 Muscle heatmap SVG** — body front/back, tô màu theo volume 7 ngày. Phát hiện muscle bỏ quên
+- [ ] **3.4 ACWR load balance** — aerobic (muay thai rounds × duration × RPE) vs anaerobic (tonnage). Cảnh báo ACWR > 1.5 (chấn thương)
+- [ ] **3.5 Correlation insights** — card "💡 Insight tuần này": "Ngủ < 6h → kcal +X%", "Tập muay thai → cân -Yg sáng sau", "Cuối tuần chi tiêu +Z%"
+
+**Verify:** sau 4 tuần log đầy đủ → insight card hiện ≥2 pattern thực.
+
+**Effort tổng:** ~2 tuần. Phụ thuộc Phase 2.5 (exercise DB) và data ≥30 ngày.
+
+---
+
+## Notes / Decisions ghi nhớ
+
+- **Phase 1 → 2 gap:** Phase 2 cần Claude prompt update (instructions.md). Đây là leverage cao nhất vì 1 lần update prompt → mọi log sau đều có data mới.
+- **Không build UI nhập liệu** trong bất kỳ phase nào. Mọi input qua chat.
+- **Exercise → muscle DB** (Phase 3.2): build dạng JSON tĩnh trong dashboard, không gọi API ngoài.
+- **Skip nếu data thưa:** TDEE/correlation cần ≥14-30 ngày liên tục, đừng vội build khi chưa đủ data.
 
 ---
 
