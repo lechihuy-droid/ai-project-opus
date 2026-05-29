@@ -18,13 +18,15 @@ The agent filters raw news into decision-relevant signals. It must not summarize
 
 | Lane | Purpose | Main Question |
 |---|---|---|
-| Tech Learning Research | Support reskill and AI-native workflow practice | What should Huy learn, test, or improve? |
+| Tech Learning Research | Support reskill and AI-native workspace operation | What should Huy learn, test, or improve in agent/tool/workspace practice? |
 | CEO Business Model Research | Support CEO-level strategy and business model sensing | If Huy were CEO of a tech firm, what should change in offer, customer focus, pricing, operating model, or investment thesis? |
 | Competitor Intelligence Research | Track competitor moves and offer packaging | What are competitors selling, packaging, monetizing, or organizing around, and how should Huy/FDE-lite respond? |
 
 Do not let technical news dominate the CEO lane unless it changes business action.
 
 Competitor Intelligence is a required sub-mode when the user asks about CEO research, market strategy, FDE-lite positioning, SIer/offshore movement, or business model competition.
+
+BD/RCD is not part of the default News Research branch. Mention BD/RCD only when the user explicitly asks about that project or when a signal directly changes the BD/RCD pilot execution. Otherwise, keep news analysis focused on workspace skills, agent operations, CEO/business model, competitor intelligence, and investment implications.
 
 ---
 
@@ -38,6 +40,8 @@ Use this pack when the task is about:
 - FDE-lite market signal
 - investment or software/SaaS thesis monitoring
 - filtering repeated or low-value news
+
+Do not use this pack to expand or maintain the BD/RCD branch unless explicitly requested.
 
 ---
 
@@ -70,7 +74,7 @@ Relevant Consilium pages:
 | Anti-repetition filter | Suppress news that only repeats known thesis |
 | CEO business signal extraction | Extract customer, offer, pricing, competitor, adoption, vertical, talent, or risk implications |
 | Competitor intelligence extraction | Extract competitor move, business model bucket, threat, opportunity gap, and recommended response |
-| Tech learning extraction | Extract what Huy should learn, test, or improve |
+| Tech learning extraction | Extract what Huy should learn, test, or improve in agent/tool/workspace practice |
 | Watch/ignore decision | Decide whether to watch, ignore, promote, or update wiki |
 | Wiki promotion check | Decide if a signal deserves a durable wiki update |
 
@@ -80,7 +84,9 @@ Relevant Consilium pages:
 
 ### `/run-tech-learning-brief`
 
-Return one to three technology signals only if they change a skill, tool, or workflow action.
+Return one to three technology signals only if they change a skill, tool, agent workflow, security posture, context management practice, or workspace operating habit.
+
+Do not route generic technology signals into BD/RCD. BD/RCD is out of scope unless the user explicitly asks for it.
 
 Format:
 
@@ -213,6 +219,7 @@ Suppress or downgrade repeated signals such as:
 - agent-first tooling is accelerating
 - enterprise AI needs accountability
 - skill-first remains necessary before agent orchestration
+- generic BD/RCD implications when the user did not ask for BD/RCD
 
 ---
 
@@ -225,6 +232,7 @@ Suppress or downgrade repeated signals such as:
 - Repeated news is suppressed unless it adds new evidence or action.
 - Tech, CEO, and Competitor lanes are not mixed accidentally.
 - CEO research includes competitor intelligence when relevant, or explicitly says no strong competitor signal was found.
+- Tech research stays focused on agent/tool/workspace learning and does not drift into BD/RCD unless explicitly requested.
 - Wiki action is explicit: update / no update / watch / ignore.
 
 ### Revise
@@ -234,6 +242,7 @@ Suppress or downgrade repeated signals such as:
 - The same thesis appeared recently without new evidence.
 - The action is vague.
 - CEO research lacks competitor intelligence when the user asked for competitors or strategy.
+- Tech research introduces BD/RCD implications without a direct user request.
 
 ### Blocked
 
@@ -241,6 +250,7 @@ Suppress or downgrade repeated signals such as:
 - The agent invents business impact not supported by the source.
 - The item is promoted to wiki without durable decision value.
 - Competitor claims are made without evidence or with only marketing language.
+- The response expands the BD/RCD branch even though the user asked for general tech/news research.
 
 ---
 
@@ -302,6 +312,7 @@ Return format:
 - Do not omit competitor intelligence when the user asks for CEO research about strategy or competitors.
 - Do not update wiki unless a signal is durable.
 - Do not treat product announcements as strong evidence without customer, KPI, revenue, adoption, or workflow evidence.
+- Do not introduce BD/RCD analysis in general news, tech, CEO, or competitor briefs unless the user explicitly asks for BD/RCD or the signal directly changes that project.
 
 ---
 
@@ -311,6 +322,7 @@ Return format:
 - More actionable CEO/business insights.
 - Competitor briefs identify concrete moves, offers, and gaps.
 - Better separation of Tech Learning, CEO Business, and Competitor Intelligence lanes.
+- Tech research no longer drifts into BD/RCD by default.
 - Fewer unnecessary wiki updates.
 - More useful watch/ignore decisions.
 
