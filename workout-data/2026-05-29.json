@@ -1,0 +1,38 @@
+{
+  "date": "2026-05-29",
+  "sessions": [
+    {
+      "time": "18:00",
+      "type": "muay_thai",
+      "duration_min": 6,
+      "calories": 60,
+      "exercises": [
+        {
+          "name": "Sparring",
+          "sets": 3,
+          "duration_per_set_sec": 120,
+          "notes": "3 hiệp x 2 phút"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "time": "18:10",
+      "type": "gym",
+      "duration_min": 5,
+      "calories": 30,
+      "exercises": [
+        {
+          "name": "Ab wheel rollout",
+          "sets": [
+            {"reps": 15},
+            {"reps": 15},
+            {"reps": 15}
+          ],
+          "notes": "gập bụng bánh xe"
+        }
+      ],
+      "notes": ""
+    }
+  ]
+}
