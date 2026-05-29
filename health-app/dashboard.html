@@ -218,7 +218,12 @@ let currentTab   = 'health';
 let cHealth = [], cWorkout = [], cFinance = [];
 let healthIdx = [], workoutIdx = [], financeIdx = [];
 
-const TARGET = { kcal: 2200, protein: 130, water_ml: 2000, steps: 8000, sleep: 7.5 };
+const CONFIG = {
+  target:   { kcal: 2200, protein: 130, water_ml: 2000, steps: 8000, sleep: 7.5 },
+  currency: 'VND',
+  locale:   'vi-VN'
+};
+const TARGET = CONFIG.target;
 
 // ── PAT setup ──
 function checkPat() {
@@ -287,7 +292,7 @@ async function reload() {
       loadModule('workout-data', currentRange).catch(()=>({rows:[],idx:[]})),
       loadModule('finance-data', currentRange).catch(()=>({rows:[],idx:[]}))
     ]);
-    cHealth = h.rows;  healthIdx  = h.idx;
+    cHealth = h.rows;  healthIdx  = h.idx; cHealth.forEach(validateHealthLog);
     cWorkout = w.rows; workoutIdx = w.idx;
     cFinance = f.rows; financeIdx = f.idx;
     renderStreakBadge();
@@ -363,16 +368,16 @@ function renderHealth(logs) {
     <!-- Water -->
     <div class="b b-water span2">
       <div class="b-label">NƯỚC</div>
-      <div class="b-val">${((shown.water_ml||0)/1000).toFixed(1)}<span class="b-unit">L</span></div>
-      <div class="b-sub" style="color:${shown.water_ml>=TARGET.water_ml?'var(--green)':'var(--muted)'};font-weight:700">${shown.water_ml>=TARGET.water_ml?'✓ Đủ':`/ ${TARGET.water_ml/1000}L`}</div>
+      <div class="b-val">${shown.water_ml>0?((shown.water_ml)/1000).toFixed(1):'—'}<span class="b-unit">${shown.water_ml>0?'L':''}</span></div>
+      <div class="b-sub" style="color:${shown.water_ml>0&&shown.water_ml>=TARGET.water_ml?'var(--green)':'var(--muted)'};font-weight:700">${shown.water_ml>0?(shown.water_ml>=TARGET.water_ml?'✓ Đủ':`/ ${TARGET.water_ml/1000}L`):'chưa log'}</div>
       <div class="b-ico">💧</div>
     </div>
 
     <!-- Steps -->
     <div class="b b-steps span2">
       <div class="b-label">BƯỚC CHÂN</div>
-      <div class="b-val">${((shown.steps||0)/1000).toFixed(1)}<span class="b-unit">k</span></div>
-      <div class="b-sub">/ ${TARGET.steps/1000}k target</div>
+      <div class="b-val">${shown.steps>0?((shown.steps)/1000).toFixed(1):'—'}<span class="b-unit">${shown.steps>0?'k':''}</span></div>
+      <div class="b-sub">${shown.steps>0?`/ ${TARGET.steps/1000}k target`:'chưa log'}</div>
       <div class="b-ico">👟</div>
     </div>
 
@@ -421,7 +426,7 @@ function renderDayAcc(l, open) {
       <div class="mi-ico">${ico}</div>
       <div class="mi-info">
         <div class="mi-name">${it.name}</div>
-        <div class="mi-mac">${it.grams}g · P:${it.protein}g C:${it.carb}g F:${it.fat}g</div>
+        <div class="mi-mac">${getItemGrams(it)}g · P:${getItemMacro(it,'protein')}g C:${getItemMacro(it,'carb')}g F:${getItemMacro(it,'fat')}g</div>
       </div>
       <div class="mi-kcal">${it.kcal}</div>
     </div>`;
@@ -783,8 +788,22 @@ function fmtFull(s) { const d=new Date(s+'T12:00:00'); return `${DAYS[d.getDay()
 function todayStr() { return isoLocal(new Date()); }
 function isoLocal(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
 function addDays(d,n) { const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+// ── Schema normalize helpers (supports old: grams/protein/carb/fat AND new: amount_g/protein_g/carb_g/fat_g) ──
+function getItemGrams(it) { return it.grams ?? it.amount_g ?? 0; }
+function getItemMacro(it, key) { return it[key] ?? it[key + '_g'] ?? 0; }
+function getMealMacro(meal, key) { return meal['total_' + key] ?? meal['total_' + key + '_g'] ?? 0; }
 function totalKcal(log) { return (log.meals||[]).reduce((s,m)=>s+(m.total_kcal||0),0); }
-function totalMacro(log,k) { return (log.meals||[]).reduce((s,m)=>s+(m['total_'+k]||0),0); }
+function totalMacro(log, k) { return (log.meals||[]).reduce((s,m) => s + getMealMacro(m, k), 0); }
+function validateHealthLog(log) {
+  const issues = [];
+  (log.meals||[]).forEach(m => {
+    (m.items||[]).forEach(it => {
+      if (it.grams == null && it.amount_g == null) issues.push(`missing grams: "${it.name}"`);
+      if (it.protein == null && it.protein_g == null) issues.push(`missing protein: "${it.name}"`);
+    });
+  });
+  if (issues.length) console.warn('[opus-vita] non-canonical health schema', log.date, issues);
+}
 function avg(arr,fn) { const v=arr.map(fn).filter(x=>x>0); return v.length?v.reduce((a,b)=>a+b,0)/v.length:0; }
 function pc(v,max) { return Math.min(100,(v/max)*100).toFixed(0); }
 function vnd(n) { if(n>=1000000)return(n/1000000).toFixed(1)+'tr'; if(n>=1000)return Math.round(n/1000)+'k'; return n+''; }
