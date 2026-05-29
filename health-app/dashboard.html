@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Opus Nexus</title>
+<script src="https://apis.google.com/js/api.js" async defer></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -266,6 +268,19 @@ canvas { display: block; }
 .proposal-time { font-size: 11px; color: var(--vita-muted); margin-top: 4px; line-height: 1.45; }
 .proposal-type { display: inline-block; margin-top: 8px; font-size: 10px; font-weight: 800; color: var(--vita-info); background: rgba(90,200,250,.12); border-radius: 8px; padding: 3px 7px; }
 .proposal-errors { margin-top: 8px; color: var(--vita-energy); font-size: 11px; line-height: 1.45; }
+.status-pill { display: inline-block; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 999px; background: rgba(255,255,255,.06); color: var(--vita-muted); }
+.status-pill.good { background: rgba(48,209,88,.14); color: var(--vita-good); }
+.status-pill.warn { background: rgba(255,159,10,.14); color: var(--vita-warn); }
+.status-pill.info { background: rgba(90,200,250,.14); color: var(--vita-info); }
+.cal-summary { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: var(--vita-gap); margin-top: var(--vita-gap); }
+.cal-mini { background: rgba(255,255,255,.04); border: 1px solid var(--vita-line); border-radius: var(--vita-radius-md); padding: 11px; min-height: 74px; }
+.cal-mini-label { font-size: 10px; font-weight: 800; color: var(--vita-muted); text-transform: uppercase; letter-spacing: .45px; }
+.cal-mini-val { font-size: 19px; font-weight: 800; margin-top: 6px; }
+.cal-event { display: flex; gap: 10px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
+.cal-event:last-child { border-bottom: none; }
+.cal-time { width: 72px; flex-shrink: 0; color: var(--vita-info); font-size: 11px; font-weight: 800; line-height: 1.45; }
+.cal-title { font-size: 13px; font-weight: 800; line-height: 1.35; }
+.cal-sub { font-size: 11px; color: var(--vita-muted); margin-top: 3px; }
 
 /* ── Coming soon (placeholder views) ── */
 .coming-soon { text-align: center; padding: 56px 24px; color: var(--vita-muted); }
@@ -326,7 +341,13 @@ canvas { display: block; }
 const CONFIG = {
   target:   { kcal: 2200, protein: 130, carb: 220, fat: 70, fiber: 25, water_ml: 2000, steps: 8000, sleep: 7.5 },
   currency: 'VND',
-  locale:   'vi-VN'
+  locale:   'vi-VN',
+  google: {
+    clientId: '',
+    apiKey: '',
+    discoveryDoc: 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
+    scopes: 'https://www.googleapis.com/auth/calendar.readonly'
+  }
 };
 const TARGET = CONFIG.target;
 
@@ -339,6 +360,7 @@ let currentView  = 'today';           // today | vita | calendar | actions
 let currentTab   = 'health';          // sub-tab inside Vita
 let cHealth = [], cWorkout = [], cFinance = [];
 let healthIdx = [], workoutIdx = [], financeIdx = [];
+let gapiReady = false, gToken = null, tokenClient = null, calEvents = [], calLoading = false, calError = '';
 
 // ── PAT setup ──
 function checkPat() {
@@ -428,7 +450,7 @@ async function reload() {
 function renderContent() {
   const el = document.getElementById('content');
   if (currentView === 'today')    { el.innerHTML = renderToday(); return; }
-  if (currentView === 'calendar') { el.innerHTML = renderComingSoon('📅','Calendar','Kết nối Google Calendar để Nexus hiểu lịch tuần.<br>Sắp ra mắt — Phase 3.'); return; }
+  if (currentView === 'calendar') { el.innerHTML = renderCalendarTab(); return; }
   if (currentView === 'actions')  { el.innerHTML = renderComingSoon('⚡','Actions','Phê duyệt đề xuất sự kiện từ LLM.<br>Sắp ra mắt — Phase 4-5.'); return; }
   // Vita module
   if (currentTab==='health')  { el.innerHTML=renderHealth(cHealth);   setTimeout(()=>drawHealth(cHealth),30); }
@@ -484,10 +506,7 @@ function renderToday() {
   <button class="action-btn" onclick="showView('vita')" style="margin-top:var(--vita-gap)">Xem chi tiết Vita →</button>
 
   <div class="stitle">Lịch tuần</div>
-  <div class="brief-card" style="font-size:13px;color:var(--vita-muted)">
-    📅 Chưa kết nối Google Calendar
-    <div style="font-size:11px;color:var(--vita-faint);margin-top:4px">Phase 3 — đọc lịch để gợi ý kế hoạch tuần</div>
-  </div>
+  ${renderCalendarContext(true)}
 
   <div class="stitle">Việc cần làm</div>
   <div class="brief-card" style="font-size:13px;color:var(--vita-muted)">
@@ -564,6 +583,212 @@ function renderProposalCard(ev, selected=false) {
       ${errors.length ? `<div class="proposal-errors">${errors.map(esc).join('<br>')}</div>` : ''}
     </div>
   </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// ║  Nexus — Calendar read-only                            ║
+// ══════════════════════════════════════════════════════════
+function isGoogleConfigured() {
+  return !!(CONFIG.google.clientId && CONFIG.google.apiKey);
+}
+
+async function initGapiClient() {
+  if (gapiReady) return true;
+  if (!isGoogleConfigured()) throw new Error('Google Calendar OAuth chưa được cấu hình.');
+  if (typeof gapi === 'undefined') throw new Error('Google API script chưa tải xong.');
+  await new Promise((resolve, reject) => {
+    gapi.load('client', { callback: resolve, onerror: () => reject(new Error('Không tải được Google API client.')) });
+  });
+  await gapi.client.init({
+    apiKey: CONFIG.google.apiKey,
+    discoveryDocs: [CONFIG.google.discoveryDoc]
+  });
+  gapiReady = true;
+  return true;
+}
+
+async function initTokenClient() {
+  if (tokenClient) return tokenClient;
+  if (!isGoogleConfigured()) throw new Error('Google Calendar OAuth chưa được cấu hình.');
+  if (typeof google === 'undefined') throw new Error('Google Identity script chưa tải xong.');
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CONFIG.google.clientId,
+    scope: CONFIG.google.scopes,
+    callback: async (resp) => {
+      if (resp.error) {
+        calError = resp.error;
+        calLoading = false;
+        renderContent();
+        return;
+      }
+      gToken = resp.access_token;
+      localStorage.setItem('nexus_cal_connected', '1');
+      try {
+        await loadCalendarEvents();
+      } catch (e) {
+        calError = e.message;
+      } finally {
+        calLoading = false;
+        renderContent();
+      }
+    }
+  });
+  return tokenClient;
+}
+
+async function connectCalendar() {
+  calError = '';
+  calLoading = true;
+  renderContent();
+  try {
+    await initGapiClient();
+    await initTokenClient();
+    tokenClient.requestAccessToken({ prompt: gToken ? '' : 'consent' });
+  } catch (e) {
+    calError = e.message;
+    calLoading = false;
+    renderContent();
+  }
+}
+
+async function loadCalendarEvents(days=14) {
+  if (!gapiReady) await initGapiClient();
+  const timeMin = new Date();
+  const timeMax = addDays(timeMin, days);
+  const res = await gapi.client.calendar.events.list({
+    calendarId: 'primary',
+    timeMin: timeMin.toISOString(),
+    timeMax: timeMax.toISOString(),
+    singleEvents: true,
+    orderBy: 'startTime',
+    maxResults: 40
+  });
+  calEvents = normalizeCalendarEvents(res.result.items || []);
+  return calEvents;
+}
+
+function normalizeCalendarEvents(items) {
+  return items.map(ev => {
+    const startRaw = ev.start?.dateTime || ev.start?.date || '';
+    const endRaw = ev.end?.dateTime || ev.end?.date || '';
+    return {
+      id: ev.id,
+      title: ev.summary || '(No title)',
+      location: ev.location || '',
+      start: startRaw,
+      end: endRaw,
+      isAllDay: !!ev.start?.date,
+      htmlLink: ev.htmlLink || ''
+    };
+  }).filter(ev => ev.start);
+}
+
+function summarizeCalendar(events=calEvents) {
+  const timed = events.filter(e => !e.isAllDay);
+  const hours = timed.reduce((sum, e) => sum + eventHours(e), 0);
+  const lateEvents = timed.filter(e => {
+    const d = parseCalDate(e.start);
+    return d && d.getHours() >= 20;
+  });
+  const mealRisk = timed.filter(e => /dinner|lunch|restaurant|外食|会食|飲み|ăn|nhậu|cafe|coffee/i.test(e.title + ' ' + e.location));
+  return {
+    total: events.length,
+    timed: timed.length,
+    busyHours: +hours.toFixed(1),
+    busyLevel: hours >= 32 ? 'Cao' : hours >= 18 ? 'Vừa' : 'Nhẹ',
+    eatingOutRisk: mealRisk.length,
+    lateEvents: lateEvents.length,
+    freeWindows: estimateFreeWindows(timed)
+  };
+}
+
+function eventHours(ev) {
+  const s = parseCalDate(ev.start), e = parseCalDate(ev.end);
+  if (!s || !e || e <= s) return 0;
+  return (e - s) / 36e5;
+}
+
+function estimateFreeWindows(events) {
+  const days = {};
+  events.forEach(ev => {
+    const d = parseCalDate(ev.start);
+    if (!d) return;
+    const k = isoLocal(d);
+    days[k] = (days[k] || 0) + eventHours(ev);
+  });
+  return Math.max(0, 14 - Object.values(days).filter(h => h >= 6).length);
+}
+
+function renderCalendarContext(compact=false) {
+  if (!isGoogleConfigured()) {
+    return `<div class="brief-card">
+      <span class="status-pill warn">Setup needed</span>
+      <div style="font-size:13px;color:var(--vita-muted);margin-top:10px">Điền Google OAuth clientId/apiKey trong CONFIG để đọc lịch. Không lưu token, không ghi calendar.</div>
+      ${compact ? `<button class="action-btn" onclick="showView('calendar')" style="margin-top:10px">Mở Calendar →</button>` : ''}
+    </div>`;
+  }
+  if (calLoading) {
+    return `<div class="brief-card"><span class="status-pill info">Loading</span><div style="font-size:13px;color:var(--vita-muted);margin-top:10px">Đang kết nối Google Calendar...</div></div>`;
+  }
+  if (!gToken) {
+    return `<div class="brief-card">
+      <span class="status-pill">Not connected</span>
+      <div style="font-size:13px;color:var(--vita-muted);margin-top:10px">Kết nối read-only để Nexus hiểu nhịp tuần.</div>
+      <button class="action-btn" onclick="connectCalendar()" style="margin-top:10px">Kết nối Calendar</button>
+      ${calError ? `<div class="proposal-errors">${esc(calError)}</div>` : ''}
+    </div>`;
+  }
+  const s = summarizeCalendar();
+  return `<div class="brief-card">
+    <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
+      <div>
+        <div class="brief-greeting">Calendar Context</div>
+        <div class="brief-date">${s.total} sự kiện / 14 ngày tới</div>
+      </div>
+      <span class="status-pill good">Read-only</span>
+    </div>
+    <div class="cal-summary">
+      <div class="cal-mini"><div class="cal-mini-label">Độ bận</div><div class="cal-mini-val">${s.busyLevel}</div></div>
+      <div class="cal-mini"><div class="cal-mini-label">Busy hours</div><div class="cal-mini-val">${s.busyHours}h</div></div>
+      <div class="cal-mini"><div class="cal-mini-label">Ăn ngoài risk</div><div class="cal-mini-val">${s.eatingOutRisk}</div></div>
+      <div class="cal-mini"><div class="cal-mini-label">Sự kiện trễ</div><div class="cal-mini-val">${s.lateEvents}</div></div>
+    </div>
+  </div>`;
+}
+
+function renderCalendarTab() {
+  const events = calEvents.slice(0, 12).map(renderCalendarEvent).join('');
+  return `${renderCalendarContext(false)}
+    ${gToken ? `<button class="action-btn" onclick="loadCalendarEvents().then(()=>renderContent()).catch(e=>{calError=e.message;renderContent();})">Refresh 14 ngày</button>` : ''}
+    <div class="stitle">Upcoming</div>
+    <div class="brief-card" style="padding:4px 14px">
+      ${gToken ? (events || '<div style="font-size:13px;color:var(--vita-muted);padding:12px 0">Không có sự kiện sắp tới</div>') : '<div style="font-size:13px;color:var(--vita-muted);padding:12px 0">Kết nối calendar để xem lịch 14 ngày tới</div>'}
+    </div>
+    <button class="action-btn" onclick="showView('actions')" style="margin-top:var(--vita-gap)" ${gToken ? '' : 'disabled'}>Plan My Week →</button>`;
+}
+
+function renderCalendarEvent(ev) {
+  return `<div class="cal-event">
+    <div class="cal-time">${formatCalTime(ev)}</div>
+    <div style="flex:1;min-width:0">
+      <div class="cal-title">${esc(ev.title)}</div>
+      ${ev.location ? `<div class="cal-sub">${esc(ev.location)}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+function formatCalTime(ev) {
+  const s = parseCalDate(ev.start), e = parseCalDate(ev.end);
+  if (!s) return '—';
+  if (ev.isAllDay) return fmt(isoLocal(s));
+  const opts = { hour: '2-digit', minute: '2-digit' };
+  return `${fmt(isoLocal(s))}<br>${s.toLocaleTimeString('vi-VN', opts)}${e ? '–'+e.toLocaleTimeString('vi-VN', opts) : ''}`;
+}
+
+function parseCalDate(value) {
+  if (!value) return null;
+  const d = value.length === 10 ? new Date(value + 'T00:00:00') : new Date(value);
+  return Number.isNaN(d.getTime()) ? null : d;
 }
 
 // ══════════════════════════════════════════════════════════
