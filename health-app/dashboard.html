@@ -251,6 +251,21 @@ canvas { display: block; }
 .brief-date { font-size: 12px; color: var(--vita-muted); margin-top: 2px; }
 .action-btn { display: block; width: 100%; padding: 11px; background: rgba(255,255,255,.06); color: var(--vita-text); border: none; border-radius: 11px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
 .action-btn:active { background: rgba(255,255,255,.1); }
+.metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: var(--vita-gap); }
+.metric-hero { background: var(--vita-surface); border: 1px solid var(--vita-line); border-radius: var(--vita-radius-lg); padding: 14px; min-height: 96px; }
+.metric-hero-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--vita-muted); margin-bottom: 8px; }
+.metric-hero-val { font-size: 28px; font-weight: 800; line-height: 1; }
+.metric-hero-unit { font-size: 12px; font-weight: 700; color: var(--vita-muted); margin-left: 2px; }
+.metric-hero-target { font-size: 11px; color: var(--vita-muted); margin-top: 7px; font-weight: 600; }
+.metric-hero .pbar { margin-top: 9px; }
+.metric-empty { color: var(--vita-faint); font-size: 20px; font-weight: 800; }
+.proposal-card { display: flex; gap: 11px; align-items: flex-start; background: var(--vita-surface); border: 1px solid var(--vita-line); border-radius: var(--vita-radius-lg); padding: 13px; }
+.proposal-card.selected { border-color: rgba(48,209,88,.55); background: rgba(48,209,88,.08); }
+.proposal-select { margin-top: 3px; accent-color: var(--vita-good); }
+.proposal-title { font-size: 13px; font-weight: 800; }
+.proposal-time { font-size: 11px; color: var(--vita-muted); margin-top: 4px; line-height: 1.45; }
+.proposal-type { display: inline-block; margin-top: 8px; font-size: 10px; font-weight: 800; color: var(--vita-info); background: rgba(90,200,250,.12); border-radius: 8px; padding: 3px 7px; }
+.proposal-errors { margin-top: 8px; color: var(--vita-energy); font-size: 11px; line-height: 1.45; }
 
 /* ── Coming soon (placeholder views) ── */
 .coming-soon { text-align: center; padding: 56px 24px; color: var(--vita-muted); }
@@ -449,11 +464,11 @@ function renderToday() {
   const dateLabel = isToday ? 'Hôm nay' : fmtFull(shown.date);
 
   const snapshot = `
-  <div class="ring-grid">
-    <div class="ring-cell">${renderRing(kcal, TARGET.kcal, 'var(--vita-energy)', 'kcal', 52)}</div>
-    <div class="ring-cell">${renderRing(Math.round(protein), TARGET.protein, 'var(--vita-protein)', 'Protein', 52)}</div>
-    <div class="ring-cell">${renderRing(sleep, TARGET.sleep, 'var(--vita-sleep)', 'Giấc ngủ', 52, 1)}</div>
-    <div class="ring-cell">${renderRing(steps, TARGET.steps / 1000, 'var(--vita-steps)', 'Vận động', 52)}</div>
+  <div class="metric-grid">
+    ${renderMetricHeroCard('Năng lượng', kcal, 'kcal', TARGET.kcal, 'var(--vita-energy)')}
+    ${renderMetricHeroCard('Protein', Math.round(protein), 'g', TARGET.protein, 'var(--vita-protein)')}
+    ${renderMetricHeroCard('Giấc ngủ', sleep, 'h', TARGET.sleep, 'var(--vita-sleep)', 1)}
+    ${renderMetricHeroCard('Vận động', steps, 'k bước', TARGET.steps / 1000, 'var(--vita-steps)', 1)}
   </div>`;
 
   return `
@@ -495,6 +510,60 @@ function greeting() {
   if (h < 14) return 'Chào buổi trưa ☀️';
   if (h < 18) return 'Chào buổi chiều 🌤️';
   return 'Chào buổi tối 🌙';
+}
+
+function renderEmptyMetric(label) {
+  return `<span class="metric-empty" aria-label="${esc(label)} chưa log">—</span>`;
+}
+
+function renderMetricHeroCard(label, val, unit, target, color, decimals=0) {
+  const hasVal = Number(val) > 0;
+  const pct = hasVal && target > 0 ? Math.min(100, (val / target) * 100) : 0;
+  const valText = hasVal
+    ? (decimals > 0 ? Number(val).toFixed(decimals) : Math.round(Number(val)).toLocaleString())
+    : renderEmptyMetric(label);
+  const unitHtml = hasVal && unit ? `<span class="metric-hero-unit">${esc(unit)}</span>` : '';
+  const targetText = target > 0
+    ? hasVal ? `${pct.toFixed(0)}% mục tiêu` : 'chưa log'
+    : hasVal ? '' : 'chưa log';
+  return `<div class="metric-hero">
+    <div class="metric-hero-label">${esc(label)}</div>
+    <div class="metric-hero-val" style="color:${color}">${valText}${unitHtml}</div>
+    <div class="metric-hero-target">${targetText}</div>
+    ${target > 0 ? `<div class="pbar"><div class="pfill" style="width:${pct}%;background:${color}"></div></div>` : ''}
+  </div>`;
+}
+
+function renderInsightCard(title, tips, options={}) {
+  const icon = options.icon || '🌿';
+  const accent = options.accent || 'var(--vita-info)';
+  const body = tips.length === 0
+    ? (options.empty || 'Đang đi đúng hướng hôm nay 🌿')
+    : tips.length === 1 ? tips[0] : `${tips.length} điểm cần lưu ý hôm nay`;
+  const tipsHtml = tips.length > 1
+    ? `<div class="insight-tips">${tips.map(t=>`<div class="insight-tip">• ${t}</div>`).join('')}</div>`
+    : '';
+  return `<div class="insight-card" style="margin-top:var(--vita-gap)">
+    <div class="insight-header">
+      <span>${icon}</span>
+      <span class="insight-label" style="color:${accent}">${esc(title)}</span>
+    </div>
+    <div class="insight-text">${body}</div>
+    ${tipsHtml}
+  </div>`;
+}
+
+function renderProposalCard(ev, selected=false) {
+  const errors = ev.errors || [];
+  return `<div class="proposal-card ${selected ? 'selected' : ''}">
+    <input class="proposal-select" type="checkbox" ${selected ? 'checked' : ''} ${errors.length ? 'disabled' : ''}>
+    <div style="flex:1;min-width:0">
+      <div class="proposal-title">${esc(ev.title || 'Untitled proposal')}</div>
+      <div class="proposal-time">${esc(ev.start || 'no start')} → ${esc(ev.end || 'no end')}</div>
+      ${ev.type ? `<span class="proposal-type">${esc(ev.type)}</span>` : ''}
+      ${errors.length ? `<div class="proposal-errors">${errors.map(esc).join('<br>')}</div>` : ''}
+    </div>
+  </div>`;
 }
 
 // ══════════════════════════════════════════════════════════
@@ -690,22 +759,7 @@ function renderInsight(shown, kcal, protein, fiber) {
   if (!sleepOk && shown.sleep_hours > 0)
     tips.push(`😴 Ngủ ${shown.sleep_hours}h — dưới mục tiêu, ảnh hưởng phục hồi và kiểm soát cân nặng`);
 
-  const summary = tips.length === 0
-    ? 'Đang đi đúng hướng hôm nay 🌿'
-    : tips.length === 1 ? tips[0] : `${tips.length} điểm cần lưu ý hôm nay`;
-
-  const tipsHtml = tips.length > 1
-    ? `<div class="insight-tips">${tips.map(t=>`<div class="insight-tip">• ${t}</div>`).join('')}</div>`
-    : '';
-
-  return `<div class="insight-card" style="margin-top:var(--vita-gap)">
-    <div class="insight-header">
-      <span>🌿</span>
-      <span class="insight-label">Nhận xét hôm nay</span>
-    </div>
-    <div class="insight-text">${summary}</div>
-    ${tipsHtml}
-  </div>`;
+  return renderInsightCard('Nhận xét hôm nay', tips);
 }
 
 function renderDayAcc(l, open) {
@@ -1113,6 +1167,7 @@ function addDays(d,n) { const x=new Date(d); x.setDate(x.getDate()+n); return x;
 function avg(arr,fn) { const v=arr.map(fn).filter(x=>x>0); return v.length?v.reduce((a,b)=>a+b,0)/v.length:0; }
 function pc(v,max) { return Math.min(100,(v/max)*100).toFixed(0); }
 function vnd(n) { if(n>=1000000)return(n/1000000).toFixed(1)+'tr'; if(n>=1000)return Math.round(n/1000)+'k'; return n+''; }
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function toast(msg) { const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2500); }
 
 // ── Debug ──
