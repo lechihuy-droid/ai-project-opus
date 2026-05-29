@@ -66,11 +66,57 @@ Relevant Consilium pages:
 
 ---
 
+## Trusted Source Criteria
+
+Prefer sources that are primary, accountable, and evidence-rich. Do not treat a source as strong only because it is recent.
+
+### Source tiers
+
+| Tier | Source Type | Use For | Examples |
+|---|---|---|---|
+| Tier 1 — Primary / official | Company announcements, earnings calls, SEC filings, official product docs, official blogs, standards bodies, government/regulator documents | Facts, dates, product launches, partnerships, pricing, revenue/bookings, policy | OpenAI / Anthropic / Microsoft / AWS / Google / NVIDIA official blogs, company IR, 10-K/10-Q, regulator pages |
+| Tier 1 — Research primary | Peer-reviewed papers, arXiv with clear methodology, official benchmark reports, security disclosures with reproducible details | Technical learning, security, agent workflow, evaluation methods | arXiv papers, project papers, CVE/security advisories, official GitHub repos |
+| Tier 2 — Reputable news / analysis | Established business/tech/finance publications with named reporting and sourced claims | Market movement, competitor moves, CEO/business interpretation | Reuters, Bloomberg, Financial Times, WSJ, Nikkei Asia, The Information, Business Insider, TechCrunch, VentureBeat |
+| Tier 2 — Specialist / analyst | Analyst firms, industry research, practitioner blogs with concrete evidence | Business model, adoption, enterprise services, implementation patterns | Gartner, Forrester, IDC, Everest Group, HFS Research, Simon Willison, Import AI |
+| Tier 3 — Community / social / newsletter | Reddit, X, Facebook, LinkedIn, personal newsletters, community screenshots | Early signals, hypotheses, repo discovery, weak signals to verify | Social posts, viral GitHub threads, community discussions |
+
+### Source confidence rules
+
+- Use Tier 1 when making factual claims about company actions, product capabilities, pricing, financials, regulation, or security vulnerabilities.
+- Use Tier 2 when interpreting market impact, competitor positioning, adoption, or business model implications.
+- Use Tier 3 only as a lead. Verify with Tier 1 or Tier 2 before promoting to a durable conclusion.
+- For investment or financial claims, prefer company filings, earnings materials, Reuters/Bloomberg/FT/WSJ/Nikkei, or market data sources.
+- For technical/security claims, prefer primary papers, official docs, CVE/advisory pages, repo code, or reproducible writeups.
+- For competitor intelligence, require at least one concrete evidence point: customer, KPI, revenue/bookings, pricing, adoption, named partnership, org move, productized offer, or official announcement.
+
+### Red flags
+
+Suppress or downgrade sources when:
+
+- only anonymous social commentary is available
+- the article is pure opinion without evidence
+- the title is sensational but the body has no concrete facts
+- the source repeats a press release without adding evidence
+- the source has no date, author, or direct attribution
+- the claim cannot be verified by a more authoritative source
+
+### Citation discipline
+
+When a brief includes sourced facts, cite the source. Separate fact from interpretation:
+
+```text
+Fact: [what the source directly supports]
+Interpretation: [what this implies for Huy / FDE-lite / investment / reskill]
+```
+
+---
+
 ## Skills
 
 | Skill | Purpose |
 |---|---|
 | Signal classification | Classify whether news is decision/action/business/reskill/investment relevant |
+| Source confidence classification | Classify source as Tier 1, Tier 2, or Tier 3 before promoting a signal |
 | Anti-repetition filter | Suppress news that only repeats known thesis |
 | CEO business signal extraction | Extract customer, offer, pricing, competitor, adoption, vertical, talent, or risk implications |
 | Competitor intelligence extraction | Extract competitor move, business model bucket, threat, opportunity gap, and recommended response |
@@ -88,10 +134,13 @@ Return one to three technology signals only if they change a skill, tool, agent 
 
 Do not route generic technology signals into BD/RCD. BD/RCD is out of scope unless the user explicitly asks for it.
 
+Prefer Tier 1 research, official docs, official repos, security advisories, or high-quality practitioner sources.
+
 Format:
 
 ```text
 Signal:
+Source confidence:
 Why it matters to Huy:
 Skill/action:
 What to ignore:
@@ -103,10 +152,13 @@ Decision label:
 
 Return one to three CEO/business signals only.
 
+Prefer sources with evidence about customer budget, pricing, revenue, adoption, regulation, enterprise blockers, or market movement.
+
 Format:
 
 ```text
 Business signal:
+Source confidence:
 Why a CEO should care:
 Impact on customer / offer / pricing / competitor / operating model / investment thesis:
 Action for Huy:
@@ -121,11 +173,14 @@ If the user asks for CEO research and no competitor signal is included, explicit
 
 Return one to three competitor signals only. Use this when the user asks about competitors, CEO research, business model radar, FDE-lite positioning, Japan SIers, offshore vendors, consulting firms, AI-SDLC, or agent/workflow tooling competitors.
 
+Prefer official announcements, earnings/IR materials, reputable business press, or analyst reports. Social signals are leads only.
+
 Format:
 
 ```text
 Competitor:
 Move:
+Source confidence:
 Business model bucket:
 Evidence:
 Threat to Huy / FDE-lite:
@@ -146,6 +201,7 @@ Return:
 
 ```text
 Existing thesis repeated:
+Source confidence:
 New evidence or action:
 Show / suppress:
 Reason:
@@ -229,7 +285,9 @@ Suppress or downgrade repeated signals such as:
 
 - The brief has one to three high-signal items.
 - Each item changes a decision, action, watchlist, or thesis.
+- Each sourced factual claim has a clear source confidence level.
 - Repeated news is suppressed unless it adds new evidence or action.
+- Tier 3/social sources are treated as leads, not durable evidence, unless verified by stronger sources.
 - Tech, CEO, and Competitor lanes are not mixed accidentally.
 - CEO research includes competitor intelligence when relevant, or explicitly says no strong competitor signal was found.
 - Tech research stays focused on agent/tool/workspace learning and does not drift into BD/RCD unless explicitly requested.
@@ -241,6 +299,7 @@ Suppress or downgrade repeated signals such as:
 - The brief is too technical for CEO lane.
 - The same thesis appeared recently without new evidence.
 - The action is vague.
+- Source confidence is unclear.
 - CEO research lacks competitor intelligence when the user asked for competitors or strategy.
 - Tech research introduces BD/RCD implications without a direct user request.
 
@@ -250,6 +309,7 @@ Suppress or downgrade repeated signals such as:
 - The agent invents business impact not supported by the source.
 - The item is promoted to wiki without durable decision value.
 - Competitor claims are made without evidence or with only marketing language.
+- Financial, legal, regulatory, security, or competitor claims rely only on weak/social sources.
 - The response expands the BD/RCD branch even though the user asked for general tech/news research.
 
 ---
@@ -269,6 +329,7 @@ Compact output:
 ```text
 Signals kept:
 Signals suppressed:
+Source confidence notes:
 Decisions made:
 Filter changes:
 Competitor watchlist changes:
@@ -294,6 +355,7 @@ Task:
 Research lane:
 Signals to promote:
 Signals to ignore:
+Source confidence notes:
 Competitors to track:
 Target wiki pages:
 Do not edit:
@@ -313,6 +375,7 @@ Return format:
 - Do not update wiki unless a signal is durable.
 - Do not treat product announcements as strong evidence without customer, KPI, revenue, adoption, or workflow evidence.
 - Do not introduce BD/RCD analysis in general news, tech, CEO, or competitor briefs unless the user explicitly asks for BD/RCD or the signal directly changes that project.
+- Do not promote social posts, screenshots, or opinion-only sources into durable conclusions without stronger verification.
 
 ---
 
@@ -323,6 +386,7 @@ Return format:
 - Competitor briefs identify concrete moves, offers, and gaps.
 - Better separation of Tech Learning, CEO Business, and Competitor Intelligence lanes.
 - Tech research no longer drifts into BD/RCD by default.
+- Stronger source confidence discipline.
 - Fewer unnecessary wiki updates.
 - More useful watch/ignore decisions.
 
