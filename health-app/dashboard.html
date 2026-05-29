@@ -7,92 +7,157 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #0A0A0F;
-  --card: #16161D;
-  --card-2: #1C1C24;
-  --text: #FFFFFF;
-  --muted: #8E8E93;
-  --faint: #5A5A66;
-  --line: rgba(255,255,255,.06);
-
-  --green: #30D158;
-  --green-d: #28B14B;
-  --blue: #0A84FF;
-  --orange: #FF9F0A;
-  --red: #FF453A;
-  --pink: #FF375F;
-  --purple: #BF5AF2;
-  --teal: #5AC8FA;
-  --yellow: #FFD60A;
+  /* ── Surface ── */
+  --vita-bg:             #090A0F;
+  --vita-surface:        #151720;
+  --vita-surface-2:      #1D202B;
+  --vita-surface-raised: #242735;
+  --vita-line:           rgba(255,255,255,.08);
+  /* ── Text ── */
+  --vita-text:  #F7F8FA;
+  --vita-muted: #9BA1AE;
+  --vita-faint: #5F6675;
+  /* ── Health metric colours ── */
+  --vita-energy:  #FF453A;
+  --vita-protein: #0A84FF;
+  --vita-carb:    #FF9F0A;
+  --vita-fat:     #BF5AF2;
+  --vita-fiber:   #30D158;
+  --vita-water:   #5AC8FA;
+  --vita-sleep:   #8E7CFF;
+  --vita-steps:   #FFD60A;
+  --vita-weight:  #30D158;
+  /* ── Status ── */
+  --vita-good: #30D158;
+  --vita-warn: #FF9F0A;
+  --vita-bad:  #FF453A;
+  --vita-info: #5AC8FA;
+  /* ── Shape ── */
+  --vita-radius-sm: 10px;
+  --vita-radius-md: 14px;
+  --vita-radius-lg: 18px;
+  --vita-radius-xl: 24px;
+  --vita-gap:      8px;
+  --vita-page-pad: 12px;
+  /* ── Legacy aliases (keep for chart helpers) ── */
+  --bg:     var(--vita-bg);
+  --card:   var(--vita-surface);
+  --card-2: var(--vita-surface-2);
+  --text:   var(--vita-text);
+  --muted:  var(--vita-muted);
+  --faint:  var(--vita-faint);
+  --line:   var(--vita-line);
+  --green:  var(--vita-good);
+  --green-d:#28B14B;
+  --blue:   var(--vita-protein);
+  --orange: var(--vita-carb);
+  --red:    var(--vita-energy);
+  --pink:   #FF375F;
+  --purple: var(--vita-fat);
+  --teal:   var(--vita-water);
+  --yellow: var(--vita-steps);
 }
-html, body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  background: var(--vita-bg); color: var(--vita-text);
+  min-height: 100vh; -webkit-font-smoothing: antialiased;
+}
 #app { max-width: 430px; margin: 0 auto; min-height: 100vh; }
 
 /* ── Topbar ── */
 .topbar {
   position: sticky; top: 0; z-index: 50;
-  background: rgba(10,10,15,.85);
+  background: rgba(9,10,15,.88);
   -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--vita-line);
   padding: 12px 14px 0;
 }
 .tb-row1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 .tb-row1 h1 { font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
-.sync-btn { font-size: 12px; padding: 6px 11px; background: rgba(48,209,88,.15); color: var(--green); border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; }
-.pat-btn { font-size: 12px; padding: 6px 10px; background: rgba(255,255,255,.06); color: var(--muted); border: none; border-radius: 8px; cursor: pointer; font-family: inherit; }
+.sync-btn { font-size: 12px; padding: 6px 11px; background: rgba(48,209,88,.15); color: var(--vita-good); border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; }
+.pat-btn  { font-size: 12px; padding: 6px 10px; background: rgba(255,255,255,.06); color: var(--vita-muted); border: none; border-radius: 8px; cursor: pointer; font-family: inherit; }
 
 .mod-tabs { display: flex; }
-.mtab { flex: 1; padding: 9px 4px 10px; text-align: center; font-size: 12px; font-weight: 700; border: none; background: none; cursor: pointer; font-family: inherit; color: var(--faint); border-bottom: 2.5px solid transparent; transition: color .18s, border-bottom-color .18s; }
-.mtab.active { color: var(--green); border-bottom-color: var(--green); }
+.mtab { flex: 1; padding: 9px 4px 10px; text-align: center; font-size: 12px; font-weight: 700; border: none; background: none; cursor: pointer; font-family: inherit; color: var(--vita-faint); border-bottom: 2.5px solid transparent; transition: color .18s, border-bottom-color .18s; }
+.mtab.active { color: var(--vita-good); border-bottom-color: var(--vita-good); }
 
 .range-row { display: flex; gap: 6px; padding: 8px 0 10px; }
-.rtab { flex: 1; padding: 6px; text-align: center; font-size: 11px; font-weight: 700; border-radius: 7px; border: none; background: rgba(255,255,255,.05); color: var(--muted); cursor: pointer; font-family: inherit; }
-.rtab.active { background: var(--green); color: #000; }
+.rtab { flex: 1; padding: 6px; text-align: center; font-size: 11px; font-weight: 700; border-radius: 7px; border: none; background: rgba(255,255,255,.05); color: var(--vita-muted); cursor: pointer; font-family: inherit; }
+.rtab.active { background: var(--vita-good); color: #000; }
 
 /* ── Content ── */
-.content { padding: 12px 12px 32px; }
+.content { padding: var(--vita-page-pad) var(--vita-page-pad) 40px; }
 
 /* ── Bento grid ── */
-.bento { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.b { background: var(--card); border-radius: 18px; padding: 14px; overflow: hidden; position: relative; min-height: 92px; }
+.bento { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--vita-gap); }
+.b { background: var(--vita-surface); border-radius: var(--vita-radius-lg); padding: 14px; overflow: hidden; position: relative; min-height: 92px; }
 .b.span2 { grid-column: span 2; }
 .b.span3 { grid-column: span 3; }
 .b.span4 { grid-column: span 4; }
 .b.tall  { min-height: 168px; }
 
-.b-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin-bottom: 6px; }
-.b-val { font-size: 28px; font-weight: 800; line-height: 1; letter-spacing: -.5px; }
-.b-unit { font-size: 13px; font-weight: 600; color: var(--muted); margin-left: 2px; }
-.b-sub { font-size: 11px; color: var(--muted); margin-top: 5px; font-weight: 500; }
-.b-ico { position: absolute; top: 12px; right: 12px; font-size: 18px; opacity: .9; }
+.b-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--vita-muted); margin-bottom: 8px; }
+.b-val   { font-size: 28px; font-weight: 800; line-height: 1; letter-spacing: -.5px; }
+.b-unit  { font-size: 13px; font-weight: 600; color: var(--vita-muted); margin-left: 2px; }
+.b-sub   { font-size: 11px; color: var(--vita-muted); margin-top: 5px; font-weight: 500; }
+.b-ico   { position: absolute; top: 12px; right: 12px; font-size: 18px; opacity: .9; }
 
-/* ── Variants ── */
-.b-kcal   { background: linear-gradient(135deg, #1A1A24, #0F0F18); border: 1px solid rgba(255,69,58,.18); }
-.b-kcal .b-val { font-size: 36px; color: var(--red); }
-.b-kcal .progress { margin-top: 10px; height: 6px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
-.b-kcal .progress > div { height: 100%; background: linear-gradient(90deg, var(--red), var(--orange)); border-radius: 3px; }
+/* ── Hero Calories card ── */
+.hero-cal {
+  background: linear-gradient(145deg, #1A0E0E, #110A0A);
+  border: 1px solid rgba(255,69,58,.2);
+  padding: 18px;
+}
+.hero-cal-inner { display: flex; align-items: center; gap: 16px; }
+.hero-cal-text { flex: 1; }
+.hero-cal-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--vita-muted); margin-bottom: 4px; }
+.hero-cal-val   { font-size: 42px; font-weight: 800; color: var(--vita-energy); line-height: 1; letter-spacing: -1.5px; }
+.hero-cal-target{ font-size: 13px; color: var(--vita-muted); margin-top: 3px; font-weight: 600; }
+.hero-cal-remain{ font-size: 13px; font-weight: 700; margin-top: 6px; }
+.hero-pbar { margin-top: 10px; height: 5px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
+.hero-pbar > div { height: 100%; background: linear-gradient(90deg, var(--vita-energy), var(--vita-carb)); border-radius: 3px; transition: width .4s; }
 
-.b-sleep  { background: linear-gradient(135deg, #14142A, #0F0F1F); border: 1px solid rgba(191,90,242,.2); }
-.b-sleep .b-val { color: var(--purple); }
-.b-water  { background: linear-gradient(135deg, #0E1A2A, #0A1422); border: 1px solid rgba(10,132,255,.2); }
-.b-water .b-val { color: var(--blue); }
-.b-steps  { background: linear-gradient(135deg, #2A1F0E, #221A0A); border: 1px solid rgba(255,159,10,.2); }
-.b-steps .b-val { color: var(--orange); }
-.b-weight { background: linear-gradient(135deg, #0E2A1F, #0A2018); border: 1px solid rgba(48,209,88,.2); }
-.b-weight .b-val { color: var(--green); }
-.b-workout{ background: linear-gradient(135deg, #2A1A2E, #1A1A24); border: 1px solid rgba(191,90,242,.2); }
-.b-insight{ background: linear-gradient(135deg, #0E1A2A, #0F1A28); border: 1px solid rgba(90,200,250,.2); }
-.b-pr     { background: linear-gradient(135deg, #2A2014, #1F1810); border: 1px solid rgba(255,214,10,.2); }
+/* ── Ring Progress ── */
+.ring-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; }
+.ring-cell {
+  background: var(--vita-surface); border-radius: var(--vita-radius-md);
+  padding: 10px 6px 8px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.ring-svg { display: block; }
+.ring-val { font-size: 12px; font-weight: 800; }
+.ring-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--vita-muted); text-align: center; }
+.ring-empty { font-size: 10px; color: var(--vita-faint); font-weight: 600; }
 
-/* ── Macros mini ── */
-.macro-mini { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; }
-.macro-mini:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,.05); }
-.macro-mini .n { font-size: 12px; color: var(--muted); font-weight: 600; }
-.macro-mini .v { font-size: 14px; font-weight: 800; }
+/* ── Macro Balance card ── */
+.macro-card { background: var(--vita-surface); border-radius: var(--vita-radius-lg); padding: 14px 14px 10px; }
+.macro-card .b-label { margin-bottom: 10px; }
+.macro-row { display: grid; grid-template-columns: 90px 1fr 52px; align-items: center; gap: 8px; padding: 5px 0; }
+.macro-row:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,.04); }
+.macro-name { font-size: 12px; font-weight: 700; }
+.macro-pbar { height: 5px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
+.macro-pfill { height: 100%; border-radius: 3px; }
+.macro-remain { font-size: 10px; color: var(--vita-muted); text-align: right; font-weight: 600; white-space: nowrap; }
 
-/* ── Mini chart ── */
-.mini-chart { height: 32px; margin-top: 8px; }
-.mini-chart svg { width: 100%; height: 100%; }
+/* ── Insight card ── */
+.insight-card {
+  background: linear-gradient(145deg, #0D1520, #0A1018);
+  border: 1px solid rgba(90,200,250,.18);
+  border-radius: var(--vita-radius-lg); padding: 14px;
+}
+.insight-header { display: flex; align-items: center; gap: 7px; margin-bottom: 8px; }
+.insight-label  { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--vita-info); }
+.insight-text   { font-size: 13px; line-height: 1.55; color: var(--vita-text); font-weight: 500; }
+.insight-tips   { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+.insight-tip    { font-size: 12px; color: var(--vita-muted); line-height: 1.45; }
+
+/* ── Trend compare card ── */
+.trend-card { background: var(--vita-surface); border-radius: var(--vita-radius-lg); padding: 14px; }
+.is-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
+.is-row:last-child { border-bottom: none; }
+.is-lbl   { font-size: 12px; color: var(--vita-muted); font-weight: 600; }
+.is-val   { font-size: 14px; font-weight: 800; }
+.is-delta { font-size: 11px; font-weight: 700; min-width: 55px; text-align: right; }
 
 /* ── Chart card ── */
 .b-chart { padding: 14px; }
@@ -100,69 +165,79 @@ html, body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans
 .chart-wrap { height: 140px; }
 canvas { display: block; }
 
-/* ── Insight badges (workout) ── */
+/* ── Workout badges ── */
 .badges { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
-.badge { font-size: 11px; padding: 4px 9px; border-radius: 10px; background: rgba(191,90,242,.18); color: var(--purple); font-weight: 700; }
-.badge.amber { background: rgba(255,159,10,.18); color: var(--orange); }
-.badge.green { background: rgba(48,209,88,.18); color: var(--green); }
-.badge.red   { background: rgba(255,69,58,.18); color: var(--red); }
+.badge { font-size: 11px; padding: 4px 9px; border-radius: 10px; background: rgba(191,90,242,.18); color: var(--vita-fat); font-weight: 700; }
+.badge.amber { background: rgba(255,159,10,.18); color: var(--vita-carb); }
+.badge.green { background: rgba(48,209,88,.18); color: var(--vita-good); }
+.badge.red   { background: rgba(255,69,58,.18);  color: var(--vita-energy); }
 
-/* ── Insight rows (weekly summary) ── */
-.is-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
-.is-row:last-child { border-bottom: none; }
-.is-lbl { font-size: 12px; color: var(--muted); font-weight: 600; }
-.is-val { font-size: 14px; font-weight: 800; }
-.is-delta { font-size: 11px; font-weight: 700; min-width: 55px; text-align: right; }
-
-/* ── Day accordion (bento) ── */
-.day-acc { background: var(--card); border-radius: 14px; margin-bottom: 7px; overflow: hidden; }
-.day-acc summary { list-style: none; cursor: pointer; padding: 13px 14px; display: flex; align-items: center; gap: 10px; user-select: none; -webkit-tap-highlight-color: transparent; }
+/* ── Day accordion ── */
+.day-acc { background: var(--vita-surface); border-radius: var(--vita-radius-md); margin-bottom: 7px; overflow: hidden; }
+.day-acc summary { list-style: none; cursor: pointer; padding: 12px 14px; display: flex; align-items: center; gap: 10px; user-select: none; -webkit-tap-highlight-color: transparent; }
 .day-acc summary::-webkit-details-marker { display: none; }
 .day-acc summary:active { background: rgba(255,255,255,.03); }
-.da-date { font-size: 13px; font-weight: 700; flex: 1; }
-.da-meta { font-size: 11px; color: var(--muted); }
-.da-kcal { font-size: 14px; font-weight: 800; color: var(--green); }
-.da-chev { font-size: 13px; color: var(--faint); transition: transform .2s; }
+.da-date  { font-size: 13px; font-weight: 700; flex: 1; }
+.da-meta  { font-size: 11px; color: var(--vita-muted); }
+.da-kcal  { font-size: 14px; font-weight: 800; color: var(--vita-good); }
+.da-chev  { font-size: 13px; color: var(--vita-faint); transition: transform .2s; }
 .day-acc[open] .da-chev { transform: rotate(180deg); }
-.da-body { padding: 0 14px 12px; border-top: 1px solid var(--line); }
+.da-body  { padding: 0 14px 10px; border-top: 1px solid var(--vita-line); }
+
+/* ── Meal group within accordion ── */
+.meal-group { padding: 8px 0 4px; }
+.meal-group:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,.04); }
+.meal-g-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.meal-g-name  { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--vita-muted); }
+.meal-g-kcal  { font-size: 12px; font-weight: 700; color: var(--vita-good); }
 
 /* ── Meal item ── */
-.mi { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.mi { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.03); }
 .mi:last-child { border-bottom: none; }
-.mi-ico { font-size: 16px; flex-shrink: 0; }
+.mi-ico  { font-size: 14px; flex-shrink: 0; }
 .mi-info { flex: 1; min-width: 0; }
-.mi-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mi-mac  { font-size: 10px; color: var(--muted); margin-top: 2px; }
-.mi-kcal { font-size: 13px; font-weight: 800; color: var(--green); flex-shrink: 0; }
+.mi-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mi-mac  { font-size: 10px; color: var(--vita-muted); margin-top: 1px; }
+.mi-kcal { font-size: 12px; font-weight: 800; color: var(--vita-good); flex-shrink: 0; }
 
-/* ── History items (workout / finance) ── */
-.hi { display: flex; align-items: center; gap: 11px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+/* ── History items ── */
+.hi { display: flex; align-items: center; gap: 11px; padding: 10px 0; border-bottom: 1px solid var(--vita-line); }
 .hi:last-child { border-bottom: none; }
-.hi-ico { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-.hi-info { flex: 1; min-width: 0; }
+.hi-ico   { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.hi-info  { flex: 1; min-width: 0; }
 .hi-title { font-size: 13px; font-weight: 700; }
-.hi-sub   { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.hi-extra { font-size: 10px; color: var(--muted); margin-top: 1px; }
+.hi-sub   { font-size: 11px; color: var(--vita-muted); margin-top: 2px; }
+.hi-extra { font-size: 10px; color: var(--vita-muted); margin-top: 1px; }
 .hi-val   { font-size: 14px; font-weight: 800; flex-shrink: 0; }
 
 /* ── Section title ── */
-.stitle { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin: 16px 0 8px; padding-left: 2px; }
+.stitle { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--vita-faint); margin: 18px 0 8px; padding-left: 2px; }
 
 /* ── Streak pill ── */
-.streak-pill { background: linear-gradient(135deg, var(--orange), var(--red)); padding: 5px 11px; border-radius: 14px; font-size: 12px; font-weight: 800; color: #fff; }
+.streak-pill { background: linear-gradient(135deg, var(--vita-carb), var(--vita-energy)); padding: 4px 10px; border-radius: 14px; font-size: 11px; font-weight: 800; color: #fff; }
+
+/* ── PR card ── */
+.pr-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
+.pr-item:last-child { border-bottom: none; }
+.pr-ico  { width: 36px; height: 36px; border-radius: 10px; background: rgba(255,214,10,.12); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.pr-info { flex: 1; }
+.pr-name { font-size: 13px; font-weight: 700; }
+.pr-val  { font-size: 11px; color: var(--vita-muted); margin-top: 2px; }
+.pr-new  { font-size: 9px; background: rgba(255,69,58,.18); color: var(--vita-energy); padding: 2px 6px; border-radius: 8px; font-weight: 800; margin-left: 5px; }
+.pr-1rm  { font-size: 13px; font-weight: 800; color: var(--vita-steps); flex-shrink: 0; }
 
 /* ── Progress bar mini ── */
-.pbar { height: 5px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
+.pbar  { height: 5px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
 .pfill { height: 100%; border-radius: 3px; }
 
 /* ── Loading / error ── */
-.loading { text-align: center; padding: 48px 20px; color: var(--muted); font-size: 14px; }
+.loading { text-align: center; padding: 48px 20px; color: var(--vita-muted); font-size: 14px; }
 .spin { font-size: 26px; display: block; margin-bottom: 10px; animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.err { background: rgba(255,69,58,.08); border-left: 3px solid var(--red); border-radius: 10px; padding: 14px; font-size: 13px; color: #FF7B6E; line-height: 1.6; }
+.err { background: rgba(255,69,58,.08); border-left: 3px solid var(--vita-energy); border-radius: 10px; padding: 14px; font-size: 13px; color: #FF7B6E; line-height: 1.6; }
 
 /* ── Toast ── */
-.toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-80px); background: var(--card-2); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 999; transition: transform .3s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; border: 1px solid var(--line); }
+.toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-80px); background: var(--vita-surface-2); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 999; transition: transform .3s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; border: 1px solid var(--vita-line); }
 .toast.show { transform: translateX(-50%) translateY(0); }
 </style>
 </head>
@@ -171,13 +246,13 @@ canvas { display: block; }
 <div id="pat-screen" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px">
   <div style="font-size:52px;margin-bottom:16px">🌿</div>
   <div style="font-size:22px;font-weight:800;margin-bottom:6px">opus-vita</div>
-  <div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:28px">Nhập GitHub PAT để truy cập dữ liệu</div>
-  <div style="width:100%;background:var(--card);border-radius:14px;padding:18px;margin-bottom:14px;border:1px solid var(--line)">
-    <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:7px;display:block">GitHub PAT</label>
-    <input id="pat-input" type="password" placeholder="github_pat_..." style="width:100%;padding:11px 13px;background:rgba(255,255,255,.04);border:1.5px solid var(--line);border-radius:10px;font-size:14px;font-family:inherit;outline:none;color:#fff">
-    <p style="font-size:11px;color:var(--faint);margin-top:8px;line-height:1.6">Scope cần: <strong style="color:var(--muted)">Contents = Read-only</strong> cho repo <code style="color:var(--green)">ai-project-opus</code></p>
+  <div style="font-size:13px;color:var(--vita-muted);text-align:center;margin-bottom:28px">Nhập GitHub PAT để truy cập dữ liệu</div>
+  <div style="width:100%;background:var(--vita-surface);border-radius:14px;padding:18px;margin-bottom:14px;border:1px solid var(--vita-line)">
+    <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--vita-muted);margin-bottom:7px;display:block">GitHub PAT</label>
+    <input id="pat-input" type="password" placeholder="github_pat_..." style="width:100%;padding:11px 13px;background:rgba(255,255,255,.04);border:1.5px solid var(--vita-line);border-radius:10px;font-size:14px;font-family:inherit;outline:none;color:#fff">
+    <p style="font-size:11px;color:var(--vita-faint);margin-top:8px;line-height:1.6">Scope cần: <strong style="color:var(--vita-muted)">Contents = Read-only</strong> cho repo <code style="color:var(--vita-good)">ai-project-opus</code></p>
   </div>
-  <button onclick="savePat()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--green),var(--green-d));color:#000;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit">Kết nối →</button>
+  <button onclick="savePat()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--vita-good),#28B14B);color:#000;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit">Kết nối →</button>
 </div>
 
 <div id="app">
@@ -209,6 +284,13 @@ canvas { display: block; }
 
 <script>
 // ── Config ──
+const CONFIG = {
+  target:   { kcal: 2200, protein: 130, water_ml: 2000, steps: 8000, sleep: 7.5 },
+  currency: 'VND',
+  locale:   'vi-VN'
+};
+const TARGET = CONFIG.target;
+
 const DATA_REPO   = 'lechihuy-droid/ai-project-opus';
 const DATA_BRANCH = 'main';
 
@@ -217,13 +299,6 @@ let currentRange = 7;
 let currentTab   = 'health';
 let cHealth = [], cWorkout = [], cFinance = [];
 let healthIdx = [], workoutIdx = [], financeIdx = [];
-
-const CONFIG = {
-  target:   { kcal: 2200, protein: 130, water_ml: 2000, steps: 8000, sleep: 7.5 },
-  currency: 'VND',
-  locale:   'vi-VN'
-};
-const TARGET = CONFIG.target;
 
 // ── PAT setup ──
 function checkPat() {
@@ -237,30 +312,28 @@ function checkPat() {
 function savePat() {
   const v = document.getElementById('pat-input').value.trim();
   if (!v) return;
-  PAT = v;
-  localStorage.setItem('ov_pat', PAT);
+  PAT = v; localStorage.setItem('ov_pat', PAT);
   document.getElementById('pat-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   reload();
 }
 function resetPat() {
-  localStorage.removeItem('ov_pat');
-  PAT = '';
+  localStorage.removeItem('ov_pat'); PAT = '';
   document.getElementById('pat-screen').style.display = 'flex';
   document.getElementById('app').style.display = 'none';
 }
 
 // ── Fetch ──
 async function ghGet(path) {
-  const url = `https://api.github.com/repos/${DATA_REPO}/contents/${path}?ref=${DATA_BRANCH}`;
-  const r = await fetch(url, { headers: { 'Authorization': `Bearer ${PAT}`, 'Accept': 'application/vnd.github.v3+json' } });
+  const r = await fetch(`https://api.github.com/repos/${DATA_REPO}/contents/${path}?ref=${DATA_BRANCH}`,
+    { headers: { 'Authorization': `Bearer ${PAT}`, 'Accept': 'application/vnd.github.v3+json' } });
   if (!r.ok) { if (r.status===404) return null; throw new Error(`${r.status}: ${path}`); }
   const d = await r.json();
   const bytes = Uint8Array.from(atob(d.content.replace(/\n/g,'')), c => c.charCodeAt(0));
   return JSON.parse(new TextDecoder().decode(bytes));
 }
 function datesInRange(n) {
-  return Array.from({length:n}, (_,i) => { const d = new Date(); d.setDate(d.getDate()-i); return isoLocal(d); });
+  return Array.from({length:n}, (_,i) => { const d=new Date(); d.setDate(d.getDate()-i); return isoLocal(d); });
 }
 async function loadModule(prefix, range) {
   const idx = await ghGet(`${prefix}/index.json`);
@@ -292,9 +365,9 @@ async function reload() {
       loadModule('workout-data', currentRange).catch(()=>({rows:[],idx:[]})),
       loadModule('finance-data', currentRange).catch(()=>({rows:[],idx:[]}))
     ]);
-    cHealth = h.rows;  healthIdx  = h.idx; cHealth.forEach(validateHealthLog);
-    cWorkout = w.rows; workoutIdx = w.idx;
-    cFinance = f.rows; financeIdx = f.idx;
+    cHealth  = h.rows;  healthIdx  = h.idx;  cHealth.forEach(validateHealthLog);
+    cWorkout = w.rows;  workoutIdx = w.idx;
+    cFinance = f.rows;  financeIdx = f.idx;
     renderStreakBadge();
     renderContent();
   } catch(e) {
@@ -304,89 +377,152 @@ async function reload() {
 }
 function renderContent() {
   const el = document.getElementById('content');
-  if (currentTab==='health')  { el.innerHTML=renderHealth(cHealth);  setTimeout(()=>drawHealth(cHealth),30); }
-  if (currentTab==='workout') { el.innerHTML=renderWorkout(cWorkout);setTimeout(()=>drawWorkout(cWorkout),30); }
-  if (currentTab==='finance') { el.innerHTML=renderFinance(cFinance);setTimeout(()=>drawFinance(cFinance),30); }
+  if (currentTab==='health')  { el.innerHTML=renderHealth(cHealth);   setTimeout(()=>drawHealth(cHealth),30); }
+  if (currentTab==='workout') { el.innerHTML=renderWorkout(cWorkout); setTimeout(()=>drawWorkout(cWorkout),30); }
+  if (currentTab==='finance') { el.innerHTML=renderFinance(cFinance); setTimeout(()=>drawFinance(cFinance),30); }
 }
 
-// ══════════════════════════════════════════════════════
-// ║  TAB 1 — Sức khỏe (Bento)                          ║
-// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+// ║  Ring Progress                                          ║
+// ══════════════════════════════════════════════════════════
+function renderRing(val, max, color, label, size=56) {
+  const pct   = max > 0 ? Math.min(1, val / max) : 0;
+  const r     = (size - 8) / 2;
+  const circ  = 2 * Math.PI * r;
+  const dash  = (pct * circ).toFixed(1);
+  const gap   = (circ - dash).toFixed(1);
+  const cx    = size / 2;
+  const valStr = val > 0 ? (val >= 1000 ? (val/1000).toFixed(1)+'k' : String(Math.round(val))) : '—';
+  const colorVal = val > 0 ? color : 'var(--vita-faint)';
+  return `<svg class="ring-svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <circle cx="${cx}" cy="${cx}" r="${r}" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="4"/>
+    <circle cx="${cx}" cy="${cx}" r="${r}" fill="none" stroke="${colorVal}" stroke-width="4"
+      stroke-dasharray="${dash} ${gap}" stroke-linecap="round"
+      transform="rotate(-90 ${cx} ${cx})"/>
+    <text x="${cx}" y="${cx+1}" text-anchor="middle" dominant-baseline="middle"
+      font-size="${size<=44?9:10}" font-weight="800" fill="${colorVal}" font-family="-apple-system,sans-serif">${valStr}</text>
+  </svg>
+  <div class="ring-lbl">${label}</div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// ║  TAB 1 — Sức khỏe                                       ║
+// ══════════════════════════════════════════════════════════
 function renderHealth(logs) {
-  if (!logs.length) return `<div class="loading">😶 Chưa có dữ liệu sức khỏe<br><span style="font-size:12px;color:var(--faint);margin-top:8px;display:block">Gửi ảnh bữa ăn cho Claude để bắt đầu</span></div>
-    <button onclick="debugFetch()" style="display:block;margin:8px auto;padding:8px 16px;background:rgba(255,255,255,.06);color:var(--muted);border:none;border-radius:8px;font-size:12px;cursor:pointer">🔍 Test API</button>
-    <pre id="dbg-out" style="display:none;background:var(--card);border-radius:8px;padding:12px;font-size:11px;white-space:pre-wrap;margin:8px 0;color:var(--muted)"></pre>`;
+  if (!logs.length) return `<div class="loading">😶 Chưa có dữ liệu sức khỏe<br>
+    <span style="font-size:12px;color:var(--vita-faint);margin-top:8px;display:block">Gửi ảnh bữa ăn cho Claude để bắt đầu</span></div>
+    <button onclick="debugFetch()" style="display:block;margin:8px auto;padding:8px 16px;background:rgba(255,255,255,.06);color:var(--vita-muted);border:none;border-radius:8px;font-size:12px;cursor:pointer">🔍 Test API</button>
+    <pre id="dbg-out" style="display:none;background:var(--vita-surface);border-radius:8px;padding:12px;font-size:11px;white-space:pre-wrap;margin:8px 0;color:var(--vita-muted)"></pre>`;
 
-  const latest    = logs[0];
-  const today     = todayStr();
-  const todayLog  = logs.find(l => l.date === today);
-  const shown     = todayLog || latest;
-  const isToday   = shown?.date === today;
-  const kcal      = totalKcal(shown);
-  const protein   = totalMacro(shown,'protein');
-  const carb      = totalMacro(shown,'carb');
-  const fat       = totalMacro(shown,'fat');
-  const fiber     = totalMacro(shown,'fiber');
-  const kcalPct   = Math.min(100, (kcal/TARGET.kcal)*100);
-  const remain    = TARGET.kcal - kcal;
-  const withW     = logs.filter(l => l.weight_kg>0);
-  const wLatest   = withW[0];
-  const wFirst    = withW[withW.length-1];
-  const wDelta    = wFirst&&wLatest ? +(wLatest.weight_kg-wFirst.weight_kg).toFixed(1) : null;
+  const today    = todayStr();
+  const shown    = logs.find(l => l.date === today) || logs[0];
+  const isToday  = shown.date === today;
+  const kcal     = totalKcal(shown);
+  const protein  = totalMacro(shown, 'protein');
+  const carb     = totalMacro(shown, 'carb');
+  const fat      = totalMacro(shown, 'fat');
+  const fiber    = totalMacro(shown, 'fiber');
+  const kcalPct  = Math.min(100, (kcal / TARGET.kcal) * 100);
+  const remain   = TARGET.kcal - kcal;
+  const withW    = logs.filter(l => l.weight_kg > 0);
+  const wLatest  = withW[0];
+  const wFirst   = withW[withW.length - 1];
+  const wDelta   = wFirst && wLatest ? +(wLatest.weight_kg - wFirst.weight_kg).toFixed(1) : null;
 
-  return `<div class="bento">
+  // Hero calories
+  const heroLabel = isToday ? 'Năng lượng hôm nay' : `Năng lượng · ${fmtFull(shown.date)}`;
+  const remainStr = remain > 0 ? `Còn ${remain} kcal để đạt mục tiêu` : `Vượt ${-remain} kcal so với mục tiêu`;
+  const remainColor = remain > 0 ? 'var(--vita-warn)' : 'var(--vita-energy)';
 
-    <!-- HERO: Calo -->
-    <div class="b b-kcal span4">
-      <div class="b-label">${isToday?'CALO HÔM NAY':`CALO · ${fmtFull(shown.date).toUpperCase()}`}</div>
-      <div style="display:flex;align-items:baseline;gap:8px">
-        <div class="b-val">${kcal.toLocaleString()}</div>
-        <div style="font-size:14px;color:var(--muted);font-weight:700">/ ${TARGET.kcal.toLocaleString()} kcal</div>
+  // Mini rings
+  const sleepVal  = shown.sleep_hours || 0;
+  const waterL    = shown.water_ml  > 0 ? +(shown.water_ml / 1000).toFixed(1) : 0;
+  const waterMax  = TARGET.water_ml / 1000;
+  const stepsK    = shown.steps > 0 ? +(shown.steps / 1000).toFixed(1) : 0;
+  const stepsMaxK = TARGET.steps / 1000;
+
+  // Macro balance rows
+  const macroRows = [
+    { name: 'Protein',  val: Math.round(protein), max: TARGET.protein, color: 'var(--vita-protein)', unit: 'g' },
+    { name: 'Carb',     val: Math.round(carb),    max: 220,             color: 'var(--vita-carb)',   unit: 'g' },
+    { name: 'Fat',      val: Math.round(fat),      max: 70,             color: 'var(--vita-fat)',    unit: 'g' },
+    { name: 'Chất xơ', val: Math.round(fiber),    max: 25,             color: 'var(--vita-fiber)',  unit: 'g' },
+  ].map(m => {
+    const pct = Math.min(100, m.max > 0 ? (m.val / m.max) * 100 : 0);
+    const left = m.max - m.val;
+    const leftStr = left > 0 ? `còn ${left}${m.unit}` : `đạt target`;
+    const leftColor = left > 0 ? 'var(--vita-muted)' : 'var(--vita-good)';
+    const valColor = m.val > 0 ? m.color : 'var(--vita-faint)';
+    const valStr = m.val > 0 ? `${m.val}${m.unit}` : '—';
+    return `<div class="macro-row">
+      <div class="macro-name" style="color:${valColor}">${m.name} <strong>${valStr}</strong></div>
+      <div class="macro-pbar"><div class="macro-pfill" style="width:${pct}%;background:${m.color}"></div></div>
+      <div class="macro-remain" style="color:${leftColor}">${leftStr}</div>
+    </div>`;
+  }).join('');
+
+  // Insight card
+  const insightHtml = renderInsight(shown, kcal, protein, fiber);
+
+  // Weight card
+  const weightVal = wLatest ? `${wLatest.weight_kg}<span class="b-unit">kg</span>` : '<span style="color:var(--vita-faint)">chưa log</span>';
+  const weightSub = wDelta !== null
+    ? `<span style="color:${wDelta<0?'var(--vita-good)':wDelta>0?'var(--vita-energy)':'var(--vita-muted)'};font-weight:700">${wDelta>0?'↑':'↓'} ${Math.abs(wDelta)}kg / ${currentRange}d</span>`
+    : `<span style="color:var(--vita-faint)">chưa có</span>`;
+
+  return `
+  <!-- Hero calories -->
+  <div class="hero-cal b span4" style="min-height:auto;margin-bottom:0">
+    <div class="hero-cal-label">${heroLabel}</div>
+    <div class="hero-cal-inner">
+      <div>${renderRing(kcal, TARGET.kcal, 'var(--vita-energy)', 'kcal', 72)}</div>
+      <div class="hero-cal-text">
+        <div class="hero-cal-val">${kcal.toLocaleString()}</div>
+        <div class="hero-cal-target">/ ${TARGET.kcal.toLocaleString()} kcal mục tiêu</div>
+        <div class="hero-cal-remain" style="color:${remainColor}">${remainStr}</div>
       </div>
-      <div class="progress"><div style="width:${kcalPct}%"></div></div>
-      <div class="b-sub">${remain>0?`Còn ${remain} kcal trong target`:`Vượt ${-remain} kcal`}</div>
-      <div class="b-ico">🔥</div>
     </div>
+    <div class="hero-pbar" style="margin-top:12px"><div style="width:${kcalPct}%"></div></div>
+  </div>
 
-    <!-- Macros -->
-    <div class="b span2 tall">
-      <div class="b-label">MACROS</div>
-      <div class="macro-mini"><div class="n">Protein</div><div class="v" style="color:var(--blue)">${Math.round(protein)}g</div></div>
-      <div class="macro-mini"><div class="n">Carb</div><div class="v" style="color:var(--orange)">${Math.round(carb)}g</div></div>
-      <div class="macro-mini"><div class="n">Fat</div><div class="v" style="color:var(--red)">${Math.round(fat)}g</div></div>
-      <div class="macro-mini"><div class="n">Chất xơ</div><div class="v" style="color:var(--green)">${fiber>0?Math.round(fiber)+'g':'—'}</div></div>
+  <!-- Mini rings -->
+  <div class="ring-grid" style="margin-top:var(--vita-gap)">
+    <div class="ring-cell">
+      ${renderRing(Math.round(protein), TARGET.protein, 'var(--vita-protein)', 'Protein', 52)}
     </div>
-
-    <!-- Sleep -->
-    <div class="b b-sleep span2">
-      <div class="b-label">NGỦ</div>
-      <div class="b-val">${(shown.sleep_hours||0).toFixed(1)}<span class="b-unit">h</span></div>
-      <div class="b-sub">${shown.sleep_hours?`${pc(shown.sleep_hours,TARGET.sleep)}% target`:'chưa log'}</div>
-      <div class="b-ico">😴</div>
+    <div class="ring-cell">
+      ${renderRing(waterL, waterMax, 'var(--vita-water)', 'Nước (L)', 52)}
     </div>
-
-    <!-- Water -->
-    <div class="b b-water span2">
-      <div class="b-label">NƯỚC</div>
-      <div class="b-val">${shown.water_ml>0?((shown.water_ml)/1000).toFixed(1):'—'}<span class="b-unit">${shown.water_ml>0?'L':''}</span></div>
-      <div class="b-sub" style="color:${shown.water_ml>0&&shown.water_ml>=TARGET.water_ml?'var(--green)':'var(--muted)'};font-weight:700">${shown.water_ml>0?(shown.water_ml>=TARGET.water_ml?'✓ Đủ':`/ ${TARGET.water_ml/1000}L`):'chưa log'}</div>
-      <div class="b-ico">💧</div>
+    <div class="ring-cell">
+      ${renderRing(sleepVal, TARGET.sleep, 'var(--vita-sleep)', 'Giấc ngủ', 52)}
     </div>
-
-    <!-- Steps -->
-    <div class="b b-steps span2">
-      <div class="b-label">BƯỚC CHÂN</div>
-      <div class="b-val">${shown.steps>0?((shown.steps)/1000).toFixed(1):'—'}<span class="b-unit">${shown.steps>0?'k':''}</span></div>
-      <div class="b-sub">${shown.steps>0?`/ ${TARGET.steps/1000}k target`:'chưa log'}</div>
-      <div class="b-ico">👟</div>
+    <div class="ring-cell">
+      ${renderRing(stepsK, stepsMaxK, 'var(--vita-steps)', 'Vận động', 52)}
     </div>
+  </div>
 
-    <!-- Weight -->
-    <div class="b b-weight span2">
-      <div class="b-label">CÂN NẶNG</div>
-      <div class="b-val">${wLatest?wLatest.weight_kg:'—'}<span class="b-unit">${wLatest?'kg':''}</span></div>
-      <div class="b-sub" style="color:${wDelta===null?'var(--muted)':wDelta<0?'var(--green)':wDelta>0?'var(--red)':'var(--muted)'};font-weight:700">${wDelta===null?'chưa có':`${wDelta>0?'↑':'↓'} ${Math.abs(wDelta)}kg / ${currentRange}d`}</div>
+  <!-- Macro balance -->
+  <div class="macro-card" style="margin-top:var(--vita-gap)">
+    <div class="b-label">Dinh dưỡng chính</div>
+    ${macroRows}
+  </div>
+
+  <!-- Insight -->
+  ${insightHtml}
+
+  <!-- Weight + Weekly compare -->
+  <div class="bento" style="margin-top:var(--vita-gap)">
+    <div class="b b-weight span2" style="background:linear-gradient(135deg,#0E2A1F,#0A2018);border:1px solid rgba(48,209,88,.18)">
+      <div class="b-label">Cân nặng</div>
+      <div class="b-val">${weightVal}</div>
+      <div class="b-sub">${weightSub}</div>
       <div class="b-ico">⚖️</div>
+    </div>
+    <div class="b span2" style="background:linear-gradient(135deg,#14142A,#0F0F1F);border:1px solid rgba(142,124,255,.18)">
+      <div class="b-label">Giấc ngủ</div>
+      <div class="b-val" style="color:var(--vita-sleep)">${sleepVal > 0 ? sleepVal.toFixed(1) : '—'}<span class="b-unit">${sleepVal > 0 ? 'h' : ''}</span></div>
+      <div class="b-sub">${sleepVal > 0 ? `${pc(sleepVal, TARGET.sleep)}% mục tiêu` : 'chưa log'}</div>
+      <div class="b-ico">😴</div>
     </div>
 
     ${renderWeeklySummary(logs)}
@@ -397,112 +533,162 @@ function renderHealth(logs) {
       <div class="chart-wrap"><canvas id="c-cal"></canvas></div>
     </div>
 
-    ${withW.length>1?`<div class="b b-chart span4 tall">
+    ${withW.length > 1 ? `<div class="b b-chart span4 tall">
       <div class="b-label">⚖️ Cân nặng (kg)</div>
       <div class="chart-wrap"><canvas id="c-weight"></canvas></div>
-    </div>`:''}
+    </div>` : ''}
 
     <div class="b b-chart span2 tall">
-      <div class="b-label">😴 Ngủ</div>
+      <div class="b-label">😴 Giấc ngủ</div>
       <div class="chart-wrap"><canvas id="c-sleep"></canvas></div>
     </div>
     <div class="b b-chart span2 tall">
-      <div class="b-label">👟 Bước</div>
+      <div class="b-label">👟 Vận động</div>
       <div class="chart-wrap"><canvas id="c-steps"></canvas></div>
     </div>
-
   </div>
 
-  <div class="stitle">🍽️ Bữa ăn gần đây</div>
+  <div class="stitle">Bữa ăn gần đây</div>
   ${logs.map((l,i) => renderDayAcc(l, i===0)).join('')}`;
+}
+
+function renderInsight(shown, kcal, protein, fiber) {
+  const tips = [];
+  const proteinLeft = TARGET.protein - protein;
+  const waterOk     = shown.water_ml > 0;
+  const sleepOk     = shown.sleep_hours >= 7;
+
+  if (protein < TARGET.protein * 0.4)
+    tips.push(`💪 Protein chỉ đạt ${Math.round(protein)}g / ${TARGET.protein}g — bữa tối ưu tiên thịt/cá/trứng, tránh thêm carb`);
+  else if (proteinLeft > 30)
+    tips.push(`💪 Còn thiếu ${Math.round(proteinLeft)}g protein — thêm 1-2 phần thịt hoặc trứng`);
+
+  if (!waterOk)
+    tips.push('💧 Chưa log nước uống hôm nay');
+
+  if (fiber < 10)
+    tips.push('🥦 Chất xơ rất thấp — thêm rau xanh hoặc salad vào bữa tiếp');
+
+  if (kcal > TARGET.kcal * 0.9 && proteinLeft > 50)
+    tips.push('⚡ Gần đạt calo nhưng thiếu protein — ưu tiên thức ăn giàu protein thấp carb');
+
+  if (!sleepOk && shown.sleep_hours > 0)
+    tips.push(`😴 Ngủ ${shown.sleep_hours}h — dưới mục tiêu, ảnh hưởng phục hồi và kiểm soát cân nặng`);
+
+  const summary = tips.length === 0
+    ? 'Đang đi đúng hướng hôm nay 🌿'
+    : tips.length === 1 ? tips[0] : `${tips.length} điểm cần lưu ý hôm nay`;
+
+  const tipsHtml = tips.length > 1
+    ? `<div class="insight-tips">${tips.map(t=>`<div class="insight-tip">• ${t}</div>`).join('')}</div>`
+    : '';
+
+  return `<div class="insight-card" style="margin-top:var(--vita-gap)">
+    <div class="insight-header">
+      <span>🌿</span>
+      <span class="insight-label">Nhận xét hôm nay</span>
+    </div>
+    <div class="insight-text">${summary}</div>
+    ${tipsHtml}
+  </div>`;
 }
 
 function renderDayAcc(l, open) {
   const kcal = totalKcal(l);
-  const mealCount = (l.meals||[]).length;
-  const rows = (l.meals||[]).flatMap(m => (m.items||[]).map(it => {
-    const ico = {receipt:'🧾',bill:'🛒'}[m.source]||'🍽️';
-    return `<div class="mi">
-      <div class="mi-ico">${ico}</div>
-      <div class="mi-info">
-        <div class="mi-name">${it.name}</div>
-        <div class="mi-mac">${getItemGrams(it)}g · P:${getItemMacro(it,'protein')}g C:${getItemMacro(it,'carb')}g F:${getItemMacro(it,'fat')}g</div>
+  const meals = l.meals || [];
+  const mealRows = meals.map(m => {
+    const items = (m.items || []).map(it => {
+      const ico = { receipt:'🧾', bill:'🛒' }[m.source] || '🍽️';
+      return `<div class="mi">
+        <div class="mi-ico">${ico}</div>
+        <div class="mi-info">
+          <div class="mi-name">${it.name}</div>
+          <div class="mi-mac">${getItemGrams(it)}g · P:${getItemMacro(it,'protein')}g C:${getItemMacro(it,'carb')}g F:${getItemMacro(it,'fat')}g</div>
+        </div>
+        <div class="mi-kcal">${it.kcal}</div>
+      </div>`;
+    }).join('');
+    return `<div class="meal-group">
+      <div class="meal-g-header">
+        <span class="meal-g-name">${m.name || m.time || '—'}</span>
+        <span class="meal-g-kcal">${m.total_kcal || 0} kcal</span>
       </div>
-      <div class="mi-kcal">${it.kcal}</div>
+      ${items || '<div style="color:var(--vita-faint);font-size:11px;padding:4px 0">Chưa có món</div>'}
     </div>`;
-  })).join('');
+  }).join('');
+
   return `<details class="day-acc" ${open?'open':''}>
     <summary>
       <span class="da-date">${fmt(l.date)}</span>
-      <span class="da-meta">${mealCount} bữa</span>
+      <span class="da-meta">${meals.length} bữa</span>
       <span class="da-kcal">${kcal} kcal</span>
       <span class="da-chev">▾</span>
     </summary>
-    <div class="da-body">${rows||'<div style="color:var(--faint);font-size:13px;padding:8px 0">Chưa có bữa nào</div>'}</div>
+    <div class="da-body">${mealRows || '<div style="color:var(--vita-faint);font-size:13px;padding:8px 0">Chưa có bữa nào</div>'}</div>
   </details>`;
 }
 
 function renderWeeklySummary(logs) {
   if (logs.length < 4) return '';
   const today = new Date();
-  const cutThis  = isoLocal(addDays(today,-7));
-  const cutPrev  = isoLocal(addDays(today,-14));
+  const cutThis = isoLocal(addDays(today,-7));
+  const cutPrev = isoLocal(addDays(today,-14));
   const thisWk = logs.filter(l => l.date >  cutThis);
   const prevWk = logs.filter(l => l.date <= cutThis && l.date > cutPrev);
   if (!thisWk.length) return '';
   const metrics = [
-    { lbl:'Kcal/ngày',  f:l=>totalKcal(l),         fmt:v=>Math.round(v) },
-    { lbl:'Protein',    f:l=>totalMacro(l,'protein'),fmt:v=>Math.round(v)+'g' },
-    { lbl:'Ngủ',        f:l=>l.sleep_hours||0,     fmt:v=>v.toFixed(1)+'h' },
-    { lbl:'Bước',       f:l=>l.steps||0,           fmt:v=>(v/1000).toFixed(1)+'k' }
+    { lbl:'Kcal/ngày', f:l=>totalKcal(l),          fmt:v=>Math.round(v).toLocaleString() },
+    { lbl:'Protein',   f:l=>totalMacro(l,'protein'), fmt:v=>Math.round(v)+'g' },
+    { lbl:'Giấc ngủ',  f:l=>l.sleep_hours||0,        fmt:v=>v.toFixed(1)+'h' },
+    { lbl:'Vận động',  f:l=>l.steps||0,              fmt:v=>(v/1000).toFixed(1)+'k bước' }
   ];
   const rows = metrics.map(m => {
-    const cur = avg(thisWk, m.f);
-    const prv = avg(prevWk, m.f);
-    const diff = prv>0 ? ((cur-prv)/prv*100) : 0;
-    const arrow = Math.abs(diff)<3 ? '→' : (diff>0?'↑':'↓');
-    const color = Math.abs(diff)<3 ? 'var(--muted)' : (diff>0?'var(--green)':'var(--red)');
-    const dlabel = prv>0 ? `${arrow} ${Math.abs(diff).toFixed(0)}%` : '—';
+    const cur  = avg(thisWk, m.f);
+    const prv  = avg(prevWk, m.f);
+    const diff = prv > 0 ? (cur - prv) / prv * 100 : 0;
+    const arrow = Math.abs(diff) < 3 ? '→' : (diff > 0 ? '↑' : '↓');
+    const color = Math.abs(diff) < 3 ? 'var(--vita-muted)' : (diff > 0 ? 'var(--vita-good)' : 'var(--vita-energy)');
+    const dlabel = prv > 0 ? `${arrow} ${Math.abs(diff).toFixed(0)}%` : '—';
     return `<div class="is-row">
       <span class="is-lbl">${m.lbl}</span>
       <span class="is-val">${m.fmt(cur)}</span>
       <span class="is-delta" style="color:${color}">${dlabel}</span>
     </div>`;
   }).join('');
-  return `<div class="b b-insight span4">
-    <div class="b-label" style="color:var(--teal)">📊 TUẦN NÀY vs TUẦN TRƯỚC</div>
+  return `<div class="b b-insight span4" style="background:linear-gradient(135deg,#0E1A2A,#0F1A28);border:1px solid rgba(90,200,250,.15)">
+    <div class="b-label" style="color:var(--vita-info)">So với tuần trước</div>
     ${rows}
   </div>`;
 }
 
 function drawHealth(logs) {
-  const o = [...logs].reverse(), lb = o.map(l=>shortDate(l.date));
-  drawBar('c-cal',    lb, o.map(l=>totalKcal(l)),      '#FF453A', TARGET.kcal);
-  drawLine('c-weight',lb, o.map(l=>l.weight_kg||0),    '#30D158', 73);
-  drawLine('c-sleep', lb, o.map(l=>l.sleep_hours||0),  '#BF5AF2', TARGET.sleep);
-  drawBar('c-steps',  lb, o.map(l=>(l.steps||0)/1000), '#FF9F0A', TARGET.steps/1000);
+  const o = [...logs].reverse(), lb = o.map(l => shortDate(l.date));
+  drawBar('c-cal',    lb, o.map(l=>totalKcal(l)),       'var(--vita-energy)', TARGET.kcal);
+  drawLine('c-weight',lb, o.map(l=>l.weight_kg||0),     'var(--vita-weight)', 73);
+  drawLine('c-sleep', lb, o.map(l=>l.sleep_hours||0),   'var(--vita-sleep)',  TARGET.sleep);
+  drawBar('c-steps',  lb, o.map(l=>(l.steps||0)/1000),  'var(--vita-steps)',  TARGET.steps/1000);
 }
 
-// ══════════════════════════════════════════════════════
-// ║  TAB 2 — Tập luyện (Bento)                         ║
-// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+// ║  TAB 2 — Tập luyện                                      ║
+// ══════════════════════════════════════════════════════════
 const TYPE_META = {
-  gym:{ico:'💪',color:'#BF5AF2'},cardio:{ico:'🏃',color:'#FF453A'},
-  yoga:{ico:'🧘',color:'#FF375F'},swim:{ico:'🏊',color:'#0A84FF'},
-  bike:{ico:'🚴',color:'#FF9F0A'},muay_thai:{ico:'🥊',color:'#FF453A'},
-  other:{ico:'⚡',color:'#8E8E93'}
+  gym:      {ico:'💪',color:'#BF5AF2'}, cardio:   {ico:'🏃',color:'#FF453A'},
+  yoga:     {ico:'🧘',color:'#FF375F'}, swim:     {ico:'🏊',color:'#0A84FF'},
+  bike:     {ico:'🚴',color:'#FF9F0A'}, muay_thai:{ico:'🥊',color:'#FF453A'},
+  other:    {ico:'⚡',color:'#8E8E93'}
 };
+
 function renderWorkout(logs) {
-  if (!logs.length) return '<div class="loading">😶 Chưa có buổi tập nào<br><span style="font-size:12px;color:var(--faint);margin-top:8px;display:block">Báo Claude khi tập xong</span></div>';
-  const sessions = logs.flatMap(l=>(l.sessions||[]).map(s=>({...s,date:l.date})));
+  if (!logs.length) return '<div class="loading">😶 Chưa có buổi tập nào<br><span style="font-size:12px;color:var(--vita-faint);margin-top:8px;display:block">Báo Claude khi tập xong</span></div>';
+  const sessions = logs.flatMap(l => (l.sessions||[]).map(s => ({...s, date: l.date})));
   const totMin   = sessions.reduce((s,x)=>s+(x.duration_min||0),0);
   const totKcal  = sessions.reduce((s,x)=>s+(x.calories||0),0);
-  const prCard   = renderPRBento(logs);
 
   const sessionRows = sessions.slice(0,20).map(s => {
     const key = (s.type||'other').split(/[ _+]/)[0];
-    const m = TYPE_META[key]||TYPE_META.other;
-    const ex = (s.exercises||[]).map(e => {
+    const m   = TYPE_META[key] || TYPE_META.other;
+    const ex  = (s.exercises||[]).map(e => {
       const detail = Array.isArray(e.sets)
         ? e.sets.map(st=>`${st.reps}×${st.weight_kg}kg`).join(', ')
         : [e.sets&&`${e.sets} sets`, e.reps&&`${e.reps} reps`, e.duration_per_set_sec&&`${e.duration_per_set_sec}s/set`, e.notes].filter(Boolean).join(' · ');
@@ -519,12 +705,12 @@ function renderWorkout(logs) {
   }).join('');
 
   return `<div class="bento">
-    <div class="b b-workout span4">
-      <div class="b-label" style="color:var(--purple)">📊 ${currentRange} NGÀY QUA</div>
-      <div style="display:flex;gap:16px;margin-top:8px">
-        <div><div style="font-size:28px;font-weight:800;color:var(--purple);line-height:1">${sessions.length}</div><div class="b-sub">buổi</div></div>
-        <div><div style="font-size:28px;font-weight:800;color:var(--orange);line-height:1">${totMin}</div><div class="b-sub">phút</div></div>
-        <div><div style="font-size:28px;font-weight:800;color:var(--red);line-height:1">${totKcal}</div><div class="b-sub">kcal</div></div>
+    <div class="b b-workout span4" style="background:linear-gradient(135deg,#1A0E2A,#120E1A);border:1px solid rgba(191,90,242,.18)">
+      <div class="b-label" style="color:var(--vita-fat)">${currentRange} ngày qua</div>
+      <div style="display:flex;gap:20px;margin-top:8px">
+        <div><div style="font-size:32px;font-weight:800;color:var(--vita-fat);line-height:1">${sessions.length}</div><div class="b-sub">buổi tập</div></div>
+        <div><div style="font-size:32px;font-weight:800;color:var(--vita-carb);line-height:1">${totMin}</div><div class="b-sub">phút</div></div>
+        <div><div style="font-size:32px;font-weight:800;color:var(--vita-energy);line-height:1">${totKcal}</div><div class="b-sub">kcal</div></div>
       </div>
     </div>
 
@@ -533,60 +719,62 @@ function renderWorkout(logs) {
       <div class="chart-wrap"><canvas id="c-wfreq"></canvas></div>
     </div>
 
-    ${prCard}
+    ${renderPRCard(logs)}
   </div>
 
-  <div class="stitle">📋 Lịch sử buổi tập</div>
+  <div class="stitle">Lịch sử buổi tập</div>
   <div class="b span4" style="padding:4px 14px">${sessionRows}</div>`;
 }
 
-function renderPRBento(logs) {
+function renderPRCard(logs) {
   const prs = computePRs(logs);
   const entries = Object.entries(prs);
   if (!entries.length) return '';
   const rows = entries.slice(0,6).map(([name,p]) => {
-    const recentPR = (p.maxWeight?.d === p.lastDate && p.maxWeight?.isNew) || (p.max1RM?.d === p.lastDate && p.max1RM?.isNew);
-    return `<div class="hi" style="padding:9px 0">
-      <div class="hi-ico" style="background:rgba(255,214,10,.15);color:var(--yellow)">🏆</div>
-      <div class="hi-info">
-        <div class="hi-title">${name}${recentPR?' <span style="background:rgba(255,69,58,.18);color:var(--red);font-size:9px;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:800">NEW PR</span>':''}</div>
-        <div class="hi-sub">Heaviest: <strong>${p.maxWeight.w}kg × ${p.maxWeight.r}</strong> · 1RM ~${p.max1RM.e.toFixed(1)}kg</div>
+    const isNew = (p.maxWeight?.d === p.lastDate && p.maxWeight?.isNew) || (p.max1RM?.d === p.lastDate && p.max1RM?.isNew);
+    return `<div class="pr-item">
+      <div class="pr-ico">🏆</div>
+      <div class="pr-info">
+        <div class="pr-name">${name}${isNew?'<span class="pr-new">NEW PR</span>':''}</div>
+        <div class="pr-val">${p.maxWeight.w}kg × ${p.maxWeight.r} reps</div>
       </div>
+      <div class="pr-1rm">~${p.max1RM.e.toFixed(1)}<span style="font-size:10px;color:var(--vita-muted)">kg 1RM</span></div>
     </div>`;
   }).join('');
-  return `<div class="b b-pr span4">
-    <div class="b-label" style="color:var(--yellow)">🏆 PERSONAL RECORDS</div>
-    <div style="margin-top:4px">${rows}</div>
+  return `<div class="b b-pr span4" style="background:linear-gradient(135deg,#2A2014,#1A1508);border:1px solid rgba(255,214,10,.18)">
+    <div class="b-label" style="color:var(--vita-steps)">Thành tích tốt nhất</div>
+    <div style="margin-top:2px">${rows}</div>
   </div>`;
 }
 
 function drawWorkout(logs) {
   const o = [...logs].reverse();
-  drawBar('c-wfreq', o.map(l=>shortDate(l.date)), o.map(l=>(l.sessions||[]).length), '#BF5AF2');
+  drawBar('c-wfreq', o.map(l=>shortDate(l.date)), o.map(l=>(l.sessions||[]).length), 'var(--vita-fat)');
 }
 
-// ══════════════════════════════════════════════════════
-// ║  TAB 3 — Tài chính (Bento)                         ║
-// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+// ║  TAB 3 — Tài chính                                      ║
+// ══════════════════════════════════════════════════════════
 const BUDGET = {food:3000000,transport:1000000,shopping:2000000,health:500000,entertainment:500000,bills:2000000,other:500000};
 const CAT = {
-  food:{ico:'🍽️',color:'#FF9F0A',lbl:'Ăn uống'},
-  transport:{ico:'🚗',color:'#0A84FF',lbl:'Đi lại'},
-  shopping:{ico:'🛍️',color:'#FF375F',lbl:'Mua sắm'},
-  health:{ico:'💊',color:'#30D158',lbl:'Sức khỏe'},
+  food:         {ico:'🍽️',color:'#FF9F0A',lbl:'Ăn uống'},
+  transport:    {ico:'🚗',color:'#0A84FF',lbl:'Đi lại'},
+  shopping:     {ico:'🛍️',color:'#FF375F',lbl:'Mua sắm'},
+  health:       {ico:'💊',color:'#30D158',lbl:'Sức khỏe'},
   entertainment:{ico:'🎬',color:'#BF5AF2',lbl:'Giải trí'},
-  bills:{ico:'🏠',color:'#8E8E93',lbl:'Hóa đơn'},
-  income:{ico:'💰',color:'#30D158',lbl:'Thu nhập'},
-  other:{ico:'📦',color:'#5A5A66',lbl:'Khác'}
+  bills:        {ico:'🏠',color:'#8E8E93',lbl:'Hóa đơn'},
+  income:       {ico:'💰',color:'#30D158',lbl:'Thu nhập'},
+  other:        {ico:'📦',color:'#5F6675',lbl:'Khác'}
 };
+
 function renderFinance(logs) {
-  if (!logs.length) return '<div class="loading">😶 Chưa có giao dịch nào<br><span style="font-size:12px;color:var(--faint);margin-top:8px;display:block">Gửi ảnh hoá đơn / bill cho Claude</span></div>';
+  if (!logs.length) return '<div class="loading">😶 Chưa có giao dịch nào<br><span style="font-size:12px;color:var(--vita-faint);margin-top:8px;display:block">Gửi ảnh hoá đơn / bill cho Claude</span></div>';
   const mm     = new Date().toISOString().slice(0,7);
   const monthT = logs.filter(l=>l.date.startsWith(mm)).flatMap(l=>l.transactions||[]);
   const allT   = logs.flatMap(l=>(l.transactions||[]).map(t=>({...t,date:l.date})));
   const income  = monthT.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
   const expense = monthT.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-  const saved   = income-expense;
+  const saved   = income - expense;
   const byCat   = {};
   monthT.filter(t=>t.type==='expense').forEach(t=>{ byCat[t.category]=(byCat[t.category]||0)+t.amount; });
   const budgetHtml = Object.entries(BUDGET).map(([cat,bud]) => {
@@ -594,9 +782,9 @@ function renderFinance(logs) {
     return `<div style="margin-bottom:11px">
       <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
         <span>${c.ico} ${c.lbl}</span>
-        <span style="color:${over?'var(--red)':'var(--muted)'};font-weight:700">${vnd(spent)} / ${vnd(bud)}</span>
+        <span style="color:${over?'var(--vita-energy)':'var(--vita-muted)'};font-weight:700">${vnd(spent)} / ${vnd(bud)}</span>
       </div>
-      <div class="pbar"><div class="pfill" style="width:${pct}%;background:${over?'var(--red)':c.color}"></div></div>
+      <div class="pbar"><div class="pfill" style="width:${pct}%;background:${over?'var(--vita-energy)':c.color}"></div></div>
     </div>`;
   }).join('');
   const txRows = allT.slice(0,20).map(t => {
@@ -607,118 +795,124 @@ function renderFinance(logs) {
         <div class="hi-title">${t.description||c.lbl}</div>
         <div class="hi-sub">${fmt(t.date)}${t.time?' · '+t.time:''}</div>
       </div>
-      <div class="hi-val" style="color:${inc?'var(--green)':'var(--red)'}">${inc?'+':'−'}${vnd(t.amount)}</div>
+      <div class="hi-val" style="color:${inc?'var(--vita-good)':'var(--vita-energy)'}">${inc?'+':'−'}${vnd(t.amount)}</div>
     </div>`;
-  }).join('') || '<div style="text-align:center;color:var(--faint);padding:20px;font-size:13px">Chưa có giao dịch</div>';
+  }).join('') || '<div style="text-align:center;color:var(--vita-faint);padding:20px;font-size:13px">Chưa có giao dịch</div>';
 
   return `<div class="bento">
-    <div class="b b-weight span4">
-      <div class="b-label" style="color:var(--green)">💰 THÁNG NÀY</div>
+    <div class="b span4" style="background:linear-gradient(135deg,#0E2A1F,#0A1C14);border:1px solid rgba(48,209,88,.18)">
+      <div class="b-label" style="color:var(--vita-good)">Tháng này</div>
       <div style="display:flex;gap:14px;margin-top:8px">
-        <div><div style="font-size:18px;font-weight:800;color:var(--green);line-height:1">${vnd(income)}</div><div class="b-sub">thu</div></div>
-        <div><div style="font-size:18px;font-weight:800;color:var(--red);line-height:1">${vnd(expense)}</div><div class="b-sub">chi</div></div>
-        <div><div style="font-size:18px;font-weight:800;color:${saved>=0?'var(--green)':'var(--red)'};line-height:1">${vnd(Math.abs(saved))}</div><div class="b-sub">${saved>=0?'tiết kiệm':'thâm hụt'}</div></div>
+        <div><div style="font-size:20px;font-weight:800;color:var(--vita-good);line-height:1">${vnd(income)}</div><div class="b-sub">thu nhập</div></div>
+        <div><div style="font-size:20px;font-weight:800;color:var(--vita-energy);line-height:1">${vnd(expense)}</div><div class="b-sub">chi tiêu</div></div>
+        <div><div style="font-size:20px;font-weight:800;color:${saved>=0?'var(--vita-good)':'var(--vita-energy)'};line-height:1">${vnd(Math.abs(saved))}</div><div class="b-sub">${saved>=0?'tiết kiệm':'thâm hụt'}</div></div>
       </div>
     </div>
-
     <div class="b b-chart span4 tall">
       <div class="b-label">📈 Chi tiêu / ngày (nghìn)</div>
       <div class="chart-wrap"><canvas id="c-fday"></canvas></div>
     </div>
-
     <div class="b span4">
-      <div class="b-label">📊 Ngân sách tháng</div>
+      <div class="b-label">Ngân sách tháng</div>
       <div style="margin-top:6px">${budgetHtml}</div>
     </div>
   </div>
-
-  <div class="stitle">💸 Giao dịch gần đây</div>
+  <div class="stitle">Giao dịch gần đây</div>
   <div class="b span4" style="padding:4px 14px">${txRows}</div>`;
 }
 function drawFinance(logs) {
   const o = [...logs].reverse();
   drawBar('c-fday', o.map(l=>shortDate(l.date)),
     o.map(l=>(l.transactions||[]).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0)/1000),
-    '#FF453A');
+    'var(--vita-energy)');
 }
 
-// ══ CHART ENGINE (dark theme) ══
+// ══ CHART ENGINE ══
 function setupCanvas(id, h=140) {
   const c=document.getElementById(id); if (!c) return null;
   const dpr=window.devicePixelRatio||1, W=c.parentElement.offsetWidth||300;
   c.style.width=W+'px'; c.style.height=h+'px'; c.width=W*dpr; c.height=h*dpr;
-  const ctx=c.getContext('2d'); ctx.scale(dpr,dpr);
-  return {ctx,W,H:h};
+  const ctx=c.getContext('2d'); ctx.scale(dpr,dpr); return {ctx,W,H:h};
 }
-function noData(ctx,W,H) { ctx.fillStyle='#5A5A66'; ctx.font='12px -apple-system'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('Chưa có dữ liệu',W/2,H/2); }
+function noData(ctx,W,H) {
+  ctx.fillStyle='#5F6675'; ctx.font='12px -apple-system'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('Chưa có dữ liệu',W/2,H/2);
+}
+function resolveCSSColor(color) {
+  if (!color.startsWith('var(')) return color;
+  const name = color.match(/var\(([^)]+)\)/)?.[1];
+  return name ? getComputedStyle(document.documentElement).getPropertyValue(name).trim() : '#888';
+}
 
 function drawBar(id, labels, data, color, goal=null) {
   const s=setupCanvas(id); if (!s) return;
   const {ctx,W,H}=s; ctx.clearRect(0,0,W,H);
   if (data.every(v=>!v)) { noData(ctx,W,H); return; }
+  const c = resolveCSSColor(color);
   const pad={t:22,r:10,b:26,l:34}, cw=W-pad.l-pad.r, ch=H-pad.t-pad.b;
   const max=Math.max(...data,goal||0)*1.2||1;
   if (goal) {
     const gy=pad.t+ch-(goal/max)*ch;
-    ctx.setLineDash([4,3]); ctx.strokeStyle=color+'66'; ctx.lineWidth=1.5;
+    ctx.setLineDash([4,3]); ctx.strokeStyle=c+'66'; ctx.lineWidth=1.5;
     ctx.beginPath(); ctx.moveTo(pad.l,gy); ctx.lineTo(W-pad.r,gy); ctx.stroke(); ctx.setLineDash([]);
   }
   [0,.5,1].forEach(t=>{
     const y=pad.t+ch*t; ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y); ctx.stroke();
-    ctx.fillStyle='#5A5A66'; ctx.font='9px -apple-system'; ctx.textAlign='right'; ctx.textBaseline='middle';
+    ctx.fillStyle='#5F6675'; ctx.font='9px -apple-system'; ctx.textAlign='right'; ctx.textBaseline='middle';
     ctx.fillText((max*(1-t)).toFixed(max>10?0:1),pad.l-3,y);
   });
   const n=labels.length, slotW=cw/Math.max(n,1), barW=Math.min(slotW*.6,28);
   data.forEach((v,i)=>{
     const x=pad.l+slotW*i+(slotW-barW)/2, bh=(v/max)*ch, y=pad.t+ch-bh, now=i===n-1;
-    ctx.fillStyle=now?color:color+'66';
+    ctx.fillStyle=now?c:c+'66';
     if (bh>0) {
       ctx.beginPath(); const r=4; ctx.moveTo(x+r,y); ctx.lineTo(x+barW-r,y);
       ctx.quadraticCurveTo(x+barW,y,x+barW,y+r); ctx.lineTo(x+barW,pad.t+ch);
       ctx.lineTo(x,pad.t+ch); ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath(); ctx.fill();
     }
     if (v>0) { ctx.fillStyle='#E5E5EA'; ctx.font=`${now?'bold ':''} 9px -apple-system`; ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText(v%1===0?v:v.toFixed(1),x+barW/2,y-2); }
-    ctx.fillStyle=now?'#FFFFFF':'#8E8E93'; ctx.font=`${now?'bold ':''} 9px -apple-system`; ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText(labels[i],x+barW/2,H-2);
+    ctx.fillStyle=now?'#FFFFFF':'#9BA1AE'; ctx.font=`${now?'bold ':''} 9px -apple-system`; ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText(labels[i],x+barW/2,H-2);
   });
 }
 
 function drawLine(id, labels, data, color, goal=null) {
   const s=setupCanvas(id); if (!s) return;
   const {ctx,W,H}=s; ctx.clearRect(0,0,W,H);
+  const c = resolveCSSColor(color);
   const nz=data.filter(v=>v>0); if (!nz.length) { noData(ctx,W,H); return; }
   const pad={t:22,r:10,b:26,l:36}, cw=W-pad.l-pad.r, ch=H-pad.t-pad.b;
   const max=Math.max(...nz,goal||0)*1.15, min=Math.min(...nz)*.85, rng=max-min||1;
   if (goal) {
-    const gy=pad.t+ch-((goal-min)/rng)*ch; ctx.setLineDash([4,3]); ctx.strokeStyle=color+'55'; ctx.lineWidth=1.5;
+    const gy=pad.t+ch-((goal-min)/rng)*ch; ctx.setLineDash([4,3]); ctx.strokeStyle=c+'55'; ctx.lineWidth=1.5;
     ctx.beginPath(); ctx.moveTo(pad.l,gy); ctx.lineTo(W-pad.r,gy); ctx.stroke(); ctx.setLineDash([]);
   }
   [0,.5,1].forEach(t=>{
     const y=pad.t+ch*t; ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y); ctx.stroke();
-    ctx.fillStyle='#5A5A66'; ctx.font='9px -apple-system'; ctx.textAlign='right'; ctx.textBaseline='middle';
+    ctx.fillStyle='#5F6675'; ctx.font='9px -apple-system'; ctx.textAlign='right'; ctx.textBaseline='middle';
     ctx.fillText((max-rng*t).toFixed(1),pad.l-3,y);
   });
   const n=labels.length;
   const pts=data.map((v,i)=>({x:pad.l+(n>1?(i/(n-1))*cw:cw/2), y:v>0?pad.t+ch-((v-min)/rng)*ch:null}));
   const grad=ctx.createLinearGradient(0,pad.t,0,pad.t+ch);
-  grad.addColorStop(0,color+'40'); grad.addColorStop(1,color+'00');
+  grad.addColorStop(0,c+'40'); grad.addColorStop(1,c+'00');
   ctx.beginPath(); let ok=false;
   pts.forEach(p=>{ if(!p.y)return; if(!ok){ctx.moveTo(p.x,pad.t+ch);ctx.lineTo(p.x,p.y);ok=true;}else ctx.lineTo(p.x,p.y); });
   const lp=[...pts].reverse().find(p=>p.y); if(lp) ctx.lineTo(lp.x,pad.t+ch);
   ctx.closePath(); ctx.fillStyle=grad; ctx.fill();
-  ctx.beginPath(); ctx.strokeStyle=color; ctx.lineWidth=2.5; ctx.lineJoin='round';
+  ctx.beginPath(); ctx.strokeStyle=c; ctx.lineWidth=2.5; ctx.lineJoin='round';
   let ls=false; pts.forEach(p=>{ if(!p.y){ls=false;return;} if(!ls){ctx.moveTo(p.x,p.y);ls=true;}else ctx.lineTo(p.x,p.y); });
   ctx.stroke();
   pts.forEach((p,i)=>{
     if (!p.y) return;
-    ctx.beginPath(); ctx.arc(p.x,p.y,3.5,0,Math.PI*2); ctx.fillStyle='#0A0A0F'; ctx.strokeStyle=color; ctx.lineWidth=2; ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(p.x,p.y,3.5,0,Math.PI*2); ctx.fillStyle='#090A0F'; ctx.strokeStyle=c; ctx.lineWidth=2; ctx.fill(); ctx.stroke();
     ctx.fillStyle='#E5E5EA'; ctx.font='9px -apple-system'; ctx.textAlign='center'; ctx.textBaseline='bottom';
     if (data[i]) ctx.fillText(data[i]%1===0?data[i]:data[i].toFixed(1),p.x,p.y-5);
   });
   labels.forEach((l,i)=>{
     const x=pad.l+(n>1?(i/(n-1))*cw:cw/2);
-    ctx.fillStyle=i===n-1?'#FFFFFF':'#8E8E93'; ctx.font=`${i===n-1?'bold ':''} 9px -apple-system`;
+    ctx.fillStyle=i===n-1?'#FFFFFF':'#9BA1AE'; ctx.font=`${i===n-1?'bold ':''} 9px -apple-system`;
     ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText(l,x,H-2);
   });
 }
@@ -727,9 +921,8 @@ function drawLine(id, labels, data, color, goal=null) {
 function epley(weight, reps) { return weight * (1 + reps/30); }
 function extractSets(ex) {
   if (Array.isArray(ex.sets)) return ex.sets.filter(s => s.reps && s.weight_kg);
-  if (typeof ex.sets === 'number' && ex.reps && ex.weight_kg) {
+  if (typeof ex.sets === 'number' && ex.reps && ex.weight_kg)
     return Array.from({length:ex.sets}, () => ({reps:ex.reps, weight_kg:ex.weight_kg}));
-  }
   return [];
 }
 function computePRs(logs) {
@@ -745,12 +938,10 @@ function computePRs(logs) {
         sets.forEach(st => {
           const e1 = epley(st.weight_kg, st.reps);
           if (!byEx[name].maxWeight || st.weight_kg > byEx[name].maxWeight.w) {
-            const isNew = byEx[name].maxWeight && st.weight_kg > byEx[name].maxWeight.w;
-            byEx[name].maxWeight = { w: st.weight_kg, r: st.reps, d: l.date, isNew: isNew||false };
+            byEx[name].maxWeight = { w:st.weight_kg, r:st.reps, d:l.date, isNew:!!byEx[name].maxWeight };
           }
           if (!byEx[name].max1RM || e1 > byEx[name].max1RM.e) {
-            const isNew = byEx[name].max1RM && e1 > byEx[name].max1RM.e;
-            byEx[name].max1RM = { e: e1, w: st.weight_kg, r: st.reps, d: l.date, isNew: isNew||false };
+            byEx[name].max1RM = { e:e1, w:st.weight_kg, r:st.reps, d:l.date, isNew:!!byEx[name].max1RM };
           }
         });
       });
@@ -767,43 +958,41 @@ function computeStreak(idxDesc) {
   const yesterday = isoLocal(y);
   let start = idxDesc.includes(today) ? today : idxDesc.includes(yesterday) ? yesterday : null;
   if (!start) return 0;
-  let count = 0;
-  let cursor = new Date(start+'T12:00:00');
+  let count = 0, cursor = new Date(start+'T12:00:00');
   while (idxDesc.includes(isoLocal(cursor))) { count++; cursor.setDate(cursor.getDate()-1); }
   return count;
 }
 function renderStreakBadge() {
-  const all = [...new Set([...healthIdx, ...workoutIdx, ...financeIdx])].sort((a,b)=>b.localeCompare(a));
+  const all = [...new Set([...healthIdx,...workoutIdx,...financeIdx])].sort((a,b)=>b.localeCompare(a));
   const s = computeStreak(all);
   const el = document.getElementById('streak-badge');
   if (!el) return;
-  el.innerHTML = s>0 ? `<span class="streak-pill">🔥 ${s}</span>` : '';
+  el.innerHTML = s > 0 ? `<span class="streak-pill">🔥 ${s}</span>` : '';
+}
+
+// ══ Schema normalize ══
+function getItemGrams(it) { return it.grams ?? it.amount_g ?? 0; }
+function getItemMacro(it, key) { return it[key] ?? it[key+'_g'] ?? 0; }
+function getMealMacro(meal, key) { return meal['total_'+key] ?? meal['total_'+key+'_g'] ?? 0; }
+function totalKcal(log) { return (log.meals||[]).reduce((s,m)=>s+(m.total_kcal||0),0); }
+function totalMacro(log,k) { return (log.meals||[]).reduce((s,m)=>s+getMealMacro(m,k),0); }
+function validateHealthLog(log) {
+  const issues = [];
+  (log.meals||[]).forEach(m => (m.items||[]).forEach(it => {
+    if (it.grams==null && it.amount_g==null) issues.push(`missing grams: "${it.name}"`);
+    if (it.protein==null && it.protein_g==null) issues.push(`missing protein: "${it.name}"`);
+  }));
+  if (issues.length) console.warn('[opus-vita] non-canonical health schema', log.date, issues);
 }
 
 // ══ Helpers ══
-const DAYS=['CN','T2','T3','T4','T5','T6','T7'];
+const DAYS = ['CN','T2','T3','T4','T5','T6','T7'];
 function shortDate(s) { const d=new Date(s+'T12:00:00'); return DAYS[d.getDay()]; }
 function fmt(s) { const d=new Date(s+'T12:00:00'); return `${DAYS[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`; }
 function fmtFull(s) { const d=new Date(s+'T12:00:00'); return `${DAYS[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`; }
 function todayStr() { return isoLocal(new Date()); }
 function isoLocal(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
 function addDays(d,n) { const x=new Date(d); x.setDate(x.getDate()+n); return x; }
-// ── Schema normalize helpers (supports old: grams/protein/carb/fat AND new: amount_g/protein_g/carb_g/fat_g) ──
-function getItemGrams(it) { return it.grams ?? it.amount_g ?? 0; }
-function getItemMacro(it, key) { return it[key] ?? it[key + '_g'] ?? 0; }
-function getMealMacro(meal, key) { return meal['total_' + key] ?? meal['total_' + key + '_g'] ?? 0; }
-function totalKcal(log) { return (log.meals||[]).reduce((s,m)=>s+(m.total_kcal||0),0); }
-function totalMacro(log, k) { return (log.meals||[]).reduce((s,m) => s + getMealMacro(m, k), 0); }
-function validateHealthLog(log) {
-  const issues = [];
-  (log.meals||[]).forEach(m => {
-    (m.items||[]).forEach(it => {
-      if (it.grams == null && it.amount_g == null) issues.push(`missing grams: "${it.name}"`);
-      if (it.protein == null && it.protein_g == null) issues.push(`missing protein: "${it.name}"`);
-    });
-  });
-  if (issues.length) console.warn('[opus-vita] non-canonical health schema', log.date, issues);
-}
 function avg(arr,fn) { const v=arr.map(fn).filter(x=>x>0); return v.length?v.reduce((a,b)=>a+b,0)/v.length:0; }
 function pc(v,max) { return Math.min(100,(v/max)*100).toFixed(0); }
 function vnd(n) { if(n>=1000000)return(n/1000000).toFixed(1)+'tr'; if(n>=1000)return Math.round(n/1000)+'k'; return n+''; }
