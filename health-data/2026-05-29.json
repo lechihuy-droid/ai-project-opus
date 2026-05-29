@@ -1,0 +1,52 @@
+{
+  "date": "2026-05-29",
+  "meals": [
+    {
+      "time": "12:00",
+      "name": "Trưa",
+      "source": "photo",
+      "items": [
+        {
+          "name": "Cơm hộp (packaged rice)",
+          "amount_g": 200,
+          "kcal": 312,
+          "protein_g": 5.0,
+          "carb_g": 74.2,
+          "fat_g": 0.6,
+          "sugar_g": 0.0,
+          "fiber_g": 3.0,
+          "saturated_fat_g": 0.1,
+          "sodium_mg": 0,
+          "alcohol_g": 0
+        },
+        {
+          "name": "Cá hồi muối Nhật (2 lát)",
+          "amount_g": 140,
+          "kcal": 210,
+          "protein_g": 31.0,
+          "carb_g": 0.0,
+          "fat_g": 10.0,
+          "sugar_g": 0.0,
+          "fiber_g": 0.0,
+          "saturated_fat_g": 2.8,
+          "sodium_mg": 750,
+          "alcohol_g": 0
+        }
+      ],
+      "total_kcal": 522,
+      "total_protein_g": 36.0,
+      "total_carb_g": 74.2,
+      "total_fat_g": 10.6,
+      "total_sugar_g": 0.0,
+      "total_fiber_g": 3.0,
+      "total_saturated_fat_g": 2.9,
+      "total_sodium_mg": 750,
+      "total_alcohol_g": 0
+    }
+  ],
+  "water_ml": 0,
+  "steps": 0,
+  "sleep_hours": 0,
+  "weight_kg": 0,
+  "notes": ""
+}
