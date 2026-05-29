@@ -5,7 +5,7 @@
       "time": "18:00",
       "type": "muay_thai",
       "duration_min": 6,
-      "calories": 60,
+      "calories": 84,
       "exercises": [
         {
           "name": "Sparring",
@@ -20,7 +20,7 @@
       "time": "18:10",
       "type": "gym",
       "duration_min": 5,
-      "calories": 30,
+      "calories": 18,
       "exercises": [
         {
           "name": "Ab wheel rollout",
