@@ -285,7 +285,7 @@ canvas { display: block; }
 <script>
 // ── Config ──
 const CONFIG = {
-  target:   { kcal: 2200, protein: 130, water_ml: 2000, steps: 8000, sleep: 7.5 },
+  target:   { kcal: 2200, protein: 130, carb: 220, fat: 70, fiber: 25, water_ml: 2000, steps: 8000, sleep: 7.5 },
   currency: 'VND',
   locale:   'vi-VN'
 };
@@ -385,14 +385,14 @@ function renderContent() {
 // ══════════════════════════════════════════════════════════
 // ║  Ring Progress                                          ║
 // ══════════════════════════════════════════════════════════
-function renderRing(val, max, color, label, size=56) {
+function renderRing(val, max, color, label, size=56, decimals=0) {
   const pct   = max > 0 ? Math.min(1, val / max) : 0;
   const r     = (size - 8) / 2;
   const circ  = 2 * Math.PI * r;
   const dash  = (pct * circ).toFixed(1);
   const gap   = (circ - dash).toFixed(1);
   const cx    = size / 2;
-  const valStr = val > 0 ? (val >= 1000 ? (val/1000).toFixed(1)+'k' : String(Math.round(val))) : '—';
+  const valStr = val > 0 ? (val >= 1000 ? (val/1000).toFixed(1)+'k' : decimals > 0 ? val.toFixed(decimals) : String(Math.round(val))) : '—';
   const colorVal = val > 0 ? color : 'var(--vita-faint)';
   return `<svg class="ring-svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
     <circle cx="${cx}" cy="${cx}" r="${r}" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="4"/>
@@ -444,9 +444,9 @@ function renderHealth(logs) {
   // Macro balance rows
   const macroRows = [
     { name: 'Protein',  val: Math.round(protein), max: TARGET.protein, color: 'var(--vita-protein)', unit: 'g' },
-    { name: 'Carb',     val: Math.round(carb),    max: 220,             color: 'var(--vita-carb)',   unit: 'g' },
-    { name: 'Fat',      val: Math.round(fat),      max: 70,             color: 'var(--vita-fat)',    unit: 'g' },
-    { name: 'Chất xơ', val: Math.round(fiber),    max: 25,             color: 'var(--vita-fiber)',  unit: 'g' },
+    { name: 'Carb',     val: Math.round(carb),    max: TARGET.carb,    color: 'var(--vita-carb)',   unit: 'g' },
+    { name: 'Fat',      val: Math.round(fat),      max: TARGET.fat,    color: 'var(--vita-fat)',    unit: 'g' },
+    { name: 'Chất xơ', val: Math.round(fiber),    max: TARGET.fiber,  color: 'var(--vita-fiber)',  unit: 'g' },
   ].map(m => {
     const pct = Math.min(100, m.max > 0 ? (m.val / m.max) * 100 : 0);
     const left = m.max - m.val;
@@ -491,10 +491,10 @@ function renderHealth(logs) {
       ${renderRing(Math.round(protein), TARGET.protein, 'var(--vita-protein)', 'Protein', 52)}
     </div>
     <div class="ring-cell">
-      ${renderRing(waterL, waterMax, 'var(--vita-water)', 'Nước (L)', 52)}
+      ${renderRing(waterL, waterMax, 'var(--vita-water)', 'Nước (L)', 52, 1)}
     </div>
     <div class="ring-cell">
-      ${renderRing(sleepVal, TARGET.sleep, 'var(--vita-sleep)', 'Giấc ngủ', 52)}
+      ${renderRing(sleepVal, TARGET.sleep, 'var(--vita-sleep)', 'Giấc ngủ', 52, 1)}
     </div>
     <div class="ring-cell">
       ${renderRing(stepsK, stepsMaxK, 'var(--vita-steps)', 'Vận động', 52)}
