@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>opus-vita</title>
+<title>Opus Nexus</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -239,13 +239,31 @@ canvas { display: block; }
 /* ── Toast ── */
 .toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-80px); background: var(--vita-surface-2); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 999; transition: transform .3s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; border: 1px solid var(--vita-line); }
 .toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ── Nexus nav (top-level views) ── */
+.nav-tabs { display: flex; gap: 6px; padding: 2px 0 10px; }
+.nav-tab { flex: 1; padding: 8px 4px; text-align: center; font-size: 12px; font-weight: 700; border: none; border-radius: 9px; background: rgba(255,255,255,.05); color: var(--vita-muted); cursor: pointer; font-family: inherit; transition: background .18s, color .18s; }
+.nav-tab.active { background: var(--vita-good); color: #000; }
+
+/* ── Today / brief ── */
+.brief-card { background: var(--vita-surface); border-radius: var(--vita-radius-lg); padding: 14px; margin-bottom: var(--vita-gap); }
+.brief-greeting { font-size: 17px; font-weight: 800; }
+.brief-date { font-size: 12px; color: var(--vita-muted); margin-top: 2px; }
+.action-btn { display: block; width: 100%; padding: 11px; background: rgba(255,255,255,.06); color: var(--vita-text); border: none; border-radius: 11px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.action-btn:active { background: rgba(255,255,255,.1); }
+
+/* ── Coming soon (placeholder views) ── */
+.coming-soon { text-align: center; padding: 56px 24px; color: var(--vita-muted); }
+.coming-soon .cs-ico   { font-size: 44px; display: block; margin-bottom: 14px; }
+.coming-soon .cs-title { font-size: 16px; font-weight: 800; color: var(--vita-text); margin-bottom: 8px; }
+.coming-soon .cs-sub   { font-size: 13px; line-height: 1.55; }
 </style>
 </head>
 <body>
 <!-- PAT Screen -->
 <div id="pat-screen" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px">
-  <div style="font-size:52px;margin-bottom:16px">🌿</div>
-  <div style="font-size:22px;font-weight:800;margin-bottom:6px">opus-vita</div>
+  <div style="font-size:52px;margin-bottom:16px">🌐</div>
+  <div style="font-size:22px;font-weight:800;margin-bottom:6px">Opus Nexus</div>
   <div style="font-size:13px;color:var(--vita-muted);text-align:center;margin-bottom:28px">Nhập GitHub PAT để truy cập dữ liệu</div>
   <div style="width:100%;background:var(--vita-surface);border-radius:14px;padding:18px;margin-bottom:14px;border:1px solid var(--vita-line)">
     <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--vita-muted);margin-bottom:7px;display:block">GitHub PAT</label>
@@ -258,18 +276,24 @@ canvas { display: block; }
 <div id="app">
   <div class="topbar">
     <div class="tb-row1">
-      <h1>🌿 opus-vita <span id="streak-badge"></span></h1>
+      <h1>🌐 Opus Nexus <span id="streak-badge"></span></h1>
       <div style="display:flex;gap:6px">
         <button class="sync-btn" onclick="reload()">↻ Sync</button>
         <button class="pat-btn" onclick="resetPat()">🔑</button>
       </div>
     </div>
-    <div class="mod-tabs">
+    <div class="nav-tabs">
+      <button class="nav-tab active" id="nv-today"    onclick="showView('today')">Today</button>
+      <button class="nav-tab"        id="nv-vita"     onclick="showView('vita')">Vita</button>
+      <button class="nav-tab"        id="nv-calendar" onclick="showView('calendar')">Calendar</button>
+      <button class="nav-tab"        id="nv-actions"  onclick="showView('actions')">Actions</button>
+    </div>
+    <div class="mod-tabs" id="mod-tabs" style="display:none">
       <button class="mtab active" id="mt-health"  onclick="showTab('health')">🌿 Sức khỏe</button>
       <button class="mtab"        id="mt-workout" onclick="showTab('workout')">💪 Tập luyện</button>
       <button class="mtab"        id="mt-finance" onclick="showTab('finance')">💰 Tài chính</button>
     </div>
-    <div class="range-row">
+    <div class="range-row" id="range-row" style="display:none">
       <button class="rtab active" onclick="setRange(7,this)">7 ngày</button>
       <button class="rtab"        onclick="setRange(14,this)">14 ngày</button>
       <button class="rtab"        onclick="setRange(30,this)">30 ngày</button>
@@ -296,7 +320,8 @@ const DATA_BRANCH = 'main';
 
 let PAT = localStorage.getItem('ov_pat') || '';
 let currentRange = 7;
-let currentTab   = 'health';
+let currentView  = 'today';           // today | vita | calendar | actions
+let currentTab   = 'health';          // sub-tab inside Vita
 let cHealth = [], cWorkout = [], cFinance = [];
 let healthIdx = [], workoutIdx = [], financeIdx = [];
 
@@ -356,6 +381,16 @@ function showTab(tab) {
   document.getElementById('mt-'+tab).classList.add('active');
   renderContent();
 }
+function showView(view) {
+  currentView = view;
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('nv-'+view).classList.add('active');
+  // Vita sub-controls (module tabs + range) chỉ hiện trong view Vita
+  const inVita = view === 'vita';
+  document.getElementById('mod-tabs').style.display  = inVita ? 'flex' : 'none';
+  document.getElementById('range-row').style.display = inVita ? 'flex' : 'none';
+  renderContent();
+}
 
 async function reload() {
   document.getElementById('content').innerHTML = '<div class="loading"><span class="spin">🌿</span>Đang tải...</div>';
@@ -377,9 +412,89 @@ async function reload() {
 }
 function renderContent() {
   const el = document.getElementById('content');
+  if (currentView === 'today')    { el.innerHTML = renderToday(); return; }
+  if (currentView === 'calendar') { el.innerHTML = renderComingSoon('📅','Calendar','Kết nối Google Calendar để Nexus hiểu lịch tuần.<br>Sắp ra mắt — Phase 3.'); return; }
+  if (currentView === 'actions')  { el.innerHTML = renderComingSoon('⚡','Actions','Phê duyệt đề xuất sự kiện từ LLM.<br>Sắp ra mắt — Phase 4-5.'); return; }
+  // Vita module
   if (currentTab==='health')  { el.innerHTML=renderHealth(cHealth);   setTimeout(()=>drawHealth(cHealth),30); }
   if (currentTab==='workout') { el.innerHTML=renderWorkout(cWorkout); setTimeout(()=>drawWorkout(cWorkout),30); }
   if (currentTab==='finance') { el.innerHTML=renderFinance(cFinance); setTimeout(()=>drawFinance(cFinance),30); }
+}
+
+// ══════════════════════════════════════════════════════════
+// ║  Nexus — Today                                          ║
+// ══════════════════════════════════════════════════════════
+function buildVitaSnapshot() {
+  const today = todayStr();
+  const shown = cHealth.find(l => l.date === today) || cHealth[0] || null;
+  if (!shown) return null;
+  return {
+    shown,
+    isToday: shown.date === today,
+    kcal:    totalKcal(shown),
+    protein: totalMacro(shown, 'protein'),
+    fiber:   totalMacro(shown, 'fiber'),
+    sleep:   shown.sleep_hours || 0,
+    steps:   shown.steps > 0 ? +(shown.steps / 1000).toFixed(1) : 0
+  };
+}
+
+function renderToday() {
+  const snap = buildVitaSnapshot();
+  if (!snap) {
+    return `<div class="loading">😶 Chưa có dữ liệu<br>
+      <span style="font-size:12px;color:var(--vita-faint);margin-top:8px;display:block">Gửi ảnh bữa ăn cho Claude để bắt đầu</span></div>`;
+  }
+  const { shown, isToday, kcal, protein, fiber, sleep, steps } = snap;
+  const dateLabel = isToday ? 'Hôm nay' : fmtFull(shown.date);
+
+  const snapshot = `
+  <div class="ring-grid">
+    <div class="ring-cell">${renderRing(kcal, TARGET.kcal, 'var(--vita-energy)', 'kcal', 52)}</div>
+    <div class="ring-cell">${renderRing(Math.round(protein), TARGET.protein, 'var(--vita-protein)', 'Protein', 52)}</div>
+    <div class="ring-cell">${renderRing(sleep, TARGET.sleep, 'var(--vita-sleep)', 'Giấc ngủ', 52, 1)}</div>
+    <div class="ring-cell">${renderRing(steps, TARGET.steps / 1000, 'var(--vita-steps)', 'Vận động', 52)}</div>
+  </div>`;
+
+  return `
+  <div class="brief-card">
+    <div class="brief-greeting">${greeting()}</div>
+    <div class="brief-date">${dateLabel} · ${fmt(shown.date)}</div>
+  </div>
+
+  ${renderInsight(shown, kcal, protein, fiber)}
+
+  <div class="stitle">Vita Snapshot</div>
+  ${snapshot}
+  <button class="action-btn" onclick="showView('vita')" style="margin-top:var(--vita-gap)">Xem chi tiết Vita →</button>
+
+  <div class="stitle">Lịch tuần</div>
+  <div class="brief-card" style="font-size:13px;color:var(--vita-muted)">
+    📅 Chưa kết nối Google Calendar
+    <div style="font-size:11px;color:var(--vita-faint);margin-top:4px">Phase 3 — đọc lịch để gợi ý kế hoạch tuần</div>
+  </div>
+
+  <div class="stitle">Việc cần làm</div>
+  <div class="brief-card" style="font-size:13px;color:var(--vita-muted)">
+    ⚡ Chưa có đề xuất
+    <div style="font-size:11px;color:var(--vita-faint);margin-top:4px">Phase 4-5 — Plan My Week &amp; phê duyệt sự kiện</div>
+  </div>`;
+}
+
+function renderComingSoon(ico, title, sub) {
+  return `<div class="coming-soon">
+    <span class="cs-ico">${ico}</span>
+    <div class="cs-title">${title}</div>
+    <div class="cs-sub">${sub}</div>
+  </div>`;
+}
+
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 11) return 'Chào buổi sáng 🌅';
+  if (h < 14) return 'Chào buổi trưa ☀️';
+  if (h < 18) return 'Chào buổi chiều 🌤️';
+  return 'Chào buổi tối 🌙';
 }
 
 // ══════════════════════════════════════════════════════════
@@ -981,8 +1096,10 @@ function validateHealthLog(log) {
   (log.meals||[]).forEach(m => (m.items||[]).forEach(it => {
     if (it.grams==null && it.amount_g==null) issues.push(`missing grams: "${it.name}"`);
     if (it.protein==null && it.protein_g==null) issues.push(`missing protein: "${it.name}"`);
+    if (it.carb==null && it.carb_g==null) issues.push(`missing carb: "${it.name}"`);
+    if (it.fat==null && it.fat_g==null) issues.push(`missing fat: "${it.name}"`);
   }));
-  if (issues.length) console.warn('[opus-vita] non-canonical health schema', log.date, issues);
+  if (issues.length) console.warn('[opus-nexus] non-canonical health schema', log.date, issues);
 }
 
 // ══ Helpers ══
