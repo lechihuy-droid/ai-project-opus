@@ -76,7 +76,7 @@ Current operating rule:
   - `wiki_ops/context_compressor.py` — compress long sources trước ingest
   - `wiki_ops/skill_curator.py` — merge/archive overlapping skills
   - `wiki_ops/telegram_handler.py:_run_consilium_brief()` — decision brief
-  - `run_daily.py:write_brief()` — morning brief text
+  - `run_daily.py:build_brief()` — local 3-lane daily brief (tech / ceo / competitor)
   - `tools/research_radar_tool.py:round2_llm_score()` — batch score GitHub/arXiv items
 - Helper: `utils/llm.py` — `claude_cli(prompt, timeout)` và `claude_cli_json(prompt, timeout, expect)` — reusable cho mọi LLM call.
 - Trade-off: Claude CLI có ~30-60s startup overhead → goal_filter 100 articles mất 5-8 phút. Chấp nhận để có chất lượng note + zero external API dependency.
@@ -96,7 +96,7 @@ python run_weekly.py --dry-run     # preview, no save
 python run_dashboard.py            # Opus Home dashboard (localhost:8765)
 ```
 
-**"Telegram là UI. LLM là operator. Wiki là brain."** — Karpathy LLM Wiki pattern
+**"Dashboard/logs là UI. LLM là operator. Wiki là brain."** — Karpathy LLM Wiki pattern
 
 Consilium là bộ não trung tâm của Opus Animus. Mọi input compile vào wiki. Mọi output query từ wiki.
 Chạy Windows Task Scheduler, không cần 24/7. LLM synthesis = Claude CLI (không cần API key riêng).
@@ -117,7 +117,7 @@ BRAIN = personal-wiki/ (Module C owns this)
 
 OUTPUTS ← query wiki, không đọc raw
 ├── Module A  → wiki context → Telegraph article → Telegram
-├── Module B  → wiki query  → daily brief       → Telegram
+├── Module B  → wiki hubs   → 3-lane daily brief → logs/daily/
 └── Research Radar → wiki + GitHub/arXiv → weekly report → Telegram
 ```
 
@@ -127,7 +127,7 @@ OUTPUTS ← query wiki, không đọc raw
 cd "C:/Users/HUY/workspace/ai-workspace/opus-animus/opus-consilium"
 
 python run_research.py AI          # Module A — research + Telegraph
-python run_daily.py                # Module B — daily brief → Telegram
+python run_daily.py                # Module B — local 3-lane daily brief
 python run_wiki.py ingest <url>    # Module C — ingest URL vào wiki
 python run_wiki.py query "<câu>"   # Module C — query wiki
 python run_wiki.py lint            # Module C — weekly lint
@@ -138,7 +138,7 @@ python run_wiki.py poll            # Module C — poll Telegram (Task Scheduler)
 
 - LLM (all filter + synthesis): Claude CLI (`claude.cmd -p`) via subprocess stdin — session auth, không cần API key
   - Helper: `utils/llm.py` — `claude_cli()` + `claude_cli_json()` — dùng cho toàn bộ project
-  - **Zero Groq dependency** — tất cả wiki_ops, collect, daily, weekly, radar đều dùng Claude CLI
+  - **Zero Groq dependency** — wiki_ops, collect, weekly, radar dùng Claude CLI; daily local-only, không gọi LLM
 - Telegram: direct requests Bot API — TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID (text only, no voice)
 - Telegraph: direct requests api.telegra.ph — token lưu `.telegraph_token`
 - PDF/HTML: markitdown library
@@ -150,7 +150,7 @@ python run_wiki.py poll            # Module C — poll Telegram (Task Scheduler)
 ```
 opus-consilium/
 ├── run_research.py      ← Module A: research → raw/research/ → wiki → Telegraph
-├── run_daily.py         ← Module B: query wiki → daily brief → Telegram
+├── run_daily.py         ← Module B: wiki hubs → 3-lane daily brief → logs/daily/
 ├── run_wiki.py          ← Module C: ingest / query / lint / poll
 ├── run_collect.py       ← Content Collector: batch RSS → raw/ → synthesis → wiki
 ├── run_weekly.py        ← Weekly Synthesizer: 7-day articles → Claude → logs/weekly/
@@ -192,12 +192,11 @@ opus-consilium/
 - **Gap:** research output chưa vào wiki → knowledge mất sau mỗi run ⚠️
 - **Fix cần làm:** Sau research, gọi `run_wiki.py ingest raw/research/<file>` trước khi publish
 
-### Module B — Wiki Reader + Broadcaster 🟡 Manual
-**Vai trò:** READER. Query wiki → synthesize → Telegram. Không tạo knowledge mới.
-- Flow hiện tại: đọc `wiki/` folder của Module A → tổng hợp → Telegram
-- Flow mục tiêu: query `personal-wiki/` → daily brief → Telegram
-- **Gap:** đọc output ephemeral của A, không query wiki thật → brief không compound ⚠️
-- **Fix cần làm:** `run_daily.py` gọi `wiki query "tóm tắt AI và stock hôm nay"` thay vì đọc wiki/
+### Module B — Wiki Reader + Local Daily ✅ Running
+**Vai trò:** READER. Đọc durable wiki hubs → brief 3 lane → `logs/daily/YYYY-MM-DD.md`. Không tạo knowledge mới.
+- Lanes: `tech`, `ceo`, `competitor`.
+- Flow hiện tại: đọc `personal-wiki/` hubs + research audit queue → local daily brief.
+- Telegram/Telegraph/Claude export: disabled for daily by design.
 
 ### Content Collector — Auto Writer ✅ Running
 **Vai trò:** AUTO-WRITER. Batch RSS → raw/articles/ → Claude synthesis → wiki (daily 05:30).
