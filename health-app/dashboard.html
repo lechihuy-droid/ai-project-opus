@@ -374,6 +374,10 @@ const CONFIG = {
     discoveryDoc: 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
     readScopes: 'https://www.googleapis.com/auth/calendar.readonly',
     writeScopes: 'https://www.googleapis.com/auth/calendar.events'
+  },
+  gemini: {
+    apiKey: '',                       // Generative Language API key (restrict by HTTP referrer)
+    model:  'gemini-2.0-flash'
   }
 };
 const TARGET = CONFIG.target;
@@ -390,6 +394,7 @@ let healthIdx = [], workoutIdx = [], financeIdx = [];
 let gapiReady = false, gToken = null, gTokenScope = '', calEvents = [], calLoading = false, calError = '';
 let pendingProposals = [], selectedIdx = new Set(), proposalText = '', proposalError = '', approvalResults = [], editingIdx = null;
 let profile = null, profileLoading = false, profileError = '', planPrompt = '';
+let aiGenLoading = false, aiGenError = '';
 
 // ── PAT setup ──
 function checkPat() {
@@ -976,9 +981,13 @@ function normalizeProposal(ev) {
   };
 }
 
-function validateProposalInput() {
-  const input = document.getElementById('proposal-input');
-  proposalText = input ? input.value : proposalText;
+function validateProposalInput(textOverride) {
+  if (typeof textOverride === 'string') {
+    proposalText = textOverride;
+  } else {
+    const input = document.getElementById('proposal-input');
+    proposalText = input ? input.value : proposalText;
+  }
   proposalError = '';
   approvalResults = [];
   try {
@@ -1114,7 +1123,12 @@ function renderPlanMyWeek() {
       </div>
       <span class="status-pill info">Paste-based</span>
     </div>
-    <button class="action-btn secondary-btn" onclick="generatePlanPrompt()" style="margin-top:12px">${profileLoading ? 'Đang tải profile...' : (planPrompt ? '↻ Tạo lại prompt' : '① Tạo prompt')}</button>
+    ${isGeminiConfigured() ? `
+      <button class="action-btn" onclick="generatePlanViaAI()" style="margin-top:12px" ${aiGenLoading ? 'disabled' : ''}>${aiGenLoading ? '✨ Đang tạo kế hoạch...' : '✨ Tự gen bằng AI'}</button>
+      ${aiGenError ? `<div class="proposal-errors">${esc(aiGenError)}</div>` : ''}
+      <div style="font-size:11px;color:var(--vita-faint);margin-top:8px;line-height:1.5">AI tạo JSON tự động và đổ vào preview bên dưới — bạn xem, sửa, rồi duyệt. Hoặc làm thủ công ↓</div>
+    ` : ''}
+    <button class="action-btn secondary-btn" onclick="generatePlanPrompt()" style="margin-top:12px">${profileLoading ? 'Đang tải profile...' : (planPrompt ? '↻ Tạo lại prompt' : '① Tạo prompt (thủ công)')}</button>
     ${profileError ? `<div class="proposal-errors">${esc(profileError)}</div>` : ''}
     ${planPrompt ? `
       <textarea id="plan-prompt" class="nexus-input" readonly style="margin-top:var(--vita-gap);min-height:160px">${esc(planPrompt)}</textarea>
@@ -1125,6 +1139,50 @@ function renderPlanMyWeek() {
       <div style="font-size:11px;color:var(--vita-faint);margin-top:8px;line-height:1.5">Đã copy → dán vào ChatGPT/Claude → copy JSON nó trả về → dán vào ô “③ Dán JSON” bên dưới.</div>
     ` : ''}
   </div>`;
+}
+
+function isGeminiConfigured() {
+  return !!CONFIG.gemini.apiKey;
+}
+
+async function generatePlanViaAI() {
+  aiGenLoading = true;
+  aiGenError = '';
+  renderContent();
+  try {
+    await loadUserProfile();
+    const prompt = buildPlanPrompt(buildWeekContext());
+    const json = await callGemini(prompt);
+    aiGenLoading = false;
+    validateProposalInput(json);   // parse + validate + render preview
+    toast('AI đã tạo kế hoạch');
+  } catch (e) {
+    aiGenError = e.message;
+    aiGenLoading = false;
+    renderContent();
+  }
+}
+
+async function callGemini(prompt) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${CONFIG.gemini.model}:generateContent?key=${CONFIG.gemini.apiKey}`;
+  const body = {
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: { temperature: 0.6, responseMimeType: 'application/json' }
+  };
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) {
+    let msg = `Gemini HTTP ${r.status}`;
+    try { const e = await r.json(); if (e.error?.message) msg = e.error.message; } catch {}
+    throw new Error(msg);
+  }
+  const data = await r.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error('Gemini không trả về nội dung.');
+  return text.trim();
 }
 
 function copyPlanPrompt(btn) {
