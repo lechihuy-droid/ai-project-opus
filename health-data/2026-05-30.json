@@ -46,6 +46,19 @@
           "alcohol": 0
         },
         {
+          "name": "Thịt gà (200g)",
+          "grams": 200,
+          "kcal": 240,
+          "protein": 38.0,
+          "carb": 0.0,
+          "fat": 8.0,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 2.0,
+          "sodium_mg": 100,
+          "alcohol": 0
+        },
+        {
           "name": "Sườn heo hầm (3 miếng)",
           "grams": 150,
           "kcal": 250,
@@ -59,14 +72,14 @@
           "alcohol": 0
         }
       ],
-      "total_kcal": 1050,
-      "total_protein": 36.5,
+      "total_kcal": 1290,
+      "total_protein": 74.5,
       "total_carb": 73.0,
-      "total_fat": 36.5,
+      "total_fat": 44.5,
       "total_sugar": 5.0,
       "total_fiber": 2.0,
-      "total_saturated_fat": 12.1,
-      "total_sodium_mg": 1245,
+      "total_saturated_fat": 14.1,
+      "total_sodium_mg": 1345,
       "total_alcohol": 39.0
     }
   ],
