@@ -1401,13 +1401,90 @@ function summarizeHabits() {
   return { daysLogged: cHealth.length, eating, sleep, steps, workout };
 }
 
+// Build a per-day map of busy blocks → free windows for the next 14 days (JST).
+// Output: array of { date, weekday, busyBlocks: [{start,end,title}], freeSlots: string }
+function buildFreeSlotMap(events = calEvents, days = 14) {
+  const JST = 9 * 60; // JST offset in minutes
+  const toJSTMins = d => d.getUTCHours() * 60 + d.getUTCMinutes() + JST;
+  const pad = n => String(n).padStart(2, '0');
+  const hmStr = mins => `${pad(Math.floor(mins / 60) % 24)}:${pad(mins % 60)}`;
+  const todayJST = new Date(new Date().getTime() + JST * 60000);
+  const todayKey = isoLocal(todayJST);
+
+  // Build day buckets for next `days` days (skip today)
+  const buckets = {};
+  for (let i = 1; i <= days; i++) {
+    const d = new Date(todayJST);
+    d.setDate(d.getDate() + i);
+    const key = isoLocal(d);
+    buckets[key] = { weekday: DAYS[d.getDay()], busy: [] };
+  }
+
+  // Fill busy blocks from timed events
+  events.filter(e => !e.isAllDay).forEach(e => {
+    const s = parseCalDate(e.start), en = parseCalDate(e.end);
+    if (!s || !en) return;
+    const dayKey = isoLocal(new Date(s.getTime() + JST * 60000));
+    if (!buckets[dayKey]) return;
+    const sm = toJSTMins(s), em = toJSTMins(en);
+    buckets[dayKey].busy.push({ sm, em, title: e.title });
+  });
+
+  // For each day compute free windows relative to active hours 06:00–23:00
+  const DAY_START = 6 * 60, DAY_END = 23 * 60;
+  const SLOTS = [
+    { name: 'Sáng', from: 6 * 60, to: 12 * 60 },
+    { name: 'Chiều', from: 12 * 60, to: 18 * 60 },
+    { name: 'Tối', from: 18 * 60, to: 23 * 60 }
+  ];
+
+  return Object.entries(buckets).sort(([a], [b]) => a.localeCompare(b)).map(([date, { weekday, busy }]) => {
+    busy.sort((a, b) => a.sm - b.sm);
+
+    // Merge overlapping blocks
+    const merged = [];
+    for (const b of busy) {
+      if (merged.length && b.sm < merged[merged.length - 1].em) {
+        merged[merged.length - 1].em = Math.max(merged[merged.length - 1].em, b.em);
+      } else {
+        merged.push({ ...b });
+      }
+    }
+
+    // Compute free windows per zone (≥45 min contiguous)
+    const freeZones = SLOTS.map(zone => {
+      let cursor = zone.from;
+      const gaps = [];
+      for (const b of merged) {
+        if (b.em <= zone.from || b.sm >= zone.to) continue;
+        const gapEnd = Math.min(b.sm, zone.to);
+        if (gapEnd - cursor >= 45) gaps.push(`${hmStr(cursor)}-${hmStr(gapEnd)}`);
+        cursor = Math.max(cursor, b.em);
+      }
+      if (zone.to - cursor >= 45) gaps.push(`${hmStr(cursor)}-${hmStr(zone.to)}`);
+      return gaps.length ? `${zone.name}: ${gaps.join(', ')}` : null;
+    }).filter(Boolean);
+
+    const busyStr = merged.length
+      ? merged.map(b => `${hmStr(b.sm)}-${hmStr(b.em)}`).join(', ')
+      : 'trống hoàn toàn';
+
+    return {
+      date,
+      weekday,
+      busyStr,
+      freeSlots: freeZones.length ? freeZones.join(' · ') : 'không còn slot ≥45 phút'
+    };
+  });
+}
+
 function buildWeekContext() {
   const latest = cHealth[0] || null;
   return {
     date: todayStr(),
     timezone: profile?.preferences?.timezone || 'Asia/Tokyo',
     calendar: summarizeCalendar(),
-    upcoming_events: calEvents.slice(0, 20),
+    freeSlotMap: buildFreeSlotMap(),
     habits: summarizeHabits(),
     latest_date: latest?.date || null,
     profile
@@ -1428,12 +1505,13 @@ function buildPlanPrompt(ctx) {
   const sleepStr = hb.sleep?.avg ? `${hb.sleep.avg}h` : 'chưa log';
   const stepStr = hb.steps?.avg ? `${hb.steps.avg} bước` : 'chưa log';
 
-  // Compact, human-readable busy days the LLM must avoid (dates + all-day flags)
-  const busy = (ctx.upcoming_events || []).map(e => {
-    const allDay = e.isAllDay ? ' (cả ngày)' : '';
-    const when = e.isAllDay ? e.start : `${e.start} → ${e.end}`;
-    return `  - ${e.title || '(no title)'}: ${when}${allDay}`;
-  }).join('\n') || '  (không có sự kiện nào trong 14 ngày tới)';
+  // Per-day schedule: busy blocks + free slots ≥45 min (JST)
+  const slotMap = (ctx.freeSlotMap || []);
+  const busy = slotMap.length
+    ? slotMap.map(d =>
+        `  ${d.date} (${d.weekday}) · bận: ${d.busyStr}\n    → Trống: ${d.freeSlots}`
+      ).join('\n')
+    : '  (chưa kết nối Calendar — lên lịch linh hoạt)';
 
   const goals = (p.goals || []).map(g => `  - ${g.label}${g.metric ? ` (đo bằng: ${g.metric})` : ''}`).join('\n') || '  (chưa đặt)';
   const windows = (pref.workout_time_windows || []).join(', ') || 'linh hoạt';
@@ -1472,7 +1550,7 @@ Plan a realistic, low-stress week for ONE person. Output BOTH timed calendar eve
 ## HARD RULES (vi phạm = bị app từ chối):
 1. EVENT: mọi start/end PHẢI có đủ ngày + giờ + offset +09:00 (Asia/Tokyo). KHÔNG dùng date-only.
 2. EVENT: start < end. Mỗi event <= 3 giờ, TRỪ type "sleep_protection".
-3. EVENT: KHÔNG trùng giờ với các sự kiện đang có (liệt kê ở Busy days). Sự kiện "cả ngày" KHÔNG chặn giờ — nhưng ngày đó đang bận, nên hạn chế xếp việc nặng.
+3. EVENT: PHẢI đặt start/end nằm trong một "Trống" block của ngày đó (xem Lịch trống bên dưới). KHÔNG chèn vào giờ đang bận. Sự kiện "cả ngày" không chặn giờ nhưng ngày đó hạn chế việc nặng.
 4. Chỉ xếp event/task TỪ NGÀY MAI trở đi (hôm nay là ${ctx.date}). Lên kế hoạch cho 7 ngày tới.
 5. EVENT: type phải nằm trong danh sách trên. TASK: "due" theo dạng YYYY-MM-DD (hoặc bỏ trống nếu không có hạn).
 
@@ -1496,7 +1574,7 @@ Plan a realistic, low-stress week for ONE person. Output BOTH timed calendar eve
 - Mục tiêu:
 ${goals}
 - Lịch 14 ngày tới: tổng ${cal.total} sự kiện (${cal.timed} có giờ, ${cal.allDay || 0} cả ngày), độ bận: ${cal.busyLevel}.
-- Busy days (TRÁNH trùng giờ):
+- Lịch trống per ngày (JST) — CHỈ xếp event vào slot "Trống" phù hợp:
 ${busy}
 
 Hãy trả JSON ngay bây giờ.`;
