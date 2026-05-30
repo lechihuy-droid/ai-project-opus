@@ -3,14 +3,14 @@ title: "AcademiClaw: When Students Set Challenges for AI Agents"
 aliases: []
 topic: AI
 tags: [source-seed, hf-papers]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-05-05-academiclaw-when-students-set-challenges-for-ai-agents.md", "https://huggingface.co/papers/2605.02661"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # AcademiClaw: When Students Set Challenges for AI Agents

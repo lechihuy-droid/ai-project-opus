@@ -3,14 +3,14 @@ title: "April 2026 newsletter"
 aliases: []
 topic: AI
 tags: [source-seed, simon-willison]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-05-04-april-2026-newsletter.md", "https://simonwillison.net/2026/May/4/april-newsletter/#atom-everything"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # April 2026 newsletter

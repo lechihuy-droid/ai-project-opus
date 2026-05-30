@@ -3,14 +3,14 @@ title: "Anthropic says ‘evil’ portrayals of AI were responsible for Claude�
 aliases: []
 topic: AI
 tags: [source-seed, marketnews, techcrunch-ai]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-05-13-anthropic-says-evil-portrayals-of-ai-were-responsible-for-claudes-blackmail-atte.md", "https://techcrunch.com/2026/05/10/anthropic-says-evil-portrayals-of-ai-were-responsible-for-claudes-blackmail-attempts/"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # Anthropic says ‘evil’ portrayals of AI were responsible for Claude’s blackmail attempts

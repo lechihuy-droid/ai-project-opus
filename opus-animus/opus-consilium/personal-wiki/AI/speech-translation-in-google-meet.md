@@ -1,4 +1,5 @@
 ---
+status: needs-review
 title: "Speech Translation in Google Meet"
 topic: AI
 tags: [speech-translation, google-meet, ai]
@@ -6,7 +7,7 @@ sources: ["2026-04-27-speech-translation-in-google-meet.md"]
 related: ["[[github-ai-features-and-tools]]"]
 confidence: medium
 created: 2026-04-28
-updated: 2026-04-28
+updated: 2026-05-30
 ---
 
 ## Summary

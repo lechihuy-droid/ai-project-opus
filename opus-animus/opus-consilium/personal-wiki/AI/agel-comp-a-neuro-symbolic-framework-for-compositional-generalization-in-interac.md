@@ -3,14 +3,14 @@ title: "AGEL-Comp: A Neuro-Symbolic Framework for Compositional Generalization i
 aliases: []
 topic: AI
 tags: [source-seed, arxiv-ai]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-04-30-agel-comp-a-neuro-symbolic-framework-for-compositional-generalization-in-interac.md", "https://arxiv.org/abs/2604.26522"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # AGEL-Comp: A Neuro-Symbolic Framework for Compositional Generalization in Interactive Agents

@@ -3,14 +3,14 @@ title: "Anil-matcha/Open-Generative-AI"
 aliases: []
 topic: AI
 tags: [source-seed, github-trending-ai]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-04-30-anil-matcha-open-generative-ai.md", "https://github.com/Anil-matcha/Open-Generative-AI"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # Anil-matcha/Open-Generative-AI

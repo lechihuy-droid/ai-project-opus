@@ -1,4 +1,5 @@
 ---
+status: needs-review
 title: "GitHub AI Features and Tools"
 topic: AI
 tags: ["github", "ai", "tools", "features"]
@@ -6,7 +7,7 @@ sources: ["2026-04-28-cc-sdd.md"]
 related: ["[[github-ai-features]]", "[[github-ai-and-ml]]", "[[llm-agents-2025]]"]
 confidence: medium
 created: 2026-04-28
-updated: 2026-04-28
+updated: 2026-05-30
 ---
 
 ## Summary

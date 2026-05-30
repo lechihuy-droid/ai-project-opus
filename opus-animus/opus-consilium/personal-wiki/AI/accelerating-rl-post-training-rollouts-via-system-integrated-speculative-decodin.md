@@ -3,14 +3,14 @@ title: "Accelerating RL Post-Training Rollouts via System-Integrated Speculative
 aliases: []
 topic: AI
 tags: [source-seed, hf-papers]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-04-30-accelerating-rl-post-training-rollouts-via-system-integrated-speculative-decodin.md", "https://huggingface.co/papers/2604.26779"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # Accelerating RL Post-Training Rollouts via System-Integrated Speculative Decoding

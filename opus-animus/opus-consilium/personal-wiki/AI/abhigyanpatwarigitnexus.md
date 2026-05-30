@@ -3,14 +3,14 @@ title: "abhigyanpatwari/GitNexus"
 aliases: []
 topic: AI
 tags: [source-seed, github-trending-ai]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-05-01-abhigyanpatwari-gitnexus.md", "https://github.com/abhigyanpatwari/GitNexus"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # abhigyanpatwari/GitNexus

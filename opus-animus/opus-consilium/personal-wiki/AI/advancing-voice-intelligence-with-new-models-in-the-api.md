@@ -3,14 +3,14 @@ title: "Advancing voice intelligence with new models in the API"
 aliases: []
 topic: AI
 tags: [source-seed, marketnews, openai-news]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-05-07-advancing-voice-intelligence-with-new-models-in-the-api.md", "https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # Advancing voice intelligence with new models in the API

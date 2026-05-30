@@ -1,4 +1,5 @@
 ---
+status: needs-review
 title: "Building Scalable Web Apps with OpenAI's Privacy Filter"
 topic: AI
 tags: ["openai", "privacy-filter", "web-apps"]
@@ -6,7 +7,7 @@ sources: ["https://huggingface.co/blog/openai-privacy-filter-web-apps"]
 related: ["[[openai-microsoft-agi-clause]]", "[[github-ai-features-and-tools]]"]
 confidence: medium
 created: 2026-04-28
-updated: 2026-04-28
+updated: 2026-05-30
 ---
 
 ## Summary

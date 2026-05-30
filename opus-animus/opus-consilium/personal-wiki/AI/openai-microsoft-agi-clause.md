@@ -1,4 +1,5 @@
 ---
+status: needs-review
 title: "OpenAI Microsoft AGI Clause"
 topic: AI
 tags: ["openai", "microsoft", "agi"]
@@ -6,7 +7,7 @@ sources: ["https://simonwillison.net/2026/Apr/27/now-deceased-agi-clause/#atom-e
 related: ["[[github-ai-features-and-tools]]", "[[llm-wiki-agent-research]]"]
 confidence: medium
 created: 2026-04-28
-updated: 2026-04-28
+updated: 2026-05-30
 ---
 
 ## Summary

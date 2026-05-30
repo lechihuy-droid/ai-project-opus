@@ -3,14 +3,14 @@ title: "Articraft: An Agentic System for Scalable Articulated 3D Asset Generatio
 aliases: []
 topic: AI
 tags: [source-seed, hf-papers]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-05-17-articraft-an-agentic-system-for-scalable-articulated-3d-asset-generation.md", "https://huggingface.co/papers/2605.15187"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # Articraft: An Agentic System for Scalable Articulated 3D Asset Generation

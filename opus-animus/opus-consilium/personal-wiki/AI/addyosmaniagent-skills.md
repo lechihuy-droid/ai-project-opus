@@ -3,14 +3,14 @@ title: "addyosmani/agent-skills"
 aliases: []
 topic: AI
 tags: [source-seed, github-trending-ai]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-05-11-addyosmani-agent-skills.md", "https://github.com/addyosmani/agent-skills"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # addyosmani/agent-skills

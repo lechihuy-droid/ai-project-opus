@@ -3,14 +3,14 @@ title: "Building an E-commerce MVP with Requirement Driven Development"
 aliases: []
 topic: Tech
 tags: ["requirement-driven-development", "e-commerce", "mvp"]
-status: seed
+status: needs-review
 confidence: medium
 sources: ["https://medium.com/@leechanchai/i-built-an-e-commerce-mvp-in-5-prompts-with-rdd-requirement-driven-development-3a1b2b422677"]
 related: ["[[requirement-driven-development]]"]
 applied: []
 open_questions: []
 created: 2026-04-29
-updated: 2026-04-29
+updated: 2026-05-30
 ---
 
 # Building an E-commerce MVP with Requirement Driven Development

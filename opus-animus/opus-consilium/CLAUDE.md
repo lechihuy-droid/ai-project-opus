@@ -24,7 +24,7 @@ raw/articles/YYYY-MM-DD-{slug}.md          ← immutable sources
 logs/intel_reviews/YYYY-MM-DD.json         ← daily Claude synthesis
         |
         v
-wiki_ops/ingest.py                         # auto_ingest: true
+wiki_ops/ingest.py                         # gated by audit-research
         |
         v
 personal-wiki/                             ← compounding brain
@@ -64,7 +64,7 @@ run_weekly.py
 ```
 
 Current operating rule:
-- `collect.auto_ingest: true` — collect ghi `raw/articles/` VÀ auto-ingest vào `personal-wiki/`.
+- `collect.auto_ingest: false` — collect ghi `raw/articles/`; wiki ingest đi qua `run_wiki.py audit-research`.
 - **All LLM calls dùng Claude CLI** (`claude.cmd -p`) qua subprocess stdin — không cần API key:
   - `goal_align_filter()` — score + Vietnamese relevance note (batch 20)
   - `daily_synthesis()` — daily brief JSON
@@ -156,7 +156,7 @@ opus-consilium/
 ├── run_weekly.py        ← Weekly Synthesizer: 7-day articles → Claude → logs/weekly/
 ├── run_dashboard.py     ← Opus Home: FastAPI server (localhost:8765)
 ├── run_radar.py         ← Research Radar: GitHub + arXiv → wiki → Telegram
-├── config.yaml          ← sources config (auto_ingest: true)
+├── config.yaml          ← sources config (auto_ingest: false; audit-gated)
 ├── crews/               ← ResearchCrew (Module A)
 ├── tools/               ← rss, search, yfinance, telegraph, wiki, markitdown, research_radar_tool
 ├── wiki_ops/            ← ingest, query, lint, telegram_handler
@@ -202,7 +202,7 @@ opus-consilium/
 ### Content Collector — Auto Writer ✅ Running
 **Vai trò:** AUTO-WRITER. Batch RSS → raw/articles/ → Claude synthesis → wiki (daily 05:30).
 - `daily_synthesis()` gọi Claude CLI → `logs/intel_reviews/YYYY-MM-DD.json`
-- `auto_ingest: true` — wiki ingest chạy tự động sau mỗi collect
+- `auto_ingest: false` — wiki ingest được gate bằng `run_wiki.py audit-research`
 - Telegram: reading list notification, nội dung đầy đủ xem trên Opus Home
 
 ### Weekly Synthesizer — Auto Writer ✅ Running

@@ -1,4 +1,5 @@
 ---
+status: needs-review
 title: "GitHub AI Tools and Features"
 topic: AI
 tags: [github, ai, tools, features]
@@ -6,7 +7,7 @@ sources: ["2026-04-28-bmad-method.md"]
 related: ["[[github-ai-tools]]", "[[github-ai-and-ml]]"]
 confidence: medium
 created: 2026-04-28
-updated: 2026-04-28
+updated: 2026-05-30
 ---
 
 ## Summary

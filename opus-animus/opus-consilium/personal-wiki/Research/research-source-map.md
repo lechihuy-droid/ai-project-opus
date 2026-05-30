@@ -6,11 +6,11 @@ tags: [research, sources, collector, intel, raw-articles, opus-home]
 status: evergreen
 confidence: medium
 sources: ["config.yaml:collect_sources", "run_collect.py", "tools/collect_tool.py", "api/intel.py", "run_weekly.py"]
-related: ["[[intel-to-wiki-promotion]]", "[[ai-trend-radar]]", "[[competitor-business-model-radar]]", "[[fde-adoption-radar]]", "[[investment-theses]]"]
-applied: ["2026-05-19 - Created after auditing research sources and Intel/wiki sync.", "2026-05-23 - Added CEO Business Model Research as a parallel channel to Tech Learning Research."]
+related: ["[[intel-to-wiki-promotion]]", "[[research-audit-queue]]", "[[chat-to-wiki-classification-skill]]", "[[ai-trend-radar]]", "[[competitor-business-model-radar]]", "[[fde-adoption-radar]]", "[[investment-theses]]"]
+applied: ["2026-05-19 - Created after auditing research sources and Intel/wiki sync.", "2026-05-23 - Added CEO Business Model Research as a parallel channel to Tech Learning Research.", "2026-05-30 - Added Competitor Intelligence as the third research lane and gated raw-to-wiki through audit."]
 open_questions: ["Which source families should trigger automatic wiki promotion?", "Which sources are too noisy and should only remain raw evidence?", "Which CEO/business sources should be added for Japan SIer, offshore, pricing, and enterprise budget signals?"]
 created: 2026-05-19
-updated: 2026-05-23
+updated: 2026-05-31
 ---
 
 # Research Source Map
@@ -18,22 +18,23 @@ updated: 2026-05-23
 ## Summary
 This page maps the research inputs that feed Opus Home Intel and Consilium. It separates raw source collection from durable wiki knowledge.
 
-Consilium research now has two parallel channels:
+Consilium research now has three parallel lanes:
 - **Tech Learning Research**: helps Huy learn tools, skills, AI workflows, and agent governance.
 - **CEO Business Model Research**: helps Huy think like a tech-firm CEO: customer budget, competitor business model, offer/pricing, enterprise adoption, vertical opportunity, talent/operating model, and strategic risk.
+- **Competitor Intelligence Research**: tracks concrete moves by SIers, consulting firms, platform vendors, and AI-SDLC competitors.
 
 ## Key Points
 - `raw/articles/` is the durable event log for collected sources.
 - `api/intel.py` enriches and ranks collected sources for Opus Home; it is not the long-term knowledge layer.
 - `logs/intel_reviews/`, `logs/weekly/`, and `logs/business_briefs/` store synthesized reports, but those reports are not automatically durable wiki pages.
 - `personal-wiki/` is the decision brain. Important Intel signals must be promoted into hub pages.
-- Current config has `collect.auto_ingest: true`, so raw articles can become seed pages automatically; this still does not replace hub-page synthesis.
-- Tech Learning Research and CEO Business Model Research should be separated in daily briefs to avoid over-weighting technical news.
+- Current config has `collect.auto_ingest: false`, so raw articles should pass the three-lane audit before becoming wiki pages.
+- Tech Learning Research, CEO Business Model Research, and Competitor Intelligence Research should stay separated so technical news does not crowd out business or competitor evidence.
 
 ## Why It Matters
 Without a source map, Consilium mixes four different things: raw evidence, dashboard review, synthesized reports, and durable wiki conclusions. This page keeps them distinct.
 
-Huy already has enough technology-learning coverage. The next research gap is CEO-level business model sensing: what customers buy, what competitors sell, how AI changes pricing, where enterprise adoption is blocked, which verticals are opening, how delivery teams should be redesigned, and what risks delay purchasing.
+Huy already has enough technology-learning coverage. The next research gaps are CEO-level business model sensing and competitor evidence: what customers buy, what competitors sell, how AI changes pricing, where enterprise adoption is blocked, which verticals are opening, how delivery teams should be redesigned, which competitors have proof points, and what risks delay purchasing.
 
 ## Details
 
@@ -43,6 +44,7 @@ Huy already has enough technology-learning coverage. The next research gap is CE
 |---|---|---|---|
 | Tech Learning Research | Learn skills, tools, workflow patterns, and AI-native operations | What should Huy learn, test, or improve? | [[ai-trend-radar]], [[reskill-roadmap]], [[fde-adoption-radar]] |
 | CEO Business Model Research | Support business strategy, offer design, competitor understanding, and investment/business thesis formation | If Huy were CEO of a tech firm, what should change in strategy, offer, market focus, or operating model? | [[competitor-business-model-radar]], [[fde-adoption-radar]], [[fde-japan-gap-analysis]], [[fde-model]], [[investment-theses]], [[open-questions]] |
+| Competitor Intelligence Research | Track concrete competitor moves, positioning, partnerships, proof points, and delivery models | Which competitor move changes Huy's strategy, offer, or FDE-lite benchmark? | [[competitor-business-model-radar]], [[fde-adoption-radar]], [[fde-japan-gap-analysis]], [[investment-theses]] |
 
 ### CEO Business Model Research categories
 
@@ -103,9 +105,12 @@ For daily use, keep Tech Learning Research and CEO Business Model Research as se
 ## Applied
 - 2026-05-19 - Audited collector, Intel API, weekly reports, and current raw/log storage.
 - 2026-05-23 - Added CEO Business Model Research channel and seven CEO research categories.
+- 2026-05-30 - Added Competitor Intelligence Research as the third lane and made audit the default raw-to-wiki gate.
 
 ## See Also
 - [[intel-to-wiki-promotion]]
+- [[research-audit-queue]]
+- [[chat-to-wiki-classification-skill]]
 - [[ai-trend-radar]]
 - [[competitor-business-model-radar]]
 - [[fde-adoption-radar]]
