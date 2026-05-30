@@ -42,6 +42,48 @@
       "total_saturated_fat": 2.9,
       "total_sodium_mg": 750,
       "total_alcohol": 0
+    },
+    {
+      "time": "19:00",
+      "name": "Tối",
+      "source": "photo",
+      "items": [
+        {
+          "name": "Baby Star snack (1 gói)",
+          "grams": 56,
+          "kcal": 288,
+          "protein": 6.3,
+          "carb": 32.0,
+          "fat": 15.3,
+          "sugar": 5.0,
+          "fiber": 1.0,
+          "saturated_fat": 7.0,
+          "sodium_mg": 437,
+          "alcohol": 0
+        },
+        {
+          "name": "Xúc xích (nguyên gói)",
+          "grams": 285,
+          "kcal": 812,
+          "protein": 36.2,
+          "carb": 15.1,
+          "fat": 67.5,
+          "sugar": 3.0,
+          "fiber": 0.0,
+          "saturated_fat": 28.0,
+          "sodium_mg": 2581,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 1100,
+      "total_protein": 42.5,
+      "total_carb": 47.1,
+      "total_fat": 82.8,
+      "total_sugar": 8.0,
+      "total_fiber": 1.0,
+      "total_saturated_fat": 35.0,
+      "total_sodium_mg": 3018,
+      "total_alcohol": 0
     }
   ],
   "water_ml": 0,
