@@ -1,0 +1,1 @@
+{ "action": "add_task", "title": "Test Nexus command pipeline", "due": "2026-06-01", "notes": "Verify GitHub Actions → Google Tasks flow" }

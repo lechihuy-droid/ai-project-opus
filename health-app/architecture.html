@@ -3,306 +3,361 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>System Architecture</title>
+<title>Opus Nexus — System Architecture</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0F172A; color: #E2E8F0; min-height: 100vh; padding: 32px 16px; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0F172A; color: #E2E8F0; min-height: 100vh; padding: 32px 16px 48px; }
 h1 { text-align: center; font-size: 20px; font-weight: 800; letter-spacing: .5px; margin-bottom: 4px; color: #F8FAFC; }
 .sub { text-align: center; font-size: 12px; color: #64748B; margin-bottom: 36px; }
 
-.arch { max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 0; }
+.wrap { max-width: 740px; margin: 0 auto; }
 
-/* Layer */
-.layer { display: flex; align-items: stretch; margin-bottom: 0; }
-.layer-label {
-  writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
-  font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;
-  color: #475569; padding: 0 10px; display: flex; align-items: center; justify-content: center;
-  min-width: 28px;
+/* Section heading */
+.sec-head {
+  font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;
+  color: #475569; margin: 28px 0 10px;
 }
-.layer-body { flex: 1; padding: 14px 0 14px 12px; }
 
-/* Connector arrow */
-.arrow { display: flex; align-items: center; justify-content: center; height: 32px; }
-.arrow-line {
-  width: 2px; height: 100%; background: linear-gradient(to bottom, #334155, #1E293B);
-  position: relative; margin: 0 auto;
+/* Flow row */
+.flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin-bottom: 6px; }
+.flow-step {
+  background: #1E293B; border: 1px solid #334155; border-radius: 8px;
+  padding: 7px 11px; font-size: 10px; color: #CBD5E1; text-align: center;
+  flex: 1; min-width: 90px;
 }
-.arrow svg { display: block; }
+.flow-step.hi { border-color: #3B82F6; background: #172554; color: #BFDBFE; }
+.flow-step.green { border-color: #10B981; background: #022C22; color: #6EE7B7; }
+.flow-step.purple { border-color: #7C3AED; background: #1E1B4B; color: #DDD6FE; }
+.flow-step.orange { border-color: #F59E0B; background: #1C1000; color: #FDE68A; }
+.flow-arrow { color: #475569; font-size: 13px; padding: 0 5px; flex-shrink: 0; }
 
 /* Cards grid */
 .cards { display: flex; flex-wrap: wrap; gap: 8px; }
 .card {
   background: #1E293B; border: 1px solid #334155; border-radius: 10px;
-  padding: 11px 13px; flex: 1; min-width: 130px;
+  padding: 12px 14px; flex: 1; min-width: 150px;
 }
 .card.wide { min-width: 100%; }
-.card-icon { font-size: 20px; margin-bottom: 6px; }
+.card.blue  { border-color: #1D4ED8; background: #172554; }
+.card.green { border-color: #065F46; background: #022C22; }
+.card.purple{ border-color: #5B21B6; background: #1E1B4B; }
+.card.orange{ border-color: #9A3412; background: #1C0A00; }
+.card.teal  { border-color: #0E7490; background: #042F2E; }
+.card-icon { font-size: 18px; margin-bottom: 5px; }
 .card-title { font-size: 12px; font-weight: 700; color: #F1F5F9; margin-bottom: 3px; }
-.card-desc { font-size: 10px; color: #64748B; line-height: 1.5; }
+.card-title.blue   { color: #BFDBFE; }
+.card-title.green  { color: #A7F3D0; }
+.card-title.purple { color: #DDD6FE; }
+.card-title.orange { color: #FED7AA; }
+.card-title.teal   { color: #A5F3FC; }
+.card-desc { font-size: 10px; color: #64748B; line-height: 1.6; }
 .tag { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; margin-top: 5px; margin-right: 3px; }
 
-/* Layer colors */
-.l-input  .layer-label { color: #60A5FA; }
-.l-input  .card { border-color: #1D4ED8; background: #172554; }
-.l-input  .card-title { color: #BFDBFE; }
-
-.l-ai     .layer-label { color: #A78BFA; }
-.l-ai     .card { border-color: #5B21B6; background: #1E1B4B; }
-.l-ai     .card-title { color: #DDD6FE; }
-
-.l-store  .layer-label { color: #34D399; }
-.l-store  .card { border-color: #065F46; background: #022C22; }
-.l-store  .card-title { color: #A7F3D0; }
-
-.l-view   .layer-label { color: #FB923C; }
-.l-view   .card { border-color: #9A3412; background: #1C0A00; }
-.l-view   .card-title { color: #FED7AA; }
-
-.l-config .layer-label { color: #94A3B8; }
-.l-config .card { border-color: #334155; background: #1E293B; }
-
-/* Arrow between layers */
-.connector {
-  display: flex; align-items: center; justify-content: center;
-  padding: 4px 0 4px 40px; gap: 8px;
-}
-.conn-line { flex: 0 0 2px; height: 24px; background: #334155; }
-.conn-label { font-size: 10px; color: #475569; }
-
+/* Arrow down */
 .arrow-down {
-  display: flex; flex-direction: column; align-items: center;
-  padding-left: 40px; margin: 2px 0;
+  display: flex; flex-direction: column; align-items: flex-start; padding-left: 20px;
+  margin: 4px 0;
 }
-.ad-line { width: 1.5px; height: 20px; background: #334155; }
+.arrow-down.center { align-items: center; padding-left: 0; }
+.ad-line { width: 1.5px; height: 18px; background: #334155; }
 .ad-tip { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid #334155; }
 .ad-label { font-size: 9px; color: #475569; margin-top: 3px; }
 
+/* Divider */
+.divider { border: none; border-top: 1px solid #1E293B; margin: 28px 0; }
+
 /* File tree */
-.filetree { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 10px; line-height: 1.8; color: #94A3B8; }
+.filetree { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 10px; line-height: 1.9; color: #94A3B8; }
 .filetree .dir  { color: #60A5FA; }
-.filetree .file { color: #94A3B8; }
+.filetree .new  { color: #34D399; }
 .filetree .note { color: #475569; }
 
-/* Flow section */
-.flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin-top: 8px; }
-.flow-step { background: #0F172A; border: 1px solid #334155; border-radius: 8px; padding: 7px 10px; font-size: 10px; color: #CBD5E1; text-align: center; flex: 1; min-width: 80px; }
-.flow-arrow { color: #334155; font-size: 14px; padding: 0 4px; flex-shrink: 0; }
+/* Badge */
+.badge { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+.badge.done   { background: #022C22; color: #34D399; }
+.badge.defer  { background: #1E1B4B; color: #7C3AED; }
+.badge.new-f  { background: #172554; color: #60A5FA; }
 
-/* Legend */
-.legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; max-width: 700px; margin-left: auto; margin-right: auto; }
-.legend-item { display: flex; align-items: center; gap: 6px; font-size: 10px; color: #64748B; }
-.legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+/* Two column */
+.two-col { display: flex; gap: 8px; flex-wrap: wrap; }
+.two-col > * { flex: 1; min-width: 240px; }
+
+/* Feature table */
+table { width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 6px; }
+th { background: #1E293B; color: #94A3B8; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; font-size: 9px; padding: 7px 10px; text-align: left; }
+td { padding: 7px 10px; border-top: 1px solid #1E293B; color: #CBD5E1; vertical-align: top; }
+tr:hover td { background: #1A2333; }
 </style>
 </head>
 <body>
 
-<h1>🌿 Health Management — System Architecture</h1>
-<div class="sub">Claude Code Web · GitHub · GitHub Pages</div>
+<div class="wrap">
 
-<div class="arch">
+<h1>🌐 Opus Nexus — System Architecture</h1>
+<div class="sub">health-app/dashboard.html · lechihuy-droid/ai-project-opus · 2026-05-30</div>
 
-  <!-- INPUT LAYER -->
-  <div class="layer l-input">
-    <div class="layer-label">Input</div>
-    <div class="layer-body">
-      <div class="cards">
-        <div class="card">
-          <div class="card-icon">📸</div>
-          <div class="card-title">Ảnh bữa ăn</div>
-          <div class="card-desc">Upload photo vào Claude Code chat · AI nhận diện món, ước tính gram</div>
-          <span class="tag" style="background:#1D4ED8;color:#BFDBFE">photo</span>
-        </div>
-        <div class="card">
-          <div class="card-icon">🧾</div>
-          <div class="card-title">Hóa đơn / Receipt</div>
-          <div class="card-desc">Scan hóa đơn nhà hàng, siêu thị · Đọc tên món + tổng tiền</div>
-          <span class="tag" style="background:#1D4ED8;color:#BFDBFE">receipt</span>
-          <span class="tag" style="background:#1D4ED8;color:#BFDBFE">bill</span>
-        </div>
-        <div class="card">
-          <div class="card-icon">⌨️</div>
-          <div class="card-title">Text thủ công</div>
-          <div class="card-desc">Nhập bước chân, nước uống, cân nặng, giấc ngủ, tài chính, workout</div>
-          <span class="tag" style="background:#1D4ED8;color:#BFDBFE">text</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- arrow -->
-  <div class="arrow-down">
-    <div class="ad-line"></div><div class="ad-tip"></div>
-    <div class="ad-label">Claude Code Web (claude.ai/code)</div>
-  </div>
-
-  <!-- AI LAYER -->
-  <div class="layer l-ai">
-    <div class="layer-label">AI</div>
-    <div class="layer-body">
-      <div class="cards">
-        <div class="card">
-          <div class="card-icon">🤖</div>
-          <div class="card-title">Claude Sonnet</div>
-          <div class="card-desc">Phân tích ảnh · Extract dinh dưỡng · Auto-categorize tài chính · Parse workout</div>
-        </div>
-        <div class="card">
-          <div class="card-icon">📋</div>
-          <div class="card-title">instructions.md</div>
-          <div class="card-desc">System prompt trong repo · Claude đọc qua <code style="font-size:9px;color:#A78BFA">/health</code> command · Chứa schema, rules, mục tiêu cá nhân</div>
-        </div>
-        <div class="card wide">
-          <div class="card-title" style="margin-bottom:6px">Logging flow</div>
-          <div class="flow">
-            <div class="flow-step">Nhận ảnh / text</div>
-            <div class="flow-arrow">→</div>
-            <div class="flow-step">Extract dữ liệu</div>
-            <div class="flow-arrow">→</div>
-            <div class="flow-step">Merge vào JSON</div>
-            <div class="flow-arrow">→</div>
-            <div class="flow-step">git commit + push</div>
-            <div class="flow-arrow">→</div>
-            <div class="flow-step">Reply confirm</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- arrow -->
-  <div class="arrow-down">
-    <div class="ad-line"></div><div class="ad-tip"></div>
-    <div class="ad-label">git push (MCP GitHub tools)</div>
-  </div>
-
-  <!-- STORAGE LAYER -->
-  <div class="layer l-store">
-    <div class="layer-label">Storage</div>
-    <div class="layer-body">
-      <div class="cards">
-        <div class="card">
-          <div class="card-icon">🗄️</div>
-          <div class="card-title">GitHub Repository</div>
-          <div class="card-desc">lechihuy-droid/ai-project-opus · branch: main · Public repo</div>
-          <br>
-          <div class="filetree">
-            <div><span class="dir">health-data/</span></div>
-            <div>&nbsp;&nbsp;<span class="file">index.json</span> <span class="note">← manifest</span></div>
-            <div>&nbsp;&nbsp;<span class="file">2026-05-27.json</span></div>
-            <div>&nbsp;&nbsp;<span class="file">YYYY-MM-DD.json</span></div>
-            <div><span class="dir">workout-data/</span></div>
-            <div>&nbsp;&nbsp;<span class="file">index.json</span></div>
-            <div><span class="dir">finance-data/</span></div>
-            <div>&nbsp;&nbsp;<span class="file">index.json</span></div>
-            <div><span class="dir">health-app/</span></div>
-            <div>&nbsp;&nbsp;<span class="file">dashboard.html</span></div>
-            <div>&nbsp;&nbsp;<span class="file">instructions.md</span></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-icon">📄</div>
-          <div class="card-title">JSON Schema / ngày</div>
-          <div class="card-desc" style="font-family:monospace;font-size:9px;line-height:1.8;color:#6EE7B7">
-            health: meals[] + water + steps + sleep + weight<br>
-            workout: sessions[] + exercises[] + sets[]<br>
-            finance: transactions[] + type + amount + category
-          </div>
-          <div style="margin-top:8px">
-            <span class="tag" style="background:#065F46;color:#A7F3D0">🌿 Sức khỏe</span>
-            <span class="tag" style="background:#065F46;color:#A7F3D0">💪 Workout</span>
-            <span class="tag" style="background:#065F46;color:#A7F3D0">💰 Finance</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- arrow -->
-  <div class="arrow-down">
-    <div class="ad-line"></div><div class="ad-tip"></div>
-    <div class="ad-label">raw.githubusercontent.com (no auth)</div>
-  </div>
-
-  <!-- VIEW LAYER -->
-  <div class="layer l-view">
-    <div class="layer-label">View</div>
-    <div class="layer-body">
-      <div class="cards">
-        <div class="card">
-          <div class="card-icon">📱</div>
-          <div class="card-title">dashboard.html</div>
-          <div class="card-desc">GitHub Pages · Bookmark trên iPhone · Fetch JSON trực tiếp · Không cần PAT</div>
-          <br>
-          <div style="display:flex;gap:6px;margin-top:4px">
-            <div style="flex:1;background:#0F172A;border-radius:6px;padding:7px;text-align:center;font-size:10px;color:#FED7AA;border:1px solid #9A3412">🌿<br>Sức khỏe</div>
-            <div style="flex:1;background:#0F172A;border-radius:6px;padding:7px;text-align:center;font-size:10px;color:#FED7AA;border:1px solid #9A3412">💪<br>Tập luyện</div>
-            <div style="flex:1;background:#0F172A;border-radius:6px;padding:7px;text-align:center;font-size:10px;color:#FED7AA;border:1px solid #9A3412">💰<br>Tài chính</div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-icon">📊</div>
-          <div class="card-title">Features</div>
-          <div class="card-desc">
-            · Calorie + macro charts<br>
-            · Cân nặng / ngủ / bước chân trend<br>
-            · Workout session history<br>
-            · Finance budget bars<br>
-            · Range: 7 / 14 / 30 / 90 ngày<br>
-            · Canvas charts (no CDN)
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CONFIG LAYER -->
-  <div style="margin-top:24px">
-    <div style="font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-left:40px">Configuration</div>
-    <div class="layer l-config">
-      <div class="layer-label">Config</div>
-      <div class="layer-body">
-        <div class="cards">
-          <div class="card">
-            <div class="card-icon">⚡</div>
-            <div class="card-title">.claude/commands/health.md</div>
-            <div class="card-desc">Slash command <code style="font-size:9px;color:#94A3B8">/health</code> · Bootstrap assistant · Đọc instructions.md lúc start session</div>
-          </div>
-          <div class="card">
-            <div class="card-icon">🎯</div>
-            <div class="card-title">Mục tiêu cá nhân</div>
-            <div class="card-desc">Calo: 2000 kcal · Protein: 110g · Nước: 2000ml · Bước: 8000 · Ngủ: 7.5h · Cân: 66kg</div>
-          </div>
-          <div class="card">
-            <div class="card-icon">💡</div>
-            <div class="card-title">AI auto-advice</div>
-            <div class="card-desc">Sau mỗi log: nhận xét 1-2 câu về protein/carb/calo · On-demand: phân tích xu hướng nhiều ngày</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
+<!-- ─── FLOW A: Health Logging ─── -->
+<div class="sec-head">Data Flow A — Health Logging</div>
+<div class="flow">
+  <div class="flow-step hi">📱 iPhone<br><span style="color:#475569;font-size:9px">photo / text</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step purple">🤖 Claude Code Web<br><span style="color:#475569;font-size:9px">claude.ai/code</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step green">🗄️ GitHub<br><span style="color:#475569;font-size:9px">health-data/ push</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step orange">📊 Nexus App<br><span style="color:#475569;font-size:9px">Vita view</span></div>
 </div>
 
-<!-- Data flow summary -->
-<div style="max-width:700px;margin:28px auto 0;background:#1E293B;border:1px solid #334155;border-radius:12px;padding:16px 20px">
-  <div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Data Flow</div>
-  <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:11px">
-    <span style="background:#172554;color:#93C5FD;padding:4px 10px;border-radius:6px">📱 iPhone</span>
-    <span style="color:#334155">──upload──▶</span>
-    <span style="background:#1E1B4B;color:#C4B5FD;padding:4px 10px;border-radius:6px">🤖 Claude Code Web</span>
-    <span style="color:#334155">──push──▶</span>
-    <span style="background:#022C22;color:#6EE7B7;padding:4px 10px;border-radius:6px">🗄️ GitHub main</span>
-    <span style="color:#334155">──Pages──▶</span>
-    <span style="background:#1C0A00;color:#FCA06A;padding:4px 10px;border-radius:6px">📊 Dashboard</span>
-    <span style="color:#334155">──fetch──▶</span>
-    <span style="background:#172554;color:#93C5FD;padding:4px 10px;border-radius:6px">📱 iPhone view</span>
+<!-- ─── FLOW B: Command Pipeline ─── -->
+<div class="sec-head">Data Flow B — Nexus Command Pipeline</div>
+<div class="flow">
+  <div class="flow-step hi">📱 iPhone<br><span style="color:#475569;font-size:9px">natural language</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step purple">🤖 ChatGPT / Claude<br><span style="color:#475569;font-size:9px">mobile LLM app</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step green">📄 nexus-commands/<br><span style="color:#475569;font-size:9px">JSON commit to main</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step" style="border-color:#F59E0B;background:#1C1000;color:#FDE68A;">⚡ GitHub Actions<br><span style="color:#475569;font-size:9px">nexus-command.yml</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step teal" style="border-color:#0E7490;background:#042F2E;color:#A5F3FC;">🗓️ Google Calendar<br>✅ Google Tasks</div>
+</div>
+
+<!-- ─── FLOW C: In-app Calendar ─── -->
+<div class="sec-head">Data Flow C — In-App Calendar / Tasks (Browser OAuth)</div>
+<div class="flow">
+  <div class="flow-step orange">📊 Nexus App<br><span style="color:#475569;font-size:9px">dashboard.html</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step purple">🔐 Google OAuth<br><span style="color:#475569;font-size:9px">GIS browser flow</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step teal" style="border-color:#0E7490;background:#042F2E;color:#A5F3FC;">🗓️ Calendar + Tasks<br><span style="color:#475569;font-size:9px">read + write</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step orange">📋 Proposals<br><span style="color:#475569;font-size:9px">validate → approve</span></div>
+</div>
+
+<hr class="divider">
+
+<!-- ─── STORAGE ─── -->
+<div class="sec-head">GitHub Repository Structure</div>
+<div class="two-col">
+  <div class="card green">
+    <div class="card-icon">🗄️</div>
+    <div class="card-title green">lechihuy-droid/ai-project-opus</div>
+    <div class="card-desc" style="margin-top:8px">
+      <div class="filetree">
+        <div><span class="dir">health-data/</span> <span class="note">daily logs</span></div>
+        <div><span class="dir">workout-data/</span></div>
+        <div><span class="dir">finance-data/</span></div>
+        <div><span class="new">nexus-commands/</span> <span class="note">← command queue</span></div>
+        <div>&nbsp;&nbsp;<span class="new">processed/</span> <span class="note">archived</span></div>
+        <div><span class="dir">health-app/</span></div>
+        <div>&nbsp;&nbsp;<span class="dir">dashboard.html</span> <span class="note">← Nexus app</span></div>
+        <div>&nbsp;&nbsp;<span class="dir">instructions.md</span></div>
+        <div><span class="new">scripts/</span></div>
+        <div>&nbsp;&nbsp;<span class="new">exec-command.js</span></div>
+        <div>&nbsp;&nbsp;<span class="new">get-refresh-token.js</span></div>
+        <div><span class="dir">.github/workflows/</span></div>
+        <div>&nbsp;&nbsp;<span class="new">nexus-command.yml</span></div>
+        <div>&nbsp;&nbsp;<span class="dir">sync-dashboard.yml</span></div>
+      </div>
+    </div>
+    <div style="margin-top:8px;font-size:9px;color:#475569"><span style="color:#34D399">green</span> = added in this build</div>
+  </div>
+
+  <div class="card" style="border-color:#334155;">
+    <div class="card-icon">📄</div>
+    <div class="card-title">Data Schemas</div>
+    <div class="card-desc" style="font-family:monospace;font-size:9px;line-height:1.9;color:#94A3B8;margin-top:6px">
+      <b style="color:#60A5FA">health-data/YYYY-MM-DD.json</b><br>
+      meals[] · water_ml · steps · sleep_hours · weight_kg<br><br>
+      <b style="color:#60A5FA">workout-data/YYYY-MM-DD.json</b><br>
+      sessions[] · exercises[] · sets[]<br><br>
+      <b style="color:#34D399">nexus-commands/&lt;ts&gt;.json</b><br>
+      action: add_event | add_task<br>
+      add_event: title · start · end · type<br>
+      add_task: title · due · notes
+    </div>
   </div>
 </div>
 
-<div style="text-align:center;margin-top:24px;font-size:11px;color:#334155">
-  Claude Code Web · lechihuy-droid/ai-project-opus · 2026
+<hr class="divider">
+
+<!-- ─── RUNTIME ─── -->
+<div class="sec-head">Runtime Connections (not stored in GitHub)</div>
+<div class="cards">
+  <div class="card teal" style="border-color:#0E7490;background:#042F2E;">
+    <div class="card-icon">🗓️</div>
+    <div class="card-title teal">Google Calendar API</div>
+    <div class="card-desc">
+      Browser: <code style="color:#A5F3FC;font-size:9px">calendar.readonly</code> (read context)<br>
+      Browser: <code style="color:#A5F3FC;font-size:9px">calendar.events</code> (write approved)<br>
+      Pipeline: service-to-service via refresh token<br>
+      All Nexus events tagged <code style="color:#A5F3FC;font-size:9px">source='opus-nexus'</code>
+    </div>
+  </div>
+  <div class="card teal" style="border-color:#0E7490;background:#042F2E;">
+    <div class="card-icon">✅</div>
+    <div class="card-title teal">Google Tasks API</div>
+    <div class="card-desc">
+      Browser: <code style="color:#A5F3FC;font-size:9px">tasks</code> scope (read + write)<br>
+      Pipeline: server-side via refresh token<br>
+      Tasklist: <code style="color:#A5F3FC;font-size:9px">@default</code>
+    </div>
+  </div>
+  <div class="card blue">
+    <div class="card-icon">🔐</div>
+    <div class="card-title blue">GitHub Secrets</div>
+    <div class="card-desc">
+      <code style="color:#93C5FD;font-size:9px">GOOGLE_CLIENT_ID</code><br>
+      <code style="color:#93C5FD;font-size:9px">GOOGLE_CLIENT_SECRET</code><br>
+      <code style="color:#93C5FD;font-size:9px">GOOGLE_REFRESH_TOKEN</code><br>
+      Used only by <code style="color:#93C5FD;font-size:9px">nexus-command.yml</code>
+    </div>
+  </div>
+  <div class="card" style="border-color:#334155;">
+    <div class="card-icon">💾</div>
+    <div class="card-title">localStorage (browser)</div>
+    <div class="card-desc">
+      <code style="font-size:9px;color:#94A3B8">ov_pat</code> — GitHub PAT for Vita data fetch<br>
+      OAuth token: <b>in-memory only</b>, never persisted
+    </div>
+  </div>
 </div>
 
+<hr class="divider">
+
+<!-- ─── NEXUS APP FEATURES ─── -->
+<div class="sec-head">Nexus App — dashboard.html</div>
+<div class="cards">
+  <div class="card orange wide">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <div style="background:#0F172A;border:1px solid #9A3412;border-radius:6px;padding:8px 12px;font-size:10px;color:#FED7AA;text-align:center;flex:1;min-width:70px">Today</div>
+      <div style="background:#0F172A;border:1px solid #334155;border-radius:6px;padding:8px 12px;font-size:10px;color:#94A3B8;text-align:center;flex:1;min-width:70px">Vita</div>
+      <div style="background:#0F172A;border:1px solid #334155;border-radius:6px;padding:8px 12px;font-size:10px;color:#94A3B8;text-align:center;flex:1;min-width:70px">Calendar</div>
+      <div style="background:#0F172A;border:1px solid #334155;border-radius:6px;padding:8px 12px;font-size:10px;color:#94A3B8;text-align:center;flex:1;min-width:70px">Actions</div>
+    </div>
+    <table>
+      <tr><th>View</th><th>Features</th><th>Status</th></tr>
+      <tr>
+        <td><b>Today</b></td>
+        <td>Vita snapshot (kcal/protein/sleep/steps) · Calendar context · Task context (open/overdue)</td>
+        <td><span class="badge done">✅ Shipped</span></td>
+      </tr>
+      <tr>
+        <td><b>Vita</b></td>
+        <td>Health · Workout · Finance tabs · Range 7/14/30/90d · Insight cards · Trends</td>
+        <td><span class="badge done">✅ Shipped</span></td>
+      </tr>
+      <tr>
+        <td><b>Calendar</b></td>
+        <td>Connect button · 7-day events · Calendar Context card · ✨ Plan My Week</td>
+        <td><span class="badge done">✅ Shipped</span></td>
+      </tr>
+      <tr>
+        <td><b>Actions</b></td>
+        <td>Paste LLM JSON · Validate · Preview cards · Per-item ✓ Approve · Batch approve</td>
+        <td><span class="badge done">✅ Shipped</span></td>
+      </tr>
+      <tr>
+        <td><b>Plan My Week</b></td>
+        <td>summarizeHabits() · buildFreeSlotMap() · Generate LLM prompt · Reuse Actions pipeline</td>
+        <td><span class="badge done">✅ Shipped</span></td>
+      </tr>
+      <tr>
+        <td><b>Command Pipeline</b></td>
+        <td>nexus-commands/*.json → GitHub Actions → Google Calendar/Tasks (server-side)</td>
+        <td><span class="badge new-f">✨ Beyond plan</span></td>
+      </tr>
+      <tr>
+        <td><b>Daily Brief</b></td>
+        <td>Auto brief on open · today + health status + suggestions</td>
+        <td><span class="badge defer">⏸ Deferred</span></td>
+      </tr>
+      <tr>
+        <td><b>Consilium</b></td>
+        <td>Second brain integration · Decision notes</td>
+        <td><span class="badge defer">⏸ Deferred</span></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ─── PLAN MY WEEK INTERNALS ─── -->
+<div class="sec-head">Plan My Week — Context Building</div>
+<div class="flow">
+  <div class="flow-step green">📅 calEvents[]<br><span style="color:#475569;font-size:9px">7-day Calendar</span></div>
+  <div class="flow-arrow">+</div>
+  <div class="flow-step hi">🥗 cHealth[]<br><span style="color:#475569;font-size:9px">meal logs history</span></div>
+  <div class="flow-arrow">+</div>
+  <div class="flow-step hi">💪 cWorkout[]<br><span style="color:#475569;font-size:9px">workout history</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step purple">summarizeHabits()<br>buildFreeSlotMap()</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step orange">buildPlanPrompt()<br><span style="color:#475569;font-size:9px">copy to LLM</span></div>
+</div>
+<div style="font-size:10px;color:#475569;margin-top:8px;padding-left:4px">
+  Free slot map: per-day JST gaps ≥45 min, labeled Sáng (5-12h) / Chiều (12-18h) / Tối (18-23h)<br>
+  Habits: avgKcal, avgProtein, proteinHitRate, breakfastRate, lateDinnerRate, workout freq/timing/types
+</div>
+
+<hr class="divider">
+
+<!-- ─── COMMAND PIPELINE INTERNALS ─── -->
+<div class="sec-head">Nexus Command Pipeline — Execution Detail</div>
+<div class="cards">
+  <div class="card wide" style="border-color:#F59E0B;background:#1C1000;">
+    <div class="card-title orange" style="color:#FDE68A;margin-bottom:8px">nexus-command.yml → exec-command.js</div>
+    <div class="flow" style="margin-bottom:0">
+      <div class="flow-step" style="font-size:9px;padding:6px 8px">Push detected<br><code style="color:#6EE7B7">nexus-commands/*.json</code></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="font-size:9px;padding:6px 8px">git diff HEAD~1<br>detect new files</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="font-size:9px;padding:6px 8px">exec-command.js<br>validate + call API</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="font-size:9px;padding:6px 8px">archive to<br>processed/</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="font-size:9px;padding:6px 8px">git commit<br>"nexus: archive…"</div>
+    </div>
+    <div style="margin-top:10px;font-size:9px;color:#475569;line-height:1.8">
+      Validation: required fields · start&lt;end · duration ≤3h · type allowed · due YYYY-MM-DD<br>
+      Secrets: GOOGLE_CLIENT_ID · GOOGLE_CLIENT_SECRET · GOOGLE_REFRESH_TOKEN<br>
+      No npm deps — Node 18+ native fetch · Single file or array per JSON file supported
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ─── CONFIG ─── -->
+<div class="sec-head">Configuration</div>
+<div class="cards">
+  <div class="card">
+    <div class="card-icon">📋</div>
+    <div class="card-title">instructions.md</div>
+    <div class="card-desc">System prompt for Claude health logging sessions · Schema + personal targets · Slash command <code style="font-size:9px">/health</code></div>
+  </div>
+  <div class="card">
+    <div class="card-icon">📘</div>
+    <div class="card-title">nexus-commands/README.md</div>
+    <div class="card-desc">LLM system prompt for command pipeline · Full schema + examples · Used by ChatGPT/Claude mobile</div>
+  </div>
+  <div class="card">
+    <div class="card-icon">🎯</div>
+    <div class="card-title">Personal Targets (CONFIG)</div>
+    <div class="card-desc">kcal: 2000 · protein: 110g · water: 2000ml · steps: 8000 · sleep: 7.5h · weight: 66kg</div>
+  </div>
+  <div class="card">
+    <div class="card-icon">🔐</div>
+    <div class="card-title">OAuth (dashboard)</div>
+    <div class="card-desc">Google Identity Services browser flow · Scopes: calendar.readonly + calendar.events + tasks · clientId in CONFIG constant</div>
+  </div>
+</div>
+
+<div style="text-align:center;margin-top:36px;font-size:10px;color:#334155">
+  Opus Nexus · lechihuy-droid/ai-project-opus · 2026-05-30
+</div>
+
+</div>
 </body>
 </html>

@@ -21,7 +21,7 @@ open_questions:
   - "Which SIer AI model is durable versus marketing narrative?"
   - "Which competitor signals should become weekly tracking items?"
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-31
 ---
 
 # Competitor Business Model Radar
@@ -64,6 +64,21 @@ Train consultants on AI tools
 → sell AI transformation packages
 → scale by industry domain
 ```
+
+### AI-native enterprise functions become a services wedge
+The OpenAI + PwC finance-function signal strengthens the pattern that AI labs and consulting firms can enter enterprise budgets through named functions, not generic AI transformation. Finance is attractive because planning, forecasting, reporting, procurement, payments, treasury, tax, and close workflows already have measurable cycle time, auditability needs, and executive ownership.
+
+Business model pattern:
+
+```text
+Internal customer zero
+-> function-specific agent workflow
+-> consulting partner implementation
+-> repeatable enterprise package
+-> platform usage and managed transformation
+```
+
+For FDE-lite, this is a useful benchmark: start from one function with messy but measurable work, keep human gates, and sell workflow improvement before trying broad automation.
 
 ### Japanese SIers defend through legacy modernization
 Japanese SIers have an advantage in legacy systems, regulated industries, long-term enterprise accounts, and domain knowledge. AI is likely to be packaged as legacy modernization, documentation generation, migration support, and managed service improvement.
@@ -290,6 +305,7 @@ Use competitor signals to test whether Lucida should evolve from content-generat
 - 2026-05-19 - Created competitor business model radar as a separate lane from AI technology trend tracking.
 - 2026-05-19 - Added daily research signals to track for competitor business model monitoring.
 - 2026-05-19 - Linked outcome-based FDE as a commercial upgrade path from offshore man-month delivery.
+- 2026-05-31 - Added OpenAI + PwC AI-native finance as evidence for function-specific enterprise AI delivery packages.
 
 ## See Also
 - [[outcome-based-fde-model]]
@@ -307,3 +323,4 @@ Use competitor signals to test whether Lucida should evolve from content-generat
 - https://www.investopedia.com/microsoft-hitachi-form-multibillion-dollar-ai-partnership-8658022
 - https://www.wsj.com/articles/hitachi-google-cloud-sign-deal-to-bring-ai-to-businesses-5e900fd9
 - https://www.reuters.com/business/capgemini-exceeds-revenue-target-ai-bookings-grow-2026-02-13/
+- `D:\Google Drive\AI-Raw-Assets\opus-consilium\raw\articles\2026-05-19-openai-pwc-ai-native-finance-function.md`

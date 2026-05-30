@@ -3,14 +3,14 @@ title: "ATLAS: Agentic or Latent Visual Reasoning? One Word is Enough for Both"
 aliases: []
 topic: AI
 tags: [source-seed, hf-papers]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-05-17-atlas-agentic-or-latent-visual-reasoning-one-word-is-enough-for-both.md", "https://huggingface.co/papers/2605.15198"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # ATLAS: Agentic or Latent Visual Reasoning? One Word is Enough for Both

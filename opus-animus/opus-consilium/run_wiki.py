@@ -6,6 +6,7 @@ Usage:
   python run_wiki.py ingest --dry-run <url|file_path>
   python run_wiki.py query "<question>"
   python run_wiki.py lint
+  python run_wiki.py audit-research [--plan|--apply] [--limit N]
   python run_wiki.py poll          (called by Task Scheduler every 5 min)
   python run_wiki.py test          (M1 milestone check)
 """
@@ -84,6 +85,12 @@ def cmd_reflect():
     run_reflect(send_telegram=True)
 
 
+def cmd_audit_research(args: list[str]):
+    """Audit raw/wiki items against the three Consilium research lanes."""
+    from wiki_ops.research_audit import main as audit_main
+    audit_main(args or ["--plan"])
+
+
 def cmd_skill(args: list[str]):
     """Manage learned skills: list | show <slug> | add"""
     from wiki_ops.skill_manager import list_skills, get_skill, save_skill
@@ -138,7 +145,7 @@ def cmd_skill(args: list[str]):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: run_wiki.py test|ingest|query|lint|poll|reflect|skill [args]")
+        print("Usage: run_wiki.py test|ingest|query|lint|audit-research|poll|reflect|skill [args]")
         return
 
     cmd = sys.argv[1].lower()
@@ -171,6 +178,8 @@ def main():
         cmd_poll()
     elif cmd == "reflect":
         cmd_reflect()
+    elif cmd == "audit-research":
+        cmd_audit_research(sys.argv[2:])
     elif cmd == "skill":
         cmd_skill(sys.argv[2:])
     else:

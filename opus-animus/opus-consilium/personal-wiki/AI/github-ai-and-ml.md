@@ -1,4 +1,5 @@
 ---
+status: needs-review
 title: "GitHub AI and ML"
 topic: AI
 tags: [github, ai, ml]
@@ -6,7 +7,7 @@ sources: ["https://github.blog/ai-and-ml/"]
 related: ["[[llm-agents-2025]]", "[[github-ai-features-and-tools]]"]
 confidence: medium
 created: 2026-04-28
-updated: 2026-04-28
+updated: 2026-05-30
 ---
 
 ## Summary

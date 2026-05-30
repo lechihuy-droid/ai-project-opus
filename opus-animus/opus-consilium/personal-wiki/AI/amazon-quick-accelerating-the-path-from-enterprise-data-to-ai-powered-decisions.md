@@ -3,14 +3,14 @@ title: "Amazon Quick: Accelerating the path from enterprise data to AI-powered d
 aliases: []
 topic: AI
 tags: [source-seed, marketnews, aws-ml-blog]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-05-13-amazon-quick-accelerating-the-path-from-enterprise-data-to-ai-powered-decisions.md", "https://aws.amazon.com/blogs/machine-learning/amazon-quick-accelerating-the-path-from-enterprise-data-to-ai-powered-decisions/"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # Amazon Quick: Accelerating the path from enterprise data to AI-powered decisions

@@ -1,4 +1,5 @@
 ---
+status: needs-review
 title: "Visure Requirements ALM Platform"
 topic: Tech
 tags: ["requirements-alm-platform", "visure", "tech"]
@@ -6,7 +7,7 @@ sources: ["https://visuresolutions.com/tool-suite/requirements-alm-platform"]
 related: ["[[requirement-driven-development]]"]
 confidence: medium
 created: 2026-04-28
-updated: 2026-04-28
+updated: 2026-05-30
 ---
 
 ## Summary

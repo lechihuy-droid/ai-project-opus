@@ -6,11 +6,11 @@ tags: [decision-brain, opus-animus, lucida, context]
 status: evergreen
 confidence: medium
 sources: []
-related: ["[[current-beliefs]]", "[[decisions]]", "[[ai-trend-radar]]", "[[reskill-roadmap]]", "[[investment-theses]]"]
+related: ["[[current-beliefs]]", "[[decisions]]", "[[wiki-chat-protocol]]", "[[ai-trend-radar]]", "[[reskill-roadmap]]", "[[investment-theses]]"]
 applied: []
 open_questions: ["Which active project should receive AI trend synthesis first?"]
 created: 2026-05-19
-updated: 2026-05-21
+updated: 2026-05-31
 ---
 
 # Active Project Context
@@ -54,6 +54,7 @@ Use this page as the context preface for daily and weekly wiki chats.
 ## See Also
 - [[current-beliefs]]
 - [[decisions]]
+- [[wiki-chat-protocol]]
 - [[ai-trend-radar]]
 - [[reskill-roadmap]]
 - [[investment-theses]]

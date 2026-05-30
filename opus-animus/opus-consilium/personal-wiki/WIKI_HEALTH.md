@@ -117,3 +117,219 @@ Sources marked with `keyword_filter` in config.yaml — articles not matching ar
 | 2026-05-17 22:52 | content-collector | 112 | 37 dropped | 75 | 41 | 15 | 35 | openai-news:10→10; google-ai-blog:1→1; aws-ml-blog:13→10; nvidia-blog:5→5; techcrunch-ai:11→10; simon-willison:4→4; hf-blog:3→3; import-ai:1→1; interconnects:2→2; nikkei-asia:21→10; hf-papers:14→10; github-trending-ai:15→9; itmedia-enterprise:2→0; everest-group:10→0 |
 | 2026-05-20 03:09 | content-collector | 157 | 56 dropped | 101 | 81 | 0 | 450 | openai-news:10→10; google-ai-blog:7→6; aws-ml-blog:12→10; nvidia-blog:5→5; techcrunch-ai:10→10; venturebeat-ai:1→1; simon-willison:2→2; hf-blog:6→6; import-ai:1→1; interconnects:1→1; arxiv-ai:10→10; arxiv-lg:19→10; nikkei-asia:20→10; hf-papers:11→10; github-trending-ai:15→9; itmedia-enterprise:18→0; everest-group:9→0 |
 | 2026-05-20 05:39 | content-collector | 163 | 60 dropped | 103 | 7 | 0 | 450 | openai-news:10→10; microsoft-azure-blog:1→1; google-ai-blog:7→6; aws-ml-blog:12→10; nvidia-blog:5→5; techcrunch-ai:10→10; venturebeat-ai:1→1; simon-willison:2→2; hf-blog:7→7; import-ai:1→1; interconnects:1→1; arxiv-ai:10→10; arxiv-lg:19→10; nikkei-asia:22→10; hf-papers:11→10; github-trending-ai:15→9; itmedia-enterprise:20→0; everest-group:9→0 |
+
+## Research Audit Snapshot - 2026-05-30
+
+| Metric | Value |
+|---|---:|
+| Wiki pages audited | 455 |
+| Raw articles audited | 1223 |
+| Source-seed pages | 381 |
+| Orphan wiki pages | 359 |
+| Missing status | 0 |
+| Decisions keep | 479 |
+| Decisions promote | 22 |
+| Decisions ingest | 13 |
+| Decisions deprioritize | 809 |
+| Decisions archive | 355 |
+| Applied actions this run | 47 |
+
+Decision label: **test**. Keep the three-lane audit as the gate between raw collection and durable wiki promotion.
+
+## Research Audit Snapshot - 2026-05-31
+
+| Metric | Value |
+|---|---:|
+| Wiki pages audited | 435 |
+| Raw articles audited | 1223 |
+| Source-seed pages | 361 |
+| Orphan wiki pages | 339 |
+| Missing status | 0 |
+| Decisions keep | 459 |
+| Decisions promote | 22 |
+| Decisions ingest | 13 |
+| Decisions deprioritize | 829 |
+| Decisions archive | 335 |
+| Applied actions this run | 20 |
+
+Decision label: **test**. Keep the three-lane audit as the gate between raw collection and durable wiki promotion.
+
+## Research Audit Snapshot - 2026-05-31
+
+| Metric | Value |
+|---|---:|
+| Wiki pages audited | 390 |
+| Raw articles audited | 1223 |
+| Source-seed pages | 316 |
+| Orphan wiki pages | 292 |
+| Missing status | 0 |
+| Decisions keep | 415 |
+| Decisions promote | 22 |
+| Decisions ingest | 13 |
+| Decisions deprioritize | 873 |
+| Decisions archive | 290 |
+| Applied actions this run | 45 |
+
+Decision label: **test**. Keep the three-lane audit as the gate between raw collection and durable wiki promotion.
+
+## Research Audit Snapshot - 2026-05-31
+
+| Metric | Value |
+|---|---:|
+| Wiki pages audited | 391 |
+| Raw articles audited | 1223 |
+| Source-seed pages | 316 |
+| Orphan wiki pages | 272 |
+| Missing status | 0 |
+| Decisions keep | 416 |
+| Decisions promote | 22 |
+| Decisions ingest | 13 |
+| Decisions deprioritize | 873 |
+| Decisions archive | 290 |
+| Applied actions this run | 0 |
+
+Decision label: **test**. Keep the three-lane audit as the gate between raw collection and durable wiki promotion.
+
+## Research Audit Snapshot - 2026-05-31
+
+| Metric | Value |
+|---|---:|
+| Wiki pages audited | 391 |
+| Raw articles audited | 1223 |
+| Source-seed pages | 316 |
+| Orphan wiki pages | 272 |
+| Missing status | 0 |
+| Decisions keep | 438 |
+| Decisions promote | 0 |
+| Decisions ingest | 13 |
+| Decisions deprioritize | 873 |
+| Decisions archive | 290 |
+| Applied actions this run | 0 |
+
+Decision label: **test**. Keep the three-lane audit as the gate between raw collection and durable wiki promotion.
+
+## Research Audit Snapshot - 2026-05-31
+
+| Metric | Value |
+|---|---:|
+| Wiki pages audited | 391 |
+| Raw articles audited | 1223 |
+| Source-seed pages | 316 |
+| Orphan wiki pages | 272 |
+| Missing status | 0 |
+| Decisions keep | 438 |
+| Decisions promote | 0 |
+| Decisions ingest | 0 |
+| Decisions deprioritize | 886 |
+| Decisions archive | 290 |
+| Applied actions this run | 0 |
+
+Decision label: **test**. Keep the three-lane audit as the gate between raw collection and durable wiki promotion.
+
+## Research Audit Snapshot - 2026-05-31
+
+| Metric | Value |
+|---|---:|
+| Wiki pages audited | 391 |
+| Raw articles audited | 1173 |
+| Source-seed pages | 316 |
+| Orphan wiki pages | 272 |
+| Missing status | 0 |
+| Decisions keep | 438 |
+| Decisions promote | 0 |
+| Decisions ingest | 0 |
+| Decisions deprioritize | 886 |
+| Decisions archive | 240 |
+| Applied actions this run | 50 |
+
+Decision label: **test**. Keep the three-lane audit as the gate between raw collection and durable wiki promotion.
+
+## Research Audit Snapshot - 2026-05-31
+
+| Metric | Value |
+|---|---:|
+| Wiki pages audited | 391 |
+| Raw articles audited | 1123 |
+| Source-seed pages | 316 |
+| Orphan wiki pages | 272 |
+| Missing status | 0 |
+| Decisions keep | 438 |
+| Decisions promote | 0 |
+| Decisions ingest | 0 |
+| Decisions deprioritize | 886 |
+| Decisions archive | 190 |
+| Applied actions this run | 50 |
+
+Decision label: **test**. Keep the three-lane audit as the gate between raw collection and durable wiki promotion.
+
+## Research Audit Snapshot - 2026-05-31
+
+| Metric | Value |
+|---|---:|
+| Wiki pages audited | 391 |
+| Raw articles audited | 1073 |
+| Source-seed pages | 316 |
+| Orphan wiki pages | 272 |
+| Missing status | 0 |
+| Decisions keep | 438 |
+| Decisions promote | 0 |
+| Decisions ingest | 0 |
+| Decisions deprioritize | 886 |
+| Decisions archive | 140 |
+| Applied actions this run | 50 |
+
+Decision label: **test**. Keep the three-lane audit as the gate between raw collection and durable wiki promotion.
+
+## Research Audit Snapshot - 2026-05-31
+
+| Metric | Value |
+|---|---:|
+| Wiki pages audited | 391 |
+| Raw articles audited | 1023 |
+| Source-seed pages | 316 |
+| Orphan wiki pages | 272 |
+| Missing status | 0 |
+| Decisions keep | 438 |
+| Decisions promote | 0 |
+| Decisions ingest | 0 |
+| Decisions deprioritize | 886 |
+| Decisions archive | 90 |
+| Applied actions this run | 50 |
+
+Decision label: **test**. Keep the three-lane audit as the gate between raw collection and durable wiki promotion.
+
+## Research Audit Snapshot - 2026-05-31
+
+| Metric | Value |
+|---|---:|
+| Wiki pages audited | 391 |
+| Raw articles audited | 973 |
+| Source-seed pages | 316 |
+| Orphan wiki pages | 272 |
+| Missing status | 0 |
+| Decisions keep | 438 |
+| Decisions promote | 0 |
+| Decisions ingest | 0 |
+| Decisions deprioritize | 886 |
+| Decisions archive | 40 |
+| Applied actions this run | 50 |
+
+Decision label: **test**. Keep the three-lane audit as the gate between raw collection and durable wiki promotion.
+
+## Research Audit Snapshot - 2026-05-31
+
+| Metric | Value |
+|---|---:|
+| Wiki pages audited | 391 |
+| Raw articles audited | 933 |
+| Source-seed pages | 316 |
+| Orphan wiki pages | 272 |
+| Missing status | 0 |
+| Decisions keep | 438 |
+| Decisions promote | 0 |
+| Decisions ingest | 0 |
+| Decisions deprioritize | 886 |
+| Decisions archive | 0 |
+| Applied actions this run | 40 |
+
+Decision label: **test**. Keep the three-lane audit as the gate between raw collection and durable wiki promotion.

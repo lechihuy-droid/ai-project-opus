@@ -176,7 +176,7 @@ collect:
   max_articles_per_source: 10
   ingest_batch_limit: 15       # max wiki pages/run — giới hạn Groq free tier
   notify_top_n: 5
-  auto_ingest: true            # articles auto-ingest into personal-wiki after daily collect
+  auto_ingest: false           # gate raw -> wiki through run_wiki.py audit-research
   goal_filter:
     enabled: true
     goal: >

@@ -245,7 +245,7 @@ RSS/API → URL list → download_tool → markitdown_tool → input/YYYY-MM-DD-
 - `run_weekly.py` (NEW) — tổng hợp 7 ngày → Claude → `logs/weekly/YYYY-Www.json`
 - Task Scheduler: `opus-weekly-research` (Chủ nhật 06:00 JST)
 - Dashboard startup: bat file trong Windows Startup folder (auto-start khi login)
-- `config.yaml`: `auto_ingest: true` (wiki ingest chạy tự động)
+- `config.yaml`: `auto_ingest: false` (wiki ingest đi qua `run_wiki.py audit-research`)
 
 ### [2026-05-18] Dashboard Intel → Weekly tab
 - `/api/intel/weekly` endpoint trong `api/intel.py`

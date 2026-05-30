@@ -3,14 +3,14 @@ title: "GPT-5 Release Rumours"
 aliases: []
 topic: AI
 tags: ["gpt-5", "openai", "llm"]
-status: evergreen
+status: needs-review
 confidence: medium
 sources: ["https://example.com", "https://huggingface.co/blog/openai-privacy-filter-web-apps"]
 related: ["[[karpathy-llm-wiki-idea-file]]", "[[llm-agents-2025]]"]
 applied: ["Investigate potential applications of GPT-5 in OPUS ANIMUS"]
 open_questions: ["What are the potential implications of GPT-5 on the AI industry?", "How can GPT-5 be used to improve OPUS ANIMUS workflows?"]
 created: 2026-04-28
-updated: 2026-04-29
+updated: 2026-05-31
 ---
 
 # GPT-5 Release Rumours
@@ -35,6 +35,9 @@ GPT-5 can be used to improve the performance of OPUS ANIMUS workflows by providi
 ## Open Questions
 - What are the potential implications of GPT-5 on the AI industry?
 - How can GPT-5 be used to improve OPUS ANIMUS workflows?
+
+## Audit Note
+- 2026-05-31 - Downgraded from evergreen to needs-review during three-lane research audit because the page is rumour-based and includes weak source evidence.
 
 ## Applied
 - 2026-04-29 - Investigated potential applications of GPT-5 in OPUS ANIMUS

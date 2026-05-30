@@ -1,7 +1,10 @@
 # Personal Wiki Index
-*Updated: 2026-05-19 04:26*
+*Updated: 2026-05-31 01:50*
 
 ## FDE
+- [[agent-first-vs-skill-first]] — Agent-First vs Skill-First | tags: fde, ai-sdlc, agents, skills, methodology, human-in-the-loop, ai-adoption
+- [[bd-rcd-ai-pack-pilot]] — BD RCD AI Pack Pilot | tags: fde, ai-sdlc, bd, rcd, human-in-the-loop, skills, prompts, pilot
+- [[ears-for-rd-to-rcd]] — EARS for RD to RCD | tags: fde, ai-sdlc, requirements, ears, rcd, bd, human-in-the-loop, upstream
 - [[fde-model]] — FDE Model | tags: fde, forward-deployed-engineer, service-as-software, ai-fde
 - [[fde-japan-gap-analysis]] — FDE Japan Gap Analysis | tags: fde, japan-it, sier, gap-analysis
 - [[fde-roadmap]] — FDE Roadmap | tags: fde, roadmap, japan-it, outcome-based-delivery
@@ -10,9 +13,13 @@
 - [[fde-dashboard-sync]] — FDE Dashboard Sync | tags: fde, dashboard, opus-home, sync
 
 ## Business
+- [[ecc-agents-as-a-service-best-practice]] — ECC Agents-as-a-Service Best Practice | tags: agents-as-a-service, fde, agent-workflow, business-model, best-practice, ai-sdlc
+- [[outcome-based-fde-model]] — Outcome-Based FDE Model | tags: fde, outcome-based, offshore, business-models, ai-sdlc, consulting, decision-brain
 - [[competitor-business-model-radar]] — Competitor Business Model Radar | tags: competitor-intelligence, ai-business-models, consulting, sier, japan-sier, decision-brain
 
 ## Research
+- [[research-audit-queue]] — Research Audit Queue | tags: research, audit, intake, three-lane, decision-brain
+- [[chat-to-wiki-classification-skill]] — Chat To Wiki Classification Skill | tags: research, wiki-ops, chat-to-wiki, classification, decision-brain, consilium
 - [[research-source-map]] — Research Source Map | tags: research, sources, collector, intel, raw-articles
 - [[intel-to-wiki-promotion]] — Intel To Wiki Promotion | tags: intel, wiki-promotion, research-flow, decision-brain
 
@@ -66,12 +73,9 @@
 - [[clawgym-a-scalable-framework-for-building-effective-claw-agents]] — ClawGym: A Scalable Framework for Building Effective Claw Agents | tags: source-seed, hf-papers
 - [[dv-world-benchmarking-data-visualization-agents-in-real-world-scenarios]] — DV-World: Benchmarking Data Visualization Agents in Real-World Scenarios | tags: source-seed, hf-papers
 - [[huggingfaceml-intern]] — huggingface/ml-intern | tags: source-seed, github-trending-ai
-- [[maic-ui-making-interactive-courseware-with-generative-ui]] — MAIC-UI: Making Interactive Courseware with Generative UI | tags: source-seed, hf-papers
 - [[recursive-multi-agent-systems]] — Recursive Multi-Agent Systems | tags: source-seed, hf-papers
-- [[step-audio-r15-technical-report]] — Step-Audio-R1.5 Technical Report | tags: source-seed, hf-papers
 - [[toward-scalable-terminal-task-synthesis-via-skill-graphs]] — Toward Scalable Terminal Task Synthesis via Skill Graphs | tags: source-seed, hf-papers
 - [[turning-the-tide-cross-architecture-distillation-for-diffusion-large-language-mo]] — Turning the TIDE: Cross-Architecture Distillation for Diffusion Large Language Models | tags: source-seed, hf-papers
-- [[unified-4d-world-action-modeling-from-video-priors-with-asynchronous-denoising]] — Unified 4D World Action Modeling from Video Priors with Asynchronous Denoising | tags: source-seed, hf-papers
 - [[world2vlm-distilling-world-model-imagination-into-vlms-for-dynamic-spatial-reaso]] — World2VLM: Distilling World Model Imagination into VLMs for Dynamic Spatial Reasoning | tags: source-seed, hf-papers
 - [[aidc-aipixelle-video]] — AIDC-AI/Pixelle-Video | tags: source-seed, github-trending-ai
 - [[anil-matchaopen-generative-ai]] — Anil-matcha/Open-Generative-AI | tags: source-seed, github-trending-ai
@@ -89,49 +93,36 @@
 - [[omega-optimizing-machine-learning-by-evaluating-generated-algorithms]] — OMEGA: Optimizing Machine Learning by Evaluating Generated Algorithms | tags: source-seed, arxiv-ai
 - [[persuadability-and-llms-as-legal-decision-tools]] — Persuadability and LLMs as Legal Decision Tools | tags: source-seed, arxiv-ai
 - [[dreamprover-evolving-transferable-lemma-libraries-via-a-wake-sleep-theorem-provi]] — DreamProver: Evolving Transferable Lemma Libraries via a Wake-Sleep Theorem-Proving Agent | tags: source-seed, arxiv-ai
-- [[auto-relational-reasoning]] — Auto-Relational Reasoning | tags: source-seed, arxiv-ai
-- [[grounding-vs-compositionality-on-the-non-complementarity-of-reasoning-in-neuro-s]] — Grounding vs. Compositionality: On the Non-Complementarity of Reasoning in Neuro-Symbolic Systems | tags: source-seed, arxiv-ai
 - [[agel-comp-a-neuro-symbolic-framework-for-compositional-generalization-in-interac]] — AGEL-Comp: A Neuro-Symbolic Framework for Compositional Generalization in Interactive Agents | tags: source-seed, arxiv-ai
 - [[rethinking-kv-cache-eviction-via-a-unified-information-theoretic-objective]] — Rethinking KV Cache Eviction via a Unified Information-Theoretic Objective | tags: source-seed, arxiv-lg
-- [[mini-batch-class-composition-bias-in-link-prediction]] — Mini-Batch Class Composition Bias in Link Prediction | tags: source-seed, arxiv-lg
 - [[ramp-runtime-aware-megakernel-polymorphism-for-mixture-of-experts]] — RaMP: Runtime-Aware Megakernel Polymorphism for Mixture-of-Experts | tags: source-seed, arxiv-lg
 - [[ppg-based-affect-recognition-with-long-range-deep-models-a-measurement-driven-co]] — PPG-Based Affect Recognition with Long-Range Deep Models: A Measurement-Driven Comparison of CNN, Transformer, and Mamba Architectures | tags: source-seed, arxiv-lg
 - [[reward-lens-a-mechanistic-interpretability-library-for-reward-models]] — reward-lens: A Mechanistic Interpretability Library for Reward Models | tags: source-seed, arxiv-lg
 - [[entropy-centroids-as-intrinsic-rewards-for-test-time-scaling]] — Entropy Centroids as Intrinsic Rewards for Test-Time Scaling | tags: source-seed, arxiv-lg
 - [[efficient-and-interpretable-transformer-for-counterfactual-fairness]] — Efficient and Interpretable Transformer for Counterfactual Fairness | tags: source-seed, arxiv-lg
 - [[dora-a-scalable-asynchronous-reinforcement-learning-system-for-language-model-tr]] — DORA: A Scalable Asynchronous Reinforcement Learning System for Language Model Training | tags: source-seed, arxiv-lg
-- [[addressing-performance-saturation-for-llm-rl-via-precise-entropy-curve-control]] — Addressing Performance Saturation for LLM RL via Precise Entropy Curve Control | tags: source-seed, arxiv-lg
-- [[adaptive-and-fine-grained-module-wise-expert-pruning-for-efficient-lora-moe-fine]] — Adaptive and Fine-grained Module-wise Expert Pruning for Efficient LoRA-MoE Fine-Tuning | tags: source-seed, arxiv-lg
 - [[glm-5v-turbo-toward-a-native-foundation-model-for-multimodal-agents]] — GLM-5V-Turbo: Toward a Native Foundation Model for Multimodal Agents | tags: source-seed, hf-papers
 - [[theory-grounded-evaluation-exposes-the-authorship-gap-in-llm-personalization]] — Theory-Grounded Evaluation Exposes the Authorship Gap in LLM Personalization | tags: source-seed, hf-papers
 - [[amplitude-encoding-of-slater-type-orbitals-via-matrix-product-states-efficient-s]] — Amplitude Encoding of Slater-Type Orbitals via Matrix Product States: Efficient State Preparation and Integral Evaluation on Quantum Hardware | tags: source-seed, hf-papers
-- [[fash-icnn-making-editorial-fashion-identity-inspectable-through-multimodal-cnn-p]] — FASH-iCNN: Making Editorial Fashion Identity Inspectable Through Multimodal CNN Probing | tags: source-seed, hf-papers
 - [[agentic-fusion-of-large-atomic-and-language-models-to-accelerate-superconductors]] — Agentic Fusion of Large Atomic and Language Models to Accelerate Superconductors Discovery | tags: source-seed, hf-papers
 - [[codex-cli-01280-adds-goal]] — Codex CLI 0.128.0 adds /goal | tags: source-seed, simon-willison
 - [[inaturalist-sightings]] — iNaturalist Sightings | tags: source-seed, simon-willison
 - [[our-evaluation-of-openais-gpt-55-cyber-capabilities]] — Our evaluation of OpenAI's GPT-5.5 cyber capabilities | tags: source-seed, simon-willison
 - [[quoting-andrew-kelley]] — Quoting Andrew Kelley | tags: source-seed, simon-willison
-- [[binary-spiking-neural-networks-as-causal-models]] — Binary Spiking Neural Networks as Causal Models | tags: source-seed, arxiv-ai
 - [[end-to-end-autonomous-scientific-discovery-on-a-real-optical-platform]] — End-to-end autonomous scientific discovery on a real optical platform | tags: source-seed, arxiv-ai
 - [[think-it-run-it-autonomous-ml-pipeline-generation-via-self-healing-multi-agent-a]] — Think it, Run it: Autonomous ML pipeline generation via self-healing multi-agent AI | tags: source-seed, arxiv-ai
 - [[unsupervised-electrofacies-classification-and-porosity-characterization-in-the-o]] — Unsupervised Electrofacies Classification and Porosity Characterization in the Offshore Keta Basin Using Wireline Logs | tags: source-seed, arxiv-ai
 - [[when-your-llm-reaches-end-of-life-a-framework-for-confident-model-migration-in-p]] — When Your LLM Reaches End-of-Life: A Framework for Confident Model Migration in Production Systems | tags: source-seed, arxiv-ai
 - [[optimal-stop-loss-and-take-profit-parameterization-for-autonomous-trading-agent]] — Optimal Stop-Loss and Take-Profit Parameterization for Autonomous Trading Agent Swarm | tags: source-seed, arxiv-ai
 - [[step-level-optimization-for-efficient-computer-use-agents]] — Step-level Optimization for Efficient Computer-use Agents | tags: source-seed, arxiv-ai
-- [[toward-personalized-digital-twins-for-cognitive-decline-assessment-a-multimodal]] — Toward Personalized Digital Twins for Cognitive Decline Assessment: A Multimodal, Uncertainty-Aware Framework | tags: source-seed, arxiv-ai
 - [[trust-a-framework-for-decentralized-ai-service-v01]] — TRUST: A Framework for Decentralized AI Service v.0.1 | tags: source-seed, arxiv-ai
 - [[web2bigtable-a-bi-level-multi-agent-llm-system-for-internet-scale-information-se]] — Web2BigTable: A Bi-Level Multi-Agent LLM System for Internet-Scale Information Search and Extraction | tags: source-seed, arxiv-ai
 - [[automatic-causal-fairness-analysis-with-llm-generated-reporting]] — Automatic Causal Fairness Analysis with LLM-Generated Reporting | tags: source-seed, arxiv-lg
-- [[co-evolving-policy-distillation]] — Co-Evolving Policy Distillation | tags: source-seed, arxiv-lg
 - [[cross-subject-generalization-for-eeg-decoding-a-survey-of-deep-learning-methods]] — Cross-Subject Generalization for EEG Decoding: A Survey of Deep Learning Methods | tags: source-seed, arxiv-lg
 - [[detecting-clinical-discrepancies-in-health-coaching-agents-a-dual-stream-memory]] — Detecting Clinical Discrepancies in Health Coaching Agents: A Dual-Stream Memory and Reconciliation Architecture | tags: source-seed, arxiv-lg
-- [[dynamic-adversarial-fine-tuning-reorganizes-refusal-geometry]] — Dynamic Adversarial Fine-Tuning Reorganizes Refusal Geometry | tags: source-seed, arxiv-lg
 - [[fidelity-diversity-and-privacy-a-multi-dimensional-llm-evaluation-for-clinical-d]] — Fidelity, Diversity, and Privacy: A Multi-Dimensional LLM Evaluation for Clinical Data Augmentation | tags: source-seed, arxiv-lg
-- [[learning-rate-transfer-in-normalized-transformers]] — Learning Rate Transfer in Normalized Transformers | tags: source-seed, arxiv-lg
-- [[monitoring-neural-training-with-topology-a-footprint-predictable-collapse-index]] — Monitoring Neural Training with Topology: A Footprint-Predictable Collapse Index | tags: source-seed, arxiv-lg
 - [[when-continual-learning-moves-to-memory-a-study-of-experience-reuse-in-llm-agent]] — When Continual Learning Moves to Memory: A Study of Experience Reuse in LLM Agents | tags: source-seed, arxiv-lg
 - [[autosp-unlocking-long-context-llm-training-via-compiler-based-sequence-paralleli]] — AutoSP: Unlocking Long-Context LLM Training Via Compiler-Based Sequence Parallelism | tags: source-seed, arxiv-lg
-- [[last-r1-reinforcing-action-via-adaptive-physical-latent-reasoning-for-vla-models]] — LaST-R1: Reinforcing Action via Adaptive Physical Latent Reasoning for VLA Models | tags: source-seed, hf-papers
 - [[synthetic-computers-at-scale-for-long-horizon-productivity-simulation]] — Synthetic Computers at Scale for Long-Horizon Productivity Simulation | tags: source-seed, hf-papers
 - [[visual-generation-in-the-new-era-an-evolution-from-atomic-mapping-to-agentic-wor]] — Visual Generation in the New Era: An Evolution from Atomic Mapping to Agentic World Modeling | tags: source-seed, hf-papers
 - [[abhigyanpatwarigitnexus]] — abhigyanpatwari/GitNexus | tags: source-seed, github-trending-ai
@@ -144,39 +135,22 @@
 - [[reliable-answers-for-recurring-questions-boosting-text-to-sql-accuracy-with-temp]] — Reliable Answers for Recurring Questions: Boosting Text-to-SQL Accuracy with Template Constrained Decoding | tags: source-seed, hf-papers
 - [[tauricresearchtradingagents]] — TauricResearch/TradingAgents | tags: source-seed, github-trending-ai
 - [[tripvvt-a-large-scale-triplet-dataset-and-a-coarse-mask-baseline-for-in-the-wild]] — TripVVT: A Large-Scale Triplet Dataset and a Coarse-Mask Baseline for In-the-Wild Video Virtual Try-On | tags: source-seed, hf-papers
-- [[sightings]] — Sightings | tags: source-seed, simon-willison
 - [[repetition-over-diversity-high-signal-data-filtering-for-sample-efficient-german]] — Repetition over Diversity: High-Signal Data Filtering for Sample-Efficient German Language Modeling | tags: source-seed, hf-papers
 - [[soxojmaigret]] — soxoj/maigret | tags: source-seed, github-trending-ai
-- [[quoting-anthropic]] — Quoting Anthropic | tags: source-seed, simon-willison
-- [[import-ai-455-automating-ai-research]] — Import AI 455: Automating AI Research | tags: source-seed, import-ai
 - [[redis-array-playground]] — Redis Array Playground | tags: source-seed, simon-willison
-- [[the-distillation-panic]] — The distillation panic | tags: source-seed, interconnects
 - [[tre-python-binding-redos-robustness-demo]] — TRE Python binding — ReDoS robustness demo | tags: source-seed, simon-willison
-- [[soft-msm-differentiable-context-aware-elastic-alignment-for-time-series]] — Soft-MSM: Differentiable Context-Aware Elastic Alignment for Time Series | tags: source-seed, arxiv-lg
-- [[technical-report-activation-residual-hessian-quantization-arhq-for-low-bit-llm-q]] — Technical Report: Activation Residual Hessian Quantization (ARHQ) for Low-Bit LLM Quantization | tags: source-seed, arxiv-lg
-- [[what-physics-do-data-driven-mocap-to-radar-models-learn]] — What Physics do Data-Driven MoCap-to-Radar Models Learn? | tags: source-seed, arxiv-lg
-- [[fair-dataset-distillation-via-cross-group-barycenter-alignment]] — Fair Dataset Distillation via Cross-Group Barycenter Alignment | tags: source-seed, arxiv-lg
-- [[wasserstein-distributionally-robust-regret-optimization-for-reinforcement-learni]] — Wasserstein Distributionally Robust Regret Optimization for Reinforcement Learning from Human Feedback | tags: source-seed, arxiv-lg
-- [[borrowed-geometry-computational-reuse-of-frozen-text-pretrained-transformer-weig]] — Borrowed Geometry: Computational Reuse of Frozen Text-Pretrained Transformer Weights Across Modalities | tags: source-seed, arxiv-lg
 - [[caracal-causal-architecture-via-spectral-mixing]] — Caracal: Causal Architecture via Spectral Mixing | tags: source-seed, arxiv-lg
-- [[diversity-in-large-language-models-under-supervised-fine-tuning]] — Diversity in Large Language Models under Supervised Fine-Tuning | tags: source-seed, arxiv-lg
-- [[odysseus-scaling-vlms-to-100-turn-decision-making-in-games-via-reinforcement-lea]] — Odysseus: Scaling VLMs to 100+ Turn Decision-Making in Games via Reinforcement Learning | tags: source-seed, arxiv-lg
 - [[state-stream-transformer-sst-v2-parallel-training-of-nonlinear-recurrence-for-la]] — State Stream Transformer (SST) V2: Parallel Training of Nonlinear Recurrence for Latent Space Reasoning | tags: source-seed, arxiv-lg
 - [[being-h07-a-latent-world-action-model-from-egocentric-videos]] — Being-H0.7: A Latent World-Action Model from Egocentric Videos | tags: source-seed, hf-papers
 - [[beyond-benchmarks-matharena-as-an-evaluation-platform-for-mathematics-with-llms]] — Beyond Benchmarks: MathArena as an Evaluation Platform for Mathematics with LLMs | tags: source-seed, hf-papers
 - [[learning-to-act-and-cooperate-for-distributed-black-box-consensus-optimization]] — Learning to Act and Cooperate for Distributed Black-Box Consensus Optimization | tags: source-seed, hf-papers
 - [[let-vit-speak-generative-language-image-pre-training]] — Let ViT Speak: Generative Language-Image Pre-training | tags: source-seed, hf-papers
-- [[online-self-calibration-against-hallucination-in-vision-language-models]] — Online Self-Calibration Against Hallucination in Vision-Language Models | tags: source-seed, hf-papers
 - [[ruvnetruflo]] — ruvnet/ruflo | tags: source-seed, github-trending-ai
-- [[stable-gflownet-toward-diverse-and-robust-llm-red-teaming-via-contrastive-trajec]] — Stable-GFlowNet: Toward Diverse and Robust LLM Red-Teaming via Contrastive Trajectory Balance | tags: source-seed, hf-papers
 - [[themis-training-robust-multilingual-code-reward-models-for-flexible-multi-criter]] — Themis: Training Robust Multilingual Code Reward Models for Flexible Multi-Criteria Scoring | tags: source-seed, hf-papers
-- [[unividx-a-unified-multimodal-framework-for-versatile-video-generation-via-diffus]] — UniVidX: A Unified Multimodal Framework for Versatile Video Generation via Diffusion Priors | tags: source-seed, hf-papers
 - [[datasette-llm-01a7]] — datasette-llm 0.1a7 | tags: source-seed, simon-willison
 - [[llm-echo-05a0]] — llm-echo 0.5a0 | tags: source-seed, simon-willison
-- [[quoting-john-gruber]] — Quoting John Gruber | tags: source-seed, simon-willison
 - [[april-2026-newsletter]] — April 2026 newsletter | tags: source-seed, simon-willison
 - [[granite-41-3b-svg-pelican-gallery]] — Granite 4.1 3B SVG Pelican Gallery | tags: source-seed, simon-willison
-- [[quoting-andy-masley]] — Quoting Andy Masley | tags: source-seed, simon-willison
 - [[agentfloor-how-far-up-the-tool-use-ladder-can-small-open-weight-models-go]] — AgentFloor: How Far Up the tool use Ladder Can Small Open-Weight Models Go? | tags: source-seed, arxiv-ai
 - [[agentic-ai-for-trip-planning-optimization-application]] — Agentic AI for Trip Planning Optimization Application | tags: source-seed, arxiv-ai
 - [[agentopic-a-generative-ai-agent-workflow-for-explainable-topic-modeling]] — Agentopic: A Generative AI Agent Workflow for Explainable Topic Modeling | tags: source-seed, arxiv-lg
@@ -185,18 +159,10 @@
 - [[armor-2025-a-military-aligned-benchmark-for-evaluating-large-language-model-safe]] — ARMOR 2025: A Military-Aligned Benchmark for Evaluating Large Language Model Safety Beyond Civilian Contexts | tags: source-seed, arxiv-ai
 - [[causal-foundations-of-collective-agency]] — Causal Foundations of Collective Agency | tags: source-seed, arxiv-ai
 - [[from-euler-to-dormand-prince-ode-solvers-for-flow-matching-generative-models]] — From Euler to Dormand-Prince: ODE Solvers for Flow Matching Generative Models | tags: source-seed, arxiv-lg
-- [[from-flat-facts-to-sharp-hallucinations-detecting-stubborn-errors-via-gradient-s]] — From Flat Facts to Sharp Hallucinations: Detecting Stubborn Errors via Gradient Sensitivity | tags: source-seed, arxiv-lg
-- [[learning-in-the-fisher-subspace-a-guided-initialization-for-lora-fine-tuning]] — Learning in the Fisher Subspace: A Guided Initialization for LoRA Fine-Tuning | tags: source-seed, arxiv-lg
-- [[minimal-local-causal-explanations-for-jailbreak-success-in-large-language-models]] — Minimal, Local, Causal Explanations for Jailbreak Success in Large Language Models | tags: source-seed, arxiv-ai
-- [[phasenet-phase-aware-frequency-domain-anomaly-detection-for-industrial-control-s]] — PhaseNet++: Phase-Aware Frequency-Domain Anomaly Detection for Industrial Control Systems via Phase Coherence Graphs | tags: source-seed, arxiv-lg
 - [[tadi-tool-augmented-drilling-intelligence-via-agentic-llm-orchestration-over-het]] — TADI: Tool-Augmented Drilling Intelligence via Agentic LLM Orchestration over Heterogeneous Wellsite Data | tags: source-seed, arxiv-ai
 - [[token-arena-a-continuous-benchmark-unifying-energy-and-cognition-in-ai-inference]] — Token Arena: A Continuous Benchmark Unifying Energy and Cognition in AI Inference | tags: source-seed, arxiv-ai
-- [[tur-dpo-topology-and-uncertainty-aware-direct-preference-optimization]] — TUR-DPO: Topology- and Uncertainty-Aware Direct Preference Optimization | tags: source-seed, arxiv-ai
 - [[academiclaw-when-students-set-challenges-for-ai-agents]] — AcademiClaw: When Students Set Challenges for AI Agents | tags: source-seed, hf-papers
-- [[focus-and-dilution-the-multi-stage-learning-process-of-attention]] — Focus and Dilution: The Multi-stage Learning Process of Attention | tags: source-seed, arxiv-lg
 - [[leap-layer-wise-exit-aware-pretraining-for-efficient-transformer-inference]] — LEAP: Layer-wise Exit-Aware Pretraining for Efficient Transformer Inference | tags: source-seed, arxiv-lg
-- [[minimizing-collateral-damage-in-activation-steering]] — Minimizing Collateral Damage in Activation Steering | tags: source-seed, arxiv-lg
-- [[molmoact2-action-reasoning-models-for-real-world-deployment]] — MolmoAct2: Action Reasoning Models for Real-world Deployment | tags: source-seed, hf-papers
 - [[multi-perspective-transformers-in-arc-agi-2-challenge]] — Multi-Perspective Transformers in ARC-AGI-2 Challenge | tags: source-seed, arxiv-lg
 - [[perceptual-flow-network-for-visually-grounded-reasoning]] — Perceptual Flow Network for Visually Grounded Reasoning | tags: source-seed, hf-papers
 - [[videonet-a-large-scale-dataset-for-domain-specific-action-recognition]] — VideoNet: A Large-Scale Dataset for Domain-Specific Action Recognition | tags: source-seed, hf-papers
@@ -211,9 +177,7 @@
 - [[viratttdexter]] — virattt/dexter | tags: source-seed, github-trending-ai
 - [[warpdotdevwarp]] — warpdotdev/warp | tags: source-seed, github-trending-ai
 - [[cybersecqwen-4b-why-defensive-cyber-needs-small-specialized-locally-runnable-mod]] — CyberSecQwen-4B: Why Defensive Cyber Needs Small, Specialized, Locally-Runnable Models | tags: source-seed, hf-blog
-- [[emo-pretraining-mixture-of-experts-for-emergent-modularity]] — EMO: Pretraining mixture of experts for emergent modularity | tags: source-seed, hf-blog
 - [[vllm-v0-to-v1-correctness-before-corrections-in-rl]] — vLLM V0 to V1: Correctness Before Corrections in RL | tags: source-seed, hf-blog
-- [[notes-from-inside-chinas-ai-labs]] — Notes from inside China's AI labs | tags: source-seed, interconnects
 - [[emo-pretraining-mixture-of-experts-for-emergent-modularity-2]] — EMO: Pretraining Mixture of Experts for Emergent Modularity | tags: source-seed, hf-papers
 - [[when-no-benchmark-exists-validating-comparative-llm-safety-scoring-without-groun]] — When No Benchmark Exists: Validating Comparative LLM Safety Scoring Without Ground-Truth Labels | tags: source-seed, hf-papers
 - [[strata-incentivizing-agentic-reinforcement-learning-with-strategic-trajectory-ab]] — StraTA: Incentivizing Agentic Reinforcement Learning with Strategic Trajectory Abstraction | tags: source-seed, hf-papers
@@ -222,22 +186,18 @@
 - [[cocoindex-iococoindex]] — cocoindex-io/cocoindex | tags: source-seed, github-trending-ai
 - [[import-ai-456-rsi-and-economic-growth-radical-optionality-for-ai-regulation-and]] — Import AI 456: RSI and economic growth; radical optionality for AI regulation; and a neural computer | tags: source-seed, import-ai
 - [[graphdc-a-divide-and-conquer-multi-agent-system-for-scalable-graph-algorithm-rea]] — GraphDC: A Divide-and-Conquer Multi-Agent System for Scalable Graph Algorithm Reasoning | tags: source-seed, arxiv-ai
-- [[more-thinking-more-bias-length-driven-position-bias-in-reasoning-models]] — More Thinking, More Bias: Length-Driven Position Bias in Reasoning Models | tags: source-seed, arxiv-ai
 - [[hidden-coalitions-in-multi-agent-ai-a-spectral-diagnostic-from-internal-represen]] — Hidden Coalitions in Multi-Agent AI: A Spectral Diagnostic from Internal Representations | tags: source-seed, arxiv-ai
 - [[state-representation-and-termination-for-recursive-reasoning-systems]] — State Representation and Termination for Recursive Reasoning Systems | tags: source-seed, arxiv-ai
 - [[cascade-case-based-continual-adaptation-for-large-language-models-during-deploym]] — CASCADE: Case-Based Continual Adaptation for Large Language Models During Deployment | tags: source-seed, arxiv-ai
 - [[from-storage-to-experience-a-survey-on-the-evolution-of-llm-agent-memory-mechani]] — From Storage to Experience: A Survey on the Evolution of LLM Agent Memory Mechanisms | tags: source-seed, arxiv-ai
 - [[weblica-scalable-and-reproducible-training-environments-for-visual-web-agents]] — Weblica: Scalable and Reproducible Training Environments for Visual Web Agents | tags: source-seed, arxiv-ai
-- [[when-does-a-language-model-commit-a-finite-answer-theory-of-pre-verbalization-co]] — When Does a Language Model Commit? A Finite-Answer Theory of Pre-Verbalization Commitment | tags: source-seed, arxiv-ai
 - [[when-does-critique-improve-ai-assisted-theoretical-physics-scalar-structured-cri]] — When Does Critique Improve AI-Assisted Theoretical Physics? SCALAR: Structured Critic--Actor Loop for Agentic Reasoning | tags: source-seed, arxiv-ai
-- [[ratequant-optimal-mixed-precision-kv-cache-quantization-via-rate-distortion-theo]] — RateQuant: Optimal Mixed-Precision KV Cache Quantization via Rate-Distortion Theory | tags: source-seed, arxiv-lg
 - [[towards-security-auditable-llm-agents-a-unified-graph-representation]] — Towards Security-Auditable LLM Agents: A Unified Graph Representation | tags: source-seed, arxiv-ai
 - [[lkv-end-to-end-learning-of-head-wise-budgets-and-token-selection-for-llm-kv-cach]] — LKV: End-to-End Learning of Head-wise Budgets and Token Selection for LLM KV Cache Eviction | tags: source-seed, arxiv-lg
 - [[toeplitz-mlp-mixers-are-low-complexity-information-rich-sequence-models]] — Toeplitz MLP Mixers are Low Complexity, Information-Rich Sequence Models | tags: source-seed, arxiv-lg
 - [[llms-improving-llms-agentic-discovery-for-test-time-scaling]] — LLMs Improving LLMs: Agentic Discovery for Test-Time Scaling | tags: source-seed, hf-papers
 - [[conformal-path-reasoning-trustworthy-knowledge-graph-question-answering-via-path]] — Conformal Path Reasoning: Trustworthy Knowledge Graph Question Answering via Path-Level Calibration | tags: source-seed, hf-papers
 - [[fast-byte-latent-transformer]] — Fast Byte Latent Transformer | tags: source-seed, hf-papers
-- [[flow-opd-on-policy-distillation-for-flow-matching-models]] — Flow-OPD: On-Policy Distillation for Flow Matching Models | tags: source-seed, hf-papers
 - [[learning-cli-agents-with-structured-action-credit-under-selective-observation]] — Learning CLI Agents with Structured Action Credit under Selective Observation | tags: source-seed, hf-papers
 - [[hmbowndeepseek-tui]] — Hmbown/DeepSeek-TUI | tags: source-seed, github-trending-ai
 - [[bytedanceui-tars-desktop]] — bytedance/UI-TARS-desktop | tags: source-seed, github-trending-ai
@@ -255,42 +215,29 @@
 - [[simplex-rethinks-software-development-with-codex]] — Simplex rethinks software development with Codex | tags: source-seed, marketnews, openai-news
 - [[learning-on-the-shop-floor]] — Learning on the Shop floor | tags: source-seed, simon-willison
 - [[quoting-new-york-times-editors-note]] — Quoting New York Times Editors’ Note | tags: source-seed, simon-willison
-- [[quoting-andrew-quinn]] — Quoting Andrew Quinn | tags: source-seed, simon-willison
-- [[adding-benchmaxxer-repellant-to-the-open-asr-leaderboard]] — Adding Benchmaxxer Repellant to the Open ASR Leaderboard | tags: source-seed, hf-blog
 - [[conditional-generation-of-antibody-sequences-with-classifier-guided-germline-abs]] — Conditional generation of antibody sequences with classifier-guided germline-absorbing discrete diffusion | tags: source-seed, arxiv-lg
-- [[the-edelta-mhc-geo-transformer-adaptive-geodesic-operations-with-guaranteed-orth]] — The E$\Delta$-MHC-Geo Transformer: Adaptive Geodesic Operations with Guaranteed Orthogonality | tags: source-seed, arxiv-lg
 - [[transformer-based-wildlife-species-classification-from-daily-movement-trajectori]] — Transformer-Based Wildlife Species Classification from Daily Movement Trajectories | tags: source-seed, arxiv-lg
-- [[beyond-factor-aggregation-gauge-aware-low-rank-server-representations-for-federa]] — Beyond Factor Aggregation: Gauge-Aware Low-Rank Server Representations for Federated LoRA | tags: source-seed, arxiv-lg
 - [[sparse-attention-as-a-range-searching-problem-towards-an-inference-efficient-ind]] — Sparse Attention as a Range Searching Problem: Towards an Inference-Efficient Index for KV Cache | tags: source-seed, arxiv-lg
 - [[starflow2-bridging-language-models-and-normalizing-flows-for-unified-multimodal]] — STARFlow2: Bridging Language Models and Normalizing Flows for Unified Multimodal Generation | tags: source-seed, hf-papers
 - [[decolua9router]] — decolua/9router | tags: source-seed, github-trending-ai
 - [[quoting-james-shore]] — Quoting James Shore | tags: source-seed, simon-willison
 - [[thoughts-on-gitlabs-workforce-reduction-and-structural-and-strategic-decisions]] — Thoughts on GitLab's workforce reduction" and "structural and strategic decisions" | tags: source-seed, simon-willison
 - [[using-llm-in-the-shebang-line-of-a-script]] — Using LLM in the shebang line of a script | tags: source-seed, simon-willison
-- [[belief-or-circuitry-causal-evidence-for-in-context-graph-learning]] — Belief or Circuitry? Causal Evidence for In-Context Graph Learning | tags: source-seed, arxiv-ai
 - [[building-blocks-for-foundation-model-training-and-inference-on-aws]] — Building Blocks for Foundation Model Training and Inference on AWS | tags: source-seed, hf-blog
 - [[cocoda-co-evolving-compositional-dag-for-tool-augmented-agents]] — CoCoDA: Co-evolving Compositional DAG for Tool-Augmented Agents | tags: source-seed, arxiv-ai
 - [[measuring-what-matters-benchmarking-generative-multimodal-and-agentic-ai-in-heal]] — Measuring What Matters: Benchmarking Generative, Multimodal, and Agentic AI in Healthcare | tags: source-seed, arxiv-ai
 - [[memq-integrating-q-learning-into-self-evolving-memory-agents-over-provenance-dag]] — MemQ: Integrating Q-Learning into Self-Evolving Memory Agents over Provenance DAGs | tags: source-seed, arxiv-ai
 - [[on-distinguishing-capability-elicitation-from-capability-creation-in-post-traini]] — On Distinguishing Capability Elicitation from Capability Creation in Post-Training: A Free-Energy Perspective | tags: source-seed, arxiv-ai
-- [[political-plasticity-an-analysis-of-ideological-adaptability-in-large-language-m]] — Political Plasticity: An Analysis of Ideological Adaptability in Large Language Models | tags: source-seed, arxiv-ai
 - [[skilllens-adaptive-multi-granularity-skill-reuse-for-cost-efficient-llm-agents]] — SkillLens: Adaptive Multi-Granularity Skill Reuse for Cost-Efficient LLM Agents | tags: source-seed, arxiv-ai
-- [[spatial-priming-outperforms-semantic-prompting-a-grid-based-approach-to-improvin]] — Spatial Priming Outperforms Semantic Prompting: A Grid-Based Approach to Improving LLM Accuracy on Chart Data Extraction | tags: source-seed, arxiv-ai
-- [[where-reliability-lives-in-vision-language-models-a-mechanistic-study-of-attenti]] — Where Reliability Lives in Vision-Language Models: A Mechanistic Study of Attention, Hidden States, and Causal Circuits | tags: source-seed, arxiv-ai
-- [[balora-bayesian-low-rank-adaptation-of-large-scale-models]] — BaLoRA: Bayesian Low-Rank Adaptation of Large Scale Models | tags: source-seed, arxiv-lg
 - [[dare-diffusion-language-model-activation-reuse-for-efficient-inference]] — DARE: Diffusion Language Model Activation Reuse for Efficient Inference | tags: source-seed, arxiv-lg
 - [[dataarc-syndata-toolkit-a-unified-closed-loop-framework-for-multi-path-multimoda]] — DataArc-SynData-Toolkit: A Unified Closed-Loop Framework for Multi-Path, Multimodal, and Multilingual Data Synthesis | tags: source-seed, arxiv-lg
 - [[horen-normalized-hopfield-retrieval-for-large-scale-sequential-model-editing]] — HoReN: Normalized Hopfield Retrieval for Large-Scale Sequential Model Editing | tags: source-seed, arxiv-lg
 - [[reasoning-emerges-from-constrained-inference-manifolds-in-large-language-models]] — Reasoning emerges from constrained inference manifolds in large language models | tags: source-seed, arxiv-lg
 - [[statistical-inference-and-quality-measures-of-kv-cache-quantisations-inspired-by]] — Statistical Inference and Quality Measures of KV Cache Quantisations Inspired by TurboQuant | tags: source-seed, arxiv-lg
-- [[ttcdtransformer-integrated-temporal-causal-discovery-from-non-stationary-time-se]] — TTCD:Transformer Integrated Temporal Causal Discovery from Non-Stationary Time Series Data | tags: source-seed, arxiv-lg
 - [[weight-pruning-amplifies-bias-a-multi-method-study-of-compressed-llms-for-edge-a]] — Weight Pruning Amplifies Bias: A Multi-Method Study of Compressed LLMs for Edge AI | tags: source-seed, arxiv-lg
-- [[feature-rivalry-in-sparse-autoencoder-representations-a-mechanistic-study-of-unc]] — Feature Rivalry in Sparse Autoencoder Representations: A Mechanistic Study of Uncertainty-Driven Feature Competition in LLMs | tags: source-seed, arxiv-lg
-- [[a-pytorch-library-of-turing-complete-neural-networks]] — A PyTorch Library of Turing-Complete Neural Networks | tags: source-seed, arxiv-lg
 - [[datamaster-towards-autonomous-data-engineering-for-machine-learning]] — DataMaster: Towards Autonomous Data Engineering for Machine Learning | tags: source-seed, hf-papers
 - [[deco-sparse-mixture-of-experts-with-dense-comparable-performance-on-end-side-dev]] — DECO: Sparse Mixture-of-Experts with Dense-Comparable Performance on End-Side Devices | tags: source-seed, hf-papers
 - [[dynamic-skill-lifecycle-management-for-agentic-reinforcement-learning]] — Dynamic Skill Lifecycle Management for Agentic Reinforcement Learning | tags: source-seed, hf-papers
-- [[elf-embedded-language-flows]] — ELF: Embedded Language Flows | tags: source-seed, hf-papers
 - [[rethinking-agentic-search-with-pi-serini-is-lexical-retrieval-sufficient]] — Rethinking Agentic Search with Pi-Serini: Is Lexical Retrieval Sufficient? | tags: source-seed, hf-papers
 - [[towards-on-policy-data-evolution-for-visual-native-multimodal-deep-search-agents]] — Towards On-Policy Data Evolution for Visual-Native Multimodal Deep Search Agents | tags: source-seed, hf-papers
 - [[vectifyaipageindex]] — VectifyAI/PageIndex | tags: source-seed, github-trending-ai
@@ -318,14 +265,12 @@
 - [[secure-short-term-gpu-capacity-for-ml-workloads-with-ec2-capacity-blocks-for-ml]] — Secure short-term GPU capacity for ML workloads with EC2 Capacity Blocks for ML and SageMaker training plans | tags: source-seed, marketnews, aws-ml-blog
 - [[there-arent-enough-rockets-for-space-data-centers-cowboy-space-raised-275m-to-bu]] — There aren’t enough rockets for space data centers — Cowboy Space raised $275M to build them | tags: source-seed, marketnews, techcrunch-ai
 - [[thinking-machines-wants-to-build-an-ai-that-actually-listens-while-it-talks]] — Thinking Machines wants to build an AI that actually listens while it talks | tags: source-seed, marketnews, techcrunch-ai
-- [[count-anything-at-any-granularity]] — Count Anything at Any Granularity | tags: source-seed, hf-papers
 - [[how-open-model-ecosystems-compound]] — How open model ecosystems compound | tags: source-seed, interconnects
 - [[playing-games-with-knowledge-ai-induced-delusions-need-game-theoretic-interventi]] — Playing games with knowledge: AI-Induced delusions need game theoretic interventions | tags: source-seed, arxiv-ai
 - [[robomemarena-a-comprehensive-and-challenging-robotic-memory-benchmark]] — RoboMemArena: A Comprehensive and Challenging Robotic Memory Benchmark | tags: source-seed, hf-papers
 - [[shepherd-a-runtime-substrate-empowering-meta-agents-with-a-formalized-execution]] — Shepherd: A Runtime Substrate Empowering Meta-Agents with a Formalized Execution Trace | tags: source-seed, hf-papers
 - [[voice-ai-in-india-is-hard-wispr-flow-is-betting-on-it-anyway]] — Voice AI in India is hard — Wispr Flow is betting on it anyway | tags: source-seed, marketnews, techcrunch-ai
 - [[were-feeling-cynical-about-xais-big-deal-with-anthropic]] — We’re feeling cynical about xAI’s big deal with Anthropic | tags: source-seed, marketnews, techcrunch-ai
-- [[your-ai-use-is-breaking-my-brain]] — Your AI Use Is Breaking My Brain | tags: source-seed, simon-willison
 - [[yikartaitoearn]] — yikart/AiToEarn | tags: source-seed, github-trending-ai
 - [[databricks-brings-gpt-55-to-enterprise-agent-workflows]] — Databricks brings GPT-5.5 to enterprise agent workflows | tags: source-seed, marketnews, openai-news
 - [[how-business-operations-teams-use-codex]] — How business operations teams use Codex | tags: source-seed, marketnews, openai-news
@@ -355,7 +300,6 @@
 - [[openai-says-codex-is-coming-to-your-phone]] — OpenAI says Codex is coming to your phone | tags: source-seed, marketnews, techcrunch-ai
 - [[granite-embedding-multilingual-r2-open-apache-20-multilingual-embeddings-with-32]] — Granite Embedding Multilingual R2: Open Apache 2.0 Multilingual Embeddings with 32K Context — Best Sub-100M Retrieval Quality | tags: source-seed, hf-blog
 - [[latest-open-artifacts-21-open-model-bonanza-gemma-4-deepseek-v4-kimi-k26-mimo-25]] — Latest open artifacts (#21): Open model bonanza! Gemma 4, DeepSeek V4, Kimi K2.6, MiMo 2.5, GLM-5.1 & others. On CAISI's V4 assessment. | tags: source-seed, interconnects
-- [[aligning-latent-geometry-for-spherical-flow-matching-in-image-generation]] — Aligning Latent Geometry for Spherical Flow Matching in Image Generation | tags: source-seed, hf-papers
 - [[atlas-agentic-or-latent-visual-reasoning-one-word-is-enough-for-both]] — ATLAS: Agentic or Latent Visual Reasoning? One Word is Enough for Both | tags: source-seed, hf-papers
 - [[entitybench-towards-entity-consistent-long-range-multi-shot-video-generation]] — EntityBench: Towards Entity-Consistent Long-Range Multi-Shot Video Generation | tags: source-seed, hf-papers
 - [[raven-real-time-autoregressive-video-extrapolation-with-consistency-model-grpo]] — RAVEN: Real-time Autoregressive Video Extrapolation with Consistency-model GRPO | tags: source-seed, hf-papers
@@ -437,9 +381,7 @@
 - [[kioxias-rising-shares-signal-japan-market-shift-from-autos-to-chips]] — Kioxia's rising shares signal Japan market shift from autos to chips | tags: source-seed, nikkei-asia
 - [[vietnams-workers-power-japan-inc-but-face-ai-risks-at-home]] — Vietnam's workers power Japan Inc but face AI risks at home | tags: source-seed, nikkei-asia
 - [[japans-fukuoka-blossoms-into-tech-hub-for-foreign-startups-local-it-firms]] — Japan's Fukuoka blossoms into tech hub for foreign startups, local IT firms | tags: source-seed, nikkei-asia
-- [[azure-iaas-defense-in-depth-built-on-secure-by-design-principles]] — Azure IaaS: Defense in depth built on secure-by-design principles | tags: source-seed, marketnews, microsoft-azure-blog
 - [[how-frontier-firms-are-rebuilding-the-operating-model-for-the-age-of-ai]] — How Frontier Firms are rebuilding the operating model for the age of AI | tags: source-seed, marketnews, microsoft-official-blog
-- [[scaling-cloud-and-ai-microsoft-azures-commitment-to-europes-digital-future]] — Scaling cloud and AI: Microsoft Azure’s commitment to Europe’s digital future | tags: source-seed, marketnews, microsoft-azure-blog
 - [[bessent-says-fx-volatility-undesirable-after-meeting-japans-takaichi]] — Bessent says FX volatility 'undesirable' after meeting Japan's Takaichi | tags: source-seed, nikkei-asia
 - [[japan-bearing-makers-nsk-ntn-agree-to-merge-into-worlds-top-player]] — Japan bearing makers NSK, NTN agree to merge into world's top player | tags: source-seed, nikkei-asia
 - [[japans-nidec-suspected-of-over-1000-cases-of-quality-tampering]] — Japan's Nidec suspected of over 1,000 cases of quality tampering | tags: source-seed, nikkei-asia
@@ -452,6 +394,7 @@
 - [[investment-theses]] — Investment Theses | tags: investment, ai-trends, decision-brain, thesis
 ## Personal
 
+- [[reflection-2026-W19]] — Reflection 2026-W19 | tags: reflection, weekly
 - [[current-beliefs]] — Current Beliefs | tags: decision-brain, beliefs, ai-trends, reskill, investing
 - [[open-questions]] — Open Questions | tags: decision-brain, questions, research-agenda
 - [[decisions]] — Decisions | tags: decision-brain, decisions, operating-log

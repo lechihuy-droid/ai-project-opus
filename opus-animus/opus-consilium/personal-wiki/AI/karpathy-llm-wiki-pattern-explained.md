@@ -1,4 +1,5 @@
 ---
+status: needs-review
 title: "Karpathy LLM Wiki Pattern Explained"
 topic: AI
 tags: ["llm", "karpathy", "wiki", "knowledge-base"]
@@ -6,7 +7,7 @@ sources: ["https://antigravity.codes/blog/karpathy-llm-wiki-idea-file", "https:/
 related: ["[[gpt-5-release-rumours]]", "[[github-ai-features-and-tools]]", "[[llm-wiki-agent-research]]"]
 confidence: medium
 created: 2026-04-28
-updated: 2026-04-28
+updated: 2026-05-30
 ---
 
 ## Summary

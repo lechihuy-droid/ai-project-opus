@@ -10,7 +10,7 @@ related: ["[[karpathy-llm-wiki-pattern]]", "[[karpathy-llm-wiki-pattern-explaine
 applied: ["Using LLMs to build personal knowledge bases for various topics of research interest"]
 open_questions: ["How can we effectively use LLMs to build and maintain personal knowledge bases?", "What are the potential applications of LLM knowledge bases in different fields?"]
 created: 2026-04-28
-updated: 2026-04-29
+updated: 2026-05-31
 ---
 
 # Karpathy's LLM Wiki: The Complete Guide to His Idea File
@@ -35,6 +35,9 @@ This concept can be applied to OPUS ANIMUS by using LLMs to build personal knowl
 ## Open Questions
 - How can we effectively use LLMs to build and maintain personal knowledge bases?
 - What are the potential applications of LLM knowledge bases in different fields?
+
+## Audit Note
+- 2026-05-31 - Retained as evergreen because it supports the Consilium wiki-agent operating model and maps to the tech learning lane.
 
 ## Applied
 - Used LLMs to build personal knowledge bases for various topics of research interest.

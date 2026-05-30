@@ -3,14 +3,14 @@ title: "Agentic Fusion of Large Atomic and Language Models to Accelerate Superco
 aliases: []
 topic: AI
 tags: [source-seed, hf-papers]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-04-30-agentic-fusion-of-large-atomic-and-language-models-to-accelerate-superconductors.md", "https://huggingface.co/papers/2604.23758"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # Agentic Fusion of Large Atomic and Language Models to Accelerate Superconductors Discovery

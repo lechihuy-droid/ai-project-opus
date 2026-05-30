@@ -1,4 +1,5 @@
 ---
+status: needs-review
 title: "DeepSeek-V4: A Million-Token Context for Agents"
 topic: AI
 tags: ["deepseek-v4", "llm", "agents"]
@@ -6,7 +7,7 @@ sources: ["https://huggingface.co/blog/deepseekv4"]
 related: ["[[llm-agents-2025]]", "[[llm-wiki-agent-research]]"]
 confidence: medium
 created: 2026-04-28
-updated: 2026-04-28
+updated: 2026-05-30
 ---
 
 ## Summary

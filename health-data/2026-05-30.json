@@ -42,6 +42,87 @@
       "total_saturated_fat": 10.5,
       "total_sodium_mg": 2800,
       "total_alcohol": 0
+    },
+    {
+      "time": "19:00",
+      "name": "Tối",
+      "source": "text",
+      "items": [
+        {
+          "name": "Bia (3 lon 330ml)",
+          "grams": 990,
+          "kcal": 420,
+          "protein": 4.5,
+          "carb": 30.0,
+          "fat": 0.0,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 0.0,
+          "sodium_mg": 45,
+          "alcohol": 39.0
+        },
+        {
+          "name": "Hoành thánh chiên mini (10 cái)",
+          "grams": 100,
+          "kcal": 350,
+          "protein": 10.0,
+          "carb": 35.0,
+          "fat": 18.0,
+          "sugar": 2.0,
+          "fiber": 1.0,
+          "saturated_fat": 5.0,
+          "sodium_mg": 500,
+          "alcohol": 0
+        },
+        {
+          "name": "Canh củ cải trắng (1 chén)",
+          "grams": 300,
+          "kcal": 30,
+          "protein": 2.0,
+          "carb": 6.0,
+          "fat": 0.5,
+          "sugar": 3.0,
+          "fiber": 1.0,
+          "saturated_fat": 0.1,
+          "sodium_mg": 500,
+          "alcohol": 0
+        },
+        {
+          "name": "Thịt gà (200g)",
+          "grams": 200,
+          "kcal": 240,
+          "protein": 38.0,
+          "carb": 0.0,
+          "fat": 8.0,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 2.0,
+          "sodium_mg": 100,
+          "alcohol": 0
+        },
+        {
+          "name": "Sườn heo hầm (3 miếng)",
+          "grams": 150,
+          "kcal": 250,
+          "protein": 20.0,
+          "carb": 2.0,
+          "fat": 18.0,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 7.0,
+          "sodium_mg": 200,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 1290,
+      "total_protein": 74.5,
+      "total_carb": 73.0,
+      "total_fat": 44.5,
+      "total_sugar": 5.0,
+      "total_fiber": 2.0,
+      "total_saturated_fat": 14.1,
+      "total_sodium_mg": 1345,
+      "total_alcohol": 39.0
     }
   ],
   "water_ml": 0,

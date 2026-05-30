@@ -1,0 +1,48 @@
+name: Nexus — Execute Calendar/Tasks command
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'nexus-commands/*.json'
+
+jobs:
+  exec:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2   # need HEAD~1 to diff changed files
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Detect new command files
+        id: changed
+        run: |
+          FILES=$(git diff --name-only HEAD~1 HEAD \
+            | grep '^nexus-commands/[^/]*\.json$' \
+            | tr '\n' ' ')
+          echo "files=$FILES" >> $GITHUB_OUTPUT
+          echo "Detected: $FILES"
+
+      - name: Execute commands
+        if: steps.changed.outputs.files != ''
+        env:
+          GOOGLE_CLIENT_ID:     ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+        run: node scripts/exec-command.js ${{ steps.changed.outputs.files }}
+
+      - name: Commit archived files
+        if: steps.changed.outputs.files != ''
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git add nexus-commands/processed/
+          git diff --cached --quiet && echo "Nothing to commit" && exit 0
+          git commit -m "nexus: archive processed commands"
+          git push

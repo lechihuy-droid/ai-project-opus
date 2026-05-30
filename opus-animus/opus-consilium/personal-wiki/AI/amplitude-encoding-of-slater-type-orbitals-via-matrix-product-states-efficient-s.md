@@ -3,14 +3,14 @@ title: "Amplitude Encoding of Slater-Type Orbitals via Matrix Product States: Ef
 aliases: []
 topic: AI
 tags: [source-seed, hf-papers]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-04-30-amplitude-encoding-of-slater-type-orbitals-via-matrix-product-states-efficient-s.md", "https://huggingface.co/papers/2604.26314"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # Amplitude Encoding of Slater-Type Orbitals via Matrix Product States: Efficient State Preparation and Integral Evaluation on Quantum Hardware

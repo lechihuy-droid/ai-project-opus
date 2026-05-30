@@ -3,14 +3,14 @@ title: "Auto-FlexSwitch: Efficient Dynamic Model Merging via Learnable Task Vect
 aliases: []
 topic: AI
 tags: [source-seed, hf-papers]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-05-01-auto-flexswitch-efficient-dynamic-model-merging-via-learnable-task-vector-compre.md", "https://huggingface.co/papers/2604.28109"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # Auto-FlexSwitch: Efficient Dynamic Model Merging via Learnable Task Vector Compression

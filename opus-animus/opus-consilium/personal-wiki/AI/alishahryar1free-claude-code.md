@@ -3,14 +3,14 @@ title: "Alishahryar1/free-claude-code"
 aliases: []
 topic: AI
 tags: [source-seed, github-trending-ai]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-04-30-alishahryar1-free-claude-code.md", "https://github.com/Alishahryar1/free-claude-code"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # Alishahryar1/free-claude-code

@@ -15,6 +15,7 @@ def _get_all_pages() -> list[Path]:
     return [
         p for p in wiki.rglob("*.md")
         if p.name not in ("SCHEMA.md", "INDEX.md", "log.md")
+        and "_archive" not in p.parts
     ]
 
 
