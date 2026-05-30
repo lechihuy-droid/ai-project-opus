@@ -1997,13 +1997,15 @@ function renderHealth(logs) {
 
 function renderInsight(shown, kcal, protein, fiber) {
   const tips = [];
+  let hasSevere = false;
   const proteinLeft = TARGET.protein - protein;
   const waterOk     = shown.water_ml > 0;
   const sleepOk     = shown.sleep_hours >= 7;
 
-  if (protein < TARGET.protein * 0.4)
+  if (protein < TARGET.protein * 0.4) {
+    hasSevere = true;
     tips.push(`💪 Protein chỉ đạt ${Math.round(protein)}g / ${TARGET.protein}g — bữa tối ưu tiên thịt/cá/trứng, tránh thêm carb`);
-  else if (proteinLeft > 30)
+  } else if (proteinLeft > 30)
     tips.push(`💪 Còn thiếu ${Math.round(proteinLeft)}g protein — thêm 1-2 phần thịt hoặc trứng`);
 
   if (!waterOk)
@@ -2018,7 +2020,21 @@ function renderInsight(shown, kcal, protein, fiber) {
   if (!sleepOk && shown.sleep_hours > 0)
     tips.push(`😴 Ngủ ${shown.sleep_hours}h — dưới mục tiêu, ảnh hưởng phục hồi và kiểm soát cân nặng`);
 
-  return renderInsightCard('Nhận xét hôm nay', tips);
+  const status = hasSevere ? 'bad' : (tips.length > 0 ? 'warn' : 'good');
+  const icon = status === 'good' ? '✅' : (status === 'warn' ? '⚠️' : '🔴');
+  const statusClass = status === 'good' ? '' : ` ${status}`;
+  const body = tips.length === 0
+    ? 'Đang đi đúng hướng hôm nay 🌿'
+    : tips.length === 1 ? tips[0] : `${tips.length} điểm cần lưu ý hôm nay`;
+  const tipsHtml = tips.length > 1
+    ? `<div class="ih-tips">${tips.map(t => `<div class="ih-tip">• ${esc(t)}</div>`).join('')}</div>`
+    : '';
+
+  return `<div class="insight2${statusClass}">
+    <div class="ih"><span>${icon}</span><span>Nhận xét hôm nay</span></div>
+    <p>${esc(body)}</p>
+    ${tipsHtml}
+  </div>`;
 }
 
 function renderDayAcc(l, open) {
