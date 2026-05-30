@@ -104,7 +104,7 @@ html, body {
 .rtab.active { background: var(--vita-surface-raised); color: var(--vita-text); box-shadow: 0 1px 3px rgba(0,0,0,.3); }
 
 /* ── Content ── */
-.content { padding: var(--vita-page-pad) var(--vita-page-pad) calc(40px + env(safe-area-inset-bottom, 0px)); }
+.content { padding: var(--vita-page-pad) var(--vita-page-pad) calc(84px + env(safe-area-inset-bottom, 0px)); }
 
 /* ── Bento grid ── */
 .bento { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--vita-gap); }
@@ -388,27 +388,32 @@ canvas { display: block; }
         <button class="pat-btn" onclick="resetPat()">🔑</button>
       </div>
     </div>
-    <div class="nav-tabs">
-      <button class="nav-tab active" id="nv-today"    onclick="showView('today')">Today</button>
-      <button class="nav-tab"        id="nv-vita"     onclick="showView('vita')">Vita</button>
-      <button class="nav-tab"        id="nv-calendar" onclick="showView('calendar')">Calendar</button>
-      <button class="nav-tab"        id="nv-actions"  onclick="showView('actions')">Actions</button>
-    </div>
-    <div class="mod-tabs" id="mod-tabs" style="display:none">
-      <button class="mtab active" id="mt-health"  onclick="showTab('health')">🌿 Sức khỏe</button>
-      <button class="mtab"        id="mt-workout" onclick="showTab('workout')">💪 Tập luyện</button>
-      <button class="mtab"        id="mt-finance" onclick="showTab('finance')">💰 Tài chính</button>
-    </div>
-    <div class="range-row" id="range-row" style="display:none">
-      <button class="rtab active" onclick="setRange(7,this)">7 ngày</button>
-      <button class="rtab"        onclick="setRange(14,this)">14 ngày</button>
-      <button class="rtab"        onclick="setRange(30,this)">30 ngày</button>
-      <button class="rtab"        onclick="setRange(90,this)">3 tháng</button>
-    </div>
   </div>
   <div class="content" id="content">
     <div class="loading"><span class="spin">🌿</span>Đang tải...</div>
   </div>
+  <button class="fab" onclick="goPlanWeek()" aria-label="Plan My Week" title="Plan My Week">
+    <svg viewBox="0 0 256 256"><use href="#i-spark"/></svg>
+  </button>
+  <nav class="botnav">
+    <button class="bn active" id="nv-today" onclick="showView('today')">
+      <svg viewBox="0 0 256 256"><use class="ic-line" href="#i-home"/><use class="ic-fill" href="#i-home-fill"/></svg>
+      <span class="bn-lbl">Today</span>
+    </button>
+    <button class="bn" id="nv-vita" onclick="showView('vita')">
+      <svg viewBox="0 0 256 256"><use href="#i-vita"/></svg>
+      <span class="bn-lbl">Vita</span>
+    </button>
+    <button class="bn" id="nv-calendar" onclick="showView('calendar')">
+      <svg viewBox="0 0 256 256"><use class="ic-line" href="#i-cal"/><use class="ic-fill" href="#i-cal-fill"/></svg>
+      <span class="bn-lbl">Calendar</span>
+    </button>
+    <button class="bn" id="nv-actions" onclick="showView('actions')">
+      <svg viewBox="0 0 256 256"><use class="ic-line" href="#i-tray"/><use class="ic-fill" href="#i-tray-fill"/></svg>
+      <span class="bn-lbl">Approval</span>
+      <span class="bn-badge" id="approval-badge" style="display:none"></span>
+    </button>
+  </nav>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -501,13 +506,17 @@ function showTab(tab) {
 }
 function showView(view) {
   currentView = view;
-  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.botnav .bn').forEach(b => b.classList.remove('active'));
   document.getElementById('nv-'+view).classList.add('active');
-  // Vita sub-controls (module tabs + range) chỉ hiện trong view Vita
-  const inVita = view === 'vita';
-  document.getElementById('mod-tabs').style.display  = inVita ? 'flex' : 'none';
-  document.getElementById('range-row').style.display = inVita ? 'flex' : 'none';
+  // Vita sub-controls (module tabs + range) render trong content, xem renderVitaControls()
   renderContent();
+}
+function goPlanWeek() {
+  showView('actions');
+  setTimeout(() => {
+    const el = document.getElementById('plan-my-week');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 60);
 }
 
 async function reload() {
@@ -528,15 +537,33 @@ async function reload() {
       `<div class="err">❌ Lỗi tải dữ liệu:<br><strong>${e.message}</strong><br><br>Kiểm tra PAT hoặc kết nối mạng. <span style="text-decoration:underline;cursor:pointer" onclick="resetPat()">Đổi PAT</span></div>`;
   }
 }
+// Vita sub-controls (module tabs + range) — render trong content; active đọc từ state
+function renderVitaControls() {
+  const mt = (tab,label) => `<button class="mtab${currentTab===tab?' active':''}" id="mt-${tab}" onclick="showTab('${tab}')">${label}</button>`;
+  const rt = (n,label)   => `<button class="rtab${currentRange===n?' active':''}" onclick="setRange(${n},this)">${label}</button>`;
+  return `<div class="vita-controls">
+    <div class="mod-tabs">${mt('health','🌿 Sức khỏe')}${mt('workout','💪 Tập luyện')}${mt('finance','💰 Tài chính')}</div>
+    <div class="range-row">${rt(7,'7 ngày')}${rt(14,'14 ngày')}${rt(30,'30 ngày')}${rt(90,'3 tháng')}</div>
+  </div>`;
+}
+function updateApprovalBadge() {
+  const el = document.getElementById('approval-badge');
+  if (!el) return;
+  const n = pendingProposals.filter(ev => !ev.approved).length;
+  if (n > 0) { el.textContent = n; el.style.display = 'flex'; }
+  else { el.style.display = 'none'; }
+}
 function renderContent() {
+  updateApprovalBadge();
   const el = document.getElementById('content');
   if (currentView === 'today')    { el.innerHTML = renderToday(); return; }
   if (currentView === 'calendar') { el.innerHTML = renderCalendarTab(); return; }
   if (currentView === 'actions')  { el.innerHTML = renderActionsTab(); return; }
   // Vita module
-  if (currentTab==='health')  { el.innerHTML=renderHealth(cHealth);   setTimeout(()=>drawHealth(cHealth),30); }
-  if (currentTab==='workout') { el.innerHTML=renderWorkout(cWorkout); setTimeout(()=>drawWorkout(cWorkout),30); }
-  if (currentTab==='finance') { el.innerHTML=renderFinance(cFinance); setTimeout(()=>drawFinance(cFinance),30); }
+  const vc = renderVitaControls();
+  if (currentTab==='health')  { el.innerHTML=vc+renderHealth(cHealth);   setTimeout(()=>drawHealth(cHealth),30); }
+  if (currentTab==='workout') { el.innerHTML=vc+renderWorkout(cWorkout); setTimeout(()=>drawWorkout(cWorkout),30); }
+  if (currentTab==='finance') { el.innerHTML=vc+renderFinance(cFinance); setTimeout(()=>drawFinance(cFinance),30); }
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1329,7 +1356,7 @@ function clearProposals() {
 }
 
 function renderPlanMyWeek() {
-  return `<div class="brief-card">
+  return `<div class="brief-card" id="plan-my-week">
     <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">
       <div>
         <div class="brief-greeting">Plan My Week</div>
