@@ -372,8 +372,9 @@ const CONFIG = {
     clientId: '574840915293-me5v64tsagtloeou1fp6e738dief7imo.apps.googleusercontent.com',
     apiKey: 'AIzaSyBG5rFyxnqYfPMbSPqh-WYctIZctxPwEdA',
     discoveryDoc: 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
+    tasksDiscoveryDoc: 'https://tasks.googleapis.com/$discovery/rest?version=v1',
     readScopes: 'https://www.googleapis.com/auth/calendar.readonly',
-    writeScopes: 'https://www.googleapis.com/auth/calendar.events'
+    writeScopes: 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/tasks'
   }
 };
 const TARGET = CONFIG.target;
@@ -604,6 +605,18 @@ function renderInsightCard(title, tips, options={}) {
 function renderProposalCard(ev, selected=false, idx=null) {
   const errors = ev.errors || [];
   if (idx !== null && editingIdx === idx) return renderProposalEditor(ev, idx);
+  if (ev.kind === 'task') {
+    return `<div class="proposal-card ${selected ? 'selected' : ''}">
+      <input class="proposal-select" type="checkbox" ${selected ? 'checked' : ''} ${errors.length ? 'disabled' : ''} ${idx===null ? '' : `onchange="toggleProposal(${idx}, this.checked)"`}>
+      <div style="flex:1;min-width:0">
+        <div class="proposal-title">${esc(ev.title || 'Untitled task')}</div>
+        <div class="proposal-time">${ev.due ? `📋 Hạn: ${esc(formatDueLabel(ev.due))}` : '📋 Việc cần làm · không hạn'}</div>
+        <span class="proposal-type">task</span>
+        ${errors.length ? `<div class="proposal-errors">${errors.map(esc).join('<br>')}</div>` : ''}
+      </div>
+      ${idx===null ? '' : `<button class="proposal-edit" onclick="startEdit(${idx})" title="Sửa">✏️</button>`}
+    </div>`;
+  }
   const dur = formatDuration(ev);
   return `<div class="proposal-card ${selected ? 'selected' : ''}">
     <input class="proposal-select" type="checkbox" ${selected ? 'checked' : ''} ${errors.length ? 'disabled' : ''} ${idx===null ? '' : `onchange="toggleProposal(${idx}, this.checked)"`}>
@@ -619,6 +632,26 @@ function renderProposalCard(ev, selected=false, idx=null) {
 }
 
 function renderProposalEditor(ev, idx) {
+  if (ev.kind === 'task') {
+    return `<div class="proposal-card editing">
+      <div class="edit-row" style="margin-bottom:8px">
+        <label>Tên</label>
+        <input class="edit-field" id="ed-title-${idx}" value="${esc(ev.title || '')}">
+      </div>
+      <div class="edit-row" style="margin-bottom:8px">
+        <label>Hạn</label>
+        <input class="edit-field" id="ed-due-${idx}" type="date" value="${esc(ev.due || '')}">
+      </div>
+      <div class="edit-row" style="margin-bottom:10px">
+        <label>Ghi chú</label>
+        <input class="edit-field" id="ed-notes-${idx}" value="${esc(ev.notes || '')}">
+      </div>
+      <div class="btn-row" style="margin-top:0">
+        <button class="action-btn secondary-btn" onclick="saveEdit(${idx})">Lưu</button>
+        <button class="action-btn danger-btn" onclick="cancelEdit()">Huỷ</button>
+      </div>
+    </div>`;
+  }
   const typeOpts = ALLOWED_TYPES.map(t => `<option value="${t}" ${ev.type===t?'selected':''}>${t}</option>`).join('');
   return `<div class="proposal-card editing">
     <div class="edit-row" style="margin-bottom:8px">
@@ -655,6 +688,17 @@ function startEdit(idx) { editingIdx = idx; renderContent(); }
 function cancelEdit() { editingIdx = null; renderContent(); }
 function saveEdit(idx) {
   const g = id => document.getElementById(id);
+  const cur = pendingProposals[idx];
+  if (cur && cur.kind === 'task') {
+    cur.title = g(`ed-title-${idx}`)?.value || '';
+    cur.due   = normalizeDueDate(g(`ed-due-${idx}`)?.value || '');
+    cur.notes = g(`ed-notes-${idx}`)?.value || '';
+    cur.errors = validateProposal(cur).errors;
+    if (cur.errors.length) selectedIdx.delete(idx);
+    editingIdx = null;
+    renderContent();
+    return;
+  }
   const title = g(`ed-title-${idx}`)?.value || '';
   const type  = g(`ed-type-${idx}`)?.value || 'personal_admin';
   const start = g(`ed-start-${idx}`)?.value || '';  // "2026-05-31T20:00" (JST wall-clock)
@@ -688,7 +732,7 @@ async function initGapiClient() {
   });
   await gapi.client.init({
     apiKey: CONFIG.google.apiKey,
-    discoveryDocs: [CONFIG.google.discoveryDoc]
+    discoveryDocs: [CONFIG.google.discoveryDoc, CONFIG.google.tasksDiscoveryDoc]
   });
   gapiReady = true;
   applyGoogleToken();
@@ -940,9 +984,9 @@ function renderActionsTab() {
     <div class="stitle">Paste proposal JSON</div>
     <div class="brief-card">
       <div style="font-size:13px;color:var(--vita-muted);line-height:1.55;margin-bottom:10px">
-        Paste JSON dạng <code>{ "summary": "...", "events": [...] }</code>. App validate trước, không ghi calendar cho tới khi tick event và bấm Approve.
+        Paste JSON dạng <code>{ "summary": "...", "events": [...], "tasks": [...] }</code>. App validate trước, không ghi Calendar/Tasks cho tới khi tick mục và bấm Approve.
       </div>
-      <textarea id="proposal-input" class="nexus-input" placeholder='{"summary":"...","events":[{"title":"Walk","start":"2026-05-30T18:30:00+09:00","end":"2026-05-30T19:00:00+09:00","type":"walk"}]}'>${esc(proposalText)}</textarea>
+      <textarea id="proposal-input" class="nexus-input" placeholder='{"summary":"...","events":[{"title":"Walk","start":"2026-05-30T18:30:00+09:00","end":"2026-05-30T19:00:00+09:00","type":"walk"}],"tasks":[{"title":"Đặt lịch khám","due":"2026-06-02"}]}'>${esc(proposalText)}</textarea>
       <div class="btn-row">
         <button class="action-btn secondary-btn" onclick="validateProposalInput()">Validate</button>
         <button class="action-btn danger-btn" onclick="clearProposals()">Clear</button>
@@ -980,11 +1024,12 @@ function parseProposals(text) {
   } catch (e) {
     throw new Error('JSON không hợp lệ — copy lại đúng phần JSON từ LLM (gồm cả dấu { } đầu cuối).');
   }
-  const events = Array.isArray(raw) ? raw : raw.events;
-  if (!Array.isArray(events)) throw new Error('JSON phải là array hoặc object có events[].');
+  const events = Array.isArray(raw) ? raw : (Array.isArray(raw.events) ? raw.events : []);
+  const tasks  = Array.isArray(raw) ? [] : (Array.isArray(raw.tasks) ? raw.tasks : []);
+  if (!events.length && !tasks.length) throw new Error('JSON cần có events[] hoặc tasks[].');
   return {
     summary: Array.isArray(raw) ? '' : (raw.summary || ''),
-    events: events.map(normalizeProposal)
+    items: [...events.map(normalizeProposal), ...tasks.map(normalizeTask)]
   };
 }
 
@@ -992,6 +1037,7 @@ function normalizeProposal(ev) {
   const start = normalizeDateTime(ev.start || ev.start_time || ev.dateTime);
   const end = normalizeDateTime(ev.end || ev.end_time);
   return {
+    kind: 'event',
     title: ev.title || ev.summary || '',
     start,
     end,
@@ -999,6 +1045,22 @@ function normalizeProposal(ev) {
     description: ev.description || ev.notes || '',
     location: ev.location || ''
   };
+}
+
+function normalizeTask(t) {
+  return {
+    kind: 'task',
+    title: t.title || t.summary || '',
+    due: normalizeDueDate(t.due || t.date || t.due_date || ''),
+    notes: t.notes || t.description || ''
+  };
+}
+
+// Google Tasks stores date only — coerce any input to YYYY-MM-DD (or '').
+function normalizeDueDate(v) {
+  if (!v) return '';
+  const m = String(v).match(/^(\d{4}-\d{2}-\d{2})/);
+  return m ? m[1] : '';
 }
 
 function validateProposalInput(textOverride) {
@@ -1012,7 +1074,7 @@ function validateProposalInput(textOverride) {
   approvalResults = [];
   try {
     const parsed = parseProposals(proposalText);
-    pendingProposals = parsed.events.map(ev => ({ ...ev, errors: validateProposal(ev, calEvents).errors }));
+    pendingProposals = parsed.items.map(ev => ({ ...ev, errors: validateProposal(ev, calEvents).errors }));
     selectedIdx = new Set(pendingProposals.map((ev, idx) => ev.errors.length ? null : idx).filter(v => v !== null));
   } catch (e) {
     pendingProposals = [];
@@ -1023,6 +1085,12 @@ function validateProposalInput(textOverride) {
 }
 
 function validateProposal(ev, existing=[]) {
+  if (ev.kind === 'task') {
+    const terrors = [];
+    if (!ev.title?.trim()) terrors.push('title required');
+    if (ev.due && !/^\d{4}-\d{2}-\d{2}$/.test(ev.due)) terrors.push('due must be YYYY-MM-DD');
+    return { ok: terrors.length === 0, errors: terrors };
+  }
   const errors = [];
   if (!ev.title?.trim()) errors.push('title required');
   if (!ev.start) errors.push('start required');
@@ -1056,7 +1124,7 @@ function renderProposalPreview() {
     <div style="display:flex;flex-direction:column;gap:var(--vita-gap)">
       ${pendingProposals.map((ev, idx) => renderProposalCard(ev, selectedIdx.has(idx), idx)).join('')}
     </div>
-    <button class="action-btn" onclick="approveSelected()" style="margin-top:var(--vita-gap)" ${selectedIdx.size ? '' : 'disabled'}>Approve ${selectedIdx.size} event</button>`;
+    <button class="action-btn" onclick="approveSelected()" style="margin-top:var(--vita-gap)" ${selectedIdx.size ? '' : 'disabled'}>Approve ${selectedIdx.size} mục</button>`;
 }
 
 function toggleProposal(idx, checked) {
@@ -1087,7 +1155,8 @@ async function approveSelected() {
         continue;
       }
       try {
-        await insertCalendarEvent(ev);
+        if (ev.kind === 'task') await insertTask(ev);
+        else await insertCalendarEvent(ev);
         approvalResults.push({ ok:true, title:ev.title });
       } catch (e) {
         approvalResults.push({ ok:false, title:ev.title, error:e.message });
@@ -1112,6 +1181,17 @@ async function insertCalendarEvent(ev) {
     extendedProperties: { private: { source: 'opus-nexus', type: ev.type || 'personal_admin' } }
   };
   return gapi.client.calendar.events.insert({ calendarId: 'primary', resource });
+}
+
+async function insertTask(t) {
+  await initGapiClient();
+  const resource = {
+    title: t.title,
+    notes: [t.notes, 'Created by Opus Nexus'].filter(Boolean).join('\n\n')
+  };
+  // Google Tasks expects RFC3339; only the date portion is honoured.
+  if (t.due) resource.due = new Date(t.due + 'T00:00:00.000Z').toISOString();
+  return gapi.client.tasks.tasks.insert({ tasklist: '@default', resource });
 }
 
 function renderApprovalResults() {
@@ -1245,7 +1325,7 @@ function buildPlanPrompt(ctx) {
   const mealDays = (pref.preferred_meal_prep_days || []).join(', ') || 'cuối tuần';
 
   return `You are the planning engine for Opus Nexus, a personal life dashboard.
-Plan a realistic, low-stress week of calendar events for ONE person.
+Plan a realistic, low-stress week for ONE person. Output BOTH timed calendar events AND to-dos (Google Tasks).
 
 ## OUTPUT — return ONLY raw JSON, no markdown, no commentary:
 {
@@ -1259,15 +1339,27 @@ Plan a realistic, low-stress week of calendar events for ONE person.
       "description": "1 câu: vì sao xếp event này (tiếng Việt)",
       "location": ""
     }
+  ],
+  "tasks": [
+    {
+      "title": "ngắn gọn, tiếng Việt",
+      "due": "YYYY-MM-DD",
+      "notes": "1 câu: ngữ cảnh (tiếng Việt)"
+    }
   ]
 }
 
+## EVENT vs TASK — phân loại đúng:
+- "events" = việc CÓ khung giờ cố định, chiếm 1 slot trên lịch (tập gym 18:00, ngủ, deep work 2 tiếng).
+- "tasks" = việc cần làm nhưng KHÔNG ràng buộc giờ cụ thể, chỉ cần xong trong ngày (đặt lịch khám, mua thực phẩm, uống vitamin, gọi điện). Dùng "due" là hạn chót (chỉ ngày, không giờ).
+- Nếu một việc không cần ngồi vào đúng một khung giờ → để ở "tasks", đừng nhồi vào lịch.
+
 ## HARD RULES (vi phạm = bị app từ chối):
-1. Mọi start/end PHẢI có đủ ngày + giờ + offset +09:00 (Asia/Tokyo). KHÔNG dùng date-only.
-2. start < end. Mỗi event <= 3 giờ, TRỪ type "sleep_protection".
-3. KHÔNG trùng giờ với các sự kiện đang có (liệt kê ở Busy days). Sự kiện "cả ngày" KHÔNG chặn giờ — nhưng ngày đó đang bận, nên hạn chế xếp việc nặng.
-4. Chỉ xếp event TỪ NGÀY MAI trở đi (hôm nay là ${ctx.date}). Lên kế hoạch cho 7 ngày tới.
-5. type phải nằm trong danh sách trên.
+1. EVENT: mọi start/end PHẢI có đủ ngày + giờ + offset +09:00 (Asia/Tokyo). KHÔNG dùng date-only.
+2. EVENT: start < end. Mỗi event <= 3 giờ, TRỪ type "sleep_protection".
+3. EVENT: KHÔNG trùng giờ với các sự kiện đang có (liệt kê ở Busy days). Sự kiện "cả ngày" KHÔNG chặn giờ — nhưng ngày đó đang bận, nên hạn chế xếp việc nặng.
+4. Chỉ xếp event/task TỪ NGÀY MAI trở đi (hôm nay là ${ctx.date}). Lên kế hoạch cho 7 ngày tới.
+5. EVENT: type phải nằm trong danh sách trên. TASK: "due" theo dạng YYYY-MM-DD (hoặc bỏ trống nếu không có hạn).
 
 ## SOFT GUIDANCE (làm cho kế hoạch tốt hơn):
 - Ưu tiên ÍT mà chất: 4-7 event/tuần, đừng nhồi.
@@ -1322,6 +1414,12 @@ function formatDuration(ev) {
   const h = Math.floor(mins / 60), m = mins % 60;
   return h ? (m ? `${h}h${String(m).padStart(2,'0')}` : `${h}h`) : `${m} phút`;
 }
+function formatDueLabel(due) {
+  const d = new Date(due + 'T00:00:00');
+  if (isNaN(d)) return due;
+  return d.toLocaleDateString(CONFIG.locale, { weekday: 'short', day: '2-digit', month: '2-digit' });
+}
+
 function formatProposalTime(ev) {
   const a = jstParts(ev.start), b = jstParts(ev.end);
   if (!a) return ev.start ? esc(ev.start) : 'chưa có giờ';
