@@ -1,0 +1,22 @@
+{
+  "goals": [
+    {
+      "id": "health-baseline",
+      "label": "Maintain health baseline",
+      "priority": 1,
+      "metric": "protein, sleep, walking consistency"
+    },
+    {
+      "id": "deep-work",
+      "label": "Protect deep work blocks",
+      "priority": 2,
+      "metric": "focused sessions per week"
+    },
+    {
+      "id": "weekly-review",
+      "label": "Close the weekly review loop",
+      "priority": 3,
+      "metric": "one review block per week"
+    }
+  ]
+}
