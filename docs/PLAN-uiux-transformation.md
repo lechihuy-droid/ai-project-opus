@@ -181,3 +181,27 @@ Report UX/UI chuyên sâu được rà với code thật. Kết quả:
 - **Plan My Week → FAB + bottom-sheet trong Calendar** (thay vì nút tĩnh trong Approval tab): thay đổi thiết kế lớn hơn [A.4].
 
 > Ba mục 7.4 đều cần JS UI mới + phụ thuộc quirk Safari → không nằm trong "review HTML/CSS/render" thuần. Chờ user đồng ý mở scope.
+
+---
+
+## 8. Research addendum 2 (2026-05-30) — Bento mobile, semantic color, empty states
+
+Deep-dive thứ 2 (Bento grid mobile + dark-OLED color). Phần dùng được:
+
+### 8.1 🆕 Nguyên lý màu trên OLED nền siêu tối — lời giải cụ thể cho [E.17]+[E.18]
+- **Quy tắc vàng:** trên `#090A0F`, **chữ nhỏ (10–12px) KHÔNG dùng màu chức năng bão hoà** (gây "vibrate", mỏi mắt, tương phản yếu) → **text = xám trung tính** (`#E5E5EA` ~ trắng 86%, đã gần với `--vita-text`); **chỉ đổ màu rực lên đồ hoạ**: icon, viền ring, thanh bar, chấm trạng thái.
+- Áp dụng: rà các chỗ đang tô màu chức năng lên *chữ* (vd `metric-hero-val` đang `style="color:var(--vita-energy)"`, `da-kcal`, `mi-kcal` màu green…) → cân nhắc chuyển số về neutral, giữ màu ở pbar/ring/icon. Giảm bão hoà (desaturate) các token nếu cần (Apple HIG / Material 3 Dark).
+- *Lưu ý:* bảng contrast trong report tính trên nền `#12131A`, app dùng `#151720` — dùng nguyên lý, không bê số tuyệt đối; nếu cần thì đo lại bằng APCA/WCAG.
+
+### 8.2 Bento mobile = 2 cột (không 4) — refine [E.20]/[B.5]
+- `.bento` hiện là `repeat(4,1fr)` → ô 1x1 ~95px, chật cho số 28px. **Đổi base về 2-col + dùng `.span*`** (đã có sẵn). Today (`metric-grid`) vốn đã 2-col → ổn.
+- **Layout Today bất đối xứng (spec cụ thể):** Kcal = hero `span2` (thanh ngang dài) · Protein + Steps = `span1` (ring đồng tâm) · Sleep = `span2` (cột mini). Hiện thực hoá "Size = Hierarchy".
+
+### 8.3 Empty state = CTA tile, không phá grid — mở rộng [D.16]
+- Ô Bento trống / chưa connect Google → biến thành **khối CTA tương tác** ("Kết nối →") thay vì banner lỗi dạng list. Giữ nguyên grid bo tròn.
+
+### 8.4 ✅ Validate lựa chọn hiện tại — KHÔNG đổi
+- **Proposal dùng vertical scroll list** (đang làm) **thắng** Tinder-swipe: quét toàn cảnh, dễ undo, đỡ mỏi tay. → Giữ nguyên, không chuyển swipe.
+
+### 8.5 Inspiration keywords (Mobbin/Behance/Dribbble)
+- "mobile bento grid health", "AI input vertical approval flow", "iOS segmented control dark", "dark mode dashboard onboarding empty state".
