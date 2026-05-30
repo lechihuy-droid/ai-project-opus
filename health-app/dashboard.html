@@ -258,14 +258,27 @@ canvas { display: block; }
 .badge.red   { background: rgba(255,69,58,.18);  color: var(--vita-energy); }
 
 /* ── Day accordion ── */
+.week-acc { background: var(--vita-surface); border: 1px solid var(--vita-line); border-radius: var(--vita-radius-lg); margin-bottom: 8px; overflow: hidden; }
+.week-acc summary { list-style: none; cursor: pointer; padding: 13px 14px; min-height: 64px; display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; align-items: center; user-select: none; -webkit-tap-highlight-color: transparent; }
+.week-acc summary::-webkit-details-marker { display: none; }
+.week-acc summary:active { background: rgba(255,255,255,.03); }
+.wh-title { font-size: 14px; font-weight: 800; color: var(--vita-text); }
+.wh-range { font-size: var(--fs-cap); color: var(--vita-muted); font-weight: 600; margin-top: 2px; }
+.wh-kcal { font-size: 16px; font-weight: 800; color: var(--vita-text); text-align: right; white-space: nowrap; }
+.wh-kcal small { display: block; font-size: var(--fs-cap); color: var(--vita-muted); font-weight: 600; margin-top: 2px; }
+.wh-meta { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; }
+.wh-pill { min-width: 0; border-radius: 9px; background: rgba(255,255,255,.045); padding: 6px 7px; font-size: var(--fs-cap); color: var(--vita-muted); font-weight: 700; line-height: 1.25; }
+.wh-pill strong { display: block; color: var(--vita-text); font-size: 12px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.week-body { border-top: 1px solid var(--vita-line); padding: 6px 8px 8px; background: rgba(0,0,0,.08); }
 .day-acc { background: var(--vita-surface); border-radius: var(--vita-radius-md); margin-bottom: 7px; overflow: hidden; }
-.day-acc summary { list-style: none; cursor: pointer; padding: 12px 14px; min-height: var(--tap-min); display: flex; align-items: center; gap: 10px; user-select: none; -webkit-tap-highlight-color: transparent; }
+.week-body .day-acc { background: rgba(255,255,255,.035); border-radius: 10px; margin-bottom: 6px; }
+.day-acc summary { list-style: none; cursor: pointer; padding: 10px 12px; min-height: var(--tap-min); display: flex; align-items: center; gap: 10px; user-select: none; -webkit-tap-highlight-color: transparent; }
 .day-acc summary::-webkit-details-marker { display: none; }
 .day-acc summary:active { background: rgba(255,255,255,.03); }
 .da-date  { font-size: 13px; font-weight: 700; flex: 1; }
 .da-meta  { font-size: 11px; color: var(--vita-muted); }
-.da-kcal  { font-size: 14px; font-weight: 800; color: var(--vita-text); }
-.da-chev  { font-size: 13px; color: var(--vita-faint); transition: transform .2s; }
+.da-kcal  { font-size: 13px; font-weight: 800; color: var(--vita-text); }
+.da-chev  { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,.045); color: var(--vita-faint); display: grid; place-items: center; font-size: 12px; transition: transform .2s; flex-shrink: 0; }
 .day-acc[open] .da-chev { transform: rotate(180deg); }
 .da-body  { padding: 0 14px 10px; border-top: 1px solid var(--vita-line); }
 
@@ -1991,8 +2004,8 @@ function renderHealth(logs) {
     </div>
   </div>
 
-  <div class="stitle">Bữa ăn gần đây</div>
-  ${logs.map((l,i) => renderDayAcc(l, i===0)).join('')}`;
+  <div class="stitle">Tổng kết dinh dưỡng</div>
+  ${renderNutritionHistory(logs)}`;
 }
 
 function renderInsight(shown, kcal, protein, fiber) {
@@ -2069,6 +2082,73 @@ function renderDayAcc(l, open) {
       <span class="da-chev">▾</span>
     </summary>
     <div class="da-body">${mealRows || '<div style="color:var(--vita-faint);font-size:13px;padding:8px 0">Chưa có bữa nào</div>'}</div>
+  </details>`;
+}
+
+function renderNutritionHistory(logs) {
+  const weeks = groupLogsByWeek(logs);
+  return weeks.map(week => renderWeekAcc(week)).join('');
+}
+
+function groupLogsByWeek(logs) {
+  const map = new Map();
+  logs.forEach(log => {
+    const start = weekStart(log.date);
+    const key = isoLocal(start);
+    const end = addDays(start, 6);
+    if (!map.has(key)) map.set(key, { start, end, logs: [] });
+    map.get(key).logs.push(log);
+  });
+  return [...map.values()]
+    .map(week => ({ ...week, logs: week.logs.sort((a, b) => b.date.localeCompare(a.date)) }))
+    .sort((a, b) => isoLocal(b.start).localeCompare(isoLocal(a.start)));
+}
+
+function weekStart(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00');
+  const day = d.getDay() || 7;
+  d.setDate(d.getDate() - day + 1);
+  return d;
+}
+
+function weekLabel(start, end) {
+  const today = new Date();
+  const thisStart = weekStart(isoLocal(today));
+  const prevStart = addDays(thisStart, -7);
+  const key = isoLocal(start);
+  if (key === isoLocal(thisStart)) return 'Tuần này';
+  if (key === isoLocal(prevStart)) return 'Tuần trước';
+  return `${fmt(isoLocal(start))} - ${fmt(isoLocal(end))}`;
+}
+
+function renderWeekAcc(week) {
+  const logs = week.logs;
+  const days = logs.length;
+  const avgKcal = avg(logs, totalKcal);
+  const proteinHit = logs.filter(l => totalMacro(l, 'protein') >= TARGET.protein).length;
+  const fiberLow = logs.filter(l => totalMacro(l, 'fiber') < TARGET.fiber * 0.6).length;
+  const outlier = logs
+    .map(l => ({ log: l, delta: Math.abs(totalKcal(l) - TARGET.kcal) }))
+    .sort((a, b) => b.delta - a.delta)[0]?.log;
+  const outlierText = outlier ? `${fmt(outlier.date)} · ${totalKcal(outlier).toLocaleString()} kcal` : '—';
+  const proteinText = `${proteinHit}/${days} ngày`;
+  const fiberText = fiberLow > 0 ? `${fiberLow}/${days} thấp` : 'ổn';
+  const dayRows = logs.map(l => renderDayAcc(l, false)).join('');
+
+  return `<details class="week-acc">
+    <summary>
+      <div>
+        <div class="wh-title">${weekLabel(week.start, week.end)}</div>
+        <div class="wh-range">${fmt(isoLocal(week.start))} - ${fmt(isoLocal(week.end))} · ${days} ngày có log</div>
+      </div>
+      <div class="wh-kcal">${Math.round(avgKcal).toLocaleString()}<small>kcal/ngày</small></div>
+      <div class="wh-meta">
+        <div class="wh-pill">Protein đạt<strong>${proteinText}</strong></div>
+        <div class="wh-pill">Fiber<strong>${fiberText}</strong></div>
+        <div class="wh-pill">Lệch nhất<strong>${outlierText}</strong></div>
+      </div>
+    </summary>
+    <div class="week-body">${dayRows}</div>
   </details>`;
 }
 
