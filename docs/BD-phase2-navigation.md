@@ -1,6 +1,6 @@
 # BD — Build Plan: Opus Nexus UI/UX — Phase 2 (Navigation)
 **Date:** 2026-05-30
-**Status:** 🔵 Planning
+**Status:** ✅ Done (commits 2d8e891…HEAD · static verify pass)
 **Ref:** `docs/PLAN-uiux-transformation.md` (review A–G + §6 LOCKED + §7/§8 addenda), `docs/BD-phase1-foundation.md`, mockups `docs/mockup-bottom-nav-icons.html` + `docs/mockup-today-redesign.html`
 **Estimate:** ~3–4 giờ
 **Target file:** `health-app/dashboard.html` (single file)

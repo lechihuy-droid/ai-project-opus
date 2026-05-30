@@ -270,13 +270,13 @@ canvas { display: block; }
 .bn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: var(--tap-min); padding: 7px 2px; position: relative; background: none; border: none; border-radius: 16px; cursor: pointer; font-family: inherit; transition: transform .2s, background .2s; }
 .bn svg { width: 24px; height: 24px; display: block; fill: var(--vita-faint); transition: fill .2s; }
 .bn .ic-fill { display: none; }
-.bn-lbl { font-size: 10px; font-weight: 700; color: var(--vita-faint); letter-spacing: .2px; transition: color .2s; }
+.bn-lbl { font-size: var(--fs-cap); font-weight: 700; color: var(--vita-faint); letter-spacing: .2px; transition: color .2s; }
 .bn.active { background: var(--vita-active-bg); box-shadow: var(--vita-active-glow), inset 0 1px 0 rgba(255,255,255,.08); transform: translateY(-2px); }
 .bn.active svg { fill: var(--vita-active); }
 .bn.active .ic-line { display: none; }
 .bn.active .ic-fill { display: block; }
 .bn.active .bn-lbl { color: #7FB6FF; }
-.bn-badge { position: absolute; top: 2px; right: 50%; transform: translateX(22px); min-width: 17px; height: 17px; padding: 0 4px; border-radius: 9px; background: var(--vita-energy); color: #fff; font-size: 10px; font-weight: 800; align-items: center; justify-content: center; border: 2px solid var(--vita-bg); }
+.bn-badge { position: absolute; top: 2px; right: 50%; transform: translateX(22px); min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: var(--vita-energy); color: #fff; font-size: var(--fs-cap); font-weight: 800; align-items: center; justify-content: center; border: 2px solid var(--vita-bg); }
 
 /* ── FAB (Plan My Week) ── */
 .fab { position: fixed; right: 16px; z-index: 59; bottom: calc(82px + env(safe-area-inset-bottom, 0px)); width: 52px; height: 52px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--vita-active), #0066CC); border: none; cursor: pointer; box-shadow: 0 6px 20px rgba(10,132,255,.4); }
