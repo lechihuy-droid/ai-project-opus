@@ -1966,6 +1966,9 @@ function renderHealth(logs) {
   <!-- Insight -->
   ${insightHtml}
 
+  <div class="stitle">Tổng kết dinh dưỡng</div>
+  ${renderNutritionHistory(logs)}
+
   <!-- Weight + Weekly compare -->
   <div class="bento" style="margin-top:var(--vita-gap)">
     <div class="b b-weight span2" style="background:linear-gradient(135deg,#0E2A1F,#0A2018);border:1px solid rgba(48,209,88,.18)">
@@ -2002,10 +2005,7 @@ function renderHealth(logs) {
       <div class="b-label">👟 Vận động</div>
       <div class="chart-wrap"><canvas id="c-steps"></canvas></div>
     </div>
-  </div>
-
-  <div class="stitle">Tổng kết dinh dưỡng</div>
-  ${renderNutritionHistory(logs)}`;
+  </div>`;
 }
 
 function renderInsight(shown, kcal, protein, fiber) {
