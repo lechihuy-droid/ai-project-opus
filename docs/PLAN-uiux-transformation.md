@@ -157,6 +157,7 @@ Inspiration (không phải repo, để so visual): Mobbin → Health & Fitness, 
 > - **Q4 Màu active: A — xanh dương** (`--vita-info`), gỡ green khỏi vai trò "active"; green giữ riêng cho "good/success".
 > - **Q3 Mở scope JS-behavior: CÓ** — cho phép §7.4 (bottom-sheet, keyboard-fix, 1-tap paste).
 > - **Icon set: Phosphor** (inline SVG, no-CDN) — inactive = Regular/outline xám, active = Fill xanh dương. Thay toàn bộ emoji ở nav.
+> - **Tab active = Option 2 (icon Fill xanh) + nền tím than NỔI, Sắc 3** (`linear-gradient(180deg,#322C52,#241F3D)` + glow `0 6px 18px rgba(80,60,160,.28)` + inset top highlight + `translateY(-2px)`). Token đề xuất: `--vita-active-bg`.
 > - Mockup tổng: `docs/mockup-today-redesign.html`, nav icon: `docs/mockup-bottom-nav-icons.html`.
 
 ---
