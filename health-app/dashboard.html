@@ -815,7 +815,7 @@ async function connectCalendar() {
   }
 }
 
-async function loadCalendarEvents(days=14) {
+async function loadCalendarEvents(days=7) {
   if (!gapiReady) await initGapiClient();
   const timeMin = new Date();
   const timeMax = addDays(timeMin, days);
@@ -894,7 +894,7 @@ function estimateFreeWindows(events) {
     const k = isoLocal(d);
     days[k] = (days[k] || 0) + eventHours(ev);
   });
-  return Math.max(0, 14 - Object.values(days).filter(h => h >= 6).length);
+  return Math.max(0, 7 - Object.values(days).filter(h => h >= 6).length);
 }
 
 function renderCalendarContext(compact=false) {
@@ -921,13 +921,13 @@ function renderCalendarContext(compact=false) {
     <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
       <div>
         <div class="brief-greeting">Nhịp lịch tuần</div>
-        <div class="brief-date">${s.total} sự kiện · 14 ngày tới${s.allDay ? ` · ${s.allDay} cả ngày` : ''}</div>
+        <div class="brief-date">${s.total} sự kiện · 7 ngày tới${s.allDay ? ` · ${s.allDay} cả ngày` : ''}</div>
       </div>
       <span class="status-pill good">Chỉ đọc</span>
     </div>`;
   if (!s.timed) {
     return `${header}
-      <div class="cal-empty">📅 Lịch trống 14 ngày tới${s.allDay ? ` (${s.allDay} sự kiện cả ngày)` : ''}.<br>Chưa có gì để Nexus phân tích — cứ lên kế hoạch thoải mái.</div>
+      <div class="cal-empty">📅 Lịch trống 7 ngày tới${s.allDay ? ` (${s.allDay} sự kiện cả ngày)` : ''}.<br>Chưa có gì để Nexus phân tích — cứ lên kế hoạch thoải mái.</div>
     </div>`;
   }
   const v = (val, muted) => `<div class="cal-mini-val${muted ? ' muted' : ''}">${val}</div>`;
@@ -972,10 +972,10 @@ function renderTaskContext() {
 function renderCalendarTab() {
   const events = calEvents.slice(0, 12).map(renderCalendarEvent).join('');
   return `${renderCalendarContext(false)}
-    ${gToken ? `<button class="action-btn" onclick="loadCalendarEvents().then(()=>renderContent()).catch(e=>{calError=e.message;renderContent();})">Refresh 14 ngày</button>` : ''}
+    ${gToken ? `<button class="action-btn" onclick="loadCalendarEvents().then(()=>renderContent()).catch(e=>{calError=e.message;renderContent();})">Refresh 7 ngày</button>` : ''}
     <div class="stitle">Upcoming</div>
     <div class="brief-card" style="padding:4px 14px">
-      ${gToken ? (events || '<div style="font-size:13px;color:var(--vita-muted);padding:12px 0">Không có sự kiện sắp tới</div>') : '<div style="font-size:13px;color:var(--vita-muted);padding:12px 0">Kết nối calendar để xem lịch 14 ngày tới</div>'}
+      ${gToken ? (events || '<div style="font-size:13px;color:var(--vita-muted);padding:12px 0">Không có sự kiện sắp tới</div>') : '<div style="font-size:13px;color:var(--vita-muted);padding:12px 0">Kết nối calendar để xem lịch 7 ngày tới</div>'}
     </div>
     <button class="action-btn" onclick="showView('actions')" style="margin-top:var(--vita-gap)">Plan My Week →</button>`;
 }
@@ -1403,7 +1403,7 @@ function summarizeHabits() {
 
 // Build a per-day map of busy blocks → free windows for the next 14 days (JST).
 // Output: array of { date, weekday, busyBlocks: [{start,end,title}], freeSlots: string }
-function buildFreeSlotMap(events = calEvents, days = 14) {
+function buildFreeSlotMap(events = calEvents, days = 7) {
   const JST = 9 * 60; // JST offset in minutes
   const toJSTMins = d => d.getUTCHours() * 60 + d.getUTCMinutes() + JST;
   const pad = n => String(n).padStart(2, '0');
@@ -1573,7 +1573,7 @@ Plan a realistic, low-stress week for ONE person. Output BOTH timed calendar eve
 - Hôm nay: ${ctx.date} (${ctx.timezone}). Dữ liệu mới nhất: ${ctx.latest_date || 'chưa có'}.
 - Mục tiêu:
 ${goals}
-- Lịch 14 ngày tới: tổng ${cal.total} sự kiện (${cal.timed} có giờ, ${cal.allDay || 0} cả ngày), độ bận: ${cal.busyLevel}.
+- Lịch 7 ngày tới: tổng ${cal.total} sự kiện (${cal.timed} có giờ, ${cal.allDay || 0} cả ngày), độ bận: ${cal.busyLevel}.
 - Lịch trống per ngày (JST) — CHỈ xếp event vào slot "Trống" phù hợp:
 ${busy}
 
