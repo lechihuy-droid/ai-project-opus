@@ -645,6 +645,9 @@ function requestGoogleToken(scope, prompt='') {
         applyGoogleToken();
         localStorage.setItem('nexus_cal_connected', '1');
         resolve(resp);
+      },
+      error_callback: (err) => {
+        reject(new Error(err?.type === 'popup_closed' ? 'Đã đóng cửa sổ đăng nhập Google.' : (err?.message || err?.type || 'OAuth bị từ chối.')));
       }
     });
     client.requestAccessToken({ prompt });
