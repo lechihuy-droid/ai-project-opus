@@ -1351,24 +1351,65 @@ async function loadUserProfile() {
   return profile;
 }
 
+function daySpan(rows) {
+  const ds = rows.map(r => new Date(r.date + 'T12:00:00')).filter(d => !isNaN(d)).sort((a, b) => a - b);
+  if (!ds.length) return 1;
+  return Math.max(1, Math.round((ds[ds.length - 1] - ds[0]) / 864e5) + 1);
+}
+
+// Aggregate real eating + workout + sleep patterns over loaded history (not just latest day).
+function summarizeHabits() {
+  const fed = cHealth.filter(l => (l.meals || []).length);
+  const n = fed.length;
+  const someMealHour = test => l => (l.meals || []).some(m => {
+    const h = parseInt((m.time || '').split(':')[0]);
+    return !isNaN(h) && test(h);
+  });
+  const eating = {
+    avgKcal: Math.round(avg(fed, totalKcal)),
+    avgProtein: Math.round(avg(fed, l => totalMacro(l, 'protein'))),
+    avgFiber: Math.round(avg(fed, l => totalMacro(l, 'fiber'))),
+    proteinHitRate: n ? Math.round(100 * fed.filter(l => totalMacro(l, 'protein') >= TARGET.protein).length / n) : 0,
+    avgMeals: n ? +(fed.reduce((s, l) => s + (l.meals || []).length, 0) / n).toFixed(1) : 0,
+    breakfastRate: n ? Math.round(100 * fed.filter(someMealHour(h => h < 11)).length / n) : 0,
+    lateDinnerRate: n ? Math.round(100 * fed.filter(someMealHour(h => h >= 21)).length / n) : 0
+  };
+  const sleepD = cHealth.filter(l => (l.sleep_hours || 0) > 0);
+  const stepD = cHealth.filter(l => (l.steps || 0) > 0);
+  const sleep = { avg: sleepD.length ? +avg(sleepD, l => l.sleep_hours).toFixed(1) : null };
+  const steps = { avg: stepD.length ? Math.round(avg(stepD, l => l.steps)) : null };
+  const sessions = cWorkout.flatMap(l => (l.sessions || []).map(s => ({ ...s, date: l.date })));
+  const span = daySpan(cWorkout.length ? cWorkout : cHealth);
+  const weekdays = {}, types = {};
+  let hourSum = 0, hourN = 0, durSum = 0;
+  sessions.forEach(s => {
+    const d = new Date(s.date + 'T12:00:00');
+    if (!isNaN(d)) weekdays[DAYS[d.getDay()]] = (weekdays[DAYS[d.getDay()]] || 0) + 1;
+    const h = parseInt((s.time || '').split(':')[0]);
+    if (!isNaN(h)) { hourSum += h; hourN++; }
+    if (s.type) types[s.type] = (types[s.type] || 0) + 1;
+    durSum += s.duration_min || 0;
+  });
+  const workout = {
+    total: sessions.length,
+    spanDays: span,
+    perWeek: sessions.length ? +(sessions.length / (span / 7)).toFixed(1) : 0,
+    weekdays, types,
+    typicalHour: hourN ? Math.round(hourSum / hourN) : null,
+    avgDur: sessions.length ? Math.round(durSum / sessions.length) : 0
+  };
+  return { daysLogged: cHealth.length, eating, sleep, steps, workout };
+}
+
 function buildWeekContext() {
   const latest = cHealth[0] || null;
-  const workouts = cWorkout.flatMap(l => l.sessions || []);
-  const finance = cFinance.flatMap(l => l.transactions || []);
   return {
     date: todayStr(),
     timezone: profile?.preferences?.timezone || 'Asia/Tokyo',
     calendar: summarizeCalendar(),
     upcoming_events: calEvents.slice(0, 20),
-    vita: {
-      latest_date: latest?.date || null,
-      kcal: latest ? totalKcal(latest) : 0,
-      protein: latest ? Math.round(totalMacro(latest, 'protein')) : 0,
-      sleep_hours: latest?.sleep_hours || 0,
-      steps: latest?.steps || 0,
-      workout_sessions_loaded: workouts.length,
-      finance_transactions_loaded: finance.length
-    },
+    habits: summarizeHabits(),
+    latest_date: latest?.date || null,
     profile
   };
 }
@@ -1377,8 +1418,15 @@ function buildPlanPrompt(ctx) {
   const p = ctx.profile || {};
   const pref = p.preferences || {};
   const con = p.constraints || {};
-  const v = ctx.vita || {};
   const cal = ctx.calendar || {};
+  const hb = ctx.habits || {};
+  const eat = hb.eating || {};
+  const wo = hb.workout || {};
+  const topDays = Object.entries(wo.weekdays || {}).sort((a, b) => b[1] - a[1]).map(([d, c]) => `${d}×${c}`).join(', ') || '—';
+  const typeStr = Object.entries(wo.types || {}).sort((a, b) => b[1] - a[1]).map(([t, c]) => `${t}×${c}`).join(', ') || '—';
+  const woHour = wo.typicalHour != null ? `${wo.typicalHour}h` : '?';
+  const sleepStr = hb.sleep?.avg ? `${hb.sleep.avg}h` : 'chưa log';
+  const stepStr = hb.steps?.avg ? `${hb.steps.avg} bước` : 'chưa log';
 
   // Compact, human-readable busy days the LLM must avoid (dates + all-day flags)
   const busy = (ctx.upcoming_events || []).map(e => {
@@ -1430,17 +1478,23 @@ Plan a realistic, low-stress week for ONE person. Output BOTH timed calendar eve
 
 ## SOFT GUIDANCE (làm cho kế hoạch tốt hơn):
 - Ưu tiên ÍT mà chất: 4-7 event/tuần, đừng nhồi.
-- Tập (workout/walk) đặt trong khung giờ ưa thích: ${windows}.
-- Meal prep vào: ${mealDays}.
+- **BÁM THÓI QUEN THẬT** (xem mục THÓI QUEN bên dưới): đặt buổi tập vào ĐÚNG ngày & khung giờ user hay tập (${topDays} lúc ~${woHour}); GIỮ loại hình user đang theo (${typeStr}) — đừng phát minh môn mới.
+- Ăn sáng: user chỉ ăn sáng ${eat.breakfastRate ?? '?'}% số ngày → nếu thấp, ĐỪNG ép bữa sáng nặng; dồn protein vào trưa/tối.
+- Protein: đạt mục tiêu ${eat.proteinHitRate ?? '?'}% số ngày (TB ${eat.avgProtein ?? '?'}/${TARGET.protein}g) → nếu hụt, thêm "meal_prep" giàu đạm; cân nhắc task "mua thực phẩm giàu protein".
+- Khung giờ tập ưa thích (profile): ${windows}. Meal prep: ${mealDays}. Khi xung đột, ưu tiên thói quen THẬT hơn profile.
 - Có đúng 1 "weekly_review" (~45 phút) nếu còn slot trống.
 - Tránh xếp event sau ${con.avoid_late_events_after || '22:00'}; bảo vệ giấc ngủ sau ${con.protect_sleep_after || '23:30'}.
-- Bù đắp điểm yếu gần nhất: nếu protein thấp → thêm meal_prep; nếu thiếu vận động → thêm walk/workout; ngày bận → chỉ micro-action (đi bộ 10-15').
+- Ngày bận (xem Busy days) → chỉ micro-action (đi bộ 10-15').
+
+## THÓI QUEN THỰC TẾ — rút từ ${hb.daysLogged ?? 0} ngày dữ liệu gần nhất (nguồn sự thật, ưu tiên hơn giả định):
+- Ăn uống: TB ${eat.avgKcal ?? 0} kcal & ${eat.avgProtein ?? 0}g protein/ngày · ~${eat.avgMeals ?? 0} bữa/ngày · ăn sáng ${eat.breakfastRate ?? 0}% ngày · ăn tối muộn (sau 21h) ${eat.lateDinnerRate ?? 0}% ngày · chất xơ TB ${eat.avgFiber ?? 0}g.
+- Tập luyện: ${wo.total ?? 0} buổi / ${wo.spanDays ?? 0} ngày (~${wo.perWeek ?? 0} buổi/tuần) · hay tập: ${topDays} · khung giờ quen ~${woHour} · loại: ${typeStr} · TB ${wo.avgDur ?? 0} phút/buổi.
+- Ngủ TB: ${sleepStr} · Vận động TB: ${stepStr}.
 
 ## CONTEXT NGƯỜI DÙNG:
-- Hôm nay: ${ctx.date} (${ctx.timezone}).
+- Hôm nay: ${ctx.date} (${ctx.timezone}). Dữ liệu mới nhất: ${ctx.latest_date || 'chưa có'}.
 - Mục tiêu:
 ${goals}
-- Tình trạng gần nhất (${v.latest_date || 'chưa có'}): ${v.kcal} kcal, protein ${v.protein}g, ngủ ${v.sleep_hours}h, ${v.steps} bước. Đã có ${v.workout_sessions_loaded} buổi tập trong dữ liệu.
 - Lịch 14 ngày tới: tổng ${cal.total} sự kiện (${cal.timed} có giờ, ${cal.allDay || 0} cả ngày), độ bận: ${cal.busyLevel}.
 - Busy days (TRÁNH trùng giờ):
 ${busy}
