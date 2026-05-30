@@ -9,13 +9,13 @@
 
 The Content Collector is now the upstream data producer for the Opus Home `Intel` tab.
 
-It still collects articles into `raw/articles/`, but the main product surface is no longer only Telegram or automatic wiki ingest. The current product loop is:
+It still collects articles into `raw/articles/`, but the main product surface is Opus Home, not Telegram or automatic wiki ingest. The current product loop is:
 
 ```
 external sources -> raw article files -> Intel API enrichment -> Opus Home dashboard -> user action
 ```
 
-`personal-wiki/` remains the long-term brain. Current `config.yaml` has `collect.auto_ingest: true`, so raw articles can be compiled into seed wiki pages after collection. That still does not make Intel synthesis durable: conclusions from the Intel tab must be promoted into hub pages using `personal-wiki/Research/intel-to-wiki-promotion.md`.
+`personal-wiki/` remains the long-term brain. Current `config.yaml` has `collect.auto_ingest: false`, so raw articles are reviewed through `run_wiki.py audit-research` before they become durable wiki pages. Telegram delivery is disabled system-wide.
 
 ---
 

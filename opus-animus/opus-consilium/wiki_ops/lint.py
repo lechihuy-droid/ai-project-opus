@@ -136,7 +136,7 @@ def _pages_added_this_week(pages: list[Path]) -> list[Path]:
     return new
 
 
-def run_lint(send_telegram: bool = True) -> str:
+def run_lint(send_telegram: bool = False) -> str:
     pages = _get_all_pages()
 
     issues = []

@@ -60,7 +60,7 @@ run_weekly.py
   load_week_articles()   # đọc raw/articles/ 7 ngày qua
   group_by_topic()       # AI / competitor / market / other
   weekly_synthesis()     # Claude CLI → logs/weekly/YYYY-Www.json
-  send_telegram()        # optional notify
+  write logs only        # Telegram disabled
 ```
 
 Current operating rule:
@@ -69,20 +69,20 @@ Current operating rule:
   - `goal_align_filter()` — score + Vietnamese relevance note (batch 20)
   - `daily_synthesis()` — daily brief JSON
   - `weekly_synthesis()` — weekly report JSON (Task Scheduler `opus-weekly-research`, Chủ nhật 06:00 JST)
-  - `intent_classifier._llm_classify()` — Telegram intent fallback
+  - `intent_classifier._llm_classify()` — legacy Telegram intent fallback (disabled)
   - `wiki_ops/ingest.py` — compile source → wiki page JSON
   - `wiki_ops/query.py` — find pages (array) + synthesize answer
   - `wiki_ops/reflect.py` — weekly reflection text
   - `wiki_ops/context_compressor.py` — compress long sources trước ingest
   - `wiki_ops/skill_curator.py` — merge/archive overlapping skills
-  - `wiki_ops/telegram_handler.py:_run_consilium_brief()` — decision brief
+  - `wiki_ops/telegram_handler.py:_run_consilium_brief()` — legacy decision brief (disabled)
   - `run_daily.py:build_brief()` — LLM-assisted local 3-lane daily brief (tech / ceo / competitor)
   - `tools/research_radar_tool.py:round2_llm_score()` — batch score GitHub/arXiv items
 - Helper: `utils/llm.py` — `claude_cli(prompt, timeout)` và `claude_cli_json(prompt, timeout, expect)` — reusable cho mọi LLM call.
 - Trade-off: Claude CLI có ~30-60s startup overhead → goal_filter 100 articles mất 5-8 phút. Chấp nhận để có chất lượng note + zero external API dependency.
 - **Groq đã bị remove hoàn toàn** khỏi tất cả file trừ `crews/` (CrewAI legacy, chạy tay).
 - Voice transcription (Groq Whisper) đã bị xóa khỏi `telegram_handler.py` — bot chỉ nhận text message.
-- Home Intel là primary review UI. Telegram chỉ notify, không hiển thị nội dung đầy đủ.
+- Home Intel là primary review UI. Telegram delivery is disabled system-wide.
 - `logs/intel_state.json` stores used/unused status for Intel items.
 - FDE news feed tự cập nhật hàng ngày khi collect chạy — không cần config thêm.
 
@@ -90,7 +90,7 @@ Run command:
 
 ```bash
 cd "C:/Users/HUY/workspace/ai-workspace/opus-animus/opus-consilium"
-python run_collect.py              # daily collect + synthesis + wiki ingest
+python run_collect.py              # daily collect + synthesis -> Home Intel logs
 python run_weekly.py               # weekly synthesis (thường qua Task Scheduler)
 python run_weekly.py --dry-run     # preview, no save
 python run_dashboard.py            # Opus Home dashboard (localhost:8765)
@@ -116,9 +116,9 @@ BRAIN = personal-wiki/ (Module C owns this)
 └── Lint:   weekly → fix orphans, contradictions, gaps
 
 OUTPUTS ← query wiki, không đọc raw
-├── Module A  → wiki context → Telegraph article → Telegram
+├── Module A  → wiki context → local/Telegraph article (manual)
 ├── Module B  → wiki hubs   → Claude analysis → 3-lane daily brief → logs/daily/
-└── Research Radar → wiki + GitHub/arXiv → weekly report → Telegram
+└── Research Radar → wiki + GitHub/arXiv → weekly report/logs
 ```
 
 ## Chạy
@@ -131,15 +131,15 @@ python run_daily.py                # Module B — LLM-assisted local 3-lane dail
 python run_wiki.py ingest <url>    # Module C — ingest URL vào wiki
 python run_wiki.py query "<câu>"   # Module C — query wiki
 python run_wiki.py lint            # Module C — weekly lint
-python run_wiki.py poll            # Module C — poll Telegram (Task Scheduler)
+python run_wiki.py poll            # disabled — Telegram integration is off
 ```
 
 ## Stack
 
 - LLM (all filter + synthesis): Claude CLI (`claude.cmd -p`) via subprocess stdin — session auth, không cần API key
   - Helper: `utils/llm.py` — `claude_cli()` + `claude_cli_json()` — dùng cho toàn bộ project
-  - **Zero Groq dependency** — wiki_ops, collect, daily, weekly, radar dùng Claude CLI; daily không gửi Telegram/Telegraph
-- Telegram: direct requests Bot API — TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID (text only, no voice)
+  - **Zero Groq dependency** — wiki_ops, collect, daily, weekly, radar dùng Claude CLI; Telegram/Telegraph delivery is disabled for automated flows
+- Telegram: disabled system-wide; legacy utilities remain dormant only
 - Telegraph: direct requests api.telegra.ph — token lưu `.telegraph_token`
 - PDF/HTML: markitdown library
 - CrewAI: **legacy chỉ trong `crews/` + `tools/*.py` (BaseTool base class)** — Module A manual trigger, không chạy tự động. Tools (rss, search, yfinance, telegraph, wiki) dùng `BaseTool` nhưng hoạt động độc lập.
@@ -151,16 +151,16 @@ python run_wiki.py poll            # Module C — poll Telegram (Task Scheduler)
 opus-consilium/
 ├── run_research.py      ← Module A: research → raw/research/ → wiki → Telegraph
 ├── run_daily.py         ← Module B: wiki hubs → Claude analysis → 3-lane daily brief → logs/daily/
-├── run_wiki.py          ← Module C: ingest / query / lint / poll
-├── run_collect.py       ← Content Collector: batch RSS → raw/ → synthesis → wiki
+├── run_wiki.py          ← Module C: ingest / query / lint / audit
+├── run_collect.py       ← Content Collector: batch RSS → raw/ → synthesis → Home Intel
 ├── run_weekly.py        ← Weekly Synthesizer: 7-day articles → Claude → logs/weekly/
 ├── run_dashboard.py     ← Opus Home: FastAPI server (localhost:8765)
-├── run_radar.py         ← Research Radar: GitHub + arXiv → wiki → Telegram
+├── run_radar.py         ← Research Radar: GitHub + arXiv → wiki/logs
 ├── config.yaml          ← sources config (auto_ingest: false; audit-gated)
 ├── crews/               ← ResearchCrew (Module A)
 ├── tools/               ← rss, search, yfinance, telegraph, wiki, markitdown, research_radar_tool
-├── wiki_ops/            ← ingest, query, lint, telegram_handler
-├── utils/               ← config loader, telegram sender
+├── wiki_ops/            ← ingest, query, lint, research_audit
+├── utils/               ← config loader, LLM helpers
 ├── personal-wiki/       ← THE BRAIN — đừng xóa, đừng sửa tay
 │   ├── SCHEMA.md        ← editorial constitution (LLM reads this first)
 │   ├── INDEX.md         ← catalog mọi page + 1-line summary
@@ -180,15 +180,15 @@ opus-consilium/
 ### Module C — The Brain ✅ Running
 **Vai trò:** PRIMARY. Owns personal-wiki/. Mọi pipeline khác feed vào đây.
 - Karpathy pattern: raw/ (immutable) → personal-wiki/ (LLM-maintained, compounding)
-- Operations: `ingest` (source → update 10-15 pages) | `query` | `lint` | `poll`
-- Task Scheduler: `wiki-poll` (5 min), `wiki-lint-weekly` (Chủ nhật 06:00) ✅ fixed
+- Operations: `ingest` (source → update 10-15 pages) | `query` | `lint` | `audit-research`
+- Task Scheduler: `wiki-poll` disabled; `wiki-lint-weekly` local-only
 - **Rule:** Chỉ Module C được ghi vào personal-wiki/. Không có ngoại lệ.
 
 ### Module A — Researcher + Wiki Writer 🟡 Manual
 **Vai trò:** WRITER. Deep research → compile vào wiki → publish Telegraph.
 - Topics: AI, JP_STOCK (config.yaml)
-- Flow hiện tại: RSS → CrewAI research → `wiki/` folder (ephemeral) → Telegraph → Telegram
-- Flow mục tiêu: RSS → CrewAI research → `raw/research/` → wiki ingest → Telegraph → Telegram
+- Flow hiện tại: RSS → CrewAI research → `wiki/` folder (ephemeral) → local/Telegraph output (manual)
+- Flow mục tiêu: RSS → CrewAI research → `raw/research/` → wiki ingest → local/Telegraph output (manual)
 - **Gap:** research output chưa vào wiki → knowledge mất sau mỗi run ⚠️
 - **Fix cần làm:** Sau research, gọi `run_wiki.py ingest raw/research/<file>` trước khi publish
 
@@ -196,13 +196,13 @@ opus-consilium/
 **Vai trò:** READER. Đọc durable wiki hubs → Claude analysis → brief 3 lane → `logs/daily/YYYY-MM-DD.md`. Không tạo knowledge mới.
 - Lanes: `tech`, `ceo`, `competitor`.
 - Flow hiện tại: đọc `personal-wiki/` hubs + research audit queue → LLM suggest/action synthesis → local daily brief.
-- Telegram/Telegraph export: disabled for daily by design.
+- Telegram/Telegraph export: disabled system-wide by design.
 
 ### Content Collector — Auto Writer ✅ Running
-**Vai trò:** AUTO-WRITER. Batch RSS → raw/articles/ → Claude synthesis → wiki (daily 05:30).
+**Vai trò:** AUTO-WRITER. Batch RSS → raw/articles/ → Claude synthesis → Home Intel (daily 05:30).
 - `daily_synthesis()` gọi Claude CLI → `logs/intel_reviews/YYYY-MM-DD.json`
 - `auto_ingest: false` — wiki ingest được gate bằng `run_wiki.py audit-research`
-- Telegram: reading list notification, nội dung đầy đủ xem trên Opus Home
+- Telegram: disabled; reading list preview prints locally, full review lives in Opus Home
 
 ### Weekly Synthesizer — Auto Writer ✅ Running
 **Vai trò:** Tổng hợp 7 ngày articles → Claude → strategic report.
@@ -218,7 +218,7 @@ opus-consilium/
 - News feed tự update mỗi ngày khi collect chạy — không cần config thêm
 
 ### Research Radar — Auto Writer + Reader ⬜ In Progress
-**Vai trò:** Fetch GitHub trending + arXiv → raw/ → wiki → weekly Telegram report.
+**Vai trò:** Fetch GitHub trending + arXiv → raw/ → wiki/logs → weekly local report.
 - `tools/research_radar_tool.py` ✅ | `run_radar.py` ⬜ chưa xong
 
 ### Issues Đang Open
