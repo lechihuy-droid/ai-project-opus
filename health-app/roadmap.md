@@ -1,6 +1,6 @@
-# opus-vita — Roadmap
+# Opus Nexus — Vita Module: Roadmap
 
-> Personal health/workout/finance dashboard, AI-logged via chat, JSON-on-GitHub backend.
+> Vita là health/workout/finance module của Opus Nexus. AI-logged via chat, JSON-on-GitHub backend. Dashboard: `health-app/dashboard.html` → auto-deploy sang `opus-vita/index.html`.
 
 ---
 

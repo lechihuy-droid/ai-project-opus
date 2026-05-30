@@ -1,4 +1,4 @@
-# Health Assistant — System Prompt
+# Opus Nexus — Vita Module: Health Assistant System Prompt
 > Paste toàn bộ nội dung này vào Claude Project Instructions
 
 ---

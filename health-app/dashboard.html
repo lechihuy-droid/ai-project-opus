@@ -389,6 +389,7 @@ let currentTab   = 'health';          // sub-tab inside Vita
 let cHealth = [], cWorkout = [], cFinance = [];
 let healthIdx = [], workoutIdx = [], financeIdx = [];
 let gapiReady = false, gToken = null, gTokenScope = '', calEvents = [], calLoading = false, calError = '';
+let gTasks = [], tasksLoading = false, tasksError = '';
 let pendingProposals = [], selectedIdx = new Set(), proposalText = '', proposalError = '', approvalResults = [], editingIdx = null;
 let profile = null, profileLoading = false, profileError = '', planPrompt = '';
 
@@ -539,10 +540,7 @@ function renderToday() {
   ${renderCalendarContext(true)}
 
   <div class="stitle">Việc cần làm</div>
-  <div class="brief-card" style="font-size:13px;color:var(--vita-muted)">
-    ⚡ Chưa có đề xuất
-    <div style="font-size:11px;color:var(--vita-faint);margin-top:4px">Phase 4-5 — Plan My Week &amp; phê duyệt sự kiện</div>
-  </div>`;
+  ${renderTaskContext() || `<div class="brief-card" style="font-size:13px;color:var(--vita-muted)">Kết nối Google Calendar để xem Tasks.</div>`}`;
 }
 
 function renderComingSoon(ico, title, sub) {
@@ -788,15 +786,17 @@ async function connectCalendar() {
   calError = '';
   const tokenRequest = initTokenClient();
   calLoading = true;
+  tasksLoading = true;
   renderContent();
   try {
     await tokenRequest;
     await initGapiClient();
-    await loadCalendarEvents();
+    await Promise.all([loadCalendarEvents(), loadTasks().catch(() => null)]);
   } catch (e) {
     calError = e.message;
   } finally {
     calLoading = false;
+    tasksLoading = false;
     renderContent();
   }
 }
@@ -815,6 +815,18 @@ async function loadCalendarEvents(days=14) {
   });
   calEvents = normalizeCalendarEvents(res.result.items || []);
   return calEvents;
+}
+
+async function loadTasks() {
+  if (!gapiReady) await initGapiClient();
+  const res = await gapi.client.tasks.tasks.list({
+    tasklist: '@default',
+    showCompleted: false,
+    showHidden: false,
+    maxResults: 50
+  });
+  gTasks = (res.result.items || []).filter(t => t.status !== 'completed');
+  return gTasks;
 }
 
 function normalizeCalendarEvents(items) {
@@ -912,6 +924,34 @@ function renderCalendarContext(compact=false) {
       <div class="cal-mini"><div class="cal-mini-label">Nguy cơ ăn ngoài</div>${v(s.eatingOutRisk, !s.eatingOutRisk)}</div>
       <div class="cal-mini"><div class="cal-mini-label">Sự kiện về trễ</div>${v(s.lateEvents, !s.lateEvents)}</div>
     </div>
+  </div>`;
+}
+
+function renderTaskContext() {
+  if (!gToken) return '';
+  if (tasksLoading) {
+    return `<div class="brief-card"><span class="status-pill info">Loading</span><div style="font-size:13px;color:var(--vita-muted);margin-top:8px">Đang tải Tasks...</div></div>`;
+  }
+  if (!gTasks.length) {
+    return `<div class="brief-card" style="font-size:13px;color:var(--vita-muted)">✅ Không có việc tồn đọng</div>`;
+  }
+  const today = new Date(); today.setHours(0,0,0,0);
+  const rows = gTasks.slice(0, 8).map(t => {
+    const due = t.due ? new Date(t.due) : null;
+    due?.setHours(0,0,0,0);
+    const overdue = due && due < today;
+    const dueStr = due ? `· ${due.toLocaleDateString(CONFIG.locale, {day:'2-digit',month:'2-digit'})}` : '';
+    return `<div class="is-row" style="${overdue ? 'color:var(--vita-warn)' : ''}">
+      <span>${esc(t.title)}${dueStr ? ` <span style="font-size:11px;opacity:.75">${dueStr}</span>` : ''}</span>
+      ${overdue ? '<span class="badge red" style="font-size:10px">Quá hạn</span>' : ''}
+    </div>`;
+  }).join('');
+  const extra = gTasks.length > 8 ? `<div style="font-size:11px;color:var(--vita-faint);margin-top:6px">+${gTasks.length - 8} việc nữa</div>` : '';
+  return `<div class="brief-card">
+    <div class="brief-date" style="margin-bottom:8px">${gTasks.length} việc mở</div>
+    <div class="brief-stat-block">${rows}</div>
+    ${extra}
+    <button class="action-btn secondary-btn" onclick="showView('actions')" style="margin-top:10px;font-size:12px">Thêm việc →</button>
   </div>`;
 }
 
@@ -1163,7 +1203,7 @@ async function approveSelected() {
       }
     }
     selectedIdx = new Set();
-    await loadCalendarEvents().catch(()=>null);
+    await Promise.all([loadCalendarEvents().catch(()=>null), loadTasks().catch(()=>null)]);
   } catch (e) {
     proposalError = e.message;
   }
