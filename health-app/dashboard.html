@@ -89,15 +89,15 @@ html, body {
 }
 .tb-row1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 .tb-row1 h1 { font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
-.sync-btn { font-size: 12px; padding: 6px 11px; background: rgba(48,209,88,.15); color: var(--vita-good); border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; }
-.pat-btn  { font-size: 12px; padding: 6px 10px; background: rgba(255,255,255,.06); color: var(--vita-muted); border: none; border-radius: 8px; cursor: pointer; font-family: inherit; }
+.sync-btn { font-size: 12px; padding: 6px 11px; min-height: var(--tap-min); background: rgba(48,209,88,.15); color: var(--vita-good); border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; }
+.pat-btn  { font-size: 12px; padding: 6px 10px; min-height: var(--tap-min); background: rgba(255,255,255,.06); color: var(--vita-muted); border: none; border-radius: 8px; cursor: pointer; font-family: inherit; }
 
 .mod-tabs { display: flex; }
-.mtab { flex: 1; padding: 9px 4px 10px; text-align: center; font-size: 12px; font-weight: 700; border: none; background: none; cursor: pointer; font-family: inherit; color: var(--vita-faint); border-bottom: 2.5px solid transparent; transition: color .18s, border-bottom-color .18s; }
+.mtab { flex: 1; padding: 9px 4px 10px; min-height: var(--tap-min); text-align: center; font-size: 12px; font-weight: 700; border: none; background: none; cursor: pointer; font-family: inherit; color: var(--vita-faint); border-bottom: 2.5px solid transparent; transition: color .18s, border-bottom-color .18s; }
 .mtab.active { color: var(--vita-active); border-bottom-color: var(--vita-active); }
 
 .range-row { display: flex; gap: 6px; padding: 8px 0 10px; }
-.rtab { flex: 1; padding: 6px; text-align: center; font-size: 11px; font-weight: 700; border-radius: 7px; border: none; background: rgba(255,255,255,.05); color: var(--vita-muted); cursor: pointer; font-family: inherit; }
+.rtab { flex: 1; padding: 6px; min-height: var(--tap-min); text-align: center; font-size: 11px; font-weight: 700; border-radius: 7px; border: none; background: rgba(255,255,255,.05); color: var(--vita-muted); cursor: pointer; font-family: inherit; }
 .rtab.active { background: var(--vita-active); color: #fff; }
 
 /* ── Content ── */
@@ -188,7 +188,7 @@ canvas { display: block; }
 
 /* ── Day accordion ── */
 .day-acc { background: var(--vita-surface); border-radius: var(--vita-radius-md); margin-bottom: 7px; overflow: hidden; }
-.day-acc summary { list-style: none; cursor: pointer; padding: 12px 14px; display: flex; align-items: center; gap: 10px; user-select: none; -webkit-tap-highlight-color: transparent; }
+.day-acc summary { list-style: none; cursor: pointer; padding: 12px 14px; min-height: var(--tap-min); display: flex; align-items: center; gap: 10px; user-select: none; -webkit-tap-highlight-color: transparent; }
 .day-acc summary::-webkit-details-marker { display: none; }
 .day-acc summary:active { background: rgba(255,255,255,.03); }
 .da-date  { font-size: 13px; font-weight: 700; flex: 1; }
@@ -256,14 +256,14 @@ canvas { display: block; }
 
 /* ── Nexus nav (top-level views) ── */
 .nav-tabs { display: flex; gap: 6px; padding: 2px 0 10px; }
-.nav-tab { flex: 1; padding: 8px 4px; text-align: center; font-size: 12px; font-weight: 700; border: none; border-radius: 9px; background: rgba(255,255,255,.05); color: var(--vita-muted); cursor: pointer; font-family: inherit; transition: background .18s, color .18s; }
+.nav-tab { flex: 1; padding: 8px 4px; min-height: var(--tap-min); text-align: center; font-size: 12px; font-weight: 700; border: none; border-radius: 9px; background: rgba(255,255,255,.05); color: var(--vita-muted); cursor: pointer; font-family: inherit; transition: background .18s, color .18s; }
 .nav-tab.active { background: var(--vita-active); color: #fff; }
 
 /* ── Today / brief ── */
 .brief-card { background: var(--vita-surface); border-radius: var(--vita-radius-lg); padding: 14px; margin-bottom: var(--vita-gap); }
 .brief-greeting { font-size: 17px; font-weight: 800; }
 .brief-date { font-size: 12px; color: var(--vita-muted); margin-top: 2px; }
-.action-btn { display: block; width: 100%; padding: 11px; background: rgba(255,255,255,.06); color: var(--vita-text); border: none; border-radius: 11px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.action-btn { display: block; width: 100%; padding: 11px; min-height: var(--tap-min); background: rgba(255,255,255,.06); color: var(--vita-text); border: none; border-radius: 11px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
 .action-btn:active { background: rgba(255,255,255,.1); }
 .action-btn:disabled { opacity: .45; cursor: not-allowed; }
 .secondary-btn { background: rgba(90,200,250,.12); color: var(--vita-info); }
@@ -292,9 +292,9 @@ canvas { display: block; }
 .proposal-time { font-size: 11px; color: var(--vita-muted); margin-top: 4px; line-height: 1.45; }
 .proposal-type { display: inline-block; margin-top: 8px; font-size: var(--fs-cap); font-weight: 800; color: var(--vita-info); background: rgba(90,200,250,.12); border-radius: 8px; padding: 3px 7px; }
 .proposal-dur { display: inline-block; margin-top: 8px; margin-left: 6px; font-size: var(--fs-cap); font-weight: 700; color: var(--vita-muted); background: rgba(255,255,255,.05); border-radius: 8px; padding: 3px 7px; }
-.proposal-edit { flex-shrink: 0; background: rgba(255,255,255,.06); color: var(--vita-muted); border: none; border-radius: 8px; width: 30px; height: 30px; font-size: 13px; cursor: pointer; font-family: inherit; }
+.proposal-edit { flex-shrink: 0; background: rgba(255,255,255,.06); color: var(--vita-muted); border: none; border-radius: 8px; min-width: var(--tap-min); min-height: var(--tap-min); font-size: 13px; cursor: pointer; font-family: inherit; }
 .proposal-edit:active { background: rgba(255,255,255,.12); }
-.proposal-approve { flex-shrink: 0; background: rgba(48,209,88,.16); color: var(--vita-good); border: none; border-radius: 8px; height: 30px; padding: 0 11px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.proposal-approve { flex-shrink: 0; background: rgba(48,209,88,.16); color: var(--vita-good); border: none; border-radius: 8px; min-height: var(--tap-min); padding: 0 11px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
 .proposal-approve:active { background: rgba(48,209,88,.28); }
 .proposal-card.approved { border-color: rgba(48,209,88,.3); background: rgba(48,209,88,.05); opacity: .75; }
 .proposal-card.editing { display: block; border-color: rgba(90,200,250,.4); }
