@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UI/UX Transformation — Opus Nexus</title>
+  <link rel="stylesheet" href="../html-kit/styles.css">
+</head>
+<body>
+
+  <header class="doc-header">
+    <span class="badge navy">Plan · UI/UX</span>
+    <h1>UI/UX Transformation — Opus Nexus</h1>
+    <p class="lead">Review theo quan điểm A–G có sẵn · so sánh app cùng loại · repo design tham chiếu · phasing 3 phase.</p>
+    <p class="meta">2026-05-30 · Nguồn: <code>docs/handoff-codex-uiux.md</code> + <code>health-app/dashboard.html</code></p>
+  </header>
+
+  <main>
+
+    <!-- ── TL;DR ── -->
+    <h2>0 · TL;DR</h2>
+    <p>Opus Nexus đã đúng "xương" (4 view, bento, dark, mobile-first) nhưng vướng <strong>3 nhóm vấn đề đo được</strong>, không phải gu cá nhân:</p>
+    <div class="card-grid">
+      <div class="card">
+        <span class="badge red">Blocker nền tảng</span>
+        <h3>Touch target dưới chuẩn</h3>
+        <p>Gần như mọi control &lt; 44px iOS HIG: <code>nav-tab</code> ~32px, <code>rtab</code> ~28px, <code>proposal-edit</code> 30px → mis-tap trên phone.</p>
+      </div>
+      <div class="card">
+        <span class="badge red">Blocker nền tảng</span>
+        <h3>Điều hướng &amp; tone lẫn lộn</h3>
+        <p>Nav top thay vì bottom tab bar; tới 3 tầng tab xếp chồng ở Vita; "Actions" mơ hồ; trộn Việt/Anh ("Today" vs "Sức khỏe").</p>
+      </div>
+      <div class="card">
+        <span class="badge red">Blocker nền tảng</span>
+        <h3>Màu/typography quá tải</h3>
+        <p>9 màu metric + status; <code>--vita-good</code> (green) gánh cả "active" lẫn "success"; body 12px / label 9–10px dưới ngưỡng đọc iOS (≥17px).</p>
+      </div>
+    </div>
+    <div class="callout">Cộng thêm: thiếu <code>env(safe-area-inset-*)</code> và meta PWA cho đúng use-case "bookmark iPhone". Plan đề xuất <strong>3 phase, không refactor lớn</strong>, mọi thay đổi nằm gọn trong <code>dashboard.html</code>.</div>
+
+    <!-- ── Review A-G ── -->
+    <h2>1 · Review theo quan điểm A–G</h2>
+    <p>Severity: <span class="badge red">Blocker</span> <span class="badge navy">Friction</span> <span class="badge gray">Polish</span> · mỗi finding kèm vị trí thật trong file.</p>
+
+    <table>
+      <thead>
+        <tr><th style="width:90px">Severity</th><th>Finding</th><th style="width:160px">Vị trí</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="badge red">Blocker</span></td><td><strong>[A.3]</strong> 3 tầng tab xếp chồng ở Vita (nav + mod + range) trong topbar sticky → nặng nhận thức, tốn chiều cao.</td><td><code>:344 / :350 / :355</code></td></tr>
+        <tr><td><span class="badge red">Blocker</span></td><td><strong>[E.17]</strong> Thang typography dưới ngưỡng &amp; không nhất quán: body 12px, label 10px, <code>ring-lbl</code> 9px, <code>pr-new</code> 9px.</td><td><code>:134 / :231</code></td></tr>
+        <tr><td><span class="badge red">Blocker</span></td><td><strong>[E.19]</strong> <code>--vita-good</code> (green) gánh 2 nghĩa: vừa "active" (nav/mtab/rtab) vừa "success/good" → xung đột ngữ nghĩa.</td><td><code>:88 / :92 / :251</code></td></tr>
+        <tr><td><span class="badge red">Blocker</span></td><td><strong>[F.21]</strong> Touch target &lt; 44px diện rộng: nav-tab ~32px, rtab ~28px, mtab ~36px, proposal btn 30px, sync/pat ~30px.</td><td><code>:83 / :91 / :250 / :288</code></td></tr>
+        <tr><td><span class="badge navy">Friction</span></td><td><strong>[A.1]</strong> "Actions" mơ hồ. <strong>🔒 Chốt: → "Approval"</strong> (danh từ, đồng bộ tiếng Anh) + badge đếm proposal pending.</td><td><code>:348</code></td></tr>
+        <tr><td><span class="badge navy">Friction</span></td><td><strong>[A.4]</strong> "Plan My Week" chôn trong Actions dù calendar-centric — cân nhắc đưa lên Calendar.</td><td>—</td></tr>
+        <tr><td><span class="badge navy">Friction</span></td><td><strong>[B.5]</strong> Snapshot Today thiếu progress visual → khó "đọc trong 5 giây". Tái dùng <code>.pbar</code>/<code>.ring-svg</code> sẵn có.</td><td>—</td></tr>
+        <tr><td><span class="badge navy">Friction</span></td><td><strong>[C.9]</strong> Thiếu nút Clear/reset sau khi validate &amp; approve xong.</td><td>—</td></tr>
+        <tr><td><span class="badge navy">Friction</span></td><td><strong>[C.10]</strong> Hai nút Approve (per-item + batch) cùng màu green, không phân tầng → dễ nhầm.</td><td><code>:288</code></td></tr>
+        <tr><td><span class="badge navy">Friction</span></td><td><strong>[C.12]</strong> Edit form mobile: grid <code>64px 1fr</code> hẹp cho label dài; nút trong form cần ≥44px.</td><td><code>:294</code></td></tr>
+        <tr><td><span class="badge navy">Friction</span></td><td><strong>[D.16]</strong> Empty state Calendar chỉ có text, thiếu CTA "Kết nối Google Calendar".</td><td><code>:307</code></td></tr>
+        <tr><td><span class="badge navy">Friction</span></td><td><strong>[E.18]</strong> Quá tải màu — 9 màu metric + status. Dark UI nên nền tối + ít accent. Giảm màu ở nav/status.</td><td><code>:26–34</code></td></tr>
+        <tr><td><span class="badge navy">Friction</span></td><td><strong>[G.24]</strong> Trộn Việt/Anh: nav tiếng Anh vs mtab tiếng Việt vs card "Nhận xét hôm nay". Chốt 1 ngôn ngữ.</td><td>—</td></tr>
+        <tr><td><span class="badge navy">Friction</span></td><td><strong>[F.22]</strong> Thiếu safe-area — không <code>env(safe-area-inset-*)</code>; bottom pad cố định 40px.</td><td><code>:95</code></td></tr>
+        <tr><td><span class="badge gray">Polish</span></td><td><strong>[A.2]</strong> Today có thể quá tải — cần thứ tự ưu tiên thị giác.</td><td>—</td></tr>
+        <tr><td><span class="badge gray">Polish</span></td><td><strong>[B.6]</strong> Insight card dễ bị skip — cùng tông; cho weight rõ hơn hoặc thu gọn "lead".</td><td>—</td></tr>
+        <tr><td><span class="badge gray">Polish</span></td><td><strong>[B.8]</strong> Badge "quá hạn" dùng <code>--vita-bad</code> đậm hơn để nổi.</td><td>—</td></tr>
+        <tr><td><span class="badge gray">Polish</span></td><td><strong>[C.11]</strong> Trạng thái <code>.approved</code> chỉ dim — thêm ✓ + "Đã thêm" để xác nhận thành công.</td><td><code>:290</code></td></tr>
+        <tr><td><span class="badge gray">Polish</span></td><td><strong>[E.20]</strong> Radius không nhất quán: <code>.b</code> lg=18 vs <code>ring-cell</code>/<code>cal-mini</code> md=14. Chuẩn hóa card lg / nested md.</td><td><code>:99 / :129</code></td></tr>
+        <tr><td><span class="badge gray">Polish</span></td><td><strong>[D.14]</strong> Kiểm tra wrap title dài trong event list.</td><td><code>:310</code></td></tr>
+        <tr><td><span class="badge gray">Polish</span></td><td><strong>[G.25]</strong> "Duyệt tất cả" vs "✓ Approve" — thống nhất "Duyệt".</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn"><strong>Tổng: 4 Blocker · 9 Friction · 7 Polish.</strong> 4 blocker (A.3, E.17, E.19, F.21) là nền tảng — fix trước sẽ kéo theo nhiều friction.</div>
+    <div class="callout"><strong>Nguyên lý màu OLED (research 2):</strong> trên nền siêu tối <code>#090A0F</code>, chữ nhỏ 10–12px <strong>không tô màu chức năng bão hoà</strong> (vibrate/mỏi mắt) → <strong>text = xám trung tính</strong>, chỉ đổ màu rực lên <strong>đồ hoạ</strong> (icon · viền ring · bar · chấm trạng thái). Đây là lời giải cụ thể cho [E.17]+[E.18]. Chi tiết §8 trong bản <code>.md</code>.</div>
+
+    <!-- ── Competitive ── -->
+    <h2>2 · So sánh app cùng loại</h2>
+    <p>Nexus = lai giữa <strong>health tracker</strong> (Vita) và <strong>AI planner/operator</strong> (Actions / Plan My Week). Học từ cả 2 nhánh:</p>
+    <table>
+      <thead>
+        <tr><th>App</th><th>Nhánh</th><th>Điểm đáng học</th><th>Áp dụng</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Apple Health / Fitness</td><td><span class="badge green">Health</span></td><td>Bento + rings; mỗi card 1 ý; màu chỉ ở vòng tiến độ</td><td>Giảm màu chrome, dồn màu vào ring (B.5, E.18)</td></tr>
+        <tr><td>Gentler Streak</td><td><span class="badge green">Health</span></td><td>"Informed coaching" — surface next step, interface calm</td><td>Insight thành "next action" (B.6)</td></tr>
+        <tr><td>Cronometer</td><td><span class="badge green">Health</span></td><td>Macro density cao nhưng thứ bậc rõ; target luôn hiện</td><td>Chuẩn cho macro-card + snapshot</td></tr>
+        <tr><td>Structured</td><td><span class="badge">Planner</span></td><td>Timeline 1 cột sạch; "AI tab" nói chuyện → gợi ý task</td><td>Mô hình Today/Calendar; Actions tiến tới conversational</td></tr>
+        <tr><td>Motion</td><td><span class="badge">Planner</span></td><td>NL → auto-schedule, real-time reschedule</td><td>Định hướng dài hạn Plan My Week</td></tr>
+        <tr><td>Reclaim</td><td><span class="badge">Planner</span></td><td>Phân biệt task/habit/meeting bằng màu + nhãn nhất quán</td><td>Khung phân loại proposal (C.10)</td></tr>
+        <tr><td>Sunsama</td><td><span class="badge">Planner</span></td><td>"Plan your day" ritual mỗi sáng — brief gọn</td><td>Củng cố Today như daily ritual</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">Điểm yếu lớn nhất so với nhóm này <strong>không phải thiếu feature</strong> mà là hệ thị giác chưa phân tầng + điều hướng nặng — đúng 4 blocker ở §1.</div>
+
+    <!-- ── GitHub repos ── -->
+    <h2>3 · Repo GitHub tham chiếu design</h2>
+    <table>
+      <thead>
+        <tr><th>Repo</th><th>Vì sao liên quan</th><th>Dùng để</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><a href="https://github.com/Shubo16/Bento-box-dashboard">Shubo16/Bento-box-dashboard</a></td><td>Bento dashboard cho fitness (active calories, PR) — đúng domain</td><td>Layout bento cho Vita</td></tr>
+        <tr><td><a href="https://github.com/migueravila/Bento">migueravila/Bento</a></td><td>Startpage bento HTML/CSS/JS thuần, tinh thần single-file</td><td>CSS thuần không framework (hợp no-CDN)</td></tr>
+        <tr><td><a href="https://github.com/VoltAgent/awesome-design-md">VoltAgent/awesome-design-md</a></td><td>Bộ <code>DESIGN.md</code> của design system lớn cho coding agent</td><td>Tạo <code>DESIGN.md</code>/token spec cho Nexus</td></tr>
+        <tr><td><a href="https://github.com/topics/bento-grid">topics/bento-grid</a></td><td>Tổng hợp bento-grid patterns</td><td>Pattern grid responsive</td></tr>
+        <tr><td><a href="https://github.com/darelova/Awesome-Design-Resources-List">darelova/Awesome-Design-Resources-List</a></td><td>Index công cụ màu/typography/inspiration</td><td>Chọn palette accent + type scale</td></tr>
+        <tr><td><a href="https://github.com/awesomelistsio/awesome-ui-components">awesome-ui-components</a></td><td>Catalog component pattern</td><td>Segmented control, bottom-nav, empty state</td></tr>
+      </tbody>
+    </table>
+    <p class="text-small text-muted">Inspiration visual (không phải repo): Mobbin → Health &amp; Fitness · Dribbble tag <code>health-app</code> · DesignRush "Best Health &amp; Wellness 2026". Repo React/Tailwind chỉ tham chiếu <em>pattern</em>, không import — Nexus vẫn CSS thuần single-file.</p>
+
+    <!-- ── Đề xuất ── -->
+    <h2>4 · Đề xuất transform</h2>
+    <details open>
+      <summary>4.1 · Design tokens (sửa <code>:root</code>, dòng 14–64)</summary>
+      <ul>
+        <li><strong>Type scale chuẩn:</strong> caption 11 / body 13 / title 15 / metric 28; bỏ 9px, nâng 10px → 11px tối thiểu.</li>
+        <li><strong>Tách active vs success:</strong> thêm <code>--vita-active</code> riêng để gỡ green khỏi vai trò "active".</li>
+        <li><strong>Touch token:</strong> <code>--tap-min: 44px</code> áp cho mọi button/tab.</li>
+        <li><strong>Safe-area:</strong> <code>env(safe-area-inset-*)</code> vào topbar pad-top + content pad-bottom.</li>
+      </ul>
+    </details>
+    <details>
+      <summary>4.2 · Navigation</summary>
+      <ul>
+        <li>Chuyển primary nav xuống <strong>bottom tab bar</strong> (icon + nhãn, ≥44px, có safe-area) — đúng HIG cho phone.</li>
+        <li>Vita: gộp <code>range-row</code> thành segmented chip cuộn ngang trong content, không stack topbar.</li>
+        <li>Đổi nhãn "Actions" → "Duyệt"; thống nhất ngôn ngữ (Việt).</li>
+      </ul>
+    </details>
+    <details>
+      <summary>4.3 · Component polish</summary>
+      <ul>
+        <li>Snapshot Today: thêm progress (ring/pbar tái dùng) mỗi metric.</li>
+        <li>Actions: batch = primary, per-item = ghost; thêm Clear; approved rõ (✓ + "Đã thêm").</li>
+        <li>Calendar empty state: thêm CTA connect. Chuẩn hóa radius (card lg / nested md).</li>
+      </ul>
+    </details>
+    <details>
+      <summary>4.4 · PWA hygiene (đúng use-case bookmark iPhone)</summary>
+      <ul>
+        <li>Thêm meta <code>apple-mobile-web-app-capable</code>, <code>apple-mobile-web-app-status-bar-style</code>, <code>theme-color</code>; cân nhắc inline manifest. Không thêm CDN — chỉ meta tags.</li>
+      </ul>
+    </details>
+
+    <!-- ── Phasing ── -->
+    <h2>5 · Phasing thực thi</h2>
+    <ul class="timeline">
+      <li>
+        <span class="time">Phase 1 — Foundation · rủi ro thấp</span>
+        <p><strong>4 blocker:</strong> type scale, tách active/success token, touch-target ≥44px, safe-area. Thuần token + CSS, không đổi DOM logic → kéo theo phần lớn friction.</p>
+      </li>
+      <li>
+        <span class="time">Phase 2 — Navigation · rủi ro trung</span>
+        <p>Bottom tab bar, gỡ stack tab Vita, đổi nhãn/ngôn ngữ. Phụ thuộc P1 (token, safe-area); đụng cấu trúc topbar + <code>showView</code>.</p>
+      </li>
+      <li>
+        <span class="time">Phase 3 — Component polish · rủi ro thấp–trung</span>
+        <p>Snapshot progress, Actions button hierarchy + Clear + approved state, calendar empty CTA, radius, PWA meta.</p>
+      </li>
+    </ul>
+    <div class="callout warn"><strong>Verify mỗi phase:</strong> mở dashboard ở viewport 390–430px, kiểm 3 trạng thái (empty / có data / error), đo tap target ≥44px. <strong>Scope guard:</strong> không đổi nền/design language, không đụng JS API/validation, không thêm CDN (handoff §7).</div>
+
+    <!-- ── Open questions ── -->
+    <h2>6 · Open questions — cần chốt trước khi viết BD</h2>
+    <div class="card-grid">
+      <div class="card"><h3>1 · Bottom nav</h3><p>Đồng ý chuyển primary nav xuống đáy? (đổi cấu trúc rõ nhưng đúng HIG)</p></div>
+      <div class="card"><h3>2 · Ngôn ngữ nhãn</h3><p>Việt-chủ-đạo (giữ brand tiếng Anh) hay giữ Anh? <span class="badge green">Tab 4 đã chốt: Approval</span></p></div>
+      <div class="card"><h3>3 · Accent "active" mới</h3><p>Một màu accent riêng (vd <code>--vita-info</code>) hay neutral surface-raised?</p></div>
+      <div class="card"><h3>4 · Plan My Week</h3><p>Giữ ở Actions hay chuyển sang Calendar?</p></div>
+      <div class="card"><h3>5 · Ưu tiên ship</h3><p>Chỉ P1 (an toàn, impact cao) hay P1+P2 cùng đợt?</p></div>
+    </div>
+
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup — Tab thứ 4: Inbox vs Duyệt vs Proposals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+  :root{
+    --vita-bg:#090A0F; --vita-surface:#151720; --vita-surface-2:#1D202B; --vita-surface-raised:#242735;
+    --vita-line:rgba(255,255,255,.08); --vita-text:#F7F8FA; --vita-muted:#9BA1AE; --vita-faint:#5F6675;
+    --vita-good:#30D158; --vita-energy:#FF453A; --vita-protein:#0A84FF; --vita-info:#5AC8FA;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Inter",-apple-system,sans-serif;background:#05060a;color:var(--vita-text);
+    -webkit-font-smoothing:antialiased;padding:28px 16px 60px;line-height:1.5;}
+  h1{font-size:18px;font-weight:800;margin-bottom:4px;}
+  .sub{font-size:13px;color:var(--vita-muted);margin-bottom:26px;}
+  h2{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--vita-faint);
+    margin:30px 0 12px;padding-left:2px;}
+  .row{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;}
+
+  /* phone frame */
+  .phone{width:300px;background:var(--vita-bg);border-radius:30px;border:1px solid var(--vita-line);
+    overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.5);}
+  .phone-top{padding:14px 16px 10px;border-bottom:1px solid var(--vita-line);
+    background:rgba(9,10,15,.9);}
+  .phone-top h3{font-size:15px;font-weight:800;display:flex;align-items:center;gap:6px;}
+  .phone-body{min-height:150px;padding:18px 16px;display:flex;align-items:center;justify-content:center;
+    color:var(--vita-faint);font-size:12px;text-align:center;}
+
+  /* ── BOTTOM NAV (proposed) ── */
+  .botnav{display:flex;background:rgba(13,14,20,.96);border-top:1px solid var(--vita-line);
+    padding:8px 6px calc(8px + 6px);} /* +safe-area placeholder */
+  .bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;
+    padding:4px 2px;min-height:48px;justify-content:center;background:none;border:none;font-family:inherit;cursor:pointer;}
+  .bn-ico{font-size:20px;line-height:1;opacity:.85;}
+  .bn-lbl{font-size:10px;font-weight:700;color:var(--vita-faint);letter-spacing:.2px;}
+  .bn.active .bn-ico{opacity:1;}
+  .bn.active .bn-lbl{color:var(--vita-good);}
+  /* active dot indicator (semantic, not green text everywhere) */
+  .bn.active::before{content:"";position:absolute;top:0;width:22px;height:3px;border-radius:0 0 3px 3px;background:var(--vita-good);}
+  /* badge counter */
+  .bn .badge{position:absolute;top:-1px;right:50%;transform:translateX(20px);
+    min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--vita-energy);
+    color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;
+    border:1.5px solid var(--vita-bg);}
+
+  /* ── current TOP nav for reference ── */
+  .topnav{display:flex;gap:5px;padding:10px 12px;}
+  .tn{flex:1;padding:8px 4px;text-align:center;font-size:11px;font-weight:700;border:none;border-radius:9px;
+    background:rgba(255,255,255,.05);color:var(--vita-muted);font-family:inherit;position:relative;}
+  .tn.active{background:var(--vita-good);color:#000;}
+
+  .note{font-size:12px;color:var(--vita-muted);max-width:300px;line-height:1.6;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+    padding:3px 8px;border-radius:6px;margin-bottom:10px;}
+  .tag.now{background:rgba(255,159,10,.15);color:#FF9F0A;}
+  .tag.a{background:rgba(48,209,88,.15);color:var(--vita-good);}
+  .tag.b{background:rgba(90,200,250,.15);color:var(--vita-info);}
+  .tag.c{background:rgba(10,132,255,.15);color:var(--vita-protein);}
+  .legend{font-size:11px;color:var(--vita-faint);margin-top:8px;}
+</style>
+</head>
+<body>
+
+  <h1>🌐 Opus Nexus — Tab thứ 4: chọn nhãn</h1>
+  <div class="sub">Mockup render bằng đúng style thật của app. So sánh 3 phương án nhãn + badge đếm, đặt trong bottom nav (pattern đề xuất). Reference: nav hiện tại ở trên cùng.</div>
+
+  <!-- ── HIỆN TẠI ── -->
+  <h2>0 · Hiện tại (top nav, nhãn "Actions", không badge)</h2>
+  <div class="phone">
+    <div class="phone-top">
+      <h3>🌐 Opus Nexus</h3>
+      <div class="topnav" style="padding:10px 0 0">
+        <button class="tn">Today</button>
+        <button class="tn">Vita</button>
+        <button class="tn">Calendar</button>
+        <button class="tn active">Actions</button>
+      </div>
+    </div>
+    <div class="phone-body">"Actions" mơ hồ · không biết có 3 mục đang chờ</div>
+  </div>
+
+  <!-- ── 3 PHƯƠNG ÁN ── -->
+  <h2>Bottom nav + badge — 3 phương án nhãn</h2>
+  <div class="row">
+
+    <!-- A: Inbox -->
+    <div>
+      <span class="tag a">Phương án A · Inbox</span>
+      <div class="phone">
+        <div class="phone-top"><h3>📥 Inbox <span style="font-size:11px;color:var(--vita-muted);font-weight:600;margin-left:auto">3 đề xuất chờ duyệt</span></h3></div>
+        <div class="phone-body">Danh sách proposal từ LLM…</div>
+        <div class="botnav">
+          <button class="bn"><span class="bn-ico">🏠</span><span class="bn-lbl">Today</span></button>
+          <button class="bn"><span class="bn-ico">🌿</span><span class="bn-lbl">Vita</span></button>
+          <button class="bn"><span class="bn-ico">🗓️</span><span class="bn-lbl">Calendar</span></button>
+          <button class="bn active"><span class="badge">3</span><span class="bn-ico">📥</span><span class="bn-lbl">Inbox</span></button>
+        </div>
+      </div>
+      <div class="legend">✅ Metaphor quen thuộc (mail) · gợi "có việc chờ" · ngắn, hợp badge</div>
+    </div>
+
+    <!-- B: Duyệt -->
+    <div>
+      <span class="tag b">Phương án B · Duyệt</span>
+      <div class="phone">
+        <div class="phone-top"><h3>✅ Duyệt <span style="font-size:11px;color:var(--vita-muted);font-weight:600;margin-left:auto">3 đề xuất chờ duyệt</span></h3></div>
+        <div class="phone-body">Danh sách proposal từ LLM…</div>
+        <div class="botnav">
+          <button class="bn"><span class="bn-ico">🏠</span><span class="bn-lbl">Today</span></button>
+          <button class="bn"><span class="bn-ico">🌿</span><span class="bn-lbl">Vita</span></button>
+          <button class="bn"><span class="bn-ico">🗓️</span><span class="bn-lbl">Calendar</span></button>
+          <button class="bn active"><span class="badge">3</span><span class="bn-ico">✅</span><span class="bn-lbl">Duyệt</span></button>
+        </div>
+      </div>
+      <div class="legend">✅ Tiếng Việt thuần, rõ hành động · ⚠️ là động từ (nav nên là danh từ)</div>
+    </div>
+
+    <!-- C: Proposals -->
+    <div>
+      <span class="tag c">Phương án C · Proposals</span>
+      <div class="phone">
+        <div class="phone-top"><h3>📋 Proposals <span style="font-size:11px;color:var(--vita-muted);font-weight:600;margin-left:auto">3 chờ duyệt</span></h3></div>
+        <div class="phone-body">Danh sách proposal từ LLM…</div>
+        <div class="botnav">
+          <button class="bn"><span class="bn-ico">🏠</span><span class="bn-lbl">Today</span></button>
+          <button class="bn"><span class="bn-ico">🌿</span><span class="bn-lbl">Vita</span></button>
+          <button class="bn"><span class="bn-ico">🗓️</span><span class="bn-lbl">Calendar</span></button>
+          <button class="bn active"><span class="badge">3</span><span class="bn-ico">📋</span><span class="bn-lbl">Proposals</span></button>
+        </div>
+      </div>
+      <div class="legend">✅ Đúng domain (đề xuất) · ⚠️ tiếng Anh + dài, dễ tràn ở màn nhỏ</div>
+    </div>
+
+  </div>
+
+  <h2>Khuyến nghị</h2>
+  <p class="note"><strong style="color:var(--vita-good)">Phương án A — "Inbox"</strong> đọc nhanh nhất với badge: metaphor hộp-thư khiến con số "3" tự động được hiểu là "3 việc chờ xử lý". "Duyệt" (B) rõ tiếng Việt nhưng là động từ — hơi lệch quy ước đặt tên nav. "Proposals" (C) chính xác về domain nhưng dài + lệch ngôn ngữ nếu các nhãn khác chuyển sang tiếng Việt.<br><br>
+  Nếu bạn chốt <strong>ngôn ngữ Việt-chủ-đạo</strong> cho toàn nav (Today→Hôm nay, Vita giữ brand, Calendar→Lịch) thì <strong>"Hộp thư"</strong> hoặc giữ <strong>"Inbox"</strong> (đã là từ mượn phổ biến) là hợp nhất.</p>
+
+</body>
+</html>
