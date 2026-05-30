@@ -374,10 +374,6 @@ const CONFIG = {
     discoveryDoc: 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
     readScopes: 'https://www.googleapis.com/auth/calendar.readonly',
     writeScopes: 'https://www.googleapis.com/auth/calendar.events'
-  },
-  gemini: {
-    apiKey: '',                       // Generative Language API key (restrict by HTTP referrer)
-    model:  'gemini-2.0-flash'
   }
 };
 const TARGET = CONFIG.target;
@@ -394,7 +390,6 @@ let healthIdx = [], workoutIdx = [], financeIdx = [];
 let gapiReady = false, gToken = null, gTokenScope = '', calEvents = [], calLoading = false, calError = '';
 let pendingProposals = [], selectedIdx = new Set(), proposalText = '', proposalError = '', approvalResults = [], editingIdx = null;
 let profile = null, profileLoading = false, profileError = '', planPrompt = '';
-let aiGenLoading = false, aiGenError = '';
 
 // ── PAT setup ──
 function checkPat() {
@@ -958,8 +953,33 @@ function renderActionsTab() {
     ${renderApprovalResults()}`;
 }
 
+function extractJSON(text) {
+  let s = String(text || '').trim();
+  if (!s) throw new Error('Chưa có nội dung. Dán JSON từ LLM vào đây.');
+  // Strip ```json ... ``` or ``` ... ``` fences that ChatGPT/Claude often add
+  const fence = s.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if (fence) s = fence[1].trim();
+  // If there is prose around the JSON, carve out the outermost { } or [ ]
+  if (!/^[\[{]/.test(s)) {
+    const objStart = s.indexOf('{'), arrStart = s.indexOf('[');
+    const starts = [objStart, arrStart].filter(i => i >= 0);
+    if (starts.length) {
+      const start = Math.min(...starts);
+      const open = s[start], close = open === '{' ? '}' : ']';
+      const end = s.lastIndexOf(close);
+      if (end > start) s = s.slice(start, end + 1);
+    }
+  }
+  return s;
+}
+
 function parseProposals(text) {
-  const raw = JSON.parse(text);
+  let raw;
+  try {
+    raw = JSON.parse(extractJSON(text));
+  } catch (e) {
+    throw new Error('JSON không hợp lệ — copy lại đúng phần JSON từ LLM (gồm cả dấu { } đầu cuối).');
+  }
   const events = Array.isArray(raw) ? raw : raw.events;
   if (!Array.isArray(events)) throw new Error('JSON phải là array hoặc object có events[].');
   return {
@@ -1123,12 +1143,7 @@ function renderPlanMyWeek() {
       </div>
       <span class="status-pill info">Paste-based</span>
     </div>
-    ${isGeminiConfigured() ? `
-      <button class="action-btn" onclick="generatePlanViaAI()" style="margin-top:12px" ${aiGenLoading ? 'disabled' : ''}>${aiGenLoading ? '✨ Đang tạo kế hoạch...' : '✨ Tự gen bằng AI'}</button>
-      ${aiGenError ? `<div class="proposal-errors">${esc(aiGenError)}</div>` : ''}
-      <div style="font-size:11px;color:var(--vita-faint);margin-top:8px;line-height:1.5">AI tạo JSON tự động và đổ vào preview bên dưới — bạn xem, sửa, rồi duyệt. Hoặc làm thủ công ↓</div>
-    ` : ''}
-    <button class="action-btn secondary-btn" onclick="generatePlanPrompt()" style="margin-top:12px">${profileLoading ? 'Đang tải profile...' : (planPrompt ? '↻ Tạo lại prompt' : '① Tạo prompt (thủ công)')}</button>
+    <button class="action-btn secondary-btn" onclick="generatePlanPrompt()" style="margin-top:12px">${profileLoading ? 'Đang tải profile...' : (planPrompt ? '↻ Tạo lại prompt' : '① Tạo prompt')}</button>
     ${profileError ? `<div class="proposal-errors">${esc(profileError)}</div>` : ''}
     ${planPrompt ? `
       <textarea id="plan-prompt" class="nexus-input" readonly style="margin-top:var(--vita-gap);min-height:160px">${esc(planPrompt)}</textarea>
@@ -1139,50 +1154,6 @@ function renderPlanMyWeek() {
       <div style="font-size:11px;color:var(--vita-faint);margin-top:8px;line-height:1.5">Đã copy → dán vào ChatGPT/Claude → copy JSON nó trả về → dán vào ô “③ Dán JSON” bên dưới.</div>
     ` : ''}
   </div>`;
-}
-
-function isGeminiConfigured() {
-  return !!CONFIG.gemini.apiKey;
-}
-
-async function generatePlanViaAI() {
-  aiGenLoading = true;
-  aiGenError = '';
-  renderContent();
-  try {
-    await loadUserProfile();
-    const prompt = buildPlanPrompt(buildWeekContext());
-    const json = await callGemini(prompt);
-    aiGenLoading = false;
-    validateProposalInput(json);   // parse + validate + render preview
-    toast('AI đã tạo kế hoạch');
-  } catch (e) {
-    aiGenError = e.message;
-    aiGenLoading = false;
-    renderContent();
-  }
-}
-
-async function callGemini(prompt) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${CONFIG.gemini.model}:generateContent?key=${CONFIG.gemini.apiKey}`;
-  const body = {
-    contents: [{ parts: [{ text: prompt }] }],
-    generationConfig: { temperature: 0.6, responseMimeType: 'application/json' }
-  };
-  const r = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-  if (!r.ok) {
-    let msg = `Gemini HTTP ${r.status}`;
-    try { const e = await r.json(); if (e.error?.message) msg = e.error.message; } catch {}
-    throw new Error(msg);
-  }
-  const data = await r.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error('Gemini không trả về nội dung.');
-  return text.trim();
 }
 
 function copyPlanPrompt(btn) {
@@ -1256,33 +1227,66 @@ function buildWeekContext() {
 }
 
 function buildPlanPrompt(ctx) {
-  return `You are planning one pragmatic week for Opus Nexus.
+  const p = ctx.profile || {};
+  const pref = p.preferences || {};
+  const con = p.constraints || {};
+  const v = ctx.vita || {};
+  const cal = ctx.calendar || {};
 
-Return ONLY JSON in this exact shape:
+  // Compact, human-readable busy days the LLM must avoid (dates + all-day flags)
+  const busy = (ctx.upcoming_events || []).map(e => {
+    const allDay = e.isAllDay ? ' (cả ngày)' : '';
+    const when = e.isAllDay ? e.start : `${e.start} → ${e.end}`;
+    return `  - ${e.title || '(no title)'}: ${when}${allDay}`;
+  }).join('\n') || '  (không có sự kiện nào trong 14 ngày tới)';
+
+  const goals = (p.goals || []).map(g => `  - ${g.label}${g.metric ? ` (đo bằng: ${g.metric})` : ''}`).join('\n') || '  (chưa đặt)';
+  const windows = (pref.workout_time_windows || []).join(', ') || 'linh hoạt';
+  const mealDays = (pref.preferred_meal_prep_days || []).join(', ') || 'cuối tuần';
+
+  return `You are the planning engine for Opus Nexus, a personal life dashboard.
+Plan a realistic, low-stress week of calendar events for ONE person.
+
+## OUTPUT — return ONLY raw JSON, no markdown, no commentary:
 {
-  "summary": "short rationale",
+  "summary": "1-2 câu lý do tổng thể (tiếng Việt)",
   "events": [
     {
-      "title": "string",
+      "title": "ngắn gọn, tiếng Việt",
       "start": "YYYY-MM-DDTHH:mm:ss+09:00",
       "end": "YYYY-MM-DDTHH:mm:ss+09:00",
       "type": "workout|walk|meal_prep|sleep_protection|hydration|recovery|weekly_review|deep_work|study|personal_admin",
-      "description": "short note",
+      "description": "1 câu: vì sao xếp event này (tiếng Việt)",
       "location": ""
     }
   ]
 }
 
-Rules:
-- Use Asia/Tokyo timezone with +09:00 offset.
-- Do not overlap existing calendar events.
-- Keep each event <= 3h unless type is sleep_protection.
-- Prefer small, realistic events over an overloaded plan.
-- Include at least one weekly_review if there is a free slot.
-- Respect profile constraints, especially no auto-write and approval required.
+## HARD RULES (vi phạm = bị app từ chối):
+1. Mọi start/end PHẢI có đủ ngày + giờ + offset +09:00 (Asia/Tokyo). KHÔNG dùng date-only.
+2. start < end. Mỗi event <= 3 giờ, TRỪ type "sleep_protection".
+3. KHÔNG trùng giờ với các sự kiện đang có (liệt kê ở Busy days). Sự kiện "cả ngày" KHÔNG chặn giờ — nhưng ngày đó đang bận, nên hạn chế xếp việc nặng.
+4. Chỉ xếp event TỪ NGÀY MAI trở đi (hôm nay là ${ctx.date}). Lên kế hoạch cho 7 ngày tới.
+5. type phải nằm trong danh sách trên.
 
-Context:
-${JSON.stringify(ctx, null, 2)}`;
+## SOFT GUIDANCE (làm cho kế hoạch tốt hơn):
+- Ưu tiên ÍT mà chất: 4-7 event/tuần, đừng nhồi.
+- Tập (workout/walk) đặt trong khung giờ ưa thích: ${windows}.
+- Meal prep vào: ${mealDays}.
+- Có đúng 1 "weekly_review" (~45 phút) nếu còn slot trống.
+- Tránh xếp event sau ${con.avoid_late_events_after || '22:00'}; bảo vệ giấc ngủ sau ${con.protect_sleep_after || '23:30'}.
+- Bù đắp điểm yếu gần nhất: nếu protein thấp → thêm meal_prep; nếu thiếu vận động → thêm walk/workout; ngày bận → chỉ micro-action (đi bộ 10-15').
+
+## CONTEXT NGƯỜI DÙNG:
+- Hôm nay: ${ctx.date} (${ctx.timezone}).
+- Mục tiêu:
+${goals}
+- Tình trạng gần nhất (${v.latest_date || 'chưa có'}): ${v.kcal} kcal, protein ${v.protein}g, ngủ ${v.sleep_hours}h, ${v.steps} bước. Đã có ${v.workout_sessions_loaded} buổi tập trong dữ liệu.
+- Lịch 14 ngày tới: tổng ${cal.total} sự kiện (${cal.timed} có giờ, ${cal.allDay || 0} cả ngày), độ bận: ${cal.busyLevel}.
+- Busy days (TRÁNH trùng giờ):
+${busy}
+
+Hãy trả JSON ngay bây giờ.`;
 }
 
 function normalizeDateTime(value) {
