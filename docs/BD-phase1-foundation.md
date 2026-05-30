@@ -1,6 +1,6 @@
 # BD — Build Plan: Opus Nexus UI/UX — Phase 1 (Foundation)
 **Date:** 2026-05-30
-**Status:** 🔵 Planning
+**Status:** ✅ Done (Steps 1–6 · commits 2daa8ec…d8d66cc)
 **Ref:** `docs/PLAN-uiux-transformation.md` (review A–G + §7/§8 addenda), `docs/handoff-codex-uiux.md`
 **Estimate:** ~2.5–3.5 giờ
 **Target file:** `health-app/dashboard.html` (single file)
@@ -36,7 +36,7 @@
 
 ---
 
-### Step 1 — Thêm design tokens mới vào `:root` (dòng 14–64)
+### Step 1 — Thêm design tokens mới vào `:root` (dòng 14–64) ✅
 **Mục tiêu:** Có sẵn token cho type scale, active accent, tap target — chưa đổi UI.
 **Files:** Sửa `health-app/dashboard.html` — block `:root`.
 **Việc làm:**
@@ -50,7 +50,8 @@
 
 ---
 
-### Step 2 — Nâng cỡ chữ dưới ngưỡng (E.17)
+### Step 2 — Nâng cỡ chữ dưới ngưỡng (E.17) ✅
+> Lưu ý: `.cal-sub` + `.proposal-time` (13px body) bị sót ở commit đầu, fix ở commit d8d66cc.
 **Mục tiêu:** Không còn text < 11px; thang chữ nhất quán.
 **Files:** Sửa các rule CSS.
 **Việc làm:**
@@ -63,7 +64,7 @@
 
 ---
 
-### Step 3 — Nguyên lý màu OLED: số trung tính, màu chỉ ở đồ hoạ (E.18/E.19/§8.1)
+### Step 3 — Nguyên lý màu OLED: số trung tính, màu chỉ ở đồ hoạ (E.18/E.19/§8.1) ✅
 **Mục tiêu:** Giảm "vibrate"/quá tải màu; tách green khỏi "active".
 **Files:** Sửa CSS + một số render function (in-scope: "review HTML/CSS/render").
 **Việc làm:**
@@ -76,7 +77,7 @@
 
 ---
 
-### Step 4 — Touch target ≥ 44px (F.21)
+### Step 4 — Touch target ≥ 44px (F.21) ✅
 **Mục tiêu:** Mọi control chạm được đúng chuẩn iOS HIG.
 **Files:** Sửa CSS các class button/tab.
 **Việc làm:**
@@ -90,7 +91,7 @@
 
 ---
 
-### Step 5 — Safe-area + PWA meta (F.22)
+### Step 5 — Safe-area + PWA meta (F.22) ✅
 **Mục tiêu:** Không bị notch/home-indicator iPhone đè; nền tảng cho bottom nav Phase 2.
 **Files:** `<head>` + CSS `.topbar`/`.content`.
 **Việc làm:**
@@ -104,8 +105,16 @@
 
 ---
 
-### Step 6 — Integration test (regression)
+### Step 6 — Integration test (regression) ✅ (static)
 **Mục tiêu:** Đảm bảo không vỡ gì, đạt mục tiêu Phase 1.
+
+**Static verify đã chạy (không có browser trong môi trường remote):**
+- `grep` font-size <11px → **0 kết quả** ✓
+- `.mtab/.rtab/.nav-tab.active` đều `var(--vita-active)`, không còn green ✓
+- 9 control dùng `var(--tap-min)`; 2 chỗ `env(safe-area-*)` ✓
+- `node new Function(...)` parse inline JS (85K chars) → **OK**, không lỗi syntax ✓
+- ⏳ **Còn lại (cần browser thật/simulator):** render 3 view ở 430px, empty/error states, đo notch/home-indicator trên iPhone. → Để user verify khi mở app.
+
 **Test cases:**
 - [ ] Happy: mở 430px có data → 3 view render đúng, số trắng, bar/ring màu, active xanh dương.
 - [ ] Empty: chưa có PAT / chưa connect Google → empty states vẫn hiện, không lỗi.
