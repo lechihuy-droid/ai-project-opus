@@ -17,11 +17,11 @@ updated: 2026-05-20
 *Tracks every ingest run — quality signal over time*
 
 ## Legacy Stats Snapshot (stale)
-*Updated: 2026-05-20 05:39*
+*Updated: 2026-05-29 10:47*
 
 | Metric | Value |
 |---|---|
-| Total wiki pages | 450 |
+| Total wiki pages | 456 |
 | Topics | AI: 15 · Tech: 3 · Stock: 0 · Personal: 0 |
 | Raw articles (processed) | 198 |
 | processed.txt entries | 198 |
@@ -32,7 +32,7 @@ updated: 2026-05-20
 
 | Metric | Value |
 |---|---|
-| Total wiki pages | 450 |
+| Total wiki pages | 456 |
 | Topics | AI: 351; Stock: 79; Personal: 7; FDE: 6; Tech: 3; Research: 2; Business: 1; root: 1 |
 | Status mix | seed: 415; evergreen: 21; missing status: 14 |
 | Source-seed pages | 382 |
@@ -117,3 +117,7 @@ Sources marked with `keyword_filter` in config.yaml — articles not matching ar
 | 2026-05-17 22:52 | content-collector | 112 | 37 dropped | 75 | 41 | 15 | 35 | openai-news:10→10; google-ai-blog:1→1; aws-ml-blog:13→10; nvidia-blog:5→5; techcrunch-ai:11→10; simon-willison:4→4; hf-blog:3→3; import-ai:1→1; interconnects:2→2; nikkei-asia:21→10; hf-papers:14→10; github-trending-ai:15→9; itmedia-enterprise:2→0; everest-group:10→0 |
 | 2026-05-20 03:09 | content-collector | 157 | 56 dropped | 101 | 81 | 0 | 450 | openai-news:10→10; google-ai-blog:7→6; aws-ml-blog:12→10; nvidia-blog:5→5; techcrunch-ai:10→10; venturebeat-ai:1→1; simon-willison:2→2; hf-blog:6→6; import-ai:1→1; interconnects:1→1; arxiv-ai:10→10; arxiv-lg:19→10; nikkei-asia:20→10; hf-papers:11→10; github-trending-ai:15→9; itmedia-enterprise:18→0; everest-group:9→0 |
 | 2026-05-20 05:39 | content-collector | 163 | 60 dropped | 103 | 7 | 0 | 450 | openai-news:10→10; microsoft-azure-blog:1→1; google-ai-blog:7→6; aws-ml-blog:12→10; nvidia-blog:5→5; techcrunch-ai:10→10; venturebeat-ai:1→1; simon-willison:2→2; hf-blog:7→7; import-ai:1→1; interconnects:1→1; arxiv-ai:10→10; arxiv-lg:19→10; nikkei-asia:22→10; hf-papers:11→10; github-trending-ai:15→9; itmedia-enterprise:20→0; everest-group:9→0 |
+| 2026-05-27 00:45 | content-collector | 168 | 65 dropped | 103 | 50 | 0 | 456 | openai-news:8→8; microsoft-official-blog:1→1; microsoft-azure-blog:4→4; google-ai-blog:11→10; aws-ml-blog:10→10; nvidia-blog:3→2; techcrunch-ai:9→6; simon-willison:7→7; hf-blog:4→4; import-ai:1→1; arxiv-ai:10→10; arxiv-lg:26→10; nikkei-asia:24→10; hf-papers:13→10; github-trending-ai:11→10; itmedia-enterprise:18→0; everest-group:8→0 |
+| 2026-05-27 22:45 | content-collector | 150 | 54 dropped | 96 | 61 | 0 | 456 | openai-news:4→4; microsoft-official-blog:1→1; microsoft-azure-blog:3→3; google-ai-blog:4→4; aws-ml-blog:10→10; nvidia-blog:3→2; techcrunch-ai:13→10; simon-willison:7→7; hf-blog:3→3; import-ai:1→1; interconnects:1→1; arxiv-ai:11→10; arxiv-lg:23→10; nikkei-asia:14→10; hf-papers:11→10; github-trending-ai:13→10; itmedia-enterprise:21→0; everest-group:7→0 |
+| 2026-05-28 10:35 | content-collector | 151 | 53 dropped | 98 | 39 | 0 | 456 | openai-news:8→8; microsoft-official-blog:1→1; google-ai-blog:1→1; aws-ml-blog:10→10; nvidia-blog:4→3; techcrunch-ai:11→10; simon-willison:7→7; hf-blog:6→6; import-ai:1→1; interconnects:1→1; arxiv-ai:11→10; arxiv-lg:23→10; nikkei-asia:15→10; hf-papers:11→10; github-trending-ai:13→10; itmedia-enterprise:21→0; everest-group:7→0 |
+| 2026-05-29 10:47 | content-collector | 167 | 76 dropped | 91 | 64 | 0 | 456 | microsoft-azure-blog:2→2; google-ai-blog:2→2; aws-ml-blog:11→10; nvidia-blog:4→4; techcrunch-ai:11→10; simon-willison:5→5; hf-blog:6→6; import-ai:1→1; interconnects:1→1; arxiv-ai:14→10; arxiv-lg:34→10; nikkei-asia:18→10; hf-papers:11→10; github-trending-ai:12→10; itmedia-enterprise:27→0; everest-group:8→0 |

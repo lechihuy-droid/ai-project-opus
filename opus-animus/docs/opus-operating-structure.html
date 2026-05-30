@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Opus Animus Operating Structure</title>
+  <style>
+    :root {
+      --ink: #17202a;
+      --muted: #5f6b7a;
+      --line: #d8dee8;
+      --paper: #f8fafc;
+      --panel: #ffffff;
+      --cons: #166f8f;
+      --fabrica: #7a5a12;
+      --lucida: #9b3f5c;
+      --actio: #4359a8;
+      --github: #24292f;
+      --good: #1f7a55;
+      --shadow: 0 16px 40px rgba(23, 32, 42, 0.09);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, #eef3f8 0%, #f8fafc 34%, #ffffff 100%);
+      line-height: 1.55;
+    }
+
+    main {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 40px 24px 64px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.6fr);
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 28px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(32px, 5vw, 64px);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      font-size: 24px;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .subtitle {
+      max-width: 740px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .meta {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 7px 0;
+      border-bottom: 1px solid #edf1f6;
+      font-size: 14px;
+    }
+
+    .meta-row:last-child {
+      border-bottom: 0;
+    }
+
+    .label {
+      color: var(--muted);
+    }
+
+    .value {
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .section {
+      margin-top: 28px;
+      padding: 26px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .topology {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .node {
+      position: relative;
+      min-height: 132px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .node::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 5px;
+      background: var(--accent, var(--github));
+    }
+
+    .node strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .node span {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .node.github {
+      grid-column: 1 / -1;
+      min-height: auto;
+      --accent: var(--github);
+      background: #f6f8fa;
+    }
+
+    .node.root {
+      grid-column: 1 / -1;
+      min-height: auto;
+      --accent: var(--good);
+      background: #f4fbf8;
+    }
+
+    .cons { --accent: var(--cons); }
+    .fabrica { --accent: var(--fabrica); }
+    .lucida { --accent: var(--lucida); }
+    .actio { --accent: var(--actio); }
+
+    .pipe {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .step {
+      position: relative;
+      min-height: 108px;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #fbfdff;
+    }
+
+    .step:not(:last-child)::after {
+      content: ">";
+      position: absolute;
+      top: 50%;
+      right: -11px;
+      transform: translateY(-50%);
+      z-index: 2;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #243447;
+      color: white;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .step small {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0;
+    }
+
+    .step b {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .item {
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdff;
+    }
+
+    .item b {
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .item span {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .lane {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .lane-step {
+      display: grid;
+      grid-template-columns: 32px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #26364a;
+      color: white;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .sources {
+      columns: 2;
+      column-gap: 28px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    code {
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-size: 0.92em;
+      color: #243447;
+      background: #eef3f8;
+      padding: 2px 5px;
+      border-radius: 5px;
+    }
+
+    @media (max-width: 980px) {
+      header,
+      .split {
+        grid-template-columns: 1fr;
+      }
+
+      .topology {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .pipe {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .step:nth-child(2n)::after {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      main {
+        padding: 26px 14px 48px;
+      }
+
+      .section {
+        padding: 18px;
+      }
+
+      .topology,
+      .pipe {
+        grid-template-columns: 1fr;
+      }
+
+      .step::after {
+        display: none !important;
+      }
+
+      .sources {
+        columns: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>Opus Animus Operating Structure</h1>
+        <p class="subtitle">Ban do van hanh sau khi migrate len GitHub: Opus la mot he workspace, trong do Concept Wiki la bo nao lam viec voi Consilium; Consilium van hanh inbox, review, routing, dashboard va cac chu ky tong hop.</p>
+      </div>
+      <aside class="meta" aria-label="metadata">
+        <div class="meta-row"><span class="label">Repo</span><span class="value">ai-workspace / main</span></div>
+        <div class="meta-row"><span class="label">Root</span><span class="value">opus-animus</span></div>
+        <div class="meta-row"><span class="label">Updated</span><span class="value">2026-05-29</span></div>
+        <div class="meta-row"><span class="label">View</span><span class="value">operating map</span></div>
+      </aside>
+    </header>
+
+    <section class="section">
+      <h2>Workspace Topology</h2>
+      <div class="topology">
+        <div class="node github">
+          <strong>GitHub main</strong>
+          <span>Source of truth cho Markdown wiki, architecture docs, workflows, app code, va handoff state.</span>
+        </div>
+        <div class="node root">
+          <strong>opus-animus</strong>
+          <span>Umbrella workspace. Giu dinh huong, status, handoff, dev approach, va cac he con.</span>
+        </div>
+        <div class="node cons">
+          <strong>opus-consilium</strong>
+          <span>Operating workspace cho Concept Wiki: inbox, review layer, routing layer, dashboard, daily/weekly intelligence.</span>
+        </div>
+        <div class="node fabrica">
+          <strong>opus-fabrica</strong>
+          <span>Shared capability layer: tool/agent/skill dung chung. Resident hien tai: markitdown-agent.</span>
+        </div>
+        <div class="node lucida">
+          <strong>opus-lucida</strong>
+          <span>Product/content workspace: Japanese N2 learning, lesson method, production lanes, funnel.</span>
+        </div>
+        <div class="node actio">
+          <strong>opus-actio</strong>
+          <span>Investment workflow branch: Claude Code slash commands, portfolio/tax/research routines.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>System Flow</h2>
+      <div class="pipe">
+        <div class="step">
+          <small>01 input</small>
+          <b>Sources</b>
+          <p>GitHub edits, ChatGPT mobile, Telegram, RSS, web, manual files.</p>
+        </div>
+        <div class="step">
+          <small>02 normalize</small>
+          <b>Fabrica tools</b>
+          <p>markitdown-agent converts files to Markdown and routes them into raw input folders.</p>
+        </div>
+        <div class="step">
+          <small>03 store</small>
+          <b>Consilium raw/</b>
+          <p>Immutable source layer for articles, papers, notes, and inbox drops.</p>
+        </div>
+        <div class="step">
+          <small>04 synthesize</small>
+          <b>Claude CLI + wiki_ops</b>
+          <p>Ingest, query, lint, reflect, daily synthesis, weekly synthesis.</p>
+        </div>
+        <div class="step">
+          <small>05 think</small>
+          <b>Concept Wiki</b>
+          <p>Bo nao lam viec voi Consilium: durable decision memory for AI trends, reskill, investment, FDE, and Opus strategy.</p>
+        </div>
+        <div class="step">
+          <small>06 act</small>
+          <b>Route to workspaces</b>
+          <p>Lucida production, Actio analysis, dashboard review, or wiki decision updates.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section split">
+      <div>
+        <h2>Consilium Runtime</h2>
+        <div class="list">
+          <div class="item"><b>Concept Wiki</b><span>Working brain cua Consilium: decision memory, concept map, beliefs, open questions, and routing context.</span></div>
+          <div class="item"><b>Content Collector</b><span>Daily 05:30 JST. Collects AI/market signals, filters them, writes synthesis and optional wiki ingest.</span></div>
+          <div class="item"><b>Weekly Synthesizer</b><span>Sunday 06:00 JST. Builds weekly strategic report under <code>logs/weekly/</code>.</span></div>
+          <div class="item"><b>Module C Wiki</b><span><code>run_wiki.py poll</code> every 5 minutes, plus weekly lint/reflection routines.</span></div>
+          <div class="item"><b>Opus Home Dashboard</b><span>FastAPI + React at <code>localhost:8765</code>, showing dashboard, Intel, FDE, reading views.</span></div>
+        </div>
+      </div>
+      <div>
+        <h2>Lucida Production Lane</h2>
+        <div class="lane">
+          <div class="lane-step"><span class="num">1</span><span>Topic choice and approved examples</span></div>
+          <div class="lane-step"><span class="num">2</span><span>Teaching skeleton as source of truth</span></div>
+          <div class="lane-step"><span class="num">3</span><span>Slide architecture and script derive from skeleton</span></div>
+          <div class="lane-step"><span class="num">4</span><span>Slide-system review, frame map, worksheet / quiz spec</span></div>
+          <div class="lane-step"><span class="num">5</span><span>HTML deck, exported frames, audio, video assembly</span></div>
+          <div class="lane-step"><span class="num">6</span><span>Publish handoff and post-video decision log</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section split">
+      <div>
+        <h2>Folder Roles</h2>
+        <div class="list">
+          <div class="item"><b><code>opus-consilium/personal-wiki/</code></b><span>Concept Wiki: bo nao lam viec voi Consilium, plus GitHub-facing wiki source of truth.</span></div>
+          <div class="item"><b><code>opus-consilium/raw/</code></b><span>Write-once source layer. Do not edit raw files casually.</span></div>
+          <div class="item"><b><code>opus-lucida/strategy/</code></b><span>Positioning, offers, pricing, product ladder.</span></div>
+          <div class="item"><b><code>opus-lucida/framework/</code></b><span>Teaching method, grammar 3-view, slide method.</span></div>
+          <div class="item"><b><code>opus-lucida/production/</code></b><span>Active lesson lanes, QA criteria, assets, slide-system rules.</span></div>
+          <div class="item"><b><code>opus-lucida/automation/</code></b><span>SOPs, runners, execution governance, audio/video rules.</span></div>
+        </div>
+      </div>
+      <div>
+        <h2>Operating Principles</h2>
+        <div class="list">
+          <div class="item"><b>File-first, GitHub-first</b><span>Markdown files remain readable, diffable, and usable by local Codex, ChatGPT cloud, and Obsidian.</span></div>
+          <div class="item"><b>Concept Wiki thinks, Consilium operates</b><span>Concept Wiki giu concept memory va decision logic; Consilium nhan input, review, route, va hien thi dashboard.</span></div>
+          <div class="item"><b>Fabrica is reusable</b><span>Shared tools should not own business truth. They serve multiple workspaces.</span></div>
+          <div class="item"><b>Teacher review before publish</b><span>AI drafts can move fast, but learner-facing output must pass language and teaching QA.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Canonical References</h2>
+      <p class="sources">
+        <code>docs/SA-system-architecture.md</code><br>
+        <code>docs/SD-opus-workspace-map.md</code><br>
+        <code>opus-consilium/README.md</code><br>
+        <code>opus-consilium/CLAUDE.md</code><br>
+        <code>opus-lucida/README.md</code><br>
+        <code>opus-lucida/11-current-operating-flow.md</code><br>
+        <code>opus-lucida/12-repo-folder-status-map.md</code><br>
+        <code>opus-fabrica/docs/SD-opus-fabrica.md</code><br>
+        <code>opus-actio/USAGE.md</code><br>
+        <code>ai/status.md</code>
+      </p>
+    </section>
+  </main>
+</body>
+</html>
