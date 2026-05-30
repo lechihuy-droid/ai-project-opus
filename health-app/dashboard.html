@@ -676,6 +676,17 @@ function renderToday() {
   const sleepPct = TARGET.sleep > 0 ? Math.min(100, sleep / TARGET.sleep * 100) : 0;
   const sleepLabel = sleep > 0 ? sleep.toFixed(1).replace('.', ',') : '—';
   const sleepSub = sleep > 0 ? `${sleepPct.toFixed(0)}% mục tiêu` : 'chưa log';
+  const sleepSeries = cHealth.slice(0, 7).reverse().map(l => l.sleep_hours || 0);
+  const sleepValues = sleepSeries.filter(v => v > 0);
+  const sleepAvg = sleepValues.length ? sleepValues.reduce((a, b) => a + b, 0) / sleepValues.length : 0;
+  const sleepAvgText = sleepAvg > 0 ? sleepAvg.toFixed(1).replace('.', ',') : '';
+  const sleepUnit = sleep > 0
+    ? `h tối qua${sleepAvgText ? ` · TB ${sleepAvgText}h` : ''}`
+    : (sleepAvgText ? `TB ${sleepAvgText}h` : '');
+  const maxSleep = Math.max(TARGET.sleep, ...sleepSeries, 1);
+  const sleepBars = sleepSeries.length
+    ? `<div class="bars">${sleepSeries.map(v => `<span style="height:${v > 0 ? Math.max(6, v / maxSleep * 100) : 4}%"></span>`).join('')}</div>`
+    : '';
 
   const snapshot = `
   <div class="snap-grid">
@@ -704,11 +715,11 @@ function renderToday() {
     </div>
     <div class="sb span2">
       <span class="sb-ico">😴</span>
-      <div class="sb-label">Giấc ngủ</div>
+      <div class="sb-label">Giấc ngủ · 7 ngày</div>
       <div class="sleep-head">
-        <span class="sb-val">${sleepLabel}</span><span class="sb-unit">${sleep > 0 ? 'h tối qua' : ''}</span>
+        <span class="sb-val">${sleepLabel}</span><span class="sb-unit">${sleepUnit}</span>
       </div>
-      <div class="sb-hero-sub">${sleepSub}</div>
+      ${sleepBars || `<div class="sb-hero-sub">${sleepSub}</div>`}
     </div>
   </div>`;
 
