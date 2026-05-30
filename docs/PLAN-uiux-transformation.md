@@ -150,7 +150,14 @@ Inspiration (không phải repo, để so visual): Mobbin → Health & Fitness, 
 4. **"Plan My Week"** — giữ ở Actions hay chuyển sang Calendar?
 5. Phase nào ưu tiên ship trước — chỉ P1 (an toàn, impact cao) hay P1+P2 cùng đợt?
 
-> **Đã chốt:** Q-naming → tab 4 = **"Approval"** + badge đếm (mockup: `docs/mockup-tab4-naming.html`).
+> **🔒 Đã chốt (2026-05-30):**
+> - Tab 4 = **"Approval"** + badge đếm (mockup `docs/mockup-tab4-naming.html`).
+> - **Q1 Bottom nav: CÓ** — chuyển 4 tab xuống đáy (kéo theo [F.22] safe-area → Blocker).
+> - **Q2 Ngôn ngữ nav: EN** (Today / Vita / Calendar / Approval).
+> - **Q4 Màu active: A — xanh dương** (`--vita-info`), gỡ green khỏi vai trò "active"; green giữ riêng cho "good/success".
+> - **Q3 Mở scope JS-behavior: CÓ** — cho phép §7.4 (bottom-sheet, keyboard-fix, 1-tap paste).
+> - **Icon set: Phosphor** (inline SVG, no-CDN) — inactive = Regular/outline xám, active = Fill xanh dương. Thay toàn bộ emoji ở nav.
+> - Mockup tổng: `docs/mockup-today-redesign.html`, nav icon: `docs/mockup-bottom-nav-icons.html`.
 
 ---
 

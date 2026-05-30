@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup — Bottom nav icons + active state</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+  :root{
+    --vita-bg:#090A0F; --vita-surface:#151720; --vita-surface-raised:#242735;
+    --vita-line:rgba(255,255,255,.08); --vita-text:#F7F8FA; --vita-muted:#9BA1AE; --vita-faint:#5F6675;
+    --vita-good:#30D158; --vita-energy:#FF453A; --vita-info:#5AC8FA; --vita-protein:#0A84FF;
+    --active:#0A84FF; /* Q4 chốt: xanh dương */
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Inter",-apple-system,sans-serif;background:#05060a;color:var(--vita-text);
+    -webkit-font-smoothing:antialiased;padding:26px 18px 70px;line-height:1.5;}
+  h1{font-size:18px;font-weight:800;margin-bottom:4px;}
+  .sub{font-size:13px;color:var(--vita-muted);margin-bottom:8px;max-width:640px;}
+  .sub2{font-size:12px;color:var(--vita-faint);margin-bottom:26px;max-width:640px;}
+  h2{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--vita-faint);margin:34px 0 14px;}
+  .row{display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start;}
+  .legend{font-size:11.5px;color:var(--vita-muted);margin-top:10px;max-width:300px;line-height:1.6;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+    padding:3px 8px;border-radius:6px;margin-bottom:10px;background:rgba(10,132,255,.16);color:#4DA3FF;}
+  .tag.rec{background:rgba(48,209,88,.15);color:var(--vita-good);}
+
+  .bar{width:320px;background:rgba(13,14,20,.98);border:1px solid var(--vita-line);
+    border-radius:22px;padding:9px 8px 9px;display:flex;box-shadow:0 10px 30px rgba(0,0,0,.5);}
+  .bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;
+    padding:7px 2px 5px;background:none;border:none;font-family:inherit;cursor:pointer;}
+  .bn svg{width:24px;height:24px;display:block;stroke:var(--vita-faint);fill:none;
+    stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transition:.18s;}
+  .bn .lbl{font-size:10px;font-weight:700;color:var(--vita-faint);letter-spacing:.2px;transition:.18s;}
+  .bn .badge{position:absolute;top:0;right:50%;transform:translateX(22px);min-width:17px;height:17px;
+    padding:0 4px;border-radius:9px;background:var(--vita-energy);color:#fff;font-size:10px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;border:2px solid #0D0E14;z-index:2;}
+
+  /* ───── OPTION 1 · Soft pill highlight (Material-You style) ───── */
+  .o1 .bn.active svg{stroke:var(--active);}
+  .o1 .bn.active .lbl{color:#4DA3FF;}
+  .o1 .bn.active .ico{position:relative;}
+  .o1 .bn.active .ico::before{content:"";position:absolute;inset:-5px -16px;border-radius:14px;
+    background:rgba(10,132,255,.16);z-index:-1;}
+
+  /* ───── OPTION 2 · Filled icon (Phosphor Fill style) ───── */
+  .o2 .bn.active svg{stroke:var(--active);fill:rgba(10,132,255,.9);stroke-width:1.2;}
+  .o2 .bn.active .lbl{color:#4DA3FF;}
+
+  /* ───── OPTION 3 · Accent + dot under label ───── */
+  .o3 .bn.active svg{stroke:var(--active);stroke-width:2.2;}
+  .o3 .bn.active .lbl{color:#4DA3FF;}
+  .o3 .bn.active::after{content:"";position:absolute;bottom:-3px;width:5px;height:5px;border-radius:50%;background:var(--active);}
+
+  .note{font-size:12.5px;color:var(--vita-muted);max-width:660px;line-height:1.65;margin-top:6px;}
+  code{font-family:ui-monospace,monospace;font-size:.9em;background:rgba(255,255,255,.06);padding:1px 5px;border-radius:4px;color:#9FD0FF;}
+</style>
+</head>
+<body>
+
+  <h1>🌐 Bottom nav — icon Phosphor/line + active state</h1>
+  <div class="sub">Icon line thật (inline SVG, không CDN) thay emoji. Active đã chốt màu <strong style="color:#4DA3FF">xanh dương</strong>. Dưới đây 3 cách thể hiện tab được chọn — chọn 1 cái thay cho "thanh trên đỉnh" cũ.</div>
+  <div class="sub2">Icon dùng: House · Pulse (Vita) · Calendar · Tray (Approval). Có thể đổi sang Phosphor Fill cho state active để "đầy đặn" hơn.</div>
+
+  <!-- reusable symbols -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 9.5 9-7 9 7V20a1.5 1.5 0 0 1-1.5 1.5h-4V14h-7v7.5h-4A1.5 1.5 0 0 1 3 20z"/></symbol>
+    <symbol id="i-vita" viewBox="0 0 24 24"><path d="M2 12h4l2.5-7 4 16 3-9H21"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></symbol>
+    <symbol id="i-tray" viewBox="0 0 24 24"><path d="M3 13h4l2 3h6l2-3h4"/><path d="M5.5 5.5 3 13v5a1.5 1.5 0 0 0 1.5 1.5h15A1.5 1.5 0 0 0 21 18v-5l-2.5-7.5A1.5 1.5 0 0 0 17 4.5H7A1.5 1.5 0 0 0 5.5 5.5z"/></symbol>
+  </svg>
+
+  <div class="row">
+
+    <!-- OPTION 1 -->
+    <div>
+      <span class="tag rec">Option 1 · Soft pill (khuyến nghị)</span>
+      <div class="bar o1">
+        <button class="bn active"><span class="ico"><svg><use href="#i-home"/></svg></span><span class="lbl">Today</span></button>
+        <button class="bn"><svg><use href="#i-vita"/></svg><span class="lbl">Vita</span></button>
+        <button class="bn"><svg><use href="#i-cal"/></svg><span class="lbl">Calendar</span></button>
+        <button class="bn"><span class="badge">3</span><svg><use href="#i-tray"/></svg><span class="lbl">Approval</span></button>
+      </div>
+      <div class="legend">Highlight bo tròn mờ xanh sau icon active. Sạch, hiện đại (Gmail / Material You), không "đè" lên đường viền nav. <strong style="color:var(--vita-good)">Nên dùng cái này.</strong></div>
+    </div>
+
+    <!-- OPTION 2 -->
+    <div>
+      <span class="tag">Option 2 · Filled icon (Phosphor Fill)</span>
+      <div class="bar o2">
+        <button class="bn active"><svg><use href="#i-home"/></svg><span class="lbl">Today</span></button>
+        <button class="bn"><svg><use href="#i-vita"/></svg><span class="lbl">Vita</span></button>
+        <button class="bn"><svg><use href="#i-cal"/></svg><span class="lbl">Calendar</span></button>
+        <button class="bn"><span class="badge">3</span><svg><use href="#i-tray"/></svg><span class="lbl">Approval</span></button>
+      </div>
+      <div class="legend">Icon active được tô đặc xanh (đúng pattern iOS: outline → fill). "Đầy đặn", rõ trạng thái nhất. Cần dùng Phosphor để có bản Fill chuẩn.</div>
+    </div>
+
+    <!-- OPTION 3 -->
+    <div>
+      <span class="tag">Option 3 · Accent + dot</span>
+      <div class="bar o3">
+        <button class="bn active"><svg><use href="#i-home"/></svg><span class="lbl">Today</span></button>
+        <button class="bn"><svg><use href="#i-vita"/></svg><span class="lbl">Vita</span></button>
+        <button class="bn"><svg><use href="#i-cal"/></svg><span class="lbl">Calendar</span></button>
+        <button class="bn"><span class="badge">3</span><svg><use href="#i-tray"/></svg><span class="lbl">Approval</span></button>
+      </div>
+      <div class="legend">Icon + chữ xanh + chấm nhỏ dưới nhãn. Tối giản, nhẹ nhàng; ít nổi hơn 2 cái trên.</div>
+    </div>
+
+  </div>
+
+  <h2>Vì sao Phosphor</h2>
+  <p class="note">Phosphor có sẵn 6 weight gồm <strong>Regular (outline)</strong> và <strong>Fill</strong> — đúng cặp cần cho tab bar (inactive outline / active filled), MIT license, inline thẳng SVG nên <strong>không phá ràng buộc no-CDN</strong>. Lucide là phương án thay thế (chỉ outline). SF Symbols đẹp nhất nhưng Apple cấm dùng ngoài app native → loại. Khi build, tải đúng các icon cần (house, pulse, calendar, tray) ở 2 weight rồi nhúng vào <code>&lt;symbol&gt;</code> như mockup này — tổng dung lượng vài KB.</p>
+
+</body>
+</html>
