@@ -285,6 +285,9 @@ canvas { display: block; }
 .proposal-dur { display: inline-block; margin-top: 8px; margin-left: 6px; font-size: 10px; font-weight: 700; color: var(--vita-muted); background: rgba(255,255,255,.05); border-radius: 8px; padding: 3px 7px; }
 .proposal-edit { flex-shrink: 0; background: rgba(255,255,255,.06); color: var(--vita-muted); border: none; border-radius: 8px; width: 30px; height: 30px; font-size: 13px; cursor: pointer; font-family: inherit; }
 .proposal-edit:active { background: rgba(255,255,255,.12); }
+.proposal-approve { flex-shrink: 0; background: rgba(48,209,88,.16); color: var(--vita-good); border: none; border-radius: 8px; height: 30px; padding: 0 11px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.proposal-approve:active { background: rgba(48,209,88,.28); }
+.proposal-card.approved { border-color: rgba(48,209,88,.3); background: rgba(48,209,88,.05); opacity: .75; }
 .proposal-card.editing { display: block; border-color: rgba(90,200,250,.4); }
 .edit-field { width: 100%; padding: 9px 11px; background: rgba(255,255,255,.04); border: 1px solid var(--vita-line); border-radius: 9px; font-size: 13px; font-family: inherit; color: var(--vita-text); outline: none; }
 .edit-field:focus { border-color: rgba(90,200,250,.45); }
@@ -603,6 +606,17 @@ function renderInsightCard(title, tips, options={}) {
 function renderProposalCard(ev, selected=false, idx=null) {
   const errors = ev.errors || [];
   if (idx !== null && editingIdx === idx) return renderProposalEditor(ev, idx);
+  if (ev.approved) {
+    return `<div class="proposal-card approved">
+      <span class="proposal-ok" style="margin-top:2px">✓</span>
+      <div style="flex:1;min-width:0">
+        <div class="proposal-title">${esc(ev.title || '')}</div>
+        <div class="proposal-time">Đã thêm vào ${ev.kind === 'task' ? 'Tasks' : 'Calendar'}</div>
+      </div>
+    </div>`;
+  }
+  const actions = idx === null ? '' : `${errors.length ? '' : `<button class="proposal-approve" onclick="approveOne(${idx})" title="Approve mục này">✓ Approve</button>`}
+    <button class="proposal-edit" onclick="startEdit(${idx})" title="Sửa">✏️</button>`;
   if (ev.kind === 'task') {
     return `<div class="proposal-card ${selected ? 'selected' : ''}">
       <input class="proposal-select" type="checkbox" ${selected ? 'checked' : ''} ${errors.length ? 'disabled' : ''} ${idx===null ? '' : `onchange="toggleProposal(${idx}, this.checked)"`}>
@@ -612,7 +626,7 @@ function renderProposalCard(ev, selected=false, idx=null) {
         <span class="proposal-type">task</span>
         ${errors.length ? `<div class="proposal-errors">${errors.map(esc).join('<br>')}</div>` : ''}
       </div>
-      ${idx===null ? '' : `<button class="proposal-edit" onclick="startEdit(${idx})" title="Sửa">✏️</button>`}
+      ${actions}
     </div>`;
   }
   const dur = formatDuration(ev);
@@ -625,7 +639,7 @@ function renderProposalCard(ev, selected=false, idx=null) {
       ${dur ? `<span class="proposal-dur">⏱ ${esc(dur)}</span>` : ''}
       ${errors.length ? `<div class="proposal-errors">${errors.map(esc).join('<br>')}</div>` : ''}
     </div>
-    ${idx===null ? '' : `<button class="proposal-edit" onclick="startEdit(${idx})" title="Sửa">✏️</button>`}
+    ${actions}
   </div>`;
 }
 
@@ -1159,12 +1173,16 @@ function overlapsProposal(start, end, existing) {
 
 function renderProposalPreview() {
   if (!pendingProposals.length) return '';
-  const validCount = pendingProposals.filter(ev => !ev.errors.length).length;
-  return `<div class="stitle">Preview · ${validCount}/${pendingProposals.length} hợp lệ</div>
+  const pending = pendingProposals.filter(ev => !ev.approved);
+  const validCount = pending.filter(ev => !ev.errors.length).length;
+  const batchBtn = pending.length > 1
+    ? `<button class="action-btn" onclick="approveSelected()" style="margin-top:var(--vita-gap)" ${selectedIdx.size ? '' : 'disabled'}>Approve ${selectedIdx.size} mục đã chọn</button>`
+    : '';
+  return `<div class="stitle">Preview · ${validCount}/${pending.length} chờ duyệt</div>
     <div style="display:flex;flex-direction:column;gap:var(--vita-gap)">
       ${pendingProposals.map((ev, idx) => renderProposalCard(ev, selectedIdx.has(idx), idx)).join('')}
     </div>
-    <button class="action-btn" onclick="approveSelected()" style="margin-top:var(--vita-gap)" ${selectedIdx.size ? '' : 'disabled'}>Approve ${selectedIdx.size} mục</button>`;
+    ${batchBtn}`;
 }
 
 function toggleProposal(idx, checked) {
@@ -1174,9 +1192,17 @@ function toggleProposal(idx, checked) {
 }
 
 async function approveSelected() {
+  await runApproval([...selectedIdx]);
+}
+
+async function approveOne(idx) {
+  await runApproval([idx]);
+}
+
+async function runApproval(indices) {
   approvalResults = [];
   proposalError = '';
-  if (!selectedIdx.size) return;
+  if (!indices.length) return;
   if (!isGoogleConfigured()) {
     proposalError = 'Google OAuth chưa được cấu hình.';
     renderContent();
@@ -1185,9 +1211,9 @@ async function approveSelected() {
   try {
     await ensureCalendarWriteAccess();
     await loadCalendarEvents();
-    for (const idx of [...selectedIdx].sort((a,b)=>a-b)) {
+    for (const idx of indices.slice().sort((a,b)=>a-b)) {
       const ev = pendingProposals[idx];
-      if (!ev) continue;
+      if (!ev || ev.approved) continue;
       const freshValidation = validateProposal(ev, calEvents);
       ev.errors = freshValidation.errors;
       if (!freshValidation.ok) {
@@ -1197,12 +1223,13 @@ async function approveSelected() {
       try {
         if (ev.kind === 'task') await insertTask(ev);
         else await insertCalendarEvent(ev);
+        ev.approved = true;
+        selectedIdx.delete(idx);
         approvalResults.push({ ok:true, title:ev.title });
       } catch (e) {
         approvalResults.push({ ok:false, title:ev.title, error:e.message });
       }
     }
-    selectedIdx = new Set();
     await Promise.all([loadCalendarEvents().catch(()=>null), loadTasks().catch(()=>null)]);
   } catch (e) {
     proposalError = e.message;
