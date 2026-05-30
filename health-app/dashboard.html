@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Opus Nexus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <script src="https://apis.google.com/js/api.js" async defer></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
@@ -61,7 +64,7 @@
 }
 
 html, body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
   background: var(--vita-bg); color: var(--vita-text);
   min-height: 100vh; -webkit-font-smoothing: antialiased;
 }
@@ -285,9 +288,11 @@ canvas { display: block; }
 .status-pill.warn { background: rgba(255,159,10,.14); color: var(--vita-warn); }
 .status-pill.info { background: rgba(90,200,250,.14); color: var(--vita-info); }
 .cal-summary { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: var(--vita-gap); margin-top: var(--vita-gap); }
-.cal-mini { background: rgba(255,255,255,.04); border: 1px solid var(--vita-line); border-radius: var(--vita-radius-md); padding: 11px; min-height: 74px; }
-.cal-mini-label { font-size: 10px; font-weight: 800; color: var(--vita-muted); text-transform: uppercase; letter-spacing: .45px; }
-.cal-mini-val { font-size: 19px; font-weight: 800; margin-top: 6px; }
+.cal-mini { background: rgba(255,255,255,.04); border: 1px solid var(--vita-line); border-radius: var(--vita-radius-md); padding: 12px 13px; min-height: 64px; }
+.cal-mini-label { font-size: 11px; font-weight: 600; color: var(--vita-muted); letter-spacing: .1px; }
+.cal-mini-val { font-size: 20px; font-weight: 700; margin-top: 5px; letter-spacing: -.3px; }
+.cal-mini-val.muted { color: var(--vita-faint); font-weight: 600; }
+.cal-empty { margin-top: var(--vita-gap); padding: 18px 14px; text-align: center; background: rgba(255,255,255,.03); border: 1px solid var(--vita-line); border-radius: var(--vita-radius-md); color: var(--vita-muted); font-size: 13px; line-height: 1.5; }
 .cal-event { display: flex; gap: 10px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
 .cal-event:last-child { border-bottom: none; }
 .cal-time { width: 72px; flex-shrink: 0; color: var(--vita-info); font-size: 11px; font-weight: 800; line-height: 1.45; }
@@ -725,9 +730,11 @@ function summarizeCalendar(events=calEvents) {
     return d && d.getHours() >= 20;
   });
   const mealRisk = timed.filter(e => /dinner|lunch|restaurant|外食|会食|飲み|ăn|nhậu|cafe|coffee/i.test(e.title + ' ' + e.location));
+  const allDay = events.length - timed.length;
   return {
     total: events.length,
     timed: timed.length,
+    allDay,
     busyHours: +hours.toFixed(1),
     busyLevel: hours >= 32 ? 'Cao' : hours >= 18 ? 'Vừa' : 'Nhẹ',
     eatingOutRisk: mealRisk.length,
@@ -773,19 +780,26 @@ function renderCalendarContext(compact=false) {
     </div>`;
   }
   const s = summarizeCalendar();
-  return `<div class="brief-card">
+  const header = `<div class="brief-card">
     <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
       <div>
-        <div class="brief-greeting">Calendar Context</div>
-        <div class="brief-date">${s.total} sự kiện / 14 ngày tới</div>
+        <div class="brief-greeting">Nhịp lịch tuần</div>
+        <div class="brief-date">${s.total} sự kiện · 14 ngày tới${s.allDay ? ` · ${s.allDay} cả ngày` : ''}</div>
       </div>
-      <span class="status-pill good">Read-only</span>
-    </div>
+      <span class="status-pill good">Chỉ đọc</span>
+    </div>`;
+  if (!s.timed) {
+    return `${header}
+      <div class="cal-empty">📅 Lịch trống 14 ngày tới${s.allDay ? ` (${s.allDay} sự kiện cả ngày)` : ''}.<br>Chưa có gì để Nexus phân tích — cứ lên kế hoạch thoải mái.</div>
+    </div>`;
+  }
+  const v = (val, muted) => `<div class="cal-mini-val${muted ? ' muted' : ''}">${val}</div>`;
+  return `${header}
     <div class="cal-summary">
-      <div class="cal-mini"><div class="cal-mini-label">Độ bận</div><div class="cal-mini-val">${s.busyLevel}</div></div>
-      <div class="cal-mini"><div class="cal-mini-label">Busy hours</div><div class="cal-mini-val">${s.busyHours}h</div></div>
-      <div class="cal-mini"><div class="cal-mini-label">Ăn ngoài risk</div><div class="cal-mini-val">${s.eatingOutRisk}</div></div>
-      <div class="cal-mini"><div class="cal-mini-label">Sự kiện trễ</div><div class="cal-mini-val">${s.lateEvents}</div></div>
+      <div class="cal-mini"><div class="cal-mini-label">Độ bận</div>${v(s.busyLevel)}</div>
+      <div class="cal-mini"><div class="cal-mini-label">Giờ kín lịch</div>${v(s.busyHours + 'h')}</div>
+      <div class="cal-mini"><div class="cal-mini-label">Nguy cơ ăn ngoài</div>${v(s.eatingOutRisk, !s.eatingOutRisk)}</div>
+      <div class="cal-mini"><div class="cal-mini-label">Sự kiện về trễ</div>${v(s.lateEvents, !s.lateEvents)}</div>
     </div>
   </div>`;
 }
