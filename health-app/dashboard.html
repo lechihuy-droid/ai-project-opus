@@ -259,16 +259,17 @@ canvas { display: block; }
 
 /* ── Day accordion ── */
 .week-acc { background: var(--vita-surface); border: 1px solid var(--vita-line); border-radius: var(--vita-radius-lg); margin-bottom: 8px; overflow: hidden; }
-.week-acc summary { list-style: none; cursor: pointer; padding: 13px 14px; min-height: 64px; display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; align-items: center; user-select: none; -webkit-tap-highlight-color: transparent; }
+.week-acc summary { list-style: none; cursor: pointer; padding: 14px; min-height: 64px; display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; align-items: start; user-select: none; -webkit-tap-highlight-color: transparent; }
 .week-acc summary::-webkit-details-marker { display: none; }
 .week-acc summary:active { background: rgba(255,255,255,.03); }
-.wh-title { font-size: 14px; font-weight: 800; color: var(--vita-text); }
+.wh-title { font-size: 15px; font-weight: 800; color: var(--vita-text); }
 .wh-range { font-size: var(--fs-cap); color: var(--vita-muted); font-weight: 600; margin-top: 2px; }
-.wh-kcal { font-size: 16px; font-weight: 800; color: var(--vita-text); text-align: right; white-space: nowrap; }
-.wh-kcal small { display: block; font-size: var(--fs-cap); color: var(--vita-muted); font-weight: 600; margin-top: 2px; }
-.wh-meta { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; }
-.wh-pill { min-width: 0; border-radius: 9px; background: rgba(255,255,255,.045); padding: 6px 7px; font-size: var(--fs-cap); color: var(--vita-muted); font-weight: 700; line-height: 1.25; }
-.wh-pill strong { display: block; color: var(--vita-text); font-size: 12px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wh-kcal { font-size: 26px; font-weight: 800; color: var(--vita-text); text-align: right; line-height: 1; white-space: nowrap; }
+.wh-kcal small { display: block; font-size: var(--fs-body); color: var(--vita-muted); font-weight: 600; margin-top: 5px; }
+.wh-meta { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; margin-top: 2px; }
+.wh-line { display: grid; grid-template-columns: 74px 1fr; gap: 8px; align-items: baseline; font-size: var(--fs-body); line-height: 1.35; }
+.wh-line span { color: var(--vita-muted); font-weight: 700; }
+.wh-line strong { min-width: 0; color: var(--vita-text); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .week-body { border-top: 1px solid var(--vita-line); padding: 6px 8px 8px; background: rgba(0,0,0,.08); }
 .day-acc { background: var(--vita-surface); border-radius: var(--vita-radius-md); margin-bottom: 7px; overflow: hidden; }
 .week-body .day-acc { background: rgba(255,255,255,.035); border-radius: 10px; margin-bottom: 6px; }
@@ -282,12 +283,24 @@ canvas { display: block; }
 .day-acc[open] .da-chev { transform: rotate(180deg); }
 .da-body  { padding: 0 14px 10px; border-top: 1px solid var(--vita-line); }
 
-/* ── Meal group within accordion ── */
-.meal-group { padding: 8px 0 4px; }
-.meal-group:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,.04); }
-.meal-g-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-.meal-g-name  { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--vita-muted); }
-.meal-g-kcal  { font-size: 12px; font-weight: 700; color: var(--vita-text); }
+/* ── Meal cards within accordion ── */
+.meal-card { border-radius: var(--vita-radius-md); background: rgba(255,255,255,.035); margin-top: 8px; overflow: hidden; }
+.meal-card summary { list-style: none; cursor: pointer; padding: 11px 12px; display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; align-items: center; min-height: var(--tap-min); }
+.meal-card summary::-webkit-details-marker { display: none; }
+.meal-card summary:active { background: rgba(255,255,255,.03); }
+.meal-g-name  { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--vita-muted); }
+.meal-g-kcal  { font-size: 14px; font-weight: 800; color: var(--vita-text); white-space: nowrap; }
+.meal-g-sub { grid-column: 1 / -1; font-size: var(--fs-cap); color: var(--vita-muted); font-weight: 700; line-height: 1.35; }
+.meal-top { grid-column: 1 / -1; margin-top: 2px; display: grid; gap: 3px; }
+.meal-top-row { display: flex; justify-content: space-between; gap: 10px; color: var(--vita-text); font-size: 12px; font-weight: 700; }
+.meal-top-row span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.meal-top-row span:last-child { flex-shrink: 0; }
+.macro-strip { grid-column: 1 / -1; display: grid; grid-template-columns: var(--p,1fr) var(--c,1fr) var(--f,1fr); gap: 3px; height: 5px; border-radius: 4px; overflow: hidden; background: rgba(255,255,255,.06); }
+.macro-strip i { display: block; min-width: 5px; }
+.macro-strip .mp { background: var(--vita-protein); }
+.macro-strip .mc { background: var(--vita-carb); }
+.macro-strip .mf { background: var(--vita-fat); }
+.meal-body { border-top: 1px solid rgba(255,255,255,.05); padding: 0 12px 6px; }
 
 /* ── Meal item ── */
 .mi { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.03); }
@@ -2053,26 +2066,7 @@ function renderInsight(shown, kcal, protein, fiber) {
 function renderDayAcc(l, open) {
   const kcal = totalKcal(l);
   const meals = l.meals || [];
-  const mealRows = meals.map(m => {
-    const items = (m.items || []).map(it => {
-      const ico = { receipt:'🧾', bill:'🛒' }[m.source] || '🍽️';
-      return `<div class="mi">
-        <div class="mi-ico">${ico}</div>
-        <div class="mi-info">
-          <div class="mi-name">${it.name}</div>
-          <div class="mi-mac">${getItemGrams(it)}g · P:${getItemMacro(it,'protein')}g C:${getItemMacro(it,'carb')}g F:${getItemMacro(it,'fat')}g</div>
-        </div>
-        <div class="mi-kcal">${it.kcal}</div>
-      </div>`;
-    }).join('');
-    return `<div class="meal-group">
-      <div class="meal-g-header">
-        <span class="meal-g-name">${m.name || m.time || '—'}</span>
-        <span class="meal-g-kcal">${m.total_kcal || 0} kcal</span>
-      </div>
-      ${items || '<div style="color:var(--vita-faint);font-size:11px;padding:4px 0">Chưa có món</div>'}
-    </div>`;
-  }).join('');
+  const mealRows = meals.map(renderMealCard).join('');
 
   return `<details class="day-acc" ${open?'open':''}>
     <summary>
@@ -2083,6 +2077,54 @@ function renderDayAcc(l, open) {
     </summary>
     <div class="da-body">${mealRows || '<div style="color:var(--vita-faint);font-size:13px;padding:8px 0">Chưa có bữa nào</div>'}</div>
   </details>`;
+}
+
+function renderMealCard(meal) {
+  const items = meal.items || [];
+  const protein = Math.round(getMealMacro(meal, 'protein'));
+  const carb = Math.round(getMealMacro(meal, 'carb'));
+  const fat = Math.round(getMealMacro(meal, 'fat'));
+  const totalMacro = Math.max(1, protein + carb + fat);
+  const topItems = [...items].sort((a, b) => (b.kcal || 0) - (a.kcal || 0)).slice(0, 2);
+  const hiddenCount = Math.max(0, items.length - topItems.length);
+  const diagnosis = mealDiagnosis(meal, protein, carb, fat);
+  const topRows = topItems.map(it => `<div class="meal-top-row"><span>${esc(it.name)}</span><span>${it.kcal || 0}</span></div>`).join('');
+  const itemRows = items.map(it => {
+    const ico = { receipt:'🧾', bill:'🛒' }[meal.source] || '🍽️';
+    return `<div class="mi">
+      <div class="mi-ico">${ico}</div>
+      <div class="mi-info">
+        <div class="mi-name">${esc(it.name)}</div>
+        <div class="mi-mac">${getItemGrams(it)}g · P:${getItemMacro(it,'protein')}g C:${getItemMacro(it,'carb')}g F:${getItemMacro(it,'fat')}g</div>
+      </div>
+      <div class="mi-kcal">${it.kcal || 0}</div>
+    </div>`;
+  }).join('');
+
+  return `<details class="meal-card">
+    <summary>
+      <span class="meal-g-name">${esc(meal.name || meal.time || '—')}</span>
+      <span class="meal-g-kcal">${(meal.total_kcal || 0).toLocaleString()} kcal</span>
+      <div class="meal-g-sub">${items.length} món · P${protein}g C${carb}g F${fat}g · ${diagnosis}</div>
+      <div class="macro-strip" style="--p:${protein / totalMacro}fr;--c:${carb / totalMacro}fr;--f:${fat / totalMacro}fr">
+        <i class="mp"></i><i class="mc"></i><i class="mf"></i>
+      </div>
+      <div class="meal-top">
+        ${topRows || '<div class="meal-top-row"><span>Chưa có món</span><span>—</span></div>'}
+        ${hiddenCount ? `<div class="meal-top-row" style="color:var(--vita-muted)"><span>+${hiddenCount} món khác</span><span></span></div>` : ''}
+      </div>
+    </summary>
+    <div class="meal-body">${itemRows || '<div style="color:var(--vita-faint);font-size:13px;padding:8px 0">Chưa có món</div>'}</div>
+  </details>`;
+}
+
+function mealDiagnosis(meal, protein, carb, fat) {
+  const kcal = meal.total_kcal || 0;
+  if (protein >= 35 && protein >= carb * 0.7) return 'protein tốt';
+  if (carb >= protein + fat && carb >= 45) return 'carb cao';
+  if (fat >= 30 && fat >= protein) return 'fat cao';
+  if (kcal >= 500 && protein < 20) return 'calo cao, protein thấp';
+  return 'cân bằng';
 }
 
 function renderNutritionHistory(logs) {
@@ -2127,12 +2169,14 @@ function renderWeekAcc(week) {
   const avgKcal = avg(logs, totalKcal);
   const proteinHit = logs.filter(l => totalMacro(l, 'protein') >= TARGET.protein).length;
   const fiberLow = logs.filter(l => totalMacro(l, 'fiber') < TARGET.fiber * 0.6).length;
+  const kcalDelta = avgKcal - TARGET.kcal;
+  const kcalTone = Math.abs(kcalDelta) < 150 ? 'gần mục tiêu' : (kcalDelta > 0 ? `vượt TB ${Math.round(kcalDelta)} kcal/ngày` : `thiếu TB ${Math.round(Math.abs(kcalDelta))} kcal/ngày`);
   const outlier = logs
     .map(l => ({ log: l, delta: Math.abs(totalKcal(l) - TARGET.kcal) }))
     .sort((a, b) => b.delta - a.delta)[0]?.log;
   const outlierText = outlier ? `${fmt(outlier.date)} · ${totalKcal(outlier).toLocaleString()} kcal` : '—';
-  const proteinText = `${proteinHit}/${days} ngày`;
-  const fiberText = fiberLow > 0 ? `${fiberLow}/${days} thấp` : 'ổn';
+  const proteinText = proteinHit >= Math.ceil(days * 0.7) ? `protein ổn ${proteinHit}/${days}` : `protein hụt ${days - proteinHit}/${days}`;
+  const fiberText = fiberLow > 0 ? `fiber thấp ${fiberLow}/${days}` : 'fiber ổn';
   const dayRows = logs.map(l => renderDayAcc(l, false)).join('');
 
   return `<details class="week-acc">
@@ -2143,9 +2187,8 @@ function renderWeekAcc(week) {
       </div>
       <div class="wh-kcal">${Math.round(avgKcal).toLocaleString()}<small>kcal/ngày</small></div>
       <div class="wh-meta">
-        <div class="wh-pill">Protein đạt<strong>${proteinText}</strong></div>
-        <div class="wh-pill">Fiber<strong>${fiberText}</strong></div>
-        <div class="wh-pill">Lệch nhất<strong>${outlierText}</strong></div>
+        <div class="wh-line"><span>Nhịp tuần</span><strong>${kcalTone} · ${proteinText}</strong></div>
+        <div class="wh-line"><span>Cần nhìn</span><strong>${fiberText} · lệch nhất ${outlierText}</strong></div>
       </div>
     </summary>
     <div class="week-body">${dayRows}</div>
