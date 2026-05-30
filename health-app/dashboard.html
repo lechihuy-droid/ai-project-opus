@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>opus-vita</title>
+<title>Opus Nexus</title>
+<script src="https://apis.google.com/js/api.js" async defer></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -239,13 +241,71 @@ canvas { display: block; }
 /* ── Toast ── */
 .toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-80px); background: var(--vita-surface-2); color: #fff; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 999; transition: transform .3s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; border: 1px solid var(--vita-line); }
 .toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ── Nexus nav (top-level views) ── */
+.nav-tabs { display: flex; gap: 6px; padding: 2px 0 10px; }
+.nav-tab { flex: 1; padding: 8px 4px; text-align: center; font-size: 12px; font-weight: 700; border: none; border-radius: 9px; background: rgba(255,255,255,.05); color: var(--vita-muted); cursor: pointer; font-family: inherit; transition: background .18s, color .18s; }
+.nav-tab.active { background: var(--vita-good); color: #000; }
+
+/* ── Today / brief ── */
+.brief-card { background: var(--vita-surface); border-radius: var(--vita-radius-lg); padding: 14px; margin-bottom: var(--vita-gap); }
+.brief-greeting { font-size: 17px; font-weight: 800; }
+.brief-date { font-size: 12px; color: var(--vita-muted); margin-top: 2px; }
+.action-btn { display: block; width: 100%; padding: 11px; background: rgba(255,255,255,.06); color: var(--vita-text); border: none; border-radius: 11px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.action-btn:active { background: rgba(255,255,255,.1); }
+.action-btn:disabled { opacity: .45; cursor: not-allowed; }
+.secondary-btn { background: rgba(90,200,250,.12); color: var(--vita-info); }
+.danger-btn { background: rgba(255,69,58,.12); color: var(--vita-energy); }
+.nexus-input {
+  width: 100%; min-height: 130px; resize: vertical;
+  background: rgba(255,255,255,.04); color: var(--vita-text);
+  border: 1px solid var(--vita-line); border-radius: var(--vita-radius-md);
+  padding: 11px; font-size: 12px; line-height: 1.55; font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  outline: none;
+}
+.nexus-input:focus { border-color: rgba(90,200,250,.45); }
+.btn-row { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: var(--vita-gap); margin-top: var(--vita-gap); }
+.metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: var(--vita-gap); }
+.metric-hero { background: var(--vita-surface); border: 1px solid var(--vita-line); border-radius: var(--vita-radius-lg); padding: 14px; min-height: 96px; }
+.metric-hero-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--vita-muted); margin-bottom: 8px; }
+.metric-hero-val { font-size: 28px; font-weight: 800; line-height: 1; }
+.metric-hero-unit { font-size: 12px; font-weight: 700; color: var(--vita-muted); margin-left: 2px; }
+.metric-hero-target { font-size: 11px; color: var(--vita-muted); margin-top: 7px; font-weight: 600; }
+.metric-hero .pbar { margin-top: 9px; }
+.metric-empty { color: var(--vita-faint); font-size: 20px; font-weight: 800; }
+.proposal-card { display: flex; gap: 11px; align-items: flex-start; background: var(--vita-surface); border: 1px solid var(--vita-line); border-radius: var(--vita-radius-lg); padding: 13px; }
+.proposal-card.selected { border-color: rgba(48,209,88,.55); background: rgba(48,209,88,.08); }
+.proposal-select { margin-top: 3px; accent-color: var(--vita-good); }
+.proposal-title { font-size: 13px; font-weight: 800; }
+.proposal-time { font-size: 11px; color: var(--vita-muted); margin-top: 4px; line-height: 1.45; }
+.proposal-type { display: inline-block; margin-top: 8px; font-size: 10px; font-weight: 800; color: var(--vita-info); background: rgba(90,200,250,.12); border-radius: 8px; padding: 3px 7px; }
+.proposal-errors { margin-top: 8px; color: var(--vita-energy); font-size: 11px; line-height: 1.45; }
+.status-pill { display: inline-block; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 999px; background: rgba(255,255,255,.06); color: var(--vita-muted); }
+.status-pill.good { background: rgba(48,209,88,.14); color: var(--vita-good); }
+.status-pill.warn { background: rgba(255,159,10,.14); color: var(--vita-warn); }
+.status-pill.info { background: rgba(90,200,250,.14); color: var(--vita-info); }
+.cal-summary { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: var(--vita-gap); margin-top: var(--vita-gap); }
+.cal-mini { background: rgba(255,255,255,.04); border: 1px solid var(--vita-line); border-radius: var(--vita-radius-md); padding: 11px; min-height: 74px; }
+.cal-mini-label { font-size: 10px; font-weight: 800; color: var(--vita-muted); text-transform: uppercase; letter-spacing: .45px; }
+.cal-mini-val { font-size: 19px; font-weight: 800; margin-top: 6px; }
+.cal-event { display: flex; gap: 10px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
+.cal-event:last-child { border-bottom: none; }
+.cal-time { width: 72px; flex-shrink: 0; color: var(--vita-info); font-size: 11px; font-weight: 800; line-height: 1.45; }
+.cal-title { font-size: 13px; font-weight: 800; line-height: 1.35; }
+.cal-sub { font-size: 11px; color: var(--vita-muted); margin-top: 3px; }
+
+/* ── Coming soon (placeholder views) ── */
+.coming-soon { text-align: center; padding: 56px 24px; color: var(--vita-muted); }
+.coming-soon .cs-ico   { font-size: 44px; display: block; margin-bottom: 14px; }
+.coming-soon .cs-title { font-size: 16px; font-weight: 800; color: var(--vita-text); margin-bottom: 8px; }
+.coming-soon .cs-sub   { font-size: 13px; line-height: 1.55; }
 </style>
 </head>
 <body>
 <!-- PAT Screen -->
 <div id="pat-screen" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px">
-  <div style="font-size:52px;margin-bottom:16px">🌿</div>
-  <div style="font-size:22px;font-weight:800;margin-bottom:6px">opus-vita</div>
+  <div style="font-size:52px;margin-bottom:16px">🌐</div>
+  <div style="font-size:22px;font-weight:800;margin-bottom:6px">Opus Nexus</div>
   <div style="font-size:13px;color:var(--vita-muted);text-align:center;margin-bottom:28px">Nhập GitHub PAT để truy cập dữ liệu</div>
   <div style="width:100%;background:var(--vita-surface);border-radius:14px;padding:18px;margin-bottom:14px;border:1px solid var(--vita-line)">
     <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--vita-muted);margin-bottom:7px;display:block">GitHub PAT</label>
@@ -258,18 +318,24 @@ canvas { display: block; }
 <div id="app">
   <div class="topbar">
     <div class="tb-row1">
-      <h1>🌿 opus-vita <span id="streak-badge"></span></h1>
+      <h1>🌐 Opus Nexus <span id="streak-badge"></span></h1>
       <div style="display:flex;gap:6px">
         <button class="sync-btn" onclick="reload()">↻ Sync</button>
         <button class="pat-btn" onclick="resetPat()">🔑</button>
       </div>
     </div>
-    <div class="mod-tabs">
+    <div class="nav-tabs">
+      <button class="nav-tab active" id="nv-today"    onclick="showView('today')">Today</button>
+      <button class="nav-tab"        id="nv-vita"     onclick="showView('vita')">Vita</button>
+      <button class="nav-tab"        id="nv-calendar" onclick="showView('calendar')">Calendar</button>
+      <button class="nav-tab"        id="nv-actions"  onclick="showView('actions')">Actions</button>
+    </div>
+    <div class="mod-tabs" id="mod-tabs" style="display:none">
       <button class="mtab active" id="mt-health"  onclick="showTab('health')">🌿 Sức khỏe</button>
       <button class="mtab"        id="mt-workout" onclick="showTab('workout')">💪 Tập luyện</button>
       <button class="mtab"        id="mt-finance" onclick="showTab('finance')">💰 Tài chính</button>
     </div>
-    <div class="range-row">
+    <div class="range-row" id="range-row" style="display:none">
       <button class="rtab active" onclick="setRange(7,this)">7 ngày</button>
       <button class="rtab"        onclick="setRange(14,this)">14 ngày</button>
       <button class="rtab"        onclick="setRange(30,this)">30 ngày</button>
@@ -287,7 +353,14 @@ canvas { display: block; }
 const CONFIG = {
   target:   { kcal: 2200, protein: 130, carb: 220, fat: 70, fiber: 25, water_ml: 2000, steps: 8000, sleep: 7.5 },
   currency: 'VND',
-  locale:   'vi-VN'
+  locale:   'vi-VN',
+  google: {
+    clientId: '',
+    apiKey: '',
+    discoveryDoc: 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
+    readScopes: 'https://www.googleapis.com/auth/calendar.readonly',
+    writeScopes: 'https://www.googleapis.com/auth/calendar.events'
+  }
 };
 const TARGET = CONFIG.target;
 
@@ -296,9 +369,13 @@ const DATA_BRANCH = 'main';
 
 let PAT = localStorage.getItem('ov_pat') || '';
 let currentRange = 7;
-let currentTab   = 'health';
+let currentView  = 'today';           // today | vita | calendar | actions
+let currentTab   = 'health';          // sub-tab inside Vita
 let cHealth = [], cWorkout = [], cFinance = [];
 let healthIdx = [], workoutIdx = [], financeIdx = [];
+let gapiReady = false, gToken = null, gTokenScope = '', calEvents = [], calLoading = false, calError = '';
+let pendingProposals = [], selectedIdx = new Set(), proposalText = '', proposalError = '', approvalResults = [];
+let profile = null, profileLoading = false, profileError = '', planPrompt = '';
 
 // ── PAT setup ──
 function checkPat() {
@@ -356,6 +433,16 @@ function showTab(tab) {
   document.getElementById('mt-'+tab).classList.add('active');
   renderContent();
 }
+function showView(view) {
+  currentView = view;
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('nv-'+view).classList.add('active');
+  // Vita sub-controls (module tabs + range) chỉ hiện trong view Vita
+  const inVita = view === 'vita';
+  document.getElementById('mod-tabs').style.display  = inVita ? 'flex' : 'none';
+  document.getElementById('range-row').style.display = inVita ? 'flex' : 'none';
+  renderContent();
+}
 
 async function reload() {
   document.getElementById('content').innerHTML = '<div class="loading"><span class="spin">🌿</span>Đang tải...</div>';
@@ -377,9 +464,676 @@ async function reload() {
 }
 function renderContent() {
   const el = document.getElementById('content');
+  if (currentView === 'today')    { el.innerHTML = renderToday(); return; }
+  if (currentView === 'calendar') { el.innerHTML = renderCalendarTab(); return; }
+  if (currentView === 'actions')  { el.innerHTML = renderActionsTab(); return; }
+  // Vita module
   if (currentTab==='health')  { el.innerHTML=renderHealth(cHealth);   setTimeout(()=>drawHealth(cHealth),30); }
   if (currentTab==='workout') { el.innerHTML=renderWorkout(cWorkout); setTimeout(()=>drawWorkout(cWorkout),30); }
   if (currentTab==='finance') { el.innerHTML=renderFinance(cFinance); setTimeout(()=>drawFinance(cFinance),30); }
+}
+
+// ══════════════════════════════════════════════════════════
+// ║  Nexus — Today                                          ║
+// ══════════════════════════════════════════════════════════
+function buildVitaSnapshot() {
+  const today = todayStr();
+  const shown = cHealth.find(l => l.date === today) || cHealth[0] || null;
+  if (!shown) return null;
+  return {
+    shown,
+    isToday: shown.date === today,
+    kcal:    totalKcal(shown),
+    protein: totalMacro(shown, 'protein'),
+    fiber:   totalMacro(shown, 'fiber'),
+    sleep:   shown.sleep_hours || 0,
+    steps:   shown.steps > 0 ? +(shown.steps / 1000).toFixed(1) : 0
+  };
+}
+
+function renderToday() {
+  const snap = buildVitaSnapshot();
+  if (!snap) {
+    return `<div class="loading">😶 Chưa có dữ liệu<br>
+      <span style="font-size:12px;color:var(--vita-faint);margin-top:8px;display:block">Gửi ảnh bữa ăn cho Claude để bắt đầu</span></div>`;
+  }
+  const { shown, isToday, kcal, protein, fiber, sleep, steps } = snap;
+  const dateLabel = isToday ? 'Hôm nay' : fmtFull(shown.date);
+
+  const snapshot = `
+  <div class="metric-grid">
+    ${renderMetricHeroCard('Năng lượng', kcal, 'kcal', TARGET.kcal, 'var(--vita-energy)')}
+    ${renderMetricHeroCard('Protein', Math.round(protein), 'g', TARGET.protein, 'var(--vita-protein)')}
+    ${renderMetricHeroCard('Giấc ngủ', sleep, 'h', TARGET.sleep, 'var(--vita-sleep)', 1)}
+    ${renderMetricHeroCard('Vận động', steps, 'k bước', TARGET.steps / 1000, 'var(--vita-steps)', 1)}
+  </div>`;
+
+  return `
+  <div class="brief-card">
+    <div class="brief-greeting">${greeting()}</div>
+    <div class="brief-date">${dateLabel} · ${fmt(shown.date)}</div>
+  </div>
+
+  ${renderInsight(shown, kcal, protein, fiber)}
+
+  <div class="stitle">Vita Snapshot</div>
+  ${snapshot}
+  <button class="action-btn" onclick="showView('vita')" style="margin-top:var(--vita-gap)">Xem chi tiết Vita →</button>
+
+  <div class="stitle">Lịch tuần</div>
+  ${renderCalendarContext(true)}
+
+  <div class="stitle">Việc cần làm</div>
+  <div class="brief-card" style="font-size:13px;color:var(--vita-muted)">
+    ⚡ Chưa có đề xuất
+    <div style="font-size:11px;color:var(--vita-faint);margin-top:4px">Phase 4-5 — Plan My Week &amp; phê duyệt sự kiện</div>
+  </div>`;
+}
+
+function renderComingSoon(ico, title, sub) {
+  return `<div class="coming-soon">
+    <span class="cs-ico">${ico}</span>
+    <div class="cs-title">${title}</div>
+    <div class="cs-sub">${sub}</div>
+  </div>`;
+}
+
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 11) return 'Chào buổi sáng 🌅';
+  if (h < 14) return 'Chào buổi trưa ☀️';
+  if (h < 18) return 'Chào buổi chiều 🌤️';
+  return 'Chào buổi tối 🌙';
+}
+
+function renderEmptyMetric(label) {
+  return `<span class="metric-empty" aria-label="${esc(label)} chưa log">—</span>`;
+}
+
+function renderMetricHeroCard(label, val, unit, target, color, decimals=0) {
+  const hasVal = Number(val) > 0;
+  const pct = hasVal && target > 0 ? Math.min(100, (val / target) * 100) : 0;
+  const valText = hasVal
+    ? (decimals > 0 ? Number(val).toFixed(decimals) : Math.round(Number(val)).toLocaleString())
+    : renderEmptyMetric(label);
+  const unitHtml = hasVal && unit ? `<span class="metric-hero-unit">${esc(unit)}</span>` : '';
+  const targetText = target > 0
+    ? hasVal ? `${pct.toFixed(0)}% mục tiêu` : 'chưa log'
+    : hasVal ? '' : 'chưa log';
+  return `<div class="metric-hero">
+    <div class="metric-hero-label">${esc(label)}</div>
+    <div class="metric-hero-val" style="color:${color}">${valText}${unitHtml}</div>
+    <div class="metric-hero-target">${targetText}</div>
+    ${target > 0 ? `<div class="pbar"><div class="pfill" style="width:${pct}%;background:${color}"></div></div>` : ''}
+  </div>`;
+}
+
+function renderInsightCard(title, tips, options={}) {
+  const icon = options.icon || '🌿';
+  const accent = options.accent || 'var(--vita-info)';
+  const body = tips.length === 0
+    ? (options.empty || 'Đang đi đúng hướng hôm nay 🌿')
+    : tips.length === 1 ? tips[0] : `${tips.length} điểm cần lưu ý hôm nay`;
+  const tipsHtml = tips.length > 1
+    ? `<div class="insight-tips">${tips.map(t=>`<div class="insight-tip">• ${t}</div>`).join('')}</div>`
+    : '';
+  return `<div class="insight-card" style="margin-top:var(--vita-gap)">
+    <div class="insight-header">
+      <span>${icon}</span>
+      <span class="insight-label" style="color:${accent}">${esc(title)}</span>
+    </div>
+    <div class="insight-text">${body}</div>
+    ${tipsHtml}
+  </div>`;
+}
+
+function renderProposalCard(ev, selected=false, idx=null) {
+  const errors = ev.errors || [];
+  return `<div class="proposal-card ${selected ? 'selected' : ''}">
+    <input class="proposal-select" type="checkbox" ${selected ? 'checked' : ''} ${errors.length ? 'disabled' : ''} ${idx===null ? '' : `onchange="toggleProposal(${idx}, this.checked)"`}>
+    <div style="flex:1;min-width:0">
+      <div class="proposal-title">${esc(ev.title || 'Untitled proposal')}</div>
+      <div class="proposal-time">${esc(formatProposalTime(ev))}</div>
+      ${ev.type ? `<span class="proposal-type">${esc(ev.type)}</span>` : ''}
+      ${errors.length ? `<div class="proposal-errors">${errors.map(esc).join('<br>')}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// ║  Nexus — Calendar read-only                            ║
+// ══════════════════════════════════════════════════════════
+function isGoogleConfigured() {
+  return !!(CONFIG.google.clientId && CONFIG.google.apiKey);
+}
+
+async function initGapiClient() {
+  if (gapiReady) return true;
+  if (!isGoogleConfigured()) throw new Error('Google Calendar OAuth chưa được cấu hình.');
+  if (typeof gapi === 'undefined') throw new Error('Google API script chưa tải xong.');
+  await new Promise((resolve, reject) => {
+    gapi.load('client', { callback: resolve, onerror: () => reject(new Error('Không tải được Google API client.')) });
+  });
+  await gapi.client.init({
+    apiKey: CONFIG.google.apiKey,
+    discoveryDocs: [CONFIG.google.discoveryDoc]
+  });
+  gapiReady = true;
+  applyGoogleToken();
+  return true;
+}
+
+async function initTokenClient() {
+  await requestGoogleToken(CONFIG.google.readScopes, gToken ? '' : 'consent');
+  return true;
+}
+
+function requestGoogleToken(scope, prompt='') {
+  if (!isGoogleConfigured()) return Promise.reject(new Error('Google Calendar OAuth chưa được cấu hình.'));
+  if (typeof google === 'undefined') return Promise.reject(new Error('Google Identity script chưa tải xong.'));
+  return new Promise((resolve, reject) => {
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: CONFIG.google.clientId,
+      scope,
+      callback: (resp) => {
+        if (resp.error) {
+          reject(new Error(resp.error));
+          return;
+        }
+        gToken = resp.access_token;
+        gTokenScope = scope;
+        applyGoogleToken();
+        localStorage.setItem('nexus_cal_connected', '1');
+        resolve(resp);
+      }
+    });
+    client.requestAccessToken({ prompt });
+  });
+}
+
+function applyGoogleToken() {
+  if (gToken && typeof gapi !== 'undefined' && gapi.client?.setToken) {
+    gapi.client.setToken({ access_token: gToken });
+  }
+}
+
+async function ensureCalendarWriteAccess() {
+  if (!gToken || gTokenScope !== CONFIG.google.writeScopes) {
+    await requestGoogleToken(CONFIG.google.writeScopes, 'consent');
+  }
+  await initGapiClient();
+  return true;
+}
+
+async function connectCalendar() {
+  calError = '';
+  const tokenRequest = initTokenClient();
+  calLoading = true;
+  renderContent();
+  try {
+    await tokenRequest;
+    await initGapiClient();
+    await loadCalendarEvents();
+  } catch (e) {
+    calError = e.message;
+  } finally {
+    calLoading = false;
+    renderContent();
+  }
+}
+
+async function loadCalendarEvents(days=14) {
+  if (!gapiReady) await initGapiClient();
+  const timeMin = new Date();
+  const timeMax = addDays(timeMin, days);
+  const res = await gapi.client.calendar.events.list({
+    calendarId: 'primary',
+    timeMin: timeMin.toISOString(),
+    timeMax: timeMax.toISOString(),
+    singleEvents: true,
+    orderBy: 'startTime',
+    maxResults: 40
+  });
+  calEvents = normalizeCalendarEvents(res.result.items || []);
+  return calEvents;
+}
+
+function normalizeCalendarEvents(items) {
+  return items.map(ev => {
+    const startRaw = ev.start?.dateTime || ev.start?.date || '';
+    const endRaw = ev.end?.dateTime || ev.end?.date || '';
+    return {
+      id: ev.id,
+      title: ev.summary || '(No title)',
+      location: ev.location || '',
+      start: startRaw,
+      end: endRaw,
+      isAllDay: !!ev.start?.date,
+      htmlLink: ev.htmlLink || ''
+    };
+  }).filter(ev => ev.start);
+}
+
+function summarizeCalendar(events=calEvents) {
+  const timed = events.filter(e => !e.isAllDay);
+  const hours = timed.reduce((sum, e) => sum + eventHours(e), 0);
+  const lateEvents = timed.filter(e => {
+    const d = parseCalDate(e.start);
+    return d && d.getHours() >= 20;
+  });
+  const mealRisk = timed.filter(e => /dinner|lunch|restaurant|外食|会食|飲み|ăn|nhậu|cafe|coffee/i.test(e.title + ' ' + e.location));
+  return {
+    total: events.length,
+    timed: timed.length,
+    busyHours: +hours.toFixed(1),
+    busyLevel: hours >= 32 ? 'Cao' : hours >= 18 ? 'Vừa' : 'Nhẹ',
+    eatingOutRisk: mealRisk.length,
+    lateEvents: lateEvents.length,
+    freeWindows: estimateFreeWindows(timed)
+  };
+}
+
+function eventHours(ev) {
+  const s = parseCalDate(ev.start), e = parseCalDate(ev.end);
+  if (!s || !e || e <= s) return 0;
+  return (e - s) / 36e5;
+}
+
+function estimateFreeWindows(events) {
+  const days = {};
+  events.forEach(ev => {
+    const d = parseCalDate(ev.start);
+    if (!d) return;
+    const k = isoLocal(d);
+    days[k] = (days[k] || 0) + eventHours(ev);
+  });
+  return Math.max(0, 14 - Object.values(days).filter(h => h >= 6).length);
+}
+
+function renderCalendarContext(compact=false) {
+  if (!isGoogleConfigured()) {
+    return `<div class="brief-card">
+      <span class="status-pill warn">Setup needed</span>
+      <div style="font-size:13px;color:var(--vita-muted);margin-top:10px">Điền Google OAuth clientId/apiKey trong CONFIG để đọc lịch. Không lưu token, không ghi calendar.</div>
+      ${compact ? `<button class="action-btn" onclick="showView('calendar')" style="margin-top:10px">Mở Calendar →</button>` : ''}
+    </div>`;
+  }
+  if (calLoading) {
+    return `<div class="brief-card"><span class="status-pill info">Loading</span><div style="font-size:13px;color:var(--vita-muted);margin-top:10px">Đang kết nối Google Calendar...</div></div>`;
+  }
+  if (!gToken) {
+    return `<div class="brief-card">
+      <span class="status-pill">Not connected</span>
+      <div style="font-size:13px;color:var(--vita-muted);margin-top:10px">Kết nối read-only để Nexus hiểu nhịp tuần.</div>
+      <button class="action-btn" onclick="connectCalendar()" style="margin-top:10px">Kết nối Calendar</button>
+      ${calError ? `<div class="proposal-errors">${esc(calError)}</div>` : ''}
+    </div>`;
+  }
+  const s = summarizeCalendar();
+  return `<div class="brief-card">
+    <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
+      <div>
+        <div class="brief-greeting">Calendar Context</div>
+        <div class="brief-date">${s.total} sự kiện / 14 ngày tới</div>
+      </div>
+      <span class="status-pill good">Read-only</span>
+    </div>
+    <div class="cal-summary">
+      <div class="cal-mini"><div class="cal-mini-label">Độ bận</div><div class="cal-mini-val">${s.busyLevel}</div></div>
+      <div class="cal-mini"><div class="cal-mini-label">Busy hours</div><div class="cal-mini-val">${s.busyHours}h</div></div>
+      <div class="cal-mini"><div class="cal-mini-label">Ăn ngoài risk</div><div class="cal-mini-val">${s.eatingOutRisk}</div></div>
+      <div class="cal-mini"><div class="cal-mini-label">Sự kiện trễ</div><div class="cal-mini-val">${s.lateEvents}</div></div>
+    </div>
+  </div>`;
+}
+
+function renderCalendarTab() {
+  const events = calEvents.slice(0, 12).map(renderCalendarEvent).join('');
+  return `${renderCalendarContext(false)}
+    ${gToken ? `<button class="action-btn" onclick="loadCalendarEvents().then(()=>renderContent()).catch(e=>{calError=e.message;renderContent();})">Refresh 14 ngày</button>` : ''}
+    <div class="stitle">Upcoming</div>
+    <div class="brief-card" style="padding:4px 14px">
+      ${gToken ? (events || '<div style="font-size:13px;color:var(--vita-muted);padding:12px 0">Không có sự kiện sắp tới</div>') : '<div style="font-size:13px;color:var(--vita-muted);padding:12px 0">Kết nối calendar để xem lịch 14 ngày tới</div>'}
+    </div>
+    <button class="action-btn" onclick="showView('actions')" style="margin-top:var(--vita-gap)">Plan My Week →</button>`;
+}
+
+function renderCalendarEvent(ev) {
+  return `<div class="cal-event">
+    <div class="cal-time">${formatCalTime(ev)}</div>
+    <div style="flex:1;min-width:0">
+      <div class="cal-title">${esc(ev.title)}</div>
+      ${ev.location ? `<div class="cal-sub">${esc(ev.location)}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+function formatCalTime(ev) {
+  const s = parseCalDate(ev.start), e = parseCalDate(ev.end);
+  if (!s) return '—';
+  if (ev.isAllDay) return fmt(isoLocal(s));
+  const opts = { hour: '2-digit', minute: '2-digit' };
+  return `${fmt(isoLocal(s))}<br>${s.toLocaleTimeString('vi-VN', opts)}${e ? '–'+e.toLocaleTimeString('vi-VN', opts) : ''}`;
+}
+
+function parseCalDate(value) {
+  if (!value) return null;
+  const d = value.length === 10 ? new Date(value + 'T00:00:00') : new Date(value);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+// ══════════════════════════════════════════════════════════
+// ║  Nexus — Actions + Plan My Week                         ║
+// ══════════════════════════════════════════════════════════
+const ALLOWED_TYPES = ['workout','walk','meal_prep','sleep_protection','hydration',
+  'recovery','weekly_review','deep_work','study','personal_admin'];
+
+const DEFAULT_PROFILE = {
+  goals: [
+    { id:'health', label:'Maintain health baseline', priority:1, metric:'protein, sleep, walking consistency' },
+    { id:'work', label:'Protect deep work blocks', priority:2, metric:'focused sessions per week' },
+    { id:'review', label:'Weekly review loop', priority:3, metric:'one review block per week' }
+  ],
+  preferences: {
+    language: 'vi',
+    timezone: 'Asia/Tokyo',
+    workout_time_windows: ['07:00-09:00', '18:30-21:00'],
+    preferred_walk_duration_min: 30,
+    preferred_meal_prep_days: ['Sunday'],
+    default_event_duration_min: 60
+  },
+  constraints: {
+    no_calendar_auto_write: true,
+    approval_required: true,
+    max_event_duration_hours: 3,
+    avoid_late_events_after: '22:00',
+    protect_sleep_after: '23:30'
+  }
+};
+
+function renderActionsTab() {
+  return `${renderPlanMyWeek()}
+    <div class="stitle">Paste proposal JSON</div>
+    <div class="brief-card">
+      <div style="font-size:13px;color:var(--vita-muted);line-height:1.55;margin-bottom:10px">
+        Paste JSON dạng <code>{ "summary": "...", "events": [...] }</code>. App validate trước, không ghi calendar cho tới khi tick event và bấm Approve.
+      </div>
+      <textarea id="proposal-input" class="nexus-input" placeholder='{"summary":"...","events":[{"title":"Walk","start":"2026-05-30T18:30:00+09:00","end":"2026-05-30T19:00:00+09:00","type":"walk"}]}'>${esc(proposalText)}</textarea>
+      <div class="btn-row">
+        <button class="action-btn secondary-btn" onclick="validateProposalInput()">Validate</button>
+        <button class="action-btn danger-btn" onclick="clearProposals()">Clear</button>
+      </div>
+      ${proposalError ? `<div class="proposal-errors">${esc(proposalError)}</div>` : ''}
+    </div>
+    ${renderProposalPreview()}
+    ${renderApprovalResults()}`;
+}
+
+function parseProposals(text) {
+  const raw = JSON.parse(text);
+  const events = Array.isArray(raw) ? raw : raw.events;
+  if (!Array.isArray(events)) throw new Error('JSON phải là array hoặc object có events[].');
+  return {
+    summary: Array.isArray(raw) ? '' : (raw.summary || ''),
+    events: events.map(normalizeProposal)
+  };
+}
+
+function normalizeProposal(ev) {
+  const start = normalizeDateTime(ev.start || ev.start_time || ev.dateTime);
+  const end = normalizeDateTime(ev.end || ev.end_time);
+  return {
+    title: ev.title || ev.summary || '',
+    start,
+    end,
+    type: ev.type || 'personal_admin',
+    description: ev.description || ev.notes || '',
+    location: ev.location || ''
+  };
+}
+
+function validateProposalInput() {
+  const input = document.getElementById('proposal-input');
+  proposalText = input ? input.value : proposalText;
+  proposalError = '';
+  approvalResults = [];
+  try {
+    const parsed = parseProposals(proposalText);
+    pendingProposals = parsed.events.map(ev => ({ ...ev, errors: validateProposal(ev, calEvents).errors }));
+    selectedIdx = new Set(pendingProposals.map((ev, idx) => ev.errors.length ? null : idx).filter(v => v !== null));
+  } catch (e) {
+    pendingProposals = [];
+    selectedIdx = new Set();
+    proposalError = e.message;
+  }
+  renderContent();
+}
+
+function validateProposal(ev, existing=[]) {
+  const errors = [];
+  if (!ev.title?.trim()) errors.push('title required');
+  if (!ev.start) errors.push('start required');
+  if (!ev.end) errors.push('end required');
+  if (ev.start && !isDateTimeString(ev.start)) errors.push('start must include time');
+  if (ev.end && !isDateTimeString(ev.end)) errors.push('end must include time');
+  if (ev.type && !ALLOWED_TYPES.includes(ev.type)) errors.push(`type not allowed: ${ev.type}`);
+
+  const start = parseCalDate(ev.start);
+  const end = parseCalDate(ev.end);
+  if (ev.start && !start) errors.push('start invalid');
+  if (ev.end && !end) errors.push('end invalid');
+  if (start && end && start >= end) errors.push('start must be before end');
+  if (start && end && ev.type !== 'sleep_protection' && (end - start) / 36e5 > 3) errors.push('duration > 3h');
+  if (start && end && existing.some(x => overlapsProposal(start, end, x))) errors.push('overlaps existing calendar event');
+
+  return { ok: errors.length === 0, errors };
+}
+
+function overlapsProposal(start, end, existing) {
+  if (existing.isAllDay) return false;
+  const s = parseCalDate(existing.start), e = parseCalDate(existing.end);
+  if (!s || !e) return false;
+  return start < e && end > s;
+}
+
+function renderProposalPreview() {
+  if (!pendingProposals.length) return '';
+  const validCount = pendingProposals.filter(ev => !ev.errors.length).length;
+  return `<div class="stitle">Preview · ${validCount}/${pendingProposals.length} hợp lệ</div>
+    <div style="display:flex;flex-direction:column;gap:var(--vita-gap)">
+      ${pendingProposals.map((ev, idx) => renderProposalCard(ev, selectedIdx.has(idx), idx)).join('')}
+    </div>
+    <button class="action-btn" onclick="approveSelected()" style="margin-top:var(--vita-gap)" ${selectedIdx.size ? '' : 'disabled'}>Approve ${selectedIdx.size} event</button>`;
+}
+
+function toggleProposal(idx, checked) {
+  if (checked) selectedIdx.add(idx);
+  else selectedIdx.delete(idx);
+  renderContent();
+}
+
+async function approveSelected() {
+  approvalResults = [];
+  proposalError = '';
+  if (!selectedIdx.size) return;
+  if (!isGoogleConfigured()) {
+    proposalError = 'Google OAuth chưa được cấu hình.';
+    renderContent();
+    return;
+  }
+  try {
+    await ensureCalendarWriteAccess();
+    await loadCalendarEvents();
+    for (const idx of [...selectedIdx].sort((a,b)=>a-b)) {
+      const ev = pendingProposals[idx];
+      if (!ev) continue;
+      const freshValidation = validateProposal(ev, calEvents);
+      ev.errors = freshValidation.errors;
+      if (!freshValidation.ok) {
+        approvalResults.push({ ok:false, title:ev.title || `Proposal ${idx + 1}`, error:freshValidation.errors.join('; ') });
+        continue;
+      }
+      try {
+        await insertCalendarEvent(ev);
+        approvalResults.push({ ok:true, title:ev.title });
+      } catch (e) {
+        approvalResults.push({ ok:false, title:ev.title, error:e.message });
+      }
+    }
+    selectedIdx = new Set();
+    await loadCalendarEvents().catch(()=>null);
+  } catch (e) {
+    proposalError = e.message;
+  }
+  renderContent();
+}
+
+async function insertCalendarEvent(ev) {
+  await initGapiClient();
+  const resource = {
+    summary: ev.title,
+    description: [ev.description, 'Created by Opus Nexus'].filter(Boolean).join('\n\n'),
+    location: ev.location || undefined,
+    start: { dateTime: ev.start, timeZone: 'Asia/Tokyo' },
+    end: { dateTime: ev.end, timeZone: 'Asia/Tokyo' },
+    extendedProperties: { private: { source: 'opus-nexus', type: ev.type || 'personal_admin' } }
+  };
+  return gapi.client.calendar.events.insert({ calendarId: 'primary', resource });
+}
+
+function renderApprovalResults() {
+  if (!approvalResults.length) return '';
+  return `<div class="stitle">Approval results</div>
+    <div class="brief-card">
+      ${approvalResults.map(r => `<div class="is-row">
+        <span class="is-lbl">${esc(r.title)}</span>
+        <span class="is-val" style="color:${r.ok?'var(--vita-good)':'var(--vita-energy)'}">${r.ok?'Inserted':'Failed'}</span>
+      </div>${r.error ? `<div class="proposal-errors">${esc(r.error)}</div>` : ''}`).join('')}
+    </div>`;
+}
+
+function clearProposals() {
+  proposalText = '';
+  proposalError = '';
+  pendingProposals = [];
+  selectedIdx = new Set();
+  approvalResults = [];
+  renderContent();
+}
+
+function renderPlanMyWeek() {
+  return `<div class="brief-card">
+    <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">
+      <div>
+        <div class="brief-greeting">Plan My Week</div>
+        <div class="brief-date">Copy prompt → ask LLM → paste JSON proposals below</div>
+      </div>
+      <span class="status-pill info">Paste-based</span>
+    </div>
+    <button class="action-btn secondary-btn" onclick="generatePlanPrompt()" style="margin-top:12px">${profileLoading ? 'Đang tải profile...' : 'Generate prompt'}</button>
+    ${profileError ? `<div class="proposal-errors">${esc(profileError)}</div>` : ''}
+    ${planPrompt ? `<textarea class="nexus-input" readonly style="margin-top:var(--vita-gap);min-height:220px">${esc(planPrompt)}</textarea>` : ''}
+  </div>`;
+}
+
+async function generatePlanPrompt() {
+  profileLoading = true;
+  profileError = '';
+  renderContent();
+  try {
+    await loadUserProfile();
+    const ctx = buildWeekContext();
+    planPrompt = buildPlanPrompt(ctx);
+  } catch (e) {
+    profileError = e.message;
+  } finally {
+    profileLoading = false;
+    renderContent();
+  }
+}
+
+async function loadUserProfile() {
+  const [goals, preferences, constraints] = await Promise.all([
+    ghGet('user-profile/goals.json').catch(()=>null),
+    ghGet('user-profile/preferences.json').catch(()=>null),
+    ghGet('user-profile/constraints.json').catch(()=>null)
+  ]);
+  profile = {
+    goals: goals?.goals || DEFAULT_PROFILE.goals,
+    preferences: preferences || DEFAULT_PROFILE.preferences,
+    constraints: constraints || DEFAULT_PROFILE.constraints
+  };
+  return profile;
+}
+
+function buildWeekContext() {
+  const latest = cHealth[0] || null;
+  const workouts = cWorkout.flatMap(l => l.sessions || []);
+  const finance = cFinance.flatMap(l => l.transactions || []);
+  return {
+    date: todayStr(),
+    timezone: profile?.preferences?.timezone || 'Asia/Tokyo',
+    calendar: summarizeCalendar(),
+    upcoming_events: calEvents.slice(0, 20),
+    vita: {
+      latest_date: latest?.date || null,
+      kcal: latest ? totalKcal(latest) : 0,
+      protein: latest ? Math.round(totalMacro(latest, 'protein')) : 0,
+      sleep_hours: latest?.sleep_hours || 0,
+      steps: latest?.steps || 0,
+      workout_sessions_loaded: workouts.length,
+      finance_transactions_loaded: finance.length
+    },
+    profile
+  };
+}
+
+function buildPlanPrompt(ctx) {
+  return `You are planning one pragmatic week for Opus Nexus.
+
+Return ONLY JSON in this exact shape:
+{
+  "summary": "short rationale",
+  "events": [
+    {
+      "title": "string",
+      "start": "YYYY-MM-DDTHH:mm:ss+09:00",
+      "end": "YYYY-MM-DDTHH:mm:ss+09:00",
+      "type": "workout|walk|meal_prep|sleep_protection|hydration|recovery|weekly_review|deep_work|study|personal_admin",
+      "description": "short note",
+      "location": ""
+    }
+  ]
+}
+
+Rules:
+- Use Asia/Tokyo timezone with +09:00 offset.
+- Do not overlap existing calendar events.
+- Keep each event <= 3h unless type is sleep_protection.
+- Prefer small, realistic events over an overloaded plan.
+- Include at least one weekly_review if there is a free slot.
+- Respect profile constraints, especially no auto-write and approval required.
+
+Context:
+${JSON.stringify(ctx, null, 2)}`;
+}
+
+function normalizeDateTime(value) {
+  if (!value) return '';
+  const s = String(value).trim();
+  if (!s) return '';
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(s)) return s + ':00+09:00';
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(s)) return s + '+09:00';
+  if (/^\d{4}-\d{2}-\d{2}T/.test(s) && !/(Z|[+-]\d{2}:?\d{2})$/.test(s)) return s + '+09:00';
+  return s;
+}
+
+function isDateTimeString(value) {
+  return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value.trim());
+}
+
+function formatProposalTime(ev) {
+  return `${ev.start || 'no start'} → ${ev.end || 'no end'}`;
 }
 
 // ══════════════════════════════════════════════════════════
@@ -575,22 +1329,7 @@ function renderInsight(shown, kcal, protein, fiber) {
   if (!sleepOk && shown.sleep_hours > 0)
     tips.push(`😴 Ngủ ${shown.sleep_hours}h — dưới mục tiêu, ảnh hưởng phục hồi và kiểm soát cân nặng`);
 
-  const summary = tips.length === 0
-    ? 'Đang đi đúng hướng hôm nay 🌿'
-    : tips.length === 1 ? tips[0] : `${tips.length} điểm cần lưu ý hôm nay`;
-
-  const tipsHtml = tips.length > 1
-    ? `<div class="insight-tips">${tips.map(t=>`<div class="insight-tip">• ${t}</div>`).join('')}</div>`
-    : '';
-
-  return `<div class="insight-card" style="margin-top:var(--vita-gap)">
-    <div class="insight-header">
-      <span>🌿</span>
-      <span class="insight-label">Nhận xét hôm nay</span>
-    </div>
-    <div class="insight-text">${summary}</div>
-    ${tipsHtml}
-  </div>`;
+  return renderInsightCard('Nhận xét hôm nay', tips);
 }
 
 function renderDayAcc(l, open) {
@@ -981,8 +1720,10 @@ function validateHealthLog(log) {
   (log.meals||[]).forEach(m => (m.items||[]).forEach(it => {
     if (it.grams==null && it.amount_g==null) issues.push(`missing grams: "${it.name}"`);
     if (it.protein==null && it.protein_g==null) issues.push(`missing protein: "${it.name}"`);
+    if (it.carb==null && it.carb_g==null) issues.push(`missing carb: "${it.name}"`);
+    if (it.fat==null && it.fat_g==null) issues.push(`missing fat: "${it.name}"`);
   }));
-  if (issues.length) console.warn('[opus-vita] non-canonical health schema', log.date, issues);
+  if (issues.length) console.warn('[opus-nexus] non-canonical health schema', log.date, issues);
 }
 
 // ══ Helpers ══
@@ -996,6 +1737,7 @@ function addDays(d,n) { const x=new Date(d); x.setDate(x.getDate()+n); return x;
 function avg(arr,fn) { const v=arr.map(fn).filter(x=>x>0); return v.length?v.reduce((a,b)=>a+b,0)/v.length:0; }
 function pc(v,max) { return Math.min(100,(v/max)*100).toFixed(0); }
 function vnd(n) { if(n>=1000000)return(n/1000000).toFixed(1)+'tr'; if(n>=1000)return Math.round(n/1000)+'k'; return n+''; }
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function toast(msg) { const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2500); }
 
 // ── Debug ──

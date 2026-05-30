@@ -1,0 +1,7 @@
+{
+  "no_calendar_auto_write": true,
+  "approval_required": true,
+  "max_event_duration_hours": 3,
+  "avoid_late_events_after": "22:00",
+  "protect_sleep_after": "23:30"
+}

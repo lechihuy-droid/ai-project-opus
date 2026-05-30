@@ -1,0 +1,13 @@
+{
+  "language": "vi",
+  "timezone": "Asia/Tokyo",
+  "workout_time_windows": [
+    "07:00-09:00",
+    "18:30-21:00"
+  ],
+  "preferred_walk_duration_min": 30,
+  "preferred_meal_prep_days": [
+    "Sunday"
+  ],
+  "default_event_duration_min": 60
+}
