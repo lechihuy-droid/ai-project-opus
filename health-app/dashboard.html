@@ -282,6 +282,15 @@ canvas { display: block; }
 .proposal-title { font-size: 13px; font-weight: 800; }
 .proposal-time { font-size: 11px; color: var(--vita-muted); margin-top: 4px; line-height: 1.45; }
 .proposal-type { display: inline-block; margin-top: 8px; font-size: 10px; font-weight: 800; color: var(--vita-info); background: rgba(90,200,250,.12); border-radius: 8px; padding: 3px 7px; }
+.proposal-dur { display: inline-block; margin-top: 8px; margin-left: 6px; font-size: 10px; font-weight: 700; color: var(--vita-muted); background: rgba(255,255,255,.05); border-radius: 8px; padding: 3px 7px; }
+.proposal-edit { flex-shrink: 0; background: rgba(255,255,255,.06); color: var(--vita-muted); border: none; border-radius: 8px; width: 30px; height: 30px; font-size: 13px; cursor: pointer; font-family: inherit; }
+.proposal-edit:active { background: rgba(255,255,255,.12); }
+.proposal-card.editing { display: block; border-color: rgba(90,200,250,.4); }
+.edit-field { width: 100%; padding: 9px 11px; background: rgba(255,255,255,.04); border: 1px solid var(--vita-line); border-radius: 9px; font-size: 13px; font-family: inherit; color: var(--vita-text); outline: none; }
+.edit-field:focus { border-color: rgba(90,200,250,.45); }
+.edit-row { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 8px; }
+.edit-row label { font-size: 11px; color: var(--vita-muted); font-weight: 600; }
+.proposal-ok { font-size: 12px; color: var(--vita-good); font-weight: 700; }
 .proposal-errors { margin-top: 8px; color: var(--vita-energy); font-size: 11px; line-height: 1.45; }
 .status-pill { display: inline-block; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 999px; background: rgba(255,255,255,.06); color: var(--vita-muted); }
 .status-pill.good { background: rgba(48,209,88,.14); color: var(--vita-good); }
@@ -379,7 +388,7 @@ let currentTab   = 'health';          // sub-tab inside Vita
 let cHealth = [], cWorkout = [], cFinance = [];
 let healthIdx = [], workoutIdx = [], financeIdx = [];
 let gapiReady = false, gToken = null, gTokenScope = '', calEvents = [], calLoading = false, calError = '';
-let pendingProposals = [], selectedIdx = new Set(), proposalText = '', proposalError = '', approvalResults = [];
+let pendingProposals = [], selectedIdx = new Set(), proposalText = '', proposalError = '', approvalResults = [], editingIdx = null;
 let profile = null, profileLoading = false, profileError = '', planPrompt = '';
 
 // ── PAT setup ──
@@ -594,15 +603,73 @@ function renderInsightCard(title, tips, options={}) {
 
 function renderProposalCard(ev, selected=false, idx=null) {
   const errors = ev.errors || [];
+  if (idx !== null && editingIdx === idx) return renderProposalEditor(ev, idx);
+  const dur = formatDuration(ev);
   return `<div class="proposal-card ${selected ? 'selected' : ''}">
     <input class="proposal-select" type="checkbox" ${selected ? 'checked' : ''} ${errors.length ? 'disabled' : ''} ${idx===null ? '' : `onchange="toggleProposal(${idx}, this.checked)"`}>
     <div style="flex:1;min-width:0">
       <div class="proposal-title">${esc(ev.title || 'Untitled proposal')}</div>
-      <div class="proposal-time">${esc(formatProposalTime(ev))}</div>
+      <div class="proposal-time">${formatProposalTime(ev)}</div>
       ${ev.type ? `<span class="proposal-type">${esc(ev.type)}</span>` : ''}
+      ${dur ? `<span class="proposal-dur">⏱ ${esc(dur)}</span>` : ''}
       ${errors.length ? `<div class="proposal-errors">${errors.map(esc).join('<br>')}</div>` : ''}
     </div>
+    ${idx===null ? '' : `<button class="proposal-edit" onclick="startEdit(${idx})" title="Sửa">✏️</button>`}
   </div>`;
+}
+
+function renderProposalEditor(ev, idx) {
+  const typeOpts = ALLOWED_TYPES.map(t => `<option value="${t}" ${ev.type===t?'selected':''}>${t}</option>`).join('');
+  return `<div class="proposal-card editing">
+    <div class="edit-row" style="margin-bottom:8px">
+      <label>Tên</label>
+      <input class="edit-field" id="ed-title-${idx}" value="${esc(ev.title || '')}">
+    </div>
+    <div class="edit-row" style="margin-bottom:8px">
+      <label>Loại</label>
+      <select class="edit-field" id="ed-type-${idx}">${typeOpts}</select>
+    </div>
+    <div class="edit-row" style="margin-bottom:8px">
+      <label>Bắt đầu</label>
+      <input class="edit-field" id="ed-start-${idx}" type="datetime-local" value="${toLocalInput(ev.start)}">
+    </div>
+    <div class="edit-row" style="margin-bottom:10px">
+      <label>Kết thúc</label>
+      <input class="edit-field" id="ed-end-${idx}" type="datetime-local" value="${toLocalInput(ev.end)}">
+    </div>
+    <div class="btn-row" style="margin-top:0">
+      <button class="action-btn secondary-btn" onclick="saveEdit(${idx})">Lưu</button>
+      <button class="action-btn danger-btn" onclick="cancelEdit()">Huỷ</button>
+    </div>
+  </div>`;
+}
+
+// Convert "...T20:00:00+09:00" → "2026-05-31T20:00" for <input type=datetime-local> (JST wall-clock)
+function toLocalInput(iso) {
+  const p = jstParts(iso);
+  if (!p) return '';
+  const ymd = new Intl.DateTimeFormat('en-CA', { timeZone:'Asia/Tokyo', year:'numeric', month:'2-digit', day:'2-digit' }).format(p.d);
+  return `${ymd}T${p.hm}`;
+}
+function startEdit(idx) { editingIdx = idx; renderContent(); }
+function cancelEdit() { editingIdx = null; renderContent(); }
+function saveEdit(idx) {
+  const g = id => document.getElementById(id);
+  const title = g(`ed-title-${idx}`)?.value || '';
+  const type  = g(`ed-type-${idx}`)?.value || 'personal_admin';
+  const start = g(`ed-start-${idx}`)?.value || '';  // "2026-05-31T20:00" (JST wall-clock)
+  const end   = g(`ed-end-${idx}`)?.value || '';
+  const ev = pendingProposals[idx];
+  if (ev) {
+    ev.title = title;
+    ev.type = type;
+    ev.start = start ? normalizeDateTime(start) : '';
+    ev.end   = end ? normalizeDateTime(end) : '';
+    ev.errors = validateProposal(ev, calEvents).errors;
+    if (ev.errors.length) selectedIdx.delete(idx);
+  }
+  editingIdx = null;
+  renderContent();
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1043,15 +1110,40 @@ function renderPlanMyWeek() {
     <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">
       <div>
         <div class="brief-greeting">Plan My Week</div>
-        <div class="brief-date">Copy prompt → ask LLM → paste JSON proposals below</div>
+        <div class="brief-date">1· Tạo prompt → 2· Copy &amp; hỏi LLM → 3· Dán JSON kết quả xuống dưới</div>
       </div>
       <span class="status-pill info">Paste-based</span>
     </div>
-    <button class="action-btn secondary-btn" onclick="generatePlanPrompt()" style="margin-top:12px">${profileLoading ? 'Đang tải profile...' : 'Generate prompt'}</button>
+    <button class="action-btn secondary-btn" onclick="generatePlanPrompt()" style="margin-top:12px">${profileLoading ? 'Đang tải profile...' : (planPrompt ? '↻ Tạo lại prompt' : '① Tạo prompt')}</button>
     ${profileError ? `<div class="proposal-errors">${esc(profileError)}</div>` : ''}
-    ${planPrompt ? `<textarea class="nexus-input" readonly style="margin-top:var(--vita-gap);min-height:220px">${esc(planPrompt)}</textarea>` : ''}
+    ${planPrompt ? `
+      <textarea id="plan-prompt" class="nexus-input" readonly style="margin-top:var(--vita-gap);min-height:160px">${esc(planPrompt)}</textarea>
+      <div class="btn-row">
+        <button class="action-btn" onclick="copyPlanPrompt(this)">② Copy prompt</button>
+        <button class="action-btn secondary-btn" onclick="openLLM()">Mở ChatGPT ↗</button>
+      </div>
+      <div style="font-size:11px;color:var(--vita-faint);margin-top:8px;line-height:1.5">Đã copy → dán vào ChatGPT/Claude → copy JSON nó trả về → dán vào ô “③ Dán JSON” bên dưới.</div>
+    ` : ''}
   </div>`;
 }
+
+function copyPlanPrompt(btn) {
+  const ta = document.getElementById('plan-prompt');
+  if (!ta) return;
+  const done = () => {
+    const old = btn.textContent;
+    btn.textContent = '✓ Đã copy — kéo xuống dán JSON';
+    toast('Đã copy prompt');
+    const paste = document.getElementById('proposal-input');
+    if (paste) paste.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => { btn.textContent = old; }, 2600);
+  };
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(ta.value).then(done).catch(() => { ta.select(); document.execCommand('copy'); done(); });
+  } else { ta.select(); document.execCommand('copy'); done(); }
+}
+
+function openLLM() { window.open('https://chat.openai.com/', '_blank', 'noopener'); }
 
 async function generatePlanPrompt() {
   profileLoading = true;
@@ -1149,8 +1241,32 @@ function isDateTimeString(value) {
   return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value.trim());
 }
 
+// JST display helpers for proposals (everything shown in Asia/Tokyo)
+const JST_OPTS = { timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit', hour12: false };
+const WD_TO_VI = { Sun:'CN', Mon:'T2', Tue:'T3', Wed:'T4', Thu:'T5', Fri:'T6', Sat:'T7' };
+function jstParts(iso) {
+  const d = parseCalDate(iso);
+  if (!d) return null;
+  const wd = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', weekday: 'short' }).format(d);
+  const day = WD_TO_VI[wd] || wd;
+  const dm = new Intl.DateTimeFormat('vi-VN', { timeZone: 'Asia/Tokyo', day: '2-digit', month: '2-digit' }).format(d);
+  const hm = new Intl.DateTimeFormat('en-GB', JST_OPTS).format(d);
+  return { day, dm, hm, d };
+}
+function formatDuration(ev) {
+  const s = parseCalDate(ev.start), e = parseCalDate(ev.end);
+  if (!s || !e || e <= s) return '';
+  const mins = Math.round((e - s) / 60000);
+  const h = Math.floor(mins / 60), m = mins % 60;
+  return h ? (m ? `${h}h${String(m).padStart(2,'0')}` : `${h}h`) : `${m} phút`;
+}
 function formatProposalTime(ev) {
-  return `${ev.start || 'no start'} → ${ev.end || 'no end'}`;
+  const a = jstParts(ev.start), b = jstParts(ev.end);
+  if (!a) return ev.start ? esc(ev.start) : 'chưa có giờ';
+  const sameDay = b && a.dm === b.dm;
+  if (b && sameDay) return `${a.day}, ${a.dm} · ${a.hm}–${b.hm} (JST)`;
+  if (b) return `${a.day} ${a.dm} ${a.hm} → ${b.day} ${b.dm} ${b.hm} (JST)`;
+  return `${a.day}, ${a.dm} · ${a.hm} (JST)`;
 }
 
 // ══════════════════════════════════════════════════════════
