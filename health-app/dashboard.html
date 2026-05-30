@@ -94,11 +94,11 @@ html, body {
 
 .mod-tabs { display: flex; }
 .mtab { flex: 1; padding: 9px 4px 10px; text-align: center; font-size: 12px; font-weight: 700; border: none; background: none; cursor: pointer; font-family: inherit; color: var(--vita-faint); border-bottom: 2.5px solid transparent; transition: color .18s, border-bottom-color .18s; }
-.mtab.active { color: var(--vita-good); border-bottom-color: var(--vita-good); }
+.mtab.active { color: var(--vita-active); border-bottom-color: var(--vita-active); }
 
 .range-row { display: flex; gap: 6px; padding: 8px 0 10px; }
 .rtab { flex: 1; padding: 6px; text-align: center; font-size: 11px; font-weight: 700; border-radius: 7px; border: none; background: rgba(255,255,255,.05); color: var(--vita-muted); cursor: pointer; font-family: inherit; }
-.rtab.active { background: var(--vita-good); color: #000; }
+.rtab.active { background: var(--vita-active); color: #fff; }
 
 /* ── Content ── */
 .content { padding: var(--vita-page-pad) var(--vita-page-pad) 40px; }
@@ -193,7 +193,7 @@ canvas { display: block; }
 .day-acc summary:active { background: rgba(255,255,255,.03); }
 .da-date  { font-size: 13px; font-weight: 700; flex: 1; }
 .da-meta  { font-size: 11px; color: var(--vita-muted); }
-.da-kcal  { font-size: 14px; font-weight: 800; color: var(--vita-good); }
+.da-kcal  { font-size: 14px; font-weight: 800; color: var(--vita-text); }
 .da-chev  { font-size: 13px; color: var(--vita-faint); transition: transform .2s; }
 .day-acc[open] .da-chev { transform: rotate(180deg); }
 .da-body  { padding: 0 14px 10px; border-top: 1px solid var(--vita-line); }
@@ -203,7 +203,7 @@ canvas { display: block; }
 .meal-group:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,.04); }
 .meal-g-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
 .meal-g-name  { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--vita-muted); }
-.meal-g-kcal  { font-size: 12px; font-weight: 700; color: var(--vita-good); }
+.meal-g-kcal  { font-size: 12px; font-weight: 700; color: var(--vita-text); }
 
 /* ── Meal item ── */
 .mi { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.03); }
@@ -212,7 +212,7 @@ canvas { display: block; }
 .mi-info { flex: 1; min-width: 0; }
 .mi-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mi-mac  { font-size: var(--fs-cap); color: var(--vita-muted); margin-top: 1px; }
-.mi-kcal { font-size: 12px; font-weight: 800; color: var(--vita-good); flex-shrink: 0; }
+.mi-kcal { font-size: 12px; font-weight: 800; color: var(--vita-text); flex-shrink: 0; }
 
 /* ── History items ── */
 .hi { display: flex; align-items: center; gap: 11px; padding: 10px 0; border-bottom: 1px solid var(--vita-line); }
@@ -257,7 +257,7 @@ canvas { display: block; }
 /* ── Nexus nav (top-level views) ── */
 .nav-tabs { display: flex; gap: 6px; padding: 2px 0 10px; }
 .nav-tab { flex: 1; padding: 8px 4px; text-align: center; font-size: 12px; font-weight: 700; border: none; border-radius: 9px; background: rgba(255,255,255,.05); color: var(--vita-muted); cursor: pointer; font-family: inherit; transition: background .18s, color .18s; }
-.nav-tab.active { background: var(--vita-good); color: #000; }
+.nav-tab.active { background: var(--vita-active); color: #fff; }
 
 /* ── Today / brief ── */
 .brief-card { background: var(--vita-surface); border-radius: var(--vita-radius-lg); padding: 14px; margin-bottom: var(--vita-gap); }
@@ -587,7 +587,7 @@ function renderMetricHeroCard(label, val, unit, target, color, decimals=0) {
     : hasVal ? '' : 'chưa log';
   return `<div class="metric-hero">
     <div class="metric-hero-label">${esc(label)}</div>
-    <div class="metric-hero-val" style="color:${color}">${valText}${unitHtml}</div>
+    <div class="metric-hero-val">${valText}${unitHtml}</div>
     <div class="metric-hero-target">${targetText}</div>
     ${target > 0 ? `<div class="pbar"><div class="pfill" style="width:${pct}%;background:${color}"></div></div>` : ''}
   </div>`;
