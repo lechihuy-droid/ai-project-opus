@@ -111,7 +111,7 @@ html, body {
 .b.span4 { grid-column: span 4; }
 .b.tall  { min-height: 168px; }
 
-.b-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--vita-muted); margin-bottom: 8px; }
+.b-label { font-size: var(--fs-cap); font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--vita-muted); margin-bottom: 8px; }
 .b-val   { font-size: 28px; font-weight: 800; line-height: 1; letter-spacing: -.5px; }
 .b-unit  { font-size: 13px; font-weight: 600; color: var(--vita-muted); margin-left: 2px; }
 .b-sub   { font-size: 11px; color: var(--vita-muted); margin-top: 5px; font-weight: 500; }
@@ -140,8 +140,8 @@ html, body {
 }
 .ring-svg { display: block; }
 .ring-val { font-size: 12px; font-weight: 800; }
-.ring-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--vita-muted); text-align: center; }
-.ring-empty { font-size: 10px; color: var(--vita-faint); font-weight: 600; }
+.ring-lbl { font-size: var(--fs-cap); font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--vita-muted); text-align: center; }
+.ring-empty { font-size: var(--fs-cap); color: var(--vita-faint); font-weight: 600; }
 
 /* ── Macro Balance card ── */
 .macro-card { background: var(--vita-surface); border-radius: var(--vita-radius-lg); padding: 14px 14px 10px; }
@@ -151,7 +151,7 @@ html, body {
 .macro-name { font-size: 12px; font-weight: 700; }
 .macro-pbar { height: 5px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
 .macro-pfill { height: 100%; border-radius: 3px; }
-.macro-remain { font-size: 10px; color: var(--vita-muted); text-align: right; font-weight: 600; white-space: nowrap; }
+.macro-remain { font-size: var(--fs-cap); color: var(--vita-muted); text-align: right; font-weight: 600; white-space: nowrap; }
 
 /* ── Insight card ── */
 .insight-card {
@@ -211,7 +211,7 @@ canvas { display: block; }
 .mi-ico  { font-size: 14px; flex-shrink: 0; }
 .mi-info { flex: 1; min-width: 0; }
 .mi-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mi-mac  { font-size: 10px; color: var(--vita-muted); margin-top: 1px; }
+.mi-mac  { font-size: var(--fs-cap); color: var(--vita-muted); margin-top: 1px; }
 .mi-kcal { font-size: 12px; font-weight: 800; color: var(--vita-good); flex-shrink: 0; }
 
 /* ── History items ── */
@@ -221,7 +221,7 @@ canvas { display: block; }
 .hi-info  { flex: 1; min-width: 0; }
 .hi-title { font-size: 13px; font-weight: 700; }
 .hi-sub   { font-size: 11px; color: var(--vita-muted); margin-top: 2px; }
-.hi-extra { font-size: 10px; color: var(--vita-muted); margin-top: 1px; }
+.hi-extra { font-size: var(--fs-cap); color: var(--vita-muted); margin-top: 1px; }
 .hi-val   { font-size: 14px; font-weight: 800; flex-shrink: 0; }
 
 /* ── Section title ── */
@@ -237,7 +237,7 @@ canvas { display: block; }
 .pr-info { flex: 1; }
 .pr-name { font-size: 13px; font-weight: 700; }
 .pr-val  { font-size: 11px; color: var(--vita-muted); margin-top: 2px; }
-.pr-new  { font-size: 9px; background: rgba(255,69,58,.18); color: var(--vita-energy); padding: 2px 6px; border-radius: 8px; font-weight: 800; margin-left: 5px; }
+.pr-new  { font-size: var(--fs-cap); background: rgba(255,69,58,.18); color: var(--vita-energy); padding: 2px 6px; border-radius: 8px; font-weight: 800; margin-left: 5px; }
 .pr-1rm  { font-size: 13px; font-weight: 800; color: var(--vita-steps); flex-shrink: 0; }
 
 /* ── Progress bar mini ── */
@@ -279,7 +279,7 @@ canvas { display: block; }
 .btn-row { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: var(--vita-gap); margin-top: var(--vita-gap); }
 .metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: var(--vita-gap); }
 .metric-hero { background: var(--vita-surface); border: 1px solid var(--vita-line); border-radius: var(--vita-radius-lg); padding: 14px; min-height: 96px; }
-.metric-hero-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--vita-muted); margin-bottom: 8px; }
+.metric-hero-label { font-size: var(--fs-cap); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--vita-muted); margin-bottom: 8px; }
 .metric-hero-val { font-size: 28px; font-weight: 800; line-height: 1; }
 .metric-hero-unit { font-size: 12px; font-weight: 700; color: var(--vita-muted); margin-left: 2px; }
 .metric-hero-target { font-size: 11px; color: var(--vita-muted); margin-top: 7px; font-weight: 600; }
@@ -290,8 +290,8 @@ canvas { display: block; }
 .proposal-select { margin-top: 3px; accent-color: var(--vita-good); }
 .proposal-title { font-size: 13px; font-weight: 800; }
 .proposal-time { font-size: 11px; color: var(--vita-muted); margin-top: 4px; line-height: 1.45; }
-.proposal-type { display: inline-block; margin-top: 8px; font-size: 10px; font-weight: 800; color: var(--vita-info); background: rgba(90,200,250,.12); border-radius: 8px; padding: 3px 7px; }
-.proposal-dur { display: inline-block; margin-top: 8px; margin-left: 6px; font-size: 10px; font-weight: 700; color: var(--vita-muted); background: rgba(255,255,255,.05); border-radius: 8px; padding: 3px 7px; }
+.proposal-type { display: inline-block; margin-top: 8px; font-size: var(--fs-cap); font-weight: 800; color: var(--vita-info); background: rgba(90,200,250,.12); border-radius: 8px; padding: 3px 7px; }
+.proposal-dur { display: inline-block; margin-top: 8px; margin-left: 6px; font-size: var(--fs-cap); font-weight: 700; color: var(--vita-muted); background: rgba(255,255,255,.05); border-radius: 8px; padding: 3px 7px; }
 .proposal-edit { flex-shrink: 0; background: rgba(255,255,255,.06); color: var(--vita-muted); border: none; border-radius: 8px; width: 30px; height: 30px; font-size: 13px; cursor: pointer; font-family: inherit; }
 .proposal-edit:active { background: rgba(255,255,255,.12); }
 .proposal-approve { flex-shrink: 0; background: rgba(48,209,88,.16); color: var(--vita-good); border: none; border-radius: 8px; height: 30px; padding: 0 11px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
@@ -304,7 +304,7 @@ canvas { display: block; }
 .edit-row label { font-size: 11px; color: var(--vita-muted); font-weight: 600; }
 .proposal-ok { font-size: 12px; color: var(--vita-good); font-weight: 700; }
 .proposal-errors { margin-top: 8px; color: var(--vita-energy); font-size: 11px; line-height: 1.45; }
-.status-pill { display: inline-block; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 999px; background: rgba(255,255,255,.06); color: var(--vita-muted); }
+.status-pill { display: inline-block; font-size: var(--fs-cap); font-weight: 800; padding: 4px 8px; border-radius: 999px; background: rgba(255,255,255,.06); color: var(--vita-muted); }
 .status-pill.good { background: rgba(48,209,88,.14); color: var(--vita-good); }
 .status-pill.warn { background: rgba(255,159,10,.14); color: var(--vita-warn); }
 .status-pill.info { background: rgba(90,200,250,.14); color: var(--vita-info); }
@@ -966,7 +966,7 @@ function renderTaskContext() {
     const dueStr = due ? `· ${due.toLocaleDateString(CONFIG.locale, {day:'2-digit',month:'2-digit'})}` : '';
     return `<div class="is-row" style="${overdue ? 'color:var(--vita-warn)' : ''}">
       <span>${esc(t.title)}${dueStr ? ` <span style="font-size:11px;opacity:.75">${dueStr}</span>` : ''}</span>
-      ${overdue ? '<span class="badge red" style="font-size:10px">Quá hạn</span>' : ''}
+      ${overdue ? '<span class="badge red" style="font-size:11px">Quá hạn</span>' : ''}
     </div>`;
   }).join('');
   const extra = gTasks.length > 8 ? `<div style="font-size:11px;color:var(--vita-faint);margin-top:6px">+${gTasks.length - 8} việc nữa</div>` : '';
@@ -1978,7 +1978,7 @@ function renderPRCard(logs) {
         <div class="pr-name">${name}${isNew?'<span class="pr-new">NEW PR</span>':''}</div>
         <div class="pr-val">${p.maxWeight.w}kg × ${p.maxWeight.r} reps</div>
       </div>
-      <div class="pr-1rm">~${p.max1RM.e.toFixed(1)}<span style="font-size:10px;color:var(--vita-muted)">kg 1RM</span></div>
+      <div class="pr-1rm">~${p.max1RM.e.toFixed(1)}<span style="font-size:11px;color:var(--vita-muted)">kg 1RM</span></div>
     </div>`;
   }).join('');
   return `<div class="b b-pr span4" style="background:linear-gradient(135deg,#2A2014,#1A1508);border:1px solid rgba(255,214,10,.18)">
