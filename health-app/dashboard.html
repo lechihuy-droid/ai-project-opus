@@ -619,6 +619,7 @@ async function initGapiClient() {
     discoveryDocs: [CONFIG.google.discoveryDoc]
   });
   gapiReady = true;
+  applyGoogleToken();
   return true;
 }
 
@@ -641,6 +642,7 @@ function requestGoogleToken(scope, prompt='') {
         }
         gToken = resp.access_token;
         gTokenScope = scope;
+        applyGoogleToken();
         localStorage.setItem('nexus_cal_connected', '1');
         resolve(resp);
       }
@@ -649,20 +651,28 @@ function requestGoogleToken(scope, prompt='') {
   });
 }
 
+function applyGoogleToken() {
+  if (gToken && typeof gapi !== 'undefined' && gapi.client?.setToken) {
+    gapi.client.setToken({ access_token: gToken });
+  }
+}
+
 async function ensureCalendarWriteAccess() {
+  if (!gToken || gTokenScope !== CONFIG.google.writeScopes) {
+    await requestGoogleToken(CONFIG.google.writeScopes, 'consent');
+  }
   await initGapiClient();
-  if (gToken && gTokenScope === CONFIG.google.writeScopes) return true;
-  await requestGoogleToken(CONFIG.google.writeScopes, 'consent');
   return true;
 }
 
 async function connectCalendar() {
   calError = '';
+  const tokenRequest = initTokenClient();
   calLoading = true;
   renderContent();
   try {
+    await tokenRequest;
     await initGapiClient();
-    await initTokenClient();
     await loadCalendarEvents();
   } catch (e) {
     calError = e.message;
@@ -904,6 +914,8 @@ function validateProposal(ev, existing=[]) {
   if (!ev.title?.trim()) errors.push('title required');
   if (!ev.start) errors.push('start required');
   if (!ev.end) errors.push('end required');
+  if (ev.start && !isDateTimeString(ev.start)) errors.push('start must include time');
+  if (ev.end && !isDateTimeString(ev.end)) errors.push('end must include time');
   if (ev.type && !ALLOWED_TYPES.includes(ev.type)) errors.push(`type not allowed: ${ev.type}`);
 
   const start = parseCalDate(ev.start);
@@ -951,9 +963,16 @@ async function approveSelected() {
   }
   try {
     await ensureCalendarWriteAccess();
+    await loadCalendarEvents();
     for (const idx of [...selectedIdx].sort((a,b)=>a-b)) {
       const ev = pendingProposals[idx];
-      if (!ev || ev.errors?.length) continue;
+      if (!ev) continue;
+      const freshValidation = validateProposal(ev, calEvents);
+      ev.errors = freshValidation.errors;
+      if (!freshValidation.ok) {
+        approvalResults.push({ ok:false, title:ev.title || `Proposal ${idx + 1}`, error:freshValidation.errors.join('; ') });
+        continue;
+      }
       try {
         await insertCalendarEvent(ev);
         approvalResults.push({ ok:true, title:ev.title });
@@ -1107,6 +1126,10 @@ function normalizeDateTime(value) {
   if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(s)) return s + '+09:00';
   if (/^\d{4}-\d{2}-\d{2}T/.test(s) && !/(Z|[+-]\d{2}:?\d{2})$/.test(s)) return s + '+09:00';
   return s;
+}
+
+function isDateTimeString(value) {
+  return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value.trim());
 }
 
 function formatProposalTime(ev) {
