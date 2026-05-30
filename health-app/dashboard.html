@@ -660,13 +660,56 @@ function renderToday() {
   }
   const { shown, isToday, kcal, protein, fiber, sleep, steps } = snap;
   const dateLabel = isToday ? 'Hôm nay' : fmtFull(shown.date);
+  const kcalPct = TARGET.kcal > 0 ? Math.min(100, kcal / TARGET.kcal * 100) : 0;
+  const kcalRemain = TARGET.kcal - kcal;
+  const proteinPct = TARGET.protein > 0 ? Math.min(100, protein / TARGET.protein * 100) : 0;
+  const stepsTarget = TARGET.steps / 1000;
+  const stepsPct = stepsTarget > 0 ? Math.min(100, steps / stepsTarget * 100) : 0;
+  const kcalLabel = kcal > 0 ? kcal.toLocaleString() : '—';
+  const kcalSub = kcal > 0
+    ? `${kcalRemain > 0 ? `Còn lại ${kcalRemain.toLocaleString()} kcal` : `Vượt ${Math.abs(kcalRemain).toLocaleString()} kcal`} · ${kcalPct.toFixed(0)}% mục tiêu`
+    : 'chưa log';
+  const proteinLabel = protein > 0 ? Math.round(protein).toLocaleString() : '—';
+  const proteinSub = protein > 0 ? `${proteinPct.toFixed(0)}% · ${TARGET.protein}g` : 'chưa log';
+  const stepsLabel = steps > 0 ? steps.toFixed(1).replace('.', ',') : '—';
+  const stepsSub = steps > 0 ? `${stepsPct.toFixed(0)}% · ${stepsTarget}k` : 'chưa log';
+  const sleepPct = TARGET.sleep > 0 ? Math.min(100, sleep / TARGET.sleep * 100) : 0;
+  const sleepLabel = sleep > 0 ? sleep.toFixed(1).replace('.', ',') : '—';
+  const sleepSub = sleep > 0 ? `${sleepPct.toFixed(0)}% mục tiêu` : 'chưa log';
 
   const snapshot = `
-  <div class="metric-grid">
-    ${renderMetricHeroCard('Năng lượng', kcal, 'kcal', TARGET.kcal, 'var(--vita-energy)')}
-    ${renderMetricHeroCard('Protein', Math.round(protein), 'g', TARGET.protein, 'var(--vita-protein)')}
-    ${renderMetricHeroCard('Giấc ngủ', sleep, 'h', TARGET.sleep, 'var(--vita-sleep)', 1)}
-    ${renderMetricHeroCard('Vận động', steps, 'k bước', TARGET.steps / 1000, 'var(--vita-steps)', 1)}
+  <div class="snap-grid">
+    <div class="sb span2 sb-hero">
+      <span class="sb-ico">🔥</span>
+      <div>
+        <div class="sb-label">Năng lượng</div>
+        <span class="sb-val">${kcalLabel}</span><span class="sb-unit">/ ${TARGET.kcal.toLocaleString()} kcal</span>
+      </div>
+      <div class="sb-hero-sub">${kcalSub}</div>
+      <div class="track"><i style="width:${kcalPct}%"></i></div>
+    </div>
+    <div class="sb">
+      <div class="sb-label">Protein</div>
+      <div class="ringwrap">
+        <div class="ring" style="--c:${protein > 0 ? 'var(--vita-protein)' : 'var(--vita-faint)'};--p:${proteinPct}"><i>💪</i></div>
+        <div class="ringtxt"><span class="sb-val">${proteinLabel}</span><span class="sb-unit">${protein > 0 ? 'g' : ''}</span><small>${proteinSub}</small></div>
+      </div>
+    </div>
+    <div class="sb">
+      <div class="sb-label">Vận động</div>
+      <div class="ringwrap">
+        <div class="ring" style="--c:${steps > 0 ? 'var(--vita-steps)' : 'var(--vita-faint)'};--p:${stepsPct}"><i>👟</i></div>
+        <div class="ringtxt"><span class="sb-val">${stepsLabel}</span><span class="sb-unit">${steps > 0 ? 'k' : ''}</span><small>${stepsSub}</small></div>
+      </div>
+    </div>
+    <div class="sb span2">
+      <span class="sb-ico">😴</span>
+      <div class="sb-label">Giấc ngủ</div>
+      <div class="sleep-head">
+        <span class="sb-val">${sleepLabel}</span><span class="sb-unit">${sleep > 0 ? 'h tối qua' : ''}</span>
+      </div>
+      <div class="sb-hero-sub">${sleepSub}</div>
+    </div>
   </div>`;
 
   return `
@@ -708,6 +751,7 @@ function renderEmptyMetric(label) {
   return `<span class="metric-empty" aria-label="${esc(label)} chưa log">—</span>`;
 }
 
+// Unused by Today after Phase 3; kept for future Vita cleanup.
 function renderMetricHeroCard(label, val, unit, target, color, decimals=0) {
   const hasVal = Number(val) > 0;
   const pct = hasVal && target > 0 ? Math.min(100, (val / target) * 100) : 0;
