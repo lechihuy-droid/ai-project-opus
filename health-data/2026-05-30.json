@@ -2,6 +2,48 @@
   "date": "2026-05-30",
   "meals": [
     {
+      "time": "16:00",
+      "name": "Snack",
+      "source": "text",
+      "items": [
+        {
+          "name": "Mì Hảo Hảo tôm chua cay (1 gói 75g)",
+          "grams": 75,
+          "kcal": 350,
+          "protein": 6.9,
+          "carb": 51.4,
+          "fat": 13.0,
+          "sugar": 3.0,
+          "fiber": 2.0,
+          "saturated_fat": 6.5,
+          "sodium_mg": 1700,
+          "alcohol": 0
+        },
+        {
+          "name": "Thịt bò khô (1 gói 50g, ước tính)",
+          "grams": 50,
+          "kcal": 200,
+          "protein": 22.0,
+          "carb": 7.0,
+          "fat": 9.0,
+          "sugar": 5.0,
+          "fiber": 0.5,
+          "saturated_fat": 4.0,
+          "sodium_mg": 1100,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 550,
+      "total_protein": 28.9,
+      "total_carb": 58.4,
+      "total_fat": 22.0,
+      "total_sugar": 8.0,
+      "total_fiber": 2.5,
+      "total_saturated_fat": 10.5,
+      "total_sodium_mg": 2800,
+      "total_alcohol": 0
+    },
+    {
       "time": "19:00",
       "name": "Tối",
       "source": "text",
@@ -87,5 +129,5 @@
   "steps": 0,
   "sleep_hours": 0,
   "weight_kg": 0,
-  "notes": ""
+  "notes": "Mì Hảo Hảo theo label nhà sản xuất; thịt bò khô là giá trị ước tính (không có label)."
 }
