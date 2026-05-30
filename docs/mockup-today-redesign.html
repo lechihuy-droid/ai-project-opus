@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup — Today redesign + bottom nav</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+  :root{
+    --vita-bg:#090A0F; --vita-surface:#151720; --vita-surface-2:#1D202B; --vita-surface-raised:#242735;
+    --vita-line:rgba(255,255,255,.08); --vita-text:#F7F8FA; --vita-muted:#9BA1AE; --vita-faint:#5F6675;
+    --vita-good:#30D158; --vita-energy:#FF453A; --vita-protein:#0A84FF; --vita-info:#5AC8FA;
+    --vita-sleep:#8E7CFF; --vita-steps:#FFD60A; --vita-warn:#FF9F0A;
+    --gap:8px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Inter",-apple-system,sans-serif;background:#05060a;color:var(--vita-text);
+    -webkit-font-smoothing:antialiased;padding:26px 16px 60px;line-height:1.5;}
+  h1{font-size:18px;font-weight:800;margin-bottom:4px;}
+  .sub{font-size:13px;color:var(--vita-muted);margin-bottom:24px;max-width:680px;}
+  h2{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--vita-faint);
+    margin:30px 0 12px;}
+  .row{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start;}
+  .legend{font-size:11px;color:var(--vita-faint);margin-top:8px;max-width:240px;line-height:1.55;}
+  .tag{display:inline-block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+    padding:3px 8px;border-radius:6px;margin-bottom:10px;background:rgba(90,200,250,.15);color:var(--vita-info);}
+  .tag.rec{background:rgba(48,209,88,.15);color:var(--vita-good);}
+
+  /* phone */
+  .phone{width:330px;background:var(--vita-bg);border-radius:34px;border:1px solid var(--vita-line);
+    overflow:hidden;box-shadow:0 14px 44px rgba(0,0,0,.55);display:flex;flex-direction:column;}
+  .ptop{padding:16px 16px 12px;border-bottom:1px solid var(--vita-line);background:rgba(9,10,15,.92);}
+  .ptop .brand{font-size:15px;font-weight:800;}
+  .ptop .greet{font-size:12px;color:var(--vita-muted);margin-top:2px;}
+  .pbody{padding:14px;flex:1;}
+  .stitle{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--vita-faint);margin:2px 0 9px;}
+
+  /* ── Bento 2-col asymmetric ── */
+  .bento{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--gap);}
+  .b{background:var(--vita-surface);border-radius:18px;padding:14px;position:relative;overflow:hidden;}
+  .span2{grid-column:span 2;}
+  .b-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--vita-muted);margin-bottom:7px;}
+  /* NEUTRAL text values (color principle §8.1) */
+  .b-val{font-size:30px;font-weight:800;line-height:1;letter-spacing:-.5px;color:var(--vita-text);}
+  .b-unit{font-size:13px;font-weight:600;color:var(--vita-muted);margin-left:3px;}
+  .b-ico{position:absolute;top:13px;right:14px;font-size:17px;opacity:.85;}
+
+  /* hero kcal — horizontal bar (color only on the bar) */
+  .hero{display:flex;flex-direction:column;gap:10px;}
+  .hero-top{display:flex;align-items:baseline;justify-content:space-between;}
+  .hero-sub{font-size:12px;color:var(--vita-muted);font-weight:600;}
+  .track{height:7px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;}
+  .track > i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--vita-energy),var(--vita-warn));}
+
+  /* ring cells (conic-gradient — pure CSS, the report's technique) */
+  .ringwrap{display:flex;align-items:center;gap:12px;}
+  .ring{position:relative;width:58px;height:58px;border-radius:50%;flex-shrink:0;
+    background:conic-gradient(var(--c) calc(var(--p)*1%), rgba(255,255,255,.07) 0);}
+  .ring::after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--vita-surface);}
+  .ring i{position:absolute;inset:0;display:grid;place-items:center;font-size:15px;z-index:1;}
+  .ringtxt .b-val{font-size:22px;}
+  .ringtxt small{font-size:11px;color:var(--vita-muted);font-weight:600;display:block;margin-top:2px;}
+
+  /* sleep mini bars (color only on bars) */
+  .bars{display:flex;align-items:flex-end;gap:5px;height:42px;margin-top:4px;}
+  .bars > span{flex:1;border-radius:3px 3px 0 0;background:var(--vita-sleep);opacity:.85;}
+
+  /* insight color-by-status (§8.1/B.6) */
+  .insight{margin-top:var(--gap);border-radius:16px;padding:13px 14px;background:var(--vita-surface);
+    border-left:3px solid var(--vita-good);}
+  .insight.warn{border-left-color:var(--vita-warn);}
+  .insight .ih{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+    color:var(--vita-good);margin-bottom:6px;display:flex;gap:6px;align-items:center;}
+  .insight.warn .ih{color:var(--vita-warn);}
+  .insight p{font-size:13px;color:var(--vita-text);line-height:1.5;font-weight:500;}
+
+  /* ── Bottom nav (proposed) ── */
+  .botnav{display:flex;background:rgba(13,14,20,.97);border-top:1px solid var(--vita-line);
+    padding:8px 6px 14px;} /* extra bottom pad ~ env(safe-area-inset-bottom) */
+  .bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;
+    padding:4px 2px;min-height:48px;justify-content:center;background:none;border:none;font-family:inherit;cursor:pointer;}
+  .bn-ico{font-size:20px;line-height:1;opacity:.8;}
+  .bn-lbl{font-size:10px;font-weight:700;color:var(--vita-faint);letter-spacing:.2px;white-space:nowrap;}
+  .bn.active .bn-ico{opacity:1;}
+  .badge{position:absolute;top:-1px;right:50%;transform:translateX(20px);min-width:16px;height:16px;
+    padding:0 4px;border-radius:8px;background:var(--vita-energy);color:#fff;font-size:10px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;border:1.5px solid var(--vita-bg);}
+  .safe-note{font-size:9px;color:var(--vita-faint);text-align:center;padding:0 0 6px;opacity:.6;}
+
+  /* active variants */
+  .bn.act-blue.active .bn-lbl{color:var(--vita-info);}
+  .bn.act-blue.active::before{content:"";position:absolute;top:0;width:22px;height:3px;border-radius:0 0 3px 3px;background:var(--vita-info);}
+  .bn.act-green.active .bn-lbl{color:var(--vita-good);}
+  .bn.act-green.active::before{content:"";position:absolute;top:0;width:22px;height:3px;border-radius:0 0 3px 3px;background:var(--vita-good);}
+  .bn.act-neutral.active{}
+  .bn.act-neutral.active .bn-lbl{color:var(--vita-text);}
+  .bn.act-neutral.active .bn-ico{filter:none;}
+  .bn.act-neutral.active::before{content:"";position:absolute;inset:2px 8px;background:var(--vita-surface-raised);border-radius:12px;z-index:-1;}
+
+  .mini{width:300px;background:var(--vita-bg);border:1px solid var(--vita-line);border-radius:20px;overflow:hidden;}
+</style>
+</head>
+<body>
+
+  <h1>🌐 Opus Nexus — Today redesign</h1>
+  <div class="sub">Render thật theo §8.2 (bento bất đối xứng: Kcal hero · Protein/Steps ring conic-gradient · Sleep mini-bars) + §8.1 (số = trắng trung tính, màu chỉ ở bar/ring/icon) + bottom nav có safe-area. Dùng để quyết Q1 (bottom nav), Q2 (ngôn ngữ), Q4 (màu active).</div>
+
+  <div class="row">
+
+    <!-- FULL TODAY -->
+    <div>
+      <span class="tag rec">Bản đề xuất · active = xanh dương</span>
+      <div class="phone">
+        <div class="ptop">
+          <div class="brand">🌐 Opus Nexus</div>
+          <div class="greet">Chào buổi chiều 🌤️ · Hôm nay 30/05</div>
+        </div>
+        <div class="pbody">
+          <div class="stitle">Vita Snapshot</div>
+          <div class="bento">
+            <!-- Kcal hero -->
+            <div class="b span2 hero">
+              <span class="b-ico">🔥</span>
+              <div class="hero-top">
+                <div><div class="b-label">Năng lượng</div><span class="b-val">1.840</span><span class="b-unit">/ 2.200 kcal</span></div>
+              </div>
+              <div class="hero-sub">Còn lại 360 kcal · 84% mục tiêu</div>
+              <div class="track"><i style="width:84%"></i></div>
+            </div>
+            <!-- Protein ring -->
+            <div class="b">
+              <div class="b-label">Protein</div>
+              <div class="ringwrap">
+                <div class="ring" style="--c:var(--vita-protein);--p:71"><i>💪</i></div>
+                <div class="ringtxt"><span class="b-val">92</span><span class="b-unit">g</span><small>71% · 130g</small></div>
+              </div>
+            </div>
+            <!-- Steps ring -->
+            <div class="b">
+              <div class="b-label">Vận động</div>
+              <div class="ringwrap">
+                <div class="ring" style="--c:var(--vita-steps);--p:74"><i>👟</i></div>
+                <div class="ringtxt"><span class="b-val">5,9</span><span class="b-unit">k</span><small>74% · 8k</small></div>
+              </div>
+            </div>
+            <!-- Sleep wide -->
+            <div class="b span2">
+              <span class="b-ico">😴</span>
+              <div class="b-label">Giấc ngủ · 7 ngày</div>
+              <div style="display:flex;align-items:baseline;gap:6px"><span class="b-val">7,2</span><span class="b-unit">h tối qua · TB 6,8h</span></div>
+              <div class="bars">
+                <span style="height:60%"></span><span style="height:85%"></span><span style="height:50%"></span>
+                <span style="height:75%"></span><span style="height:90%"></span><span style="height:65%"></span><span style="height:96%"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="insight warn">
+            <div class="ih">⚠️ Nhận xét hôm nay</div>
+            <p>Protein đang chậm nhịp (71%). Bữa tối thêm ~40g là đạt mục tiêu 💪</p>
+          </div>
+        </div>
+
+        <div class="safe-note">▔▔▔ env(safe-area-inset-bottom) ▔▔▔</div>
+        <div class="botnav">
+          <button class="bn act-blue active"><span class="bn-ico">🏠</span><span class="bn-lbl">Today</span></button>
+          <button class="bn act-blue"><span class="bn-ico">🌿</span><span class="bn-lbl">Vita</span></button>
+          <button class="bn act-blue"><span class="bn-ico">🗓️</span><span class="bn-lbl">Calendar</span></button>
+          <button class="bn act-blue"><span class="badge">3</span><span class="bn-ico">📥</span><span class="bn-lbl">Approval</span></button>
+        </div>
+      </div>
+      <div class="legend">Số liệu = trắng (đọc rõ), màu rực chỉ ở thanh/ring/icon. Insight đổi viền theo trạng thái (vàng = cảnh báo).</div>
+    </div>
+
+    <!-- DECISIONS COLUMN -->
+    <div style="display:flex;flex-direction:column;gap:26px">
+
+      <div>
+        <h2 style="margin-top:0">Q4 · Màu indicator "active"</h2>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div>
+            <div class="mini"><div class="botnav" style="padding:8px 6px">
+              <button class="bn act-blue active"><span class="bn-ico">🏠</span><span class="bn-lbl">Today</span></button>
+              <button class="bn act-blue"><span class="bn-ico">🌿</span><span class="bn-lbl">Vita</span></button>
+              <button class="bn act-blue"><span class="bn-ico">🗓️</span><span class="bn-lbl">Calendar</span></button>
+              <button class="bn act-blue"><span class="badge">3</span><span class="bn-ico">📥</span><span class="bn-lbl">Approval</span></button>
+            </div></div>
+            <div class="legend"><strong style="color:var(--vita-info)">A · Xanh dương</strong> — gỡ green khỏi 2 nghĩa, để green chỉ còn = "good/success". <em>Khuyến nghị.</em></div>
+          </div>
+          <div>
+            <div class="mini"><div class="botnav" style="padding:8px 6px">
+              <button class="bn act-green active"><span class="bn-ico">🏠</span><span class="bn-lbl">Today</span></button>
+              <button class="bn act-green"><span class="bn-ico">🌿</span><span class="bn-lbl">Vita</span></button>
+              <button class="bn act-green"><span class="bn-ico">🗓️</span><span class="bn-lbl">Calendar</span></button>
+              <button class="bn act-green"><span class="badge">3</span><span class="bn-ico">📥</span><span class="bn-lbl">Approval</span></button>
+            </div></div>
+            <div class="legend"><strong style="color:var(--vita-good)">B · Xanh lá (hiện tại)</strong> — đẹp nhưng xung đột: green vừa "active" vừa "success".</div>
+          </div>
+          <div>
+            <div class="mini"><div class="botnav" style="padding:8px 6px">
+              <button class="bn act-neutral active"><span class="bn-ico">🏠</span><span class="bn-lbl">Today</span></button>
+              <button class="bn act-neutral"><span class="bn-ico">🌿</span><span class="bn-lbl">Vita</span></button>
+              <button class="bn act-neutral"><span class="bn-ico">🗓️</span><span class="bn-lbl">Calendar</span></button>
+              <button class="bn act-neutral"><span class="badge">3</span><span class="bn-ico">📥</span><span class="bn-lbl">Approval</span></button>
+            </div></div>
+            <div class="legend"><strong>C · Neutral pill</strong> — trung tính nhất, dành toàn bộ màu cho dữ liệu; hơi kém nổi.</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h2 style="margin-top:0">Q2 · Ngôn ngữ nav</h2>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div>
+            <div class="mini"><div class="botnav" style="padding:8px 6px">
+              <button class="bn act-blue active"><span class="bn-ico">🏠</span><span class="bn-lbl">Today</span></button>
+              <button class="bn act-blue"><span class="bn-ico">🌿</span><span class="bn-lbl">Vita</span></button>
+              <button class="bn act-blue"><span class="bn-ico">🗓️</span><span class="bn-lbl">Calendar</span></button>
+              <button class="bn act-blue"><span class="badge">3</span><span class="bn-ico">📥</span><span class="bn-lbl">Approval</span></button>
+            </div></div>
+            <div class="legend"><strong>EN</strong> — đồng bộ với "Approval" đã chốt; gọn.</div>
+          </div>
+          <div>
+            <div class="mini"><div class="botnav" style="padding:8px 6px">
+              <button class="bn act-blue active"><span class="bn-ico">🏠</span><span class="bn-lbl">Hôm nay</span></button>
+              <button class="bn act-blue"><span class="bn-ico">🌿</span><span class="bn-lbl">Vita</span></button>
+              <button class="bn act-blue"><span class="bn-ico">🗓️</span><span class="bn-lbl">Lịch</span></button>
+              <button class="bn act-blue"><span class="badge">3</span><span class="bn-ico">📥</span><span class="bn-lbl">Chờ duyệt</span></button>
+            </div></div>
+            <div class="legend"><strong>VN</strong> — khớp nội dung tiếng Việt trong app; "Approval" → "Chờ duyệt". Lưu ý nhãn dài hơn.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
