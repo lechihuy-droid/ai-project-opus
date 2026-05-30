@@ -3,11 +3,11 @@ Daily Consilium brief.
 
 Default behavior is local-only:
 - read the durable wiki hubs
-- format the three research lanes: tech, ceo, competitor
+- ask Claude CLI to analyze the three research lanes: tech, ceo, competitor
 - write logs/daily/YYYY-MM-DD.md
 - print the brief
 
-No Telegram, Telegraph, or LLM call is made here. Collection happens in
+No Telegram or Telegraph call is made here. Collection happens in
 run_lane.py / run_collect.py; this file is the local decision brief.
 """
 from __future__ import annotations
@@ -23,6 +23,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from utils.config import logs_dir, personal_wiki_dir
+from utils.llm import claude_cli
 
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
@@ -163,15 +164,48 @@ def _queue_status() -> list[str]:
     return rows
 
 
-def build_brief() -> str:
+def build_evidence_bundle() -> str:
+    today_iso = date.today().isoformat()
+    today_display = date.today().strftime("%d/%m/%Y")
+    lines = [
+        f"Date: {today_iso} ({today_display})",
+        "Delivery: local-only; no Telegram; no Telegraph.",
+        "Research lanes: tech, ceo, competitor.",
+        "",
+    ]
+
+    for lane in LANES:
+        lines.extend(
+            [
+                f"## Lane: {lane.key} - {lane.title}",
+                f"Focus: {lane.focus}",
+                f"Default action bias: {lane.action}",
+                "",
+                "Evidence signals from wiki hubs:",
+            ]
+        )
+        for signal in _lane_signals(lane):
+            lines.append(f"- {signal}")
+        lines.append("")
+
+    lines.extend(["## Intake Status", ""])
+    for item in _queue_status():
+        lines.append(f"- {item}")
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def _deterministic_brief(evidence: str, reason: str | None = None) -> str:
     today_iso = date.today().isoformat()
     today_display = date.today().strftime("%d/%m/%Y")
     lines = [
         f"# Consilium Daily Brief - {today_iso}",
         "",
-        f"Brief {today_display} | local-only | 3 lanes",
+        f"Brief {today_display} | local-only | 3 lanes | deterministic fallback",
         "",
     ]
+
+    if reason:
+        lines.extend([f"> LLM synthesis unavailable: {reason}", ""])
 
     for lane in LANES:
         lines.extend(
@@ -179,16 +213,31 @@ def build_brief() -> str:
                 f"## {lane.title}",
                 f"Focus: {lane.focus}",
                 "",
-                "Signals:",
+                "What Changed:",
             ]
         )
         for signal in _lane_signals(lane):
             lines.append(f"- {signal}")
-        lines.extend(["", f"Action: {lane.action}", ""])
+        lines.extend(
+            [
+                "",
+                "Suggested Action:",
+                f"- {lane.action}",
+                "",
+                "Ignore:",
+                "- Isolated source noise without decision impact or a clear target hub.",
+                "",
+            ]
+        )
 
     lines.extend(["## Intake Status", ""])
-    for item in _queue_status():
-        lines.append(f"- {item}")
+    in_intake = False
+    for line in evidence.splitlines():
+        if line == "## Intake Status":
+            in_intake = True
+            continue
+        if in_intake and line.startswith("- "):
+            lines.append(line)
     lines.extend(
         [
             "",
@@ -202,12 +251,75 @@ def build_brief() -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
+def synthesize_brief(evidence: str) -> str:
+    today_iso = date.today().isoformat()
+    today_display = date.today().strftime("%d/%m/%Y")
+    prompt = f"""
+You are Opus Consilium, Huy's decision brain.
+
+Write a concise daily brief in Vietnamese from the evidence below.
+
+Hard rules:
+- Use exactly the three lanes: tech, ceo, competitor.
+- Separate evidence from interpretation.
+- Do not invent facts beyond the evidence.
+- Give practical suggested actions, what to ignore, and wiki pages to update.
+- Keep it decision-oriented, not a news summary.
+- No Telegram, Telegraph, publishing, or external-send instruction.
+- Mention that delivery is local-only.
+
+Required markdown structure:
+# Consilium Daily Brief - {today_iso}
+
+Brief {today_display} | LLM-assisted | local-only | 3 lanes
+
+## Tech
+### What changed
+### What it means
+### Suggested action
+### Ignore
+### Wiki updates
+
+## CEO
+### What changed
+### What it means
+### Suggested action
+### Ignore
+### Wiki updates
+
+## Competitor
+### What changed
+### What it means
+### Suggested action
+### Ignore
+### Wiki updates
+
+## Intake Status
+## Decision
+
+Evidence:
+{evidence[:9000]}
+""".strip()
+    return claude_cli(prompt, timeout=180).strip() + "\n"
+
+
+def build_brief(use_llm: bool = True) -> str:
+    evidence = build_evidence_bundle()
+    if not use_llm:
+        return _deterministic_brief(evidence)
+    try:
+        return synthesize_brief(evidence)
+    except Exception as exc:
+        return _deterministic_brief(evidence, reason=str(exc)[:300])
+
+
 def main(argv: list[str] | None = None) -> str:
-    parser = argparse.ArgumentParser(description="Write a local-only three-lane Consilium daily brief.")
+    parser = argparse.ArgumentParser(description="Write a local-only, LLM-assisted, three-lane Consilium daily brief.")
     parser.add_argument("--no-write", action="store_true", help="Print only; do not write logs/daily.")
+    parser.add_argument("--no-llm", action="store_true", help="Use deterministic fallback only.")
     args = parser.parse_args(argv)
 
-    brief = build_brief()
+    brief = build_brief(use_llm=not args.no_llm)
     if not args.no_write:
         path = logs_dir() / f"{date.today().isoformat()}.md"
         path.write_text(brief, encoding="utf-8")
