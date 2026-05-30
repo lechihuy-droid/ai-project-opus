@@ -52,7 +52,7 @@
         <tr><td><span class="badge red">Blocker</span></td><td><strong>[E.17]</strong> Thang typography dưới ngưỡng &amp; không nhất quán: body 12px, label 10px, <code>ring-lbl</code> 9px, <code>pr-new</code> 9px.</td><td><code>:134 / :231</code></td></tr>
         <tr><td><span class="badge red">Blocker</span></td><td><strong>[E.19]</strong> <code>--vita-good</code> (green) gánh 2 nghĩa: vừa "active" (nav/mtab/rtab) vừa "success/good" → xung đột ngữ nghĩa.</td><td><code>:88 / :92 / :251</code></td></tr>
         <tr><td><span class="badge red">Blocker</span></td><td><strong>[F.21]</strong> Touch target &lt; 44px diện rộng: nav-tab ~32px, rtab ~28px, mtab ~36px, proposal btn 30px, sync/pat ~30px.</td><td><code>:83 / :91 / :250 / :288</code></td></tr>
-        <tr><td><span class="badge navy">Friction</span></td><td><strong>[A.1]</strong> "Actions" mơ hồ — user mới không đoán được = paste JSON → duyệt. Đổi nhãn + icon.</td><td><code>:348</code></td></tr>
+        <tr><td><span class="badge navy">Friction</span></td><td><strong>[A.1]</strong> "Actions" mơ hồ. <strong>🔒 Chốt: → "Approval"</strong> (danh từ, đồng bộ tiếng Anh) + badge đếm proposal pending.</td><td><code>:348</code></td></tr>
         <tr><td><span class="badge navy">Friction</span></td><td><strong>[A.4]</strong> "Plan My Week" chôn trong Actions dù calendar-centric — cân nhắc đưa lên Calendar.</td><td>—</td></tr>
         <tr><td><span class="badge navy">Friction</span></td><td><strong>[B.5]</strong> Snapshot Today thiếu progress visual → khó "đọc trong 5 giây". Tái dùng <code>.pbar</code>/<code>.ring-svg</code> sẵn có.</td><td>—</td></tr>
         <tr><td><span class="badge navy">Friction</span></td><td><strong>[C.9]</strong> Thiếu nút Clear/reset sau khi validate &amp; approve xong.</td><td>—</td></tr>
@@ -165,7 +165,7 @@
     <h2>6 · Open questions — cần chốt trước khi viết BD</h2>
     <div class="card-grid">
       <div class="card"><h3>1 · Bottom nav</h3><p>Đồng ý chuyển primary nav xuống đáy? (đổi cấu trúc rõ nhưng đúng HIG)</p></div>
-      <div class="card"><h3>2 · Ngôn ngữ nhãn</h3><p>Việt-chủ-đạo (giữ brand tiếng Anh) hay giữ Anh?</p></div>
+      <div class="card"><h3>2 · Ngôn ngữ nhãn</h3><p>Việt-chủ-đạo (giữ brand tiếng Anh) hay giữ Anh? <span class="badge green">Tab 4 đã chốt: Approval</span></p></div>
       <div class="card"><h3>3 · Accent "active" mới</h3><p>Một màu accent riêng (vd <code>--vita-info</code>) hay neutral surface-raised?</p></div>
       <div class="card"><h3>4 · Plan My Week</h3><p>Giữ ở Actions hay chuyển sang Calendar?</p></div>
       <div class="card"><h3>5 · Ưu tiên ship</h3><p>Chỉ P1 (an toàn, impact cao) hay P1+P2 cùng đợt?</p></div>

@@ -26,7 +26,7 @@ Plan đề xuất **3 phase, không refactor lớn**, mỗi thay đổi nằm g�
 Severity: 🔴 blocker · 🟠 friction · 🟡 polish. Mỗi finding kèm vị trí thật trong file.
 
 ### A. Navigation & Information Architecture
-- 🟠 **[A.1] "Actions" tên mơ hồ.** User mới không đoán được tab này = paste JSON → duyệt. Đổi nhãn (vd "Duyệt" / "Proposals") + icon. `dashboard.html:348`
+- 🟠 **[A.1] "Actions" tên mơ hồ.** User mới không đoán được tab này = paste JSON → duyệt. **🔒 Chốt: đổi nhãn → "Approval"** (danh từ, đúng quy ước nav, đồng bộ tiếng Anh, mô tả đúng hàng-chờ-phê-duyệt) + **badge đếm** số proposal pending (chấm đỏ `--vita-energy`). `dashboard.html:348`
 - 🔴 **[A.3] 3 tầng tab xếp chồng ở Vita.** `nav-tabs` (dòng 344) + `mod-tabs` (350) + `range-row` (355) chồng nhau trong topbar sticky → chiếm chiều cao lớn, nặng nhận thức. Gộp range vào segmented control nhỏ trong content, hoặc cho range thành chip cuộn ngang.
 - 🟠 **[A.4] "Plan My Week" chôn trong Actions** trong khi nó là calendar-centric. Cân nhắc đưa lên Calendar tab (handoff Q4).
 - 🟡 **[A.2] Today có thể quá tải** — snapshot + insight + calendar + task trong 1 màn. Cần thứ tự ưu tiên thị giác (xem D).
@@ -149,3 +149,35 @@ Inspiration (không phải repo, để so visual): Mobbin → Health & Fitness, 
 3. **Accent "active" mới** — muốn 1 màu accent riêng (vd xanh dương/`--vita-info`) hay dùng neutral surface-raised?
 4. **"Plan My Week"** — giữ ở Actions hay chuyển sang Calendar?
 5. Phase nào ưu tiên ship trước — chỉ P1 (an toàn, impact cao) hay P1+P2 cùng đợt?
+
+> **Đã chốt:** Q-naming → tab 4 = **"Approval"** + badge đếm (mockup: `docs/mockup-tab4-naming.html`).
+
+---
+
+## 7. Research addendum (2026-05-30) — đối chiếu deep-dive report với code
+
+Report UX/UI chuyên sâu được rà với code thật. Kết quả:
+
+### 7.1 Đính chính — vài critique của report KHÔNG còn đúng với code hiện tại
+- **Snapshot Today KHÔNG phải "4 ô text thuần".** Thực tế dùng `metric-grid` 2 cột + `renderMetricHeroCard`, **đã có `pbar/pfill` + "% mục tiêu"** (`dashboard.html:523,583,577`). → Sửa lại **[B.5]**: không phải "thiếu progress" mà là cơ hội **bento-hierarchy** (cho kcal thành hero `.span2`, tái dùng `.hero-cal`/`.span*` đã có sẵn).
+- **Insight card đã chunk.** `renderInsightCard` đã bullet hoá khi >1 tip + có param `accent` (`:593,599`). → Sửa **[B.6]**: việc cần làm là **color-by-status** (truyền `--vita-good`/`--vita-warn`/`--vita-bad` theo ngữ cảnh) chứ không phải "chunk từ đầu".
+- **Approved đã có ✓.** `proposal-ok ✓` render sẵn (`:611`). → Sửa **[C.11]**: nâng cấp là **collapse animation** (thu gọn chiều cao), không phải "thêm dấu tích".
+- **conic-gradient không cần.** App đã có `renderRing()` SVG (`:1634`) — tái dùng, không thêm kỹ thuật mới.
+
+### 7.2 Mục MỚI đáng apply — trong scope §7 (CSS + render)
+- **Inbox/Approval + badge đếm** (đã chốt Approval). — [A.1]
+- **Segmented control** cho range 7/14/30/90 (phân biệt lọc vs chuyển trang). — củng cố [A.3]
+- **Insight color-by-status** (viền/nền theo good/warn/bad). — [B.6]
+- **Proposal `.selected` → elevation** (`--vita-surface-raised` + box-shadow) thay vì chỉ viền; **`.approved` → collapse**. — [C.10/C.11]
+- **Batch "Duyệt tất cả" → `position: sticky`** mép dưới, trên safe-area. — [C.10]
+- **Nút Clear "✕"** trên textarea (hiện khi length>0). — [C.9]
+
+### 7.3 Nâng severity
+- **[F.22] safe-area → 🔴 Blocker (có điều kiện):** nếu chọn bottom nav, bắt buộc `viewport-fit=cover` + `env(safe-area-inset-bottom)` nếu không Home Indicator iPhone đè nút. Report đúng.
+
+### 7.4 Optional — VƯỢT scope §7, cần mở scope JS-behavior (chờ user quyết)
+- **Fix keyboard đẩy vỡ viewport** (Safari resize visual-viewport): cần listener `visualViewport` + `scrollIntoView`.
+- **"1-Tap Paste & Validate"** (`navigator.clipboard.readText()` từ user gesture): bỏ luồng textarea-first; lưu ý iOS popup "Allow paste".
+- **Plan My Week → FAB + bottom-sheet trong Calendar** (thay vì nút tĩnh trong Approval tab): thay đổi thiết kế lớn hơn [A.4].
+
+> Ba mục 7.4 đều cần JS UI mới + phụ thuộc quirk Safari → không nằm trong "review HTML/CSS/render" thuần. Chờ user đồng ý mở scope.
