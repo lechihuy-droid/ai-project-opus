@@ -97,11 +97,14 @@ html, body {
 .brand-mark { width: 24px; height: 24px; color: var(--opus-gold); flex-shrink: 0; }
 .pat-mark { width: 58px; height: 58px; color: var(--opus-gold); margin-bottom: 16px; }
 .ui-ico { width: 18px; height: 18px; display: inline-block; color: currentColor; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: square; stroke-linejoin: miter; }
-.sync-btn { font-size: 12px; padding: 6px 11px; min-height: var(--tap-min); background: rgba(48,209,88,.15); color: var(--vita-good); border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; }
-.pat-btn  { font-size: 12px; padding: 6px 10px; min-height: var(--tap-min); background: rgba(255,255,255,.06); color: var(--vita-muted); border: none; border-radius: 8px; cursor: pointer; font-family: inherit; }
+.sync-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; padding: 6px 11px; min-height: var(--tap-min); background: rgba(48,209,88,.15); color: var(--vita-good); border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; }
+.sync-btn .ui-ico { width: 15px; height: 15px; }
+.pat-btn  { display: inline-flex; align-items: center; justify-content: center; font-size: 12px; padding: 6px 10px; min-width: var(--tap-min); min-height: var(--tap-min); background: rgba(255,255,255,.06); color: var(--vita-muted); border: none; border-radius: 8px; cursor: pointer; font-family: inherit; }
+.pat-btn .ui-ico { width: 16px; height: 16px; }
 
 .mod-tabs { display: flex; }
-.mtab { flex: 1; padding: 9px 4px 10px; min-height: var(--tap-min); text-align: center; font-size: 12px; font-weight: 700; border: none; background: none; cursor: pointer; font-family: inherit; color: var(--vita-faint); border-bottom: 2.5px solid transparent; transition: color .18s, border-bottom-color .18s; }
+.mtab { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 4px 10px; min-height: var(--tap-min); text-align: center; font-size: 12px; font-weight: 700; border: none; background: none; cursor: pointer; font-family: inherit; color: var(--vita-faint); border-bottom: 2.5px solid transparent; transition: color .18s, border-bottom-color .18s; }
+.mtab .ui-ico { width: 16px; height: 16px; }
 .mtab.active { color: var(--vita-active); border-bottom-color: var(--vita-active); }
 
 .range-row { display: flex; gap: 0; padding: 3px; margin-top: 8px; background: rgba(255,255,255,.05); border-radius: 10px; }
@@ -120,6 +123,7 @@ html, body {
 .b.tall  { min-height: 168px; }
 
 .b-label { font-size: var(--fs-cap); font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--vita-muted); margin-bottom: 8px; }
+.b-label .ui-ico { width: 14px; height: 14px; vertical-align: -2px; margin-right: 4px; }
 .b-val   { font-size: 28px; font-weight: 800; line-height: 1; letter-spacing: -.5px; }
 .b-unit  { font-size: 13px; font-weight: 600; color: var(--vita-muted); margin-left: 2px; }
 .b-sub   { font-size: 11px; color: var(--vita-muted); margin-top: 5px; font-weight: 500; }
@@ -313,6 +317,7 @@ canvas { display: block; }
 .mi { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.03); }
 .mi:last-child { border-bottom: none; }
 .mi-ico  { font-size: 14px; flex-shrink: 0; }
+.mi-ico .ui-ico { width: 15px; height: 15px; }
 .mi-info { flex: 1; min-width: 0; }
 .mi-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mi-mac  { font-size: var(--fs-cap); color: var(--vita-muted); margin-top: 1px; }
@@ -322,6 +327,7 @@ canvas { display: block; }
 .hi { display: flex; align-items: center; gap: 11px; padding: 10px 0; border-bottom: 1px solid var(--vita-line); }
 .hi:last-child { border-bottom: none; }
 .hi-ico   { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.hi-ico .ui-ico { width: 19px; height: 19px; }
 .hi-info  { flex: 1; min-width: 0; }
 .hi-title { font-size: 13px; font-weight: 700; }
 .hi-sub   { font-size: 11px; color: var(--vita-muted); margin-top: 2px; }
@@ -332,12 +338,14 @@ canvas { display: block; }
 .stitle { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--vita-faint); margin: 18px 0 8px; padding-left: 2px; }
 
 /* ── Streak pill ── */
-.streak-pill { background: linear-gradient(135deg, var(--vita-carb), var(--vita-energy)); padding: 4px 10px; border-radius: 14px; font-size: 11px; font-weight: 800; color: #fff; }
+.streak-pill { display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, var(--vita-carb), var(--vita-energy)); padding: 4px 10px; border-radius: 14px; font-size: 11px; font-weight: 800; color: #fff; }
+.streak-pill .ui-ico { width: 12px; height: 12px; }
 
 /* ── PR card ── */
 .pr-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
 .pr-item:last-child { border-bottom: none; }
 .pr-ico  { width: 36px; height: 36px; border-radius: 10px; background: rgba(255,214,10,.12); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.pr-ico .ui-ico { width: 18px; height: 18px; color: var(--vita-steps); }
 .pr-info { flex: 1; }
 .pr-name { font-size: 13px; font-weight: 700; }
 .pr-val  { font-size: 11px; color: var(--vita-muted); margin-top: 2px; }
@@ -446,6 +454,7 @@ canvas { display: block; }
 .cal-mini-val { font-size: 20px; font-weight: 700; margin-top: 5px; letter-spacing: -.3px; }
 .cal-mini-val.muted { color: var(--vita-faint); font-weight: 600; }
 .cal-empty { margin-top: var(--vita-gap); padding: 18px 14px; text-align: center; background: rgba(255,255,255,.03); border: 1px solid var(--vita-line); border-radius: var(--vita-radius-md); color: var(--vita-muted); font-size: 13px; line-height: 1.5; }
+.cal-empty .ui-ico { width: 20px; height: 20px; margin-bottom: 4px; color: var(--vita-info); }
 .cal-event { display: flex; gap: 10px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
 .cal-event:last-child { border-bottom: none; }
 .cal-time { width: 72px; flex-shrink: 0; color: var(--vita-info); font-size: 11px; font-weight: 800; line-height: 1.45; }
@@ -534,6 +543,48 @@ canvas { display: block; }
       <path d="M19 16.4C17.6 17.4 15.8 18 13.9 18C9.5 18 6 14.5 6 10.1C6 8.2 6.6 6.4 7.6 5C4.8 6.2 3 8.9 3 12C3 16.4 6.6 20 11 20C14.1 20 16.8 18.2 18 15.4L19 16.4Z"/>
       <path d="M14 5H19L14 10H19"/>
     </symbol>
+    <symbol id="i-sync" viewBox="0 0 24 24">
+      <path d="M19 8V4H15"/>
+      <path d="M18.2 8.2C16.9 5.9 14.7 4.8 12 4.8C8 4.8 4.8 8 4.8 12"/>
+      <path d="M5 16V20H9"/>
+      <path d="M5.8 15.8C7.1 18.1 9.3 19.2 12 19.2C16 19.2 19.2 16 19.2 12"/>
+    </symbol>
+    <symbol id="i-key" viewBox="0 0 24 24">
+      <circle cx="8" cy="12" r="3.5"/>
+      <path d="M11.5 12H21M17 12V15M14.5 12V14"/>
+    </symbol>
+    <symbol id="i-dumbbell" viewBox="0 0 24 24">
+      <path d="M5 9V15M8 7V17M16 7V17M19 9V15"/>
+      <path d="M8 12H16"/>
+    </symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24">
+      <path d="M4 7H18C19.1 7 20 7.9 20 9V18H4V7Z"/>
+      <path d="M4 7L16 4V7"/>
+      <path d="M15 12H21V16H15V12Z"/>
+      <path d="M18 14H18.1"/>
+    </symbol>
+    <symbol id="i-scale" viewBox="0 0 24 24">
+      <path d="M12 4V20M7 7H17M5 20H19"/>
+      <path d="M7 7L4 13H10L7 7ZM17 7L14 13H20L17 7Z"/>
+    </symbol>
+    <symbol id="i-chart-line" viewBox="0 0 24 24">
+      <path d="M4 19H20"/>
+      <path d="M5 16L9 12L12 14L18 7"/>
+    </symbol>
+    <symbol id="i-water" viewBox="0 0 24 24">
+      <path d="M12 3C8 8 6 11.2 6 14.5C6 18 8.7 21 12 21C15.3 21 18 18 18 14.5C18 11.2 16 8 12 3Z"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path d="M5 12.5L10 17.5L19 7.5"/>
+    </symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24">
+      <path d="M12 4L21 20H3L12 4Z"/>
+      <path d="M12 10V14M12 17H12.1"/>
+    </symbol>
+    <symbol id="i-critical" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8"/>
+      <path d="M12 8V13M12 16H12.1"/>
+    </symbol>
     <symbol id="i-home" viewBox="0 0 256 256"><path d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z"/></symbol>
     <symbol id="i-home-fill" viewBox="0 0 256 256"><path d="M224,120v96a8,8,0,0,1-8,8H160a8,8,0,0,1-8-8V164a4,4,0,0,0-4-4H108a4,4,0,0,0-4,4v52a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V120a16,16,0,0,1,4.69-11.31l80-80a16,16,0,0,1,22.62,0l80,80A16,16,0,0,1,224,120Z"/></symbol>
     <symbol id="i-vita" viewBox="0 0 256 256"><path d="M240,128a8,8,0,0,1-8,8H204.94l-37.78,75.58A8,8,0,0,1,160,216h-.4a8,8,0,0,1-7.08-5.14L95.35,60.76,63.28,131.31A8,8,0,0,1,56,136H24a8,8,0,0,1,0-16H50.85L88.72,36.69a8,8,0,0,1,14.76.46l57.51,151,31.85-63.71A8,8,0,0,1,200,120h32A8,8,0,0,1,240,128Z"/></symbol>
@@ -547,8 +598,8 @@ canvas { display: block; }
     <div class="tb-row1">
       <h1><svg class="brand-mark" viewBox="0 0 64 64"><use href="#i-opus-mark"/></svg>Opus Nexus <span id="streak-badge"></span></h1>
       <div style="display:flex;gap:6px">
-        <button class="sync-btn" onclick="reload()">↻ Sync</button>
-        <button class="pat-btn" onclick="resetPat()">🔑</button>
+        <button class="sync-btn" onclick="reload()"><svg class="ui-ico" viewBox="0 0 24 24"><use href="#i-sync"/></svg><span>Sync</span></button>
+        <button class="pat-btn" onclick="resetPat()" aria-label="Đổi PAT" title="Đổi PAT"><svg class="ui-ico" viewBox="0 0 24 24"><use href="#i-key"/></svg></button>
       </div>
     </div>
   </div>
@@ -610,6 +661,10 @@ let gapiReady = false, gToken = null, gTokenScope = '', calEvents = [], calLoadi
 let gTasks = [], tasksLoading = false, tasksError = '';
 let pendingProposals = [], selectedIdx = new Set(), proposalText = '', proposalError = '', approvalResults = [], editingIdx = null;
 let profile = null, profileLoading = false, profileError = '', planPrompt = '';
+
+function uiIcon(id, extraClass='', extra='') {
+  return `<svg class="ui-ico${extraClass ? ' ' + extraClass : ''}" viewBox="0 0 24 24" ${extra}><use href="#${id}"/></svg>`;
+}
 
 // ── PAT setup ──
 function checkPat() {
@@ -697,7 +752,7 @@ async function reload() {
     renderContent();
   } catch(e) {
     document.getElementById('content').innerHTML =
-      `<div class="err">❌ Lỗi tải dữ liệu:<br><strong>${e.message}</strong><br><br>Kiểm tra PAT hoặc kết nối mạng. <span style="text-decoration:underline;cursor:pointer" onclick="resetPat()">Đổi PAT</span></div>`;
+      `<div class="err">Lỗi tải dữ liệu:<br><strong>${e.message}</strong><br><br>Kiểm tra PAT hoặc kết nối mạng. <span style="text-decoration:underline;cursor:pointer" onclick="resetPat()">Đổi PAT</span></div>`;
   }
 }
 // Vita sub-controls (module tabs + range) — render trong content; active đọc từ state
@@ -705,7 +760,7 @@ function renderVitaControls() {
   const mt = (tab,label) => `<button class="mtab${currentTab===tab?' active':''}" id="mt-${tab}" onclick="showTab('${tab}')">${label}</button>`;
   const rt = (n,label)   => `<button class="rtab${currentRange===n?' active':''}" onclick="setRange(${n},this)">${label}</button>`;
   return `<div class="vita-controls">
-    <div class="mod-tabs">${mt('health','🌿 Sức khỏe')}${mt('workout','💪 Tập luyện')}${mt('finance','💰 Tài chính')}</div>
+    <div class="mod-tabs">${mt('health',`${uiIcon('i-health-heart')}Sức khỏe`)}${mt('workout',`${uiIcon('i-dumbbell')}Tập luyện`)}${mt('finance',`${uiIcon('i-wallet')}Tài chính`)}</div>
     <div class="range-row">${rt(7,'7 ngày')}${rt(14,'14 ngày')}${rt(30,'30 ngày')}${rt(90,'3 tháng')}</div>
   </div>`;
 }
@@ -750,7 +805,7 @@ function buildVitaSnapshot() {
 function renderToday() {
   const snap = buildVitaSnapshot();
   if (!snap) {
-    return `<div class="loading">😶 Chưa có dữ liệu<br>
+    return `<div class="loading">${uiIcon('i-health-heart', '', 'style="color:var(--vita-faint);width:26px;height:26px;margin-bottom:8px"')}<br>Chưa có dữ liệu<br>
       <span style="font-size:12px;color:var(--vita-faint);margin-top:8px;display:block">Gửi ảnh bữa ăn cho Claude để bắt đầu</span></div>`;
   }
   const { shown, isToday, kcal, protein, fiber, sleep, steps } = snap;
@@ -847,10 +902,10 @@ function renderComingSoon(ico, title, sub) {
 
 function greeting() {
   const h = new Date().getHours();
-  if (h < 11) return 'Chào buổi sáng 🌅';
-  if (h < 14) return 'Chào buổi trưa ☀️';
-  if (h < 18) return 'Chào buổi chiều 🌤️';
-  return 'Chào buổi tối 🌙';
+  if (h < 11) return 'Chào buổi sáng';
+  if (h < 14) return 'Chào buổi trưa';
+  if (h < 18) return 'Chào buổi chiều';
+  return 'Chào buổi tối';
 }
 
 function renderEmptyMetric(label) {
@@ -877,10 +932,10 @@ function renderMetricHeroCard(label, val, unit, target, color, decimals=0) {
 }
 
 function renderInsightCard(title, tips, options={}) {
-  const icon = options.icon || '🌿';
+  const icon = options.icon || uiIcon('i-health-heart', '', 'style="color:var(--vita-info)"');
   const accent = options.accent || 'var(--vita-info)';
   const body = tips.length === 0
-    ? (options.empty || 'Đang đi đúng hướng hôm nay 🌿')
+    ? (options.empty || 'Đang đi đúng hướng hôm nay')
     : tips.length === 1 ? tips[0] : `${tips.length} điểm cần lưu ý hôm nay`;
   const tipsHtml = tips.length > 1
     ? `<div class="insight-tips">${tips.map(t=>`<div class="insight-tip">• ${t}</div>`).join('')}</div>`
@@ -900,21 +955,21 @@ function renderProposalCard(ev, selected=false, idx=null) {
   if (idx !== null && editingIdx === idx) return renderProposalEditor(ev, idx);
   if (ev.approved) {
     return `<div class="proposal-card approved">
-      <span class="proposal-ok" style="margin-top:2px">✓</span>
+      <span class="proposal-ok" style="margin-top:2px">${uiIcon('i-check', '', 'style="width:14px;height:14px"')}</span>
       <div style="flex:1;min-width:0">
         <div class="proposal-title">${esc(ev.title || '')}</div>
         <div class="proposal-time">Đã thêm vào ${ev.kind === 'task' ? 'Tasks' : 'Calendar'}</div>
       </div>
     </div>`;
   }
-  const actions = idx === null ? '' : `${errors.length ? '' : `<button class="proposal-approve" onclick="approveOne(${idx})" title="Approve mục này">✓ Approve</button>`}
-    <button class="proposal-edit" onclick="startEdit(${idx})" title="Sửa">✏️</button>`;
+  const actions = idx === null ? '' : `${errors.length ? '' : `<button class="proposal-approve" onclick="approveOne(${idx})" title="Approve mục này">Approve</button>`}
+    <button class="proposal-edit" onclick="startEdit(${idx})" title="Sửa">Sửa</button>`;
   if (ev.kind === 'task') {
     return `<div class="proposal-card ${selected ? 'selected' : ''}">
       <input class="proposal-select" type="checkbox" ${selected ? 'checked' : ''} ${errors.length ? 'disabled' : ''} ${idx===null ? '' : `onchange="toggleProposal(${idx}, this.checked)"`}>
       <div style="flex:1;min-width:0">
         <div class="proposal-title">${esc(ev.title || 'Untitled task')}</div>
-        <div class="proposal-time">${ev.due ? `📋 Hạn: ${esc(formatDueLabel(ev.due))}` : '📋 Việc cần làm · không hạn'}</div>
+        <div class="proposal-time">${ev.due ? `Hạn: ${esc(formatDueLabel(ev.due))}` : 'Việc cần làm · không hạn'}</div>
         <span class="proposal-type">task</span>
         ${errors.length ? `<div class="proposal-errors">${errors.map(esc).join('<br>')}</div>` : ''}
       </div>
@@ -1202,7 +1257,7 @@ function renderCalendarContext(compact=false) {
   }
   if (!gToken) {
     return `<div class="brief-card" style="text-align:center;padding:22px 16px">
-      <div style="font-size:28px;margin-bottom:10px">📅</div>
+      ${uiIcon('i-calendar-days', '', 'style="width:28px;height:28px;color:var(--vita-info);margin-bottom:10px"')}
       <div style="font-size:15px;font-weight:800;margin-bottom:6px">Chưa kết nối Calendar</div>
       <div style="font-size:13px;color:var(--vita-muted);line-height:1.55;margin-bottom:14px">Kết nối read-only để Nexus đọc nhịp tuần và gợi ý đúng thời điểm.</div>
       <button class="action-btn" onclick="connectCalendar()" style="background:var(--vita-active);color:#fff;max-width:240px;margin:0 auto">Kết nối Google Calendar →</button>
@@ -1221,7 +1276,8 @@ function renderCalendarContext(compact=false) {
   if (!s.timed) {
     return `${header}
       <div class="cal-empty">
-        <div>📅 Lịch trống 7 ngày tới${s.allDay ? ` (${s.allDay} sự kiện cả ngày)` : ''}.</div>
+        ${uiIcon('i-calendar-days')}
+        <div>Lịch trống 7 ngày tới${s.allDay ? ` (${s.allDay} sự kiện cả ngày)` : ''}.</div>
         <div style="margin-top:4px">Chưa có gì để Nexus phân tích.</div>
         <button class="action-btn secondary-btn" onclick="goPlanWeek()" style="margin-top:12px;max-width:200px;margin-left:auto;margin-right:auto">Plan My Week →</button>
       </div>
@@ -1244,7 +1300,7 @@ function renderTaskContext() {
     return `<div class="brief-card"><span class="status-pill info">Loading</span><div style="font-size:13px;color:var(--vita-muted);margin-top:8px">Đang tải Tasks...</div></div>`;
   }
   if (!gTasks.length) {
-    return `<div class="brief-card" style="font-size:13px;color:var(--vita-muted)">✅ Không có việc tồn đọng</div>`;
+    return `<div class="brief-card" style="font-size:13px;color:var(--vita-muted)">${uiIcon('i-check', '', 'style="color:var(--vita-good);vertical-align:-4px;margin-right:6px"')}Không có việc tồn đọng</div>`;
   }
   const today = new Date(); today.setHours(0,0,0,0);
   const rows = gTasks.slice(0, 8).map(t => {
@@ -1591,7 +1647,7 @@ function renderPlanMyWeek() {
       </div>
       <span class="status-pill info">Paste-based</span>
     </div>
-    <button class="action-btn secondary-btn" onclick="generatePlanPrompt()" style="margin-top:12px">${profileLoading ? 'Đang tải profile...' : (planPrompt ? '↻ Tạo lại prompt' : '① Tạo prompt')}</button>
+    <button class="action-btn secondary-btn" onclick="generatePlanPrompt()" style="margin-top:12px">${profileLoading ? 'Đang tải profile...' : (planPrompt ? `${uiIcon('i-sync', '', 'style="vertical-align:-4px;margin-right:6px"')}Tạo lại prompt` : 'Tạo prompt')}</button>
     ${profileError ? `<div class="proposal-errors">${esc(profileError)}</div>` : ''}
     ${planPrompt ? `
       <textarea id="plan-prompt" class="nexus-input" readonly style="margin-top:var(--vita-gap);min-height:160px">${esc(planPrompt)}</textarea>
@@ -1609,7 +1665,7 @@ function copyPlanPrompt(btn) {
   if (!ta) return;
   const done = () => {
     const old = btn.textContent;
-    btn.textContent = '✓ Đã copy — kéo xuống dán JSON';
+    btn.textContent = 'Đã copy — kéo xuống dán JSON';
     toast('Đã copy prompt');
     const paste = document.getElementById('proposal-input');
     if (paste) paste.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1956,9 +2012,9 @@ function renderRing(val, max, color, label, size=56, decimals=0) {
 // ║  TAB 1 — Sức khỏe                                       ║
 // ══════════════════════════════════════════════════════════
 function renderHealth(logs) {
-  if (!logs.length) return `<div class="loading">😶 Chưa có dữ liệu sức khỏe<br>
+  if (!logs.length) return `<div class="loading">${uiIcon('i-health-heart', '', 'style="color:var(--vita-faint);width:26px;height:26px;margin-bottom:8px"')}<br>Chưa có dữ liệu sức khỏe<br>
     <span style="font-size:12px;color:var(--vita-faint);margin-top:8px;display:block">Gửi ảnh bữa ăn cho Claude để bắt đầu</span></div>
-    <button onclick="debugFetch()" style="display:block;margin:8px auto;padding:8px 16px;background:rgba(255,255,255,.06);color:var(--vita-muted);border:none;border-radius:8px;font-size:12px;cursor:pointer">🔍 Test API</button>
+    <button onclick="debugFetch()" style="display:block;margin:8px auto;padding:8px 16px;background:rgba(255,255,255,.06);color:var(--vita-muted);border:none;border-radius:8px;font-size:12px;cursor:pointer">Test API</button>
     <pre id="dbg-out" style="display:none;background:var(--vita-surface);border-radius:8px;padding:12px;font-size:11px;white-space:pre-wrap;margin:8px 0;color:var(--vita-muted)"></pre>`;
 
   const today    = todayStr();
@@ -2071,34 +2127,34 @@ function renderHealth(logs) {
       <div class="b-label">Cân nặng</div>
       <div class="b-val">${weightVal}</div>
       <div class="b-sub">${weightSub}</div>
-      <div class="b-ico">⚖️</div>
+      <div class="b-ico">${uiIcon('i-scale', '', 'style="color:var(--vita-weight)"')}</div>
     </div>
     <div class="b span2" style="background:linear-gradient(135deg,#14142A,#0F0F1F);border:1px solid rgba(142,124,255,.18)">
       <div class="b-label">Giấc ngủ</div>
       <div class="b-val" style="color:var(--vita-sleep)">${sleepVal > 0 ? sleepVal.toFixed(1) : '—'}<span class="b-unit">${sleepVal > 0 ? 'h' : ''}</span></div>
       <div class="b-sub">${sleepVal > 0 ? `${pc(sleepVal, TARGET.sleep)}% mục tiêu` : 'chưa log'}</div>
-      <div class="b-ico">😴</div>
+      <div class="b-ico">${uiIcon('i-sleep', '', 'style="color:var(--vita-sleep)"')}</div>
     </div>
 
     ${renderWeeklySummary(logs)}
 
     <!-- Chart: calo -->
     <div class="b b-chart span4 tall">
-      <div class="b-label">📈 Calo / ngày · ${currentRange} ngày</div>
+      <div class="b-label">${uiIcon('i-chart-line')}Calo / ngày · ${currentRange} ngày</div>
       <div class="chart-wrap"><canvas id="c-cal"></canvas></div>
     </div>
 
     ${withW.length > 1 ? `<div class="b b-chart span4 tall">
-      <div class="b-label">⚖️ Cân nặng (kg)</div>
+      <div class="b-label">${uiIcon('i-scale')}Cân nặng (kg)</div>
       <div class="chart-wrap"><canvas id="c-weight"></canvas></div>
     </div>` : ''}
 
     <div class="b b-chart span2 tall">
-      <div class="b-label">😴 Giấc ngủ</div>
+      <div class="b-label">${uiIcon('i-sleep')}Giấc ngủ</div>
       <div class="chart-wrap"><canvas id="c-sleep"></canvas></div>
     </div>
     <div class="b b-chart span2 tall">
-      <div class="b-label">👟 Vận động</div>
+      <div class="b-label">${uiIcon('i-steps')}Vận động</div>
       <div class="chart-wrap"><canvas id="c-steps"></canvas></div>
     </div>
   </div>`;
@@ -2113,27 +2169,31 @@ function renderInsight(shown, kcal, protein, fiber) {
 
   if (protein < TARGET.protein * 0.4) {
     hasSevere = true;
-    tips.push(`💪 Protein chỉ đạt ${Math.round(protein)}g / ${TARGET.protein}g — bữa tối ưu tiên thịt/cá/trứng, tránh thêm carb`);
+    tips.push(`Protein chỉ đạt ${Math.round(protein)}g / ${TARGET.protein}g — bữa tối ưu tiên thịt/cá/trứng, tránh thêm carb`);
   } else if (proteinLeft > 30)
-    tips.push(`💪 Còn thiếu ${Math.round(proteinLeft)}g protein — thêm 1-2 phần thịt hoặc trứng`);
+    tips.push(`Còn thiếu ${Math.round(proteinLeft)}g protein — thêm 1-2 phần thịt hoặc trứng`);
 
   if (!waterOk)
-    tips.push('💧 Chưa log nước uống hôm nay');
+    tips.push('Chưa log nước uống hôm nay');
 
   if (fiber < 10)
-    tips.push('🥦 Chất xơ rất thấp — thêm rau xanh hoặc salad vào bữa tiếp');
+    tips.push('Chất xơ rất thấp — thêm rau xanh hoặc salad vào bữa tiếp');
 
   if (kcal > TARGET.kcal * 0.9 && proteinLeft > 50)
-    tips.push('⚡ Gần đạt calo nhưng thiếu protein — ưu tiên thức ăn giàu protein thấp carb');
+    tips.push('Gần đạt calo nhưng thiếu protein — ưu tiên thức ăn giàu protein thấp carb');
 
   if (!sleepOk && shown.sleep_hours > 0)
-    tips.push(`😴 Ngủ ${shown.sleep_hours}h — dưới mục tiêu, ảnh hưởng phục hồi và kiểm soát cân nặng`);
+    tips.push(`Ngủ ${shown.sleep_hours}h — dưới mục tiêu, ảnh hưởng phục hồi và kiểm soát cân nặng`);
 
   const status = hasSevere ? 'bad' : (tips.length > 0 ? 'warn' : 'good');
-  const icon = status === 'good' ? '✅' : (status === 'warn' ? '⚠️' : '🔴');
+  const icon = status === 'good'
+    ? uiIcon('i-check', '', 'style="color:var(--vita-good)"')
+    : (status === 'warn'
+      ? uiIcon('i-alert', '', 'style="color:var(--vita-warn)"')
+      : uiIcon('i-critical', '', 'style="color:var(--vita-bad)"'));
   const statusClass = status === 'good' ? '' : ` ${status}`;
   const body = tips.length === 0
-    ? 'Đang đi đúng hướng hôm nay 🌿'
+    ? 'Đang đi đúng hướng hôm nay'
     : tips.length === 1 ? tips[0] : `${tips.length} điểm cần lưu ý hôm nay`;
   const tipsHtml = tips.length > 1
     ? `<div class="ih-tips">${tips.map(t => `<div class="ih-tip">• ${esc(t)}</div>`).join('')}</div>`
@@ -2173,7 +2233,7 @@ function renderMealCard(meal) {
   const diagnosis = mealDiagnosis(meal, protein, carb, fat);
   const topRows = topItems.map(it => `<div class="meal-top-row"><span>${esc(it.name)}</span><span>${it.kcal || 0}</span></div>`).join('');
   const itemRows = items.map(it => {
-    const ico = { receipt:'🧾', bill:'🛒' }[meal.source] || '🍽️';
+    const ico = meal.source === 'receipt' || meal.source === 'bill' ? uiIcon('i-wallet') : uiIcon('i-flame');
     return `<div class="mi">
       <div class="mi-ico">${ico}</div>
       <div class="mi-info">
@@ -2323,14 +2383,14 @@ function drawHealth(logs) {
 // ║  TAB 2 — Tập luyện                                      ║
 // ══════════════════════════════════════════════════════════
 const TYPE_META = {
-  gym:      {ico:'💪',color:'#BF5AF2'}, cardio:   {ico:'🏃',color:'#FF453A'},
-  yoga:     {ico:'🧘',color:'#FF375F'}, swim:     {ico:'🏊',color:'#0A84FF'},
-  bike:     {ico:'🚴',color:'#FF9F0A'}, muay_thai:{ico:'🥊',color:'#FF453A'},
-  other:    {ico:'⚡',color:'#8E8E93'}
+  gym:      {ico:uiIcon('i-dumbbell'),color:'#BF5AF2'}, cardio:   {ico:uiIcon('i-steps'),color:'#FF453A'},
+  yoga:     {ico:uiIcon('i-vita-shield'),color:'#FF375F'}, swim:     {ico:uiIcon('i-water'),color:'#0A84FF'},
+  bike:     {ico:uiIcon('i-steps'),color:'#FF9F0A'}, muay_thai:{ico:uiIcon('i-dumbbell'),color:'#FF453A'},
+  other:    {ico:uiIcon('i-spark-line'),color:'#8E8E93'}
 };
 
 function renderWorkout(logs) {
-  if (!logs.length) return '<div class="loading">😶 Chưa có buổi tập nào<br><span style="font-size:12px;color:var(--vita-faint);margin-top:8px;display:block">Báo Claude khi tập xong</span></div>';
+  if (!logs.length) return `<div class="loading">${uiIcon('i-dumbbell', '', 'style="color:var(--vita-faint);width:26px;height:26px;margin-bottom:8px"')}<br>Chưa có buổi tập nào<br><span style="font-size:12px;color:var(--vita-faint);margin-top:8px;display:block">Báo Claude khi tập xong</span></div>`;
   const sessions = logs.flatMap(l => (l.sessions||[]).map(s => ({...s, date: l.date})));
   const totMin   = sessions.reduce((s,x)=>s+(x.duration_min||0),0);
   const totKcal  = sessions.reduce((s,x)=>s+(x.calories||0),0);
@@ -2365,7 +2425,7 @@ function renderWorkout(logs) {
     </div>
 
     <div class="b b-chart span4 tall">
-      <div class="b-label">📈 Số buổi / ngày</div>
+      <div class="b-label">${uiIcon('i-chart-line')}Số buổi / ngày</div>
       <div class="chart-wrap"><canvas id="c-wfreq"></canvas></div>
     </div>
 
@@ -2383,7 +2443,7 @@ function renderPRCard(logs) {
   const rows = entries.slice(0,6).map(([name,p]) => {
     const isNew = (p.maxWeight?.d === p.lastDate && p.maxWeight?.isNew) || (p.max1RM?.d === p.lastDate && p.max1RM?.isNew);
     return `<div class="pr-item">
-      <div class="pr-ico">🏆</div>
+      <div class="pr-ico">${uiIcon('i-dumbbell')}</div>
       <div class="pr-info">
         <div class="pr-name">${name}${isNew?'<span class="pr-new">NEW PR</span>':''}</div>
         <div class="pr-val">${p.maxWeight.w}kg × ${p.maxWeight.r} reps</div>
@@ -2407,18 +2467,18 @@ function drawWorkout(logs) {
 // ══════════════════════════════════════════════════════════
 const BUDGET = {food:3000000,transport:1000000,shopping:2000000,health:500000,entertainment:500000,bills:2000000,other:500000};
 const CAT = {
-  food:         {ico:'🍽️',color:'#FF9F0A',lbl:'Ăn uống'},
-  transport:    {ico:'🚗',color:'#0A84FF',lbl:'Đi lại'},
-  shopping:     {ico:'🛍️',color:'#FF375F',lbl:'Mua sắm'},
-  health:       {ico:'💊',color:'#30D158',lbl:'Sức khỏe'},
-  entertainment:{ico:'🎬',color:'#BF5AF2',lbl:'Giải trí'},
-  bills:        {ico:'🏠',color:'#8E8E93',lbl:'Hóa đơn'},
-  income:       {ico:'💰',color:'#30D158',lbl:'Thu nhập'},
-  other:        {ico:'📦',color:'#5F6675',lbl:'Khác'}
+  food:         {ico:uiIcon('i-flame'),color:'#FF9F0A',lbl:'Ăn uống'},
+  transport:    {ico:uiIcon('i-steps'),color:'#0A84FF',lbl:'Đi lại'},
+  shopping:     {ico:uiIcon('i-wallet'),color:'#FF375F',lbl:'Mua sắm'},
+  health:       {ico:uiIcon('i-health-heart'),color:'#30D158',lbl:'Sức khỏe'},
+  entertainment:{ico:uiIcon('i-spark-line'),color:'#BF5AF2',lbl:'Giải trí'},
+  bills:        {ico:uiIcon('i-wallet'),color:'#8E8E93',lbl:'Hóa đơn'},
+  income:       {ico:uiIcon('i-wallet'),color:'#30D158',lbl:'Thu nhập'},
+  other:        {ico:uiIcon('i-wallet'),color:'#5F6675',lbl:'Khác'}
 };
 
 function renderFinance(logs) {
-  if (!logs.length) return '<div class="loading">😶 Chưa có giao dịch nào<br><span style="font-size:12px;color:var(--vita-faint);margin-top:8px;display:block">Gửi ảnh hoá đơn / bill cho Claude</span></div>';
+  if (!logs.length) return `<div class="loading">${uiIcon('i-wallet', '', 'style="color:var(--vita-faint);width:26px;height:26px;margin-bottom:8px"')}<br>Chưa có giao dịch nào<br><span style="font-size:12px;color:var(--vita-faint);margin-top:8px;display:block">Gửi ảnh hoá đơn / bill cho Claude</span></div>`;
   const mm     = new Date().toISOString().slice(0,7);
   const monthT = logs.filter(l=>l.date.startsWith(mm)).flatMap(l=>l.transactions||[]);
   const allT   = logs.flatMap(l=>(l.transactions||[]).map(t=>({...t,date:l.date})));
@@ -2459,7 +2519,7 @@ function renderFinance(logs) {
       </div>
     </div>
     <div class="b b-chart span4 tall">
-      <div class="b-label">📈 Chi tiêu / ngày (nghìn)</div>
+      <div class="b-label">${uiIcon('i-chart-line')}Chi tiêu / ngày (nghìn)</div>
       <div class="chart-wrap"><canvas id="c-fday"></canvas></div>
     </div>
     <div class="b span4">
@@ -2617,7 +2677,7 @@ function renderStreakBadge() {
   const s = computeStreak(all);
   const el = document.getElementById('streak-badge');
   if (!el) return;
-  el.innerHTML = s > 0 ? `<span class="streak-pill">🔥 ${s}</span>` : '';
+  el.innerHTML = s > 0 ? `<span class="streak-pill">${uiIcon('i-flame')} ${s}</span>` : '';
 }
 
 // ══ Schema normalize ══
