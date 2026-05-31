@@ -6,11 +6,11 @@ tags: [ai-trends, decision-brain, agents, coding-agents]
 status: evergreen
 confidence: medium
 sources: []
-related: ["[[current-beliefs]]", "[[open-questions]]", "[[reskill-roadmap]]", "[[investment-theses]]", "[[competitor-business-model-radar]]", "[[openai-codex-base-instructions]]", "[[llm-agents-2025]]", "[[human-in-the-loop-systems-for-agentic-workflows]]", "[[ai-evals-bottleneck]]", "[[agent-first-vs-skill-first]]"]
-applied: []
-open_questions: ["Which trend is strong enough to change weekly action?"]
+related: ["[[current-beliefs]]", "[[open-questions]]", "[[reskill-roadmap]]", "[[investment-theses]]", "[[competitor-business-model-radar]]", "[[openai-codex-base-instructions]]", "[[llm-agents-2025]]", "[[human-in-the-loop-systems-for-agentic-workflows]]", "[[ai-evals-bottleneck]]", "[[agent-first-vs-skill-first]]", "[[research-audit-queue]]"]
+applied: ["2026-05-31 - Promoted the three-lane audit seed queue into agent memory, eval/reliability, skill lifecycle, computer-use infrastructure, and autonomous workflow clusters."]
+open_questions: ["Which trend is strong enough to change weekly action?", "Which memory/context pattern should be tested first in Codex or Consilium?", "Which agent evaluation should become the default gate before workflow automation?"]
 created: 2026-05-19
-updated: 2026-05-20
+updated: 2026-05-31
 ---
 
 # AI Trend Radar
@@ -73,6 +73,38 @@ Recommended wiki action:
 **Noise for now**
 - Single paper seeds about exotic RL, model compression, or narrow benchmark wins should stay as weak evidence until they repeat across sources or connect to a weekly experiment.
 
+### Promoted Signals - 2026-05-31
+
+The current audit queue reinforces one main trend: agents are moving from "prompt a model" to managed runtime systems with memory, skills, evaluation, sandboxes, and task-specific orchestration. The individual seeds are still uneven, but the repeated pattern is strong enough to guide learning and Consilium pipeline design.
+
+**Actionable now**
+- Memory is becoming an engineering surface, not just a UX feature. [[from-storage-to-experience-a-survey-on-the-evolution-of-llm-agent-memory-mechani]], [[when-continual-learning-moves-to-memory-a-study-of-experience-reuse-in-llm-agent]], [[memq-integrating-q-learning-into-self-evolving-memory-agents-over-provenance-dag]], [[detecting-clinical-discrepancies-in-health-coaching-agents-a-dual-stream-memory]], and [[rohitg00agentmemory]] point to the same question: which memories are useful, how are they evaluated, and when should experience be reused instead of silently accumulated?
+- Agent reliability needs domain-specific evals, not generic benchmark confidence. [[agentfloor-how-far-up-the-tool-use-ladder-can-small-open-weight-models-go]], [[armor-2025-a-military-aligned-benchmark-for-evaluating-large-language-model-safe]], [[robomemarena-a-comprehensive-and-challenging-robotic-memory-benchmark]], [[theory-grounded-evaluation-exposes-the-authorship-gap-in-llm-personalization]], and [[fidelity-diversity-and-privacy-a-multi-dimensional-llm-evaluation-for-clinical-d]] show evals fragmenting by tool-use level, safety context, memory, personalization, and privacy.
+- Agent runtime infrastructure is becoming the product layer. [[trycuacua]], [[mksglucontext-mode]], [[agentreputation-a-decentralized-agentic-ai-reputation-framework]], and [[flashrt-towards-computationally-and-memory-efficient-red-teaming-for-prompt-inje]] are practical signals: desktop sandboxes, context-output reduction, trust/reputation layers, and prompt-injection testing are becoming default control surfaces for real workflows.
+
+**Watch closely**
+- Skill lifecycle is emerging as the layer above prompting. [[dynamic-skill-lifecycle-management-for-agentic-reinforcement-learning]], [[cocoda-co-evolving-compositional-dag-for-tool-augmented-agents]], and [[self-distilled-agentic-reinforcement-learning]] all point toward agents that create, retrieve, refine, and distill reusable skills. This matters for Consilium because skill curation should be measured by repeatable task success, not by having a large skill library.
+- Agentic search may not require exotic retrieval by default. [[rethinking-agentic-search-with-pi-serini-is-lexical-retrieval-sufficient]] suggests that stronger reasoning loops can make simple retrieval surprisingly competitive. For Consilium, this supports keeping raw/wiki search simple until a specific failure mode justifies complexity.
+- Autonomous workflow generation is getting closer, but should stay gated. [[think-it-run-it-autonomous-ml-pipeline-generation-via-self-healing-multi-agent-a]] and [[glm-5v-turbo-toward-a-native-foundation-model-for-multimodal-agents]] show more capable multimodal and multi-agent workflow construction, but the practical threshold is still traceability and repairability.
+
+**Noise for now**
+- [[multi-perspective-transformers-in-arc-agi-2-challenge]] and [[tripvvt-a-large-scale-triplet-dataset-and-a-coarse-mask-baseline-for-in-the-wild]] are useful as model capability/data signals, but they do not yet change Huy's near-term AI workflow, FDE-lite method, or investment thesis.
+
+### Raw Ingest Signals - 2026-05-31
+
+The raw ingest queue mostly confirms the same agent-operating-system thesis rather than creating new concept pages. These items should be treated as hub evidence and marked processed, not expanded into another layer of source pages.
+
+**Add to active thesis**
+- Managed agent runtimes are becoming the default shape of production AI. The Amazon Bedrock AgentCore items show persistent working memory, sandboxed code execution, shared memory, observability, and multi-agent orchestration moving into cloud-managed infrastructure.
+- Long-term agent memory is converging on database-like responsibilities: growth control, semantic revision, forgetting, retrieval, provenance, and evolving graph connectivity. The memory raw files strengthen the existing memory/context cluster rather than requiring separate pages.
+- Agent evaluation is moving toward work alignment and trajectory-level measurement. AgentAtlas, JobBench, and VitaBench point to the same gap: final answer accuracy is too shallow for agents acting in files, tools, occupations, and long-term user contexts.
+
+**Keep as watchlist**
+- AgentCo-op, SciAtlas, and MUSE-Autoskill suggest reusable skills, typed handoffs, scientific knowledge graphs, and self-repair loops are becoming research infrastructure. Useful for Consilium design, but not yet an immediate build commitment.
+- Laguna's model-factory framing is relevant as an industrialization signal for coding models; it matters if more labs describe model development as versioned data, eval, training, and inference pipelines rather than one-off model releases.
+
+Decision label: **test**. For Consilium, the next practical test should be a small memory/eval gate for Codex work: what should be remembered, what should be forgotten, and what evidence proves the memory improved a later task?
+
 ## Application To OPUS ANIMUS
 Use this hub when asking Codex for an AI trend brief. Codex should cite source pages, then say whether each trend is actionable now, watch-only, or noise.
 
@@ -85,6 +117,8 @@ Use this hub when asking Codex for an AI trend brief. Codex should cite source p
 ## Applied
 - 2026-05-20 — Added agent-first tooling vs skill-first methodology signal and linked [[agent-first-vs-skill-first]].
 - 2026-05-20 - Promoted high-signal seed pages into three active trend clusters: coding-agent workflow infrastructure, agent safety/auditability, and memory/context/skill reuse.
+- 2026-05-31 - Promoted three-lane audit queue into five trend clusters: memory/context, eval/reliability, runtime infrastructure, skill lifecycle, and autonomous workflow generation.
+- 2026-05-31 - Ingested 12 raw tech candidates as hub evidence instead of creating more source pages.
 
 ## See Also
 - [[competitor-business-model-radar]]
@@ -94,9 +128,16 @@ Use this hub when asking Codex for an AI trend brief. Codex should cite source p
 - [[ai-evals-bottleneck]]
 - [[large-language-models-debugging]]
 - [[agent-first-vs-skill-first]]
+- [[research-audit-queue]]
 
 ## Sources
 - The Verge — Google Gemini Spark and Antigravity updates, 2026-05-20.
 - The Times of India — Google Antigravity 2.0 agent-first rebuild, 2026-05-20.
 - arXiv — Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?, 2026-02-12.
 - arXiv — Configuring Agentic AI Coding Tools: An Exploratory Study, 2026-02-16.
+- `D:\Google Drive\AI-Raw-Assets\opus-consilium\raw\articles\2026-05-22-break-the-context-window-barrier-with-amazon-bedrock-agentcore.md`
+- `D:\Google Drive\AI-Raw-Assets\opus-consilium\raw\articles\2026-05-23-agentatlas-beyond-outcome-leaderboards-for-llm-agents.md`
+- `D:\Google Drive\AI-Raw-Assets\opus-consilium\raw\articles\2026-05-27-is-agent-memory-a-database-rethinking-data-foundations-for-long-term-ai-agent-me.md`
+- `D:\Google Drive\AI-Raw-Assets\opus-consilium\raw\articles\2026-05-27-jobbench-aligning-agent-work-with-human-will.md`
+- `D:\Google Drive\AI-Raw-Assets\opus-consilium\raw\articles\2026-05-27-muse-autoskill-self-evolving-agents-via-skill-creation-memory-management-and-eva.md`
+- `D:\Google Drive\AI-Raw-Assets\opus-consilium\raw\articles\2026-05-29-rethinking-memory-as-continuously-evolving-connectivity.md`

@@ -3,14 +3,14 @@ title: "Agentic AI for Trip Planning Optimization Application"
 aliases: []
 topic: AI
 tags: [source-seed, arxiv-ai]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-05-05-agentic-ai-for-trip-planning-optimization-application.md", "https://arxiv.org/abs/2605.00276"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # Agentic AI for Trip Planning Optimization Application

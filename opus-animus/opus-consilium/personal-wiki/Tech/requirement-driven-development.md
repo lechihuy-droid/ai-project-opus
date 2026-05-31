@@ -1,4 +1,5 @@
 ---
+status: needs-review
 title: "Requirement Driven Development"
 topic: Tech
 tags: [requirement-driven-development, software-development, test-and-evaluation]
@@ -6,7 +7,7 @@ sources: ["https://phase2online.com/2022/01/20/requirement-driven-development/"]
 related: ["[[github-ai-and-ml]]"]
 confidence: medium
 created: 2026-04-28
-updated: 2026-04-28
+updated: 2026-05-30
 ---
 
 ## Summary

@@ -3,14 +3,14 @@ title: "Automatic Causal Fairness Analysis with LLM-Generated Reporting"
 aliases: []
 topic: AI
 tags: [source-seed, arxiv-lg]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-05-01-automatic-causal-fairness-analysis-with-llm-generated-reporting.md", "https://arxiv.org/abs/2604.27011"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # Automatic Causal Fairness Analysis with LLM-Generated Reporting

@@ -1,4 +1,5 @@
 ---
+status: needs-review
 title: "GitHub AI Features"
 topic: AI
 tags: ["github", "ai", "features"]
@@ -6,7 +7,7 @@ sources: ["2026-04-28-spec-kit.md"]
 related: ["[[github-ai-and-ml]]", "[[github-ai-tools-and-features]]"]
 confidence: medium
 created: 2026-04-28
-updated: 2026-04-28
+updated: 2026-05-30
 ---
 
 ## Summary

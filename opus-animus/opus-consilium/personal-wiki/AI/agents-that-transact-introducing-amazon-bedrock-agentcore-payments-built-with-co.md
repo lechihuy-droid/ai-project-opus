@@ -3,14 +3,14 @@ title: "Agents that transact: Introducing Amazon Bedrock AgentCore payments, bui
 aliases: []
 topic: AI
 tags: [source-seed, marketnews, aws-ml-blog]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-05-13-agents-that-transact-introducing-amazon-bedrock-agentcore-payments-built-with-co.md", "https://aws.amazon.com/blogs/machine-learning/agents-that-transact-introducing-amazon-bedrock-agentcore-payments-built-with-coinbase-and-stripe/"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # Agents that transact: Introducing Amazon Bedrock AgentCore payments, built with Coinbase and Stripe

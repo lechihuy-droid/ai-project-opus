@@ -3,14 +3,14 @@ title: "Are Tools All We Need? Unveiling the Tool-Use Tax in LLM Agents"
 aliases: []
 topic: AI
 tags: [source-seed, arxiv-ai]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-05-05-are-tools-all-we-need-unveiling-the-tool-use-tax-in-llm-agents.md", "https://arxiv.org/abs/2605.00136"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # Are Tools All We Need? Unveiling the Tool-Use Tax in LLM Agents

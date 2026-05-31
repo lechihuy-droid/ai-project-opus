@@ -10,7 +10,7 @@ related: ["[[gpt-5-release-rumours]]", "[[github-ai-features-and-tools]]", "[[ll
 applied: ["Using LLMs to build personal knowledge bases for various topics of research interest"]
 open_questions: ["How can we effectively use LLMs to build and maintain personal knowledge bases?", "What are the potential applications of LLM knowledge bases in different fields?"]
 created: 2026-04-28
-updated: 2026-04-29
+updated: 2026-05-31
 ---
 
 # Karpathy LLM Wiki Pattern
@@ -36,6 +36,9 @@ The Karpathy LLM Wiki pattern can be applied to OPUS ANIMUS by using LLM to crea
 ## Open Questions
 - How can we effectively use LLMs to build and maintain personal knowledge bases?
 - What are the potential applications of LLM knowledge bases in different fields?
+
+## Audit Note
+- 2026-05-31 - Retained as evergreen because it is a core pattern behind Consilium's raw/wiki/schema workflow and maps to the tech learning lane.
 
 ## Applied
 - Using LLMs to build personal knowledge bases for various topics of research interest

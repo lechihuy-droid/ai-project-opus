@@ -7,10 +7,10 @@ status: evergreen
 confidence: medium
 sources: ["api/intel.py", "dashboard/index.html:SimpleIntelView", "run_collect.py", "run_weekly.py", "personal-wiki/Research/research-source-map.md"]
 related: ["[[research-source-map]]", "[[ai-trend-radar]]", "[[competitor-business-model-radar]]", "[[fde-adoption-radar]]", "[[investment-theses]]", "[[open-questions]]"]
-applied: ["2026-05-19 - Created as the Intel-to-wiki sync contract.", "2026-05-23 - Added anti-repetition rule for daily research briefs.", "2026-05-23 - Added CEO Business Model Research promotion rules."]
+applied: ["2026-05-19 - Created as the Intel-to-wiki sync contract.", "2026-05-23 - Added anti-repetition rule for daily research briefs.", "2026-05-23 - Added CEO Business Model Research promotion rules.", "2026-05-30 - Added Competitor Intelligence lane and audit-first promotion gate."]
 open_questions: ["Should marked-used Intel items automatically create update proposals?", "Should weekly reports file back into Personal reflection pages or topic hubs?", "Should repeated no-response categories be tracked as explicit negative feedback?", "Should the CEO research channel get a separate daily/weekly report artifact?"]
 created: 2026-05-19
-updated: 2026-05-23
+updated: 2026-05-30
 ---
 
 # Intel To Wiki Promotion
@@ -18,9 +18,10 @@ updated: 2026-05-23
 ## Summary
 This page defines when Opus Home Intel becomes durable Consilium wiki knowledge. Raw sources and dashboard reports are evidence; hub pages hold conclusions and decisions.
 
-Consilium research now has two daily lanes:
+Consilium research now has three research lanes:
 - **Tech Learning Research**: skills, tools, AI-native workflows, coding agents, and operational practice.
 - **CEO Business Model Research**: customer budget, competitor models, offer/pricing, enterprise adoption, vertical opportunity, talent/operating model, and strategic risk.
+- **Competitor Intelligence Research**: concrete moves by SIers, consulting firms, platform vendors, and AI-SDLC competitors.
 
 ## Key Points
 - Intel review is not enough. A signal becomes durable only after it updates a wiki hub page.
@@ -29,7 +30,7 @@ Consilium research now has two daily lanes:
 - Promotion should be small, explicit, and decision-oriented.
 - Every promoted signal should map to one primary hub and optional secondary hubs.
 - Daily briefs should not repeat old thesis signals unless there is a new decision, action, contradiction, metric, or business implication.
-- CEO Business Model Research should be separated from Tech Learning Research so technical news does not crowd out strategic business signals.
+- CEO Business Model Research and Competitor Intelligence Research should be separated from Tech Learning Research so technical news does not crowd out strategic business or competitor signals.
 
 ## Why It Matters
 The Intel tab is a strong review UI, but it is ephemeral if conclusions stay in dashboard summaries or JSON logs. Consilium needs repeated signals to compound inside `personal-wiki/`.
@@ -46,7 +47,7 @@ raw/articles
 -> api/intel.py enrichment
 -> Opus Home Intel review
 -> choose useful signal
--> classify as Tech Learning or CEO Business Model
+-> classify as Tech Learning, CEO Business Model, or Competitor Intelligence
 -> update hub page if durable
 -> add source/evidence
 -> update open question or decision if needed
@@ -71,7 +72,8 @@ Primary routes:
 | Lane | Include When | Suppress When | Default Output |
 |---|---|---|---|
 | Tech Learning Research | The signal changes what Huy should learn, test, automate, or improve in AI-native workflow | It is only a model/tool/news update with no practice implication | Skill/action brief and optional update to [[ai-trend-radar]] or [[reskill-roadmap]] |
-| CEO Business Model Research | The signal changes business strategy, offer design, customer budget view, competitor model, operating model, vertical opportunity, or investment question | It is pure technical detail without CEO-level implication | CEO brief and optional update to [[competitor-business-model-radar]], [[fde-adoption-radar]], [[fde-model]], [[investment-theses]], or [[open-questions]] |
+| CEO Business Model Research | The signal changes business strategy, offer design, customer budget view, operating model, vertical opportunity, or investment question | It is pure technical detail without CEO-level implication | CEO brief and optional update to [[competitor-business-model-radar]], [[fde-adoption-radar]], [[fde-model]], [[investment-theses]], or [[open-questions]] |
+| Competitor Intelligence Research | The signal is a concrete competitor/vendor/SIer move, partnership, launch, pricing, revenue, delivery model, or AI-SDLC proof point | It is vague AI positioning with no named actor or observable move | Competitor brief and optional update to [[competitor-business-model-radar]], [[fde-adoption-radar]], [[fde-japan-gap-analysis]], or [[investment-theses]] |
 
 ### CEO Business Model Research categories
 
@@ -148,7 +150,7 @@ Cloud prompt for ChatGPT mobile:
 Use opus-consilium.
 Read README.md, SCHEMA.md, INDEX.md, research-source-map, and intel-to-wiki-promotion.
 Given this Intel signal, decide whether to promote it to the wiki.
-Classify it as Tech Learning Research or CEO Business Model Research.
+Classify it as Tech Learning Research, CEO Business Model Research, or Competitor Intelligence Research.
 If yes, update the correct hub page only.
 Keep the edit small.
 Add source/evidence.
@@ -168,7 +170,7 @@ Promote only durable weekly conclusions into:
 - reskill-roadmap
 - open-questions
 Do not copy the report. Extract only decisions, repeated patterns, and questions.
-Separate Tech Learning Research from CEO Business Model Research.
+Separate Tech Learning Research, CEO Business Model Research, and Competitor Intelligence Research.
 ```
 
 ## Application To OPUS ANIMUS
@@ -176,7 +178,9 @@ This page is the operating contract between Opus Home Intel and Consilium. Dashb
 
 Use the Tech Learning lane when the goal is reskill, tool practice, AI workflow improvement, or FDE-lite method learning.
 
-Use the CEO Business Model lane when the goal is strategy: customer pain, budget, competitors, offer/pricing, enterprise adoption, verticals, talent model, risk, and investment/business thesis.
+Use the CEO Business Model lane when the goal is strategy: customer pain, budget, offer/pricing, enterprise adoption, verticals, talent model, risk, and investment/business thesis.
+
+Use the Competitor Intelligence lane when the goal is named-actor evidence: SIer and consulting moves, AI-SDLC productization, legacy modernization, hyperscaler alliances, revenue/bookings, pricing, hiring, or delivery model changes.
 
 ## Open Questions
 - Should `mark-used` in Opus Home create a pending promotion queue?
@@ -189,6 +193,7 @@ Use the CEO Business Model lane when the goal is strategy: customer pain, budget
 - 2026-05-19 - Established the first explicit Intel-to-wiki promotion layer.
 - 2026-05-23 - Added daily brief anti-repetition rule after repeated AI coding/governance signals were judged too similar to prior Consilium briefs.
 - 2026-05-23 - Added CEO Business Model Research lane, including seven CEO research categories and a CEO daily brief format.
+- 2026-05-30 - Added Competitor Intelligence Research and audit-first gating for raw-to-wiki promotion.
 
 ## See Also
 - [[research-source-map]]

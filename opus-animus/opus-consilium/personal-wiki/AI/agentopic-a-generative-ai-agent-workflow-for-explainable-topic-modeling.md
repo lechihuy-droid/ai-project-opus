@@ -3,14 +3,14 @@ title: "Agentopic: A Generative AI Agent Workflow for Explainable Topic Modeling
 aliases: []
 topic: AI
 tags: [source-seed, arxiv-lg]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-05-05-agentopic-a-generative-ai-agent-workflow-for-explainable-topic-modeling.md", "https://arxiv.org/abs/2605.00833"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # Agentopic: A Generative AI Agent Workflow for Explainable Topic Modeling

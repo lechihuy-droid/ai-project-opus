@@ -1,4 +1,5 @@
 ---
+status: needs-review
 title: "LLM Agents in 2025"
 topic: AI
 tags: ["llm-agents", "enterprise-automation", "n8n"]
@@ -6,7 +7,7 @@ sources: ["2026-04-28-search-llm-agents-2025.md"]
 related: ["[[llm-wiki-agent-research]]", "[[karpathy-llm-wiki-pattern-explained]]"]
 confidence: medium
 created: 2026-04-28
-updated: 2026-04-28
+updated: 2026-05-30
 ---
 
 ## Summary

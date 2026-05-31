@@ -3,14 +3,14 @@ title: "AIDC-AI/Pixelle-Video"
 aliases: []
 topic: AI
 tags: [source-seed, github-trending-ai]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-04-30-aidc-ai-pixelle-video.md", "https://github.com/AIDC-AI/Pixelle-Video"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # AIDC-AI/Pixelle-Video

@@ -2,9 +2,8 @@
 GAP-2: Reflection layer — weekly synthesis
 GAP-5: Spaced repetition — surface old pages
 
-Output: personal-wiki/Personal/reflection-YYYY-WW.md + Telegram summary
+Output: personal-wiki/Personal/reflection-YYYY-WW.md. Telegram delivery is disabled.
 """
-import os
 import re
 from datetime import datetime, date, timedelta
 from pathlib import Path
@@ -67,7 +66,7 @@ def _read_page_snippet(path: Path, max_chars: int = 500) -> str:
         return ""
 
 
-def run_reflect(send_telegram: bool = True) -> str:
+def run_reflect(send_telegram: bool = False) -> str:
     week = _get_week_str()
     today = date.today().isoformat()
 
@@ -140,21 +139,8 @@ updated: {today}
 """
     output_path.write_text(full_content, encoding="utf-8")
 
-    # Telegram
     if send_telegram:
-        import requests
-        token = os.getenv("TELEGRAM_BOT_TOKEN")
-        chat_id = os.getenv("TELEGRAM_CHAT_ID")
-        if token and chat_id:
-            msg = f"Weekly Reflection {week}\n\n{reflection_text[:3000]}"
-            try:
-                requests.post(
-                    f"https://api.telegram.org/bot{token}/sendMessage",
-                    json={"chat_id": chat_id, "text": msg},
-                    timeout=10,
-                )
-            except Exception as e:
-                print(f"[reflect] Telegram error: {e}")
+        print("[reflect] Telegram disabled - reflection kept local")
 
     print(f"[reflect] Saved: Personal/reflection-{week}.md")
     return reflection_text

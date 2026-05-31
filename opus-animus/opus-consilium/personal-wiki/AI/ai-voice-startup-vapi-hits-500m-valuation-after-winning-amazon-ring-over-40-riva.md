@@ -3,14 +3,14 @@ title: "AI voice startup Vapi hits $500M valuation after winning Amazon Ring ove
 aliases: []
 topic: AI
 tags: [source-seed, marketnews, techcrunch-ai]
-status: seed
+status: needs-review
 confidence: low
 sources: ["raw/articles/2026-05-13-ai-voice-startup-vapi-hits-500m-valuation-after-winning-amazon-ring-over-40-riva.md", "https://techcrunch.com/2026/05/12/vapi-hits-500m-valuation-as-amazon-ring-chose-its-ai-platform-over-40-rivals/"]
 related: []
 applied: []
 open_questions: []
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # AI voice startup Vapi hits $500M valuation after winning Amazon Ring over 40 rivals

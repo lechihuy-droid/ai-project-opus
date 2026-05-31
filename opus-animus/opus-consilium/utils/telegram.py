@@ -1,7 +1,5 @@
-import os
 import json
 import time
-import requests
 from pathlib import Path
 
 LAST_ERROR_FILE = Path(__file__).parent.parent / ".last_error.json"
@@ -9,19 +7,8 @@ MAX_MSG_LEN = 3800
 
 
 def send_message(text: str) -> bool:
-    token = os.getenv("TELEGRAM_BOT_TOKEN")
-    chat_id = os.getenv("TELEGRAM_CHAT_ID")
-    if not token or not chat_id:
-        print("[Telegram] Missing token or chat_id")
-        return False
-
-    text = text[:MAX_MSG_LEN] + ("..." if len(text) > MAX_MSG_LEN else "")
-    resp = requests.post(
-        f"https://api.telegram.org/bot{token}/sendMessage",
-        json={"chat_id": chat_id, "text": text, "parse_mode": "HTML"},
-        timeout=10,
-    )
-    return resp.ok
+    print("[Telegram] Disabled system-wide; message not sent")
+    return False
 
 
 def send_error(module: str, error: str) -> bool:

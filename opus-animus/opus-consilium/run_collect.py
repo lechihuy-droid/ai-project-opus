@@ -1,20 +1,18 @@
 """
 Content Collector — daily batch 05:30
-Fetch high-signal sources → raw/ → wiki ingest → Telegram reading list
+Fetch high-signal sources → raw/ → Home Intel logs.
 
 Usage:
   python run_collect.py              # full pipeline
-  python run_collect.py --dry-run    # fetch + rank, no write, no Telegram
-  python run_collect.py --no-ingest  # collect + notify, skip wiki ingest
+  python run_collect.py --dry-run    # fetch + rank, no write
+  python run_collect.py --no-ingest  # collect, skip wiki ingest
 """
 import json
-import os
 import sys
 import argparse
 from datetime import datetime
 if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-import requests
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -75,34 +73,14 @@ def update_wiki_health(stats: dict, n_new: int, n_saved: int, n_ingested: int):
         print(f"[collect] WIKI_HEALTH update failed: {e}")
 
 
-def send_telegram(text: str):
-    token = os.getenv("TELEGRAM_BOT_TOKEN")
-    chat_id = os.getenv("TELEGRAM_CHAT_ID")
-    if not token or not chat_id:
-        print("[collect] Telegram env missing — skip notify")
-        return
-    try:
-        r = requests.post(
-            f"https://api.telegram.org/bot{token}/sendMessage",
-            json={"chat_id": chat_id, "text": text},
-            timeout=15,
-        )
-        if r.status_code == 200:
-            print("[collect] Telegram sent")
-        else:
-            print(f"[collect] Telegram warn: {r.status_code} {r.text[:100]}")
-    except Exception as e:
-        print(f"[collect] Telegram error: {e}")
-
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true",
-                        help="Fetch + rank only, no file writes, no Telegram")
+                        help="Fetch + rank only, no file writes")
     parser.add_argument("--no-ingest", action="store_true",
                         help="Save raw articles but skip wiki ingest")
     parser.add_argument("--no-notify", action="store_true",
-                        help="Skip Telegram notification")
+                        help="Deprecated no-op; Telegram notifications are disabled")
     args = parser.parse_args()
 
     cfg = load_config()
@@ -130,7 +108,7 @@ def main():
         new_articles = goal_align_filter(new_articles, goal=goal, min_score=min_score)
 
     if len(new_articles) == 0:
-        print("[collect] Nothing new — skip Telegram")
+        print("[collect] Nothing new")
         return
 
     saved = 0
@@ -179,11 +157,10 @@ def main():
     if args.dry_run:
         print("\n--- DRY RUN PREVIEW ---")
         print(reading_list)
-    elif args.no_notify:
-        print("\n--- NOTIFY SKIPPED ---")
-        print(reading_list)
     else:
-        send_telegram(reading_list)
+        print("\n--- HOME INTEL PREVIEW ---")
+        print(reading_list)
+        print("[collect] Telegram disabled — read full output in Opus Home")
 
 
 if __name__ == "__main__":

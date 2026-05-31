@@ -3,13 +3,12 @@ Weekly Research Synthesizer — Chủ nhật 06:00 JST
 Tổng hợp 7 ngày raw/articles/ → LLM synthesis → logs/weekly/YYYY-Www.json
 
 Usage:
-  python run_weekly.py            # full synthesis + Telegram
-  python run_weekly.py --dry-run  # parse + preview, no save, no Telegram
-  python run_weekly.py --no-notify # synthesize + save, skip Telegram
+  python run_weekly.py            # full synthesis + local log
+  python run_weekly.py --dry-run  # parse + preview, no save
+  python run_weekly.py --no-notify # deprecated no-op; Telegram is disabled
   python run_weekly.py --days 14  # look back 14 days instead of 7
 """
 import json
-import os
 import re
 import sys
 import argparse
@@ -225,33 +224,12 @@ def save_weekly_report(report: dict, weekly_dir: Path = WEEKLY_DIR) -> Path:
     return path
 
 
-def send_telegram(text: str):
-    import requests as req
-    token = os.getenv("TELEGRAM_BOT_TOKEN")
-    chat_id = os.getenv("TELEGRAM_CHAT_ID")
-    if not token or not chat_id:
-        print("[weekly] Telegram env missing — skip")
-        return
-    try:
-        r = req.post(
-            f"https://api.telegram.org/bot{token}/sendMessage",
-            json={"chat_id": chat_id, "text": text},
-            timeout=15,
-        )
-        if r.status_code == 200:
-            print("[weekly] Telegram sent")
-        else:
-            print(f"[weekly] Telegram warn: {r.status_code}")
-    except Exception as e:
-        print(f"[weekly] Telegram error: {e}")
-
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true",
-                        help="Parse + preview, no save, no Telegram")
+                        help="Parse + preview, no save")
     parser.add_argument("--no-notify", action="store_true",
-                        help="Synthesize + save, skip Telegram")
+                        help="Deprecated no-op; Telegram notifications are disabled")
     parser.add_argument("--days", type=int, default=7,
                         help="Look-back window in days (default: 7)")
     args = parser.parse_args()
@@ -306,7 +284,7 @@ def main():
             msg_lines.append("\nHành động tuần tới:")
             msg_lines.extend(f"• {item}" for item in items[:3])
 
-    send_telegram("\n".join(msg_lines))
+    print("[weekly] Telegram disabled - weekly summary kept local")
 
 
 if __name__ == "__main__":

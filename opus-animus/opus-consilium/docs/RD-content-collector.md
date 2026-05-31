@@ -9,7 +9,7 @@ This RD started as a Telegram reading-list + wiki-ingest design. The implemented
 - `collect.auto_ingest` is currently `false`; collector saves raw article files but does not automatically modify `personal-wiki/`.
 - The LLM is used inside `goal_align_filter()` to score and annotate articles for the user's daily AI market radar.
 - The web dashboard reads raw article metadata through `api/data.py` and builds Intel views through `api/intel.py`.
-- Telegram reading list is still supported, but the primary user-facing UI is the Home dashboard `Intel` tab.
+- Telegram reading list delivery is disabled. The primary user-facing UI is the Home dashboard `Intel` tab.
 
 Latest flow:
 

@@ -68,6 +68,13 @@
   --vita-active:    #0A84FF;
   --vita-active-bg: linear-gradient(180deg,#322C52,#241F3D);
   --vita-active-glow: 0 6px 18px rgba(80,60,160,.28);
+  --nav-background: #090A12;
+  --nav-border:     #171824;
+  --nav-active-bg:  #2D2754;
+  --nav-active-icon:#D8B85A;
+  --nav-active-text:#F6E7B1;
+  --nav-icon:       #706B7C;
+  --nav-text:       #8D879A;
   --fs-cap:    11px;
   --fs-body:   13px;
   --fs-title:  15px;
@@ -104,7 +111,7 @@ html, body {
 .rtab.active { background: var(--vita-surface-raised); color: var(--vita-text); box-shadow: 0 1px 3px rgba(0,0,0,.3); }
 
 /* ── Content ── */
-.content { padding: var(--vita-page-pad) var(--vita-page-pad) calc(84px + env(safe-area-inset-bottom, 0px)); }
+.content { padding: var(--vita-page-pad) var(--vita-page-pad) calc(96px + env(safe-area-inset-bottom, 0px)); }
 
 /* ── Bento grid ── */
 .bento { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--vita-gap); }
@@ -119,6 +126,74 @@ html, body {
 .b-unit  { font-size: 13px; font-weight: 600; color: var(--vita-muted); margin-left: 2px; }
 .b-sub   { font-size: 11px; color: var(--vita-muted); margin-top: 5px; font-weight: 500; }
 .b-ico   { position: absolute; top: 12px; right: 12px; font-size: 18px; opacity: .9; }
+
+/* ── Today snapshot v2 ── */
+.snap-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: var(--vita-gap); }
+.sb {
+  background: var(--vita-surface);
+  border-radius: var(--vita-radius-lg);
+  padding: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.sb.span2 { grid-column: span 2; }
+.sb-label {
+  font-size: var(--fs-cap);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--vita-muted);
+  margin-bottom: 7px;
+}
+.sb-val { font-size: 30px; font-weight: 800; line-height: 1; letter-spacing: -.5px; color: var(--vita-text); }
+.sb-unit { font-size: var(--fs-body); font-weight: 600; color: var(--vita-muted); margin-left: 3px; }
+.sb-ico { position: absolute; top: 13px; right: 14px; font-size: 17px; opacity: .85; }
+.sb-hero { display: flex; flex-direction: column; gap: 10px; }
+.sb-hero-sub { font-size: var(--fs-body); color: var(--vita-muted); font-weight: 600; }
+.track { height: 7px; background: rgba(255,255,255,.07); border-radius: 4px; overflow: hidden; }
+.track > i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg,var(--vita-energy),var(--vita-warn)); }
+.ringwrap { display: flex; align-items: center; gap: 12px; }
+.ring {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: conic-gradient(var(--c) calc(var(--p)*1%), rgba(255,255,255,.07) 0);
+}
+.ring::after { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: var(--vita-surface); }
+.ring i { position: absolute; inset: 0; display: grid; place-items: center; font-size: 15px; z-index: 1; font-style: normal; }
+.ringtxt { min-width: 0; }
+.ringtxt .sb-val { font-size: 22px; }
+.ringtxt small { font-size: var(--fs-cap); color: var(--vita-muted); font-weight: 600; display: block; margin-top: 2px; }
+.bars { display: flex; align-items: flex-end; gap: 5px; height: 42px; margin-top: 4px; }
+.bars > span { flex: 1; border-radius: 3px 3px 0 0; background: var(--vita-sleep); opacity: .85; }
+.sleep-head { display: flex; align-items: baseline; gap: 6px; }
+.insight2 {
+  margin-top: var(--vita-gap);
+  border-radius: var(--vita-radius-md);
+  padding: 13px 14px;
+  background: var(--vita-surface);
+  border-left: 3px solid var(--vita-good);
+}
+.insight2.warn { border-left-color: var(--vita-warn); }
+.insight2.bad { border-left-color: var(--vita-bad); }
+.insight2 .ih {
+  font-size: var(--fs-cap);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--vita-good);
+  margin-bottom: 6px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.insight2.warn .ih { color: var(--vita-warn); }
+.insight2.bad .ih { color: var(--vita-bad); }
+.insight2 p { font-size: var(--fs-body); color: var(--vita-text); line-height: 1.5; font-weight: 500; }
+.insight2 .ih-tips { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+.insight2 .ih-tip { font-size: 12px; color: var(--vita-muted); line-height: 1.45; }
 
 /* ── Hero Calories card ── */
 .hero-cal {
@@ -190,23 +265,49 @@ canvas { display: block; }
 .badge.red   { background: rgba(255,69,58,.18);  color: var(--vita-energy); }
 
 /* ── Day accordion ── */
+.week-acc { background: var(--vita-surface); border: 1px solid var(--vita-line); border-radius: var(--vita-radius-lg); margin-bottom: 8px; overflow: hidden; }
+.week-acc summary { list-style: none; cursor: pointer; padding: 14px; min-height: 64px; display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; align-items: start; user-select: none; -webkit-tap-highlight-color: transparent; }
+.week-acc summary::-webkit-details-marker { display: none; }
+.week-acc summary:active { background: rgba(255,255,255,.03); }
+.wh-title { font-size: 15px; font-weight: 800; color: var(--vita-text); }
+.wh-range { font-size: var(--fs-cap); color: var(--vita-muted); font-weight: 600; margin-top: 2px; }
+.wh-kcal { font-size: 26px; font-weight: 800; color: var(--vita-text); text-align: right; line-height: 1; white-space: nowrap; }
+.wh-kcal small { display: block; font-size: var(--fs-body); color: var(--vita-muted); font-weight: 600; margin-top: 5px; }
+.wh-meta { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; margin-top: 2px; }
+.wh-line { display: grid; grid-template-columns: 74px 1fr; gap: 8px; align-items: baseline; font-size: var(--fs-body); line-height: 1.35; }
+.wh-line span { color: var(--vita-muted); font-weight: 700; }
+.wh-line strong { min-width: 0; color: var(--vita-text); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.week-body { border-top: 1px solid var(--vita-line); padding: 6px 8px 8px; background: rgba(0,0,0,.08); }
 .day-acc { background: var(--vita-surface); border-radius: var(--vita-radius-md); margin-bottom: 7px; overflow: hidden; }
-.day-acc summary { list-style: none; cursor: pointer; padding: 12px 14px; min-height: var(--tap-min); display: flex; align-items: center; gap: 10px; user-select: none; -webkit-tap-highlight-color: transparent; }
+.week-body .day-acc { background: rgba(255,255,255,.035); border-radius: 10px; margin-bottom: 6px; }
+.day-acc summary { list-style: none; cursor: pointer; padding: 10px 12px; min-height: var(--tap-min); display: flex; align-items: center; gap: 10px; user-select: none; -webkit-tap-highlight-color: transparent; }
 .day-acc summary::-webkit-details-marker { display: none; }
 .day-acc summary:active { background: rgba(255,255,255,.03); }
 .da-date  { font-size: 13px; font-weight: 700; flex: 1; }
 .da-meta  { font-size: 11px; color: var(--vita-muted); }
-.da-kcal  { font-size: 14px; font-weight: 800; color: var(--vita-text); }
-.da-chev  { font-size: 13px; color: var(--vita-faint); transition: transform .2s; }
+.da-kcal  { font-size: 13px; font-weight: 800; color: var(--vita-text); }
+.da-chev  { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,.045); color: var(--vita-faint); display: grid; place-items: center; font-size: 12px; transition: transform .2s; flex-shrink: 0; }
 .day-acc[open] .da-chev { transform: rotate(180deg); }
 .da-body  { padding: 0 14px 10px; border-top: 1px solid var(--vita-line); }
 
-/* ── Meal group within accordion ── */
-.meal-group { padding: 8px 0 4px; }
-.meal-group:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,.04); }
-.meal-g-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-.meal-g-name  { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--vita-muted); }
-.meal-g-kcal  { font-size: 12px; font-weight: 700; color: var(--vita-text); }
+/* ── Meal cards within accordion ── */
+.meal-card { border-radius: var(--vita-radius-md); background: rgba(255,255,255,.035); margin-top: 8px; overflow: hidden; }
+.meal-card summary { list-style: none; cursor: pointer; padding: 11px 12px; display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; align-items: center; min-height: var(--tap-min); }
+.meal-card summary::-webkit-details-marker { display: none; }
+.meal-card summary:active { background: rgba(255,255,255,.03); }
+.meal-g-name  { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--vita-muted); }
+.meal-g-kcal  { font-size: 14px; font-weight: 800; color: var(--vita-text); white-space: nowrap; }
+.meal-g-sub { grid-column: 1 / -1; font-size: var(--fs-cap); color: var(--vita-muted); font-weight: 700; line-height: 1.35; }
+.meal-top { grid-column: 1 / -1; margin-top: 2px; display: grid; gap: 3px; }
+.meal-top-row { display: flex; justify-content: space-between; gap: 10px; color: var(--vita-text); font-size: 12px; font-weight: 700; }
+.meal-top-row span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.meal-top-row span:last-child { flex-shrink: 0; }
+.macro-strip { grid-column: 1 / -1; display: grid; grid-template-columns: var(--p,1fr) var(--c,1fr) var(--f,1fr); gap: 3px; height: 5px; border-radius: 4px; overflow: hidden; background: rgba(255,255,255,.06); }
+.macro-strip i { display: block; min-width: 5px; }
+.macro-strip .mp { background: var(--vita-protein); }
+.macro-strip .mc { background: var(--vita-carb); }
+.macro-strip .mf { background: var(--vita-fat); }
+.meal-body { border-top: 1px solid rgba(255,255,255,.05); padding: 0 12px 6px; }
 
 /* ── Meal item ── */
 .mi { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.03); }
@@ -262,20 +363,38 @@ canvas { display: block; }
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
   max-width: 430px; margin: 0 auto;
   display: flex; gap: 2px;
-  background: rgba(13,14,20,.97);
+  min-height: calc(88px + env(safe-area-inset-bottom, 0px));
+  background: var(--nav-background);
   -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
-  border-top: 1px solid var(--vita-line);
-  padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--nav-border);
+  padding: 10px 8px calc(10px + env(safe-area-inset-bottom, 0px));
 }
-.bn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: var(--tap-min); padding: 7px 2px; position: relative; background: none; border: none; border-radius: 16px; cursor: pointer; font-family: inherit; transition: transform .2s, background .2s; }
-.bn svg { width: 24px; height: 24px; display: block; fill: var(--vita-faint); transition: fill .2s; }
+.bn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 64px; padding: 8px 2px; position: relative; background: none; border: none; border-radius: 0; cursor: pointer; font-family: inherit; transition: transform .2s; }
+.bn::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(112px, calc(100% - 4px));
+  height: 58px;
+  border-radius: 24px;
+  background: var(--nav-active-bg);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 8px 18px rgba(45,39,84,.22);
+  opacity: 0;
+  transform: translate(-50%,-50%);
+  transition: opacity .18s, transform .18s;
+}
+.bn > svg,
+.bn > .bn-lbl,
+.bn > .bn-badge { position: relative; z-index: 1; }
+.bn svg { width: 24px; height: 24px; display: block; fill: var(--nav-icon); transition: fill .2s; }
 .bn .ic-fill { display: none; }
-.bn-lbl { font-size: var(--fs-cap); font-weight: 700; color: var(--vita-faint); letter-spacing: .2px; transition: color .2s; }
-.bn.active { background: var(--vita-active-bg); box-shadow: var(--vita-active-glow), inset 0 1px 0 rgba(255,255,255,.08); transform: translateY(-2px); }
-.bn.active svg { fill: var(--vita-active); }
-.bn.active .ic-line { display: none; }
-.bn.active .ic-fill { display: block; }
-.bn.active .bn-lbl { color: #7FB6FF; }
+.bn-lbl { font-size: 12px; font-weight: 600; color: var(--nav-text); letter-spacing: .15px; transition: color .2s; }
+.bn.active::before { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+.bn.active svg { fill: var(--nav-active-icon); }
+.bn.active .ic-line { display: block; }
+.bn.active .ic-fill { display: none; }
+.bn.active .bn-lbl { color: var(--nav-active-text); }
 .bn-badge { position: absolute; top: 2px; right: 50%; transform: translateX(22px); min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: var(--vita-energy); color: #fff; font-size: var(--fs-cap); font-weight: 800; align-items: center; justify-content: center; border: 2px solid var(--vita-bg); }
 
 /* ── FAB (Plan My Week) ── */
@@ -592,13 +711,67 @@ function renderToday() {
   }
   const { shown, isToday, kcal, protein, fiber, sleep, steps } = snap;
   const dateLabel = isToday ? 'Hôm nay' : fmtFull(shown.date);
+  const kcalPct = TARGET.kcal > 0 ? Math.min(100, kcal / TARGET.kcal * 100) : 0;
+  const kcalRemain = TARGET.kcal - kcal;
+  const proteinPct = TARGET.protein > 0 ? Math.min(100, protein / TARGET.protein * 100) : 0;
+  const stepsTarget = TARGET.steps / 1000;
+  const stepsPct = stepsTarget > 0 ? Math.min(100, steps / stepsTarget * 100) : 0;
+  const kcalLabel = kcal > 0 ? kcal.toLocaleString() : '—';
+  const kcalSub = kcal > 0
+    ? `${kcalRemain > 0 ? `Còn lại ${kcalRemain.toLocaleString()} kcal` : `Vượt ${Math.abs(kcalRemain).toLocaleString()} kcal`} · ${kcalPct.toFixed(0)}% mục tiêu`
+    : 'chưa log';
+  const proteinLabel = protein > 0 ? Math.round(protein).toLocaleString() : '—';
+  const proteinSub = protein > 0 ? `${proteinPct.toFixed(0)}% · ${TARGET.protein}g` : 'chưa log';
+  const stepsLabel = steps > 0 ? steps.toFixed(1).replace('.', ',') : '—';
+  const stepsSub = steps > 0 ? `${stepsPct.toFixed(0)}% · ${stepsTarget}k` : 'chưa log';
+  const sleepPct = TARGET.sleep > 0 ? Math.min(100, sleep / TARGET.sleep * 100) : 0;
+  const sleepLabel = sleep > 0 ? sleep.toFixed(1).replace('.', ',') : '—';
+  const sleepSub = sleep > 0 ? `${sleepPct.toFixed(0)}% mục tiêu` : 'chưa log';
+  const sleepSeries = cHealth.slice(0, 7).reverse().map(l => l.sleep_hours || 0);
+  const sleepValues = sleepSeries.filter(v => v > 0);
+  const sleepAvg = sleepValues.length ? sleepValues.reduce((a, b) => a + b, 0) / sleepValues.length : 0;
+  const sleepAvgText = sleepAvg > 0 ? sleepAvg.toFixed(1).replace('.', ',') : '';
+  const sleepUnit = sleep > 0
+    ? `h tối qua${sleepAvgText ? ` · TB ${sleepAvgText}h` : ''}`
+    : (sleepAvgText ? `TB ${sleepAvgText}h` : '');
+  const maxSleep = Math.max(TARGET.sleep, ...sleepSeries, 1);
+  const sleepBars = sleepSeries.length
+    ? `<div class="bars">${sleepSeries.map(v => `<span style="height:${v > 0 ? Math.max(6, v / maxSleep * 100) : 4}%"></span>`).join('')}</div>`
+    : '';
 
   const snapshot = `
-  <div class="metric-grid">
-    ${renderMetricHeroCard('Năng lượng', kcal, 'kcal', TARGET.kcal, 'var(--vita-energy)')}
-    ${renderMetricHeroCard('Protein', Math.round(protein), 'g', TARGET.protein, 'var(--vita-protein)')}
-    ${renderMetricHeroCard('Giấc ngủ', sleep, 'h', TARGET.sleep, 'var(--vita-sleep)', 1)}
-    ${renderMetricHeroCard('Vận động', steps, 'k bước', TARGET.steps / 1000, 'var(--vita-steps)', 1)}
+  <div class="snap-grid">
+    <div class="sb span2 sb-hero">
+      <span class="sb-ico">🔥</span>
+      <div>
+        <div class="sb-label">Năng lượng</div>
+        <span class="sb-val">${kcalLabel}</span><span class="sb-unit">/ ${TARGET.kcal.toLocaleString()} kcal</span>
+      </div>
+      <div class="sb-hero-sub">${kcalSub}</div>
+      <div class="track"><i style="width:${kcalPct}%"></i></div>
+    </div>
+    <div class="sb">
+      <div class="sb-label">Protein</div>
+      <div class="ringwrap">
+        <div class="ring" style="--c:${protein > 0 ? 'var(--vita-protein)' : 'var(--vita-faint)'};--p:${proteinPct}"><i>💪</i></div>
+        <div class="ringtxt"><span class="sb-val">${proteinLabel}</span><span class="sb-unit">${protein > 0 ? 'g' : ''}</span><small>${proteinSub}</small></div>
+      </div>
+    </div>
+    <div class="sb">
+      <div class="sb-label">Vận động</div>
+      <div class="ringwrap">
+        <div class="ring" style="--c:${steps > 0 ? 'var(--vita-steps)' : 'var(--vita-faint)'};--p:${stepsPct}"><i>👟</i></div>
+        <div class="ringtxt"><span class="sb-val">${stepsLabel}</span><span class="sb-unit">${steps > 0 ? 'k' : ''}</span><small>${stepsSub}</small></div>
+      </div>
+    </div>
+    <div class="sb span2">
+      <span class="sb-ico">😴</span>
+      <div class="sb-label">Giấc ngủ · 7 ngày</div>
+      <div class="sleep-head">
+        <span class="sb-val">${sleepLabel}</span><span class="sb-unit">${sleepUnit}</span>
+      </div>
+      ${sleepBars || `<div class="sb-hero-sub">${sleepSub}</div>`}
+    </div>
   </div>`;
 
   return `
@@ -640,6 +813,7 @@ function renderEmptyMetric(label) {
   return `<span class="metric-empty" aria-label="${esc(label)} chưa log">—</span>`;
 }
 
+// Unused by Today after Phase 3; kept for future Vita cleanup.
 function renderMetricHeroCard(label, val, unit, target, color, decimals=0) {
   const hasVal = Number(val) > 0;
   const pct = hasVal && target > 0 ? Math.min(100, (val / target) * 100) : 0;
@@ -1830,6 +2004,9 @@ function renderHealth(logs) {
   <!-- Insight -->
   ${insightHtml}
 
+  <div class="stitle">Tổng kết dinh dưỡng</div>
+  ${renderNutritionHistory(logs)}
+
   <!-- Weight + Weekly compare -->
   <div class="bento" style="margin-top:var(--vita-gap)">
     <div class="b b-weight span2" style="background:linear-gradient(135deg,#0E2A1F,#0A2018);border:1px solid rgba(48,209,88,.18)">
@@ -1866,21 +2043,20 @@ function renderHealth(logs) {
       <div class="b-label">👟 Vận động</div>
       <div class="chart-wrap"><canvas id="c-steps"></canvas></div>
     </div>
-  </div>
-
-  <div class="stitle">Bữa ăn gần đây</div>
-  ${logs.map((l,i) => renderDayAcc(l, i===0)).join('')}`;
+  </div>`;
 }
 
 function renderInsight(shown, kcal, protein, fiber) {
   const tips = [];
+  let hasSevere = false;
   const proteinLeft = TARGET.protein - protein;
   const waterOk     = shown.water_ml > 0;
   const sleepOk     = shown.sleep_hours >= 7;
 
-  if (protein < TARGET.protein * 0.4)
+  if (protein < TARGET.protein * 0.4) {
+    hasSevere = true;
     tips.push(`💪 Protein chỉ đạt ${Math.round(protein)}g / ${TARGET.protein}g — bữa tối ưu tiên thịt/cá/trứng, tránh thêm carb`);
-  else if (proteinLeft > 30)
+  } else if (proteinLeft > 30)
     tips.push(`💪 Còn thiếu ${Math.round(proteinLeft)}g protein — thêm 1-2 phần thịt hoặc trứng`);
 
   if (!waterOk)
@@ -1895,32 +2071,27 @@ function renderInsight(shown, kcal, protein, fiber) {
   if (!sleepOk && shown.sleep_hours > 0)
     tips.push(`😴 Ngủ ${shown.sleep_hours}h — dưới mục tiêu, ảnh hưởng phục hồi và kiểm soát cân nặng`);
 
-  return renderInsightCard('Nhận xét hôm nay', tips);
+  const status = hasSevere ? 'bad' : (tips.length > 0 ? 'warn' : 'good');
+  const icon = status === 'good' ? '✅' : (status === 'warn' ? '⚠️' : '🔴');
+  const statusClass = status === 'good' ? '' : ` ${status}`;
+  const body = tips.length === 0
+    ? 'Đang đi đúng hướng hôm nay 🌿'
+    : tips.length === 1 ? tips[0] : `${tips.length} điểm cần lưu ý hôm nay`;
+  const tipsHtml = tips.length > 1
+    ? `<div class="ih-tips">${tips.map(t => `<div class="ih-tip">• ${esc(t)}</div>`).join('')}</div>`
+    : '';
+
+  return `<div class="insight2${statusClass}">
+    <div class="ih"><span>${icon}</span><span>Nhận xét hôm nay</span></div>
+    <p>${esc(body)}</p>
+    ${tipsHtml}
+  </div>`;
 }
 
 function renderDayAcc(l, open) {
   const kcal = totalKcal(l);
   const meals = l.meals || [];
-  const mealRows = meals.map(m => {
-    const items = (m.items || []).map(it => {
-      const ico = { receipt:'🧾', bill:'🛒' }[m.source] || '🍽️';
-      return `<div class="mi">
-        <div class="mi-ico">${ico}</div>
-        <div class="mi-info">
-          <div class="mi-name">${it.name}</div>
-          <div class="mi-mac">${getItemGrams(it)}g · P:${getItemMacro(it,'protein')}g C:${getItemMacro(it,'carb')}g F:${getItemMacro(it,'fat')}g</div>
-        </div>
-        <div class="mi-kcal">${it.kcal}</div>
-      </div>`;
-    }).join('');
-    return `<div class="meal-group">
-      <div class="meal-g-header">
-        <span class="meal-g-name">${m.name || m.time || '—'}</span>
-        <span class="meal-g-kcal">${m.total_kcal || 0} kcal</span>
-      </div>
-      ${items || '<div style="color:var(--vita-faint);font-size:11px;padding:4px 0">Chưa có món</div>'}
-    </div>`;
-  }).join('');
+  const mealRows = meals.map(renderMealCard).join('');
 
   return `<details class="day-acc" ${open?'open':''}>
     <summary>
@@ -1930,6 +2101,122 @@ function renderDayAcc(l, open) {
       <span class="da-chev">▾</span>
     </summary>
     <div class="da-body">${mealRows || '<div style="color:var(--vita-faint);font-size:13px;padding:8px 0">Chưa có bữa nào</div>'}</div>
+  </details>`;
+}
+
+function renderMealCard(meal) {
+  const items = meal.items || [];
+  const protein = Math.round(getMealMacro(meal, 'protein'));
+  const carb = Math.round(getMealMacro(meal, 'carb'));
+  const fat = Math.round(getMealMacro(meal, 'fat'));
+  const totalMacro = Math.max(1, protein + carb + fat);
+  const topItems = [...items].sort((a, b) => (b.kcal || 0) - (a.kcal || 0)).slice(0, 2);
+  const hiddenCount = Math.max(0, items.length - topItems.length);
+  const diagnosis = mealDiagnosis(meal, protein, carb, fat);
+  const topRows = topItems.map(it => `<div class="meal-top-row"><span>${esc(it.name)}</span><span>${it.kcal || 0}</span></div>`).join('');
+  const itemRows = items.map(it => {
+    const ico = { receipt:'🧾', bill:'🛒' }[meal.source] || '🍽️';
+    return `<div class="mi">
+      <div class="mi-ico">${ico}</div>
+      <div class="mi-info">
+        <div class="mi-name">${esc(it.name)}</div>
+        <div class="mi-mac">${getItemGrams(it)}g · P:${getItemMacro(it,'protein')}g C:${getItemMacro(it,'carb')}g F:${getItemMacro(it,'fat')}g</div>
+      </div>
+      <div class="mi-kcal">${it.kcal || 0}</div>
+    </div>`;
+  }).join('');
+
+  return `<details class="meal-card">
+    <summary>
+      <span class="meal-g-name">${esc(meal.name || meal.time || '—')}</span>
+      <span class="meal-g-kcal">${(meal.total_kcal || 0).toLocaleString()} kcal</span>
+      <div class="meal-g-sub">${items.length} món · P${protein}g C${carb}g F${fat}g · ${diagnosis}</div>
+      <div class="macro-strip" style="--p:${protein / totalMacro}fr;--c:${carb / totalMacro}fr;--f:${fat / totalMacro}fr">
+        <i class="mp"></i><i class="mc"></i><i class="mf"></i>
+      </div>
+      <div class="meal-top">
+        ${topRows || '<div class="meal-top-row"><span>Chưa có món</span><span>—</span></div>'}
+        ${hiddenCount ? `<div class="meal-top-row" style="color:var(--vita-muted)"><span>+${hiddenCount} món khác</span><span></span></div>` : ''}
+      </div>
+    </summary>
+    <div class="meal-body">${itemRows || '<div style="color:var(--vita-faint);font-size:13px;padding:8px 0">Chưa có món</div>'}</div>
+  </details>`;
+}
+
+function mealDiagnosis(meal, protein, carb, fat) {
+  const kcal = meal.total_kcal || 0;
+  if (protein >= 35 && protein >= carb * 0.7) return 'protein tốt';
+  if (carb >= protein + fat && carb >= 45) return 'carb cao';
+  if (fat >= 30 && fat >= protein) return 'fat cao';
+  if (kcal >= 500 && protein < 20) return 'calo cao, protein thấp';
+  return 'cân bằng';
+}
+
+function renderNutritionHistory(logs) {
+  const weeks = groupLogsByWeek(logs);
+  return weeks.map(week => renderWeekAcc(week)).join('');
+}
+
+function groupLogsByWeek(logs) {
+  const map = new Map();
+  logs.forEach(log => {
+    const start = weekStart(log.date);
+    const key = isoLocal(start);
+    const end = addDays(start, 6);
+    if (!map.has(key)) map.set(key, { start, end, logs: [] });
+    map.get(key).logs.push(log);
+  });
+  return [...map.values()]
+    .map(week => ({ ...week, logs: week.logs.sort((a, b) => b.date.localeCompare(a.date)) }))
+    .sort((a, b) => isoLocal(b.start).localeCompare(isoLocal(a.start)));
+}
+
+function weekStart(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00');
+  const day = d.getDay() || 7;
+  d.setDate(d.getDate() - day + 1);
+  return d;
+}
+
+function weekLabel(start, end) {
+  const today = new Date();
+  const thisStart = weekStart(isoLocal(today));
+  const prevStart = addDays(thisStart, -7);
+  const key = isoLocal(start);
+  if (key === isoLocal(thisStart)) return 'Tuần này';
+  if (key === isoLocal(prevStart)) return 'Tuần trước';
+  return `${fmt(isoLocal(start))} - ${fmt(isoLocal(end))}`;
+}
+
+function renderWeekAcc(week) {
+  const logs = week.logs;
+  const days = logs.length;
+  const avgKcal = avg(logs, totalKcal);
+  const proteinHit = logs.filter(l => totalMacro(l, 'protein') >= TARGET.protein).length;
+  const fiberLow = logs.filter(l => totalMacro(l, 'fiber') < TARGET.fiber * 0.6).length;
+  const kcalDelta = avgKcal - TARGET.kcal;
+  const kcalTone = Math.abs(kcalDelta) < 150 ? 'gần mục tiêu' : (kcalDelta > 0 ? `vượt TB ${Math.round(kcalDelta)} kcal/ngày` : `thiếu TB ${Math.round(Math.abs(kcalDelta))} kcal/ngày`);
+  const outlier = logs
+    .map(l => ({ log: l, delta: Math.abs(totalKcal(l) - TARGET.kcal) }))
+    .sort((a, b) => b.delta - a.delta)[0]?.log;
+  const outlierText = outlier ? `${fmt(outlier.date)} · ${totalKcal(outlier).toLocaleString()} kcal` : '—';
+  const proteinText = proteinHit >= Math.ceil(days * 0.7) ? `protein ổn ${proteinHit}/${days}` : `protein hụt ${days - proteinHit}/${days}`;
+  const fiberText = fiberLow > 0 ? `fiber thấp ${fiberLow}/${days}` : 'fiber ổn';
+  const dayRows = logs.map(l => renderDayAcc(l, false)).join('');
+
+  return `<details class="week-acc">
+    <summary>
+      <div>
+        <div class="wh-title">${weekLabel(week.start, week.end)}</div>
+        <div class="wh-range">${fmt(isoLocal(week.start))} - ${fmt(isoLocal(week.end))} · ${days} ngày có log</div>
+      </div>
+      <div class="wh-kcal">${Math.round(avgKcal).toLocaleString()}<small>kcal/ngày</small></div>
+      <div class="wh-meta">
+        <div class="wh-line"><span>Nhịp tuần</span><strong>${kcalTone} · ${proteinText}</strong></div>
+        <div class="wh-line"><span>Cần nhìn</span><strong>${fiberText} · lệch nhất ${outlierText}</strong></div>
+      </div>
+    </summary>
+    <div class="week-body">${dayRows}</div>
   </details>`;
 }
 

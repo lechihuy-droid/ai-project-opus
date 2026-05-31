@@ -1,0 +1,133 @@
+{
+  "date": "2026-05-30",
+  "meals": [
+    {
+      "time": "16:00",
+      "name": "Snack",
+      "source": "text",
+      "items": [
+        {
+          "name": "Mì Hảo Hảo tôm chua cay (1 gói 75g)",
+          "grams": 75,
+          "kcal": 350,
+          "protein": 6.9,
+          "carb": 51.4,
+          "fat": 13.0,
+          "sugar": 3.0,
+          "fiber": 2.0,
+          "saturated_fat": 6.5,
+          "sodium_mg": 1700,
+          "alcohol": 0
+        },
+        {
+          "name": "Thịt bò khô (1 gói 50g, ước tính)",
+          "grams": 50,
+          "kcal": 200,
+          "protein": 22.0,
+          "carb": 7.0,
+          "fat": 9.0,
+          "sugar": 5.0,
+          "fiber": 0.5,
+          "saturated_fat": 4.0,
+          "sodium_mg": 1100,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 550,
+      "total_protein": 28.9,
+      "total_carb": 58.4,
+      "total_fat": 22.0,
+      "total_sugar": 8.0,
+      "total_fiber": 2.5,
+      "total_saturated_fat": 10.5,
+      "total_sodium_mg": 2800,
+      "total_alcohol": 0
+    },
+    {
+      "time": "19:00",
+      "name": "Tối",
+      "source": "text",
+      "items": [
+        {
+          "name": "Bia (3 lon 330ml)",
+          "grams": 990,
+          "kcal": 420,
+          "protein": 4.5,
+          "carb": 30.0,
+          "fat": 0.0,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 0.0,
+          "sodium_mg": 45,
+          "alcohol": 39.0
+        },
+        {
+          "name": "Hoành thánh chiên mini (10 cái)",
+          "grams": 100,
+          "kcal": 350,
+          "protein": 10.0,
+          "carb": 35.0,
+          "fat": 18.0,
+          "sugar": 2.0,
+          "fiber": 1.0,
+          "saturated_fat": 5.0,
+          "sodium_mg": 500,
+          "alcohol": 0
+        },
+        {
+          "name": "Canh củ cải trắng (1 chén)",
+          "grams": 300,
+          "kcal": 30,
+          "protein": 2.0,
+          "carb": 6.0,
+          "fat": 0.5,
+          "sugar": 3.0,
+          "fiber": 1.0,
+          "saturated_fat": 0.1,
+          "sodium_mg": 500,
+          "alcohol": 0
+        },
+        {
+          "name": "Thịt gà (200g)",
+          "grams": 200,
+          "kcal": 240,
+          "protein": 38.0,
+          "carb": 0.0,
+          "fat": 8.0,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 2.0,
+          "sodium_mg": 100,
+          "alcohol": 0
+        },
+        {
+          "name": "Sườn heo hầm (3 miếng)",
+          "grams": 150,
+          "kcal": 250,
+          "protein": 20.0,
+          "carb": 2.0,
+          "fat": 18.0,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 7.0,
+          "sodium_mg": 200,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 1290,
+      "total_protein": 74.5,
+      "total_carb": 73.0,
+      "total_fat": 44.5,
+      "total_sugar": 5.0,
+      "total_fiber": 2.0,
+      "total_saturated_fat": 14.1,
+      "total_sodium_mg": 1345,
+      "total_alcohol": 39.0
+    }
+  ],
+  "water_ml": 0,
+  "steps": 0,
+  "sleep_hours": 0,
+  "weight_kg": 0,
+  "notes": "Mì Hảo Hảo theo label nhà sản xuất; thịt bò khô là giá trị ước tính (không có label)."
+}

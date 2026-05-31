@@ -6,7 +6,8 @@ Usage:
   python run_wiki.py ingest --dry-run <url|file_path>
   python run_wiki.py query "<question>"
   python run_wiki.py lint
-  python run_wiki.py poll          (called by Task Scheduler every 5 min)
+  python run_wiki.py audit-research [--plan|--apply] [--limit N]
+  python run_wiki.py poll          (disabled; Telegram integration is off)
   python run_wiki.py test          (M1 milestone check)
 """
 import sys
@@ -73,15 +74,20 @@ def cmd_lint():
 
 
 def cmd_poll():
-    """Phase 3: called by Task Scheduler — process pending Telegram /wiki commands."""
-    from wiki_ops.telegram_handler import poll_once
-    poll_once()
+    """Telegram command polling is disabled."""
+    print("[wiki] Telegram poll disabled - use Opus Home or run_wiki.py commands locally")
 
 
 def cmd_reflect():
     """GAP-2: weekly reflection + spaced repetition."""
     from wiki_ops.reflect import run_reflect
-    run_reflect(send_telegram=True)
+    run_reflect(send_telegram=False)
+
+
+def cmd_audit_research(args: list[str]):
+    """Audit raw/wiki items against the three Consilium research lanes."""
+    from wiki_ops.research_audit import main as audit_main
+    audit_main(args or ["--plan"])
 
 
 def cmd_skill(args: list[str]):
@@ -138,7 +144,7 @@ def cmd_skill(args: list[str]):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: run_wiki.py test|ingest|query|lint|poll|reflect|skill [args]")
+        print("Usage: run_wiki.py test|ingest|query|lint|audit-research|poll|reflect|skill [args]")
         return
 
     cmd = sys.argv[1].lower()
@@ -164,13 +170,14 @@ def main():
             return
         cmd_query(" ".join(sys.argv[2:]))
     elif cmd == "lint":
-        send_telegram = "--no-telegram" not in sys.argv[2:]
         from wiki_ops.lint import run_lint
-        run_lint(send_telegram=send_telegram)
+        run_lint(send_telegram=False)
     elif cmd == "poll":
         cmd_poll()
     elif cmd == "reflect":
         cmd_reflect()
+    elif cmd == "audit-research":
+        cmd_audit_research(sys.argv[2:])
     elif cmd == "skill":
         cmd_skill(sys.argv[2:])
     else:
