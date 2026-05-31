@@ -1,6 +1,6 @@
 # BD — Build Plan: Opus Nexus UI/UX — Phase 3 (Today bento redesign)
 **Date:** 2026-05-30
-**Status:** 🔵 Planning — **giao Codex implement**
+**Status:** ✅ Done — implemented by Codex (commits 51a57d7…34b834e on main)
 **Ref:** `docs/PLAN-uiux-transformation.md` §8.1 (màu OLED) + §8.2 (bento bất đối xứng) + §7.1 (đính chính), mockup `docs/mockup-today-redesign.html` (đã duyệt), `docs/BD-phase1-foundation.md` (token), `docs/BD-phase2-navigation.md`
 **Estimate:** ~2.5–3.5 giờ
 **Target file:** `health-app/dashboard.html` (single file)

@@ -69,7 +69,7 @@ See `docs/PLAN-uiux-transformation.md` + per-phase BD docs.
 - Vita Health Coach — ✅ (`docs/REQ-vita-health-coach-ux.md`, `docs/REQ-vita-health-workout-next-ux.md`)
 
 ## Known issues / tech debt
-- **Duplicate function definitions** — `renderHealth(mode)` và `renderHealthCoach()` mỗi cái định nghĩa 2 lần (do các commit "apply/rerun Vita copy patch" áp patch trùng). JS hợp lệ (bản sau ghi đè) nhưng là dead code → nên dọn 1 lần.
+- **Duplicate `renderWorkout(logs)`** — định nghĩa 2 lần (≈line 2734 và 2808; bản sau "Workout coach override" ghi đè bản trước). JS hợp lệ nhưng bản đầu là dead code → nên dọn.
 - Visual verify trên thiết bị thật chưa chạy (app cần PAT + Google API).
 
 *Updated: 2026-05-31*
