@@ -679,7 +679,7 @@ let currentView  = 'today';           // today | vita | calendar | actions
 let currentTab   = 'health';          // sub-tab inside Vita
 let cHealth = [], cWorkout = [], cFinance = [];
 let healthIdx = [], workoutIdx = [], financeIdx = [];
-let gapiReady = false, gToken = null, gTokenScope = '', calEvents = [], calLoading = false, calError = '';
+let gapiReady = false, gToken = null, gTokenScope = '', calEvents = [], calLoading = false, calError = '', calDebug = '';
 let gTasks = [], tasksLoading = false, tasksError = '';
 let pendingProposals = [], selectedIdx = new Set(), proposalText = '', proposalError = '', approvalResults = [], editingIdx = null;
 let profile = null, profileLoading = false, profileError = '', planPrompt = '';
@@ -1188,15 +1188,29 @@ async function loadCalendarEvents(days=7) {
   if (!gapiReady) await initGapiClient();
   const timeMin = new Date(); timeMin.setHours(0, 0, 0, 0); // từ 00:00 hôm nay để gồm cả event đã qua trong ngày
   const timeMax = addDays(timeMin, days);
-  const res = await gapi.client.calendar.events.list({
-    calendarId: 'primary',
-    timeMin: timeMin.toISOString(),
-    timeMax: timeMax.toISOString(),
-    singleEvents: true,
-    orderBy: 'startTime',
-    maxResults: 40
-  });
-  calEvents = normalizeCalendarEvents(res.result.items || []);
+
+  // Lấy tất cả calendar user có quyền đọc (primary + calendar phụ), không chỉ 'primary'
+  let calIds = ['primary'], account = '';
+  try {
+    const list = await gapi.client.calendar.calendarList.list({ minAccessRole: 'reader', maxResults: 50 });
+    const items = list.result.items || [];
+    const ids = items.filter(c => c.selected !== false).map(c => c.id);
+    if (ids.length) calIds = ids;
+    account = (items.find(c => c.primary)?.id) || '';
+  } catch (_) { /* không liệt kê được → fallback 'primary' */ }
+
+  const params = {
+    timeMin: timeMin.toISOString(), timeMax: timeMax.toISOString(),
+    singleEvents: true, orderBy: 'startTime', maxResults: 40
+  };
+  const lists = await Promise.all(calIds.map(id =>
+    gapi.client.calendar.events.list({ ...params, calendarId: id })
+      .then(r => r.result.items || [])
+      .catch(() => [])
+  ));
+  const raw = lists.flat();
+  calEvents = normalizeCalendarEvents(raw).sort((a, b) => (a.start || '').localeCompare(b.start || ''));
+  calDebug = `account: ${account || '?'} · ${calIds.length} calendar · ${raw.length} event thô`;
   return calEvents;
 }
 
@@ -1301,6 +1315,7 @@ function renderCalendarContext(compact=false) {
         ${uiIcon('i-calendar-days')}
         <div>Lịch trống 7 ngày tới${s.allDay ? ` (${s.allDay} sự kiện cả ngày)` : ''}.</div>
         <div style="margin-top:4px">Chưa có gì để Nexus phân tích.</div>
+        ${calDebug ? `<div style="margin-top:8px;font-size:11px;color:var(--vita-faint);word-break:break-all">${esc(calDebug)}</div>` : ''}
         <button class="action-btn secondary-btn" onclick="goPlanWeek()" style="margin-top:12px;max-width:200px;margin-left:auto;margin-right:auto">Plan My Week →</button>
       </div>
     </div>`;
