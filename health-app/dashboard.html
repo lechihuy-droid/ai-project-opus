@@ -198,11 +198,11 @@ html, body {
 .insight2.missing .ih { color: var(--vita-info); }
 .insight2 p { font-size: var(--fs-body); color: var(--vita-text); line-height: 1.5; font-weight: 500; }
 .insight2 .ih-next { margin-top: 9px; font-size: 13px; color: var(--vita-text); line-height: 1.45; font-weight: 700; }
-.insight2 .ih-tips { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
-.insight2 .ih-tip { padding: 9px 10px; border-radius: 10px; background: rgba(255,255,255,.035); border: 1px solid rgba(255,255,255,.055); }
-.ih-risk { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; color: var(--vita-text); line-height: 1.35; font-weight: 800; }
-.ih-risk small { color: var(--vita-muted); font-size: 11px; font-weight: 700; white-space: nowrap; }
-.ih-action { margin-top: 4px; font-size: 12px; color: var(--vita-muted); line-height: 1.45; font-weight: 600; }
+.insight2 .ih-reason { margin-top: 9px; display: flex; flex-wrap: wrap; gap: 6px; }
+.insight2 .ih-chip { font-size: 11px; color: var(--vita-text); font-weight: 700; line-height: 1.25; padding: 5px 8px; border-radius: 8px; background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.055); }
+.insight2 .ih-chip.warn { color: var(--vita-warn); background: rgba(255,159,10,.10); border-color: rgba(255,159,10,.18); }
+.insight2 .ih-chip.bad { color: var(--vita-bad); background: rgba(255,69,58,.10); border-color: rgba(255,69,58,.18); }
+.insight2 .ih-sub { margin-top: 8px; font-size: 11px; color: var(--vita-muted); font-weight: 700; text-transform: uppercase; letter-spacing: .45px; }
 
 /* ── Hero Calories card ── */
 .hero-cal {
@@ -248,6 +248,9 @@ html, body {
 .macro-row .macro-pbar { grid-column: 1 / -1; }
 .macro-pfill { height: 100%; border-radius: 3px; }
 .macro-remain { font-size: var(--fs-cap); color: var(--vita-muted); text-align: right; font-weight: 600; white-space: nowrap; }
+.macro-remain.bad { color: var(--vita-bad); }
+.macro-remain.warn { color: var(--vita-warn); }
+.macro-remain.good { color: var(--vita-good); }
 
 /* ── Insight card ── */
 .insight-card {
@@ -2036,6 +2039,15 @@ function formatCurrentTarget(current, target, unit) {
   return `${cur.toLocaleString()} / ${max.toLocaleString()}${unit}`;
 }
 
+function formatMacroStatus(metric, risk, left) {
+  if (!risk) return left > 0 ? `Còn ${left}g` : 'Đạt';
+  if (metric === 'protein') return left > 40 ? 'Thiếu nhiều' : 'Thiếu';
+  if (metric === 'carb') return left > 0 ? `Còn ${left}g` : 'Đạt';
+  if (metric === 'fat') return risk.severity === 'bad' ? 'Vượt giới hạn' : 'Gần giới hạn';
+  if (metric === 'fiber') return left > TARGET.fiber * 0.6 ? 'Rất thấp' : 'Còn thiếu';
+  return left > 0 ? `Còn ${left}g` : 'Đạt';
+}
+
 function riskItem(type, severity, title, detail, action, priority) {
   return { type, severity, title, detail, action, priority };
 }
@@ -2045,9 +2057,11 @@ function rankHealthRisks(metrics) {
   const risks = [];
   const kcalRemain = TARGET.kcal - kcal;
   const proteinLeft = TARGET.protein - protein;
+  const fiberVeryLowDays = (metrics.logs || []).filter(l => totalMacro(l, 'fiber') < TARGET.fiber * 0.35).length;
 
   if (fiber < TARGET.fiber * 0.4) {
-    risks.push(riskItem('fiber', 'bad', 'Chất xơ rất thấp', formatCurrentTarget(fiber, TARGET.fiber, 'g'), 'Thêm salad, rau xanh hoặc trái cây trong bữa tiếp theo.', 10));
+    const sev = fiber < TARGET.fiber * 0.25 && fiberVeryLowDays >= 3 ? 'bad' : 'warn';
+    risks.push(riskItem('fiber', sev, 'Chất xơ rất thấp', formatCurrentTarget(fiber, TARGET.fiber, 'g'), 'Thêm salad, rau xanh hoặc trái cây trong bữa tiếp theo.', 10));
   } else if (fiber < TARGET.fiber * 0.7) {
     risks.push(riskItem('fiber', 'warn', 'Chất xơ còn thiếu', formatCurrentTarget(fiber, TARGET.fiber, 'g'), 'Ưu tiên rau xanh hoặc đậu/ngũ cốc nguyên hạt ở bữa tới.', 10));
   }
@@ -2111,6 +2125,41 @@ function buildHealthNextAction(risks, metrics) {
   return actionRisk ? actionRisk.action : 'Tiếp tục giữ nhịp ăn uống, nước, ngủ và vận động như hiện tại.';
 }
 
+function groupHealthActionBlocks(risks, metrics) {
+  const has = t => risks.some(r => r.type === t);
+  const blocks = [];
+  if (has('fiber') || has('fat') || has('protein') || has('kcal')) {
+    const summary = [
+      has('fiber') ? 'chất xơ rất thấp' : '',
+      has('fat') ? 'fat gần giới hạn' : '',
+      has('protein') ? 'protein còn thiếu' : '',
+      has('kcal') ? 'năng lượng chưa cân bằng' : ''
+    ].filter(Boolean).join(', ');
+    const chips = [];
+    if (has('fiber')) chips.push({ tone: 'bad', text: `Chất xơ ${formatCurrentTarget(metrics.fiber, TARGET.fiber, 'g')}` });
+    if (has('fat')) chips.push({ tone: 'warn', text: `Fat ${formatCurrentTarget(metrics.fat, TARGET.fat, 'g')}` });
+    if (has('protein')) chips.push({ tone: 'warn', text: `Protein ${formatCurrentTarget(metrics.protein, TARGET.protein, 'g')}` });
+    if (has('kcal')) chips.push({ tone: 'warn', text: `Kcal ${formatCurrentTarget(metrics.kcal, TARGET.kcal, '')}` });
+    blocks.push({
+      summary: summary ? summary[0].toUpperCase() + summary.slice(1) + '.' : 'Cần tối ưu dinh dưỡng hôm nay.',
+      action: buildHealthNextAction(risks, metrics),
+      chips
+    });
+  }
+  if (metrics.missingData.water || metrics.missingData.sleep || metrics.missingData.steps) {
+    const missing = [];
+    if (metrics.missingData.water) missing.push('nước');
+    if (metrics.missingData.sleep) missing.push('ngủ');
+    if (metrics.missingData.steps) missing.push('vận động');
+    blocks.push({
+      summary: `Thiếu dữ liệu ${missing.join(', ')}.`,
+      action: 'Sync hoặc log nhanh để đánh giá hôm nay chính xác hơn.',
+      chips: [{ tone: 'warn', text: `Chưa log: ${missing.join(' / ')}` }]
+    });
+  }
+  return blocks.slice(0, 2);
+}
+
 function buildHealthCoachInsight(shown, logs) {
   const kcal = totalKcal(shown);
   const protein = totalMacro(shown, 'protein');
@@ -2136,7 +2185,8 @@ function buildHealthCoachInsight(shown, logs) {
     : 'đang đi đúng hướng hôm nay';
   const nextAction = buildHealthNextAction(ranked, metrics);
 
-  return { status, risks: ranked, topSummary, nextAction, missingData, metrics };
+  const actionBlocks = groupHealthActionBlocks(ranked, metrics);
+  return { status, risks: ranked, topSummary, nextAction, missingData, metrics, actionBlocks };
 }
 
 function renderHealthCoachBlock(insight) {
@@ -2149,18 +2199,20 @@ function renderHealthCoachBlock(insight) {
         : uiIcon('i-alert', '', 'style="color:var(--vita-warn)"'));
   const statusClass = insight.status === 'good' ? '' : ` ${insight.status}`;
   const title = insight.status === 'good' ? 'Đang ổn hôm nay' : 'Cần xử lý hôm nay';
-  const risksHtml = insight.risks.length
-    ? `<div class="ih-tips">${insight.risks.slice(0, 4).map(r => `<div class="ih-tip">
-        <div class="ih-risk"><span>${esc(r.title)}</span><small>${esc(r.detail)}</small></div>
-        <div class="ih-action">${esc(r.action)}</div>
-      </div>`).join('')}</div>`
+  const block = insight.actionBlocks?.[0];
+  const reasons = block?.chips?.length
+    ? `<div class="ih-sub">Lý do</div><div class="ih-reason">${block.chips.map(c => `<span class="ih-chip${c.tone ? ' '+c.tone : ''}">${esc(c.text)}</span>`).join('')}</div>`
+    : '';
+  const secondary = insight.actionBlocks?.[1]
+    ? `<div class="ih-sub">Bổ sung</div><p style="margin-top:4px">${esc(insight.actionBlocks[1].summary)}</p><div class="ih-next" style="margin-top:5px">${esc(insight.actionBlocks[1].action)}</div>`
     : '';
 
   return `<div class="insight2${statusClass}">
     <div class="ih"><span>${icon}</span><span>${title}</span></div>
-    <p>${esc(`Hôm nay: ${insight.topSummary}.`)}</p>
-    <div class="ih-next">${esc(`Việc nên làm tiếp theo: ${insight.nextAction}`)}</div>
-    ${risksHtml}
+    <p>${esc(block?.summary || `Hôm nay: ${insight.topSummary}.`)}</p>
+    <div class="ih-next">${esc(`Việc nên làm tiếp theo: ${block?.action || insight.nextAction}`)}</div>
+    ${reasons}
+    ${secondary}
   </div>`;
 }
 
@@ -2218,7 +2270,8 @@ function renderHealth(logs) {
     const valStr = formatCurrentTarget(m.val, m.max, m.unit);
     const risk = coach.risks.find(r => r.type === m.key);
     const rowClass = risk ? ` ${risk.severity}` : '';
-    const remainText = risk ? risk.title : leftStr;
+    const statusText = formatMacroStatus(m.key, risk, left);
+    const tone = risk ? risk.severity : (left > 0 ? 'warn' : 'good');
     const macroIcon = m.name === 'Protein'
       ? '<svg class="ui-ico" viewBox="0 0 24 24"><use href="#i-health-heart"/></svg>'
       : (m.name === 'Chất xơ'
@@ -2227,7 +2280,7 @@ function renderHealth(logs) {
     return `<div class="macro-row${rowClass}">
       <div class="macro-name" style="color:${valColor}">${macroIcon}<span>${m.name}</span> <strong>${valStr}</strong></div>
       <div class="macro-pbar"><div class="macro-pfill" style="width:${pct}%;background:${m.color}"></div></div>
-      <div class="macro-remain"${risk ? '' : ` style="color:${leftColor}"`}>${remainText}</div>
+      <div class="macro-remain ${tone}"${risk ? '' : ` style="color:${leftColor}"`}>${statusText}</div>
     </div>`;
   }).join('');
 
@@ -2571,6 +2624,113 @@ const TYPE_META = {
   other:    {ico:uiIcon('i-spark-line'),color:'#8E8E93'}
 };
 
+const WEEKLY_WORKOUT_MIN_TARGET = 60;
+
+function normalizeWorkoutTypeLabel(type) {
+  const t = String(type || '').toLowerCase().replace(/\s+/g, '_');
+  if (t.includes('muay')) return 'Muay Thai';
+  if (t.includes('gym')) return 'Gym';
+  if (t.includes('mobility')) return 'Mobility';
+  if (t.includes('recovery')) return 'Recovery';
+  if (t.includes('walk')) return 'Walk';
+  if (t.includes('cardio')) return 'Cardio';
+  return t ? t.split('_').map(w => w ? w[0].toUpperCase() + w.slice(1) : '').join(' ') : 'Khác';
+}
+
+function summarizeWorkoutWeek(workoutLogs) {
+  const sessions = workoutLogs.flatMap(l => (l.sessions || []).map(s => ({ ...s, date: l.date })));
+  const activeDays = new Set(sessions.map(s => s.date)).size;
+  const totalMinutes = sessions.reduce((sum, s) => sum + (Number(s.duration_min) || 0), 0);
+  const totalKcal = sessions.reduce((sum, s) => sum + (Number(s.calories) || 0), 0);
+  const minutesByDay = {};
+  const typeStats = {};
+  sessions.forEach(s => {
+    minutesByDay[s.date] = (minutesByDay[s.date] || 0) + (Number(s.duration_min) || 0);
+    const label = normalizeWorkoutTypeLabel(s.type);
+    if (!typeStats[label]) typeStats[label] = { count: 0, minutes: 0 };
+    typeStats[label].count += 1;
+    typeStats[label].minutes += Number(s.duration_min) || 0;
+  });
+  return { sessions, activeDays, totalMinutes, totalKcal, typeStats, minutesByDay };
+}
+
+function buildWorkoutCoachInsight(workoutLogs, healthLogs) {
+  const summary = summarizeWorkoutWeek(workoutLogs);
+  const { sessions, activeDays, totalMinutes, typeStats } = summary;
+  const met = totalMinutes >= WEEKLY_WORKOUT_MIN_TARGET;
+  let status = met ? 'good' : 'warn';
+  let diagnosis = '';
+  if (!sessions.length) diagnosis = 'Tuần này chưa có hoạt động tập luyện.';
+  else if (activeDays >= 3 && !met) diagnosis = `Tuần này: tần suất tốt, nhưng thời lượng còn thấp (${totalMinutes}/${WEEKLY_WORKOUT_MIN_TARGET} phút).`;
+  else if (activeDays < 2 && !met) diagnosis = `Tuần này: cần tăng tần suất và thời lượng (${activeDays} ngày có tập).`;
+  else diagnosis = `Tuần này: đạt mục tiêu vận động (${totalMinutes}/${WEEKLY_WORKOUT_MIN_TARGET} phút).`;
+  if (!sessions.length) status = 'missing';
+
+  const sleepToday = healthLogs?.[0]?.sleep_hours || 0;
+  const mainType = Object.entries(typeStats).sort((a, b) => b[1].minutes - a[1].minutes)[0]?.[0] || '';
+  let nextAction = '';
+  if (!sessions.length) nextAction = 'Bắt đầu bằng 15-20 phút đi bộ nhanh hoặc mobility nhẹ.';
+  else if (activeDays >= 3 && !met) nextAction = 'Thêm 20-30 phút vận động nhẹ hoặc mobility hôm nay.';
+  else if (mainType === 'Muay Thai' && !typeStats.Mobility && !typeStats.Recovery) nextAction = 'Thêm 10-15 phút mobility hoặc giãn cơ để hỗ trợ phục hồi.';
+  else if (!met) nextAction = 'Buổi tới tập full-body nhẹ 25-30 phút, ưu tiên push/pull/legs.';
+  else nextAction = 'Duy trì nhịp tập hiện tại và thêm một buổi recovery nhẹ nếu thấy mỏi.';
+
+  const reasonChips = [`${totalMinutes}/${WEEKLY_WORKOUT_MIN_TARGET} phút`, `${activeDays} ngày có tập`, `${sessions.length} hoạt động`];
+  const gymMin = typeStats.Gym?.minutes || 0;
+  if (gymMin > 0) reasonChips.push(`Gym ${gymMin} phút`);
+  const recoveryNote = sleepToday <= 0
+    ? 'Chưa có dữ liệu ngủ hôm nay, nên chưa đánh giá phục hồi chính xác.'
+    : (sleepToday < 6 ? 'Ngủ thấp, buổi tới nên giảm intensity hoặc ưu tiên mobility.' : '');
+  return { ...summary, status, diagnosis, nextAction, reasonChips, recoveryNote };
+}
+
+function renderWorkoutCoachBlock(insight) {
+  const icon = insight.status === 'good'
+    ? uiIcon('i-check', '', 'style="color:var(--vita-good)"')
+    : insight.status === 'missing'
+      ? uiIcon('i-alert', '', 'style="color:var(--vita-info)"')
+      : uiIcon('i-alert', '', 'style="color:var(--vita-warn)"');
+  const statusClass = insight.status === 'good' ? '' : ` ${insight.status === 'missing' ? 'missing' : 'warn'}`;
+  const chips = insight.reasonChips.map(t => `<span class="ih-chip${insight.status === 'good' ? '' : ' warn'}">${esc(t)}</span>`).join('');
+  const recovery = insight.recoveryNote ? `<div class="ih-sub">Phục hồi</div><p style="margin-top:4px">${esc(insight.recoveryNote)}</p>` : '';
+  return `<div class="insight2${statusClass}">
+    <div class="ih"><span>${icon}</span><span>Workout Coach</span></div>
+    <p>${esc(insight.diagnosis)}</p>
+    <div class="ih-next">${esc(`Việc nên làm tiếp theo: ${insight.nextAction}`)}</div>
+    <div class="ih-sub">Lý do</div>
+    <div class="ih-reason">${chips}</div>
+    ${recovery}
+  </div>`;
+}
+
+function renderWorkoutTypeBreakdown(summary) {
+  const preferred = ['Muay Thai', 'Gym', 'Mobility', 'Recovery'];
+  const seen = new Set();
+  const rows = preferred.map(label => {
+    seen.add(label);
+    const stat = summary.typeStats[label] || { count: 0, minutes: 0 };
+    return `<div class="is-row"><span class="is-lbl">${label}</span><span class="is-val">${stat.count} hoạt động</span><span class="is-delta">${stat.minutes} phút</span></div>`;
+  });
+  Object.entries(summary.typeStats).forEach(([label, stat]) => {
+    if (seen.has(label)) return;
+    rows.push(`<div class="is-row"><span class="is-lbl">${label}</span><span class="is-val">${stat.count} hoạt động</span><span class="is-delta">${stat.minutes} phút</span></div>`);
+  });
+  return `<div class="b span4"><div class="b-label">Phân bổ loại hình tập</div>${rows.join('')}</div>`;
+}
+
+function formatExerciseSet(exercise, set) {
+  const reps = Number(set?.reps) || Number(exercise?.reps) || 0;
+  const weightRaw = set?.weight_kg ?? exercise?.weight_kg;
+  const weight = Number(weightRaw);
+  const hasWeight = Number.isFinite(weight) && weight > 0;
+  const name = String(exercise?.name || '').toLowerCase();
+  const bodyweight = /ab wheel|push up|pull up|plank|burpee|bodyweight/.test(name) || String(weightRaw).toLowerCase() === 'bodyweight';
+  if (!reps) return '';
+  if (hasWeight) return `${reps} reps x ${weight}kg`;
+  if (bodyweight) return `${reps} reps · bodyweight`;
+  return `${reps} reps · chưa nhập tạ`;
+}
+
 function renderWorkout(logs) {
   if (!logs.length) return `<div class="loading">${uiIcon('i-dumbbell', '', 'style="color:var(--vita-faint);width:26px;height:26px;margin-bottom:8px"')}<br>Chưa có buổi tập nào<br><span style="font-size:12px;color:var(--vita-faint);margin-top:8px;display:block">Báo Claude khi tập xong</span></div>`;
   const sessions = logs.flatMap(l => (l.sessions||[]).map(s => ({...s, date: l.date})));
@@ -2642,6 +2802,61 @@ function renderPRCard(logs) {
 function drawWorkout(logs) {
   const o = [...logs].reverse();
   drawBar('c-wfreq', o.map(l=>shortDate(l.date)), o.map(l=>(l.sessions||[]).length), 'var(--vita-fat)');
+}
+
+// Workout coach override: minutes-first hierarchy, grouped diagnosis/action, clean history text.
+function renderWorkout(logs) {
+  if (!logs.length) return `<div class="loading">${uiIcon('i-dumbbell', '', 'style="color:var(--vita-faint);width:26px;height:26px;margin-bottom:8px"')}<br>Chưa có buổi tập nào<br><span style="font-size:12px;color:var(--vita-faint);margin-top:8px;display:block">Báo Claude khi tập xong</span></div>`;
+  const insight = buildWorkoutCoachInsight(logs, cHealth);
+  const sessions = insight.sessions;
+  const totMin = insight.totalMinutes;
+  const totKcal = insight.totalKcal;
+
+  const sessionRows = sessions.slice(0, 20).map(s => {
+    const key = (s.type || 'other').split(/[ _+]/)[0];
+    const m = TYPE_META[key] || TYPE_META.other;
+    const ex = (s.exercises || []).map(e => {
+      const detail = Array.isArray(e.sets)
+        ? e.sets.map(st => formatExerciseSet(e, st)).filter(Boolean).join(', ')
+        : formatExerciseSet(e, e);
+      const fallback = [e.duration_per_set_sec && `${e.duration_per_set_sec}s/set`, e.notes].filter(Boolean).join(' · ');
+      const text = detail || fallback;
+      return `<div class="hi-extra">${esc(e.name || 'Bài tập')}${text ? ' · ' + esc(text) : ''}</div>`;
+    }).join('');
+    const dur = s.duration_min ? `${s.duration_min} phút · ` : '';
+    return `<div class="hi">
+      <div class="hi-ico" style="background:${m.color}22">${m.ico}</div>
+      <div class="hi-info">
+        <div class="hi-title">${normalizeWorkoutTypeLabel(s.type)} · ${fmt(s.date)}${s.time ? ` · ${s.time}` : ''}</div>
+        <div class="hi-sub">${dur}${s.calories || 0} kcal đốt</div>${ex}
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div class="bento">
+    <div class="b b-workout span4" style="background:linear-gradient(135deg,#1A0E2A,#120E1A);border:1px solid rgba(191,90,242,.18)">
+      <div class="b-label" style="color:var(--vita-fat)">${currentRange} ngày qua</div>
+      <div style="font-size:28px;font-weight:800;color:var(--vita-carb);line-height:1;margin-top:6px">${totMin} / ${WEEKLY_WORKOUT_MIN_TARGET} phút</div>
+      <div class="b-sub" style="margin-top:8px">${insight.activeDays} ngày có tập · ${sessions.length} hoạt động · ${totKcal} kcal</div>
+    </div>
+    <div class="b span4">${renderWorkoutCoachBlock(insight)}</div>
+    ${renderWorkoutTypeBreakdown(insight)}
+
+    <div class="b b-chart span4 tall">
+      <div class="b-label">${uiIcon('i-chart-line')}Phút tập / ngày</div>
+      <div class="chart-wrap"><canvas id="c-wfreq"></canvas></div>
+    </div>
+
+    ${renderPRCard(logs)}
+  </div>
+
+  <div class="stitle">Lịch sử buổi tập</div>
+  <div class="b span4" style="padding:4px 14px">${sessionRows}</div>`;
+}
+
+function drawWorkout(logs) {
+  const o = [...logs].reverse();
+  drawBar('c-wfreq', o.map(l => shortDate(l.date)), o.map(l => (l.sessions || []).reduce((s, x) => s + (x.duration_min || 0), 0)), 'var(--vita-fat)', WEEKLY_WORKOUT_MIN_TARGET);
 }
 
 // ══════════════════════════════════════════════════════════
