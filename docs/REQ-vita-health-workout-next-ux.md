@@ -39,6 +39,7 @@ But the implementation must avoid over-explaining. Metrics should show numbers. 
   - compact mobile card layout
 - JS parse must pass after implementation.
 - Regression must not affect Today, Finance, Calendar, Approval, PAT, or Sync.
+- Copy-only label changes are not mandatory in this request. Existing labels such as `Diagnosis` or `Next action` may remain unless the surrounding block is already being rewritten for UX reasons.
 
 ---
 
@@ -154,7 +155,7 @@ Cần xử lý hôm nay
 Summary short line:
 Chất xơ rất thấp, fat gần giới hạn, protein còn thiếu.
 
-Việc nên làm tiếp theo:
+Next action / Việc nên làm tiếp theo:
 Thêm salad/rau xanh/trái cây + protein nạc trong bữa tiếp theo. Tránh đồ chiên, bơ, dầu, sốt béo.
 
 Lý do:
@@ -167,7 +168,7 @@ Use one card block:
 
 - Header: `Cần xử lý hôm nay`
 - Summary paragraph: one short sentence
-- Subheading: `Việc nên làm tiếp theo`
+- Action subheading: can stay as existing copy (`Next action`) or use Vietnamese if the block is rewritten anyway
 - Action paragraph: concrete action
 - Reason chips: compact chips showing key metric evidence
 
@@ -254,54 +255,6 @@ Use red only for genuinely serious conditions, for example:
 - Current screenshot-like case should render as `warn`/amber, not red overall.
 - Individual risk chip may indicate severity subtly, but the block should not feel like an emergency.
 - `bad/red` should be rare and meaningful.
-
----
-
-## A7. Copy changes
-
-Remove English labels from user-facing UI.
-
-### Required copy
-
-Replace:
-
-```text
-Diagnosis:
-```
-
-with either:
-
-```text
-Tình trạng:
-```
-
-or remove the prefix entirely if the sentence already reads naturally.
-
-Replace:
-
-```text
-Next action:
-```
-
-with:
-
-```text
-Việc nên làm tiếp theo:
-```
-
-Also replace any existing:
-
-```text
-Hành động tiếp theo:
-```
-
-with:
-
-```text
-Việc nên làm tiếp theo:
-```
-
-Reason: more natural Vietnamese and more consistent with the coach layer.
 
 ---
 
@@ -645,13 +598,11 @@ formatExerciseSet(exercise, set)
 - `Cần xử lý hôm nay` renders one grouped action card in common combined-risk scenarios.
 - The grouped card includes:
   - summary short line
-  - `Việc nên làm tiếp theo`
+  - next-action line/subheading, either existing English copy or Vietnamese copy
   - reason chips
 - No duplicate four-card risk list for the common case.
 - Overall coach block uses warn/amber for the current common case.
 - Red is reserved for severe risks only.
-- No English UI label `Diagnosis:` or `Next action:` remains.
-- `Hành động tiếp theo:` is replaced by `Việc nên làm tiếp theo:`.
 
 ## D2. Workout acceptance criteria
 
@@ -682,23 +633,21 @@ formatExerciseSet(exercise, set)
 
 # Part E — Recommended Implementation Order
 
-1. Health copy cleanup:
-   - replace `Diagnosis:` / `Next action:` / `Hành động tiếp theo:`.
-2. Health macro status cleanup:
+1. Health macro status cleanup:
    - shorten macro row status labels.
-3. Health coach block grouping:
+2. Health coach block grouping:
    - summary + next action + chips.
-4. Health severity/color adjustment:
+3. Health severity/color adjustment:
    - warn/amber for common case, red only for severe.
-5. Workout helper build:
+4. Workout helper build:
    - summarize active days, activity count, total minutes, kcal, type breakdown.
-6. Workout hero/card update:
+5. Workout hero/card update:
    - minutes-first hierarchy.
-7. Workout chart switch:
+6. Workout chart switch:
    - minutes per day.
-8. Workout history cleanup:
+7. Workout history cleanup:
    - normalize labels and prevent `undefinedkg`.
-9. Run static parse/regression checks.
+8. Run static parse/regression checks.
 
 ---
 
