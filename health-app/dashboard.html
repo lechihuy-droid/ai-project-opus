@@ -102,10 +102,10 @@ html, body {
 .pat-btn  { display: inline-flex; align-items: center; justify-content: center; font-size: 12px; padding: 6px 10px; min-width: var(--tap-min); min-height: var(--tap-min); background: rgba(255,255,255,.06); color: var(--vita-muted); border: none; border-radius: 8px; cursor: pointer; font-family: inherit; }
 .pat-btn .ui-ico { width: 16px; height: 16px; }
 
-.mod-tabs { display: flex; }
-.mtab { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 4px 10px; min-height: var(--tap-min); text-align: center; font-size: 12px; font-weight: 700; border: none; background: none; cursor: pointer; font-family: inherit; color: var(--vita-faint); border-bottom: 2.5px solid transparent; transition: color .18s, border-bottom-color .18s; }
+.mod-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 4px 0 10px; }
+.mtab { min-width: 0; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 8px; min-height: var(--tap-min); text-align: center; font-size: 12px; font-weight: 700; border: 1px solid transparent; border-radius: 10px; background: transparent; cursor: pointer; font-family: inherit; color: var(--vita-faint); transition: color .18s, background .18s, border-color .18s, box-shadow .18s; }
 .mtab .ui-ico { width: 16px; height: 16px; }
-.mtab.active { color: var(--vita-active); border-bottom-color: var(--vita-active); }
+.mtab.active { color: var(--vita-active); background: rgba(10,132,255,.14); border-color: rgba(10,132,255,.36); box-shadow: inset 0 0 0 1px rgba(10,132,255,.06), 0 4px 16px rgba(10,132,255,.10); }
 
 .range-row { display: flex; gap: 0; padding: 3px; margin-top: 8px; background: rgba(255,255,255,.05); border-radius: 10px; }
 .rtab { flex: 1; padding: 6px; min-height: var(--tap-min); text-align: center; font-size: 11px; font-weight: 700; border-radius: 8px; border: none; background: transparent; color: var(--vita-muted); cursor: pointer; font-family: inherit; transition: background .18s, color .18s; }

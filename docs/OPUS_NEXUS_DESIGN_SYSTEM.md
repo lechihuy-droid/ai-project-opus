@@ -24,6 +24,7 @@ Opus Nexus is a premium personal command center: dark, compact, operational, and
 2. **Blue active navigation**
    - Keep `--vita-active: #0A84FF` for active app navigation and primary proposal/calendar actions.
    - The previous full nav-gold active theme is not the default app state.
+   - Module tabs use a selected pill state, not an underline-only state: active tabs get a soft blue background, blue border, and blue icon/text.
 
 3. **Semantic health colors**
    - Keep blue for protein/water/feedback, green for success/fiber/sync, purple for sleep/recovery, orange for energy/warning, red for critical deficits, gray for inactive/missing data.
