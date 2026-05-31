@@ -20,14 +20,15 @@ jobs:
           from pathlib import Path
           p = Path('health-app/dashboard.html')
           s = p.read_text(encoding='utf-8')
-          old1 = "<div class=\"hero-cal-diagnosis\">${esc(`Diagnosis: ${coach.topSummary}.`)}</div>"
-          new1 = "<div class=\"hero-cal-diagnosis\">${esc(`Tình trạng: ${coach.topSummary}.`)}</div>"
-          old2 = "<div class=\"ih-next\">${esc(`Next action: ${insight.nextAction}`)}</div>"
-          new2 = "<div class=\"ih-next\">${esc(`Việc nên làm tiếp theo: ${insight.nextAction}`)}</div>"
-          missing = [x for x in (old1, old2) if x not in s]
-          if missing:
-              raise SystemExit(f'Missing expected copy targets: {missing}')
-          s = s.replace(old1, new1).replace(old2, new2)
+          replacements = {
+              "Diagnosis: ${coach.topSummary}.": "Tình trạng: ${coach.topSummary}.",
+              "Next action: ${insight.nextAction}": "Việc nên làm tiếp theo: ${insight.nextAction}",
+              "Hành động tiếp theo: ${insight.nextAction}": "Việc nên làm tiếp theo: ${insight.nextAction}",
+          }
+          for old, new in replacements.items():
+              s = s.replace(old, new)
+          if 'Diagnosis:' in s or 'Next action:' in s or 'Hành động tiếp theo:' in s:
+              raise SystemExit('Copy patch incomplete')
           p.write_text(s, encoding='utf-8')
           PY
       - name: Validate JavaScript parse
@@ -47,5 +48,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add health-app/dashboard.html .github/workflows/patch-vita-health-copy.yml
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
           git commit -m "fix: localize Vita health coach copy"
           git push
