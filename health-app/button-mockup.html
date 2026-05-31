@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Button styles — Opus Nexus</title>
+<style>
+  :root{
+    --bg:#090A0F; --surface:#12141C; --line:rgba(255,255,255,.08);
+    --text:#EAEEF5; --muted:#8A93A6; --faint:#5A6275;
+    --active:#0A84FF; --info:#5AC8FA; --good:#30D158; --energy:#FF453A;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:24px;max-width:460px;margin:0 auto}
+  h1{font-size:19px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:24px}
+  .opt{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:18px}
+  .tag{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--info);background:rgba(90,200,250,.1);padding:3px 9px;border-radius:6px;margin-bottom:4px}
+  .name{font-size:15px;font-weight:800;margin:6px 0 2px}
+  .desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:14px}
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;min-height:48px;border:none;border-radius:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;color:#fff;transition:transform .12s,box-shadow .2s,filter .2s;margin-bottom:9px}
+  .btn:last-child{margin-bottom:0}
+  .btn:active{transform:scale(.975)}
+  .ic{width:17px;height:17px;flex:none}
+
+  /* 1 — Gradient + Glow */
+  .v1{background:linear-gradient(135deg,#0A84FF 0%,#5E5CE6 100%);box-shadow:0 6px 22px rgba(10,132,255,.40),inset 0 1px 0 rgba(255,255,255,.22)}
+  .v1:active{box-shadow:0 2px 10px rgba(10,132,255,.35)}
+
+  /* 2 — Glassmorphism */
+  .v2{background:rgba(255,255,255,.07);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 4px 18px rgba(0,0,0,.4);color:var(--text)}
+
+  /* 3 — Gradient border (neon outline) */
+  .v3{position:relative;background:#0d1018;color:#7Fd0ff;border:1.5px solid transparent;background-image:linear-gradient(#0d1018,#0d1018),linear-gradient(135deg,#0A84FF,#5AC8FA);background-origin:border-box;background-clip:padding-box,border-box;box-shadow:0 0 18px rgba(10,132,255,.20)}
+
+  /* 4 — Elevated (Linear/Vercel style) */
+  .v4{background:linear-gradient(180deg,#1d212c 0%,#14171f 100%);border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 2px 4px rgba(0,0,0,.5);color:var(--text)}
+  .v4:active{background:linear-gradient(180deg,#191d27 0%,#111319 100%)}
+
+  /* 5 — Soft pill + icon chip */
+  .v5{background:#0A84FF;border-radius:999px;box-shadow:0 8px 24px rgba(10,132,255,.30);padding-left:6px;justify-content:flex-start;gap:12px}
+  .v5 .chip{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.20)}
+
+  /* 6 — Spotlight (radial sheen) */
+  .v6{background:radial-gradient(120% 140% at 30% 0%,#2a7fff 0%,#0A5BD6 60%,#0746a8 100%);box-shadow:0 6px 20px rgba(10,91,214,.45),inset 0 1px 0 rgba(255,255,255,.25)}
+
+  .row{display:grid;grid-template-columns:1fr;gap:0}
+  .sec{background:transparent;border:1px solid rgba(90,200,250,.25);color:var(--info);box-shadow:none}
+  .ghost{background:transparent;color:var(--faint);box-shadow:none;font-weight:500;min-height:36px;font-size:12px}
+</style>
+</head>
+<body>
+  <h1>Button styles — chọn 1</h1>
+  <div class="sub">Cùng 1 CTA "Plan My Week" trên nền app thật. Bấm thử để xem feedback.</div>
+
+  <div class="opt">
+    <span class="tag">Option 1</span>
+    <div class="name">Gradient + Glow</div>
+    <div class="desc">Gradient xanh→tím, glow toả, highlight viền trên. Năng lượng, hiện đại — kiểu Stripe/Revolut.</div>
+    <button class="btn v1">✦ Plan My Week</button>
+  </div>
+
+  <div class="opt">
+    <span class="tag">Option 2</span>
+    <div class="name">Glassmorphism</div>
+    <div class="desc">Kính mờ, blur nền, viền sáng mảnh. Tinh tế, premium, hợp dark UI Apple-style.</div>
+    <button class="btn v2">✦ Plan My Week</button>
+  </div>
+
+  <div class="opt">
+    <span class="tag">Option 3</span>
+    <div class="name">Neon gradient border</div>
+    <div class="desc">Nền tối, viền gradient phát sáng. Tech/AI vibe, nổi mà không nặng.</div>
+    <button class="btn v3">✦ Plan My Week</button>
+  </div>
+
+  <div class="opt">
+    <span class="tag">Option 4</span>
+    <div class="name">Elevated (Linear / Vercel)</div>
+    <div class="desc">Gradient dọc tinh tế + inner highlight + shadow. Sang, kiềm chế, đậm chất SaaS cao cấp.</div>
+    <button class="btn v4">Plan My Week</button>
+  </div>
+
+  <div class="opt">
+    <span class="tag">Option 5</span>
+    <div class="name">Pill + icon chip</div>
+    <div class="desc">Bo tròn hoàn toàn, icon trong vòng tròn riêng. Thân thiện, "tap-friendly", kiểu fintech mobile.</div>
+    <button class="btn v5"><span class="chip">✦</span> Plan My Week</button>
+  </div>
+
+  <div class="opt">
+    <span class="tag">Option 6</span>
+    <div class="name">Spotlight sheen</div>
+    <div class="desc">Radial sheen góc trên-trái như ánh đèn rọi. Chiều sâu, cao cấp, không cần gradient màu mè.</div>
+    <button class="btn v6">✦ Plan My Week</button>
+  </div>
+
+  <div class="opt">
+    <span class="tag">Bộ đầy đủ</span>
+    <div class="name">Hệ 3 tầng (vd dùng Option 1)</div>
+    <div class="desc">Primary nổi + Secondary outline + Ghost tiện ích — để bạn thấy tổng thể.</div>
+    <button class="btn v1">✦ Plan My Week</button>
+    <button class="btn sec">Xem chi tiết Vita</button>
+    <button class="btn ghost">↻ Refresh</button>
+  </div>
+</body>
+</html>
