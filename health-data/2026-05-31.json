@@ -97,11 +97,53 @@
       "total_saturated_fat": 3.5,
       "total_sodium_mg": 370,
       "total_alcohol": 31.2
+    },
+    {
+      "time": "22:30",
+      "name": "Ăn thêm",
+      "source": "text",
+      "items": [
+        {
+          "name": "Kem que (ước tính, 3 que)",
+          "grams": 180,
+          "kcal": 330,
+          "protein": 6.0,
+          "carb": 45.0,
+          "fat": 13.5,
+          "sugar": 36.0,
+          "fiber": 0.0,
+          "saturated_fat": 9.0,
+          "sodium_mg": 90,
+          "alcohol": 0
+        },
+        {
+          "name": "Tiramisu nhỏ (ước tính, 1 cái)",
+          "grams": 90,
+          "kcal": 260,
+          "protein": 4.0,
+          "carb": 28.0,
+          "fat": 15.0,
+          "sugar": 20.0,
+          "fiber": 1.0,
+          "saturated_fat": 9.0,
+          "sodium_mg": 80,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 590,
+      "total_protein": 10.0,
+      "total_carb": 73.0,
+      "total_fat": 28.5,
+      "total_sugar": 56.0,
+      "total_fiber": 1.0,
+      "total_saturated_fat": 18.0,
+      "total_sodium_mg": 170,
+      "total_alcohol": 0
     }
   ],
   "water_ml": 2000,
   "steps": 0,
   "sleep_hours": 6.5,
   "weight_kg": 0,
-  "notes": "Bữa trưa được log từ text. Thịt gà nấu hầm và rau bí luộc là giá trị ước tính theo khẩu phần đã cung cấp. Bữa tối log từ text + ảnh: 200g thịt gà hầm, 200g ngọn bí luộc, 2 lon x 330ml umeshu sour 6%; kcal/carb/alcohol của đồ uống tính theo nhãn 45kcal/100ml, carb 2.1g/100ml, alc 6%. Nước uống: 2L. Ngủ từ 04:00 đến 10:30 ngày 31/5, tổng 6.5 giờ."
+  "notes": "Bữa trưa được log từ text. Thịt gà nấu hầm và rau bí luộc là giá trị ước tính theo khẩu phần đã cung cấp. Bữa tối log từ text + ảnh: 200g thịt gà hầm, 200g ngọn bí luộc, 2 lon x 330ml umeshu sour 6%; kcal/carb/alcohol của đồ uống tính theo nhãn 45kcal/100ml, carb 2.1g/100ml, alc 6%. Ăn thêm: 3 que kem và 1 tiramisu nhỏ, giá trị dinh dưỡng là ước tính do chưa có nhãn cụ thể. Nước uống: 2L. Ngủ từ 04:00 đến 10:30 ngày 31/5, tổng 6.5 giờ."
 }
