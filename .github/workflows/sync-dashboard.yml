@@ -27,7 +27,10 @@ jobs:
           # 1. Dashboard → index.html
           cp health-app/dashboard.html /tmp/opus-vita/index.html
 
-          # 2. .nojekyll — Pages bỏ qua bước Build with Jekyll, serve file nguyên trạng
+          # 2. Assets (SVG, icons…)
+          cp -r health-app/assets /tmp/opus-vita/assets
+
+          # 3. .nojekyll — Pages bỏ qua bước Build with Jekyll, serve file nguyên trạng
           touch /tmp/opus-vita/.nojekyll
 
           cd /tmp/opus-vita
