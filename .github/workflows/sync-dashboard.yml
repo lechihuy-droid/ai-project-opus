@@ -30,10 +30,6 @@ jobs:
           # 2. .nojekyll — Pages bỏ qua bước Build with Jekyll, serve file nguyên trạng
           touch /tmp/opus-vita/.nojekyll
 
-          # 3. Workflow deploy tĩnh (upload root, không qua Jekyll)
-          mkdir -p /tmp/opus-vita/.github/workflows
-          cp .github/opus-vita-deploy-pages.yml /tmp/opus-vita/.github/workflows/deploy-pages.yml
-
           cd /tmp/opus-vita
           git add -A
           git diff --cached --quiet && echo "No changes" && exit 0
