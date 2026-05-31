@@ -3126,8 +3126,32 @@ async function debugFetch() {
   } catch(e) { out.textContent += `Fetch failed: ${e.message}`; }
 }
 
+// ── Auto-reconnect calendar on page load ──
+// gToken is in-memory only; if user previously connected, silently re-request
+// using prompt:'' so Google re-issues token without showing consent screen.
+async function autoReconnectCalendar() {
+  if (localStorage.getItem('nexus_cal_connected') !== '1') return;
+  if (!isGoogleConfigured()) return;
+  // Google scripts load async — wait up to 5s
+  for (let i = 0; i < 25; i++) {
+    if (typeof gapi !== 'undefined' && typeof google !== 'undefined') break;
+    await new Promise(r => setTimeout(r, 200));
+  }
+  if (typeof gapi === 'undefined' || typeof google === 'undefined') return;
+  try {
+    await initGapiClient();
+    await requestGoogleToken(CONFIG.google.readScopes, '');
+    await Promise.all([loadCalendarEvents(), loadTasks().catch(() => null)]);
+    renderContent();
+  } catch (e) {
+    // Token revoked or session expired — clear flag, user will see connect button
+    localStorage.removeItem('nexus_cal_connected');
+    renderContent();
+  }
+}
+
 // ── Boot ──
-if (checkPat()) reload();
+if (checkPat()) { reload(); autoReconnectCalendar(); }
 </script>
 </body>
 </html>
