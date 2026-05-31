@@ -7,7 +7,7 @@ markdown
 requests
 python-dotenv
 pyyaml
-markitdown
+markitdown>=0.1.6
 groq
 fastapi
 uvicorn[standard]
