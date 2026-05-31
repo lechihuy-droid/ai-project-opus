@@ -1,9 +1,0 @@
-{
-  "action": "capture_inbox",
-  "captured_at": "2026-05-31T04:05:00+09:00",
-  "source": "chatgpt",
-  "raw_text": "Ăn trưa ngày 31/5: 300g thịt gà nấu hầm + 200g rau bí luộc",
-  "suggested_type": "health.meal_log",
-  "review_status": "pending",
-  "route_status": "pending"
-}
