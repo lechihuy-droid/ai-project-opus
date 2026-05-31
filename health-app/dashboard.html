@@ -2731,53 +2731,6 @@ function formatExerciseSet(exercise, set) {
   return `${reps} reps · chưa nhập tạ`;
 }
 
-function renderWorkout(logs) {
-  if (!logs.length) return `<div class="loading">${uiIcon('i-dumbbell', '', 'style="color:var(--vita-faint);width:26px;height:26px;margin-bottom:8px"')}<br>Chưa có buổi tập nào<br><span style="font-size:12px;color:var(--vita-faint);margin-top:8px;display:block">Báo Claude khi tập xong</span></div>`;
-  const sessions = logs.flatMap(l => (l.sessions||[]).map(s => ({...s, date: l.date})));
-  const totMin   = sessions.reduce((s,x)=>s+(x.duration_min||0),0);
-  const totKcal  = sessions.reduce((s,x)=>s+(x.calories||0),0);
-
-  const sessionRows = sessions.slice(0,20).map(s => {
-    const key = (s.type||'other').split(/[ _+]/)[0];
-    const m   = TYPE_META[key] || TYPE_META.other;
-    const ex  = (s.exercises||[]).map(e => {
-      const detail = Array.isArray(e.sets)
-        ? e.sets.map(st=>`${st.reps}×${st.weight_kg}kg`).join(', ')
-        : [e.sets&&`${e.sets} sets`, e.reps&&`${e.reps} reps`, e.duration_per_set_sec&&`${e.duration_per_set_sec}s/set`, e.notes].filter(Boolean).join(' · ');
-      return `<div class="hi-extra">${e.name}${detail?' — '+detail:''}</div>`;
-    }).join('');
-    const dur = s.duration_min ? `${s.duration_min} phút · ` : '';
-    return `<div class="hi">
-      <div class="hi-ico" style="background:${m.color}22">${m.ico}</div>
-      <div class="hi-info">
-        <div class="hi-title">${(s.type||'').toUpperCase()} · ${fmt(s.date)}</div>
-        <div class="hi-sub">${dur}${s.calories||0} kcal đốt</div>${ex}
-      </div>
-    </div>`;
-  }).join('');
-
-  return `<div class="bento">
-    <div class="b b-workout span4" style="background:linear-gradient(135deg,#1A0E2A,#120E1A);border:1px solid rgba(191,90,242,.18)">
-      <div class="b-label" style="color:var(--vita-fat)">${currentRange} ngày qua</div>
-      <div style="display:flex;gap:20px;margin-top:8px">
-        <div><div style="font-size:32px;font-weight:800;color:var(--vita-fat);line-height:1">${sessions.length}</div><div class="b-sub">buổi tập</div></div>
-        <div><div style="font-size:32px;font-weight:800;color:var(--vita-carb);line-height:1">${totMin}</div><div class="b-sub">phút</div></div>
-        <div><div style="font-size:32px;font-weight:800;color:var(--vita-energy);line-height:1">${totKcal}</div><div class="b-sub">kcal</div></div>
-      </div>
-    </div>
-
-    <div class="b b-chart span4 tall">
-      <div class="b-label">${uiIcon('i-chart-line')}Số buổi / ngày</div>
-      <div class="chart-wrap"><canvas id="c-wfreq"></canvas></div>
-    </div>
-
-    ${renderPRCard(logs)}
-  </div>
-
-  <div class="stitle">Lịch sử buổi tập</div>
-  <div class="b span4" style="padding:4px 14px">${sessionRows}</div>`;
-}
-
 function renderPRCard(logs) {
   const prs = computePRs(logs);
   const entries = Object.entries(prs);
