@@ -1,7 +1,7 @@
 # BD — Build Plan: Opus Nexus UI/UX — Phase 4 (Proposal UX + Calendar Empty State)
 
 **Date:** 2026-05-31
-**Status:** Draft — awaiting user approval before Codex implement
+**Status:** ✅ Done — implemented (commit f3f1904 on main)
 **Ref:** `docs/PLAN-uiux-transformation.md` §7.2, §8.3, §C.10, §C.11, §D.16
 **Target file:** `health-app/dashboard.html` (single file)
 **Depends on:** Phase 3 merged into feature branch first
