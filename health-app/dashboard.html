@@ -1111,10 +1111,9 @@ async function initGapiClient() {
   await new Promise((resolve, reject) => {
     gapi.load('client', { callback: resolve, onerror: () => reject(new Error('Không tải được Google API client.')) });
   });
-  await gapi.client.init({
-    apiKey: CONFIG.google.apiKey,
-    discoveryDocs: [CONFIG.google.discoveryDoc, CONFIG.google.tasksDiscoveryDoc]
-  });
+  // Load Calendar (required) + Tasks (optional — nếu Tasks API chưa bật thì chỉ mất Tasks, không mất Calendar)
+  await gapi.client.init({ apiKey: CONFIG.google.apiKey, discoveryDocs: [CONFIG.google.discoveryDoc] });
+  await gapi.client.load(CONFIG.google.tasksDiscoveryDoc).catch(() => null);
   gapiReady = true;
   applyGoogleToken();
   return true;
