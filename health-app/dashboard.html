@@ -213,7 +213,7 @@ html, body {
 .hero-cal.good { background: linear-gradient(145deg,#0E1F17,#0A1510); border-color: rgba(48,209,88,.2); }
 .hero-cal.warn { background: linear-gradient(145deg,#17130B,#0F0C08); border-color: rgba(255,159,10,.24); }
 .hero-cal.bad { background: linear-gradient(145deg,#1A0E0E,#110A0A); border-color: rgba(255,69,58,.24); }
-.hero-cal.missing { background: linear-gradient(145deg,#0D1520,#0A1018); border-color: rgba(90,200,250,.2); }
+.hero-cal.missing { background: linear-gradient(145deg,#151720,#0F1118); border-color: rgba(255,255,255,.10); }
 .hero-cal-inner { display: flex; align-items: center; gap: 16px; }
 .hero-cal-text { flex: 1; }
 .hero-cal-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--vita-muted); margin-bottom: 4px; }
@@ -2007,14 +2007,14 @@ function formatProposalTime(ev) {
 // ══════════════════════════════════════════════════════════
 // ║  Ring Progress                                          ║
 // ══════════════════════════════════════════════════════════
-function renderRing(val, max, color, label, size=56, decimals=0) {
+function renderRing(val, max, color, label, size=56, decimals=0, emptyText='—') {
   const pct   = max > 0 ? Math.min(1, val / max) : 0;
   const r     = (size - 8) / 2;
   const circ  = 2 * Math.PI * r;
   const dash  = (pct * circ).toFixed(1);
   const gap   = (circ - dash).toFixed(1);
   const cx    = size / 2;
-  const valStr = val > 0 ? (val >= 1000 ? (val/1000).toFixed(1)+'k' : decimals > 0 ? val.toFixed(decimals) : String(Math.round(val))) : '—';
+  const valStr = val > 0 ? (val >= 1000 ? (val/1000).toFixed(1)+'k' : decimals > 0 ? val.toFixed(decimals) : String(Math.round(val))) : emptyText;
   const colorVal = val > 0 ? color : 'var(--vita-faint)';
   return `<svg class="ring-svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
     <circle cx="${cx}" cy="${cx}" r="${r}" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="4"/>
@@ -2040,20 +2040,11 @@ function riskItem(type, severity, title, detail, action, priority) {
   return { type, severity, title, detail, action, priority };
 }
 
-function rankHealthRisks(risks) {
-  const score = { bad: 3, warn: 2, missing: 1, good: 0 };
-  return risks.sort((a, b) => {
-    const sev = (score[b.severity] || 0) - (score[a.severity] || 0);
-    return sev || a.priority - b.priority;
-  });
-}
-
-function buildHealthCoachInsight(shown, metrics) {
-  const { kcal, protein, fat, fiber } = metrics;
+function rankHealthRisks(metrics) {
+  const { kcal, protein, fat, fiber, missingData } = metrics;
   const risks = [];
   const kcalRemain = TARGET.kcal - kcal;
   const proteinLeft = TARGET.protein - protein;
-  const fatLeft = TARGET.fat - fat;
 
   if (fiber < TARGET.fiber * 0.4) {
     risks.push(riskItem('fiber', 'bad', 'Chất xơ rất thấp', formatCurrentTarget(fiber, TARGET.fiber, 'g'), 'Thêm salad, rau xanh hoặc trái cây trong bữa tiếp theo.', 10));
@@ -2068,7 +2059,7 @@ function buildHealthCoachInsight(shown, metrics) {
   }
 
   if (proteinLeft > 40) {
-    risks.push(riskItem('protein', 'warn', 'Protein còn thiếu nhiều', formatCurrentTarget(protein, TARGET.protein, 'g'), 'Thêm 1 phần protein nạc như ức gà, cá, trứng hoặc sữa chua Hy Lạp.', 30));
+    risks.push(riskItem('protein', 'warn', 'Protein còn thiếu nhiều', formatCurrentTarget(protein, TARGET.protein, 'g'), 'Thêm protein nạc như ức gà, cá, trứng hoặc sữa chua Hy Lạp.', 30));
   } else if (proteinLeft > 15) {
     risks.push(riskItem('protein', 'warn', 'Protein còn thiếu', formatCurrentTarget(protein, TARGET.protein, 'g'), 'Bữa tiếp theo nên có một nguồn protein rõ ràng.', 30));
   }
@@ -2084,14 +2075,58 @@ function buildHealthCoachInsight(shown, metrics) {
   }
 
   const missing = [];
-  if (!(shown.water_ml > 0)) missing.push('nước');
-  if (!(shown.sleep_hours > 0)) missing.push('ngủ');
-  if (!(shown.steps > 0)) missing.push('vận động');
+  if (missingData.water) missing.push('nước');
+  if (missingData.sleep) missing.push('ngủ');
+  if (missingData.steps) missing.push('vận động');
   if (missing.length) {
     risks.push(riskItem('missing', 'missing', 'Thiếu dữ liệu sinh hoạt', `Chưa log ${missing.join(', ')}`, 'Sync hoặc log nhanh để đánh giá hôm nay chính xác hơn.', 50));
   }
 
-  const ranked = rankHealthRisks(risks);
+  const score = { bad: 3, warn: 2, missing: 1, good: 0 };
+  return risks.sort((a, b) => {
+    const sev = (score[b.severity] || 0) - (score[a.severity] || 0);
+    return sev || a.priority - b.priority;
+  });
+}
+
+function buildHealthNextAction(risks, metrics) {
+  const has = type => risks.some(r => r.type === type);
+  const missingCount = Object.values(metrics.missingData).filter(Boolean).length;
+  if (has('fiber') && has('fat') && has('protein')) {
+    return 'Bữa tiếp theo: rau/salad + protein nạc, tránh đồ chiên/dầu.';
+  }
+  if (has('fiber') && has('fat')) {
+    return 'Thêm rau hoặc salad, nếu cần protein thì chọn nguồn nạc và tránh thêm dầu/mỡ.';
+  }
+  if (has('protein') && has('fat')) {
+    return 'Bổ sung protein nạc vừa đủ, tránh món nhiều dầu vì fat đã gần giới hạn.';
+  }
+  if (has('protein') && has('kcal')) {
+    return 'Ăn thêm một phần protein nạc vừa đủ kcal, không cần tăng fat.';
+  }
+  if (missingCount >= 2 && !risks.some(r => r.severity === 'bad')) {
+    return 'Log/sync dữ liệu còn thiếu trước để đánh giá hôm nay chính xác hơn.';
+  }
+  const actionRisk = risks.find(r => r.type !== 'missing') || risks[0];
+  return actionRisk ? actionRisk.action : 'Tiếp tục giữ nhịp ăn uống, nước, ngủ và vận động như hiện tại.';
+}
+
+function buildHealthCoachInsight(shown, logs) {
+  const kcal = totalKcal(shown);
+  const protein = totalMacro(shown, 'protein');
+  const carb = totalMacro(shown, 'carb');
+  const fat = totalMacro(shown, 'fat');
+  const fiber = totalMacro(shown, 'fiber');
+  const missingData = {
+    water: !(shown.water_ml > 0),
+    sleep: !(shown.sleep_hours > 0),
+    steps: !(shown.steps > 0)
+  };
+  const kcalRemain = TARGET.kcal - kcal;
+  const proteinLeft = TARGET.protein - protein;
+  const fatLeft = TARGET.fat - fat;
+  const metrics = { shown, logs, kcal, protein, carb, fat, fiber, kcalRemain, proteinLeft, fatLeft, missingData };
+  const ranked = rankHealthRisks(metrics);
   const status = ranked.some(r => r.severity === 'bad') ? 'bad'
     : ranked.some(r => r.severity === 'warn') ? 'warn'
     : ranked.length ? 'missing'
@@ -2099,12 +2134,9 @@ function buildHealthCoachInsight(shown, metrics) {
   const topSummary = ranked.length
     ? ranked.slice(0, 3).map(r => r.title.toLowerCase()).join(', ')
     : 'đang đi đúng hướng hôm nay';
-  const actionRisk = ranked.find(r => r.type !== 'missing') || ranked[0];
-  const nextAction = actionRisk
-    ? actionRisk.action
-    : 'Tiếp tục giữ nhịp ăn uống, nước, ngủ và vận động như hiện tại.';
+  const nextAction = buildHealthNextAction(ranked, metrics);
 
-  return { status, risks: ranked, topSummary, nextAction, fatLeft, proteinLeft, kcalRemain };
+  return { status, risks: ranked, topSummary, nextAction, missingData, metrics };
 }
 
 function renderHealthCoachBlock(insight) {
@@ -2127,7 +2159,7 @@ function renderHealthCoachBlock(insight) {
   return `<div class="insight2${statusClass}">
     <div class="ih"><span>${icon}</span><span>${title}</span></div>
     <p>${esc(`Hôm nay: ${insight.topSummary}.`)}</p>
-    <div class="ih-next">${esc(`Next action: ${insight.nextAction}`)}</div>
+    <div class="ih-next">${esc(`Hành động tiếp theo: ${insight.nextAction}`)}</div>
     ${risksHtml}
   </div>`;
 }
@@ -2148,7 +2180,7 @@ function renderHealth(logs) {
   const fiber    = totalMacro(shown, 'fiber');
   const kcalPct  = Math.min(100, (kcal / TARGET.kcal) * 100);
   const remain   = TARGET.kcal - kcal;
-  const coach    = buildHealthCoachInsight(shown, { kcal, protein, carb, fat, fiber });
+  const coach    = buildHealthCoachInsight(shown, logs);
   const withW    = logs.filter(l => l.weight_kg > 0);
   const wLatest  = withW[0];
   const wFirst   = withW[withW.length - 1];
@@ -2157,7 +2189,10 @@ function renderHealth(logs) {
   // Hero calories
   const heroLabel = isToday ? 'Năng lượng hôm nay' : `Năng lượng · ${fmtFull(shown.date)}`;
   const remainStr = remain > 0 ? `Còn ${remain} kcal để đạt mục tiêu` : `Vượt ${-remain} kcal so với mục tiêu`;
-  const heroTone = coach.status === 'bad' ? 'var(--vita-energy)' : (coach.status === 'good' ? 'var(--vita-good)' : 'var(--vita-warn)');
+  const heroTone = coach.status === 'bad' ? 'var(--vita-energy)'
+    : coach.status === 'good' ? 'var(--vita-good)'
+    : coach.status === 'missing' ? 'var(--vita-muted)'
+    : 'var(--vita-warn)';
   const remainColor = remain > 0 ? 'var(--vita-warn)' : 'var(--vita-energy)';
 
   // Mini rings
@@ -2215,11 +2250,14 @@ function renderHealth(logs) {
         <div class="hero-cal-val" style="color:${heroTone}">${kcal.toLocaleString()}</div>
         <div class="hero-cal-target">/ ${TARGET.kcal.toLocaleString()} kcal mục tiêu</div>
         <div class="hero-cal-remain" style="color:${remainColor}">${remainStr}</div>
-        <div class="hero-cal-diagnosis">${esc(`Diagnosis: ${coach.topSummary}.`)}</div>
+        <div class="hero-cal-diagnosis">${esc(`Đánh giá: ${coach.topSummary}.`)}</div>
       </div>
     </div>
     <div class="hero-pbar" style="margin-top:12px"><div style="width:${kcalPct}%;background:linear-gradient(90deg,${heroTone},var(--vita-carb))"></div></div>
   </div>
+
+  <!-- Coach insight -->
+  ${insightHtml}
 
   <!-- Mini rings -->
   <div class="ring-grid" style="margin-top:var(--vita-gap)">
@@ -2227,15 +2265,15 @@ function renderHealth(logs) {
       ${renderRing(Math.round(protein), TARGET.protein, 'var(--vita-protein)', 'Protein', 52)}
     </div>
     <div class="ring-cell">
-      ${renderRing(waterL, waterMax, 'var(--vita-water)', 'Nước (L)', 52, 1)}
+      ${renderRing(waterL, waterMax, 'var(--vita-water)', 'Nước (L)', 52, 1, 'Log')}
       ${ringStatus(shown.water_ml > 0, 'Chưa log')}
     </div>
     <div class="ring-cell">
-      ${renderRing(sleepVal, TARGET.sleep, 'var(--vita-sleep)', 'Giấc ngủ', 52, 1)}
+      ${renderRing(sleepVal, TARGET.sleep, 'var(--vita-sleep)', 'Giấc ngủ', 52, 1, 'Log')}
       ${ringStatus(shown.sleep_hours > 0, 'Chưa log')}
     </div>
     <div class="ring-cell">
-      ${renderRing(stepsK, stepsMaxK, 'var(--vita-steps)', 'Vận động', 52)}
+      ${renderRing(stepsK, stepsMaxK, 'var(--vita-steps)', 'Vận động', 52, 0, 'Sync')}
       ${ringStatus(shown.steps > 0, 'Chưa đồng bộ')}
     </div>
   </div>
@@ -2245,9 +2283,6 @@ function renderHealth(logs) {
     <div class="b-label">Dinh dưỡng chính</div>
     ${macroRows}
   </div>
-
-  <!-- Insight -->
-  ${insightHtml}
 
   <div class="stitle">Tổng kết dinh dưỡng</div>
   ${renderNutritionHistory(logs)}
@@ -2262,7 +2297,7 @@ function renderHealth(logs) {
     </div>
     <div class="b span2" style="background:linear-gradient(135deg,#14142A,#0F0F1F);border:1px solid rgba(142,124,255,.18)">
       <div class="b-label">Giấc ngủ</div>
-      <div class="b-val" style="color:var(--vita-sleep)">${sleepVal > 0 ? sleepVal.toFixed(1) : '—'}<span class="b-unit">${sleepVal > 0 ? 'h' : ''}</span></div>
+      <div class="b-val" style="color:${sleepVal > 0 ? 'var(--vita-sleep)' : 'var(--vita-faint)'};font-size:${sleepVal > 0 ? '28px' : '18px'}">${sleepVal > 0 ? sleepVal.toFixed(1) : 'Chưa log'}<span class="b-unit">${sleepVal > 0 ? 'h' : ''}</span></div>
       <div class="b-sub">${sleepVal > 0 ? `${pc(sleepVal, TARGET.sleep)}% mục tiêu` : 'chưa log'}</div>
       <div class="b-ico">${uiIcon('i-sleep', '', 'style="color:var(--vita-sleep)"')}</div>
     </div>
@@ -2445,7 +2480,7 @@ function renderWeekAcc(week) {
   const proteinHit = logs.filter(l => totalMacro(l, 'protein') >= TARGET.protein).length;
   const fiberLow = logs.filter(l => totalMacro(l, 'fiber') < TARGET.fiber * 0.6).length;
   const kcalDelta = avgKcal - TARGET.kcal;
-  const kcalTone = Math.abs(kcalDelta) < 150 ? 'gần mục tiêu' : (kcalDelta > 0 ? `vượt TB ${Math.round(kcalDelta)} kcal/ngày` : `thiếu TB ${Math.round(Math.abs(kcalDelta))} kcal/ngày`);
+  const kcalTone = Math.abs(kcalDelta) < 150 ? 'Gần mục tiêu' : (kcalDelta > 0 ? `Vượt TB: ${Math.round(kcalDelta)} kcal/ngày` : `Thiếu TB: ${Math.round(Math.abs(kcalDelta))} kcal/ngày`);
   const kcalToneClass = Math.abs(kcalDelta) < 150 ? '' : ' warn';
   const outlier = logs
     .map(l => ({ log: l, delta: Math.abs(totalKcal(l) - TARGET.kcal) }))
@@ -2455,8 +2490,12 @@ function renderWeekAcc(week) {
   const proteinTone = proteinHit >= Math.ceil(days * 0.7) ? `Protein ổn: ${proteinHit}/${days} ngày` : `Protein hụt: ${proteinMiss}/${days} ngày`;
   const fiberTone = fiberLow > 0 ? `Fiber thấp: ${fiberLow}/${days} ngày` : 'Fiber ổn';
   const trendText = Math.abs(kcalDelta) < 150 && proteinMiss <= Math.floor(days * 0.3) && fiberLow === 0
-    ? 'Trend tuần ổn'
-    : 'Trend cần chỉnh';
+    ? 'Xu hướng: tuần này khá ổn.'
+    : `Xu hướng: ${[
+        Math.abs(kcalDelta) >= 150 ? 'năng lượng lệch mục tiêu' : '',
+        proteinMiss ? 'protein hụt lặp lại' : '',
+        fiberLow ? 'fiber thấp nhiều ngày' : ''
+      ].filter(Boolean).join(', ')}.`;
   const dayRows = logs.map(l => renderDayAcc(l, false)).join('');
 
   return `<details class="week-acc">
