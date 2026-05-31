@@ -70,13 +70,6 @@
   --vita-active:    #0A84FF;
   --vita-active-bg: linear-gradient(180deg,#322C52,#241F3D);
   --vita-active-glow: 0 6px 18px rgba(80,60,160,.28);
-  --nav-background: #090A12;
-  --nav-border:     #171824;
-  --nav-active-bg:  #2D2754;
-  --nav-active-icon:#D8B85A;
-  --nav-active-text:#F6E7B1;
-  --nav-icon:       #706B7C;
-  --nav-text:       #8D879A;
   --fs-cap:    11px;
   --fs-body:   13px;
   --fs-title:  15px;
@@ -116,7 +109,7 @@ html, body {
 .rtab.active { background: var(--vita-surface-raised); color: var(--vita-text); box-shadow: 0 1px 3px rgba(0,0,0,.3); }
 
 /* ── Content ── */
-.content { padding: var(--vita-page-pad) var(--vita-page-pad) calc(96px + env(safe-area-inset-bottom, 0px)); }
+.content { padding: var(--vita-page-pad) var(--vita-page-pad) calc(84px + env(safe-area-inset-bottom, 0px)); }
 
 /* ── Bento grid ── */
 .bento { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--vita-gap); }
@@ -371,38 +364,20 @@ canvas { display: block; }
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
   max-width: 430px; margin: 0 auto;
   display: flex; gap: 2px;
-  min-height: calc(88px + env(safe-area-inset-bottom, 0px));
-  background: var(--nav-background);
+  background: rgba(13,14,20,.97);
   -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
-  border-top: 1px solid var(--nav-border);
-  padding: 10px 8px calc(10px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--vita-line);
+  padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px));
 }
-.bn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 64px; padding: 8px 2px; position: relative; background: none; border: none; border-radius: 0; cursor: pointer; font-family: inherit; transition: transform .2s; }
-.bn::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(112px, calc(100% - 4px));
-  height: 58px;
-  border-radius: 24px;
-  background: var(--nav-active-bg);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 8px 18px rgba(45,39,84,.22);
-  opacity: 0;
-  transform: translate(-50%,-50%);
-  transition: opacity .18s, transform .18s;
-}
-.bn > svg,
-.bn > .bn-lbl,
-.bn > .bn-badge { position: relative; z-index: 1; }
-.bn svg { width: 24px; height: 24px; display: block; color: var(--nav-icon); fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: square; stroke-linejoin: miter; transition: color .2s; }
+.bn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: var(--tap-min); padding: 7px 2px; position: relative; background: none; border: none; border-radius: 10px; cursor: pointer; font-family: inherit; transition: transform .2s, background .2s; }
+.bn svg { width: 24px; height: 24px; display: block; color: var(--vita-faint); fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: square; stroke-linejoin: miter; transition: color .2s; }
 .bn .ic-fill { display: none; }
-.bn-lbl { font-size: 12px; font-weight: 600; color: var(--nav-text); letter-spacing: .15px; transition: color .2s; }
-.bn.active::before { opacity: 1; transform: translate(-50%,-50%) scale(1); }
-.bn.active svg { color: var(--nav-active-icon); }
-.bn.active .ic-line { display: block; }
-.bn.active .ic-fill { display: none; }
-.bn.active .bn-lbl { color: var(--nav-active-text); }
+.bn-lbl { font-size: var(--fs-cap); font-weight: 700; color: var(--vita-faint); letter-spacing: .2px; transition: color .2s; }
+.bn.active { background: var(--vita-active-bg); box-shadow: var(--vita-active-glow), inset 0 1px 0 rgba(255,255,255,.08); transform: translateY(-2px); }
+.bn.active svg { color: var(--vita-active); }
+.bn.active .ic-line { display: none; }
+.bn.active .ic-fill { display: block; }
+.bn.active .bn-lbl { color: #7FB6FF; }
 .bn-badge { position: absolute; top: 2px; right: 50%; transform: translateX(22px); min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: var(--vita-energy); color: #fff; font-size: var(--fs-cap); font-weight: 800; align-items: center; justify-content: center; border: 2px solid var(--vita-bg); }
 
 /* ── FAB (Plan My Week) ── */
@@ -439,8 +414,8 @@ canvas { display: block; }
 .metric-hero-target { font-size: 11px; color: var(--vita-muted); margin-top: 7px; font-weight: 600; }
 .metric-hero .pbar { margin-top: 9px; }
 .metric-empty { color: var(--vita-faint); font-size: 20px; font-weight: 800; }
-.proposal-card { display: flex; gap: 11px; align-items: flex-start; background: var(--vita-surface); border: 1px solid var(--vita-line); border-radius: var(--vita-radius-lg); padding: 13px; }
-.proposal-card.selected { border-color: rgba(48,209,88,.55); background: rgba(48,209,88,.08); }
+.proposal-card { display: flex; gap: 11px; align-items: flex-start; background: var(--vita-surface); border: 1px solid var(--vita-line); border-radius: var(--vita-radius-lg); padding: 13px; overflow: hidden; max-height: 300px; transition: max-height .35s ease, opacity .25s ease, padding .3s ease, transform .2s ease, box-shadow .2s ease; }
+.proposal-card.selected { background: var(--vita-surface-raised); box-shadow: 0 4px 18px rgba(0,0,0,.38), 0 0 0 1.5px rgba(255,255,255,.11); transform: translateY(-2px); }
 .proposal-select { margin-top: 3px; accent-color: var(--vita-good); }
 .proposal-title { font-size: 13px; font-weight: 800; }
 .proposal-time { font-size: var(--fs-body); color: var(--vita-muted); margin-top: 4px; line-height: 1.45; }
@@ -448,10 +423,13 @@ canvas { display: block; }
 .proposal-dur { display: inline-block; margin-top: 8px; margin-left: 6px; font-size: var(--fs-cap); font-weight: 700; color: var(--vita-muted); background: rgba(255,255,255,.05); border-radius: 8px; padding: 3px 7px; }
 .proposal-edit { flex-shrink: 0; background: rgba(255,255,255,.06); color: var(--vita-muted); border: none; border-radius: 8px; min-width: var(--tap-min); min-height: var(--tap-min); font-size: 13px; cursor: pointer; font-family: inherit; }
 .proposal-edit:active { background: rgba(255,255,255,.12); }
-.proposal-approve { flex-shrink: 0; background: rgba(48,209,88,.16); color: var(--vita-good); border: none; border-radius: 8px; min-height: var(--tap-min); padding: 0 11px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
-.proposal-approve:active { background: rgba(48,209,88,.28); }
-.proposal-card.approved { border-color: rgba(48,209,88,.3); background: rgba(48,209,88,.05); opacity: .75; }
+.proposal-approve { flex-shrink: 0; background: transparent; color: var(--vita-good); border: 1px solid rgba(48,209,88,.45); border-radius: 8px; min-height: var(--tap-min); padding: 0 11px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.proposal-approve:active { background: rgba(48,209,88,.12); }
+.proposal-card.approved { max-height: 44px; opacity: .55; padding-top: 11px; padding-bottom: 11px; border-color: rgba(48,209,88,.2); background: transparent; }
 .proposal-card.editing { display: block; border-color: rgba(90,200,250,.4); }
+.proposal-sticky-bar { position: sticky; bottom: calc(var(--vita-gap) + 82px + env(safe-area-inset-bottom, 0px)); z-index: 10; padding: 10px 0; }
+.proposal-sticky-bar .action-btn { background: var(--vita-active); color: #fff; box-shadow: 0 4px 16px rgba(10,132,255,.35); }
+.proposal-sticky-bar .action-btn:disabled { background: rgba(255,255,255,.08); color: var(--vita-faint); box-shadow: none; }
 .edit-field { width: 100%; padding: 9px 11px; background: rgba(255,255,255,.04); border: 1px solid var(--vita-line); border-radius: 9px; font-size: 13px; font-family: inherit; color: var(--vita-text); outline: none; }
 .edit-field:focus { border-color: rgba(90,200,250,.45); }
 .edit-row { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 8px; }
@@ -1223,11 +1201,12 @@ function renderCalendarContext(compact=false) {
     return `<div class="brief-card"><span class="status-pill info">Loading</span><div style="font-size:13px;color:var(--vita-muted);margin-top:10px">Đang kết nối Google Calendar...</div></div>`;
   }
   if (!gToken) {
-    return `<div class="brief-card">
-      <span class="status-pill">Not connected</span>
-      <div style="font-size:13px;color:var(--vita-muted);margin-top:10px">Kết nối read-only để Nexus hiểu nhịp tuần.</div>
-      <button class="action-btn" onclick="connectCalendar()" style="margin-top:10px">Kết nối Calendar</button>
-      ${calError ? `<div class="proposal-errors">${esc(calError)}</div>` : ''}
+    return `<div class="brief-card" style="text-align:center;padding:22px 16px">
+      <div style="font-size:28px;margin-bottom:10px">📅</div>
+      <div style="font-size:15px;font-weight:800;margin-bottom:6px">Chưa kết nối Calendar</div>
+      <div style="font-size:13px;color:var(--vita-muted);line-height:1.55;margin-bottom:14px">Kết nối read-only để Nexus đọc nhịp tuần và gợi ý đúng thời điểm.</div>
+      <button class="action-btn" onclick="connectCalendar()" style="background:var(--vita-active);color:#fff;max-width:240px;margin:0 auto">Kết nối Google Calendar →</button>
+      ${calError ? `<div class="proposal-errors" style="margin-top:10px">${esc(calError)}</div>` : ''}
     </div>`;
   }
   const s = summarizeCalendar();
@@ -1241,7 +1220,11 @@ function renderCalendarContext(compact=false) {
     </div>`;
   if (!s.timed) {
     return `${header}
-      <div class="cal-empty">📅 Lịch trống 7 ngày tới${s.allDay ? ` (${s.allDay} sự kiện cả ngày)` : ''}.<br>Chưa có gì để Nexus phân tích — cứ lên kế hoạch thoải mái.</div>
+      <div class="cal-empty">
+        <div>📅 Lịch trống 7 ngày tới${s.allDay ? ` (${s.allDay} sự kiện cả ngày)` : ''}.</div>
+        <div style="margin-top:4px">Chưa có gì để Nexus phân tích.</div>
+        <button class="action-btn secondary-btn" onclick="goPlanWeek()" style="margin-top:12px;max-width:200px;margin-left:auto;margin-right:auto">Plan My Week →</button>
+      </div>
     </div>`;
   }
   const v = (val, muted) => `<div class="cal-mini-val${muted ? ' muted' : ''}">${val}</div>`;
@@ -1490,7 +1473,11 @@ function renderProposalPreview() {
   const pending = pendingProposals.filter(ev => !ev.approved);
   const validCount = pending.filter(ev => !ev.errors.length).length;
   const batchBtn = pending.length > 1
-    ? `<button class="action-btn" onclick="approveSelected()" style="margin-top:var(--vita-gap)" ${selectedIdx.size ? '' : 'disabled'}>Approve ${selectedIdx.size} mục đã chọn</button>`
+    ? `<div class="proposal-sticky-bar">
+         <button class="action-btn" onclick="approveSelected()" ${selectedIdx.size ? '' : 'disabled'}>
+           Duyệt ${selectedIdx.size || ''} mục đã chọn
+         </button>
+       </div>`
     : '';
   return `<div class="stitle">Preview · ${validCount}/${pending.length} chờ duyệt</div>
     <div style="display:flex;flex-direction:column;gap:var(--vita-gap)">
