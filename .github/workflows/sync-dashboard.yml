@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'health-app/dashboard.html'
+      - '.github/opus-vita-deploy-pages.yml'
+      - '.github/workflows/sync-dashboard.yml'
   workflow_dispatch:
 
 jobs:
@@ -22,10 +24,18 @@ jobs:
 
           git clone https://x-access-token:${TOKEN}@github.com/lechihuy-droid/opus-vita.git /tmp/opus-vita
 
+          # 1. Dashboard → index.html
           cp health-app/dashboard.html /tmp/opus-vita/index.html
 
+          # 2. .nojekyll — Pages bỏ qua bước Build with Jekyll, serve file nguyên trạng
+          touch /tmp/opus-vita/.nojekyll
+
+          # 3. Workflow deploy tĩnh (upload root, không qua Jekyll)
+          mkdir -p /tmp/opus-vita/.github/workflows
+          cp .github/opus-vita-deploy-pages.yml /tmp/opus-vita/.github/workflows/deploy-pages.yml
+
           cd /tmp/opus-vita
-          git add index.html
+          git add -A
           git diff --cached --quiet && echo "No changes" && exit 0
-          git commit -m "sync: update dashboard from ai-project-opus"
+          git commit -m "sync: dashboard + static Pages deploy from ai-project-opus"
           git push
