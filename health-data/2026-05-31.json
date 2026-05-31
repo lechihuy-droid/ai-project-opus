@@ -44,9 +44,9 @@
       "total_alcohol": 0
     }
   ],
-  "water_ml": 0,
+  "water_ml": 2000,
   "steps": 0,
-  "sleep_hours": 0,
+  "sleep_hours": 6.5,
   "weight_kg": 0,
-  "notes": "Bữa trưa được log từ text. Thịt gà nấu hầm và rau bí luộc là giá trị ước tính theo khẩu phần đã cung cấp."
+  "notes": "Bữa trưa được log từ text. Thịt gà nấu hầm và rau bí luộc là giá trị ước tính theo khẩu phần đã cung cấp. Nước uống: 2L. Ngủ từ 04:00 đến 10:30 ngày 31/5, tổng 6.5 giờ."
 }
