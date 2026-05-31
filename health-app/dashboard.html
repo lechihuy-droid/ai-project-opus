@@ -423,10 +423,13 @@ canvas { display: block; }
 .brief-card { background: var(--vita-surface); border-radius: var(--vita-radius-lg); padding: 14px; margin-bottom: var(--vita-gap); }
 .brief-greeting { font-size: 17px; font-weight: 800; }
 .brief-date { font-size: 12px; color: var(--vita-muted); margin-top: 2px; }
-.action-btn { display: block; width: 100%; padding: 11px; min-height: var(--tap-min); background: rgba(255,255,255,.06); color: var(--vita-text); border: none; border-radius: 11px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
-.action-btn:active { background: rgba(255,255,255,.1); }
+.action-btn { display: block; width: 100%; padding: 11px; min-height: var(--tap-min); background: rgba(255,255,255,.06); color: var(--vita-muted); border: none; border-radius: 11px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background .15s, transform .1s; }
+.action-btn:active { background: rgba(255,255,255,.1); transform: scale(.98); }
 .action-btn:disabled { opacity: .45; cursor: not-allowed; }
-.secondary-btn { background: rgba(90,200,250,.12); color: var(--vita-info); }
+.primary-btn { background: var(--vita-active); color: #fff !important; box-shadow: 0 4px 18px rgba(10,132,255,.30); font-weight: 700; }
+.primary-btn:active { background: #0a72e0; box-shadow: none; }
+.secondary-btn { background: rgba(90,200,250,.08); color: var(--vita-info); border: 1px solid rgba(90,200,250,.22); }
+.ghost-btn { display: inline-flex; align-items: center; gap: 5px; width: auto; padding: 6px 12px; min-height: unset; background: transparent; color: var(--vita-faint); font-size: 12px; font-weight: 500; border-radius: 8px; }
 .danger-btn { background: rgba(255,69,58,.12); color: var(--vita-energy); }
 .nexus-input {
   width: 100%; min-height: 130px; resize: vertical;
@@ -906,7 +909,7 @@ function renderToday() {
 
   <div class="stitle">Vita Snapshot</div>
   ${snapshot}
-  <button class="action-btn" onclick="showView('vita')" style="margin-top:var(--vita-gap)">Xem chi tiết Vita →</button>
+  <button class="action-btn secondary-btn" onclick="showView('vita')" style="margin-top:var(--vita-gap)">Xem chi tiết Vita</button>
 
   <div class="stitle">Lịch tuần</div>
   ${renderCalendarContext(true)}
@@ -1317,7 +1320,7 @@ function renderCalendarContext(compact=false) {
         <div>Lịch trống 7 ngày tới${s.allDay ? ` (${s.allDay} sự kiện cả ngày)` : ''}.</div>
         <div style="margin-top:4px">Chưa có gì để Nexus phân tích.</div>
         ${calDebug ? `<div style="margin-top:8px;font-size:11px;color:var(--vita-faint);word-break:break-all">${esc(calDebug)}</div>` : ''}
-        <button class="action-btn secondary-btn" onclick="goPlanWeek()" style="margin-top:12px;max-width:200px;margin-left:auto;margin-right:auto">Plan My Week →</button>
+        <button class="action-btn primary-btn" onclick="goPlanWeek()" style="margin-top:12px;max-width:240px;margin-left:auto;margin-right:auto">Plan My Week</button>
       </div>
     </div>`;
   }
@@ -1374,12 +1377,14 @@ function renderCalendarTab() {
     </div>` : '';
   return `${renderCalendarContext(false)}
     ${gcalEmbed}
-    ${gToken ? `<button class="action-btn secondary-btn" style="margin-bottom:var(--vita-gap)" onclick="loadCalendarEvents().then(()=>renderContent()).catch(e=>{calError=e.message;renderContent();})">Refresh danh sách</button>` : ''}
-    <div class="stitle">Upcoming</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <div class="stitle" style="margin:0">Upcoming</div>
+      ${gToken ? `<button class="action-btn ghost-btn" onclick="loadCalendarEvents().then(()=>renderContent()).catch(e=>{calError=e.message;renderContent();})">↻ Refresh</button>` : ''}
+    </div>
     <div class="brief-card" style="padding:4px 14px">
       ${gToken ? (events || '<div style="font-size:13px;color:var(--vita-muted);padding:12px 0">Không có sự kiện sắp tới</div>') : '<div style="font-size:13px;color:var(--vita-muted);padding:12px 0">Kết nối calendar để xem lịch 7 ngày tới</div>'}
     </div>
-    <button class="action-btn" onclick="showView('actions')" style="margin-top:var(--vita-gap)">Plan My Week →</button>`;
+    <button class="action-btn primary-btn" onclick="showView('actions')" style="margin-top:var(--vita-gap)">Plan My Week</button>`;
 }
 
 function renderCalendarEvent(ev) {
