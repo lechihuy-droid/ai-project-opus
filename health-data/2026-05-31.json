@@ -42,11 +42,66 @@
       "total_saturated_fat": 5.2,
       "total_sodium_mg": 340,
       "total_alcohol": 0
+    },
+    {
+      "time": "19:00",
+      "name": "Tối",
+      "source": "photo+text",
+      "items": [
+        {
+          "name": "Thịt gà nấu hầm (ước tính, 200g)",
+          "grams": 200,
+          "kcal": 330,
+          "protein": 54.0,
+          "carb": 0.0,
+          "fat": 12.0,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 3.3,
+          "sodium_mg": 200,
+          "alcohol": 0
+        },
+        {
+          "name": "Ngọn bí luộc (200g)",
+          "grams": 200,
+          "kcal": 70,
+          "protein": 6.0,
+          "carb": 12.0,
+          "fat": 1.0,
+          "sugar": 2.0,
+          "fiber": 5.0,
+          "saturated_fat": 0.2,
+          "sodium_mg": 40,
+          "alcohol": 0
+        },
+        {
+          "name": "Suntory Takara Umeshu Sour 6% (2 lon x 330ml)",
+          "grams": 660,
+          "kcal": 297,
+          "protein": 0.0,
+          "carb": 13.9,
+          "fat": 0.0,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 0.0,
+          "sodium_mg": 130,
+          "alcohol": 31.2
+        }
+      ],
+      "total_kcal": 697,
+      "total_protein": 60.0,
+      "total_carb": 25.9,
+      "total_fat": 13.0,
+      "total_sugar": 2.0,
+      "total_fiber": 5.0,
+      "total_saturated_fat": 3.5,
+      "total_sodium_mg": 370,
+      "total_alcohol": 31.2
     }
   ],
   "water_ml": 2000,
   "steps": 0,
   "sleep_hours": 6.5,
   "weight_kg": 0,
-  "notes": "Bữa trưa được log từ text. Thịt gà nấu hầm và rau bí luộc là giá trị ước tính theo khẩu phần đã cung cấp. Nước uống: 2L. Ngủ từ 04:00 đến 10:30 ngày 31/5, tổng 6.5 giờ."
+  "notes": "Bữa trưa được log từ text. Thịt gà nấu hầm và rau bí luộc là giá trị ước tính theo khẩu phần đã cung cấp. Bữa tối log từ text + ảnh: 200g thịt gà hầm, 200g ngọn bí luộc, 2 lon x 330ml umeshu sour 6%; kcal/carb/alcohol của đồ uống tính theo nhãn 45kcal/100ml, carb 2.1g/100ml, alc 6%. Nước uống: 2L. Ngủ từ 04:00 đến 10:30 ngày 31/5, tổng 6.5 giờ."
 }
