@@ -32,6 +32,7 @@ Opus Nexus is a premium personal command center: dark, compact, operational, and
 
 4. **Existing Phase 3/4 UX**
    - Keep Today bento layout, conic rings, sleep bars, insight color-by-status, weekly nutrition summary, proposal elevation/collapse, sticky batch approve, and calendar empty CTAs.
+   - Vita > Sức khỏe should be coach-first: show diagnosis, priority risk, and next action before trend analytics/charts.
 
 5. **Inter typography and compact controls**
    - Keep Inter as the UI font.

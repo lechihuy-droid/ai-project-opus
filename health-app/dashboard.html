@@ -181,6 +181,7 @@ html, body {
 }
 .insight2.warn { border-left-color: var(--vita-warn); }
 .insight2.bad { border-left-color: var(--vita-bad); }
+.insight2.missing { border-left-color: var(--vita-info); }
 .insight2 .ih {
   font-size: var(--fs-cap);
   font-weight: 700;
@@ -194,22 +195,32 @@ html, body {
 }
 .insight2.warn .ih { color: var(--vita-warn); }
 .insight2.bad .ih { color: var(--vita-bad); }
+.insight2.missing .ih { color: var(--vita-info); }
 .insight2 p { font-size: var(--fs-body); color: var(--vita-text); line-height: 1.5; font-weight: 500; }
-.insight2 .ih-tips { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
-.insight2 .ih-tip { font-size: 12px; color: var(--vita-muted); line-height: 1.45; }
+.insight2 .ih-next { margin-top: 9px; font-size: 13px; color: var(--vita-text); line-height: 1.45; font-weight: 700; }
+.insight2 .ih-tips { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.insight2 .ih-tip { padding: 9px 10px; border-radius: 10px; background: rgba(255,255,255,.035); border: 1px solid rgba(255,255,255,.055); }
+.ih-risk { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; color: var(--vita-text); line-height: 1.35; font-weight: 800; }
+.ih-risk small { color: var(--vita-muted); font-size: 11px; font-weight: 700; white-space: nowrap; }
+.ih-action { margin-top: 4px; font-size: 12px; color: var(--vita-muted); line-height: 1.45; font-weight: 600; }
 
 /* ── Hero Calories card ── */
 .hero-cal {
-  background: linear-gradient(145deg, #1A0E0E, #110A0A);
-  border: 1px solid rgba(255,69,58,.2);
+  background: linear-gradient(145deg, #17130B, #0F0C08);
+  border: 1px solid rgba(255,159,10,.2);
   padding: 18px;
 }
+.hero-cal.good { background: linear-gradient(145deg,#0E1F17,#0A1510); border-color: rgba(48,209,88,.2); }
+.hero-cal.warn { background: linear-gradient(145deg,#17130B,#0F0C08); border-color: rgba(255,159,10,.24); }
+.hero-cal.bad { background: linear-gradient(145deg,#1A0E0E,#110A0A); border-color: rgba(255,69,58,.24); }
+.hero-cal.missing { background: linear-gradient(145deg,#0D1520,#0A1018); border-color: rgba(90,200,250,.2); }
 .hero-cal-inner { display: flex; align-items: center; gap: 16px; }
 .hero-cal-text { flex: 1; }
 .hero-cal-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--vita-muted); margin-bottom: 4px; }
 .hero-cal-val   { font-size: 42px; font-weight: 800; color: var(--vita-energy); line-height: 1; letter-spacing: -1.5px; }
 .hero-cal-target{ font-size: 13px; color: var(--vita-muted); margin-top: 3px; font-weight: 600; }
 .hero-cal-remain{ font-size: 13px; font-weight: 700; margin-top: 6px; }
+.hero-cal-diagnosis { font-size: 13px; line-height: 1.45; color: var(--vita-text); font-weight: 700; margin-top: 8px; }
 .hero-pbar { margin-top: 10px; height: 5px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
 .hero-pbar > div { height: 100%; background: linear-gradient(90deg, var(--vita-energy), var(--vita-carb)); border-radius: 3px; transition: width .4s; }
 
@@ -227,11 +238,14 @@ html, body {
 /* ── Macro Balance card ── */
 .macro-card { background: var(--vita-surface); border-radius: var(--vita-radius-lg); padding: 14px 14px 10px; }
 .macro-card .b-label { margin-bottom: 10px; }
-.macro-row { display: grid; grid-template-columns: 90px 1fr 52px; align-items: center; gap: 8px; padding: 5px 0; }
+.macro-row { display: grid; grid-template-columns: minmax(0,1fr) 76px; align-items: center; gap: 6px 8px; padding: 8px 0; }
+.macro-row.warn .macro-remain { color: var(--vita-warn); }
+.macro-row.bad .macro-remain { color: var(--vita-bad); }
 .macro-row:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,.04); }
 .macro-name { font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 5px; min-width: 0; }
 .macro-name .ui-ico { width: 14px; height: 14px; flex-shrink: 0; }
 .macro-pbar { height: 5px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
+.macro-row .macro-pbar { grid-column: 1 / -1; }
 .macro-pfill { height: 100%; border-radius: 3px; }
 .macro-remain { font-size: var(--fs-cap); color: var(--vita-muted); text-align: right; font-weight: 600; white-space: nowrap; }
 
@@ -281,6 +295,11 @@ canvas { display: block; }
 .wh-line { display: grid; grid-template-columns: 74px 1fr; gap: 8px; align-items: baseline; font-size: var(--fs-body); line-height: 1.35; }
 .wh-line span { color: var(--vita-muted); font-weight: 700; }
 .wh-line strong { min-width: 0; color: var(--vita-text); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wh-chips { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 3px; }
+.wh-chip { font-size: 11px; color: var(--vita-text); font-weight: 700; line-height: 1.25; padding: 5px 8px; border-radius: 8px; background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.055); }
+.wh-chip.warn { color: var(--vita-warn); background: rgba(255,159,10,.10); border-color: rgba(255,159,10,.18); }
+.wh-chip.bad { color: var(--vita-bad); background: rgba(255,69,58,.10); border-color: rgba(255,69,58,.18); }
+.health-tail-space { height: calc(28px + env(safe-area-inset-bottom, 0px)); grid-column: 1 / -1; }
 .week-body { border-top: 1px solid var(--vita-line); padding: 6px 8px 8px; background: rgba(0,0,0,.08); }
 .day-acc { background: var(--vita-surface); border-radius: var(--vita-radius-md); margin-bottom: 7px; overflow: hidden; }
 .week-body .day-acc { background: rgba(255,255,255,.035); border-radius: 10px; margin-bottom: 6px; }
@@ -2011,6 +2030,108 @@ function renderRing(val, max, color, label, size=56, decimals=0) {
 // ══════════════════════════════════════════════════════════
 // ║  TAB 1 — Sức khỏe                                       ║
 // ══════════════════════════════════════════════════════════
+function formatCurrentTarget(current, target, unit) {
+  const cur = Math.round(Number(current) || 0);
+  const max = Math.round(Number(target) || 0);
+  return `${cur.toLocaleString()} / ${max.toLocaleString()}${unit}`;
+}
+
+function riskItem(type, severity, title, detail, action, priority) {
+  return { type, severity, title, detail, action, priority };
+}
+
+function rankHealthRisks(risks) {
+  const score = { bad: 3, warn: 2, missing: 1, good: 0 };
+  return risks.sort((a, b) => {
+    const sev = (score[b.severity] || 0) - (score[a.severity] || 0);
+    return sev || a.priority - b.priority;
+  });
+}
+
+function buildHealthCoachInsight(shown, metrics) {
+  const { kcal, protein, fat, fiber } = metrics;
+  const risks = [];
+  const kcalRemain = TARGET.kcal - kcal;
+  const proteinLeft = TARGET.protein - protein;
+  const fatLeft = TARGET.fat - fat;
+
+  if (fiber < TARGET.fiber * 0.4) {
+    risks.push(riskItem('fiber', 'bad', 'Chất xơ rất thấp', formatCurrentTarget(fiber, TARGET.fiber, 'g'), 'Thêm salad, rau xanh hoặc trái cây trong bữa tiếp theo.', 10));
+  } else if (fiber < TARGET.fiber * 0.7) {
+    risks.push(riskItem('fiber', 'warn', 'Chất xơ còn thiếu', formatCurrentTarget(fiber, TARGET.fiber, 'g'), 'Ưu tiên rau xanh hoặc đậu/ngũ cốc nguyên hạt ở bữa tới.', 10));
+  }
+
+  if (fat > TARGET.fat) {
+    risks.push(riskItem('fat', 'bad', 'Fat đã vượt giới hạn', formatCurrentTarget(fat, TARGET.fat, 'g'), 'Nếu ăn thêm, chọn protein nạc và tránh đồ chiên/dầu.', 20));
+  } else if (fat >= TARGET.fat * 0.9) {
+    risks.push(riskItem('fat', 'warn', 'Fat gần giới hạn', formatCurrentTarget(fat, TARGET.fat, 'g'), 'Phần còn lại trong ngày nên hạn chế dầu, bơ, đồ chiên.', 20));
+  }
+
+  if (proteinLeft > 40) {
+    risks.push(riskItem('protein', 'warn', 'Protein còn thiếu nhiều', formatCurrentTarget(protein, TARGET.protein, 'g'), 'Thêm 1 phần protein nạc như ức gà, cá, trứng hoặc sữa chua Hy Lạp.', 30));
+  } else if (proteinLeft > 15) {
+    risks.push(riskItem('protein', 'warn', 'Protein còn thiếu', formatCurrentTarget(protein, TARGET.protein, 'g'), 'Bữa tiếp theo nên có một nguồn protein rõ ràng.', 30));
+  }
+
+  if (kcal <= 0) {
+    risks.push(riskItem('kcal', 'missing', 'Chưa có log năng lượng', 'Chưa log bữa ăn', 'Gửi ảnh bữa ăn cho Claude để cập nhật đánh giá.', 40));
+  } else if (kcalRemain > 600) {
+    risks.push(riskItem('kcal', 'warn', 'Thiếu năng lượng khá nhiều', `${kcal.toLocaleString()} / ${TARGET.kcal.toLocaleString()} kcal`, 'Ăn thêm một bữa cân bằng, ưu tiên protein và chất xơ.', 40));
+  } else if (kcalRemain > 150) {
+    risks.push(riskItem('kcal', 'warn', 'Thiếu năng lượng nhẹ', `${kcal.toLocaleString()} / ${TARGET.kcal.toLocaleString()} kcal`, 'Có thể ăn thêm nhẹ, nhưng chọn theo macro còn thiếu.', 40));
+  } else if (kcalRemain < -150) {
+    risks.push(riskItem('kcal', 'bad', 'Vượt mục tiêu kcal', `${kcal.toLocaleString()} / ${TARGET.kcal.toLocaleString()} kcal`, 'Phần còn lại trong ngày nên ưu tiên nước, ngủ và vận động nhẹ.', 40));
+  }
+
+  const missing = [];
+  if (!(shown.water_ml > 0)) missing.push('nước');
+  if (!(shown.sleep_hours > 0)) missing.push('ngủ');
+  if (!(shown.steps > 0)) missing.push('vận động');
+  if (missing.length) {
+    risks.push(riskItem('missing', 'missing', 'Thiếu dữ liệu sinh hoạt', `Chưa log ${missing.join(', ')}`, 'Sync hoặc log nhanh để đánh giá hôm nay chính xác hơn.', 50));
+  }
+
+  const ranked = rankHealthRisks(risks);
+  const status = ranked.some(r => r.severity === 'bad') ? 'bad'
+    : ranked.some(r => r.severity === 'warn') ? 'warn'
+    : ranked.length ? 'missing'
+    : 'good';
+  const topSummary = ranked.length
+    ? ranked.slice(0, 3).map(r => r.title.toLowerCase()).join(', ')
+    : 'đang đi đúng hướng hôm nay';
+  const actionRisk = ranked.find(r => r.type !== 'missing') || ranked[0];
+  const nextAction = actionRisk
+    ? actionRisk.action
+    : 'Tiếp tục giữ nhịp ăn uống, nước, ngủ và vận động như hiện tại.';
+
+  return { status, risks: ranked, topSummary, nextAction, fatLeft, proteinLeft, kcalRemain };
+}
+
+function renderHealthCoachBlock(insight) {
+  const icon = insight.status === 'good'
+    ? uiIcon('i-check', '', 'style="color:var(--vita-good)"')
+    : (insight.status === 'bad'
+      ? uiIcon('i-critical', '', 'style="color:var(--vita-bad)"')
+      : insight.status === 'missing'
+        ? uiIcon('i-alert', '', 'style="color:var(--vita-info)"')
+        : uiIcon('i-alert', '', 'style="color:var(--vita-warn)"'));
+  const statusClass = insight.status === 'good' ? '' : ` ${insight.status}`;
+  const title = insight.status === 'good' ? 'Đang ổn hôm nay' : 'Cần xử lý hôm nay';
+  const risksHtml = insight.risks.length
+    ? `<div class="ih-tips">${insight.risks.slice(0, 4).map(r => `<div class="ih-tip">
+        <div class="ih-risk"><span>${esc(r.title)}</span><small>${esc(r.detail)}</small></div>
+        <div class="ih-action">${esc(r.action)}</div>
+      </div>`).join('')}</div>`
+    : '';
+
+  return `<div class="insight2${statusClass}">
+    <div class="ih"><span>${icon}</span><span>${title}</span></div>
+    <p>${esc(`Hôm nay: ${insight.topSummary}.`)}</p>
+    <div class="ih-next">${esc(`Next action: ${insight.nextAction}`)}</div>
+    ${risksHtml}
+  </div>`;
+}
+
 function renderHealth(logs) {
   if (!logs.length) return `<div class="loading">${uiIcon('i-health-heart', '', 'style="color:var(--vita-faint);width:26px;height:26px;margin-bottom:8px"')}<br>Chưa có dữ liệu sức khỏe<br>
     <span style="font-size:12px;color:var(--vita-faint);margin-top:8px;display:block">Gửi ảnh bữa ăn cho Claude để bắt đầu</span></div>
@@ -2027,6 +2148,7 @@ function renderHealth(logs) {
   const fiber    = totalMacro(shown, 'fiber');
   const kcalPct  = Math.min(100, (kcal / TARGET.kcal) * 100);
   const remain   = TARGET.kcal - kcal;
+  const coach    = buildHealthCoachInsight(shown, { kcal, protein, carb, fat, fiber });
   const withW    = logs.filter(l => l.weight_kg > 0);
   const wLatest  = withW[0];
   const wFirst   = withW[withW.length - 1];
@@ -2035,6 +2157,7 @@ function renderHealth(logs) {
   // Hero calories
   const heroLabel = isToday ? 'Năng lượng hôm nay' : `Năng lượng · ${fmtFull(shown.date)}`;
   const remainStr = remain > 0 ? `Còn ${remain} kcal để đạt mục tiêu` : `Vượt ${-remain} kcal so với mục tiêu`;
+  const heroTone = coach.status === 'bad' ? 'var(--vita-energy)' : (coach.status === 'good' ? 'var(--vita-good)' : 'var(--vita-warn)');
   const remainColor = remain > 0 ? 'var(--vita-warn)' : 'var(--vita-energy)';
 
   // Mini rings
@@ -2043,34 +2166,38 @@ function renderHealth(logs) {
   const waterMax  = TARGET.water_ml / 1000;
   const stepsK    = shown.steps > 0 ? +(shown.steps / 1000).toFixed(1) : 0;
   const stepsMaxK = TARGET.steps / 1000;
+  const ringStatus = (ok, text) => ok ? '' : `<div class="ring-empty">${text}</div>`;
 
   // Macro balance rows
   const macroRows = [
-    { name: 'Protein',  val: Math.round(protein), max: TARGET.protein, color: 'var(--vita-protein)', unit: 'g' },
-    { name: 'Carb',     val: Math.round(carb),    max: TARGET.carb,    color: 'var(--vita-carb)',   unit: 'g' },
-    { name: 'Fat',      val: Math.round(fat),      max: TARGET.fat,    color: 'var(--vita-fat)',    unit: 'g' },
-    { name: 'Chất xơ', val: Math.round(fiber),    max: TARGET.fiber,  color: 'var(--vita-fiber)',  unit: 'g' },
+    { key: 'protein', name: 'Protein', val: Math.round(protein), max: TARGET.protein, color: 'var(--vita-protein)', unit: 'g' },
+    { key: 'carb', name: 'Carb', val: Math.round(carb), max: TARGET.carb, color: 'var(--vita-carb)', unit: 'g' },
+    { key: 'fat', name: 'Fat', val: Math.round(fat), max: TARGET.fat, color: 'var(--vita-fat)', unit: 'g' },
+    { key: 'fiber', name: 'Chất xơ', val: Math.round(fiber), max: TARGET.fiber, color: 'var(--vita-fiber)', unit: 'g' },
   ].map(m => {
     const pct = Math.min(100, m.max > 0 ? (m.val / m.max) * 100 : 0);
     const left = m.max - m.val;
     const leftStr = left > 0 ? `còn ${left}${m.unit}` : `đạt target`;
     const leftColor = left > 0 ? 'var(--vita-muted)' : 'var(--vita-good)';
     const valColor = m.val > 0 ? m.color : 'var(--vita-faint)';
-    const valStr = m.val > 0 ? `${m.val}${m.unit}` : '—';
+    const valStr = formatCurrentTarget(m.val, m.max, m.unit);
+    const risk = coach.risks.find(r => r.type === m.key);
+    const rowClass = risk ? ` ${risk.severity}` : '';
+    const remainText = risk ? risk.title : leftStr;
     const macroIcon = m.name === 'Protein'
       ? '<svg class="ui-ico" viewBox="0 0 24 24"><use href="#i-health-heart"/></svg>'
       : (m.name === 'Chất xơ'
         ? '<svg class="ui-ico" viewBox="0 0 24 24"><use href="#i-fiber-leaf"/></svg>'
         : '');
-    return `<div class="macro-row">
+    return `<div class="macro-row${rowClass}">
       <div class="macro-name" style="color:${valColor}">${macroIcon}<span>${m.name}</span> <strong>${valStr}</strong></div>
       <div class="macro-pbar"><div class="macro-pfill" style="width:${pct}%;background:${m.color}"></div></div>
-      <div class="macro-remain" style="color:${leftColor}">${leftStr}</div>
+      <div class="macro-remain"${risk ? '' : ` style="color:${leftColor}"`}>${remainText}</div>
     </div>`;
   }).join('');
 
-  // Insight card
-  const insightHtml = renderInsight(shown, kcal, protein, fiber);
+  // Coach card
+  const insightHtml = renderHealthCoachBlock(coach);
 
   // Weight card
   const weightVal = wLatest ? `${wLatest.weight_kg}<span class="b-unit">kg</span>` : '<span style="color:var(--vita-faint)">chưa log</span>';
@@ -2080,17 +2207,18 @@ function renderHealth(logs) {
 
   return `
   <!-- Hero calories -->
-  <div class="hero-cal b span4" style="min-height:auto;margin-bottom:0">
+  <div class="hero-cal ${coach.status} b span4" style="min-height:auto;margin-bottom:0">
     <div class="hero-cal-label">${heroLabel}</div>
     <div class="hero-cal-inner">
-      <div>${renderRing(kcal, TARGET.kcal, 'var(--vita-energy)', 'kcal', 72)}</div>
+      <div>${renderRing(kcal, TARGET.kcal, heroTone, 'kcal', 72)}</div>
       <div class="hero-cal-text">
-        <div class="hero-cal-val">${kcal.toLocaleString()}</div>
+        <div class="hero-cal-val" style="color:${heroTone}">${kcal.toLocaleString()}</div>
         <div class="hero-cal-target">/ ${TARGET.kcal.toLocaleString()} kcal mục tiêu</div>
         <div class="hero-cal-remain" style="color:${remainColor}">${remainStr}</div>
+        <div class="hero-cal-diagnosis">${esc(`Diagnosis: ${coach.topSummary}.`)}</div>
       </div>
     </div>
-    <div class="hero-pbar" style="margin-top:12px"><div style="width:${kcalPct}%"></div></div>
+    <div class="hero-pbar" style="margin-top:12px"><div style="width:${kcalPct}%;background:linear-gradient(90deg,${heroTone},var(--vita-carb))"></div></div>
   </div>
 
   <!-- Mini rings -->
@@ -2100,12 +2228,15 @@ function renderHealth(logs) {
     </div>
     <div class="ring-cell">
       ${renderRing(waterL, waterMax, 'var(--vita-water)', 'Nước (L)', 52, 1)}
+      ${ringStatus(shown.water_ml > 0, 'Chưa log')}
     </div>
     <div class="ring-cell">
       ${renderRing(sleepVal, TARGET.sleep, 'var(--vita-sleep)', 'Giấc ngủ', 52, 1)}
+      ${ringStatus(shown.sleep_hours > 0, 'Chưa log')}
     </div>
     <div class="ring-cell">
       ${renderRing(stepsK, stepsMaxK, 'var(--vita-steps)', 'Vận động', 52)}
+      ${ringStatus(shown.steps > 0, 'Chưa đồng bộ')}
     </div>
   </div>
 
@@ -2157,6 +2288,7 @@ function renderHealth(logs) {
       <div class="b-label">${uiIcon('i-steps')}Vận động</div>
       <div class="chart-wrap"><canvas id="c-steps"></canvas></div>
     </div>
+    <div class="health-tail-space"></div>
   </div>`;
 }
 
@@ -2314,12 +2446,17 @@ function renderWeekAcc(week) {
   const fiberLow = logs.filter(l => totalMacro(l, 'fiber') < TARGET.fiber * 0.6).length;
   const kcalDelta = avgKcal - TARGET.kcal;
   const kcalTone = Math.abs(kcalDelta) < 150 ? 'gần mục tiêu' : (kcalDelta > 0 ? `vượt TB ${Math.round(kcalDelta)} kcal/ngày` : `thiếu TB ${Math.round(Math.abs(kcalDelta))} kcal/ngày`);
+  const kcalToneClass = Math.abs(kcalDelta) < 150 ? '' : ' warn';
   const outlier = logs
     .map(l => ({ log: l, delta: Math.abs(totalKcal(l) - TARGET.kcal) }))
     .sort((a, b) => b.delta - a.delta)[0]?.log;
   const outlierText = outlier ? `${fmt(outlier.date)} · ${totalKcal(outlier).toLocaleString()} kcal` : '—';
-  const proteinText = proteinHit >= Math.ceil(days * 0.7) ? `protein ổn ${proteinHit}/${days}` : `protein hụt ${days - proteinHit}/${days}`;
-  const fiberText = fiberLow > 0 ? `fiber thấp ${fiberLow}/${days}` : 'fiber ổn';
+  const proteinMiss = days - proteinHit;
+  const proteinTone = proteinHit >= Math.ceil(days * 0.7) ? `Protein ổn: ${proteinHit}/${days} ngày` : `Protein hụt: ${proteinMiss}/${days} ngày`;
+  const fiberTone = fiberLow > 0 ? `Fiber thấp: ${fiberLow}/${days} ngày` : 'Fiber ổn';
+  const trendText = Math.abs(kcalDelta) < 150 && proteinMiss <= Math.floor(days * 0.3) && fiberLow === 0
+    ? 'Trend tuần ổn'
+    : 'Trend cần chỉnh';
   const dayRows = logs.map(l => renderDayAcc(l, false)).join('');
 
   return `<details class="week-acc">
@@ -2330,8 +2467,14 @@ function renderWeekAcc(week) {
       </div>
       <div class="wh-kcal">${Math.round(avgKcal).toLocaleString()}<small>kcal/ngày</small></div>
       <div class="wh-meta">
-        <div class="wh-line"><span>Nhịp tuần</span><strong>${kcalTone} · ${proteinText}</strong></div>
-        <div class="wh-line"><span>Cần nhìn</span><strong>${fiberText} · lệch nhất ${outlierText}</strong></div>
+        <div class="wh-line"><span>Đánh giá</span><strong>${trendText}</strong></div>
+        <div class="wh-line"><span>Cần nhìn</span><strong>${fiberLow > 0 ? 'Ưu tiên chất xơ' : 'Duy trì nhịp hiện tại'}</strong></div>
+      </div>
+      <div class="wh-chips">
+        <span class="wh-chip${kcalToneClass}">${kcalTone}</span>
+        <span class="wh-chip${proteinMiss ? ' warn' : ''}">${proteinTone}</span>
+        <span class="wh-chip${fiberLow ? ' bad' : ''}">${fiberTone}</span>
+        <span class="wh-chip">Lệch nhất: ${outlierText}</span>
       </div>
     </summary>
     <div class="week-body">${dayRows}</div>
