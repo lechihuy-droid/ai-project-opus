@@ -1186,7 +1186,7 @@ async function connectCalendar() {
 
 async function loadCalendarEvents(days=7) {
   if (!gapiReady) await initGapiClient();
-  const timeMin = new Date();
+  const timeMin = new Date(); timeMin.setHours(0, 0, 0, 0); // từ 00:00 hôm nay để gồm cả event đã qua trong ngày
   const timeMax = addDays(timeMin, days);
   const res = await gapi.client.calendar.events.list({
     calendarId: 'primary',
