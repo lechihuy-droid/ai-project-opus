@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#090A0F">
 <title>Opus Nexus</title>
+<link rel="icon" type="image/svg+xml" href="assets/opus-mark.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
@@ -35,6 +36,7 @@
   --vita-sleep:   #8E7CFF;
   --vita-steps:   #FFD60A;
   --vita-weight:  #30D158;
+  --opus-gold:    #C9A84C;
   /* ── Status ── */
   --vita-good: #30D158;
   --vita-warn: #FF9F0A;
@@ -99,6 +101,9 @@ html, body {
 }
 .tb-row1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 .tb-row1 h1 { font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
+.brand-mark { width: 24px; height: 24px; color: var(--opus-gold); flex-shrink: 0; }
+.pat-mark { width: 58px; height: 58px; color: var(--opus-gold); margin-bottom: 16px; }
+.ui-ico { width: 18px; height: 18px; display: inline-block; color: currentColor; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: square; stroke-linejoin: miter; }
 .sync-btn { font-size: 12px; padding: 6px 11px; min-height: var(--tap-min); background: rgba(48,209,88,.15); color: var(--vita-good); border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: inherit; }
 .pat-btn  { font-size: 12px; padding: 6px 10px; min-height: var(--tap-min); background: rgba(255,255,255,.06); color: var(--vita-muted); border: none; border-radius: 8px; cursor: pointer; font-family: inherit; }
 
@@ -162,7 +167,8 @@ html, body {
   background: conic-gradient(var(--c) calc(var(--p)*1%), rgba(255,255,255,.07) 0);
 }
 .ring::after { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: var(--vita-surface); }
-.ring i { position: absolute; inset: 0; display: grid; place-items: center; font-size: 15px; z-index: 1; font-style: normal; }
+.ring i { position: absolute; inset: 0; display: grid; place-items: center; font-size: 15px; z-index: 1; font-style: normal; color: var(--c); }
+.ring i svg { width: 20px; height: 20px; }
 .ringtxt { min-width: 0; }
 .ringtxt .sb-val { font-size: 22px; }
 .ringtxt small { font-size: var(--fs-cap); color: var(--vita-muted); font-weight: 600; display: block; margin-top: 2px; }
@@ -226,7 +232,8 @@ html, body {
 .macro-card .b-label { margin-bottom: 10px; }
 .macro-row { display: grid; grid-template-columns: 90px 1fr 52px; align-items: center; gap: 8px; padding: 5px 0; }
 .macro-row:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,.04); }
-.macro-name { font-size: 12px; font-weight: 700; }
+.macro-name { font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 5px; min-width: 0; }
+.macro-name .ui-ico { width: 14px; height: 14px; flex-shrink: 0; }
 .macro-pbar { height: 5px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
 .macro-pfill { height: 100%; border-radius: 3px; }
 .macro-remain { font-size: var(--fs-cap); color: var(--vita-muted); text-align: right; font-weight: 600; white-space: nowrap; }
@@ -350,6 +357,7 @@ canvas { display: block; }
 
 /* ── Loading / error ── */
 .loading { text-align: center; padding: 48px 20px; color: var(--vita-muted); font-size: 14px; }
+.loading .brand-mark { display: block; width: 30px; height: 30px; margin: 0 auto 10px; }
 .spin { font-size: 26px; display: block; margin-bottom: 10px; animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .err { background: rgba(255,69,58,.08); border-left: 3px solid var(--vita-energy); border-radius: 10px; padding: 14px; font-size: 13px; color: #FF7B6E; line-height: 1.6; }
@@ -387,11 +395,11 @@ canvas { display: block; }
 .bn > svg,
 .bn > .bn-lbl,
 .bn > .bn-badge { position: relative; z-index: 1; }
-.bn svg { width: 24px; height: 24px; display: block; fill: var(--nav-icon); transition: fill .2s; }
+.bn svg { width: 24px; height: 24px; display: block; color: var(--nav-icon); fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: square; stroke-linejoin: miter; transition: color .2s; }
 .bn .ic-fill { display: none; }
 .bn-lbl { font-size: 12px; font-weight: 600; color: var(--nav-text); letter-spacing: .15px; transition: color .2s; }
 .bn.active::before { opacity: 1; transform: translate(-50%,-50%) scale(1); }
-.bn.active svg { fill: var(--nav-active-icon); }
+.bn.active svg { color: var(--nav-active-icon); }
 .bn.active .ic-line { display: block; }
 .bn.active .ic-fill { display: none; }
 .bn.active .bn-lbl { color: var(--nav-active-text); }
@@ -399,7 +407,7 @@ canvas { display: block; }
 
 /* ── FAB (Plan My Week) ── */
 .fab { position: fixed; right: 16px; z-index: 59; bottom: calc(82px + env(safe-area-inset-bottom, 0px)); width: 52px; height: 52px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--vita-active), #0066CC); border: none; cursor: pointer; box-shadow: 0 6px 20px rgba(10,132,255,.4); }
-.fab svg { width: 26px; height: 26px; fill: #fff; }
+.fab svg { width: 26px; height: 26px; color: #fff; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: square; stroke-linejoin: miter; }
 .fab:active { transform: scale(.94); }
 
 /* ── Vita sub-controls (in content) ── */
@@ -476,7 +484,14 @@ canvas { display: block; }
 <body>
 <!-- PAT Screen -->
 <div id="pat-screen" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px">
-  <div style="font-size:52px;margin-bottom:16px">🌐</div>
+  <svg class="pat-mark" viewBox="0 0 64 64" aria-label="Opus Nexus mark">
+    <circle cx="32" cy="32" r="27" stroke="currentColor" stroke-width="2" fill="none"/>
+    <path d="M32 12L49 48H15L32 12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="miter" fill="none"/>
+    <path d="M22 43H42" stroke="currentColor" stroke-width="2" stroke-linecap="square" fill="none"/>
+    <path d="M32 23L37 32L32 41L27 32L32 23Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="miter" fill="none"/>
+    <path d="M32 18V23M32 41V47" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" fill="none"/>
+    <circle cx="32" cy="32" r="2.3" fill="currentColor"/>
+  </svg>
   <div style="font-size:22px;font-weight:800;margin-bottom:6px">Opus Nexus</div>
   <div style="font-size:13px;color:var(--vita-muted);text-align:center;margin-bottom:28px">Nhập GitHub PAT để truy cập dữ liệu</div>
   <div style="width:100%;background:var(--vita-surface);border-radius:14px;padding:18px;margin-bottom:14px;border:1px solid var(--vita-line)">
@@ -490,6 +505,57 @@ canvas { display: block; }
 <div id="app">
   <!-- Phosphor icon sprite (MIT) — inline, no CDN -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-opus-mark" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="27" stroke="currentColor" stroke-width="2" fill="none"/>
+      <path d="M32 12L49 48H15L32 12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="miter" fill="none"/>
+      <path d="M22 43H42" stroke="currentColor" stroke-width="2" stroke-linecap="square" fill="none"/>
+      <path d="M32 23L37 32L32 41L27 32L32 23Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="miter" fill="none"/>
+      <path d="M32 18V23M32 41V47" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" fill="none"/>
+      <circle cx="32" cy="32" r="2.3" fill="currentColor"/>
+    </symbol>
+    <symbol id="i-sunrise" viewBox="0 0 24 24">
+      <path d="M4 17H20"/>
+      <path d="M7 14C7.8 11.2 9.7 9.5 12 9.5C14.3 9.5 16.2 11.2 17 14"/>
+      <path d="M12 4V7M5.8 8.2L7.8 10.2M18.2 8.2L16.2 10.2"/>
+    </symbol>
+    <symbol id="i-vita-shield" viewBox="0 0 24 24">
+      <path d="M12 3C7 4 4 6 4 10C4 15.5 9 20.5 12 21.5C15 20.5 20 15.5 20 10C20 6 17 4 12 3Z" opacity=".65"/>
+      <path d="M6.5 12H9.25L10.75 8.5L12.25 15.5L13.75 11L15.25 13H17.5"/>
+    </symbol>
+    <symbol id="i-calendar-days" viewBox="0 0 24 24">
+      <path d="M7 3V6M17 3V6"/>
+      <path d="M4.5 8.5H19.5"/>
+      <path d="M5 5H19V20H5V5Z"/>
+      <path d="M8 12H9M12 12H13M16 12H17M8 16H9M12 16H13"/>
+    </symbol>
+    <symbol id="i-shield-check" viewBox="0 0 24 24">
+      <path d="M12 3C7 4 4 6 4 10C4 15.5 9 20.5 12 21.5C15 20.5 20 15.5 20 10C20 6 17 4 12 3Z"/>
+      <path d="M8.5 12L11 14.5L16 9.5"/>
+    </symbol>
+    <symbol id="i-spark-line" viewBox="0 0 24 24">
+      <path d="M12 3L14.4 9.6L21 12L14.4 14.4L12 21L9.6 14.4L3 12L9.6 9.6L12 3Z"/>
+      <path d="M18 3V7M16 5H20"/>
+    </symbol>
+    <symbol id="i-health-heart" viewBox="0 0 24 24">
+      <path d="M12 20C8.1 16.7 5 14.1 5 10.4C5 8.2 6.6 6.6 8.8 6.6C10.1 6.6 11.2 7.2 12 8.4C12.8 7.2 13.9 6.6 15.2 6.6C17.4 6.6 19 8.2 19 10.4C19 14.1 15.9 16.7 12 20Z"/>
+    </symbol>
+    <symbol id="i-fiber-leaf" viewBox="0 0 24 24">
+      <path d="M5.2 18.8C6.1 11.6 11.1 6.4 18.9 5.1C18.2 12.7 13.4 17.9 5.2 18.8Z"/>
+      <path d="M6.6 17.4L17.4 6.6"/>
+      <path d="M10.2 14.1H14.8M12.6 11.7H16" opacity=".9"/>
+    </symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24">
+      <path d="M12 21C8.4 21 5.5 18.3 5.5 14.9C5.5 11.9 7.5 9.9 9 8.2C10.2 6.8 11.1 5.5 10.6 3C14.4 5 18.5 8.8 18.5 14.6C18.5 18.2 15.7 21 12 21Z"/>
+      <path d="M12 18C10.5 18 9.4 16.9 9.4 15.5C9.4 14.3 10.2 13.4 11 12.5C11.7 11.7 12.2 10.9 12 9.6C13.9 10.7 15 12.7 15 15.2C15 16.8 13.8 18 12 18Z"/>
+    </symbol>
+    <symbol id="i-steps" viewBox="0 0 24 24">
+      <path d="M8.2 4.5C6.9 5.2 6.4 6.8 7.1 8.1L8.2 10.2C8.9 11.5 10.5 12 11.8 11.3C13.1 10.6 13.6 9 12.9 7.7L11.8 5.6C11.1 4.3 9.5 3.8 8.2 4.5Z"/>
+      <path d="M14.7 12.7C13.4 13.4 12.9 15 13.6 16.3L14.2 17.4C14.9 18.7 16.5 19.2 17.8 18.5C19.1 17.8 19.6 16.2 18.9 14.9L18.3 13.8C17.6 12.5 16 12 14.7 12.7Z"/>
+    </symbol>
+    <symbol id="i-sleep" viewBox="0 0 24 24">
+      <path d="M19 16.4C17.6 17.4 15.8 18 13.9 18C9.5 18 6 14.5 6 10.1C6 8.2 6.6 6.4 7.6 5C4.8 6.2 3 8.9 3 12C3 16.4 6.6 20 11 20C14.1 20 16.8 18.2 18 15.4L19 16.4Z"/>
+      <path d="M14 5H19L14 10H19"/>
+    </symbol>
     <symbol id="i-home" viewBox="0 0 256 256"><path d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z"/></symbol>
     <symbol id="i-home-fill" viewBox="0 0 256 256"><path d="M224,120v96a8,8,0,0,1-8,8H160a8,8,0,0,1-8-8V164a4,4,0,0,0-4-4H108a4,4,0,0,0-4,4v52a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V120a16,16,0,0,1,4.69-11.31l80-80a16,16,0,0,1,22.62,0l80,80A16,16,0,0,1,224,120Z"/></symbol>
     <symbol id="i-vita" viewBox="0 0 256 256"><path d="M240,128a8,8,0,0,1-8,8H204.94l-37.78,75.58A8,8,0,0,1,160,216h-.4a8,8,0,0,1-7.08-5.14L95.35,60.76,63.28,131.31A8,8,0,0,1,56,136H24a8,8,0,0,1,0-16H50.85L88.72,36.69a8,8,0,0,1,14.76.46l57.51,151,31.85-63.71A8,8,0,0,1,200,120h32A8,8,0,0,1,240,128Z"/></symbol>
@@ -501,7 +567,7 @@ canvas { display: block; }
   </svg>
   <div class="topbar">
     <div class="tb-row1">
-      <h1>🌐 Opus Nexus <span id="streak-badge"></span></h1>
+      <h1><svg class="brand-mark" viewBox="0 0 64 64"><use href="#i-opus-mark"/></svg>Opus Nexus <span id="streak-badge"></span></h1>
       <div style="display:flex;gap:6px">
         <button class="sync-btn" onclick="reload()">↻ Sync</button>
         <button class="pat-btn" onclick="resetPat()">🔑</button>
@@ -509,26 +575,26 @@ canvas { display: block; }
     </div>
   </div>
   <div class="content" id="content">
-    <div class="loading"><span class="spin">🌿</span>Đang tải...</div>
+    <div class="loading"><svg class="brand-mark spin" viewBox="0 0 64 64"><use href="#i-opus-mark"/></svg>Đang tải...</div>
   </div>
   <button class="fab" onclick="goPlanWeek()" aria-label="Plan My Week" title="Plan My Week">
-    <svg viewBox="0 0 256 256"><use href="#i-spark"/></svg>
+    <svg viewBox="0 0 24 24"><use href="#i-spark-line"/></svg>
   </button>
   <nav class="botnav">
     <button class="bn active" id="nv-today" onclick="showView('today')">
-      <svg viewBox="0 0 256 256"><use class="ic-line" href="#i-home"/><use class="ic-fill" href="#i-home-fill"/></svg>
+      <svg viewBox="0 0 24 24"><use href="#i-sunrise"/></svg>
       <span class="bn-lbl">Today</span>
     </button>
     <button class="bn" id="nv-vita" onclick="showView('vita')">
-      <svg viewBox="0 0 256 256"><use href="#i-vita"/></svg>
+      <svg viewBox="0 0 24 24"><use href="#i-vita-shield"/></svg>
       <span class="bn-lbl">Vita</span>
     </button>
     <button class="bn" id="nv-calendar" onclick="showView('calendar')">
-      <svg viewBox="0 0 256 256"><use class="ic-line" href="#i-cal"/><use class="ic-fill" href="#i-cal-fill"/></svg>
+      <svg viewBox="0 0 24 24"><use href="#i-calendar-days"/></svg>
       <span class="bn-lbl">Calendar</span>
     </button>
     <button class="bn" id="nv-actions" onclick="showView('actions')">
-      <svg viewBox="0 0 256 256"><use class="ic-line" href="#i-tray"/><use class="ic-fill" href="#i-tray-fill"/></svg>
+      <svg viewBox="0 0 24 24"><use href="#i-shield-check"/></svg>
       <span class="bn-lbl">Approval</span>
       <span class="bn-badge" id="approval-badge" style="display:none"></span>
     </button>
@@ -639,7 +705,7 @@ function goPlanWeek() {
 }
 
 async function reload() {
-  document.getElementById('content').innerHTML = '<div class="loading"><span class="spin">🌿</span>Đang tải...</div>';
+  document.getElementById('content').innerHTML = '<div class="loading"><svg class="brand-mark spin" viewBox="0 0 64 64"><use href="#i-opus-mark"/></svg>Đang tải...</div>';
   try {
     const [h, w, f] = await Promise.all([
       loadModule('health-data',  currentRange),
@@ -742,7 +808,7 @@ function renderToday() {
   const snapshot = `
   <div class="snap-grid">
     <div class="sb span2 sb-hero">
-      <span class="sb-ico">🔥</span>
+      <span class="sb-ico"><svg class="ui-ico" viewBox="0 0 24 24" style="color:var(--vita-energy)"><use href="#i-flame"/></svg></span>
       <div>
         <div class="sb-label">Năng lượng</div>
         <span class="sb-val">${kcalLabel}</span><span class="sb-unit">/ ${TARGET.kcal.toLocaleString()} kcal</span>
@@ -753,19 +819,19 @@ function renderToday() {
     <div class="sb">
       <div class="sb-label">Protein</div>
       <div class="ringwrap">
-        <div class="ring" style="--c:${protein > 0 ? 'var(--vita-protein)' : 'var(--vita-faint)'};--p:${proteinPct}"><i>💪</i></div>
+        <div class="ring" style="--c:${protein > 0 ? 'var(--vita-protein)' : 'var(--vita-faint)'};--p:${proteinPct}"><i><svg viewBox="0 0 24 24"><use href="#i-health-heart"/></svg></i></div>
         <div class="ringtxt"><span class="sb-val">${proteinLabel}</span><span class="sb-unit">${protein > 0 ? 'g' : ''}</span><small>${proteinSub}</small></div>
       </div>
     </div>
     <div class="sb">
       <div class="sb-label">Vận động</div>
       <div class="ringwrap">
-        <div class="ring" style="--c:${steps > 0 ? 'var(--vita-steps)' : 'var(--vita-faint)'};--p:${stepsPct}"><i>👟</i></div>
+        <div class="ring" style="--c:${steps > 0 ? 'var(--vita-steps)' : 'var(--vita-faint)'};--p:${stepsPct}"><i><svg viewBox="0 0 24 24"><use href="#i-steps"/></svg></i></div>
         <div class="ringtxt"><span class="sb-val">${stepsLabel}</span><span class="sb-unit">${steps > 0 ? 'k' : ''}</span><small>${stepsSub}</small></div>
       </div>
     </div>
     <div class="sb span2">
-      <span class="sb-ico">😴</span>
+      <span class="sb-ico"><svg class="ui-ico" viewBox="0 0 24 24" style="color:var(--vita-sleep)"><use href="#i-sleep"/></svg></span>
       <div class="sb-label">Giấc ngủ · 7 ngày</div>
       <div class="sleep-head">
         <span class="sb-val">${sleepLabel}</span><span class="sb-unit">${sleepUnit}</span>
@@ -1948,8 +2014,13 @@ function renderHealth(logs) {
     const leftColor = left > 0 ? 'var(--vita-muted)' : 'var(--vita-good)';
     const valColor = m.val > 0 ? m.color : 'var(--vita-faint)';
     const valStr = m.val > 0 ? `${m.val}${m.unit}` : '—';
+    const macroIcon = m.name === 'Protein'
+      ? '<svg class="ui-ico" viewBox="0 0 24 24"><use href="#i-health-heart"/></svg>'
+      : (m.name === 'Chất xơ'
+        ? '<svg class="ui-ico" viewBox="0 0 24 24"><use href="#i-fiber-leaf"/></svg>'
+        : '');
     return `<div class="macro-row">
-      <div class="macro-name" style="color:${valColor}">${m.name} <strong>${valStr}</strong></div>
+      <div class="macro-name" style="color:${valColor}">${macroIcon}<span>${m.name}</span> <strong>${valStr}</strong></div>
       <div class="macro-pbar"><div class="macro-pfill" style="width:${pct}%;background:${m.color}"></div></div>
       <div class="macro-remain" style="color:${leftColor}">${leftStr}</div>
     </div>`;
