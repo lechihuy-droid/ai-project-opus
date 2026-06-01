@@ -1,0 +1,52 @@
+{
+  "date": "2026-06-01",
+  "meals": [
+    {
+      "time": "08:00",
+      "name": "Sáng",
+      "source": "photo+text",
+      "items": [
+        {
+          "name": "Bánh mì nhỏ (6 cái)",
+          "grams": 0,
+          "kcal": 378,
+          "protein": 6.0,
+          "carb": 43.2,
+          "fat": 21.0,
+          "sugar": 42.0,
+          "fiber": 1.2,
+          "saturated_fat": 0.6,
+          "sodium_mg": 240,
+          "alcohol": 0
+        },
+        {
+          "name": "Yogurt plain (180g)",
+          "grams": 180,
+          "kcal": 158,
+          "protein": 5.8,
+          "carb": 21.2,
+          "fat": 5.6,
+          "sugar": 21.2,
+          "fiber": 0.0,
+          "saturated_fat": 0.0,
+          "sodium_mg": 79,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 536,
+      "total_protein": 11.8,
+      "total_carb": 64.4,
+      "total_fat": 26.6,
+      "total_sugar": 63.2,
+      "total_fiber": 1.2,
+      "total_saturated_fat": 0.6,
+      "total_sodium_mg": 319,
+      "total_alcohol": 0
+    }
+  ],
+  "water_ml": 0,
+  "steps": 0,
+  "sleep_hours": 0,
+  "weight_kg": 0,
+  "notes": "Breakfast: 6 small bread pieces at 63 kcal each and 1 yogurt 180g at 158 kcal."
+}
