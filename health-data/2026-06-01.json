@@ -142,8 +142,8 @@
     }
   ],
   "water_ml": 0,
-  "steps": 0,
+  "steps": 4600,
   "sleep_hours": 0,
   "weight_kg": 0,
-  "notes": "Breakfast: 6 small bread pieces at 63 kcal each and 1 yogurt 180g at 158 kcal. Lunch: udon bowl and fried side piece from provided photo/text estimates. Dinner: tiramisu estimated as one 100g serving; chicken estimated cooked 200g; bread 1/3 calculated from label shown in photo: whole bread 463 kcal, protein 16.7g, fat 2.1g, carb 94.5g."
+  "notes": "Breakfast: 6 small bread pieces at 63 kcal each and 1 yogurt 180g at 158 kcal. Lunch: udon bowl and fried side piece from provided photo/text estimates. Dinner: tiramisu estimated as one 100g serving; chicken estimated cooked 200g; bread 1/3 calculated from label shown in photo: whole bread 463 kcal, protein 16.7g, fat 2.1g, carb 94.5g. Steps updated from user input: 4600 steps."
 }
