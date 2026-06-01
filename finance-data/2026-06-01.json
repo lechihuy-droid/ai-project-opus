@@ -1,0 +1,23 @@
+{
+  "date": "2026-06-01",
+  "transactions": [
+    {
+      "time": "13:54",
+      "type": "expense",
+      "amount": 620,
+      "currency": "JPY",
+      "category": "food",
+      "description": "ひろひろ 堂島2丁目店",
+      "source": "screenshot_uploaded_in_chat"
+    },
+    {
+      "time": "08:55",
+      "type": "expense",
+      "amount": 360,
+      "currency": "JPY",
+      "category": "food",
+      "description": "ファミリーマート 近鉄堂島ビル",
+      "source": "screenshot_uploaded_in_chat"
+    }
+  ]
+}
