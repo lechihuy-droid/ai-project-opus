@@ -1,0 +1,13 @@
+{
+  "date": "2026-06-01",
+  "sessions": [
+    {
+      "time": "19:30",
+      "type": "bike",
+      "duration_min": 10,
+      "calories": 80,
+      "exercises": [],
+      "notes": "Đạp xe 10 phút, calories ước tính."
+    }
+  ]
+}
