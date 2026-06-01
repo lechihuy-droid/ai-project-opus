@@ -1,0 +1,27 @@
+{
+  "action": "add_expense",
+  "date": "2026-06-01",
+  "currency": "JPY",
+  "total": 980,
+  "items": [
+    {
+      "merchant": "ひろひろ",
+      "branch": "堂島2丁目店",
+      "amount": 620,
+      "paid_at": "2026-06-01T13:54:00+09:00",
+      "payment_status": "支払い完了",
+      "payment_method": "残高",
+      "category": "food"
+    },
+    {
+      "merchant": "ファミリーマート",
+      "branch": "近鉄堂島ビル",
+      "amount": 360,
+      "paid_at": "2026-06-01T08:55:00+09:00",
+      "payment_status": "支払い完了",
+      "payment_method": "残高",
+      "category": "convenience_store"
+    }
+  ],
+  "source": "screenshot_uploaded_in_chat"
+}
