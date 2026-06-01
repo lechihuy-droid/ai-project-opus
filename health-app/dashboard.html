@@ -493,14 +493,7 @@ canvas { display: block; }
 <body>
 <!-- PAT Screen -->
 <div id="pat-screen" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px">
-  <svg class="pat-mark" viewBox="0 0 64 64" aria-label="Opus Nexus mark">
-    <circle cx="32" cy="32" r="27" stroke="currentColor" stroke-width="2" fill="none"/>
-    <path d="M32 12L49 48H15L32 12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="miter" fill="none"/>
-    <path d="M22 43H42" stroke="currentColor" stroke-width="2" stroke-linecap="square" fill="none"/>
-    <path d="M32 23L37 32L32 41L27 32L32 23Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="miter" fill="none"/>
-    <path d="M32 18V23M32 41V47" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" fill="none"/>
-    <circle cx="32" cy="32" r="2.3" fill="currentColor"/>
-  </svg>
+  <svg class="pat-mark" viewBox="0 0 64 64"><use href="#i-opus-mark"/></svg>
   <div style="font-size:22px;font-weight:800;margin-bottom:6px">Opus Nexus</div>
   <div style="font-size:13px;color:var(--vita-muted);text-align:center;margin-bottom:28px">Nhập GitHub PAT để truy cập dữ liệu</div>
   <div style="width:100%;background:var(--vita-surface);border-radius:14px;padding:18px;margin-bottom:14px;border:1px solid var(--vita-line)">
@@ -2264,7 +2257,6 @@ function renderHealth(logs) {
   ].map(m => {
     const pct = Math.min(100, m.max > 0 ? (m.val / m.max) * 100 : 0);
     const left = m.max - m.val;
-    const leftStr = left > 0 ? `còn ${left}${m.unit}` : `đạt target`;
     const leftColor = left > 0 ? 'var(--vita-muted)' : 'var(--vita-good)';
     const valColor = m.val > 0 ? m.color : 'var(--vita-faint)';
     const valStr = formatCurrentTarget(m.val, m.max, m.unit);
@@ -2638,10 +2630,22 @@ function normalizeWorkoutTypeLabel(type) {
 }
 
 function summarizeWorkoutWeek(workoutLogs) {
-  const sessions = workoutLogs.flatMap(l => (l.sessions || []).map(s => ({ ...s, date: l.date })));
+  const healthByDate = new Map(cHealth.map(l => [l.date, l]));
+  const stepDrivenByDate = {};
+  workoutLogs.forEach(l => {
+    (l.sessions || []).forEach(s => {
+      const type = String(s.type || '').toLowerCase();
+      if (type === 'walk' || type === 'cardio') stepDrivenByDate[l.date] = (stepDrivenByDate[l.date] || 0) + 1;
+    });
+  });
+  const sessions = workoutLogs.flatMap(l => (l.sessions || []).map(s => {
+    const daySteps = healthByDate.get(l.date)?.steps || 0;
+    const caloriesBurned = inferWorkoutCalories(s, daySteps, stepDrivenByDate[l.date] || 1);
+    return { ...s, date: l.date, caloriesBurned };
+  }));
   const activeDays = new Set(sessions.map(s => s.date)).size;
   const totalMinutes = sessions.reduce((sum, s) => sum + (Number(s.duration_min) || 0), 0);
-  const totalKcal = sessions.reduce((sum, s) => sum + (Number(s.calories) || 0), 0);
+  const totalKcal = sessions.reduce((sum, s) => sum + (Number(s.caloriesBurned) || 0), 0);
   const minutesByDay = {};
   const typeStats = {};
   sessions.forEach(s => {
@@ -2752,11 +2756,6 @@ function renderPRCard(logs) {
   </div>`;
 }
 
-function drawWorkout(logs) {
-  const o = [...logs].reverse();
-  drawBar('c-wfreq', o.map(l=>shortDate(l.date)), o.map(l=>(l.sessions||[]).length), 'var(--vita-fat)');
-}
-
 // Workout coach override: minutes-first hierarchy, grouped diagnosis/action, clean history text.
 function renderWorkout(logs) {
   if (!logs.length) return `<div class="loading">${uiIcon('i-dumbbell', '', 'style="color:var(--vita-faint);width:26px;height:26px;margin-bottom:8px"')}<br>Chưa có buổi tập nào<br><span style="font-size:12px;color:var(--vita-faint);margin-top:8px;display:block">Báo Claude khi tập xong</span></div>`;
@@ -2777,11 +2776,12 @@ function renderWorkout(logs) {
       return `<div class="hi-extra">${esc(e.name || 'Bài tập')}${text ? ' · ' + esc(text) : ''}</div>`;
     }).join('');
     const dur = s.duration_min ? `${s.duration_min} phút · ` : '';
+    const kcalLabel = s.caloriesBurned ? `${s.caloriesBurned} kcal đốt` : 'chưa có kcal đốt';
     return `<div class="hi">
       <div class="hi-ico" style="background:${m.color}22">${m.ico}</div>
       <div class="hi-info">
         <div class="hi-title">${normalizeWorkoutTypeLabel(s.type)} · ${fmt(s.date)}${s.time ? ` · ${s.time}` : ''}</div>
-        <div class="hi-sub">${dur}${s.calories || 0} kcal đốt</div>${ex}
+        <div class="hi-sub">${dur}${kcalLabel}</div>${ex}
       </div>
     </div>`;
   }).join('');
@@ -2810,6 +2810,18 @@ function renderWorkout(logs) {
 function drawWorkout(logs) {
   const o = [...logs].reverse();
   drawBar('c-wfreq', o.map(l => shortDate(l.date)), o.map(l => (l.sessions || []).reduce((s, x) => s + (x.duration_min || 0), 0)), 'var(--vita-fat)', WEEKLY_WORKOUT_MIN_TARGET);
+}
+
+function estimateStepCalories(steps) {
+  return steps > 0 ? Math.round(steps * 0.04) : 0;
+}
+
+function inferWorkoutCalories(session, daySteps, stepDrivenSessions = 1) {
+  if ((session.calories || 0) > 0) return session.calories || 0;
+  const type = String(session.type || '').toLowerCase();
+  const usesSteps = type === 'walk' || type === 'cardio';
+  if (!usesSteps || daySteps <= 0) return 0;
+  return Math.round(estimateStepCalories(daySteps) / Math.max(1, stepDrivenSessions));
 }
 
 // ══════════════════════════════════════════════════════════
