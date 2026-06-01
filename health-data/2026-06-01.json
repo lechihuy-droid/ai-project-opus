@@ -84,11 +84,66 @@
       "total_saturated_fat": 3.5,
       "total_sodium_mg": 2250,
       "total_alcohol": 0
+    },
+    {
+      "time": "19:00",
+      "name": "Tối",
+      "source": "photo+text",
+      "items": [
+        {
+          "name": "Tiramisu (1 phần, ước tính)",
+          "grams": 100,
+          "kcal": 280,
+          "protein": 5.0,
+          "carb": 30.0,
+          "fat": 15.0,
+          "sugar": 22.0,
+          "fiber": 1.0,
+          "saturated_fat": 9.0,
+          "sodium_mg": 120,
+          "alcohol": 0
+        },
+        {
+          "name": "Thịt gà (200g, ước tính)",
+          "grams": 200,
+          "kcal": 330,
+          "protein": 54.0,
+          "carb": 0.0,
+          "fat": 12.0,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 3.3,
+          "sodium_mg": 200,
+          "alcohol": 0
+        },
+        {
+          "name": "Bánh mì (1/3 cây, theo label sản phẩm)",
+          "grams": 0,
+          "kcal": 154,
+          "protein": 5.6,
+          "carb": 31.5,
+          "fat": 0.7,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 0.0,
+          "sodium_mg": 0,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 764,
+      "total_protein": 64.6,
+      "total_carb": 61.5,
+      "total_fat": 27.7,
+      "total_sugar": 22.0,
+      "total_fiber": 1.0,
+      "total_saturated_fat": 12.3,
+      "total_sodium_mg": 320,
+      "total_alcohol": 0
     }
   ],
   "water_ml": 0,
   "steps": 0,
   "sleep_hours": 0,
   "weight_kg": 0,
-  "notes": "Breakfast: 6 small bread pieces at 63 kcal each and 1 yogurt 180g at 158 kcal. Lunch: udon bowl and fried side piece from provided photo/text estimates."
+  "notes": "Breakfast: 6 small bread pieces at 63 kcal each and 1 yogurt 180g at 158 kcal. Lunch: udon bowl and fried side piece from provided photo/text estimates. Dinner: tiramisu estimated as one 100g serving; chicken estimated cooked 200g; bread 1/3 calculated from label shown in photo: whole bread 463 kcal, protein 16.7g, fat 2.1g, carb 94.5g."
 }
