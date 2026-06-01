@@ -42,11 +42,53 @@
       "total_saturated_fat": 0.6,
       "total_sodium_mg": 319,
       "total_alcohol": 0
+    },
+    {
+      "time": "12:30",
+      "name": "Lunch",
+      "source": "photo text",
+      "items": [
+        {
+          "name": "Udon bowl",
+          "grams": 450,
+          "kcal": 430,
+          "protein": 12.0,
+          "carb": 82.0,
+          "fat": 5.0,
+          "sugar": 6.0,
+          "fiber": 3.0,
+          "saturated_fat": 1.0,
+          "sodium_mg": 1800,
+          "alcohol": 0
+        },
+        {
+          "name": "Fried side piece",
+          "grams": 90,
+          "kcal": 230,
+          "protein": 16.0,
+          "carb": 12.0,
+          "fat": 14.0,
+          "sugar": 1.0,
+          "fiber": 0.5,
+          "saturated_fat": 2.5,
+          "sodium_mg": 450,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 660,
+      "total_protein": 28.0,
+      "total_carb": 94.0,
+      "total_fat": 19.0,
+      "total_sugar": 7.0,
+      "total_fiber": 3.5,
+      "total_saturated_fat": 3.5,
+      "total_sodium_mg": 2250,
+      "total_alcohol": 0
     }
   ],
   "water_ml": 0,
   "steps": 0,
   "sleep_hours": 0,
   "weight_kg": 0,
-  "notes": "Breakfast: 6 small bread pieces at 63 kcal each and 1 yogurt 180g at 158 kcal."
+  "notes": "Breakfast: 6 small bread pieces at 63 kcal each and 1 yogurt 180g at 158 kcal. Lunch: udon bowl and fried side piece from provided photo/text estimates."
 }
