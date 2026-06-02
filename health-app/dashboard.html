@@ -312,18 +312,15 @@ canvas { display: block; }
 
 /* ── Day accordion ── */
 .week-acc { background: var(--vita-surface); border: 1px solid var(--vita-line); border-radius: var(--vita-radius-lg); margin-bottom: 8px; overflow: hidden; }
-.week-acc summary { list-style: none; cursor: pointer; padding: 14px; min-height: 64px; display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; align-items: start; user-select: none; -webkit-tap-highlight-color: transparent; }
+.week-acc summary { list-style: none; cursor: pointer; padding: 14px; display: flex; flex-direction: column; gap: 8px; user-select: none; -webkit-tap-highlight-color: transparent; }
 .week-acc summary::-webkit-details-marker { display: none; }
 .week-acc summary:active { background: rgba(255,255,255,.03); }
+.wh-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 .wh-title { font-size: 15px; font-weight: 800; color: var(--vita-text); }
-.wh-range { font-size: var(--fs-cap); color: var(--vita-muted); font-weight: 600; margin-top: 2px; }
-.wh-kcal { font-size: 26px; font-weight: 800; color: var(--vita-text); text-align: right; line-height: 1; white-space: nowrap; }
-.wh-kcal small { display: block; font-size: var(--fs-body); color: var(--vita-muted); font-weight: 600; margin-top: 5px; }
-.wh-meta { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; margin-top: 2px; }
-.wh-line { display: grid; grid-template-columns: 74px 1fr; gap: 8px; align-items: baseline; font-size: var(--fs-body); line-height: 1.35; }
-.wh-line span { color: var(--vita-muted); font-weight: 700; }
-.wh-line strong { min-width: 0; color: var(--vita-text); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.wh-chips { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 3px; }
+.wh-range { font-size: var(--fs-cap); color: var(--vita-muted); font-weight: 600; }
+.wh-trend { font-size: var(--fs-body); color: var(--vita-text); font-weight: 600; line-height: 1.45; }
+.wh-note { font-size: var(--fs-cap); color: var(--vita-warn); font-weight: 700; line-height: 1.4; }
+.wh-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .wh-chip { font-size: 11px; color: var(--vita-text); font-weight: 700; line-height: 1.25; padding: 5px 8px; border-radius: 8px; background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.055); }
 .wh-chip.warn { color: var(--vita-warn); background: rgba(255,159,10,.10); border-color: rgba(255,159,10,.18); }
 .wh-chip.bad { color: var(--vita-bad); background: rgba(255,69,58,.10); border-color: rgba(255,69,58,.18); }
@@ -2470,27 +2467,8 @@ function renderHealth(logs) {
     ${macroRows}
   </div>
 
-  <div class="stitle">Tổng kết dinh dưỡng</div>
-  ${renderNutritionHistory(logs)}
-
-  <!-- Weight + Weekly compare -->
+  <!-- Xu hướng: charts -->
   <div class="bento" style="margin-top:var(--vita-gap)">
-    <div class="b b-weight span2" style="background:linear-gradient(135deg,#0E2A1F,#0A2018);border:1px solid rgba(48,209,88,.18)">
-      <div class="b-label">Cân nặng</div>
-      <div class="b-val">${weightVal}</div>
-      <div class="b-sub">${weightSub}</div>
-      <div class="b-ico">${uiIcon('i-scale', '', 'style="color:var(--vita-weight)"')}</div>
-    </div>
-    <div class="b span2" style="background:linear-gradient(135deg,#14142A,#0F0F1F);border:1px solid rgba(142,124,255,.18)">
-      <div class="b-label">Giấc ngủ</div>
-      <div class="b-val" style="color:${sleepVal > 0 ? 'var(--vita-sleep)' : 'var(--vita-faint)'};font-size:${sleepVal > 0 ? '28px' : '18px'}">${sleepVal > 0 ? sleepVal.toFixed(1) : 'Chưa log'}<span class="b-unit">${sleepVal > 0 ? 'h' : ''}</span></div>
-      <div class="b-sub">${sleepVal > 0 ? `${pc(sleepVal, TARGET.sleep)}% mục tiêu` : 'chưa log'}</div>
-      <div class="b-ico">${uiIcon('i-sleep', '', 'style="color:var(--vita-sleep)"')}</div>
-    </div>
-
-    ${renderWeeklySummary(logs)}
-
-    <!-- Chart: calo -->
     <div class="b b-chart span4 tall">
       <div class="b-label">${uiIcon('i-chart-line')}Calo / ngày · ${currentRange} ngày</div>
       <div class="chart-wrap"><canvas id="c-cal"></canvas></div>
@@ -2509,8 +2487,30 @@ function renderHealth(logs) {
       <div class="b-label">${uiIcon('i-steps')}Vận động</div>
       <div class="chart-wrap"><canvas id="c-steps"></canvas></div>
     </div>
-    <div class="health-tail-space"></div>
-  </div>`;
+  </div>
+
+  <!-- Cân nặng + Giấc ngủ + So với tuần trước -->
+  <div class="bento" style="margin-top:var(--vita-gap)">
+    <div class="b b-weight span2" style="background:linear-gradient(135deg,#0E2A1F,#0A2018);border:1px solid rgba(48,209,88,.18)">
+      <div class="b-label">Cân nặng</div>
+      <div class="b-val">${weightVal}</div>
+      <div class="b-sub">${weightSub}</div>
+      <div class="b-ico">${uiIcon('i-scale', '', 'style="color:var(--vita-weight)"')}</div>
+    </div>
+    <div class="b span2" style="background:linear-gradient(135deg,#14142A,#0F0F1F);border:1px solid rgba(142,124,255,.18)">
+      <div class="b-label">Giấc ngủ</div>
+      <div class="b-val" style="color:${sleepVal > 0 ? 'var(--vita-sleep)' : 'var(--vita-faint)'};font-size:${sleepVal > 0 ? '28px' : '18px'}">${sleepVal > 0 ? sleepVal.toFixed(1) : 'Chưa log'}<span class="b-unit">${sleepVal > 0 ? 'h' : ''}</span></div>
+      <div class="b-sub">${sleepVal > 0 ? `${pc(sleepVal, TARGET.sleep)}% mục tiêu` : 'chưa log'}</div>
+      <div class="b-ico">${uiIcon('i-sleep', '', 'style="color:var(--vita-sleep)"')}</div>
+    </div>
+
+    ${renderWeeklySummary(logs)}
+  </div>
+
+  <!-- Lịch sử tuần (compressed) -->
+  <div class="stitle">Tổng kết dinh dưỡng</div>
+  ${renderNutritionHistory(logs)}
+  <div class="health-tail-space"></div>`;
 }
 
 function renderInsight(shown, kcal, protein, fiber) {
@@ -2683,22 +2683,20 @@ function renderWeekAcc(week) {
         fiberLow ? 'fiber thấp nhiều ngày' : ''
       ].filter(Boolean).join(', ')}.`;
   const dayRows = logs.map(l => renderDayAcc(l, false)).join('');
+  const lowConfidence = days < 4;
 
   return `<details class="week-acc">
     <summary>
-      <div>
-        <div class="wh-title">${weekLabel(week.start, week.end)}</div>
-        <div class="wh-range">${fmt(isoLocal(week.start))} - ${fmt(isoLocal(week.end))} · ${days} ngày có log</div>
+      <div class="wh-head">
+        <span class="wh-title">${weekLabel(week.start, week.end)}</span>
+        <span class="wh-range">${fmt(isoLocal(week.start))} - ${fmt(isoLocal(week.end))} · ${days} ngày log</span>
       </div>
-      <div class="wh-kcal">${Math.round(avgKcal).toLocaleString()}<small>kcal/ngày</small></div>
-      <div class="wh-meta">
-        <div class="wh-line"><span>Đánh giá</span><strong>${trendText}</strong></div>
-        <div class="wh-line"><span>Cần nhìn</span><strong>${fiberLow > 0 ? 'Ưu tiên chất xơ' : 'Duy trì nhịp hiện tại'}</strong></div>
-      </div>
+      <div class="wh-trend">${esc(trendText)}</div>
+      ${lowConfidence ? `<div class="wh-note">⚠ Chỉ ${days} ngày có log — độ tin cậy thấp, chưa đủ để so sánh tuần.</div>` : ''}
       <div class="wh-chips">
-        <span class="wh-chip${kcalToneClass}">${kcalTone}</span>
         <span class="wh-chip${proteinMiss ? ' warn' : ''}">${proteinTone}</span>
         <span class="wh-chip${fiberLow ? ' bad' : ''}">${fiberTone}</span>
+        <span class="wh-chip${kcalToneClass}">${kcalTone}</span>
         <span class="wh-chip">Lệch nhất: ${outlierText}</span>
       </div>
     </summary>
