@@ -1,9 +1,9 @@
 {
   "weight_kg": 73.5,
   "target_weight_kg": 66,
-  "height_cm": 170,
-  "age": 30,
+  "height_cm": 176,
+  "age": 38,
   "gender": "male",
-  "activity_level": "lightly_active",
+  "activity_level": "moderately_active",
   "_note": "Update height_cm / age / activity_level if incorrect. activity_level: sedentary=1.2, lightly_active=1.375, moderately_active=1.55"
 }
