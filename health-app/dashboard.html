@@ -205,6 +205,30 @@ html, body {
 .insight2 .ih-chip.bad { color: var(--vita-bad); background: rgba(255,69,58,.10); border-color: rgba(255,69,58,.18); }
 .insight2 .ih-sub { margin-top: 8px; font-size: 11px; color: var(--vita-muted); font-weight: 700; text-transform: uppercase; letter-spacing: .45px; }
 
+/* ── VitaDailyCoachCard ── */
+.coach-card { background: var(--vita-surface); border-radius: var(--vita-radius-md); padding: 18px 16px 14px; border: 1px solid rgba(255,255,255,.07); border-left: 3px solid var(--vita-good); }
+.coach-card.warn { border-left-color: var(--vita-warn); border-color: rgba(255,159,10,.12); }
+.coach-card.bad  { border-left-color: var(--vita-bad);  border-color: rgba(255,69,58,.12); }
+.coach-card.missing { border-left-color: var(--vita-info); }
+.coach-eyebrow { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--vita-muted); margin-bottom: 5px; }
+.coach-headline { font-size: 18px; font-weight: 800; line-height: 1.25; color: var(--vita-text); margin-bottom: 8px; }
+.coach-headline .accent { color: var(--vita-warn); }
+.coach-card.bad  .coach-headline .accent { color: var(--vita-bad); }
+.coach-card.good .coach-headline .accent { color: var(--vita-good); }
+.coach-explain { font-size: 13px; line-height: 1.55; color: var(--vita-text); font-weight: 500; opacity: .88; }
+.coach-action { margin-top: 10px; padding: 9px 11px; background: rgba(255,255,255,.04); border-radius: 9px; border-left: 2px solid var(--vita-warn); }
+.coach-card.bad  .coach-action { border-left-color: var(--vita-bad); }
+.coach-card.good .coach-action { border-left-color: var(--vita-good); }
+.coach-action-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--vita-muted); margin-bottom: 4px; }
+.coach-action-text  { font-size: 13px; font-weight: 700; color: var(--vita-text); line-height: 1.4; }
+.coach-action-hint  { font-size: 12px; color: var(--vita-muted); margin-top: 3px; line-height: 1.4; }
+.coach-chips { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+.coach-chip { font-size: 11px; font-weight: 700; padding: 5px 9px; border-radius: 8px; background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.055); color: var(--vita-text); line-height: 1.25; white-space: nowrap; }
+.coach-chip.warn { color: var(--vita-warn); background: rgba(255,159,10,.10); border-color: rgba(255,159,10,.18); }
+.coach-chip.bad  { color: var(--vita-bad);  background: rgba(255,69,58,.10);  border-color: rgba(255,69,58,.18); }
+.coach-chip.good { color: var(--vita-good); background: rgba(48,209,88,.08);  border-color: rgba(48,209,88,.18); }
+.coach-confidence { margin-top: 10px; font-size: 11px; color: var(--vita-muted); line-height: 1.45; font-weight: 500; }
+
 /* ── Hero Calories card ── */
 .hero-cal {
   background: linear-gradient(145deg, #17130B, #0F0C08);
@@ -659,8 +683,9 @@ canvas { display: block; }
 
 <script>
 // ── Config ──
+// Calorie base: Mifflin-St Jeor BMR(73.5kg,176cm,38y,M)=1650 × 1.55(moderately active)≈2557 → target 2200 (deficit 357 kcal/day)
 const CONFIG = {
-  target:   { kcal: 2200, protein: 130, carb: 220, fat: 70, fiber: 25, water_ml: 2000, steps: 8000, sleep: 7.5 },
+  target:   { kcal: 2200, protein: 150, carb: 220, fat: 70, fiber: 25, water_ml: 2000, steps: 8000, sleep: 7.5 },
   currency: 'VND',
   locale:   'vi-VN',
   google: {
@@ -2248,6 +2273,111 @@ function renderHealthCoachBlock(insight) {
   </div>`;
 }
 
+function dailyCoachPriority(kcal, protein, fiber) {
+  const fiberRatio   = TARGET.fiber   > 0 ? fiber   / TARGET.fiber   : 1;
+  const proteinRatio = TARGET.protein > 0 ? protein / TARGET.protein : 1;
+  const kcalRatio    = TARGET.kcal    > 0 ? kcal    / TARGET.kcal    : 1;
+  let priority, headlineHtml;
+  if (kcal <= 0) {
+    priority = 'missing';
+    headlineHtml = 'Chưa log bữa ăn hôm nay';
+  } else if (fiberRatio < 0.4 && proteinRatio < 0.7) {
+    priority = 'protein_fiber';
+    headlineHtml = 'Bổ sung <span class="accent">protein + chất xơ</span>';
+  } else if (fiberRatio < 0.4) {
+    priority = 'fiber';
+    headlineHtml = 'Ưu tiên <span class="accent">chất xơ</span>';
+  } else if (proteinRatio < 0.7) {
+    priority = 'protein';
+    headlineHtml = 'Bổ sung <span class="accent">protein</span>';
+  } else if (kcalRatio < 0.65) {
+    priority = 'energy';
+    headlineHtml = 'Bổ sung <span class="accent">năng lượng</span> có kiểm soát';
+  } else {
+    priority = 'balanced';
+    headlineHtml = 'Dinh dưỡng hôm nay <span class="accent" style="color:var(--vita-good)">khá ổn</span>';
+  }
+  return { priority, headlineHtml, fiberRatio, proteinRatio, kcalRatio };
+}
+
+function renderVitaDailyCoachCard(coach, kcal, protein, fiber, isToday, shownDate) {
+  const prio = dailyCoachPriority(kcal, protein, fiber);
+  const { priority, headlineHtml, fiberRatio, proteinRatio, kcalRatio } = prio;
+  const eyebrow = isToday ? 'Ưu tiên hôm nay' : `Ưu tiên · ${fmtFull(shownDate)}`;
+
+  // Explanation paragraph — kcal as supporting context, not main focus
+  const kcalCtx = kcal > 0 ? `Bạn đã đạt ${kcal.toLocaleString()} / ${TARGET.kcal.toLocaleString()} kcal.` : '';
+  let explainText;
+  if (priority === 'missing') {
+    explainText = 'Chưa có log bữa ăn nào hôm nay.';
+  } else if (priority === 'protein_fiber') {
+    explainText = `${kcalCtx} Protein còn thiếu nhiều và chất xơ đang rất thấp — bữa tiếp theo nên ưu tiên protein nạc + nguồn chất xơ, thay vì chỉ tăng kcal bằng đồ nhiều fat.`;
+  } else if (priority === 'fiber') {
+    explainText = `${kcalCtx} Chất xơ đang rất thấp — ảnh hưởng tiêu hóa và cảm giác no. Thêm rau xanh hoặc nguồn fiber vào bữa tiếp theo.`;
+  } else if (priority === 'protein') {
+    explainText = `${kcalCtx} Protein còn thiếu nhiều — cần để giữ cơ khi giảm mỡ và hỗ trợ testosterone. Ưu tiên bổ sung trong bữa tiếp theo.`;
+  } else if (priority === 'energy') {
+    explainText = 'Năng lượng hôm nay còn thiếu khá nhiều. Bổ sung thêm nhưng ưu tiên macro chất lượng thay vì đồ nhiều đường hoặc fat.';
+  } else {
+    explainText = `${kcalCtx} Protein và chất xơ đang trong vùng ổn. Tiếp tục duy trì.`;
+  }
+
+  // Next best action — concrete numbers from macro gap
+  const proteinLeft = Math.max(0, Math.round(TARGET.protein - protein));
+  const fiberLeft   = Math.max(0, Math.round(TARGET.fiber - fiber));
+  const kcalLeft    = Math.max(0, Math.round(TARGET.kcal - kcal));
+  let actionText, actionHint = '';
+  if (priority === 'protein_fiber') {
+    actionText  = `Bữa tiếp theo: thêm ~${Math.min(proteinLeft, 40)}g protein + ${Math.min(fiberLeft, 12)}g chất xơ.`;
+    actionHint  = 'Gợi ý: thịt gà / cá / trứng / đậu phụ + rau, yến mạch, đậu hoặc trái cây.';
+  } else if (priority === 'fiber') {
+    actionText  = `Thêm ~${Math.min(fiberLeft, 15)}g chất xơ vào bữa tiếp theo.`;
+    actionHint  = 'Gợi ý: rau xanh, đậu, yến mạch, trái cây ít đường.';
+  } else if (priority === 'protein') {
+    actionText  = `Bổ sung ~${Math.min(proteinLeft, 40)}g protein trong bữa tiếp theo.`;
+    actionHint  = 'Gợi ý: ức gà, cá, trứng, đậu phụ, sữa chua Hy Lạp.';
+  } else if (priority === 'energy') {
+    actionText  = `Còn ~${kcalLeft} kcal — ăn thêm một bữa cân bằng, ưu tiên protein và chất xơ.`;
+  } else if (priority === 'missing') {
+    actionText  = 'Gửi ảnh bữa ăn cho Claude để bắt đầu đánh giá dinh dưỡng.';
+  } else {
+    actionText  = coach.nextAction || 'Tiếp tục giữ nhịp ăn uống, nước, ngủ và vận động.';
+  }
+
+  // Chips: Protein · Chất xơ · Kcal (priority order per brief)
+  const proteinChipTone = proteinRatio < 0.5 ? 'bad' : proteinRatio < 0.7 ? 'warn' : 'good';
+  const fiberChipTone   = fiberRatio   < 0.3 ? 'bad' : fiberRatio   < 0.6 ? 'warn' : 'good';
+  const kcalChipTone    = kcalRatio    > 1.1 ? 'bad' : kcalRatio    < 0.65 ? 'warn' : '';
+  const chipsHtml = [
+    `<span class="coach-chip ${proteinChipTone}">Protein ${formatCurrentTarget(Math.round(protein), TARGET.protein, 'g')}</span>`,
+    `<span class="coach-chip ${fiberChipTone}">Chất xơ ${formatCurrentTarget(Math.round(fiber), TARGET.fiber, 'g')}</span>`,
+    kcal > 0 ? `<span class="coach-chip ${kcalChipTone}">Kcal ${kcal.toLocaleString()} / ${TARGET.kcal.toLocaleString()}</span>` : ''
+  ].filter(Boolean).join('');
+
+  // Confidence signal from missing data
+  const missingList = [];
+  if (coach.metrics.missingData.water) missingList.push('nước');
+  if (coach.metrics.missingData.sleep) missingList.push('ngủ');
+  if (coach.metrics.missingData.steps) missingList.push('vận động');
+  const confidenceLevel = missingList.length >= 2 ? 'trung bình' : missingList.length === 1 ? 'khá' : 'cao';
+  const confidenceText  = missingList.length
+    ? `Độ tin cậy: ${confidenceLevel} — còn thiếu dữ liệu ${missingList.join(', ')}.`
+    : 'Độ tin cậy: cao — dữ liệu hôm nay đã đủ tốt.';
+
+  return `<div class="coach-card ${coach.status}">
+    <div class="coach-eyebrow">${esc(eyebrow)}</div>
+    <div class="coach-headline">${headlineHtml}</div>
+    <div class="coach-explain">${esc(explainText)}</div>
+    <div class="coach-action">
+      <div class="coach-action-label">Next best action</div>
+      <div class="coach-action-text">${esc(actionText)}</div>
+      ${actionHint ? `<div class="coach-action-hint">${esc(actionHint)}</div>` : ''}
+    </div>
+    <div class="coach-chips">${chipsHtml}</div>
+    <div class="coach-confidence">${esc(confidenceText)}</div>
+  </div>`;
+}
+
 function renderHealth(logs) {
   if (!logs.length) return `<div class="loading">${uiIcon('i-health-heart', '', 'style="color:var(--vita-faint);width:26px;height:26px;margin-bottom:8px"')}<br>Chưa có dữ liệu sức khỏe<br>
     <span style="font-size:12px;color:var(--vita-faint);margin-top:8px;display:block">Gửi ảnh bữa ăn cho Claude để bắt đầu</span></div>
@@ -2262,22 +2392,11 @@ function renderHealth(logs) {
   const carb     = totalMacro(shown, 'carb');
   const fat      = totalMacro(shown, 'fat');
   const fiber    = totalMacro(shown, 'fiber');
-  const kcalPct  = Math.min(100, (kcal / TARGET.kcal) * 100);
-  const remain   = TARGET.kcal - kcal;
   const coach    = buildHealthCoachInsight(shown, logs);
   const withW    = logs.filter(l => l.weight_kg > 0);
   const wLatest  = withW[0];
   const wFirst   = withW[withW.length - 1];
   const wDelta   = wFirst && wLatest ? +(wLatest.weight_kg - wFirst.weight_kg).toFixed(1) : null;
-
-  // Hero calories
-  const heroLabel = isToday ? 'Năng lượng hôm nay' : `Năng lượng · ${fmtFull(shown.date)}`;
-  const remainStr = remain > 0 ? `Còn ${remain} kcal để đạt mục tiêu` : `Vượt ${-remain} kcal so với mục tiêu`;
-  const heroTone = coach.status === 'bad' ? 'var(--vita-energy)'
-    : coach.status === 'good' ? 'var(--vita-good)'
-    : coach.status === 'missing' ? 'var(--vita-muted)'
-    : 'var(--vita-warn)';
-  const remainColor = remain > 0 ? 'var(--vita-warn)' : 'var(--vita-energy)';
 
   // Mini rings
   const sleepVal  = shown.sleep_hours || 0;
@@ -2316,9 +2435,6 @@ function renderHealth(logs) {
     </div>`;
   }).join('');
 
-  // Coach card
-  const insightHtml = renderHealthCoachBlock(coach);
-
   // Weight card
   const weightVal = wLatest ? `${wLatest.weight_kg}<span class="b-unit">kg</span>` : '<span style="color:var(--vita-faint)">chưa log</span>';
   const weightSub = wDelta !== null
@@ -2326,23 +2442,8 @@ function renderHealth(logs) {
     : `<span style="color:var(--vita-faint)">chưa có</span>`;
 
   return `
-  <!-- Hero calories -->
-  <div class="hero-cal ${coach.status} b span4" style="min-height:auto;margin-bottom:0">
-    <div class="hero-cal-label">${heroLabel}</div>
-    <div class="hero-cal-inner">
-      <div>${renderRing(kcal, TARGET.kcal, heroTone, 'kcal', 72)}</div>
-      <div class="hero-cal-text">
-        <div class="hero-cal-val" style="color:${heroTone}">${kcal.toLocaleString()}</div>
-        <div class="hero-cal-target">/ ${TARGET.kcal.toLocaleString()} kcal mục tiêu</div>
-        <div class="hero-cal-remain" style="color:${remainColor}">${remainStr}</div>
-        <div class="hero-cal-diagnosis">${esc(`Đánh giá: ${coach.topSummary}.`)}</div>
-      </div>
-    </div>
-    <div class="hero-pbar" style="margin-top:12px"><div style="width:${kcalPct}%;background:linear-gradient(90deg,${heroTone},var(--vita-carb))"></div></div>
-  </div>
-
-  <!-- Coach insight -->
-  ${insightHtml}
+  <!-- VitaDailyCoachCard -->
+  ${renderVitaDailyCoachCard(coach, kcal, protein, fiber, isToday, shown.date)}
 
   <!-- Mini rings -->
   <div class="ring-grid" style="margin-top:var(--vita-gap)">
