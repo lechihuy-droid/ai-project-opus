@@ -71,11 +71,40 @@
       "total_saturated_fat": 4.3,
       "total_sodium_mg": 500,
       "total_alcohol": 0
+    },
+    {
+      "time": "15:30",
+      "name": "Snack",
+      "source": "photo+text",
+      "items": [
+        {
+          "name": "Top Coco coconut cracker 3 packs",
+          "grams": 43.5,
+          "kcal": 213,
+          "protein": 2.1,
+          "carb": 31.4,
+          "fat": 8.7,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 0.0,
+          "sodium_mg": 5,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 213,
+      "total_protein": 2.1,
+      "total_carb": 31.4,
+      "total_fat": 8.7,
+      "total_sugar": 0.0,
+      "total_fiber": 0.0,
+      "total_saturated_fat": 0.0,
+      "total_sodium_mg": 5,
+      "total_alcohol": 0
     }
   ],
   "water_ml": 0,
   "steps": 0,
   "sleep_hours": 0,
   "weight_kg": 0,
-  "notes": "Breakfast and lunch logged from text. Cookies and leftover bread are estimates because no nutrition label was provided. Stewed chicken uses the same estimate pattern as previous logs."
+  "notes": "Breakfast and lunch logged from text. Cookies and leftover bread are estimates because no nutrition label was provided. Stewed chicken uses the same estimate pattern as previous logs. Snack: Top Coco coconut cracker 3 packs x 14.5g = 43.5g; nutrition calculated from label per 100g: 489 kcal, protein 4.9g, fat 20.1g, carb 72.1g, salt equivalent 0.03g."
 }
