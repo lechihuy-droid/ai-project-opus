@@ -1,0 +1,32 @@
+{
+  "date": "2026-06-02",
+  "sessions": [
+    {
+      "time": "19:30",
+      "type": "muay_thai_strength_cardio",
+      "duration_min": 45,
+      "calories": 320,
+      "exercises": [
+        {
+          "name": "Muay Thai pairing",
+          "sets": 3,
+          "reps": null,
+          "notes": "3 set pairing Muay Thai."
+        },
+        {
+          "name": "Ab crunch",
+          "sets": 3,
+          "reps": 15,
+          "notes": "3 set x 15 reps."
+        },
+        {
+          "name": "Cycling",
+          "sets": 1,
+          "duration_min": 20,
+          "notes": "Đạp xe 20 phút."
+        }
+      ],
+      "notes": "Muay Thai pairing 3 sets, ab crunch 3x15 reps, cycling 20 minutes. Calories estimated. Post-workout weight: 73.05kg."
+    }
+  ]
+}
