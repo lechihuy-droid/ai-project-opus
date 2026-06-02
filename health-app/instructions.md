@@ -65,6 +65,7 @@ Manifest:health-data/index.json
   "steps": 8500,
   "sleep_hours": 7.5,
   "weight_kg": 68.5,
+  "intimacy": 0,
   "notes": ""
 }
 ```
@@ -78,6 +79,7 @@ Manifest:health-data/index.json
 | `saturated_fat_g` | Chất béo bão hòa | Label: "Saturated Fat" / "飽和脂肪酸" |
 | `sodium_mg` | Natri (mg) — nếu label ghi "muối (g)" thì ÷ 2.54 × 1000 | Instant noodles thường 1500-2000mg |
 | `alcohol_g` | Chỉ điền khi có rượu/bia — tính: `ml × ABV% × 0.789` | Bia 350ml 5% ≈ 14g; Whisky 30ml 40% ≈ 9.5g |
+| `intimacy` | Số lần gần gũi trong ngày (số nguyên). Mặc định `0` nếu không nhập | Outcome của mục tiêu vitality; chỉ ghi khi user nói rõ, không tự suy đoán. Dữ liệu nhạy cảm — repo PHẢI private |
 
 **Ưu tiên:** lấy từ label trước, ước tính sau (ghi chú "est." nếu ước tính).
 

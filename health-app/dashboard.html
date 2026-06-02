@@ -324,6 +324,8 @@ canvas { display: block; }
 .wh-chip { font-size: 11px; color: var(--vita-text); font-weight: 700; line-height: 1.25; padding: 5px 8px; border-radius: 8px; background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.055); }
 .wh-chip.warn { color: var(--vita-warn); background: rgba(255,159,10,.10); border-color: rgba(255,159,10,.18); }
 .wh-chip.bad { color: var(--vita-bad); background: rgba(255,69,58,.10); border-color: rgba(255,69,58,.18); }
+.wh-chip.good { color: var(--vita-good); background: rgba(48,209,88,.08); border-color: rgba(48,209,88,.18); }
+.wh-chip.wide { grid-column: 1 / -1; }
 .health-tail-space { height: calc(28px + env(safe-area-inset-bottom, 0px)); grid-column: 1 / -1; }
 .week-body { border-top: 1px solid var(--vita-line); padding: 6px 8px 8px; background: rgba(0,0,0,.08); }
 .day-acc { background: var(--vita-surface); border-radius: var(--vita-radius-md); margin-bottom: 7px; overflow: hidden; }
@@ -2692,6 +2694,10 @@ function renderWeekAcc(week) {
   const proteinMiss = days - proteinHit;
   const proteinTone = proteinHit >= Math.ceil(days * 0.7) ? `Protein đủ: ${proteinHit}/${days} ngày` : `Protein hụt: ${proteinMiss}/${days} ngày`;
 
+  // 5. Gần gũi: outcome chính của mục tiêu vitality
+  const intimacy = logs.reduce((s, l) => s + (l.intimacy || 0), 0);
+  const intimacyTone = `Gần gũi: ${intimacy} lần / tuần`;
+
   const vitalityFlags = [
     sleepBad ? 'ngủ chưa đủ sâu' : '',
     energyBad ? 'thiếu năng lượng nhiều ngày' : (energyWarn ? 'có ngày thiếu năng lượng' : ''),
@@ -2718,6 +2724,7 @@ function renderWeekAcc(week) {
         <span class="wh-chip${energyBad ? ' bad' : (energyWarn ? ' warn' : '')}">${energyTone}</span>
         <span class="wh-chip${trainWarn ? ' warn' : ''}">${trainTone}</span>
         <span class="wh-chip${proteinMiss ? ' warn' : ''}">${proteinTone}</span>
+        <span class="wh-chip wide${intimacy > 0 ? ' good' : ''}">${intimacyTone}</span>
       </div>
     </summary>
     <div class="week-body">${dayRows}</div>
