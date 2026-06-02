@@ -33,7 +33,7 @@ input{font-family:inherit;}
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState, useEffect, useRef, useCallback } = React;
+const { useState, useEffect, useCallback } = React;
 
 // ── API ───────────────────────────────────────────────────────
 async function api(path, opts={}) {
@@ -84,27 +84,21 @@ function Badge({ children, variant="warn" }) {
   return <span style={{fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:2,letterSpacing:"0.05em",textTransform:"uppercase",...styles[variant]}}>{children}</span>;
 }
 
-function Spinner() {
-  return <span style={{display:"inline-block",width:12,height:12,border:"2px solid var(--gold-dim)",borderTopColor:"var(--gold)",borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>;
-}
-
 // ── Sidebar ───────────────────────────────────────────────────
-function Sidebar({ view, setView, date, lastRefresh }) {
+function Sidebar({ view, setView, date, lastRefresh, compact=false }) {
   const nav = [
     { key:"home",    label:"Home" },
     { key:"wiki",    label:"Wiki" },
     { key:"goals",   label:"Goals" },
     { key:"intel",   label:"Intel" },
     { key:"fde",     label:"FDE" },
-    { key:"reading", label:"Reading" },
-    { key:"actions", label:"Actions" },
     { key:"pmp",     label:"PMP Quiz" },
     { key:"lucida",  label:"Lucida" },
     { key:"actio",   label:"Actio" },
   ];
   return (
-    <div style={{width:200,background:"var(--surface)",borderRight:"1px solid var(--border-subtle)",display:"flex",flexDirection:"column",flexShrink:0,minHeight:"100vh"}}>
-      <div style={{padding:"20px 18px 16px",borderBottom:"1px solid var(--border-subtle)"}}>
+    <div style={{width:compact?"100%":200,background:"var(--surface)",borderRight:compact?"none":"1px solid var(--border-subtle)",borderBottom:compact?"1px solid var(--border-subtle)":"none",display:"flex",flexDirection:compact?"row":"column",flexShrink:0,minHeight:compact?"auto":"100vh",overflow:compact?"hidden":"visible"}}>
+      <div style={{padding:compact?"12px 14px":"20px 18px 16px",borderBottom:compact?"none":"1px solid var(--border-subtle)",borderRight:compact?"1px solid var(--border-subtle)":"none",flexShrink:0}}>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
           <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:32,height:32,flexShrink:0}}>
             <circle cx="40" cy="40" r="34" stroke="#C9A84C" strokeWidth="1.5"/>
@@ -118,10 +112,10 @@ function Sidebar({ view, setView, date, lastRefresh }) {
           </div>
         </div>
       </div>
-      <nav style={{padding:"10px 8px",flex:1}}>
+      <nav style={{padding:compact?"8px":"10px 8px",flex:1,display:compact?"flex":"block",gap:compact?4:0,overflowX:compact?"auto":"visible"}}>
         {nav.map(n => (
           <button key={n.key} onClick={() => setView(n.key)} style={{
-            display:"block",width:"100%",textAlign:"left",padding:"9px 12px",
+            display:"block",width:compact?"auto":"100%",whiteSpace:compact?"nowrap":"normal",textAlign:"left",padding:"9px 12px",
             background:view===n.key?"rgba(201,168,76,0.08)":"transparent",
             border:"none",borderRadius:3,
             color:view===n.key?"var(--gold)":"var(--muted)",
@@ -132,7 +126,7 @@ function Sidebar({ view, setView, date, lastRefresh }) {
           }}>{n.label}</button>
         ))}
       </nav>
-      <div style={{padding:"14px 18px",borderTop:"1px solid var(--border-subtle)"}}>
+      <div style={{display:compact?"none":"block",padding:"14px 18px",borderTop:"1px solid var(--border-subtle)"}}>
         <div style={{fontSize:11,color:"var(--muted)"}}>{date}</div>
         {lastRefresh && <div style={{fontSize:10,color:"var(--dim)",marginTop:3}}>updated {lastRefresh}</div>}
       </div>
@@ -370,6 +364,190 @@ function HomeView({ data, setView }) {
 }
 
 // ── WIKI view ─────────────────────────────────────────────────
+function RadarLane({ lane, setView }) {
+  return (
+    <Card style={{padding:"18px 16px",display:"flex",flexDirection:"column",gap:14,minHeight:250}}>
+      <div>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,marginBottom:8}}>
+          <Label style={{color:lane.color}}>{lane.cadence}</Label>
+          <span style={{fontSize:11,color:"var(--muted)",border:"1px solid var(--border)",borderRadius:3,padding:"3px 7px"}}>{lane.mode}</span>
+        </div>
+        <div style={{fontSize:18,fontWeight:750,color:"var(--text)",lineHeight:1.2}}>{lane.title}</div>
+        <div style={{fontSize:12,color:"var(--muted)",marginTop:7,lineHeight:1.45}}>{lane.focus}</div>
+      </div>
+      <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+        {lane.tags.map(tag => (
+          <span key={tag} style={{fontSize:10,color:"var(--text-soft)",background:"rgba(255,255,255,0.045)",border:"1px solid var(--border-subtle)",borderRadius:3,padding:"4px 7px"}}>{tag}</span>
+        ))}
+      </div>
+      <div style={{marginTop:"auto",display:"flex",flexDirection:"column",gap:8}}>
+        <div style={{height:1,background:"var(--border-subtle)"}}/>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
+          <span style={{fontSize:12,color:"var(--muted)"}}>Route</span>
+          <span style={{fontSize:12,color:"var(--gold)",fontWeight:650,textAlign:"right"}}>{lane.route}</span>
+        </div>
+        <button onClick={() => setView(lane.view)} style={{alignSelf:"flex-start",padding:"7px 12px",background:"transparent",border:"1px solid var(--border)",borderRadius:3,color:"var(--text-soft)",fontSize:11,fontWeight:650}}>
+          Open {lane.cta}
+        </button>
+      </div>
+    </Card>
+  );
+}
+
+function FilterGate() {
+  const gates = [
+    ["Source confidence", "Tier 1/2 before conclusion"],
+    ["Anti-repetition", "No same thesis twice"],
+    ["Action impact", "Decision, skill, thesis, workflow"],
+    ["Wiki promotion", "Smallest durable page"],
+  ];
+  return (
+    <Card gold style={{padding:"18px 20px"}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:18,alignItems:"center"}}>
+        <div>
+          <Label style={{color:"var(--gold)",marginBottom:7}}>Signal Filter</Label>
+          <div style={{fontSize:19,fontWeight:750,color:"var(--text)",lineHeight:1.2}}>Only signals that change a decision survive.</div>
+          <div style={{fontSize:12,color:"var(--muted)",marginTop:7,lineHeight:1.45}}>Generic novelty is suppressed. The filter favors action, contradiction, evidence, and method improvement.</div>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:8}}>
+          {gates.map(([name, desc]) => (
+            <div key={name} style={{border:"1px solid var(--border-subtle)",borderRadius:4,padding:"10px 11px",background:"rgba(255,255,255,0.025)"}}>
+              <div style={{fontSize:12,fontWeight:700,color:"var(--text-soft)"}}>{name}</div>
+              <div style={{fontSize:11,color:"var(--muted)",marginTop:3,lineHeight:1.35}}>{desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function OutputRoute({ item, setView }) {
+  return (
+    <div style={{border:"1px solid var(--border-subtle)",borderRadius:4,padding:"12px 13px",background:"rgba(255,255,255,0.025)",minHeight:112,display:"flex",flexDirection:"column",gap:8}}>
+      <div style={{display:"flex",alignItems:"center",gap:8}}>
+        <span style={{width:7,height:7,borderRadius:"50%",background:item.color,boxShadow:`0 0 8px ${item.color}`}}/>
+        <div style={{fontSize:14,fontWeight:750,color:"var(--text)"}}>{item.title}</div>
+      </div>
+      <div style={{fontSize:12,color:"var(--muted)",lineHeight:1.42}}>{item.body}</div>
+      {item.view && (
+        <button onClick={() => setView(item.view)} style={{marginTop:"auto",alignSelf:"flex-start",padding:"5px 9px",background:"transparent",border:"1px solid var(--border)",borderRadius:3,color:"var(--muted)",fontSize:11}}>
+          {item.link}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function DecisionHomeView({ data, setView }) {
+  if (!data) return <Loading/>;
+  const { life_tracks: lt, system_status, today } = data;
+  const f = lt.finance || {};
+  const h = lt.health  || {};
+  const c = lt.career  || {};
+  const activeOps = system_status.filter(m => m.ok).length;
+  const radarLanes = [
+    {title:"Tech Learning Research",cadence:"Daily",mode:"default",color:"var(--verdigris)",focus:"Agent workflow, context hygiene, evaluation, governance, and tools worth testing in the workspace.",tags:["agent workflow","PACK.md","eval","security","tool test"],route:"skill / workflow update",view:"intel",cta:"Intel"},
+    {title:"CEO Business Model Research",cadence:"Weekly",mode:"strategic",color:"var(--gold)",focus:"Customer budget shifts, AI monetization, ROI pressure, operating model, and durable investment signals.",tags:["offer","pricing","ROI","customer budget","thesis"],route:"decision / thesis update",view:"wiki",cta:"Wiki"},
+    {title:"Competitor Intelligence",cadence:"Weekly + on-demand",mode:"FDE lens",color:"#60a5fa",focus:"Named competitor moves, partnerships, service packaging, AI CoE, governance offers, and FDE-lite gaps.",tags:["SIer","consulting","partnership","FDE","governance"],route:"response / watchlist",view:"fde",cta:"FDE"},
+  ];
+  const outputRoutes = [
+    {title:"Wiki", body:"Promote only durable conclusions, decisions, open questions, or hub-page updates.", color:"var(--gold)", view:"wiki", link:"Open Wiki"},
+    {title:"Action", body:"Turn a signal into a small test, workflow change, or weekly practice artifact.", color:"var(--verdigris)"},
+    {title:"Skill Update", body:"When briefs drift or repeat, patch the relevant PACK.md with a bounded edit.", color:"#60a5fa"},
+    {title:"Ignore", body:"Suppress novelty, generic benchmarks, repeated thesis, and unactionable launches.", color:"var(--dim)"},
+  ];
+  const trackBlock = (rows) => (
+    <div style={{fontSize:13,color:"var(--muted)",display:"flex",flexDirection:"column",gap:6}}>
+      {rows.map(([k,v]) => (
+        <div key={k} style={{display:"flex",justifyContent:"space-between",gap:12}}>
+          <span>{k}</span>
+          <span style={{color:v&&v!=="-"?"var(--text-soft)":"var(--dim)",fontWeight:v&&v!=="-"?500:400,maxWidth:180,textAlign:"right",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{v || "-"}</span>
+        </div>
+      ))}
+    </div>
+  );
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:16}}>
+      <section style={{background:"linear-gradient(145deg,#101614 0%,#171D1B 58%,#151300 100%)",border:"1px solid rgba(201,168,76,0.18)",borderRadius:4,padding:"26px 28px",boxShadow:"0 10px 30px rgba(0,0,0,0.42)"}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:24,alignItems:"end"}}>
+          <div>
+            <Label style={{color:"var(--gold)",marginBottom:8}}>Consilium Architecture</Label>
+            <div style={{fontFamily:"'Playfair Display SC',serif",fontSize:34,lineHeight:1.05,color:"var(--text)",letterSpacing:"0.01em"}}>Decision Brain</div>
+            <div style={{fontSize:13,color:"var(--text-soft)",marginTop:10,maxWidth:620,lineHeight:1.55}}>Radar → filter → decision → wiki/action/skill update. Consilium reads the world by asking what should change.</div>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))",gap:9}}>
+            <div style={{background:"rgba(0,0,0,0.18)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"12px 13px"}}>
+              <div style={{fontSize:24,fontWeight:800,color:"var(--gold)"}}>{today.articles}</div>
+              <div style={{fontSize:10,color:"var(--muted)",textTransform:"uppercase",letterSpacing:"0.06em"}}>raw signals today</div>
+            </div>
+            <div style={{background:"rgba(0,0,0,0.18)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"12px 13px"}}>
+              <div style={{fontSize:24,fontWeight:800,color:"var(--verdigris)"}}>{activeOps}/{system_status.length}</div>
+              <div style={{fontSize:10,color:"var(--muted)",textTransform:"uppercase",letterSpacing:"0.06em"}}>ops healthy</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:10}}>
+          <Label>Search Radar</Label>
+          <span style={{fontSize:12,color:"var(--muted)"}}>3 lines, one decision system</span>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:12}}>
+          {radarLanes.map(lane => <RadarLane key={lane.title} lane={lane} setView={setView}/>)}
+        </div>
+      </div>
+      <FilterGate/>
+      <Card>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:12}}>
+          <Label>Wiki / Action / Skill Update</Label>
+          <span style={{fontSize:12,color:"var(--muted)"}}>promotion happens after impact is clear</span>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:10}}>
+          {outputRoutes.map(item => <OutputRoute key={item.title} item={item} setView={setView}/>)}
+        </div>
+      </Card>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:12}}>
+        <Card>
+          <Label style={{marginBottom:10}}>Ops Pulse</Label>
+          <div style={{display:"flex",flexDirection:"column",gap:7}}>
+            {system_status.map((m,i) => {
+              const runLabel = m.last_run && m.last_run !== "-" && m.last_run.charCodeAt(0) !== 8212 ? m.last_run : (m.next_run ? `next ${m.next_run}` : "-");
+              return (
+                <div key={i} style={{display:"flex",alignItems:"center",gap:10}}>
+                  <StatusDot ok={m.ok}/>
+                  <span style={{flex:1,fontFamily:"'JetBrains Mono',monospace",fontSize:13,color:"var(--text-soft)"}}>{m.name}</span>
+                  <span style={{fontSize:12,color:"var(--muted)"}}>{runLabel}</span>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+        <Card>
+          <Label style={{marginBottom:10}}>Today</Label>
+          <div style={{display:"flex",flexDirection:"column",gap:8}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <span style={{fontSize:13,color:"var(--text-soft)"}}>Reading list</span>
+              <span style={{fontSize:12,color:"var(--gold)",fontWeight:600}}>{today.articles} articles</span>
+            </div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <span style={{fontSize:13,color:"var(--text-soft)"}}>Reflection W{today.reflection.week}</span>
+              {today.reflection.done ? <Badge variant="ok">DONE</Badge> : <Badge variant="danger">PENDING</Badge>}
+            </div>
+            <div style={{height:1,background:"var(--border-subtle)",margin:"4px 0"}}/>
+            <button onClick={() => setView("intel")} style={{alignSelf:"flex-start",padding:"7px 12px",background:"transparent",border:"1px solid var(--border)",borderRadius:3,color:"var(--text-soft)",fontSize:11,fontWeight:650}}>Open Intel</button>
+          </div>
+        </Card>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(210px,1fr))",gap:12}}>
+        <Card><Label style={{marginBottom:8}}>Finance</Label>{trackBlock([["Target", lt.freedom_target],["Passive", f["Thu nhập phụ (side/passive)"]],["Savings", f["Tiết kiệm/đầu tư"]]])}</Card>
+        <Card><Label style={{marginBottom:8}}>Health</Label>{trackBlock([["Sleep", h["Giấc ngủ"]],["Workout", h["Tập luyện"]],["Energy", h["Năng lượng buổi sáng"]]])}</Card>
+        <Card><Label style={{marginBottom:8}}>Career</Label>{trackBlock([["Vị trí", c["Vị trí"]],["Skill", c["Skill được market định giá"]],["Daily", c["Daily target"]]])}</Card>
+      </div>
+    </div>
+  );
+}
+
 function WikiView({ data }) {
   if (!data) return <Loading/>;
   const { wiki } = data;
@@ -961,7 +1139,7 @@ function SimpleIntelView() {
             ))}
           </div>
         ) : (
-          <div style={{fontSize:13,color:"var(--muted)"}}>Chưa có dữ liệu. Qua Actions → Test Collect.</div>
+          <div style={{fontSize:13,color:"var(--muted)"}}>Chưa có dữ liệu. Chạy Search Radar lane để tạo report mới.</div>
         )}
       </SimpleSection>
 
@@ -1687,194 +1865,6 @@ function SimpleList({ items, highlight=false }) {
   );
 }
 
-function ReadingView() {
-  const [articles, setArticles] = useState(null);
-  useEffect(() => { api("/api/articles").then(setArticles).catch(console.error); }, []);
-  if (!articles) return <Loading/>;
-  if (articles.length === 0) return (
-    <Card><div style={{color:"var(--muted)",fontSize:13,padding:"10px 0"}}>Không có articles hôm nay. Chạy Collect để fetch.</div></Card>
-  );
-  return (
-    <div style={{display:"flex",flexDirection:"column",gap:8}}>
-      <div style={{fontSize:12,color:"var(--muted)",marginBottom:4}}>{articles.length} articles today</div>
-      {articles.map((a,i) => (
-        <Card key={i} style={{padding:"12px 16px"}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10}}>
-            <div style={{flex:1}}>
-              <div style={{fontSize:13,fontWeight:500,color:"var(--text)",marginBottom:4,lineHeight:1.4}}>
-                {a.url ? <a href={a.url} target="_blank" rel="noreferrer">{a.title}</a> : a.title}
-              </div>
-              <div style={{display:"flex",gap:8,fontSize:10,color:"var(--muted)"}}>
-                {a.source && <span style={{background:"var(--elevated)",padding:"1px 6px",borderRadius:2}}>{a.source}</span>}
-                {a.topic  && <span style={{color:"var(--gold-dim)"}}>{a.topic}</span>}
-              </div>
-            </div>
-            {a.url && (
-              <a href={a.url} target="_blank" rel="noreferrer" style={{fontSize:10,padding:"3px 10px",background:"var(--elevated)",border:"1px solid var(--border)",borderRadius:3,color:"var(--muted)",whiteSpace:"nowrap",textDecoration:"none"}}>Open →</a>
-            )}
-          </div>
-        </Card>
-      ))}
-    </div>
-  );
-}
-
-// ── ACTIONS view ──────────────────────────────────────────────
-function ActionsView() {
-  const [jobs, setJobs] = useState({}); // action → {job_id, status, output}
-  const pollRefs = useRef({});
-
-  function startPoll(action, jobId) {
-    if (pollRefs.current[action]) clearInterval(pollRefs.current[action]);
-    pollRefs.current[action] = setInterval(async () => {
-      try {
-        const r = await api(`/api/run/${jobId}`);
-        setJobs(prev => ({...prev, [action]: r}));
-        if (r.status !== "running") clearInterval(pollRefs.current[action]);
-      } catch(e) {
-        clearInterval(pollRefs.current[action]);
-      }
-    }, 1500);
-  }
-
-  async function runAction(action) {
-    try {
-      setJobs(prev => ({...prev, [action]: {status:"running", output:"Starting...", job_id:null}}));
-      const r = await api(`/api/run/${action}`, {method:"POST"});
-      setJobs(prev => ({...prev, [action]: r}));
-      startPoll(action, r.job_id);
-    } catch(e) {
-      setJobs(prev => ({...prev, [action]: {status:"error", output:e.message}}));
-    }
-  }
-
-  const actionDefs = [
-    { key:"collect_dry_run", label:"Test Collect", desc:"Fetch + rank only; no raw writes, no wiki ingest, no Telegram" },
-    { key:"intel_synthesis", label:"Run Intel Synthesis", desc:"Gated synthesis action; currently verifies deterministic Intel report availability" },
-    { key:"collect",  label:"Run Collect",  desc:"Fetch RSS + new sources → raw/ → ingest batch → Telegram" },
-    { key:"research", label:"Run Research", desc:"ResearchCrew AI + JP_STOCK → Telegraph + Telegram" },
-    { key:"reflect",  label:"Run Reflect",  desc:"Weekly wiki reflection → Personal/reflection-YYYY-WN.md" },
-  ];
-
-  return (
-    <div style={{display:"flex",flexDirection:"column",gap:14}}>
-      {actionDefs.map(a => {
-        const job = jobs[a.key];
-        const running = job?.status === "running";
-        return (
-          <Card key={a.key}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:job?10:0}}>
-              <div>
-                <div style={{fontSize:14,fontWeight:600,color:"var(--text)",marginBottom:3}}>{a.label}</div>
-                <div style={{fontSize:12,color:"var(--muted)"}}>{a.desc}</div>
-              </div>
-              <button onClick={() => runAction(a.key)} disabled={running} style={{
-                padding:"7px 16px",background:running?"var(--elevated)":"var(--gold)",
-                border:"none",borderRadius:3,
-                color:running?"var(--muted)":"#0B0D0C",
-                fontSize:12,fontWeight:700,
-                display:"flex",alignItems:"center",gap:6,
-                opacity:running?0.7:1,flexShrink:0
-              }}>
-                {running && <Spinner/>}
-                {running ? "Running…" : "Run"}
-              </button>
-            </div>
-            {job && (
-              <div>
-                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
-                  <StatusDot ok={job.status==="done"}/>
-                  <span style={{fontSize:11,color:"var(--muted)",textTransform:"uppercase",letterSpacing:"0.05em",fontWeight:600}}>{job.status}</span>
-                </div>
-                {job.output && (
-                  <pre style={{
-                    fontSize:11,color:"var(--text-soft)",background:"var(--elevated)",
-                    borderRadius:3,padding:"10px 12px",
-                    whiteSpace:"pre-wrap",wordBreak:"break-all",
-                    maxHeight:200,overflow:"auto",
-                    fontFamily:"'JetBrains Mono',monospace",lineHeight:1.6
-                  }}>{job.output}</pre>
-                )}
-              </div>
-            )}
-          </Card>
-        );
-      })}
-
-      {/* PMP Data Migration */}
-      <PmpMigration/>
-    </div>
-  );
-}
-
-const PMP_KEYS = [
-  "pmp.history","pmp.wrong","pmp.settings","pmp.seen","pmp.days",
-  "pmp_ai_provider","pmp_gemini_key","pmp_gemini_model","pmp_copilot_token","pmp_copilot_model",
-];
-
-function PmpMigration() {
-  const [msg, setMsg] = useState("");
-  const [imported, setImported] = useState(null);
-
-  // check if data already exists
-  const hasData = PMP_KEYS.some(k => localStorage.getItem(k) !== null);
-
-  function doImport(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      try {
-        const dump = JSON.parse(ev.target.result);
-        const keys = Object.keys(dump).filter(k => PMP_KEYS.includes(k));
-        if (keys.length === 0) { setMsg("File không chứa PMP data hợp lệ."); return; }
-        for (const k of keys) localStorage.setItem(k, dump[k]);
-        setImported(keys.length);
-        setMsg(`✓ Imported ${keys.length} keys — mở tab PMP Quiz để xem`);
-      } catch { setMsg("File không hợp lệ."); }
-    };
-    reader.readAsText(file);
-    e.target.value = "";
-  }
-
-  function doExport() {
-    const dump = {};
-    for (const k of PMP_KEYS) { const v = localStorage.getItem(k); if (v !== null) dump[k] = v; }
-    if (Object.keys(dump).length === 0) { setMsg("Không có PMP data để export."); return; }
-    const blob = new Blob([JSON.stringify(dump, null, 2)], {type:"application/json"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `pmp-backup-${new Date().toISOString().slice(0,10)}.json`;
-    a.click();
-    setMsg("✓ Export xong");
-  }
-
-  return (
-    <Card>
-      <Label style={{marginBottom:6}}>PMP Data Migration</Label>
-      <div style={{fontSize:12,color:"var(--muted)",marginBottom:12}}>
-        {hasData
-          ? "PMP data đã có trong OPUS. Export để backup hoặc import để ghi đè."
-          : "Chưa có PMP data. Import file backup từ localhost:8000 để chuyển history sang đây."}
-      </div>
-      <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-        <label style={{padding:"7px 16px",background:"var(--gold)",borderRadius:3,color:"#0B0D0C",fontSize:12,fontWeight:700,cursor:"pointer"}}>
-          ⬆ Import backup
-          <input type="file" accept=".json" onChange={doImport} style={{display:"none"}}/>
-        </label>
-        {hasData && (
-          <button onClick={doExport} style={{padding:"7px 16px",background:"transparent",border:"1px solid var(--border)",borderRadius:3,color:"var(--muted)",fontSize:12,cursor:"pointer"}}>
-            ⬇ Export backup
-          </button>
-        )}
-      </div>
-      {msg && (
-        <div style={{marginTop:10,fontSize:12,color:msg.startsWith("✓")?"var(--verdigris)":"var(--danger)",fontWeight:500}}>{msg}</div>
-      )}
-    </Card>
-  );
-}
-
 // ── ChatGPT Handoff ───────────────────────────────────────────
 const BASE = "C:\\Users\\HUY\\AI\\OPUS ANIMUS\\opus-lucida\\";
 
@@ -2368,6 +2358,7 @@ function App() {
   const [view, setView] = useState("home");
   const [data, setData] = useState(null);
   const [lastRefresh, setLastRefresh] = useState("");
+  const [windowWidth, setWindowWidth] = useState(() => window.innerWidth);
 
   const refresh = useCallback(() => {
     api("/api/dashboard").then(d => {
@@ -2382,32 +2373,37 @@ function App() {
     return () => clearInterval(t);
   }, [refresh]);
 
+  useEffect(() => {
+    const onResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   const isPmp = view === "pmp";
   const isFullscreen = isPmp;
+  const isCompact = windowWidth < 760;
 
   const views = {
-    home:    <HomeView    data={data} setView={setView}/>,
+    home:    <DecisionHomeView data={data} setView={setView}/>,
     wiki:    <WikiView    data={data}/>,
     goals:   <GoalsView/>,
     intel:   <SimpleIntelView/>,
     fde:     <FDEView/>,
-    reading: <ReadingView/>,
-    actions: <ActionsView/>,
     pmp:     <iframe src="/pmp/" style={{width:"100%",height:"100%",border:"none"}} title="PMP Quiz" allow="clipboard-write"/>,
     lucida:  <LucidaView/>,
     actio:   <ActioView/>,
   };
 
   return (
-    <div style={{display:"flex",height:"100%",minHeight:"100vh"}}>
-      <Sidebar view={view} setView={setView} date={data?.date||""} lastRefresh={lastRefresh}/>
-      <main style={{flex:1,overflow:isFullscreen?"hidden":"auto",padding:isFullscreen?0:"32px 24px 60px"}}>
+    <div style={{display:"flex",flexDirection:isCompact?"column":"row",height:"100%",minHeight:"100vh"}}>
+      <Sidebar view={view} setView={setView} date={data?.date||""} lastRefresh={lastRefresh} compact={isCompact}/>
+      <main style={{flex:1,overflow:isFullscreen?"hidden":"auto",padding:isFullscreen?0:(isCompact?"18px 14px 48px":"32px 24px 60px")}}>
         {isFullscreen
           ? views.pmp
           : <div style={{maxWidth:900,margin:"0 auto",width:"100%",display:"flex",flexDirection:"column"}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:24,paddingBottom:14,borderBottom:"1px solid var(--border-subtle)"}}>
                 <span style={{fontSize:11,color:"var(--muted)",letterSpacing:"0.07em",textTransform:"uppercase",fontWeight:600}}>{view}</span>
-                <button onClick={refresh} style={{padding:"5px 12px",background:"transparent",border:"1px solid var(--border)",borderRadius:3,color:"var(--muted)",fontSize:11,cursor:"pointer"}}>↻ Refresh</button>
+                <button onClick={refresh} style={{padding:"5px 12px",background:"transparent",border:"1px solid var(--border)",borderRadius:3,color:"var(--muted)",fontSize:11,cursor:"pointer"}}>Refresh</button>
               </div>
               {views[view]}
             </div>
