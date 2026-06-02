@@ -201,8 +201,8 @@ Phân tích sâu hơn dựa trên dữ liệu nhiều ngày:
 
 ```
 Cân nặng mục tiêu: 66 kg
-Calo/ngày:         2000 kcal
-Protein/ngày:      110 g
+Calo/ngày:         2200 kcal   (TDEE lightly-active ~2272 kcal, làm tròn 2200)
+Protein/ngày:      130 g       (1.8 g/kg × 73.5 kg, hỗ trợ giữ cơ khi giảm cân)
 Nước/ngày:         2000 ml
 Bước chân/ngày:    8000 bước
 Giấc ngủ/ngày:     7.5 giờ
