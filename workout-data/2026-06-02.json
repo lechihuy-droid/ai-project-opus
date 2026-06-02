@@ -27,6 +27,21 @@
         }
       ],
       "notes": "Muay Thai pairing 3 sets, ab crunch 3x15 reps, cycling 20 minutes. Calories estimated. Post-workout weight: 73.05kg."
+    },
+    {
+      "time": "22:30",
+      "type": "intimate_activity",
+      "duration_min": 15,
+      "calories": 70,
+      "exercises": [
+        {
+          "name": "Intimate activity",
+          "sets": 1,
+          "reps": null,
+          "notes": "1 private session, 3 position changes. No partner name stored."
+        }
+      ],
+      "notes": "Private intimate activity logged neutrally. Partner name and explicit details intentionally omitted. Calories estimated."
     }
   ]
 }
