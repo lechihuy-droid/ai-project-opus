@@ -1,0 +1,81 @@
+{
+  "date": "2026-06-02",
+  "meals": [
+    {
+      "time": "08:00",
+      "name": "Breakfast",
+      "source": "text",
+      "items": [
+        {
+          "name": "Small cookies 3 pieces",
+          "grams": 30,
+          "kcal": 150,
+          "protein": 2.0,
+          "carb": 21.0,
+          "fat": 6.0,
+          "sugar": 9.0,
+          "fiber": 1.0,
+          "saturated_fat": 2.5,
+          "sodium_mg": 90,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 150,
+      "total_protein": 2.0,
+      "total_carb": 21.0,
+      "total_fat": 6.0,
+      "total_sugar": 9.0,
+      "total_fiber": 1.0,
+      "total_saturated_fat": 2.5,
+      "total_sodium_mg": 90,
+      "total_alcohol": 0
+    },
+    {
+      "time": "12:30",
+      "name": "Lunch",
+      "source": "text",
+      "items": [
+        {
+          "name": "Leftover bread from last night 2/3 piece",
+          "grams": 60,
+          "kcal": 180,
+          "protein": 5.0,
+          "carb": 32.0,
+          "fat": 3.0,
+          "sugar": 3.0,
+          "fiber": 2.0,
+          "saturated_fat": 1.0,
+          "sodium_mg": 300,
+          "alcohol": 0
+        },
+        {
+          "name": "Stewed chicken 200g",
+          "grams": 200,
+          "kcal": 330,
+          "protein": 54.0,
+          "carb": 0.0,
+          "fat": 12.0,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 3.3,
+          "sodium_mg": 200,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 510,
+      "total_protein": 59.0,
+      "total_carb": 32.0,
+      "total_fat": 15.0,
+      "total_sugar": 3.0,
+      "total_fiber": 2.0,
+      "total_saturated_fat": 4.3,
+      "total_sodium_mg": 500,
+      "total_alcohol": 0
+    }
+  ],
+  "water_ml": 0,
+  "steps": 0,
+  "sleep_hours": 0,
+  "weight_kg": 0,
+  "notes": "Breakfast and lunch logged from text. Cookies and leftover bread are estimates because no nutrition label was provided. Stewed chicken uses the same estimate pattern as previous logs."
+}
