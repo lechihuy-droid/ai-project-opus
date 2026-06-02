@@ -100,11 +100,66 @@
       "total_saturated_fat": 0.0,
       "total_sodium_mg": 5,
       "total_alcohol": 0
+    },
+    {
+      "time": "20:30",
+      "name": "Dinner",
+      "source": "text",
+      "items": [
+        {
+          "name": "Stewed chicken 300g",
+          "grams": 300,
+          "kcal": 495,
+          "protein": 81.0,
+          "carb": 0.0,
+          "fat": 18.0,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 5.0,
+          "sodium_mg": 300,
+          "alcohol": 0
+        },
+        {
+          "name": "Boiled water spinach 300g",
+          "grams": 300,
+          "kcal": 57,
+          "protein": 7.8,
+          "carb": 9.3,
+          "fat": 0.6,
+          "sugar": 1.5,
+          "fiber": 6.3,
+          "saturated_fat": 0.1,
+          "sodium_mg": 60,
+          "alcohol": 0
+        },
+        {
+          "name": "Diluted gin tonic 2 glasses",
+          "grams": 0,
+          "kcal": 240,
+          "protein": 0.0,
+          "carb": 18.0,
+          "fat": 0.0,
+          "sugar": 18.0,
+          "fiber": 0.0,
+          "saturated_fat": 0.0,
+          "sodium_mg": 20,
+          "alcohol": 22.0
+        }
+      ],
+      "total_kcal": 792,
+      "total_protein": 88.8,
+      "total_carb": 27.3,
+      "total_fat": 18.6,
+      "total_sugar": 19.5,
+      "total_fiber": 6.3,
+      "total_saturated_fat": 5.1,
+      "total_sodium_mg": 380,
+      "total_alcohol": 22.0
     }
   ],
   "water_ml": 0,
   "steps": 0,
   "sleep_hours": 0,
   "weight_kg": 73.05,
-  "notes": "Breakfast and lunch logged from text. Cookies and leftover bread are estimates because no nutrition label was provided. Stewed chicken uses the same estimate pattern as previous logs. Snack: Top Coco coconut cracker 3 packs x 14.5g = 43.5g; nutrition calculated from label per 100g: 489 kcal, protein 4.9g, fat 20.1g, carb 72.1g, salt equivalent 0.03g. Weight after workout: 73.05kg."
+  "notes": "Breakfast and lunch logged from text. Cookies and leftover bread are estimates because no nutrition label was provided. Stewed chicken uses the same estimate pattern as previous logs. Snack: Top Coco coconut cracker 3 packs x 14.5g = 43.5g; nutrition calculated from label per 100g: 489 kcal, protein 4.9g, fat 20.1g, carb 72.1g, salt equivalent 0.03g. Weight after workout: 73.05kg. Dinner: 300g stewed chicken, 300g boiled water spinach, and 2 diluted gin tonic glasses. Gin tonic nutrition is estimated due to missing gin/tonic volume."
 }
