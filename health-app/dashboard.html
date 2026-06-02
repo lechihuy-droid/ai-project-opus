@@ -2662,26 +2662,46 @@ function weekLabel(start, end) {
 function renderWeekAcc(week) {
   const logs = week.logs;
   const days = logs.length;
-  const avgKcal = avg(logs, totalKcal);
+
+  // ── Vitality-oriented analysis (nền tảng testosterone / libido) ──
+  // 1. Giấc ngủ ≥7h: T tổng hợp chủ yếu trong giấc ngủ sâu
+  const sleepLogged = logs.filter(l => (l.sleep_hours || 0) > 0);
+  const sleepGood = sleepLogged.filter(l => l.sleep_hours >= 7).length;
+  const sleepTone = sleepLogged.length ? `Ngủ ≥7h: ${sleepGood}/${sleepLogged.length} ngày` : 'Ngủ: chưa log';
+  const sleepBad = sleepLogged.length > 0 && sleepGood < Math.ceil(sleepLogged.length * 0.6);
+
+  // 2. Năng lượng đủ: deficit sâu (> 600 kcal dưới mục tiêu) ức chế testosterone
+  const SAFE_FLOOR = TARGET.kcal - 600;
+  const fedDays = logs.filter(l => totalKcal(l) > 0);
+  const deficitDays = fedDays.filter(l => totalKcal(l) < SAFE_FLOOR).length;
+  const energyTone = fedDays.length
+    ? (deficitDays > 0 ? `Thiếu năng lượng: ${deficitDays}/${fedDays.length} ngày` : `Năng lượng đủ: ${fedDays.length} ngày`)
+    : 'Năng lượng: chưa log';
+  const energyBad = fedDays.length > 0 && deficitDays >= Math.ceil(fedDays.length * 0.5);
+  const energyWarn = deficitDays > 0 && !energyBad;
+
+  // 3. Tập sức mạnh / vận động: resistance training tăng T
+  const wkSessions = (cWorkout || [])
+    .filter(l => l.date >= isoLocal(week.start) && l.date <= isoLocal(week.end))
+    .flatMap(l => l.sessions || []);
+  const trainTone = `Tập: ${wkSessions.length} buổi`;
+  const trainWarn = wkSessions.length < 2;
+
+  // 4. Protein đủ: nguyên liệu tổng hợp hormone
   const proteinHit = logs.filter(l => totalMacro(l, 'protein') >= TARGET.protein).length;
-  const fiberLow = logs.filter(l => totalMacro(l, 'fiber') < TARGET.fiber * 0.6).length;
-  const kcalDelta = avgKcal - TARGET.kcal;
-  const kcalTone = Math.abs(kcalDelta) < 150 ? 'Gần mục tiêu' : (kcalDelta > 0 ? `Vượt TB: ${Math.round(kcalDelta)} kcal/ngày` : `Thiếu TB: ${Math.round(Math.abs(kcalDelta))} kcal/ngày`);
-  const kcalToneClass = Math.abs(kcalDelta) < 150 ? '' : ' warn';
-  const outlier = logs
-    .map(l => ({ log: l, delta: Math.abs(totalKcal(l) - TARGET.kcal) }))
-    .sort((a, b) => b.delta - a.delta)[0]?.log;
-  const outlierText = outlier ? `${fmt(outlier.date)} · ${totalKcal(outlier).toLocaleString()} kcal` : '—';
   const proteinMiss = days - proteinHit;
-  const proteinTone = proteinHit >= Math.ceil(days * 0.7) ? `Protein ổn: ${proteinHit}/${days} ngày` : `Protein hụt: ${proteinMiss}/${days} ngày`;
-  const fiberTone = fiberLow > 0 ? `Fiber thấp: ${fiberLow}/${days} ngày` : 'Fiber ổn';
-  const trendText = Math.abs(kcalDelta) < 150 && proteinMiss <= Math.floor(days * 0.3) && fiberLow === 0
-    ? 'Xu hướng: tuần này khá ổn.'
-    : `Xu hướng: ${[
-        Math.abs(kcalDelta) >= 150 ? 'năng lượng lệch mục tiêu' : '',
-        proteinMiss ? 'protein hụt lặp lại' : '',
-        fiberLow ? 'fiber thấp nhiều ngày' : ''
-      ].filter(Boolean).join(', ')}.`;
+  const proteinTone = proteinHit >= Math.ceil(days * 0.7) ? `Protein đủ: ${proteinHit}/${days} ngày` : `Protein hụt: ${proteinMiss}/${days} ngày`;
+
+  const vitalityFlags = [
+    sleepBad ? 'ngủ chưa đủ sâu' : '',
+    energyBad ? 'thiếu năng lượng nhiều ngày' : (energyWarn ? 'có ngày thiếu năng lượng' : ''),
+    trainWarn ? 'tập còn ít' : '',
+    proteinMiss > Math.floor(days * 0.3) ? 'protein hụt lặp lại' : ''
+  ].filter(Boolean);
+  const trendText = vitalityFlags.length === 0
+    ? 'Vitality: nền tảng tuần này tốt — ngủ, năng lượng, tập và đạm đều ổn.'
+    : `Vitality: cần chú ý — ${vitalityFlags.join(', ')}.`;
+
   const dayRows = logs.map(l => renderDayAcc(l, false)).join('');
   const lowConfidence = days < 4;
 
@@ -2694,10 +2714,10 @@ function renderWeekAcc(week) {
       <div class="wh-trend">${esc(trendText)}</div>
       ${lowConfidence ? `<div class="wh-note">⚠ Chỉ ${days} ngày có log — độ tin cậy thấp, chưa đủ để so sánh tuần.</div>` : ''}
       <div class="wh-chips">
+        <span class="wh-chip${sleepBad ? ' bad' : ''}">${sleepTone}</span>
+        <span class="wh-chip${energyBad ? ' bad' : (energyWarn ? ' warn' : '')}">${energyTone}</span>
+        <span class="wh-chip${trainWarn ? ' warn' : ''}">${trainTone}</span>
         <span class="wh-chip${proteinMiss ? ' warn' : ''}">${proteinTone}</span>
-        <span class="wh-chip${fiberLow ? ' bad' : ''}">${fiberTone}</span>
-        <span class="wh-chip${kcalToneClass}">${kcalTone}</span>
-        <span class="wh-chip">Lệch nhất: ${outlierText}</span>
       </div>
     </summary>
     <div class="week-body">${dayRows}</div>
