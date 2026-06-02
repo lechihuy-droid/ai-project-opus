@@ -2713,18 +2713,20 @@ function renderWeeklySummary(logs) {
   const prevWk = logs.filter(l => l.date <= cutThis && l.date > cutPrev);
   if (!thisWk.length) return '';
   const metrics = [
-    { lbl:'Kcal/ngày', f:l=>totalKcal(l),          fmt:v=>Math.round(v).toLocaleString() },
-    { lbl:'Protein',   f:l=>totalMacro(l,'protein'), fmt:v=>Math.round(v)+'g' },
-    { lbl:'Giấc ngủ',  f:l=>l.sleep_hours||0,        fmt:v=>v.toFixed(1)+'h' },
-    { lbl:'Vận động',  f:l=>l.steps||0,              fmt:v=>(v/1000).toFixed(1)+'k bước' }
+    { lbl:'Kcal/ngày', f:l=>totalKcal(l),           fmt:v=>Math.round(v).toLocaleString(),      fmtD:(d)=>Math.round(Math.abs(d)).toLocaleString()+' kcal', neutral:50  },
+    { lbl:'Protein',   f:l=>totalMacro(l,'protein'),  fmt:v=>Math.round(v)+'g',                  fmtD:(d)=>Math.round(Math.abs(d))+'g',                       neutral:5   },
+    { lbl:'Giấc ngủ',  f:l=>l.sleep_hours||0,         fmt:v=>v.toFixed(1)+'h',                   fmtD:(d)=>Math.abs(d).toFixed(1)+'h',                        neutral:0.3 },
+    { lbl:'Vận động',  f:l=>l.steps||0,               fmt:v=>(v/1000).toFixed(1)+'k bước',       fmtD:(d)=>(Math.abs(d)/1000).toFixed(1)+'k bước',            neutral:500 }
   ];
+  const noPrev = !prevWk.length;
   const rows = metrics.map(m => {
     const cur  = avg(thisWk, m.f);
-    const prv  = avg(prevWk, m.f);
-    const diff = prv > 0 ? (cur - prv) / prv * 100 : 0;
-    const arrow = Math.abs(diff) < 3 ? '→' : (diff > 0 ? '↑' : '↓');
-    const color = Math.abs(diff) < 3 ? 'var(--vita-muted)' : (diff > 0 ? 'var(--vita-good)' : 'var(--vita-energy)');
-    const dlabel = prv > 0 ? `${arrow} ${Math.abs(diff).toFixed(0)}%` : '—';
+    const prv  = noPrev ? 0 : avg(prevWk, m.f);
+    const absd = cur - prv;
+    const isNeutral = noPrev || Math.abs(absd) < m.neutral;
+    const arrow = isNeutral ? '→' : (absd > 0 ? '↑' : '↓');
+    const color = isNeutral ? 'var(--vita-muted)' : (absd > 0 ? 'var(--vita-good)' : 'var(--vita-energy)');
+    const dlabel = noPrev ? '—' : isNeutral ? '→' : `${arrow}${m.fmtD(absd)}`;
     return `<div class="is-row">
       <span class="is-lbl">${m.lbl}</span>
       <span class="is-val">${m.fmt(cur)}</span>
