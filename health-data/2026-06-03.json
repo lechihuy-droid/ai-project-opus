@@ -1,0 +1,94 @@
+{
+  "date": "2026-06-03",
+  "meals": [
+    {
+      "time": "08:00",
+      "name": "Breakfast",
+      "source": "text",
+      "items": [
+        {
+          "name": "Cereal 50g",
+          "grams": 50,
+          "kcal": 190,
+          "protein": 4.0,
+          "carb": 37.0,
+          "fat": 2.5,
+          "sugar": 10.0,
+          "fiber": 3.0,
+          "saturated_fat": 0.5,
+          "sodium_mg": 150,
+          "alcohol": 0
+        },
+        {
+          "name": "Yogurt 100ml",
+          "grams": 100,
+          "kcal": 88,
+          "protein": 3.2,
+          "carb": 11.8,
+          "fat": 3.1,
+          "sugar": 11.8,
+          "fiber": 0.0,
+          "saturated_fat": 0.0,
+          "sodium_mg": 44,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 278,
+      "total_protein": 7.2,
+      "total_carb": 48.8,
+      "total_fat": 5.6,
+      "total_sugar": 21.8,
+      "total_fiber": 3.0,
+      "total_saturated_fat": 0.5,
+      "total_sodium_mg": 194,
+      "total_alcohol": 0
+    },
+    {
+      "time": "12:30",
+      "name": "Lunch",
+      "source": "text",
+      "items": [
+        {
+          "name": "Fried salmon 3 slices",
+          "grams": 180,
+          "kcal": 370,
+          "protein": 39.0,
+          "carb": 0.0,
+          "fat": 23.0,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 4.5,
+          "sodium_mg": 180,
+          "alcohol": 0
+        },
+        {
+          "name": "White rice 200g",
+          "grams": 200,
+          "kcal": 312,
+          "protein": 5.0,
+          "carb": 70.0,
+          "fat": 0.6,
+          "sugar": 0.0,
+          "fiber": 0.8,
+          "saturated_fat": 0.1,
+          "sodium_mg": 0,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 682,
+      "total_protein": 44.0,
+      "total_carb": 70.0,
+      "total_fat": 23.6,
+      "total_sugar": 0.0,
+      "total_fiber": 0.8,
+      "total_saturated_fat": 4.6,
+      "total_sodium_mg": 180,
+      "total_alcohol": 0
+    }
+  ],
+  "water_ml": 0,
+  "steps": 0,
+  "sleep_hours": 0,
+  "weight_kg": 0,
+  "notes": "Breakfast: 50g cereal with 100ml yogurt. Lunch: 3 slices fried salmon and 200g white rice. Rice kcal is user-provided as 312 kcal. Salmon, cereal and yogurt nutrition are estimates because no label/grams for salmon slices were provided."
+}
