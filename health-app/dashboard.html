@@ -324,8 +324,6 @@ canvas { display: block; }
 .wh-chip { font-size: 11px; color: var(--vita-text); font-weight: 700; line-height: 1.25; padding: 5px 8px; border-radius: 8px; background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.055); }
 .wh-chip.warn { color: var(--vita-warn); background: rgba(255,159,10,.10); border-color: rgba(255,159,10,.18); }
 .wh-chip.bad { color: var(--vita-bad); background: rgba(255,69,58,.10); border-color: rgba(255,69,58,.18); }
-.wh-chip.good { color: var(--vita-good); background: rgba(48,209,88,.08); border-color: rgba(48,209,88,.18); }
-.wh-chip.wide { grid-column: 1 / -1; }
 .health-tail-space { height: calc(28px + env(safe-area-inset-bottom, 0px)); grid-column: 1 / -1; }
 .week-body { border-top: 1px solid var(--vita-line); padding: 6px 8px 8px; background: rgba(0,0,0,.08); }
 .day-acc { background: var(--vita-surface); border-radius: var(--vita-radius-md); margin-bottom: 7px; overflow: hidden; }
@@ -2512,57 +2510,7 @@ function renderHealth(logs) {
   <!-- Lịch sử tuần (compressed) -->
   <div class="stitle">Tổng kết dinh dưỡng</div>
   ${renderNutritionHistory(logs)}
-  ${renderIntimacyAdvice(logs)}
   <div class="health-tail-space"></div>`;
-}
-
-function renderIntimacyAdvice(logs) {
-  // Dòng gợi ý động dựa trên dữ liệu 7 ngày gần nhất
-  const recent = logs.slice(0, 7);
-  const sleepLogged = recent.filter(l => (l.sleep_hours || 0) > 0);
-  const sleepGood = sleepLogged.filter(l => l.sleep_hours >= 7).length;
-  const intimacy = recent.reduce((s, l) => s + (l.intimacy || 0), 0);
-  const sleepWeak = sleepLogged.length > 0 && sleepGood < Math.ceil(sleepLogged.length * 0.6);
-
-  let context;
-  if (sleepWeak) {
-    context = `Tuần này ngủ đủ giấc chỉ ${sleepGood}/${sleepLogged.length} ngày — thiếu ngủ kéo testosterone và ham muốn xuống. Ưu tiên ngủ ≥7h vài đêm tới trước khi nghĩ tới tần suất.`;
-  } else if (intimacy === 0) {
-    context = `Chưa có hoạt động nào được log tuần này. Gần gũi không chỉ là quan hệ — ôm, hôn, chạm nhẹ hàng ngày giữ kết nối và làm nền cho phần còn lại.`;
-  } else {
-    context = `Nền tảng tuần này ổn (ngủ ${sleepGood}/${sleepLogged.length} ngày đủ, ${intimacy} lần gần gũi). Giữ đều đặn quan trọng hơn dồn dập — và để ý phản hồi của cô ấy hơn là con số.`;
-  }
-
-  const block = (title, body) => `<details class="week-acc">
-    <summary><div class="wh-head"><span class="wh-title">${title}</span></div></summary>
-    <div class="week-body" style="padding:12px 14px;font-size:13px;line-height:1.6;color:var(--vita-text)">${body}</div>
-  </details>`;
-
-  return `<div class="stitle">Tư vấn thân mật</div>
-  <div class="b span4" style="background:linear-gradient(135deg,#2A0E1F,#1F0F18);border:1px solid rgba(255,55,95,.18);margin-bottom:var(--vita-gap)">
-    <div class="b-label" style="color:var(--vita-fat)">Gợi ý tuần này</div>
-    <div style="font-size:13px;line-height:1.55;color:var(--vita-text);margin-top:4px">${esc(context)}</div>
-  </div>
-  ${block('Tần suất hợp lý', `
-    <p>Không có "con số chuẩn". Nghiên cứu cho thấy mức độ hài lòng của cặp đôi không tăng thêm sau khoảng <strong>1 lần/tuần</strong> — chất lượng và sự đồng điệu quan trọng hơn số lần.</p>
-    <p>Điều cần theo dõi không phải "đủ chưa" mà là <strong>cả hai có thấy thỏa mãn không</strong>. Nếu lệch nhu cầu, nói chuyện thẳng thắn thay vì đoán.</p>
-    <p>Ép tần suất khi mệt/thiếu ngủ thường phản tác dụng. Nền tảng sinh lý (ngủ, tập, ăn đủ) là thứ bền vững hơn.</p>`)}
-  ${block('Đa dạng & giữ lửa (để cô ấy không chán)', `
-    <p><strong>Sự mới mẻ</strong> là chìa khóa: thay đổi thời điểm, không gian, nhịp độ — đừng để mọi thứ thành thói quen cố định.</p>
-    <p><strong>Đầu tư cho dạo đầu</strong>: phần lớn phụ nữ cần thời gian khởi động lâu hơn. Tập trung vào cô ấy trước thường là điều tạo khác biệt lớn nhất.</p>
-    <p><strong>Gần gũi ngoài giường</strong>: tin nhắn ngọt, ôm, hẹn hò, để ý chi tiết nhỏ — ham muốn của phụ nữ gắn nhiều với cảm xúc và sự an toàn.</p>
-    <p><strong>Hỏi và lắng nghe</strong>: "Em thích thế nào?" có sức mạnh hơn mọi mẹo. Mỗi người một khác, và sở thích cũng thay đổi theo thời gian.</p>`)}
-  ${block('Tư thế — nguyên tắc, không phải danh mục', `
-    <p>Đa dạng tư thế phục vụ 2 mục đích: <strong>cảm giác khác nhau</strong> và <strong>mức độ kết nối khác nhau</strong>.</p>
-    <p>Tư thế <strong>mặt đối mặt</strong> (giao tiếp bằng mắt) tăng gắn kết cảm xúc — quan trọng nếu mục tiêu là thân mật chứ không chỉ thể chất.</p>
-    <p>Một số tư thế giúp kiểm soát độ sâu/góc để cô ấy dễ đạt khoái cảm hơn. Quan trọng là <strong>hỏi cảm giác của cô ấy</strong> và điều chỉnh, không gắng theo "kỹ thuật".</p>
-    <p>Thoải mái và an toàn là điều kiện tiên quyết — đau hay gượng ép sẽ giết hứng thú nhanh hơn bất kỳ điều gì.</p>`)}
-  ${block('Sức khỏe sinh lý (gắn với dữ liệu đang log)', `
-    <p><strong>Ngủ</strong>: testosterone tổng hợp chủ yếu khi ngủ sâu. Thiếu ngủ vài đêm đã đủ kéo ham muốn xuống — đây là đòn bẩy lớn nhất, và bạn đang theo dõi nó.</p>
-    <p><strong>Tập luyện</strong>: tập sức mạnh đều đặn tăng testosterone và lưu thông máu; nhưng tập quá sức + thiếu hồi phục lại phản tác dụng.</p>
-    <p><strong>Rượu & stress</strong>: rượu nhiều và căng thẳng kéo dài làm giảm cương cứng và hứng thú. Cortisol cao đối nghịch testosterone.</p>
-    <p><strong>Cơ sàn chậu</strong>: bài tập Kegel (cho nam) cải thiện kiểm soát và độ cứng.</p>
-    <p><strong>Khi nào gặp bác sĩ</strong>: rối loạn cương kéo dài, mất ham muốn rõ rệt, hoặc xuất tinh sớm gây căng thẳng — đây là vấn đề y tế có cách điều trị, không nên ngại.</p>`)}`;
 }
 
 function renderInsight(shown, kcal, protein, fiber) {
@@ -2744,10 +2692,6 @@ function renderWeekAcc(week) {
   const proteinMiss = days - proteinHit;
   const proteinTone = proteinHit >= Math.ceil(days * 0.7) ? `Protein đủ: ${proteinHit}/${days} ngày` : `Protein hụt: ${proteinMiss}/${days} ngày`;
 
-  // 5. Gần gũi: outcome chính của mục tiêu vitality
-  const intimacy = logs.reduce((s, l) => s + (l.intimacy || 0), 0);
-  const intimacyTone = `Phập mông Linh: ${intimacy} lần / tuần`;
-
   const vitalityFlags = [
     sleepBad ? 'ngủ chưa đủ sâu' : '',
     energyBad ? 'thiếu năng lượng nhiều ngày' : (energyWarn ? 'có ngày thiếu năng lượng' : ''),
@@ -2774,7 +2718,6 @@ function renderWeekAcc(week) {
         <span class="wh-chip${energyBad ? ' bad' : (energyWarn ? ' warn' : '')}">${energyTone}</span>
         <span class="wh-chip${trainWarn ? ' warn' : ''}">${trainTone}</span>
         <span class="wh-chip${proteinMiss ? ' warn' : ''}">${proteinTone}</span>
-        <span class="wh-chip wide${intimacy > 0 ? ' good' : ''}">${intimacyTone}</span>
       </div>
     </summary>
     <div class="week-body">${dayRows}</div>
