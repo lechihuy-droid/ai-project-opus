@@ -1,0 +1,33 @@
+{
+  "date": "2026-06-03",
+  "sessions": [
+    {
+      "time": "07:30",
+      "type": "intimacy",
+      "duration_min": 5,
+      "partner_alias": "private",
+      "acts": [
+        {
+          "type": "vaginal_sex",
+          "position": "partner_on_top",
+          "duration_min": 2,
+          "count": 1
+        },
+        {
+          "type": "anal_sex",
+          "position": "rear_entry",
+          "duration_min": 3,
+          "count": 1
+        }
+      ],
+      "metrics": {
+        "session_count": 1,
+        "vaginal_sex_count": 1,
+        "anal_sex_count": 1,
+        "rear_entry_count": 1,
+        "position_change_count": 2
+      },
+      "notes": "Private intimacy log. Partner name not stored."
+    }
+  ]
+}
