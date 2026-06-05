@@ -1,0 +1,52 @@
+{
+  "date": "2026-06-05",
+  "meals": [
+    {
+      "time": "12:30",
+      "name": "Lunch",
+      "source": "photo",
+      "items": [
+        {
+          "name": "Spicy rice ball with chashu and mayonnaise",
+          "grams": 0,
+          "kcal": 346,
+          "protein": 5.9,
+          "carb": 61.6,
+          "fat": 9.0,
+          "sugar": 59.5,
+          "fiber": 2.1,
+          "saturated_fat": 0.0,
+          "sodium_mg": 1200,
+          "alcohol": 0
+        },
+        {
+          "name": "Red Bull energy drink 250ml",
+          "grams": 250,
+          "kcal": 115,
+          "protein": 0.0,
+          "carb": 27.5,
+          "fat": 0.0,
+          "sugar": 27.5,
+          "fiber": 0.0,
+          "saturated_fat": 0.0,
+          "sodium_mg": 200,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 461,
+      "total_protein": 5.9,
+      "total_carb": 89.1,
+      "total_fat": 9.0,
+      "total_sugar": 87.0,
+      "total_fiber": 2.1,
+      "total_saturated_fat": 0.0,
+      "total_sodium_mg": 1400,
+      "total_alcohol": 0
+    }
+  ],
+  "water_ml": 0,
+  "steps": 0,
+  "sleep_hours": 0,
+  "weight_kg": 0,
+  "notes": "Lunch logged from photos: spicy rice ball with chashu and mayonnaise, plus Red Bull energy drink 250ml. Rice ball nutrition from visible label: 346 kcal, protein 5.9g, fat 9.0g, carb 61.6g, fiber 2.1g. Red Bull estimated from label/standard 46 kcal per 100ml for 250ml. Sodium and some minor values are estimated where not fully legible."
+}
