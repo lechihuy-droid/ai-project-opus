@@ -44,6 +44,35 @@
       "total_alcohol": 0
     },
     {
+      "time": "16:00",
+      "name": "Snack",
+      "source": "text",
+      "items": [
+        {
+          "name": "Small biscuits 4 pieces",
+          "grams": 32,
+          "kcal": 160,
+          "protein": 2.0,
+          "carb": 24.0,
+          "fat": 6.0,
+          "sugar": 8.0,
+          "fiber": 1.0,
+          "saturated_fat": 2.5,
+          "sodium_mg": 120,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 160,
+      "total_protein": 2.0,
+      "total_carb": 24.0,
+      "total_fat": 6.0,
+      "total_sugar": 8.0,
+      "total_fiber": 1.0,
+      "total_saturated_fat": 2.5,
+      "total_sodium_mg": 120,
+      "total_alcohol": 0
+    },
+    {
       "time": "20:00",
       "name": "Dinner",
       "source": "text",
@@ -103,5 +132,5 @@
   "steps": 0,
   "sleep_hours": 0,
   "weight_kg": 0,
-  "notes": "Lunch: 1 pack Hao Hao instant noodles and 2 chicken eggs. Dinner: 400g pork leg, 1.5 luffa, 300g mushrooms. Nutrition values are estimates; instant noodles estimated at about 350 kcal per pack."
+  "notes": "Lunch: 1 pack Hao Hao instant noodles and 2 chicken eggs. Snack: 3-4 small biscuits logged as 4 pieces to avoid underestimation. Dinner: 400g pork leg, 1.5 luffa, 300g mushrooms. Nutrition values are estimates; instant noodles estimated at about 350 kcal per pack."
 }
