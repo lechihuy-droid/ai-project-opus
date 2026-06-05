@@ -42,11 +42,92 @@
       "total_saturated_fat": 0.0,
       "total_sodium_mg": 1400,
       "total_alcohol": 0
+    },
+    {
+      "time": "20:00",
+      "name": "Dinner",
+      "source": "photo+text",
+      "items": [
+        {
+          "name": "Rice ball 1 piece",
+          "grams": 0,
+          "kcal": 220,
+          "protein": 4.0,
+          "carb": 45.0,
+          "fat": 2.0,
+          "sugar": 2.0,
+          "fiber": 1.0,
+          "saturated_fat": 0.5,
+          "sodium_mg": 600,
+          "alcohol": 0
+        },
+        {
+          "name": "Frank sausage 1 piece",
+          "grams": 80,
+          "kcal": 240,
+          "protein": 10.0,
+          "carb": 4.0,
+          "fat": 20.0,
+          "sugar": 1.0,
+          "fiber": 0.0,
+          "saturated_fat": 7.0,
+          "sodium_mg": 700,
+          "alcohol": 0
+        },
+        {
+          "name": "Stewed pork leg 300g",
+          "grams": 300,
+          "kcal": 690,
+          "protein": 54.0,
+          "carb": 0.0,
+          "fat": 51.0,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 16.5,
+          "sodium_mg": 450,
+          "alcohol": 0
+        },
+        {
+          "name": "Snack pack 50g",
+          "grams": 50,
+          "kcal": 200,
+          "protein": 3.4,
+          "carb": 42.2,
+          "fat": 2.1,
+          "sugar": 41.5,
+          "fiber": 0.7,
+          "saturated_fat": 0.0,
+          "sodium_mg": 354,
+          "alcohol": 0
+        },
+        {
+          "name": "Beer 1 liter",
+          "grams": 1000,
+          "kcal": 400,
+          "protein": 3.0,
+          "carb": 30.0,
+          "fat": 0.0,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 0.0,
+          "sodium_mg": 40,
+          "alcohol": 40.0
+        }
+      ],
+      "total_kcal": 1750,
+      "total_protein": 74.4,
+      "total_carb": 121.2,
+      "total_fat": 75.1,
+      "total_sugar": 44.5,
+      "total_fiber": 1.7,
+      "total_saturated_fat": 24.0,
+      "total_sodium_mg": 2144,
+      "total_alcohol": 40.0
     }
   ],
   "water_ml": 0,
   "steps": 0,
   "sleep_hours": 0,
   "weight_kg": 0,
-  "notes": "Lunch logged from photos: spicy rice ball with chashu and mayonnaise, plus Red Bull energy drink 250ml. Rice ball nutrition from visible label: 346 kcal, protein 5.9g, fat 9.0g, carb 61.6g, fiber 2.1g. Red Bull estimated from label/standard 46 kcal per 100ml for 250ml. Sodium and some minor values are estimated where not fully legible."
+  "notes": "Lunch logged from photos: spicy rice ball with chashu and mayonnaise, plus Red Bull energy drink 250ml. Rice ball nutrition from visible label: 346 kcal, protein 5.9g, fat 9.0g, carb 61.6g, fiber 2.1g. Red Bull estimated from label/standard 46 kcal per 100ml for 250ml. Dinner: 1 rice ball, 1 frank sausage, 300g stewed pork leg, 1 snack pack from photo, and 1 liter beer. Snack label: 50g pack, 200 kcal, protein 3.4g, fat 2.1g, carb 42.2g, sugar 41.5g, fiber 0.7g, salt equivalent 0.9g. Beer and some dinner items are estimates."
 }
