@@ -10,7 +10,7 @@ related: ["[[current-beliefs]]", "[[open-questions]]", "[[reskill-roadmap]]", "[
 applied: ["2026-05-31 - Promoted the three-lane audit seed queue into agent memory, eval/reliability, skill lifecycle, computer-use infrastructure, and autonomous workflow clusters."]
 open_questions: ["Which trend is strong enough to change weekly action?", "Which memory/context pattern should be tested first in Codex or Consilium?", "Which agent evaluation should become the default gate before workflow automation?"]
 created: 2026-05-19
-updated: 2026-05-31
+updated: 2026-06-06
 ---
 
 # AI Trend Radar
@@ -26,6 +26,7 @@ This hub tracks AI trends worth discussing with Codex. It should absorb high-sig
 - Enterprise AI adoption matters only when it changes workflows, budgets, labor structure, or competitor business models.
 - Agent-first tooling is accelerating, but FDE-lite methodology should remain skill-first until workflows, gates, and failure modes are stable.
 - 2026-05-20 synthesis: the strongest repeated signal is not "more agents" but agent operationalization: mobile/remote access, enterprise Codex use cases, secure runtimes, auditable traces, memory/context systems, and specialized workflow agents.
+- 2026-06-06 synthesis: agentic software delivery is an operating-model change, not a coding-tool upgrade. The durable pattern is standardized machine-readable artifacts + knowledge infrastructure + human review gates + smaller supervisory pods.
 
 ## Why It Matters
 The goal is not to know every AI update. The goal is to identify which AI trends change work, learning, product strategy, or investment theses.
@@ -105,6 +106,25 @@ The raw ingest queue mostly confirms the same agent-operating-system thesis rath
 
 Decision label: **test**. For Consilium, the next practical test should be a small memory/eval gate for Codex work: what should be remembered, what should be forgotten, and what evidence proves the memory improved a later task?
 
+### 2026-06-06 Signal: McKinsey agentic software delivery operating model
+
+McKinsey's article on rewiring software delivery for the agentic era reinforces that agentic AI is not merely a coding productivity tool. The useful enterprise pattern is an operating-model redesign: continuous delivery rhythm, standardized artifacts, human review gates, knowledge infrastructure, and smaller supervisory teams.
+
+**Core lesson**
+- Treat agentic delivery as a system redesign, not as a tool rollout.
+- Agents need structured, machine-readable inputs; vague handoffs create unreliable automation.
+- Human value shifts toward architecture judgment, domain modeling, review-gate design, cost/security/quality guardrails, and supervision.
+- Knowledge infrastructure matters more than raw note volume. The wiki should accumulate decisions, methods, source-backed theses, open questions, and traceable context, not transcripts.
+- Do not start with a top-down grand ontology. Let the graph evolve around live priority workflows such as News Research, Wiki Ops, Scheduler, and Lucida.
+
+**Application to Opus**
+- `operator-topology.md` should be treated as the next control-plane artifact: it maps ChatGPT/Codex/Claude/Scheduler/Telegram into the Opus ai layer and then to Consilium, Lucida, GitHub, personal-wiki, and local jobs.
+- `PACK.md`, `status.md`, `handoff-*.md`, and `scheduler-ops.md` should stay machine-readable enough for agents to use as operational inputs.
+- Wiki updates should remain gated: summarize durable insight, choose the smallest target page, avoid raw transcript storage, and require explicit apply/update before write.
+- Automation should not increase before observability and write gates are clear.
+
+**Decision label:** test. This is a high-signal methodology article and should update the active thesis, but it does not require a new source page yet.
+
 ## Application To OPUS ANIMUS
 Use this hub when asking Codex for an AI trend brief. Codex should cite source pages, then say whether each trend is actionable now, watch-only, or noise.
 
@@ -113,12 +133,14 @@ Use this hub when asking Codex for an AI trend brief. Codex should cite source p
 - Which trend is investment-relevant but not personally actionable?
 - Which trend is personally actionable but not investable?
 - Which BD/RCD skills should become agent-orchestrated after sample 2?
+- What is the minimum useful operator-topology artifact before adding a command gateway or local daemon?
 
 ## Applied
 - 2026-05-20 — Added agent-first tooling vs skill-first methodology signal and linked [[agent-first-vs-skill-first]].
 - 2026-05-20 - Promoted high-signal seed pages into three active trend clusters: coding-agent workflow infrastructure, agent safety/auditability, and memory/context/skill reuse.
 - 2026-05-31 - Promoted three-lane audit queue into five trend clusters: memory/context, eval/reliability, runtime infrastructure, skill lifecycle, and autonomous workflow generation.
 - 2026-05-31 - Ingested 12 raw tech candidates as hub evidence instead of creating more source pages.
+- 2026-06-06 - Added McKinsey agentic software delivery thesis as hub evidence for operating-model redesign, knowledge infrastructure, and operator topology.
 
 ## See Also
 - [[competitor-business-model-radar]]
@@ -131,6 +153,7 @@ Use this hub when asking Codex for an AI trend brief. Codex should cite source p
 - [[research-audit-queue]]
 
 ## Sources
+- McKinsey — Rewiring software delivery for the agentic era, 2026.
 - The Verge — Google Gemini Spark and Antigravity updates, 2026-05-20.
 - The Times of India — Google Antigravity 2.0 agent-first rebuild, 2026-05-20.
 - arXiv — Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?, 2026-02-12.
