@@ -21,7 +21,7 @@ open_questions:
   - "Which SIer AI model is durable versus marketing narrative?"
   - "Which competitor signals should become weekly tracking items?"
 created: 2026-05-19
-updated: 2026-05-31
+updated: 2026-06-06
 ---
 
 # Competitor Business Model Radar
@@ -38,6 +38,75 @@ Key patterns:
 - Japanese SIers are defending and expanding their position through legacy modernization, regulated cloud, domain platforms, and OT/IT integration.
 - The durable business model is not chatbot delivery. It is workflow redesign + reliability layer + implementation + managed operations.
 - For offshore vendors, the strategic upgrade path is man-month delivery → FDE-lite pilot → measurable workflow improvement → managed outcome retainer → selective outcome-based pricing.
+- Strategic articles should be stored as directional lenses and combined with daily CEO/competitor signals. Daily news says what moved; strategic articles explain what pattern may matter.
+
+## Strategic Articles Lane
+
+Purpose:
+- Store high-level strategic articles that shape CEO-level interpretation, not every daily news item.
+- Use strategy articles as lenses for reading daily CEO and competitor signals.
+- Convert repeated strategic ideas into business-model theses, watchlists, or offer design rules.
+
+Good sources:
+- McKinsey, BCG, Bain, Deloitte, PwC, Accenture, Gartner, Forrester, IDC, Everest Group, HFS Research
+- Tier 1 company strategy / earnings / investor letters when they explain operating model or business model direction
+- Reputable long-form business/technology analysis when it changes market framing
+
+Promotion criteria:
+- The article changes how we interpret daily news.
+- It introduces a reusable strategic lens, operating model, market structure, or business model pattern.
+- It can be linked to concrete CEO radar questions: customer budget, offer, pricing, competitor, operating model, talent, governance, investment thesis.
+- It is not merely inspirational or generic AI commentary.
+
+Output format for strategy articles:
+
+```text
+Article:
+Source type:
+Strategic lens:
+Core thesis:
+Implication for CEO radar:
+Related daily signals:
+Action / watchlist update:
+Wiki action:
+Decision label:
+```
+
+How to combine with daily CEO news:
+
+```text
+Strategic article = lens / long-term pattern
+Daily CEO news = evidence / contradiction / timing signal
+Competitor news = proof of who is acting on the pattern
+```
+
+Do not create a new page for every strategic article. Add hub evidence here unless the idea becomes a standalone recurring framework.
+
+### 2026-06-06 Strategic Lens: Agentic software delivery as operating-model redesign
+
+Source: McKinsey — Rewiring software delivery for the agentic era.
+
+Core thesis:
+- Agentic AI changes software delivery only when the operating model is rewired, not when agents are added to the old process.
+- The enterprise pattern is standardized machine-readable artifacts, knowledge infrastructure, human review gates, continuous execution rhythms, and smaller supervisory teams.
+
+Implication for CEO radar:
+- Buyers will not only buy coding agents. They will buy operating-model redesign, knowledge infrastructure, governance, and measured productivity improvement.
+- SIers and consulting firms that can package agentic delivery with guardrails, evidence, and change management may capture more value than tool-only vendors.
+- The FDE-lite offer should emphasize workflow discovery, guardrail design, cost/ROI assumptions, knowledge infrastructure, and pilot governance.
+
+Related daily signals to watch:
+- AI cost / ROI discipline from CFO or CIO commentary.
+- Consulting/SI firms announcing agentic delivery practices, AI software delivery packages, or workforce redesign.
+- Platform vendors turning coding agents into enterprise workflow systems.
+- Customers reporting productivity metrics, team-size change, delivery-cycle compression, or governance bottlenecks.
+
+Action / watchlist update:
+- Add strategic articles as a separate CEO lens beside daily news.
+- Do not treat agentic SDLC as a pure engineering tool category.
+- Watch for competitors selling operating-model redesign rather than tool implementation.
+
+Decision label: test.
 
 ## Key Signals
 
@@ -254,6 +323,22 @@ Search terms:
 - "agentic AI bookings" Capgemini Accenture
 - "enterprise AI adoption numbers" consulting
 
+### 7. Strategic article / CEO lens signal
+Look for high-quality strategic articles that explain how AI changes operating models, customer budgets, delivery models, governance, pricing, or organizational design.
+
+Why it matters:
+- Daily news is too noisy without a strategic interpretation layer.
+- Strategy articles help decide which daily signals matter and which are hype.
+- This creates a bridge between CEO Research and Competitor Intelligence.
+
+Search terms:
+- "agentic AI operating model software delivery McKinsey"
+- "AI transformation operating model consulting"
+- "enterprise AI value capture operating model"
+- "AI cost governance CFO CIO"
+- "agentic software delivery strategy"
+- "AI rewiring software delivery"
+
 ## Signal Quality Filter
 Use this filter before upgrading a source from raw seed to business-model evidence.
 
@@ -282,11 +367,26 @@ Strong / weak signal:
 Recommended wiki action: ignore / seed / update radar / update thesis / create deep dive
 ```
 
+## Strategic Article Output Format
+When a strategy article is added, summarize it before synthesis:
+
+```text
+Article:
+Source type:
+Strategic lens:
+Core thesis:
+Implication for CEO radar:
+Related daily signals:
+Action / watchlist update:
+Recommended wiki action: ignore / seed / update radar / update thesis / create deep dive
+```
+
 ## Decision Impact
 - Track competitor business models separately from AI technology trends.
 - Prioritize business model signals that show monetization, delivery model, account control, or workflow ownership.
 - Treat isolated AI product launches as weak evidence unless they connect to deployment, transformation budget, managed operations, or long-term platform lock-in.
 - Treat outcome-based FDE as a strategic commercial upgrade path for offshore vendors, but introduce it gradually through measurable workflow outcomes rather than uncontrolled business outcomes.
+- Use strategic articles as CEO lenses that interpret daily news and competitor movement. Do not treat them as daily news unless they create a new action, watchlist, or thesis update.
 
 ## Application To OPUS ANIMUS
 Use this page when deciding whether an AI trend affects business strategy. For Opus Animus and Lucida, the main question is not whether a competitor uses AI. The question is whether they have a repeatable business model that turns AI into delivery capacity, customer lock-in, or managed operations.
@@ -300,12 +400,14 @@ Use competitor signals to test whether Lucida should evolve from content-generat
 - Which business model needs enterprise trust, compliance, or legacy access that a small player cannot easily replicate?
 - Which signals should be tracked daily versus weekly?
 - Which existing offshore project is safest for an outcome-based FDE pilot?
+- Which strategic article lenses should become permanent CEO radar categories?
 
 ## Applied
 - 2026-05-19 - Created competitor business model radar as a separate lane from AI technology trend tracking.
 - 2026-05-19 - Added daily research signals to track for competitor business model monitoring.
 - 2026-05-19 - Linked outcome-based FDE as a commercial upgrade path from offshore man-month delivery.
 - 2026-05-31 - Added OpenAI + PwC AI-native finance as evidence for function-specific enterprise AI delivery packages.
+- 2026-06-06 - Added Strategic Articles Lane to combine CEO-level thought leadership with daily CEO and competitor signals.
 
 ## See Also
 - [[outcome-based-fde-model]]
@@ -315,6 +417,7 @@ Use competitor signals to test whether Lucida should evolve from content-generat
 - [[active-project-context]]
 
 ## Sources
+- McKinsey — Rewiring software delivery for the agentic era, 2026.
 - https://www.techradar.com/pro/openai-snaps-up-consulting-company-to-help-spread-the-word-about-ai
 - https://www.businessinsider.com/anthropic-pwc-big-four-business-ai-adoption-2026-5
 - https://www.techradar.com/pro/ibm-watch-out-fujitsu-uses-ai-to-understand-cobol-and-automatically-generate-design-documents-without-expert-knowledge-in-minutes-rather-than-hours
