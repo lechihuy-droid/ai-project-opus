@@ -10,6 +10,7 @@ sources:
 related: ["[[ai-trend-radar]]", "[[competitor-business-model-radar]]", "[[fde-model]]", "[[investment-theses]]", "[[open-questions]]"]
 applied:
   - "2026-06-06 - Created strategic lens page to separate long-term strategic frameworks from daily CEO news and competitor evidence."
+  - "2026-06-06 - Added strategic watch criteria for DX, Japan enterprise IT, AI-SDLC, buyer budgets, regulation, and workforce shifts."
 open_questions:
   - "Which strategic lenses deserve permanent radar categories?"
   - "Which daily CEO signals prove or weaken the agentic operating model thesis?"
@@ -108,6 +109,81 @@ Track technical capabilities only when they change the operating model:
 - evals, observability, and release gates for agentic workflows
 - tool-call security boundaries and approval gates
 - session continuity, handoff, compact, and status contracts
+
+### DX / Japan Enterprise IT Radar
+
+Track DX trends that may affect Huy's work, Japan-market positioning, or FDE-lite opportunity:
+
+- 2025 cliff / legacy modernization pressure in Japan
+- core system modernization, COBOL/mainframe, ERP renewal, and migration demand
+- DX moving from document digitization to workflow and operating-model redesign
+- shortage of IT talent, aging legacy maintainers, and reskilling pressure
+- Japanese SIers packaging GenAI around legacy documentation, test generation, migration, maintenance, and operations
+- client demand for bilingual Japan/Vietnam delivery bridges
+- cloud migration, data platform modernization, and secure AI sandboxes in regulated industries
+- manufacturing, logistics, finance, public sector, and healthcare DX as vertical opportunity areas
+
+### AI-SDLC / Delivery Model Radar
+
+Track whether AI changes software delivery business models:
+
+- AI-assisted requirement clarification, design review, coding, testing, and maintenance
+- agentic SDLC platforms with traceability from requirement to code/test/release
+- design artifacts becoming machine-readable and reviewable by agents
+- QA shifting from manual test execution to test strategy, eval gates, and defect prevention
+- delivery teams shrinking but requiring stronger architecture, domain, and review skills
+- commercial shift from man-month billing to workflow outcome, productivity gain, or managed delivery retainer
+
+### Buyer Budget / Commercial Radar
+
+Track whether AI changes who buys and how budgets are approved:
+
+- AI budget moving from innovation/IT budget into operations, finance, HR, procurement, legal, security, and business-unit budgets
+- CFO pressure around usage-based AI cost, token spend, and ROI accountability
+- buyers asking for cost ceilings, adoption metrics, risk controls, and stop conditions
+- paid PoC moving toward diagnostic sprint, pilot governance, and managed operation packages
+- procurement requiring security review, data handling policy, vendor risk evidence, and audit trails
+
+### Regulation / Trust / Risk Radar
+
+Track whether regulation or trust issues create demand for controlled AI adoption:
+
+- Japan AI governance, privacy, financial-sector cyber rules, and public-sector AI guidance
+- EU AI Act / NIST / OECD / ISO-style frameworks influencing enterprise policy
+- data residency, sovereign cloud, secure sandboxes, and private deployment requirements
+- IP/copyright, confidential data leakage, prompt injection, MCP/tool-call security, and auditability
+- compliance becoming part of delivery workflow instead of a late-stage approval gate
+
+### Workforce / Reskill Radar
+
+Track changes that affect Huy's personal learning roadmap:
+
+- demand for AI workflow architect, FDE, solution architect, AI product manager, platform engineer, and governance lead roles
+- consulting/SI firms training large workforces on AI delivery methods
+- junior developer work being automated while review, architecture, domain modeling, and customer-facing skills become more valuable
+- Japanese-language plus AI/DX bridge skill becoming valuable for Japan-facing delivery
+- education/content opportunities around AI-native Japanese work skills, DX literacy, and software delivery transformation
+
+---
+
+## Strategic Signal Quality Filter
+
+Promote a strategic signal when it changes at least one of:
+
+- what Huy should learn next
+- which business opportunity to watch
+- how Opus / Consilium / Lucida should be structured
+- which offer FDE-lite should package
+- which customer budget or buyer persona matters
+- which competitor model looks repeatable
+- which risk/control requirement becomes mandatory
+
+Downgrade or ignore when:
+
+- it is generic DX/AI optimism without a mechanism
+- it has no buyer, budget, workflow, or operating-model implication
+- it is only a vendor product announcement with no adoption or business-model evidence
+- it does not affect Japan, SI/offshore, software delivery, AI workspace operation, or Huy's learning roadmap
 
 ---
 
@@ -209,6 +285,19 @@ Use for validation and mechanism-level understanding:
 - ACM / IEEE software engineering papers
 - empirical studies on GenAI in software engineering
 - security advisories and vulnerability research for agentic workflows
+
+### Tier F — Japan DX / enterprise IT
+
+Use for Japan-market DX, SIer, and enterprise IT direction:
+
+- METI / IPA / Digital Agency Japan reports and policy material
+- Nikkei / Nikkei XTECH / Nikkei Computer
+- ITmedia Enterprise
+- EnterpriseZine
+- Impress Cloud Watch
+- MONOist for manufacturing DX
+- ZDNet Japan
+- NTT DATA / Fujitsu / NEC / Hitachi / NRI / TIS / SCSK official reports and IR material
 
 ---
 
