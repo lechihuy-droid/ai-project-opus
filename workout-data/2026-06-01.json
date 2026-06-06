@@ -8,6 +8,43 @@
       "calories": 80,
       "exercises": [],
       "notes": "Đạp xe 10 phút, calories ước tính."
+    },
+    {
+      "time": "20:00",
+      "type": "muay_thai",
+      "duration_min": 36,
+      "calories": 360,
+      "exercises": [
+        {
+          "name": "Sandbag cardio",
+          "duration_min": 30,
+          "notes": "Cardio với sandbag 30 phút"
+        },
+        {
+          "name": "Pairing với huấn luyện viên",
+          "sets": 3,
+          "duration_per_set_sec": 120,
+          "notes": "3 set x 2 phút"
+        }
+      ],
+      "notes": "Muay Thai sau đạp xe. Calories ước tính theo cường độ vừa-cao."
+    },
+    {
+      "time": "20:40",
+      "type": "gym",
+      "duration_min": 6,
+      "calories": 35,
+      "exercises": [
+        {
+          "name": "Ab wheel rollout",
+          "sets": [
+            { "reps": 15 },
+            { "reps": 15 }
+          ],
+          "notes": "2 sets x 15 reps"
+        }
+      ],
+      "notes": "Core accessory sau Muay Thai. Cân nặng trước tập 73.35kg, sau tập 72.65kg."
     }
   ]
 }
