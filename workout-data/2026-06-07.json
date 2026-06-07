@@ -1,0 +1,19 @@
+{
+  "date": "2026-06-07",
+  "sessions": [
+    {
+      "time": "15:00",
+      "type": "badminton",
+      "duration_min": 40,
+      "calories": 260,
+      "exercises": [
+        {
+          "name": "Badminton",
+          "sets": 4,
+          "notes": "4 sets"
+        }
+      ],
+      "notes": "Cầu lông 4 set. Duration/calories estimated because exact duration was not provided."
+    }
+  ]
+}
