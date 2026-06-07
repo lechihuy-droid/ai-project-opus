@@ -4,16 +4,22 @@
     {
       "time": "15:00",
       "type": "badminton",
-      "duration_min": 40,
-      "calories": 260,
+      "duration_min": 55,
+      "calories": 360,
       "exercises": [
+        {
+          "name": "Badminton warm-up",
+          "duration_min": 15,
+          "notes": "Khởi động 15 phút"
+        },
         {
           "name": "Badminton",
           "sets": 4,
-          "notes": "4 sets"
+          "duration_per_set_sec": 600,
+          "notes": "4 sets x 10 phút"
         }
       ],
-      "notes": "Cầu lông 4 set. Duration/calories estimated because exact duration was not provided."
+      "notes": "Cầu lông: khởi động 15 phút + 4 sets x 10 phút. Calories ước tính theo tổng 55 phút."
     }
   ]
 }
