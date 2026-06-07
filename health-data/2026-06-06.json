@@ -136,11 +136,53 @@
       "total_saturated_fat": 8.5,
       "total_sodium_mg": 470,
       "total_alcohol": 0
+    },
+    {
+      "time": "22:30",
+      "name": "Post-workout snack",
+      "source": "photo+text",
+      "items": [
+        {
+          "name": "Organic peeled chestnuts 100g",
+          "grams": 100,
+          "kcal": 197,
+          "protein": 4.1,
+          "carb": 41.7,
+          "fat": 1.5,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 0.0,
+          "sodium_mg": 0,
+          "alcohol": 0
+        },
+        {
+          "name": "Aquarius 1 liter",
+          "grams": 1000,
+          "kcal": 190,
+          "protein": 0.0,
+          "carb": 47.0,
+          "fat": 0.0,
+          "sugar": 47.0,
+          "fiber": 0.0,
+          "saturated_fat": 0.0,
+          "sodium_mg": 400,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 387,
+      "total_protein": 4.1,
+      "total_carb": 88.7,
+      "total_fat": 1.5,
+      "total_sugar": 47.0,
+      "total_fiber": 0.0,
+      "total_saturated_fat": 0.0,
+      "total_sodium_mg": 400,
+      "total_alcohol": 0
     }
   ],
   "water_ml": 0,
   "steps": 0,
   "sleep_hours": 0,
   "weight_kg": 0,
-  "notes": "Lunch logged from text: 3 scoops whey, each 30g with 25g protein; 1 luffa; 1 pack Hao Hao instant noodles; 200g beef tendon with fat. Dinner: 200g boiled malabar spinach, 1 egg, 100g frozen shrimp with user-provided 150 kcal, and 2 ice cream bars. Whey protein and shrimp kcal are user-provided. Other nutrition values are estimates."
+  "notes": "Lunch logged from text: 3 scoops whey, each 30g with 25g protein; 1 luffa; 1 pack Hao Hao instant noodles; 200g beef tendon with fat. Dinner: 200g boiled malabar spinach, 1 egg, 100g frozen shrimp with user-provided 150 kcal, and 2 ice cream bars. Post-workout snack: organic peeled chestnuts from photo, assumed 100g because package weight was not visible; label per 100g: 197 kcal, protein 4.1g, fat 1.5g, carb 41.7g. Aquarius 1L estimated. Whey protein and shrimp kcal are user-provided. Other nutrition values are estimates."
 }
