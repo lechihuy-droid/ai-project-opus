@@ -68,11 +68,79 @@
       "total_saturated_fat": 19.6,
       "total_sodium_mg": 2420,
       "total_alcohol": 0
+    },
+    {
+      "time": "20:00",
+      "name": "Dinner",
+      "source": "text",
+      "items": [
+        {
+          "name": "Boiled malabar spinach 200g",
+          "grams": 200,
+          "kcal": 38,
+          "protein": 4.0,
+          "carb": 7.0,
+          "fat": 0.6,
+          "sugar": 1.0,
+          "fiber": 4.0,
+          "saturated_fat": 0.1,
+          "sodium_mg": 40,
+          "alcohol": 0
+        },
+        {
+          "name": "Chicken egg 1",
+          "grams": 50,
+          "kcal": 78,
+          "protein": 6.3,
+          "carb": 0.6,
+          "fat": 5.3,
+          "sugar": 0.5,
+          "fiber": 0.0,
+          "saturated_fat": 1.6,
+          "sodium_mg": 70,
+          "alcohol": 0
+        },
+        {
+          "name": "Frozen shrimp 100g",
+          "grams": 100,
+          "kcal": 150,
+          "protein": 24.0,
+          "carb": 1.0,
+          "fat": 4.0,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 0.8,
+          "sodium_mg": 300,
+          "alcohol": 0
+        },
+        {
+          "name": "Ice cream bars 2",
+          "grams": 120,
+          "kcal": 220,
+          "protein": 4.0,
+          "carb": 30.0,
+          "fat": 9.0,
+          "sugar": 24.0,
+          "fiber": 0.0,
+          "saturated_fat": 6.0,
+          "sodium_mg": 60,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 486,
+      "total_protein": 38.3,
+      "total_carb": 38.6,
+      "total_fat": 18.9,
+      "total_sugar": 25.5,
+      "total_fiber": 4.0,
+      "total_saturated_fat": 8.5,
+      "total_sodium_mg": 470,
+      "total_alcohol": 0
     }
   ],
   "water_ml": 0,
   "steps": 0,
   "sleep_hours": 0,
   "weight_kg": 0,
-  "notes": "Lunch logged from text: 3 scoops whey, each 30g with 25g protein; 1 luffa; 1 pack Hao Hao instant noodles; 200g beef tendon with fat. Whey protein is user-provided. Other nutrition values are estimates."
+  "notes": "Lunch logged from text: 3 scoops whey, each 30g with 25g protein; 1 luffa; 1 pack Hao Hao instant noodles; 200g beef tendon with fat. Dinner: 200g boiled malabar spinach, 1 egg, 100g frozen shrimp with user-provided 150 kcal, and 2 ice cream bars. Whey protein and shrimp kcal are user-provided. Other nutrition values are estimates."
 }
