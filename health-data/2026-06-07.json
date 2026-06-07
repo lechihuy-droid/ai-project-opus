@@ -1,0 +1,9 @@
+{
+  "date": "2026-06-07",
+  "meals": [],
+  "water_ml": 0,
+  "steps": 1100,
+  "sleep_hours": 0,
+  "weight_kg": 0,
+  "notes": "Walking data allocated from user-provided 7-day average: 1600 steps/day. Existing 2026-06-01 had 4600 steps, so 2026-06-02 to 2026-06-07 are allocated as 1100 steps/day to keep the 7-day average at 1600 steps/day."
+}
