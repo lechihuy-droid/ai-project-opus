@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#090A0F">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://fonts.googleapis.com https://fonts.gstatic.com https://apis.google.com https://accounts.google.com; connect-src https://api.github.com https://www.googleapis.com https://accounts.google.com https://oauth2.googleapis.com; frame-src 'none'; object-src 'none';">
 <title>Opus Nexus</title>
 <link rel="icon" type="image/svg+xml" href="assets/opus-mark.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2896,14 +2897,14 @@ function renderWorkout(logs) {
     const ex  = (s.exercises||[]).map(e => {
       const detail = Array.isArray(e.sets)
         ? e.sets.map(st=>`${st.reps}×${st.weight_kg}kg`).join(', ')
-        : [e.sets&&`${e.sets} sets`, e.reps&&`${e.reps} reps`, e.duration_per_set_sec&&`${e.duration_per_set_sec}s/set`, e.notes].filter(Boolean).join(' · ');
-      return `<div class="hi-extra">${e.name}${detail?' — '+detail:''}</div>`;
+        : [e.sets&&`${e.sets} sets`, e.reps&&`${e.reps} reps`, e.duration_per_set_sec&&`${e.duration_per_set_sec}s/set`, e.notes&&esc(e.notes)].filter(Boolean).join(' · ');
+      return `<div class="hi-extra">${esc(e.name||'')}${detail?' — '+detail:''}</div>`;
     }).join('');
     const dur = s.duration_min ? `${s.duration_min} phút · ` : '';
     return `<div class="hi">
       <div class="hi-ico" style="background:${m.color}22">${m.ico}</div>
       <div class="hi-info">
-        <div class="hi-title">${(s.type||'').toUpperCase()} · ${fmt(s.date)}</div>
+        <div class="hi-title">${esc((s.type||'').toUpperCase())} · ${fmt(s.date)}</div>
         <div class="hi-sub">${dur}${s.calories||0} kcal đốt</div>${ex}
       </div>
     </div>`;
@@ -3052,7 +3053,7 @@ function renderFinance(logs) {
     return `<div class="hi">
       <div class="hi-ico" style="background:${c.color}22">${c.ico}</div>
       <div class="hi-info">
-        <div class="hi-title">${t.description||c.lbl}</div>
+        <div class="hi-title">${esc(t.description||c.lbl)}</div>
         <div class="hi-sub">${fmt(t.date)}${t.time?' · '+t.time:''}</div>
       </div>
       <div class="hi-val" style="color:${inc?'var(--vita-good)':'var(--vita-energy)'}">${inc?'+':'−'}${vnd(t.amount)}</div>
