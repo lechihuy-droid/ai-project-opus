@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opus Pecunia — Concept</title>
+  <link rel="stylesheet" href="../html-kit/styles.css">
+  <script src="../html-kit/diagram.js" defer></script>
+</head>
+<body>
+
+  <header class="doc-header">
+    <span class="badge">CONCEPT v0</span>
+    <h1>💰 Opus Pecunia</h1>
+    <p class="lead">App quản lý tài chính + kế hoạch dài hạn cá nhân — vận hành bằng Claude Agent Skills, không phải bằng UI.</p>
+    <p class="meta">2026-06-10 · Draft cho Le Huy · thuộc hệ Opus (Nexus · Vita · Consilium · Animus · Lucida)</p>
+  </header>
+
+  <main>
+
+    <!-- ══════════ 1. VISION ══════════ -->
+    <h2>1. Vision</h2>
+    <p>
+      Các app tài chính truyền thống (Moneytree, Zaim, MoneyForward) chỉ làm được một nửa:
+      <strong>ghi nhận quá khứ</strong>. Chúng không hiểu kế hoạch 5 năm của bạn, không biết bạn đang
+      cân nhắc ở lại Nhật hay về Việt Nam, và không tự đặt câu hỏi "tháng này có gì bất thường?".
+    </p>
+    <div class="callout">
+      <strong>Core promise:</strong> Pecunia không phải app để bạn <em>nhập liệu</em>.
+      Pecunia là một <strong>cố vấn tài chính agent</strong> — bạn nói chuyện, gửi ảnh hóa đơn,
+      đặt câu hỏi; agent ghi sổ, đối chiếu kế hoạch, cảnh báo lệch hướng, và mỗi tháng tự ngồi xuống
+      review với bạn như một CFP planner thực thụ.
+    </div>
+    <p>
+      Tagline: <em>"Log bằng một câu chat. Plan bằng một cuộc hội thoại."</em>
+    </p>
+
+    <!-- ══════════ 2. WHY AGENT SKILLS ══════════ -->
+    <h2>2. Tại sao Agent Skills thay vì app truyền thống?</h2>
+    <div class="compare">
+      <div>
+        <div class="col-head">App truyền thống (build UI)</div>
+        <div class="card" style="border-radius:0 0 4px 4px; margin:0;">
+          <p>✗ Phải build + maintain UI nhập liệu, backend, auth</p>
+          <p>✗ Nhập liệu thủ công → bỏ cuộc sau 2 tuần</p>
+          <p>✗ Logic tư vấn cứng, không hiểu ngữ cảnh đời sống</p>
+          <p>✗ Thêm tính năng = thêm code</p>
+        </div>
+      </div>
+      <div>
+        <div class="col-head">Agent Skills (concept này)</div>
+        <div class="card" style="border-radius:0 0 4px 4px; margin:0;">
+          <p>✓ Input = chat tự nhiên + ảnh hóa đơn (zero UI)</p>
+          <p>✓ Mỗi skill = 1 file SKILL.md — sửa hành vi bằng văn bản</p>
+          <p>✓ LLM hiểu ngữ cảnh: "tháng này về VN nên transport cao" </p>
+          <p>✓ Tái dùng toàn bộ hạ tầng Nexus đã chạy: JSON-on-GitHub, Actions pipeline, dashboard</p>
+        </div>
+      </div>
+    </div>
+    <div class="callout warn">
+      <strong>Nguyên tắc kế thừa từ Nexus:</strong> chat-first, không build UI nhập liệu,
+      static dashboard chỉ để <em>xem</em>, dữ liệu là JSON trên GitHub (version control = audit trail miễn phí).
+    </div>
+
+    <!-- ══════════ 3. KIẾN TRÚC ══════════ -->
+    <h2>3. Kiến trúc tổng thể</h2>
+    <p>Bốn lớp — trong đó lớp <strong>Agent (Skills)</strong> chính là "app":</p>
+    <div class="diagram" data-chart='{
+      "type": "flow",
+      "nodes": [
+        {"id":"u",  "label":"User (chat / ảnh hóa đơn)", "shape":"terminal"},
+        {"id":"sk", "label":"Agent Layer — Claude Skills\n/fin-log · /fin-review · /fin-plan · /fin-advisor", "shape":"rect"},
+        {"id":"gh", "label":"Data Layer — GitHub repo\nfinance-data/ · personal-finance/", "shape":"rect"},
+        {"id":"ga", "label":"GitHub Actions\nvalidate + merge + sanitize", "shape":"rect"},
+        {"id":"db", "label":"View Layer\nNexus dashboard (tab Tài chính) + HTML reports", "shape":"rect"},
+        {"id":"ok", "label":"Quyết định tài chính có căn cứ", "shape":"terminal"}
+      ],
+      "edges": [
+        {"from":"u","to":"sk","label":"nói chuyện"},
+        {"from":"sk","to":"gh","label":"commit JSON/MD"},
+        {"from":"gh","to":"ga","label":"trigger"},
+        {"from":"ga","to":"db","label":"data sạch"},
+        {"from":"db","to":"u","label":"xem hằng ngày"},
+        {"from":"sk","to":"ok","label":"review tháng"}
+      ]
+    }'></div>
+
+    <!-- ══════════ 4. BỘ SKILL ══════════ -->
+    <h2>4. Bộ Skill — trái tim của app</h2>
+    <p>Mỗi skill là một folder <code>.claude/skills/&lt;tên&gt;/SKILL.md</code> với vai trò, trigger và guardrails riêng:</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>📒 /fin-log — Kế toán viên</h3>
+        <p><strong>Trigger:</strong> "ăn trưa 850", ảnh hóa đơn, "lương về".</p>
+        <p>Parse JPY-first (円/¥/万), auto-categorize, gắn <code>payment_method</code> + <code>bucket</code>,
+        commit lệnh <code>add_transaction</code> → Actions merge vào <code>finance-data/</code>.</p>
+        <p><strong>Guardrail:</strong> income tự làm tròn theo privacy policy trước khi lên GitHub.</p>
+        <span class="badge green">MVP — Phase 1</span>
+      </div>
+      <div class="card">
+        <h3>📊 /fin-review — Cố vấn tháng</h3>
+        <p><strong>Trigger:</strong> "/fin-review" cuối tháng, hoặc Actions tự nhắc ngày 1.</p>
+        <p>Đọc toàn bộ transactions tháng + recurring + goals → diagnosis traffic-light
+        (cashflow / emergency fund / debt / NISA) → draft <code>snapshots/YYYY-MM.md</code> đã sanitize
+        + 3 action items. User duyệt rồi mới commit.</p>
+        <span class="badge green">MVP — Phase 2</span>
+      </div>
+      <div class="card">
+        <h3>🧭 /fin-plan — Kiến trúc sư dài hạn</h3>
+        <p><strong>Trigger:</strong> "/fin-plan", hoặc khi có quyết định lớn (đổi việc, mua nhà, về VN).</p>
+        <p>Làm việc trên <code>personal-finance/</code>: goal buckets, emergency fund target,
+        lộ trình NISA/iDeCo, mô phỏng kịch bản Ở-Nhật vs Về-VN, cập nhật 12-month roadmap.
+        Ghi mỗi quyết định vào <code>decisions/</code> (decision log).</p>
+        <span class="badge gray">Phase 3</span>
+      </div>
+      <div class="card">
+        <h3>💬 /fin-advisor — Hỏi đáp có kỷ luật</h3>
+        <p><strong>Trigger:</strong> câu hỏi bất kỳ: "tháng này tiêu được bao nhiêu nữa?", "nên max NISA không?"</p>
+        <p>Trả lời <em>dựa trên data + plan thật</em>, không chung chung. Tôn trọng gate:
+        chưa đủ quỹ khẩn cấp 3 tháng → không nudge đầu tư.</p>
+        <p><strong>Guardrail:</strong> không khuyên mua sản phẩm cụ thể — chỉ đưa framework + tiêu chí.</p>
+        <span class="badge gray">Phase 3</span>
+      </div>
+    </div>
+
+    <details>
+      <summary>Ví dụ cấu trúc 1 skill — /fin-log</summary>
+      <pre><code>.claude/skills/fin-log/
+├── SKILL.md          # vai trò, trigger, parse rules JPY, category map,
+│                     # privacy guard, output format
+├── schema.json       # transaction schema v2 (payment_method, bucket)
+└── examples.md       # 10 ví dụ input → JSON chuẩn (few-shot)</code></pre>
+      <p>Sửa hành vi app = sửa SKILL.md. Không deploy, không build. Đây chính là điểm khác biệt
+      của "app bằng agent skills".</p>
+    </details>
+
+    <!-- ══════════ 5. DATA MODEL ══════════ -->
+    <h2>5. Data model & Privacy</h2>
+    <table>
+      <thead>
+        <tr><th>File / folder</th><th>Nội dung</th><th>Độ nhạy cảm</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>finance-data/YYYY-MM-DD.json</code></td><td>Giao dịch chi tiêu hằng ngày (JPY)</td><td><span class="badge green">Thấp — số lẻ</span></td></tr>
+        <tr><td><code>finance-data/recurring.json</code></td><td>Rent, điện, trả góp Mercari, 住民税, sub AI</td><td><span class="badge green">Thấp</span></td></tr>
+        <tr><td><code>finance-data/goals.json</code></td><td>Savings goals + progress (quỹ khẩn cấp, vé VN)</td><td><span class="badge green">Thấp</span></td></tr>
+        <tr><td><code>personal-finance/snapshots/</code></td><td>Snapshot tháng — <strong>chỉ range</strong> (¥500k–550k)</td><td><span class="badge gray">Sanitized</span></td></tr>
+        <tr><td><code>personal-finance/decisions/</code></td><td>Decision log (vì sao chọn NISA trước iDeCo…)</td><td><span class="badge gray">Sanitized</span></td></tr>
+        <tr><td>Số dư ngân hàng, lương chính xác, số thẻ</td><td>—</td><td><span class="badge red">KHÔNG BAO GIỜ lên GitHub</span></td></tr>
+      </tbody>
+    </table>
+    <div class="callout risk">
+      <strong>Privacy là tính năng, không phải ghi chú:</strong> mọi skill đều có bước
+      <em>sanitize-before-commit</em> bắt buộc (kế thừa FINANCE_DATA_STORAGE_POLICY 2-layer:
+      số chính xác ở local/chat, GitHub chỉ giữ range + derived metrics).
+    </div>
+
+    <!-- ══════════ 6. VÒNG ĐỜI THÁNG ══════════ -->
+    <h2>6. Vòng đời một tháng (agent flywheel)</h2>
+    <div class="diagram" data-chart='{
+      "type": "sequence",
+      "actors": ["User", "fin-log", "GitHub+Actions", "fin-review", "fin-plan"],
+      "steps": [
+        {"from":"User","to":"fin-log","msg":"hằng ngày: chat / ảnh hóa đơn"},
+        {"from":"fin-log","to":"GitHub+Actions","msg":"add_transaction (JSON)"},
+        {"from":"GitHub+Actions","to":"User","msg":"dashboard cập nhật: budget pace, safe-to-spend","return":true},
+        {"from":"GitHub+Actions","to":"fin-review","msg":"ngày 1 hằng tháng: nhắc review"},
+        {"from":"fin-review","to":"User","msg":"diagnosis + draft snapshot + 3 actions"},
+        {"from":"User","to":"fin-review","msg":"duyệt → commit snapshot"},
+        {"from":"fin-review","to":"fin-plan","msg":"lệch lớn so với plan? → trigger re-plan"},
+        {"from":"fin-plan","to":"User","msg":"điều chỉnh roadmap / decision log","return":true}
+      ]
+    }'></div>
+    <p>
+      Vòng lặp <strong>Log → Aggregate → Review → Decide → Adjust</strong> chính là điểm
+      "app truyền thống không làm được": dữ liệu chảy ngược lên kế hoạch, kế hoạch chảy xuống
+      hành vi chi tiêu hằng ngày (safe-to-spend, gate đầu tư).
+    </p>
+
+    <!-- ══════════ 7. MODULE KẾ HOẠCH DÀI HẠN ══════════ -->
+    <h2>7. Module kế hoạch dài hạn</h2>
+    <p>Kế thừa nguyên khung <code>PERSONAL_FINANCE_PLAN_JP_v0.md</code> đã có — Pecunia làm nó <em>sống</em>:</p>
+    <table>
+      <thead>
+        <tr><th>Bucket</th><th>Horizon</th><th>Ví dụ goal</th><th>Skill phụ trách</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Safety</td><td>0–12 tháng</td><td>Quỹ khẩn cấp 6 tháng chi phí</td><td>fin-review theo dõi, fin-advisor gate</td></tr>
+        <tr><td>Short-term</td><td>1–3 năm</td><td>Vé về VN, học tập (PMP, N2), chuyển việc</td><td>fin-log (sinking fund) + goals.json</td></tr>
+        <tr><td>Medium</td><td>3–7 năm</td><td>Vốn kinh doanh, nhà, gia đình</td><td>fin-plan (kịch bản JP/VN)</td></tr>
+        <tr><td>Long-term</td><td>7+ năm</td><td>NISA core portfolio, semi-FIRE</td><td>fin-plan (IPS, allocation, rebalance rule)</td></tr>
+      </tbody>
+    </table>
+    <ul class="timeline">
+      <li><span class="time">Hằng ngày</span><p>fin-log ghi sổ · dashboard hiện safe-to-spend</p></li>
+      <li><span class="time">Hằng tháng</span><p>fin-review: snapshot + traffic-light + 3 actions</p></li>
+      <li><span class="time">Hằng quý</span><p>fin-plan: đối chiếu 12-month roadmap, điều chỉnh contribution</p></li>
+      <li><span class="time">Hằng năm / biến cố lớn</span><p>fin-plan: re-run kịch bản Ở-Nhật vs Về-VN, net worth review, NISA/iDeCo decision</p></li>
+    </ul>
+
+    <!-- ══════════ 8. MVP ROADMAP ══════════ -->
+    <h2>8. MVP Roadmap</h2>
+    <table>
+      <thead>
+        <tr><th>Phase</th><th>Deliverable</th><th>Effort</th><th>Phụ thuộc</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1 — Ghi sổ tin cậy</strong></td>
+          <td>Skill <code>/fin-log</code> + pipeline <code>add_transaction</code> + fix dashboard JPY (= Phase F0+F1 của RD finance)</td>
+          <td>~3 ngày</td>
+          <td><span class="badge green">Sẵn sàng</span></td>
+        </tr>
+        <tr>
+          <td><strong>2 — Review tháng</strong></td>
+          <td>Skill <code>/fin-review</code> + snapshot auto-draft + dashboard nâng cấp (budget pace, breakdown, bills)</td>
+          <td>~4 ngày</td>
+          <td>Cần 3–4 tuần data từ Phase 1</td>
+        </tr>
+        <tr>
+          <td><strong>3 — Planner dài hạn</strong></td>
+          <td>Skill <code>/fin-plan</code> + <code>/fin-advisor</code> + goals/net-worth + kịch bản JP/VN</td>
+          <td>~4 ngày</td>
+          <td>Snapshot tháng đầu tiên hoàn chỉnh</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <strong>Quan hệ với Nexus:</strong> Pecunia <em>không phải app tách rời</em>.
+      Dashboard vẫn là tab Tài chính trong Nexus (Vita), data vẫn là <code>finance-data/</code>.
+      Cái mới là <strong>lớp agent skills</strong> — biến dữ liệu thành tư vấn.
+      RD chi tiết phần nền tảng đã có ở <code>docs/RD-nexus-finance-improvements.md</code>.
+    </div>
+
+    <!-- ══════════ 9. CẦN CHỐT ══════════ -->
+    <h2>9. Quyết định cần bạn chốt</h2>
+    <table>
+      <thead><tr><th>#</th><th>Câu hỏi</th><th>Đề xuất của tôi</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Skills chạy ở đâu — Claude Code (desktop) hay cả Claude app mobile?</td><td>Cả hai: mobile dùng pattern nexus-commands (commit qua chat), desktop dùng skills trực tiếp</td></tr>
+        <tr><td>2</td><td>Tên: Opus Pecunia hay gộp hẳn vào Vita?</td><td>Giữ tên riêng Pecunia cho lớp agent — data/dashboard vẫn thuộc Vita</td></tr>
+        <tr><td>3</td><td>fin-review tự động (Actions cron) hay user tự gọi?</td><td>Actions chỉ <em>nhắc</em> (tạo task), review luôn chạy có mặt user — giữ control gate</td></tr>
+        <tr><td>4</td><td>Budget JPY từng category (đang chờ từ RD)?</td><td>Chốt cùng lúc với Phase 1</td></tr>
+      </tbody>
+    </table>
+
+  </main>
+
+</body>
+</html>
