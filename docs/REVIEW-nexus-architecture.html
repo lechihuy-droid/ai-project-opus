@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opus Nexus — Architecture Review</title>
+  <link rel="stylesheet" href="../html-kit/styles.css">
+  <script src="../html-kit/diagram.js" defer></script>
+</head>
+<body>
+
+  <header class="doc-header">
+    <span class="badge">ARCHITECTURE REVIEW</span>
+    <h1>🏗 Opus Nexus — Đánh giá kiến trúc hệ thống</h1>
+    <p class="lead">Solution Architecture review: điểm mạnh, rủi ro, và khuyến nghị theo mức ưu tiên P0–P3.</p>
+    <p class="meta">2026-06-10 · Reviewer: Claude (vai SA) · Scope: dashboard.html, data layer, nexus-commands pipeline, CI</p>
+  </header>
+
+  <main>
+
+    <!-- ══════════ 1. EXECUTIVE SUMMARY ══════════ -->
+    <h2>1. Executive Summary</h2>
+    <p>
+      Nexus là một kiến trúc <strong>serverless cá nhân</strong> hiếm khi được làm đúng đến vậy:
+      JSON-on-GitHub làm database + audit trail, GitHub Actions làm trusted executor, static SPA làm view,
+      LLM làm input layer. Với quy mô 1 user, chi phí vận hành bằng 0 và độ phức tạp được kiểm soát tốt
+      nhờ non-goals rõ ràng (không backend, không React).
+    </p>
+    <div class="callout risk">
+      <strong>Phát hiện nghiêm trọng nhất (P0):</strong> lỗ hổng <strong>stored XSS → đánh cắp PAT</strong>.
+      Hai render path không escape dữ liệu (<code>dashboard.html:2429</code> tên món ăn,
+      <code>:3055</code> mô tả giao dịch). Dữ liệu này do LLM ghi từ <em>ảnh hóa đơn / text chat</em>
+      (= untrusted input), trong khi PAT nằm trong <code>localStorage</code> — script chèn qua một
+      "tên cửa hàng" độc hại có thể đọc PAT và chiếm quyền repo. Fix nhỏ (~10 dòng) nhưng phải làm ngay.
+    </div>
+
+    <table>
+      <thead><tr><th>Quality attribute</th><th>Điểm</th><th>Nhận xét ngắn</th></tr></thead>
+      <tbody>
+        <tr><td>Security</td><td><span class="badge red">2/5</span></td><td>XSS chưa phủ hết render path; PAT trong localStorage; chưa có CSP</td></tr>
+        <tr><td>Data integrity</td><td><span class="badge red">2.5/5</span></td><td>3 write path với 3 mức validation; schema contract ngầm, đã drift (VND/JPY, dual-key)</td></tr>
+        <tr><td>Reliability</td><td><span class="badge gray">3/5</span></td><td>Pipeline tốt nhưng fail im lặng; không có test cho executor</td></tr>
+        <tr><td>Performance</td><td><span class="badge gray">3/5</span></td><td>N+1 fetch (90 ngày ≈ 270 API calls/reload), không cache/ETag — chấp nhận được ở range 7-14 ngày</td></tr>
+        <tr><td>Maintainability</td><td><span class="badge gray">3/5</span></td><td>Single file 3.3k dòng, section convention tốt; sẽ đau khi vượt ~5k</td></tr>
+        <tr><td>Evolvability</td><td><span class="badge green">4/5</span></td><td>Pipeline pattern + skills layer (Pecunia) mở rộng tự nhiên</td></tr>
+        <tr><td>Cost / Ops</td><td><span class="badge green">5/5</span></td><td>Zero server, zero cost, git history = backup + audit miễn phí</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ══════════ 2. ĐIỂM MẠNH ══════════ -->
+    <h2>2. Điểm mạnh cần giữ nguyên</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>✅ JSON-on-GitHub</h3>
+        <p>Version control = audit trail + backup + rollback miễn phí. Đúng quy mô bài toán — một database thật sự sẽ là overengineering ở đây.</p>
+      </div>
+      <div class="card">
+        <h3>✅ Control gate pattern</h3>
+        <p>Paste flow: validate → preview → approve từng item trước khi ghi Calendar. Human-in-the-loop đúng chỗ, events có tag <code>source='opus-nexus'</code> để truy vết.</p>
+      </div>
+      <div class="card">
+        <h3>✅ Secrets hygiene</h3>
+        <p>OAuth refresh token chỉ nằm trong GitHub Secrets; access token Google chỉ in-memory, không bao giờ persist. Làm đúng chuẩn.</p>
+      </div>
+      <div class="card">
+        <h3>✅ Non-goals kỷ luật</h3>
+        <p>"No backend, no React, no notification system" — chống scope creep hiệu quả. Review này <em>không</em> đề xuất phá bỏ các non-goals đó.</p>
+      </div>
+    </div>
+
+    <!-- ══════════ 3. FINDINGS ══════════ -->
+    <h2>3. Findings — theo mức ưu tiên</h2>
+
+    <h3>🔴 P0 — Security (làm ngay, effort S)</h3>
+    <table>
+      <thead><tr><th>#</th><th>Finding</th><th>Bằng chứng</th><th>Khuyến nghị</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>F1</strong></td>
+          <td><strong>Stored XSS → PAT exfiltration.</strong> Hàm <code>esc()</code> có sẵn và được dùng đúng ở proposal/calendar/tasks, nhưng bị bỏ sót ở Vita render: tên macro/món ăn và mô tả giao dịch render thẳng vào innerHTML. Attack path: ảnh hóa đơn / text chat → LLM ghi JSON → dashboard render → script chạy → đọc <code>localStorage.ov_pat</code>.</td>
+          <td><code>dashboard.html:2429</code> <code>${m.name}</code><br><code>dashboard.html:3055</code> <code>${t.description||c.lbl}</code></td>
+          <td>(1) Bọc <code>esc()</code> cho 2 vị trí + audit toàn bộ template literal còn lại; (2) thêm <code>&lt;meta http-equiv="Content-Security-Policy"&gt;</code> chặn inline-script ngoài whitelist làm defense-in-depth.</td>
+        </tr>
+        <tr>
+          <td><strong>F2</strong></td>
+          <td><strong>PAT blast radius.</strong> PAT trong localStorage là chấp nhận được cho app cá nhân, <em>với điều kiện</em> scope tối thiểu. Nếu đang dùng classic token full-repo thì F1 trở thành chiếm toàn bộ tài khoản.</td>
+          <td><code>dashboard.html:702</code></td>
+          <td>Dùng <strong>fine-grained PAT</strong>: chỉ repo này, chỉ <code>Contents: Read</code>, có expiry. Dashboard chỉ đọc — không cần quyền ghi.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>🟠 P1 — Data integrity: thống nhất write path (effort M)</h3>
+    <p><strong>F3 — Ba write path, ba mức validation.</strong> Đây là vấn đề kiến trúc lớn nhất:</p>
+    <div class="diagram" data-chart='{
+      "type": "flow",
+      "nodes": [
+        {"id":"a","label":"(a) LLM chat edit file\nhealth/finance/workout + index.json","shape":"rect"},
+        {"id":"b","label":"(b) nexus-commands\n→ Actions validate → execute","shape":"rect"},
+        {"id":"c","label":"(c) Dashboard paste flow\nclient-side validate → approve","shape":"rect"},
+        {"id":"d","label":"Data / Calendar / Tasks","shape":"terminal"}
+      ],
+      "edges": [
+        {"from":"a","to":"d","label":"zero validation ⚠"},
+        {"from":"b","to":"d","label":"server validate ✓"},
+        {"from":"c","to":"d","label":"client validate ~"}
+      ]
+    }'></div>
+    <p>
+      Path (a) là nơi mọi lỗi dữ liệu đã xảy ra (dual-key schema, VND/JPY mismatch, nguy cơ quên update index).
+      LLM vừa là <em>người nhập liệu</em> vừa là <em>người giữ toàn vẹn dữ liệu</em> — sai vai.
+    </p>
+    <div class="callout">
+      <strong>Khuyến nghị F3:</strong> Mọi write đi qua <strong>một choke point</strong> — mở rộng pipeline
+      nexus-commands thêm <code>add_transaction</code> / <code>add_health_log</code> / <code>add_workout</code>
+      (đã nằm trong RD finance F1.1). Tối thiểu nếu chưa làm ngay: thêm workflow
+      <strong>validate-on-push</strong> chạy JSON Schema check trên mọi thay đổi <code>*-data/*.json</code>,
+      và <strong><code>index.json</code> do Actions tự rebuild</strong> — index là derived data,
+      không bao giờ nên để LLM tự maintain.
+    </div>
+    <p><strong>F4 — Schema contract ngầm.</strong> Schema được định nghĩa 2 lần độc lập: trong prompt
+    (<code>instructions.md</code>) và trong parser (<code>dashboard.html</code>) — đã drift thực tế.
+    Khuyến nghị: đặt <code>schemas/*.schema.json</code> trong repo làm single source of truth;
+    instructions.md, validator pipeline, và dashboard cùng tham chiếu; thêm field <code>schema_version</code>
+    vào mỗi file data để migrate an toàn về sau.</p>
+
+    <h3>🟡 P2 — Reliability & Performance (effort S–M)</h3>
+    <table>
+      <thead><tr><th>#</th><th>Finding</th><th>Khuyến nghị</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>F5</strong></td>
+          <td><strong>N+1 fetch, không cache.</strong> <code>loadModule()</code> gọi 1 + N request/module (<code>dashboard.html:752-758</code>); range 90 ngày ≈ <strong>~270 API calls mỗi lần mở app</strong>. Parallel (Promise.all) nên không chết, nhưng chậm trên mobile và phí rate limit.</td>
+          <td>Actions build file rollup tháng <code>YYYY-MM.json</code> (3 calls thay vì 90), hoặc cache localStorage theo SHA của index. Range 7–14 ngày hiện tại: chưa cần vội.</td>
+        </tr>
+        <tr>
+          <td><strong>F6</strong></td>
+          <td><strong>Pipeline fail im lặng.</strong> Lệnh nexus-command lỗi (token hết hạn, validate fail) → file không được archive, user không biết — tưởng lịch đã được tạo. Đây là silent data loss ở UX level.</td>
+          <td>Workflow failure → move file vào <code>nexus-commands/failed/</code> + tạo GitHub Issue (hoặc 1 file <code>status.json</code> dashboard đọc được để hiện badge ⚠).</td>
+        </tr>
+        <tr>
+          <td><strong>F7</strong></td>
+          <td><strong>Executor không có test.</strong> <code>exec-command.js</code> chạy tự động với quyền ghi Calendar/Tasks nhưng 0 test — sửa validation là dò mìn.</td>
+          <td>Vài unit test bằng <code>node --test</code> (zero dependency, giữ đúng triết lý) cho phần validate; chạy trong workflow trước bước execute.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>⚪ P3 — Maintainability & Evolution (làm khi chạm ngưỡng)</h3>
+    <table>
+      <thead><tr><th>#</th><th>Finding</th><th>Khuyến nghị</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>F8</strong></td>
+          <td>Single file 3.3k dòng — vẫn ổn nhờ section convention (<code>// ══ TAB 3 ══</code>), nhưng mỗi feature mới (RD finance F2, Pecunia) cộng thêm vài trăm dòng.</td>
+          <td>Khi vượt ~5k dòng: build-concat tối giản — tách <code>src/*.js</code>, CI ghép thành dashboard.html. Vẫn single-file khi deploy, vẫn không framework. <em>Không</em> migrate React.</td>
+        </tr>
+        <tr>
+          <td><strong>F9</strong></td>
+          <td>Hướng evolution: lớp agent skills (Pecunia) đặt <em>cạnh</em> kiến trúc hiện tại là đúng — không đụng non-goals, tái dùng pipeline làm execution layer.</td>
+          <td>Giữ nguyên tắc: skills chỉ được ghi qua pipeline (F3), không ghi file trực tiếp — như vậy choke point validation phục vụ luôn cả agent layer.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ══════════ 4. TARGET ARCHITECTURE ══════════ -->
+    <h2>4. Kiến trúc đích đề xuất (không phá non-goals)</h2>
+    <div class="diagram" data-chart='{
+      "type": "flow",
+      "nodes": [
+        {"id":"in","label":"Input: chat / ảnh / skills (Pecunia)","shape":"terminal"},
+        {"id":"cmd","label":"nexus-commands/ — choke point duy nhất\nadd_event · add_task · add_transaction · add_health_log","shape":"rect"},
+        {"id":"act","label":"GitHub Actions\nJSON Schema validate → execute → rebuild index → rollup tháng","shape":"rect"},
+        {"id":"data","label":"Data layer\n*-data/ + schemas/ + status.json","shape":"rect"},
+        {"id":"ext","label":"Google Calendar / Tasks","shape":"rect"},
+        {"id":"dash","label":"Dashboard (read-only, esc() + CSP, fine-grained PAT)","shape":"terminal"}
+      ],
+      "edges": [
+        {"from":"in","to":"cmd","label":"commit JSON"},
+        {"from":"cmd","to":"act","label":"trigger"},
+        {"from":"act","to":"data","label":"merge ✓"},
+        {"from":"act","to":"ext","label":"API ✓"},
+        {"from":"data","to":"dash","label":"fetch rollup"}
+      ]
+    }'></div>
+    <p>
+      Thay đổi cốt lõi so với hiện tại chỉ là một câu: <strong>"dashboard chỉ đọc, mọi ghi đi qua pipeline"</strong>.
+      Mọi thứ khác (single-file SPA, JSON-on-GitHub, paste flow approve) giữ nguyên.
+    </p>
+
+    <!-- ══════════ 5. ROADMAP ══════════ -->
+    <h2>5. Thứ tự thực hiện đề xuất</h2>
+    <ul class="timeline">
+      <li><span class="time">Tuần này</span><p><strong>P0:</strong> esc() 2 vị trí + audit render + CSP meta + đổi fine-grained PAT read-only. <em>(~nửa ngày, độc lập với RD finance)</em></p></li>
+      <li><span class="time">Cùng RD finance F1</span><p><strong>P1:</strong> mở rộng pipeline (add_transaction…), JSON Schema trong <code>schemas/</code>, Actions rebuild index. <em>(gộp chung BD với RD finance để khỏi làm 2 lần)</em></p></li>
+      <li><span class="time">Sau 1 tháng data</span><p><strong>P2:</strong> rollup tháng + failed/ + status badge + unit test executor.</p></li>
+      <li><span class="time">Khi chạm ngưỡng</span><p><strong>P3:</strong> build-concat khi dashboard vượt ~5k dòng.</p></li>
+    </ul>
+
+    <!-- ══════════ 6. NHỮNG GÌ KHÔNG NÊN LÀM ══════════ -->
+    <h2>6. Những gì cố tình KHÔNG khuyến nghị</h2>
+    <div class="callout warn">
+      <p>❌ <strong>Backend / database thật</strong> — quy mô 1 user không justify chi phí vận hành; git đang làm tốt vai trò này.</p>
+      <p>❌ <strong>React / framework migration</strong> — 3.3k dòng vanilla có section convention vẫn rẻ hơn một build toolchain.</p>
+      <p>❌ <strong>Real-time sync / push notification</strong> — đúng như non-goals hiện tại; mở app là đủ với usage pattern này.</p>
+      <p>❌ <strong>OAuth proxy server cho PAT</strong> — đúng về lý thuyết bảo mật nhưng phá nguyên tắc no-backend; fine-grained read-only PAT + fix XSS là đủ cho threat model cá nhân.</p>
+    </div>
+
+  </main>
+
+</body>
+</html>
