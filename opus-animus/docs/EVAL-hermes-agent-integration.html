@@ -19,7 +19,22 @@
   <main>
 
     <!-- ── Verdict ── -->
-    <div class="callout"><strong>Kết luận: GO có điều kiện.</strong> Hermes Agent phù hợp đúng vai trò Tầng 3 (interface layer) mà kiến trúc Module C 2026-04-26 đã dự kiến — nó thay <em>cách gọi</em> hệ thống, không thay <em>logic</em> hệ thống. Triển khai theo pilot read-only (wiki query) trước, hardening security bắt buộc trước khi cho quyền ghi/shell rộng. KHÔNG thay thế pipeline hiện tại, KHÔNG cho Hermes ghi vào <code>personal-wiki/</code>.</div>
+    <div class="callout risk"><strong>Kết luận cuối (cập nhật 2026-06-11): NO-GO — đóng [OPT-3].</strong> Premise thay đổi sau khi đánh giá: Module C (wiki agent) và Telegram đã bỏ, tương tác chuyển hết qua cửa sổ app LLM. Phần lớn giá trị của Hermes trong hệ này biến mất theo — chi tiết ở mục 0. Phân tích gốc bên dưới giữ nguyên làm tư liệu (kết luận ban đầu là GO có điều kiện, dựa trên premise còn Module C + khả năng bật lại Telegram).</div>
+
+    <!-- ── 0. Cập nhật premise ── -->
+    <h2>0. Cập nhật premise 2026-06-11 — vì sao đảo kết luận</h2>
+    <p>Thay đổi từ user: <strong>Module C và Telegram đã bỏ; tương tác qua cửa sổ app LLM</strong>. Đối chiếu với 5 giá trị chính ở mục 3:</p>
+    <table>
+      <thead><tr><th>Giá trị Hermes (mục 3)</th><th>Sau thay đổi</th><th>Lý do</th></tr></thead>
+      <tbody>
+        <tr><td>Hồi sinh kênh chat (Telegram/Discord)</td><td><span class="badge red">Mất</span></td><td>Telegram bỏ hẳn — không còn nhu cầu gateway đa nền tảng</td></tr>
+        <tr><td>Context hội thoại cho wiki ops</td><td><span class="badge red">Mất</span></td><td>Target chính là Module C — đã bỏ. App LLM tự có context hội thoại</td></tr>
+        <tr><td>NL interface thay CLI</td><td><span class="badge red">Đã có sẵn</span></td><td>Cửa sổ app LLM chính là NL interface — trùng vai trò, đúng phương án thay thế #2 ở mục 5</td></tr>
+        <tr><td>Cross-module orchestration</td><td><span class="badge gray">Giảm mạnh</span></td><td>App LLM làm được khi chạy trong workspace; ít module hơn sau khi bỏ Module C</td></tr>
+        <tr><td>Built-in cron + learning loop</td><td><span class="badge gray">Còn, nhưng không đủ</span></td><td>Cron delivery hướng tới chat platform (không còn dùng); Task Scheduler vẫn chạy ổn. Không đáng đổi lấy API key mới + security hardening + một runtime thứ hai phải vận hành</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Kết luận:</strong> Hermes là interface layer — khi interface đã là app LLM thì tích hợp Hermes là thêm một lớp trùng vai trò với chi phí và rủi ro thật (mục 4, 5). Đóng [OPT-3]. Chỉ mở lại nếu xuất hiện lại nhu cầu truy cập từ chat platform/mobile hoặc cần cron có delivery đa kênh.</p>
 
     <!-- ── 1. Hermes là gì ── -->
     <h2>1. Hermes Agent là gì (cập nhật 2026-06)</h2>
@@ -170,6 +185,7 @@
 
     <!-- ── 6. Plan ── -->
     <h2>6. Plan thực hiện</h2>
+    <div class="callout warn"><strong>Vô hiệu theo premise mới (mục 0)</strong> — giữ làm tư liệu nếu [OPT-3] được mở lại trong tương lai.</div>
     <p>Theo dev-approach: integration mới → full SDD (RD → SD → BD → build). Tổng effort ước tính <strong>6–9 ngày làm việc rải trong ~4 tuần</strong> (có gate chờ ổn định giữa các phase). Mỗi phase có điều kiện dừng/rollback rõ.</p>
 
     <ul class="timeline">
