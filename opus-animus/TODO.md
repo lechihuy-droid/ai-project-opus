@@ -256,11 +256,11 @@ Cuối session: cập nhật status + completed items vào TODO.md
 ### [OPT-3] Hermes Skill Layer
 **Điều kiện trigger:** Karpathy Wiki + Obsidian workflow ổn định, CLI operations rõ contract, pipeline stable ≥ 2 tuần không có major bug
 **Mô tả:** Future natural-language control layer cho OPUS ANIMUS. Wrap các operation đã ổn định thành skill để user nói tự nhiên thay vì gõ lệnh.
-**Scope hiện tại:** Backlog only — không implement trong WIKI-3.
-**Lưu ý:** Llama tool-calling bug đã gặp — verify format trước khi implement
+**Scope hiện tại:** Đã đánh giá 2026-06-11 — `docs/EVAL-hermes-agent-integration.html` (GO có điều kiện, plan 5 phase). Chờ user trả lời open questions + approve RD trước khi start Phase 0.
+**Lưu ý:** Hermes skill = SKILL.md (markdown, chuẩn agentskills.io) gọi CLI — KHÔNG phải Python API. Ghi chú Groq Llama tool-calling cũ đã lỗi thời.
 **Việc cần làm:**
-- [ ] Đọc Hermes skill API docs
-- [ ] Verify tool-calling format với Groq Llama-3.3-70b
+- [x] Đọc Hermes skill API docs → xem EVAL doc
+- [ ] User trả lời 4 open questions trong EVAL doc (LLM provider, Telegram, Docker, trigger condition)
 - [ ] Wrap run_research.py → skill esearch_crew`
 - [ ] Wrap run_daily.py → skill `daily_briefing`
 - [ ] Wrap stable wiki operations → skill `wiki_agent` (`ingest`, `query`, `connect`, `decide`, eview`, `used`)
