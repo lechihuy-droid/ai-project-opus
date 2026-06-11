@@ -3016,7 +3016,8 @@ function drawWorkout(logs) {
 // ══════════════════════════════════════════════════════════
 // ║  TAB 3 — Tài chính                                      ║
 // ══════════════════════════════════════════════════════════
-const BUDGET = {food:3000000,transport:1000000,shopping:2000000,health:500000,entertainment:500000,bills:2000000,other:500000};
+// Budget JPY/tháng — khởi điểm từ snapshot 2026-06 (bills = rent 49k + điện 10k + phone/net ~16k). user TBD: tinh chỉnh khi có thêm data.
+const BUDGET = {food:60000,transport:10000,shopping:30000,health:10000,entertainment:20000,bills:75000,other:20000};
 const CAT = {
   food:         {ico:uiIcon('i-flame'),color:'#FF9F0A',lbl:'Ăn uống'},
   transport:    {ico:uiIcon('i-steps'),color:'#0A84FF',lbl:'Đi lại'},
@@ -3033,17 +3034,20 @@ function renderFinance(logs) {
   const mm     = new Date().toISOString().slice(0,7);
   const monthT = logs.filter(l=>l.date.startsWith(mm)).flatMap(l=>l.transactions||[]);
   const allT   = logs.flatMap(l=>(l.transactions||[]).map(t=>({...t,date:l.date})));
-  const income  = monthT.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  const expense = monthT.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  // Currency-aware: chỉ cộng JPY vào tổng tháng; VND tính riêng, không gộp thẳng vào ¥.
+  const jpyT    = monthT.filter(t=>curOf(t)==='JPY');
+  const income  = jpyT.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const expense = jpyT.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
   const saved   = income - expense;
+  const vndExpense = monthT.filter(t=>curOf(t)==='VND' && t.type==='expense').reduce((s,t)=>s+t.amount,0);
   const byCat   = {};
-  monthT.filter(t=>t.type==='expense').forEach(t=>{ byCat[t.category]=(byCat[t.category]||0)+t.amount; });
+  jpyT.filter(t=>t.type==='expense').forEach(t=>{ byCat[t.category]=(byCat[t.category]||0)+t.amount; });
   const budgetHtml = Object.entries(BUDGET).map(([cat,bud]) => {
     const spent=byCat[cat]||0, pct=Math.min(100,(spent/bud)*100), c=CAT[cat]||CAT.other, over=spent>bud;
     return `<div style="margin-bottom:11px">
       <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
         <span>${c.ico} ${c.lbl}</span>
-        <span style="color:${over?'var(--vita-energy)':'var(--vita-muted)'};font-weight:700">${vnd(spent)} / ${vnd(bud)}</span>
+        <span style="color:${over?'var(--vita-energy)':'var(--vita-muted)'};font-weight:700">${yen(spent)} / ${yen(bud)}</span>
       </div>
       <div class="pbar"><div class="pfill" style="width:${pct}%;background:${over?'var(--vita-energy)':c.color}"></div></div>
     </div>`;
@@ -3056,7 +3060,7 @@ function renderFinance(logs) {
         <div class="hi-title">${esc(t.description||c.lbl)}</div>
         <div class="hi-sub">${fmt(t.date)}${t.time?' · '+t.time:''}</div>
       </div>
-      <div class="hi-val" style="color:${inc?'var(--vita-good)':'var(--vita-energy)'}">${inc?'+':'−'}${vnd(t.amount)}</div>
+      <div class="hi-val" style="color:${inc?'var(--vita-good)':'var(--vita-energy)'}">${inc?'+':'−'}${money(t.amount,curOf(t))}</div>
     </div>`;
   }).join('') || '<div style="text-align:center;color:var(--vita-faint);padding:20px;font-size:13px">Chưa có giao dịch</div>';
 
@@ -3064,13 +3068,13 @@ function renderFinance(logs) {
     <div class="b span4" style="background:linear-gradient(135deg,#0E2A1F,#0A1C14);border:1px solid rgba(48,209,88,.18)">
       <div class="b-label" style="color:var(--vita-good)">Tháng này</div>
       <div style="display:flex;gap:14px;margin-top:8px">
-        <div><div style="font-size:20px;font-weight:800;color:var(--vita-good);line-height:1">${vnd(income)}</div><div class="b-sub">thu nhập</div></div>
-        <div><div style="font-size:20px;font-weight:800;color:var(--vita-energy);line-height:1">${vnd(expense)}</div><div class="b-sub">chi tiêu</div></div>
-        <div><div style="font-size:20px;font-weight:800;color:${saved>=0?'var(--vita-good)':'var(--vita-energy)'};line-height:1">${vnd(Math.abs(saved))}</div><div class="b-sub">${saved>=0?'tiết kiệm':'thâm hụt'}</div></div>
-      </div>
+        <div><div style="font-size:20px;font-weight:800;color:var(--vita-good);line-height:1">${yen(income)}</div><div class="b-sub">thu nhập</div></div>
+        <div><div style="font-size:20px;font-weight:800;color:var(--vita-energy);line-height:1">${yen(expense)}</div><div class="b-sub">chi tiêu</div></div>
+        <div><div style="font-size:20px;font-weight:800;color:${saved>=0?'var(--vita-good)':'var(--vita-energy)'};line-height:1">${yen(Math.abs(saved))}</div><div class="b-sub">${saved>=0?'tiết kiệm':'thâm hụt'}</div></div>
+      </div>${vndExpense>0?`<div style="font-size:11px;color:var(--vita-faint);margin-top:6px">+ chi VND riêng: ${vnd(vndExpense)}₫ <span style="opacity:.7">(không gộp vào ¥)</span></div>`:''}
     </div>
     <div class="b b-chart span4 tall">
-      <div class="b-label">${uiIcon('i-chart-line')}Chi tiêu / ngày (nghìn)</div>
+      <div class="b-label">${uiIcon('i-chart-line')}Chi tiêu / ngày (¥ nghìn)</div>
       <div class="chart-wrap"><canvas id="c-fday"></canvas></div>
     </div>
     <div class="b span4">
@@ -3084,7 +3088,7 @@ function renderFinance(logs) {
 function drawFinance(logs) {
   const o = [...logs].reverse();
   drawBar('c-fday', o.map(l=>shortDate(l.date)),
-    o.map(l=>(l.transactions||[]).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0)/1000),
+    o.map(l=>(l.transactions||[]).filter(t=>t.type==='expense' && (t.currency||'JPY')==='JPY').reduce((s,t)=>s+t.amount,0)/1000),
     'var(--vita-energy)');
 }
 
@@ -3259,6 +3263,9 @@ function addDays(d,n) { const x=new Date(d); x.setDate(x.getDate()+n); return x;
 function avg(arr,fn) { const v=arr.map(fn).filter(x=>x>0); return v.length?v.reduce((a,b)=>a+b,0)/v.length:0; }
 function pc(v,max) { return Math.min(100,(v/max)*100).toFixed(0); }
 function vnd(n) { if(n>=1000000)return(n/1000000).toFixed(1)+'tr'; if(n>=1000)return Math.round(n/1000)+'k'; return n+''; }
+function yen(n) { n=Math.round(n); if(n>=1000000)return '¥'+(n/1000000).toFixed(1).replace(/\.0$/,'')+'M'; if(n>=10000)return '¥'+(n/1000).toFixed(1).replace(/\.0$/,'')+'k'; return '¥'+n.toLocaleString('en-US'); }
+function curOf(t) { return t.currency || 'JPY'; }
+function money(amount, cur) { return (cur||'JPY')==='VND' ? vnd(amount)+'₫' : yen(amount); }
 function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function toast(msg) { const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2500); }
 

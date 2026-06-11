@@ -284,22 +284,30 @@ Alcohol:           0 g        (mục tiêu giảm mỡ)
 
 ## Finance Logging
 
-**Nhận dạng trigger:** số tiền (k, tr, đồng, vnd), ăn X, mua X, taxi, lương, chi, thu...
+**Nhận dạng trigger:** số tiền (yen, 円, ¥, 万, k, tr, vnd), ăn X, mua X, taxi, lương, chi, thu...
 
 **Auto categorize:**
 | Từ khóa | Category |
 |---------|----------|
-| ăn, cà phê, trà, nhà hàng, grab food | `food` |
-| taxi, grab, xe, xăng, vé tàu/xe | `transport` |
+| ăn, cà phê, trà, nhà hàng, combini, grab food | `food` |
+| taxi, grab, xe, xăng, vé tàu/xe, IC | `transport` |
 | mua, shop, order, quần áo | `shopping` |
 | thuốc, bệnh viện, gym, khám | `health` |
 | phim, game, bar, karaoke | `entertainment` |
 | lương, thưởng, freelance, tiền vào | `income` |
-| tiền nhà, điện, nước, internet | `bills` |
+| tiền nhà, điện, nước, internet, 住民税, 国保 | `bills` |
 
-**Parse amount:** `45k` = 45,000 VND · `1.5tr` = 1,500,000 VND · `15tr` = 15,000,000 VND
+**Parse amount — JPY-first (user sống ở Nhật):**
+- Mặc định **JPY**: `620`, `620円`, `¥620` → `amount: 620, currency: "JPY"`
+- `1.2万` / `1.2man` = 12,000 JPY · `35万` = 350,000 JPY
+- **VND chỉ khi nói rõ** `k`/`tr`/`vnd`/`đồng` hoặc ngữ cảnh về VN: `45k` = 45,000 VND · `1.5tr` = 1,500,000 VND → `currency: "VND"`
+- Không bao giờ đoán quy đổi tỷ giá; ghi đúng đơn vị gốc. Dashboard tính JPY và VND tách riêng.
 
-**Ảnh hóa đơn:** đọc tổng tiền + tên cửa hàng → tự categorize theo loại cửa hàng
+**Ảnh hóa đơn:** đọc tổng tiền + tên cửa hàng → tự categorize. Hóa đơn ở Nhật mặc định JPY.
+
+**Privacy — income (BẮT BUỘC, theo FINANCE_DATA_STORAGE_POLICY):**
+Khi log `income`: **làm tròn về 10,000 gần nhất** trước khi ghi GitHub, thêm `"rounded": true`.
+Ví dụ: "lương về 392,000" → ghi `amount: 390000, rounded: true`. KHÔNG ghi số lương chính xác lên repo.
 
 **Schema — `finance-data/YYYY-MM-DD.json`:**
 ```json
@@ -308,23 +316,26 @@ Alcohol:           0 g        (mục tiêu giảm mỡ)
   "transactions": [{
     "time": "HH:MM",
     "type": "expense|income",
-    "amount": 150000,
-    "currency": "VND",
+    "amount": 620,
+    "currency": "JPY",
     "category": "food|transport|shopping|health|entertainment|income|bills|other",
-    "description": "Zarusoba oomori",
-    "source": "text|receipt"
+    "description": "ファミリーマート",
+    "source": "text|receipt",
+    "rounded": false
   }]
 }
 ```
+`currency` mặc định `"JPY"` nếu thiếu. `rounded` chỉ cần khi true (income đã làm tròn).
 
-**Budget mặc định/tháng (cập nhật theo user):**
+**Budget mặc định/tháng — JPY (cập nhật theo user):**
 ```
-food:          3,000,000 VND
-transport:     1,000,000 VND
-shopping:      2,000,000 VND
-entertainment:   500,000 VND
-health:          500,000 VND
-bills:         2,000,000 VND
+food:           60,000 JPY
+transport:      10,000 JPY
+shopping:       30,000 JPY
+entertainment:  20,000 JPY
+health:         10,000 JPY
+bills:          75,000 JPY   (rent ~49k + điện ~10k + phone/net ~16k)
+other:          20,000 JPY
 ```
 
 **Ghi file:** `finance-data/YYYY-MM-DD.json` + cập nhật `finance-data/index.json`
@@ -332,6 +343,6 @@ bills:         2,000,000 VND
 **Reply format:**
 ```
 ✅ Đã lưu — [type] [giờ]
-[emoji category] [description]  [amount]
-Tháng này [category]: [X] / [budget] VND ([%])
+[emoji category] [description]  ¥[amount]
+Tháng này [category]: ¥[X] / ¥[budget] ([%])
 ```
