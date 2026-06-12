@@ -89,25 +89,6 @@ def inbox_count() -> int:
     return len([f for f in inbox.iterdir() if f.is_file()])
 
 
-def pmp_status() -> dict:
-    exam_date = date(2026, 5, 29)
-    today = date.today()
-    days_left = (exam_date - today).days
-    phase = ""
-    if days_left > 21:
-        phase = "Coverage"
-    elif days_left > 10:
-        phase = "Review"
-    elif days_left > 3:
-        phase = "Mock"
-    else:
-        phase = "Taper"
-
-    # Try read progress from PMP Quiz App localStorage export if exists
-    # (localStorage is browser-only, so we just show countdown + phase)
-    return {"days": days_left, "phase": phase, "exam": exam_date.isoformat()}
-
-
 def reflection_status() -> str:
     iso = date.today().isocalendar()
     week = f"{iso[0]}-W{iso[1]:02d}"
@@ -195,20 +176,6 @@ def main():
     print(f"  OPUS ANIMUS                        {now}")
     print(f'  "Non multa, sed multum."')
     print("=" * W)
-
-    # URGENT: PMP countdown
-    pmp = pmp_status()
-    urgency = "!!!" if pmp["days"] <= 7 else ("!!" if pmp["days"] <= 14 else "")
-    div(f"PMP EXAM — {pmp['days']} DAYS LEFT {urgency}")
-    total = 31  # Apr 28 → May 29
-    done = max(0, total - pmp["days"])
-    bar_w = 30
-    filled = round(done / total * bar_w)
-    bar = "[" + "#" * filled + "-" * (bar_w - filled) + "]"
-    print(f"  Exam date : 2026-05-29   Phase: {pmp['phase']}")
-    print(f"  Progress  : {bar} day {done}/{total}")
-    print(f"  App       : cd apps/pmp-quiz && python -m http.server 8000")
-    print(f"  Target    : People / Process / Business Env — aim AT/AT/AT")
 
     # B: Life tracks
     goals = parse_goals()

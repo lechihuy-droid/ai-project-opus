@@ -1,7 +1,7 @@
 from datetime import datetime
 from fastapi import APIRouter
 from .data import (
-    wiki_stats, pmp_status, system_status,
+    wiki_stats, system_status,
     reflection_status, today_articles_count, parse_goals,
 )
 
@@ -16,7 +16,6 @@ def get_dashboard():
     return {
         "date": now.strftime("%Y-%m-%d  %a"),
         "motto": "Non multa, sed multum.",
-        "pmp": pmp_status(),
         "life_tracks": {
             "finance": goals.get("finance", {}),
             "health":  goals.get("health", {}),
