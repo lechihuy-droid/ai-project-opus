@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EVAL — Hermes Agent: Orchestration &amp; Loop Engineering</title>
+  <link rel="stylesheet" href="../../html-kit/styles.css">
+  <script src="../../html-kit/diagram.js" defer></script>
+</head>
+<body>
+
+  <header class="doc-header">
+    <span class="badge">EVAL</span>
+    <h1>Hermes Agent — Đánh giá mô hình Agent Orchestration &amp; Loop Engineering</h1>
+    <p class="lead">Phân tích kiến trúc để rút bài học áp dụng — không phải đề xuất tích hợp ([OPT-3] đã đóng No-Go)</p>
+    <p class="meta">2026-06-12 · Nguồn: docs + repo chính thức NousResearch · Tiếp nối <code>EVAL-hermes-agent-integration.html</code></p>
+  </header>
+
+  <main>
+
+    <div class="callout"><strong>Kết luận:</strong> Orchestration của Hermes là <strong>work-queue/blackboard cổ điển làm rất tốt phần vận hành</strong> (durability, recovery, audit) chứ không phải "swarm thông minh" — điểm 7.5/10. Loop engineering <strong>khép kín về cơ chế nhưng hở về chất lượng</strong>: có create → use → patch → curate, thiếu measure (eval hồi quy khách quan) — điểm 6.5/10. Giá trị với ta: <strong>3 pattern đáng mượn</strong> (mục 4) mà không cần chạy Hermes.</div>
+
+    <!-- ── 1. Orchestration ── -->
+    <h2>1. Mô hình orchestration — Kanban board</h2>
+    <p>Hermes có 2 cơ chế song song: <code>delegate_task</code> (blocking, subagent vô danh, cho việc ngắn) và <strong>Kanban</strong> (fire-and-forget work queue, cho việc dài/batch). Kanban là phần đáng phân tích:</p>
+
+    <table>
+      <thead><tr><th>Thành phần</th><th>Thiết kế</th><th>Nhận xét</th></tr></thead>
+      <tbody>
+        <tr><td>Board</td><td>SQLite tại <code>~/.hermes/kanban.db</code>, chia sẻ mọi profile, peer model — agent nào cũng đọc/ghi được mọi task</td><td>Blackboard pattern. Đơn giản, durable, nhưng không có ranh giới quyền giữa các agent</td></tr>
+        <tr><td>Lifecycle</td><td><code>triage → todo → ready → running → blocked/done/archived</code>; link cha-con gate việc promote (con chỉ ready khi mọi cha done)</td><td>DAG dependency tối thiểu mà đủ dùng</td></tr>
+        <tr><td>Dispatcher</td><td>Loop 60s: reclaim worker chết → promote ready → <strong>atomic claim</strong> 1 task/assignee → spawn profile thành OS process riêng, nhận <code>HERMES_KANBAN_TASK</code></td><td>Polling chứ không event-driven — hợp batch, không hợp interactive</td></tr>
+        <tr><td>Liveness</td><td>Worker phải gọi <code>kanban_heartbeat()</code>; reclaim khi chạy &gt;4h và mất heartbeat &gt;1h, reset về ready không tăng failure counter</td><td>Giải đúng bài zombie worker mà in-process swarm thường bỏ qua</td></tr>
+        <tr><td>Failure handling</td><td>Circuit breaker (auto-block sau 2 lần spawn fail), respawn guard 1h (kể cả khi phát hiện PR URL trong comment), <code>--max-retries</code> per-task</td><td>Mức trưởng thành ops hiếm thấy ở framework &lt;4 tháng tuổi</td></tr>
+        <tr><td>Audit</td><td><code>task_events</code> append-only bất biến; run tách khỏi task (3 lần attempt = 3 rows); handoff có <code>metadata</code> (machine) + <code>summary</code> (human)</td><td>Cùng triết lý log.md append-only của ta — traceability nghiêm túc</td></tr>
+        <tr><td>Agents</td><td><strong>Named profiles</strong> — identity bền, có memory + skill set riêng, retry/resume độc lập qua restart — đối lập subagent vô danh</td><td>Đúng hướng cho long-running work</td></tr>
+        <tr><td>Swarm</td><td><code>hermes kanban swarm</code>: topology cố định root/blackboard → N worker song song → <strong>verifier</strong> gate → synthesizer</td><td>Fan-out/fan-in có gate kiểm chứng — pattern chuẩn, không phải dynamic planner</td></tr>
+        <tr><td>Auto-decomposition</td><td>LLM phụ phân rã task ở triage thành graph con, route theo specialist, cap 3 task/tick</td><td>Điểm yếu nhất: chất lượng phân rã không có verifier riêng; cap chỉ là throttle, không phải quality control</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Điểm mạnh / điểm yếu</h3>
+    <div class="compare">
+      <div>
+        <div class="col-head">Mạnh</div>
+        <div class="card" style="border-radius:0 0 4px 4px; margin:0;">
+          <ul>
+            <li><strong>Durability là first-class:</strong> crash recovery, retry, resume, audit — chính là những thứ in-process crew (kiểu CrewAI trong <code>crews/</code> của ta) không có, và là lý do loại kiến trúc đó mong manh với việc dài.</li>
+            <li>OS-process isolation per worker: đơn giản, dễ debug, không chia sẻ state ngầm.</li>
+            <li>Verifier gate trong swarm topology: kết quả worker phải qua kiểm chứng trước khi tổng hợp.</li>
+            <li>Structured handoff (metadata + summary) — downstream không phải parse văn xuôi.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="col-head">Yếu</div>
+        <div class="card" style="border-radius:0 0 4px 4px; margin:0;">
+          <ul>
+            <li><strong>Single-host by design:</strong> SQLite local, không cross-host; mọi profile chạy cùng UID — một worker bị poison đọc/ghi được board của tất cả (threat model yếu).</li>
+            <li>Decomposition = LLM đoán, không đo chất lượng phân rã — sai từ gốc thì verifier cuối không cứu được chi phí đã đốt.</li>
+            <li>Polling 60s + spawn process: latency cao, không cho interactive multi-agent.</li>
+            <li>Flow control kém hơn explicit DAG/state-machine (kiểu LangGraph) — không định nghĩa được conditional branching phức tạp ngoài dependency link.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <p><strong>Định vị:</strong> giữa hai cực — hơn CrewAI-style crew về durability/ops, kém LangGraph-style về kiểm soát flow. Chỗ đứng của nó: batch automation dài hơi trên một máy, đúng use-case "personal agent chạy nền".</p>
+
+    <!-- ── 2. Loop engineering ── -->
+    <h2>2. Loop engineering — hai vòng lặp</h2>
+
+    <h3>2a. Vòng online (trong runtime)</h3>
+    <div class="diagram" data-chart='{
+      "type": "flow",
+      "nodes": [
+        {"id":"t","label":"Task hoan thanh","shape":"terminal"},
+        {"id":"d","label":"&gt;= 5 tool calls?","shape":"diamond"},
+        {"id":"s","label":"Distill SKILL.md (approach + edge cases)","shape":"rect"},
+        {"id":"r","label":"Task tuong tu sau nay: nap skill lam context","shape":"rect"},
+        {"id":"p","label":"Gap thong tin mau thuan: patch skill ngay khi dung","shape":"rect"},
+        {"id":"c","label":"Curator 7 ngay: grade / consolidate / prune","shape":"rect"},
+        {"id":"e","label":"Skill library","shape":"terminal"}
+      ],
+      "edges": [
+        {"from":"t","to":"d"},
+        {"from":"d","to":"s","label":"Yes"},
+        {"from":"s","to":"r"},
+        {"from":"r","to":"p"},
+        {"from":"p","to":"c"},
+        {"from":"c","to":"e"}
+      ]
+    }'></div>
+
+    <ul>
+      <li><strong>Trigger:</strong> task ≥5 tool calls → tự sinh SKILL.md. Heuristic thô — sẽ "bất tử hóa" cả workflow chỉ dùng một lần (chính docs thừa nhận).</li>
+      <li><strong>Self-patch khi dùng:</strong> gặp thông tin mâu thuẫn/mở rộng → sửa skill tại chỗ. Nhanh, nhưng một bản patch tồi làm suy giảm <em>âm thầm</em> skill đang dựa vào — failure mode là drift hành vi tinh vi, không phải crash.</li>
+      <li><strong>Nudge memory:</strong> agent tự nhắc mình persist kiến thức định kỳ; session search FTS5 (từ v2026.5.28 không tốn LLM).</li>
+      <li><strong>Curator (từ v0.12):</strong> tự grade, gộp, tỉa skill chu kỳ 7 ngày — đây là câu trả lời cho drift, cùng pattern với wiki lint ta từng chạy. Nhưng grade bằng LLM-judge, không phải eval khách quan.</li>
+      <li>Benchmark "nhanh hơn 40% với skill tự tạo" là <strong>self-reported</strong> của Nous — chưa có kiểm chứng độc lập.</li>
+    </ul>
+
+    <h3>2b. Vòng offline (hermes-agent-self-evolution)</h3>
+    <p>Repo riêng, tách khỏi runtime: DSPy + GEPA (Genetic-Pareto reflective prompt evolution) đọc <em>execution traces</em> → hiểu nguyên nhân fail → sinh biến thể skill/prompt → đánh giá theo ràng buộc → chọn → <strong>mở PR cho người review</strong>. Không train weights, chi phí $2–10/lần chạy. Trạng thái: Phase 1 (tối ưu SKILL.md) xong; tool descriptions, system prompt, code evolution (Darwinian Evolver, git-based organisms) mới ở roadmap.</p>
+    <table>
+      <thead><tr><th>Guardrail vòng offline</th><th>Đánh giá</th></tr></thead>
+      <tbody>
+        <tr><td>Biến thể phải pass toàn bộ test suite</td><td><span class="badge green">Đúng chuẩn</span></td></tr>
+        <tr><td>Size cap (skill ≤15KB, tool desc ≤500 chars)</td><td><span class="badge green">Chống context bloat</span></td></tr>
+        <tr><td>Kiểm tra semantic alignment với mục đích gốc</td><td><span class="badge gray">LLM-judge — mềm</span></td></tr>
+        <tr><td>Human review bắt buộc trước khi merge</td><td><span class="badge green">Gate đúng chỗ</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Lỗ hổng chung của loop: thiếu chữ "measure"</h3>
+    <div class="callout warn">Vòng online có create → use → patch → curate nhưng <strong>không có eval hồi quy</strong>: không gì xác nhận skill sau khi patch còn tốt như trước. Phê bình "your agent has no performance review" là đúng. Vòng offline có đo (test + GEPA fitness) nhưng chạy ngoài băng, thủ công. Cộng thêm skill poisoning (đã phân tích ở EVAL trước): loop biến một lần prompt injection thành thỏa hiệp <em>vĩnh viễn</em> — Promptware defense (v2026.5.28) là giảm nhẹ, chưa phải lời giải.</div>
+
+    <!-- ── 3. Scoring ── -->
+    <h2>3. Chấm điểm</h2>
+    <table>
+      <thead><tr><th>Mảng</th><th>Điểm</th><th>Một dòng</th></tr></thead>
+      <tbody>
+        <tr><td>Orchestration — vận hành (durability, recovery, audit)</td><td><span class="badge green">9/10</span></td><td>Ops-grade thật sự</td></tr>
+        <tr><td>Orchestration — trí tuệ điều phối (decomposition, flow control)</td><td><span class="badge gray">5/10</span></td><td>LLM đoán graph, không đo chất lượng</td></tr>
+        <tr><td>Orchestration — security model đa agent</td><td><span class="badge red">4/10</span></td><td>Cùng UID, board không phân quyền</td></tr>
+        <tr><td>Loop — cơ chế (trigger, patch, curator, 2 vòng on/offline)</td><td><span class="badge green">8/10</span></td><td>Thiết kế đầy đủ nhất thị trường hiện tại</td></tr>
+        <tr><td>Loop — kiểm soát chất lượng (eval, regression, chống drift/poisoning)</td><td><span class="badge red">4/10</span></td><td>Thiếu measure; LLM-judge thay cho eval</td></tr>
+        <tr><td><strong>Tổng</strong></td><td><strong>Orchestration 7.5 · Loop 6.5</strong></td><td>Học pattern, không cần chạy runtime</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ── 4. Bài học ── -->
+    <h2>4. Ba pattern đáng mượn cho workspace của ta (không cần Hermes)</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>1 — Skill-as-markdown + Curator chu kỳ</h3>
+        <p>Learning = context engineering: kinh nghiệm đọng thành file văn bản diff được, rollback được. Ta đã có mầm này (<code>lessons/</code>, self-improvement loop trong CLAUDE.md). Bổ sung phần Hermes làm tốt hơn: <strong>chu kỳ curate định kỳ</strong> — grade/gộp/tỉa lessons + Claude Code skills, thay vì chỉ append.</p>
+        <span class="badge green">Áp dụng được ngay</span>
+      </div>
+      <div class="card">
+        <h3>2 — Durable queue + heartbeat + verifier gate</h3>
+        <p>Nếu sau này cần multi-agent thật (Lucida pipeline, metagpt-ai-company), mượn kiến trúc Kanban: board SQLite + event log bất biến + heartbeat/reclaim + verifier gate trước synthesizer — thay vì in-process crew kiểu CrewAI (đã thấy mong manh ở Module A cũ).</p>
+        <span class="badge navy">Khi có nhu cầu multi-agent</span>
+      </div>
+      <div class="card">
+        <h3>3 — Tự cải tiến qua PR + test gate</h3>
+        <p>Mô hình vòng offline đáng sao chép nguyên tắc: mọi thay đổi tự động vào prompt/skill phải đi qua <strong>biến thể → test → human review → merge</strong>, không bao giờ tự ghi đè trực tiếp. Đây là cách an toàn duy nhất hiện nay để "self-improve".</p>
+        <span class="badge green">Nguyên tắc thiết kế</span>
+      </div>
+    </div>
+
+    <p><strong>Không đổi kết luận [OPT-3]:</strong> phân tích này củng cố No-Go — phần tốt nhất của Hermes (ops durability, loop mechanics) là <em>pattern</em> ta học được, còn phần ta phải gánh nếu chạy nó (security model, drift, runtime thứ hai) thì vẫn nguyên.</p>
+
+    <!-- ── Sources ── -->
+    <h2>Nguồn</h2>
+    <details>
+      <summary>Danh sách nguồn (truy cập 2026-06-12)</summary>
+      <ul>
+        <li><a href="https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/features/kanban.md">Kanban docs chính thức</a> — lifecycle, dispatcher, heartbeat, swarm, limitations</li>
+        <li><a href="https://github.com/NousResearch/hermes-agent-self-evolution">hermes-agent-self-evolution</a> — DSPy + GEPA, guardrails, roadmap</li>
+        <li><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/skills">Skills system docs</a> · <a href="https://github.com/NousResearch/hermes-agent">README</a></li>
+        <li><a href="https://magnus919.com/2026/05/the-hermes-kanban-a-complete-guide-to-multi-agent-task-orchestration/">Hermes Kanban — complete guide</a> (bên thứ ba)</li>
+        <li><a href="https://mranand.substack.com/p/inside-hermes-agent-how-a-self-improving">Inside Hermes Agent</a> — cơ chế ≥5 tool calls, self-patch, benchmark 40%</li>
+        <li><a href="https://medium.com/@sathishkraju/your-hermes-agent-has-no-performance-review-heres-how-to-fix-that-92254efdfe18">"No performance review" critique</a> · <a href="https://ssojet.com/blog/hermes-agent-self-evolving-skills">8 self-evolving skills</a> — drift, self-patch risk</li>
+        <li><a href="https://www.mindstudio.ai/blog/hermes-agent-five-pillars-memory-skills-soul-crons">Five Pillars</a> — memory/nudge/curator</li>
+      </ul>
+    </details>
+
+  </main>
+
+</body>
+</html>
