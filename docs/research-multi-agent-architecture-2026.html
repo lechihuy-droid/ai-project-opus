@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Agent / Skill Architecture cho Personal Use — Research & Đánh giá</title>
+  <link rel="stylesheet" href="../html-kit/styles.css">
+  <script src="../html-kit/diagram.js" defer></script>
+</head>
+<body>
+
+  <header class="doc-header">
+    <span class="badge navy">RESEARCH · SDD</span>
+    <h1>Kiến trúc Multi-Agent / Skill cho người dùng cá nhân</h1>
+    <p class="lead">Research &amp; đánh giá framework/repo để áp dụng cho workspace <code>ai-project-opus</code> — chạy trên Claude subscription, Windows, Python 3.11.</p>
+    <p class="meta">2026-06-13 · Claude (Opus) · Branch <code>claude/multi-agent-architecture-o7rps7</code></p>
+  </header>
+
+  <main>
+
+    <!-- ═══════════ TL;DR ═══════════ -->
+    <div class="callout">
+      <strong>TL;DR — Khuyến nghị:</strong> Đừng thêm một framework multi-agent ngoài (LangGraph / CrewAI / AutoGen…). Với một người dùng cá nhân đã chạy mọi thứ qua Claude, kiến trúc tối ưu là <strong>Claude Code native</strong> (Skills + Subagents + Hooks + MCP), và khi cần chạy headless/scheduled thì dùng <strong>Claude Agent SDK</strong> (Python) thay cho việc tự shell ra <code>claude -p</code>. Một thay đổi chính sách quan trọng (xem dưới) vừa biến lựa chọn này thành "no-brainer".
+    </div>
+
+    <!-- ═══════════ FINDING QUAN TRỌNG NHẤT ═══════════ -->
+    <h2>Phát hiện quyết định: Agent SDK &amp; <code>claude -p</code> giờ chạy được trên subscription</h2>
+    <p>
+      Đây là yếu tố làm đảo chiều phần lớn quyết định kiến trúc, vừa có hiệu lực gần như đúng thời điểm này:
+    </p>
+    <div class="callout warn">
+      <strong>Từ 15/06/2026</strong> (2 ngày nữa), các gói subscription <em>Pro, Max, Team, Enterprise</em> nhận một <strong>khoản credit Agent SDK hàng tháng riêng biệt</strong>, bao phủ: (1) usage của <strong>Claude Agent SDK</strong>, (2) lệnh <strong><code>claude -p</code></strong> (headless), và (3) third-party apps build trên Agent SDK. Khoản này <strong>tách khỏi</strong> usage limit tương tác — tức chạy automation/scheduled job không còn "ăn" vào quota chat của bạn nữa.
+      <br><br>
+      Xác thực qua <strong>OAuth token</strong> (prefix <code>sk-ant-oat01-</code>) gắn với tài khoản Claude.ai có subscription, <strong>không cần API key trả-theo-token</strong>.
+    </div>
+    <p>
+      Nguồn chính thức: trang Agent SDK overview của Anthropic ghi rõ note này, dẫn tới support article
+      <em>"Use the Claude Agent SDK with your Claude plan"</em>. <span class="badge green">confidence: cao</span>
+    </p>
+
+    <div class="callout risk">
+      <strong>Caveat cần biết:</strong> Tài liệu SDK vẫn ghi <em>"Anthropic does not allow third party developers to offer claude.ai login or rate limits for their products"</em> — quy định này nhắm vào việc <strong>bán/phân phối app dùng login claude.ai cho người dùng KHÁC</strong>. Với <strong>tự dùng cá nhân</strong> (bạn build agent cho chính mình, trên subscription của mình) thì khoản credit mới phủ đúng trường hợp này. Đây là vùng "personal use" hợp lệ, khác với "offer to end users".
+    </div>
+
+    <!-- ═══════════ CONTEXT ═══════════ -->
+    <h2>Bối cảnh workspace (điểm xuất phát)</h2>
+    <p>Hệ thống hiện tại <em>đã là</em> một kiến trúc multi-agent/skill — chỉ là chưa được đặt tên như vậy:</p>
+    <table>
+      <thead>
+        <tr><th>Thành phần hiện có</th><th>Vai trò agent/skill</th><th>Cơ chế chạy</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Content Collector (CONS)</td><td>Collector skill</td><td>Task Scheduler 05:30 JST → <code>claude_cli()</code></td></tr>
+        <tr><td>Weekly Synthesizer</td><td>Synthesis skill</td><td>Task Scheduler CN 06:00 JST</td></tr>
+        <tr><td>Wiki ingest / lint / curator</td><td>Knowledge curator skills</td><td>wiki-poll 5 phút + lint weekly</td></tr>
+        <tr><td>Telegram handler</td><td>Chat front-end</td><td>Long-poll, text-only</td></tr>
+        <tr><td>FastAPI + React dashboard</td><td>Observability UI</td><td>localhost:8765</td></tr>
+        <tr><td><code>utils/llm.py</code> → <code>claude_cli()</code></td><td>LLM gateway tập trung</td><td>shell ra <code>claude.cmd -p</code></td></tr>
+        <tr><td>CrewAI trong <code>crews/</code></td><td>Legacy Module A</td><td>Chạy tay, ngoài pipeline chính</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Bạn đã hoàn tất migration <em>Groq → Claude CLI</em> (2026-05-20), zero dependency Groq. Kết luận trực tiếp: <strong>bạn không thiếu framework, bạn thiếu một lớp orchestration sạch và một gateway headless ổn định hơn <code>claude_cli()</code> tự chế.</strong>
+    </p>
+
+    <!-- ═══════════ TIÊU CHÍ ═══════════ -->
+    <h2>Tiêu chí đánh giá</h2>
+    <div class="card-grid">
+      <div class="card"><h3>1. Chạy trên subscription</h3><p>Không bắt buộc API key trả-theo-token. <strong>Trọng số cao nhất</strong> với bạn.</p></div>
+      <div class="card"><h3>2. Overhead cá nhân</h3><p>Không enterprise bloat, không phải nuôi infra (vector DB, message queue, consensus protocol).</p></div>
+      <div class="card"><h3>3. Compose skill</h3><p>Thêm/sửa một skill không phá vỡ phần còn lại.</p></div>
+      <div class="card"><h3>4. Memory / state</h3><p>Lưu trạng thái bền vững, resume được.</p></div>
+      <div class="card"><h3>5. Scheduling</h3><p>Hợp với Windows Task Scheduler + headless.</p></div>
+      <div class="card"><h3>6. Maturity &amp; maintenance</h3><p>Được duy trì, không demo-ware, learning curve hợp lý.</p></div>
+    </div>
+
+    <!-- ═══════════ BẢNG ĐÁNH GIÁ ═══════════ -->
+    <h2>Đánh giá các phương án</h2>
+
+    <h3>Nhóm A — Native Claude (chạy trên subscription)</h3>
+    <table>
+      <thead>
+        <tr><th>Phương án</th><th>Subscription?</th><th>Vai trò</th><th>Verdict</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Claude Code native</strong><br>(Skills + Subagents + Hooks + MCP + Plugins)</td>
+          <td><span class="badge green">Có</span></td>
+          <td>Orchestration lớp người ngồi trước máy + định nghĩa skill/agent dạng file</td>
+          <td><span class="badge green">CHỌN — nền tảng</span></td>
+        </tr>
+        <tr>
+          <td><strong>Claude Agent SDK</strong> (Python 3.10+)</td>
+          <td><span class="badge green">Có (từ 15/6)</span></td>
+          <td>Chạy headless/scheduled, custom tool in-process, sessions JSONL resume</td>
+          <td><span class="badge green">CHỌN — runtime automation</span></td>
+        </tr>
+        <tr>
+          <td><code>claude -p</code> trực tiếp (hiện tại)</td>
+          <td><span class="badge green">Có</span></td>
+          <td>Gateway shell-out trong <code>utils/llm.py</code></td>
+          <td><span class="badge gray">Giữ tạm → thay dần bằng SDK</span></td>
+        </tr>
+        <tr>
+          <td>Managed Agents (hosted REST)</td>
+          <td><span class="badge red">API platform</span></td>
+          <td>Anthropic chạy agent + sandbox hộ bạn</td>
+          <td><span class="badge gray">Bỏ qua — cho production scale, không cần</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Nhóm B — Framework multi-agent ngoài</h3>
+    <table>
+      <thead>
+        <tr><th>Framework</th><th>Subscription?</th><th>Trạng thái 2025–26</th><th>Verdict cho cá nhân</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>LangGraph</strong></td><td><span class="badge red">Cần API key</span></td><td>Trưởng thành nhất về state/checkpointing, đã 1.0</td><td><span class="badge gray">Bỏ qua — trừ khi cần graph state phức tạp; tốn token API</span></td></tr>
+        <tr><td><strong>CrewAI</strong> (legacy của bạn)</td><td><span class="badge red">Cần API key</span></td><td>Còn duy trì, thêm Flows</td><td><span class="badge red">Gỡ dần — chính bạn đã đẩy nó ra ngoài pipeline</span></td></tr>
+        <tr><td><strong>AutoGen → Microsoft Agent Framework</strong></td><td><span class="badge red">Cần API key</span></td><td>AutoGen đang hợp nhất vào MS Agent Framework — đang pivot</td><td><span class="badge gray">Bỏ qua — enterprise, đang dịch chuyển</span></td></tr>
+        <tr><td><strong>OpenAI Agents SDK</strong> (ex-Swarm)</td><td><span class="badge red">OpenAI key</span></td><td>Gọn nhẹ nhưng buộc hệ OpenAI</td><td><span class="badge gray">Bỏ qua — lệch khỏi Claude</span></td></tr>
+        <tr><td><strong>smolagents</strong> (HuggingFace)</td><td><span class="badge red">Cần API key</span></td><td>Tối giản, code-as-action</td><td><span class="badge gray">Bỏ qua — hay về triết lý, không hợp subscription</span></td></tr>
+        <tr><td><strong>MetaGPT</strong> (bạn từng thử)</td><td><span class="badge red">Cần API key</span></td><td>Ấn tượng demo, nặng về "software company" role-play</td><td><span class="badge red">Bỏ — demo-ware cho use-case của bạn</span></td></tr>
+        <tr><td><strong>OpenHands</strong> (ex-OpenDevin)</td><td><span class="badge red">Cần API key</span></td><td>Autonomous coding agent, mạnh nhưng nặng</td><td><span class="badge gray">Bỏ qua — Claude Code đã làm việc này tốt hơn cho bạn</span></td></tr>
+        <tr><td><strong>PydanticAI</strong></td><td><span class="badge red">Cần API key</span></td><td>Type-safe, sạch, đang lên</td><td><span class="badge gray">Cân nhắc nếu sau này cần structured output nghiêm ngặt + đa provider</span></td></tr>
+      </tbody>
+    </table>
+    <p class="meta">Điểm chung Nhóm B: gần như tất cả buộc API key trả-theo-token → mâu thuẫn trực tiếp với yêu cầu "không phụ thuộc API key trả phí riêng" của bạn. Đây là lý do loại đủ mạnh, độc lập với chất lượng kỹ thuật.</p>
+
+    <h3>Nhóm C — Repo orchestration / awesome trên Claude Code</h3>
+    <table>
+      <thead>
+        <tr><th>Repo</th><th>Stars (≈)</th><th>Đánh giá</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>anthropics/skills</strong></td>
+          <td>official</td>
+          <td><span class="badge green">NÊN tham khảo</span> — khuôn mẫu SKILL.md chuẩn từ chính Anthropic. Học format, không cần fork.</td>
+        </tr>
+        <tr>
+          <td><strong>ruvnet/claude-flow (Ruflo)</strong></td>
+          <td>~59k</td>
+          <td><span class="badge red">Overkill</span> — đổi tên Ruflo (2/2026), ~500k downloads, NHƯNG: benchmark tự công bố (không có bên thứ ba kiểm chứng), consensus/RL routing/vector layer là "máy móc nặng" cho phần lớn task, một-tác-giả thống trị, docs lẫn lộn 2 tên. Cộng đồng hoài nghi liệu kiến trúc cầu kỳ có đáng. <strong>Không hợp solo user.</strong></td>
+        </tr>
+        <tr>
+          <td><strong>awesome-claude-code</strong> (hesreallyhim) + VoltAgent/<br>wshobson/agents</td>
+          <td>curated</td>
+          <td><span class="badge navy">Mỏ vàng để copy lẻ</span> — lấy từng subagent/skill định nghĩa tốt về dùng, đừng adopt cả bộ.</td>
+        </tr>
+        <tr>
+          <td><strong>SuperClaude Framework</strong></td>
+          <td>khá lớn</td>
+          <td><span class="badge gray">Cân nhắc</span> — bộ persona + command có sẵn. Hữu ích để học pattern, nhưng thêm một lớp convention của người khác lên trên workflow của bạn.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ═══════════ NATIVE PRIMITIVES ═══════════ -->
+    <h2>4 primitive native bạn sẽ dùng (và khi nào dùng cái nào)</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>Skills <span class="badge">knowledge</span></h3>
+        <p><code>.claude/skills/&lt;name&gt;/SKILL.md</code>. Progressive disclosure — Claude chỉ nạp khi cần. Auto-invoke hoặc gọi <code>/name</code>.</p>
+        <p><strong>Dùng khi:</strong> đóng gói "cách làm một việc lặp lại" (collector logic, synthesis prompt, wiki lint rule).</p>
+      </div>
+      <div class="card">
+        <h3>Subagents <span class="badge">isolation</span></h3>
+        <p><code>.claude/agents/*.md</code>. Mỗi cái có context window + model + tool riêng. <strong>Mới (v2.1.172, 9/6/2026): nest được tới 5 cấp</strong>, chạy song song; <code>/batch</code> để fan-out.</p>
+        <p><strong>Dùng khi:</strong> cần cách ly context hoặc làm song song (research fan-out, review không làm bẩn context chính).</p>
+      </div>
+      <div class="card">
+        <h3>Hooks <span class="badge">enforcement</span></h3>
+        <p><code>PreToolUse</code>, <code>PostToolUse</code>, <code>SessionStart</code>, <code>SessionEnd</code>… Chạy ngầm, deterministic.</p>
+        <p><strong>Dùng khi:</strong> ép luật (chặn sửa <code>raw/</code>, auto-load <code>ai/status.md</code> đầu session, audit log mọi tool call).</p>
+      </div>
+      <div class="card">
+        <h3>MCP <span class="badge">action</span></h3>
+        <p>Kết nối hệ ngoài: DB, browser, Telegram, filesystem. Plugins bó gọn skills+agents+hooks+MCP.</p>
+        <p><strong>Dùng khi:</strong> agent cần <em>thực thi</em> ra ngoài (gửi Telegram, query SQLite, đọc Obsidian vault).</p>
+      </div>
+    </div>
+    <p class="callout">Quy tắc nhớ nhanh: <strong>Skills = biết cách làm · MCP = làm được ra ngoài · Hooks = ép tuân thủ · Subagents = cách ly &amp; song song.</strong></p>
+
+    <!-- ═══════════ KIẾN TRÚC KHUYẾN NGHỊ ═══════════ -->
+    <h2>Kiến trúc khuyến nghị cho <code>ai-project-opus</code></h2>
+    <p>Mô hình <strong>orchestrator-worker</strong> (đúng pattern Anthropic dùng cho hệ research multi-agent của họ), ánh xạ trực tiếp lên cấu trúc bạn đang có:</p>
+
+    <div class="diagram" data-chart='{
+      "type": "flow",
+      "nodes": [
+        {"id":"sched","label":"Windows Task Scheduler","shape":"terminal"},
+        {"id":"orch","label":"Orchestrator (Agent SDK / claude -p)","shape":"rect"},
+        {"id":"mem","label":"Memory: markdown + SQLite","shape":"rect"},
+        {"id":"col","label":"Collector skill","shape":"rect"},
+        {"id":"syn","label":"Synthesizer skill","shape":"rect"},
+        {"id":"wiki","label":"Wiki curator skill","shape":"rect"},
+        {"id":"tg","label":"Telegram MCP","shape":"rect"},
+        {"id":"dash","label":"FastAPI dashboard","shape":"terminal"}
+      ],
+      "edges": [
+        {"from":"sched","to":"orch","label":"trigger"},
+        {"from":"orch","to":"mem","label":"read/write state"},
+        {"from":"orch","to":"col","label":"delegate"},
+        {"from":"orch","to":"syn","label":"delegate"},
+        {"from":"orch","to":"wiki","label":"delegate"},
+        {"from":"orch","to":"tg","label":"notify"},
+        {"from":"wiki","to":"dash","label":"feed UI"}
+      ]
+    }'></div>
+
+    <h3>Phân lớp cụ thể</h3>
+    <table>
+      <thead><tr><th>Lớp</th><th>Triển khai</th><th>Thay cho cái gì hiện tại</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Trigger</strong></td><td>Giữ Windows Task Scheduler</td><td>(không đổi)</td></tr>
+        <tr><td><strong>Runtime / gateway</strong></td><td>Claude Agent SDK (Python) gói trong 1 file orchestrator</td><td>Thay <code>claude_cli()</code> shell-out thủ công bằng SDK: được sessions, hooks, custom tool, error handling chuẩn</td></tr>
+        <tr><td><strong>Worker units</strong></td><td>Mỗi pipeline = 1 Skill (SKILL.md) ± 1 Subagent khi cần cách ly</td><td>Chuẩn hoá collector/synthesizer/wiki từ script rời thành skills versioned</td></tr>
+        <tr><td><strong>Action ra ngoài</strong></td><td>MCP server cho Telegram + SQLite + Obsidian</td><td>Telegram handler hiện tại → MCP tool, dùng lại được ở mọi pipeline</td></tr>
+        <tr><td><strong>Enforcement</strong></td><td>Hooks: chặn ghi <code>raw/</code>, audit log, auto-load <code>ai/status.md</code></td><td>Biến rule trong CLAUDE.md thành ràng buộc cứng</td></tr>
+        <tr><td><strong>Memory</strong></td><td>Markdown (<code>ai/</code>, Obsidian wiki) làm bộ nhớ chính + SQLite cho structured/log</td><td>Đúng cái bạn đang làm — chỉ formalize, KHÔNG cần vector DB ở quy mô 1 người</td></tr>
+        <tr><td><strong>Observability</strong></td><td>Giữ FastAPI dashboard</td><td>(không đổi)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn">
+      <strong>Về memory:</strong> Ở quy mô một người, đừng vội kéo mem0 / Letta / vector DB vào. Markdown-as-memory (bạn đã có Obsidian vault + <code>ai/status.md</code> + handoff files) + SQLite cho log là pattern được khuyên dùng cho single-user — đơn giản, grep được, git được, không phải nuôi index. Chỉ lên vector DB khi search ngữ nghĩa trên kho wiki lớn thực sự thành nút cổ chai.
+    </div>
+
+    <!-- ═══════════ MIGRATION PATH ═══════════ -->
+    <h2>Lộ trình áp dụng (tăng dần, không big-bang)</h2>
+    <ul class="timeline">
+      <li>
+        <span class="time">Bước 0 — Giữ nguyên</span>
+        <p>Pipeline hiện chạy ổn. KHÔNG refactor toàn bộ. Mọi thay đổi phải surgical, theo đúng Karpathy principles trong CLAUDE.md.</p>
+      </li>
+      <li>
+        <span class="time">Bước 1 — Chuẩn hoá Skills</span>
+        <p>Viết SKILL.md cho 3 pipeline cốt lõi (collector, synthesizer, wiki curator). Mỗi skill mô tả input/output/verify. Đây là bước rẻ nhất, giá trị tức thì, không đổi runtime.</p>
+      </li>
+      <li>
+        <span class="time">Bước 2 — Hooks cho rule</span>
+        <p>Thêm 1–2 hook: chặn ghi <code>raw/</code> (PreToolUse), auto-load <code>ai/status.md</code> (SessionStart). Biến luật mềm thành ràng buộc cứng.</p>
+      </li>
+      <li>
+        <span class="time">Bước 3 — Pilot Agent SDK</span>
+        <p>Chọn MỘT pipeline ít rủi ro (vd weekly synthesizer). Viết orchestrator bằng Agent SDK Python thay cho <code>claude_cli()</code>. Đo: có ổn định hơn không, error handling/sessions có sạch hơn không. <em>Chờ sau 15/6 để dùng credit subscription.</em></p>
+      </li>
+      <li>
+        <span class="time">Bước 4 — MCP hoá I/O</span>
+        <p>Bọc Telegram + SQLite thành MCP server. Tái dùng across pipelines thay vì code riêng mỗi chỗ.</p>
+      </li>
+      <li>
+        <span class="time">Bước 5 — Dọn legacy</span>
+        <p>Sau khi pilot chứng minh được, quyết định gỡ hẳn CrewAI trong <code>crews/</code> (đã ngoài pipeline chính). Đây là việc bạn đã ghi trong "Next step" của status.md.</p>
+      </li>
+    </ul>
+
+    <div class="callout risk">
+      <strong>SDD gate:</strong> CLAUDE.md bắt buộc RD trước khi code feature mới. Báo cáo này là input cho RD, <strong>chưa phải lệnh code</strong>. Bước 3 (pilot Agent SDK) là feature >20 dòng → cần RD → SD → BD được approve trước khi implement. Coding giao Codex theo routing table; main session (Opus) viết spec/review.
+    </div>
+
+    <!-- ═══════════ KẾT LUẬN ═══════════ -->
+    <h2>Kết luận một dòng</h2>
+    <div class="callout">
+      Bạn <strong>không cần thêm framework</strong> — bạn cần formalize cái đã có thành <strong>Skills + Subagents + Hooks + MCP native</strong>, và nâng gateway từ <code>claude_cli()</code> thủ công lên <strong>Claude Agent SDK</strong>, tận dụng credit subscription mới (15/6/2026). Repo ngoài (claude-flow, MetaGPT, LangGraph…) đều hoặc là overkill cho một người, hoặc buộc API key trả phí — trái với ràng buộc của bạn. Tham khảo <code>anthropics/skills</code> và các awesome-list để copy mẫu lẻ, đừng adopt nguyên bộ.
+    </div>
+
+    <!-- ═══════════ NGUỒN ═══════════ -->
+    <h2>Nguồn tham khảo</h2>
+    <ul>
+      <li><a href="https://code.claude.com/docs/en/agent-sdk/overview">Agent SDK overview — Claude Code Docs</a> (note credit 15/6/2026; capabilities; SDK vs CLI vs Managed Agents)</li>
+      <li><a href="https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan">Use the Claude Agent SDK with your Claude plan — Help Center</a></li>
+      <li><a href="https://support.claude.com/en/articles/11145838-use-claude-code-with-your-pro-or-max-plan">Use Claude Code with your Pro or Max plan — Help Center</a></li>
+      <li><a href="https://github.com/anthropics/claude-agent-sdk-python/issues/559">Issue #559 — Agent SDK Max plan billing (anthropics/claude-agent-sdk-python)</a></li>
+      <li><a href="https://www.developersdigest.tech/blog/claude-code-agent-teams-subagents-2026">Claude Code Agent Teams, Subagents, and MCP: The 2026 Playbook</a></li>
+      <li><a href="https://ofox.ai/blog/claude-code-nested-subagents-2026/">Claude Code Nested Sub-Agents: 5 Levels Deep (2026)</a></li>
+      <li><a href="https://medium.com/@mishra.shashank35/claude-code-skills-subagents-hooks-and-plugins-a-practical-overview-572de7cedb20">Claude Code Skills, Subagents, Hooks and Plugins — A Practical Overview</a></li>
+      <li><a href="https://rywalker.com/research/claude-flow">Claude Flow (Ruflo) — Ry Walker Research</a> · <a href="https://github.com/ruvnet/ruflo/issues/945">Ruflo V3 rebuild issue</a></li>
+      <li><a href="https://www.firecrawl.dev/blog/best-claude-code-skills">Best Claude Code Skills to Try in 2026</a></li>
+    </ul>
+    <p class="meta">Phương pháp: 5 research agent fan-out song song (Claude native, Agent SDK, ecosystem repos, framework tổng quát, personal-agent patterns) + verify chéo các claim quyết định trên nguồn chính thức Anthropic. Claim "subscription credit 15/6/2026" và "subagent nest 5 cấp" được xác nhận trực tiếp từ docs Anthropic / changelog. Confidence cao ở các điểm quyết định kiến trúc; số liệu stars repo bên thứ ba là xấp xỉ.</p>
+
+  </main>
+
+</body>
+</html>
