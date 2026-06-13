@@ -94,6 +94,37 @@
     }'></div>
     <p>So với sơ đồ trong báo cáo gốc: thêm 2 thành phần từ nhánh Hermes — <strong>Hooks làm gate cứng</strong> (chống skill poisoning + ép Karpathy invariant "chỉ wiki_ops ghi wiki") và <strong>vòng self-improve có test gate</strong> (chống drift mà Hermes vướng). Đây chính là 2 lỗ hổng lớn nhất của Hermes được bịt ngay từ thiết kế.</p>
 
+    <h3>Mô hình hai lớp — Claude điều phối, Codex thực thi</h3>
+    <p>Tách bạch hai vai "Claude" từng gây lẫn: nay chỉ còn <strong>một lớp Claude</strong> ở vị trí điều phối (Claude Code tương tác, Opus/Sonnet), và <strong>Codex (<code>codex exec</code>) là tác nhân thực thi headless cho cả hai loại việc</strong> — <em>build</em> (viết code + test từ BD) và <em>runtime</em> (vận hành pipeline: synthesis / filter / ingest / curator). Đây là quyết định mở rộng vai Codex: nó <strong>thay <code>claude -p</code></strong> làm runtime operator trong <code>utils/llm.py</code>, không chỉ làm coding như routing cũ.</p>
+
+    <div class="diagram" data-chart='{
+      "type": "flow",
+      "nodes": [
+        {"id":"u","label":"User","shape":"terminal"},
+        {"id":"claude","label":"Lop 1 - Claude Code (Opus/Sonnet): orchestration / plan / RD-SD-BD / review","shape":"rect"},
+        {"id":"codexb","label":"Lop 2 - Codex: build (viet code + test tu BD)","shape":"rect"},
+        {"id":"codexr","label":"Lop 2 - Codex: runtime operator (synthesis / filter / ingest / curator)","shape":"rect"},
+        {"id":"sched","label":"Task Scheduler","shape":"terminal"},
+        {"id":"store","label":"raw/ + personal-wiki/ (brain)","shape":"terminal"}
+      ],
+      "edges": [
+        {"from":"u","to":"claude","label":"yeu cau"},
+        {"from":"claude","to":"codexb","label":"giao BD/brief"},
+        {"from":"sched","to":"codexr","label":"trigger"},
+        {"from":"codexb","to":"store","label":"feature/skill"},
+        {"from":"codexr","to":"store","label":"ingest/synthesis"}
+      ]
+    }'></div>
+
+    <p><strong>Phân vai:</strong> Lớp 1 (Claude) <em>nghĩ</em> — plan, RD/SD/BD, kiến trúc, review, quyết định; không tự code, không tự chạy pipeline. Lớp 2 (Codex) <em>làm</em> — mọi thực thi không người trông: nhận BD từ Claude (build) hoặc trigger từ Task Scheduler (runtime), rồi ghi kết quả vào <code>raw/</code> + wiki.</p>
+
+    <div class="callout risk"><strong>Hệ quả phải biết khi chọn hướng này:</strong>
+    <ul>
+      <li><strong>Mất credit subscription cho lớp runtime.</strong> Codex là agent của OpenAI, không chạy trên credit Agent SDK 15/6 của Claude. Đưa runtime operator sang Codex tức là <em>đảo lại</em> chính ràng buộc "không phụ thuộc API key trả phí riêng" — lớp runtime giờ tính tiền theo OpenAI/Codex, không còn nằm trong subscription Claude.</li>
+      <li><strong>Codex là coding agent.</strong> Dùng cho tác vụ suy-luận-trên-văn-bản (lọc article, viết brief) là phi truyền thống — phải đo chất lượng synthesis ở pilot trước khi thay toàn bộ.</li>
+      <li><strong>Doc-sync:</strong> hai quy tắc CLAUDE.md cần cập nhật khi triển khai — "mọi LLM call dùng Claude CLI" và "Codex chỉ coding". Quyết định này cũng thay nội dung Phase 3 (runtime operator: Agent SDK/claude -p → Codex).</li>
+    </ul></div>
+
     <!-- ── 4. Lộ trình ── -->
     <h2>4. Lộ trình hợp nhất (gộp 4 bước Hermes-decision + 5 bước báo cáo)</h2>
     <p>Hai lộ trình trùng nhau nhiều — gộp thành một chuỗi tăng dần, mỗi phase độc lập, dừng được, cần RD nhẹ trước khi code (SDD gate).</p>
@@ -111,8 +142,8 @@
         <p>Hook <code>PreToolUse</code> chặn ghi <code>raw/</code>; <code>SessionStart</code> auto-load <code>ai/status.md</code>; audit log mọi tool call. Thêm lệnh <code>curate</code> chu kỳ grade/gộp/tỉa <code>lessons/</code> + skills (pattern Curator Hermes, giữ human gate). Biến luật mềm trong CLAUDE.md thành ràng buộc deterministic.</p>
       </li>
       <li>
-        <span class="time">Phase 3 — Pilot Agent SDK (sau 15/6, dùng credit)</span>
-        <p>Chọn MỘT pipeline ít rủi ro (weekly synthesizer). Viết orchestrator bằng Agent SDK Python thay <code>claude_cli()</code> shell-out. Đo: ổn định/error-handling/sessions có sạch hơn không, <strong>và token có vừa trần credit tháng không</strong>. Đây là feature &gt;20 dòng → cần RD→SD→BD approve; coding giao Codex theo routing table.</p>
+        <span class="time">Phase 3 — Pilot Codex làm runtime operator (thay claude -p)</span>
+        <p>Chọn MỘT pipeline ít rủi ro (weekly synthesizer). Cho <code>codex exec</code> đảm nhận lời gọi trong <code>utils/llm.py</code> thay <code>claude_cli()</code> shell-out. Đo: <strong>chất lượng synthesis có giữ được không</strong> (Codex vốn là coding agent), error-handling có sạch hơn không, và chi phí Codex/OpenAI ra sao (lớp này không còn nằm trong credit subscription Claude). Đây là feature &gt;20 dòng → cần RD→SD→BD approve.</p>
       </li>
       <li>
         <span class="time">Phase 4 — MCP hoá I/O + Durable queue (khi cần)</span>
