@@ -1,6 +1,6 @@
 # STATUS - opus-animus
 **Updated:** 2026-06-14
-**Current owner:** Claude
+**Current owner:** Codex (handoff MEM-1 build — xem `ai/handoff-codex.md`)
 
 ## Active sub-systems
 
