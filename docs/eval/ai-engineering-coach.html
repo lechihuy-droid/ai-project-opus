@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đánh giá apply — microsoft/AI-Engineering-Coach</title>
+  <link rel="stylesheet" href="../../html-kit/styles.css">
+</head>
+<body>
+
+  <header class="doc-header">
+    <span class="badge navy">Tool Evaluation</span>
+    <h1>microsoft/AI-Engineering-Coach</h1>
+    <p class="lead">Đánh giá khả năng <strong>apply</strong> vào workflow AI hiện tại (Claude Code + Codex CLI + SDD)</p>
+    <p class="meta">2026-06-14 · Opus 4.8 · branch <code>claude/ai-engineering-coach-eval</code></p>
+  </header>
+
+  <main>
+
+    <!-- ── Verdict ── -->
+    <div class="callout">
+      <strong>Kết luận nhanh:</strong> <span class="badge green">NÊN THỬ</span>
+      Mức độ phù hợp <strong>CAO</strong>. Tool đọc trực tiếp log của <em>Claude Code</em> và <em>Codex CLI</em> —
+      đúng 2 harness chính của bạn — chạy 100% offline, read-only, MIT. Hệ thống 45 rule
+      anti-pattern editable bằng markdown ăn khớp với cách bạn đã làm việc theo rule (CLAUDE.md,
+      lessons.md, Karpathy principles). Rào cản chính: là <strong>VS Code extension</strong> (bạn làm việc
+      chủ yếu ở terminal CLI + Obsidian) và phải build từ source/VSIX, không phải sản phẩm Microsoft chính thức.
+    </div>
+
+    <!-- ── What it is ── -->
+    <h2>1. Đây là cái gì</h2>
+    <p>
+      VS Code extension phân tích <strong>session log cục bộ</strong> của các AI coding harness để chấm điểm
+      và chỉ ra cách bạn đang dùng AI assistant tốt/dở ở đâu. Toàn bộ phân tích chạy trên máy bạn,
+      không gửi dữ liệu ra ngoài. Triết lý: "observe → measure → improve → level-up".
+    </p>
+    <div class="card-grid">
+      <div class="card">
+        <h3>Observe</h3>
+        <p>Practice score 0–100, trend tuần/tháng, timeline session kiểu Gantt, gallery screenshot.</p>
+      </div>
+      <div class="card">
+        <h3>Measure</h3>
+        <p>Lượng code sinh ra theo ngôn ngữ &amp; model, heatmap 7×24 giờ làm việc, token budget.</p>
+      </div>
+      <div class="card">
+        <h3>Improve</h3>
+        <p>45 rule anti-pattern (markdown + DSL), rule editor trực quan, skill finder, context health.</p>
+      </div>
+      <div class="card">
+        <h3>Level-up</h3>
+        <p>XP/achievement Bronze→Diamond, quiz cá nhân hoá từ usage thật, stat card share được.</p>
+      </div>
+    </div>
+
+    <!-- ── Fit ── -->
+    <h2>2. Vì sao phù hợp với bạn</h2>
+    <table>
+      <thead>
+        <tr><th>Tiêu chí</th><th>AI-Engineering-Coach</th><th>Đánh giá</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Harness bạn dùng</td><td>Hỗ trợ <strong>Claude Code</strong> &amp; <strong>Codex CLI</strong> (cùng Local Agent/VS Code, Xcode, Copilot CLI, OpenCode)</td><td><span class="badge green">Khớp 100%</span></td></tr>
+        <tr><td>Privacy</td><td>Read-only, parse + analytics chạy hoàn toàn local; không telemetry</td><td><span class="badge green">An toàn</span></td></tr>
+        <tr><td>Triết lý rule-based</td><td>45 rule là file markdown + YAML frontmatter, ship/sửa không cần recompile, lưu ở <code>.ai-engineer-coach/rules/</code></td><td><span class="badge green">Đúng gu</span></td></tr>
+        <tr><td>5 nhóm anti-pattern</td><td>prompt-quality · session-hygiene · code-review · tool-mastery · context-management</td><td><span class="badge green">Trùng với Coding Behavior + Verification rules của bạn</span></td></tr>
+        <tr><td>License</td><td>MIT</td><td><span class="badge green">Dùng/fork tự do</span></td></tr>
+        <tr><td>Giao diện</td><td>Chỉ chạy trong VS Code (cần v1.115+)</td><td><span class="badge red">Bạn làm việc CLI/Obsidian là chính</span></td></tr>
+        <tr><td>Cài đặt</td><td>VSIX prebuilt / Dev Container / build local (Node+npm)</td><td><span class="badge gray">Cần setup, không có trên Marketplace</span></td></tr>
+        <tr><td>Độ chín</td><td>"Not an official Microsoft product", một số tính năng (token breakdown, budget projection) đang tắt</td><td><span class="badge gray">Experimental</span></td></tr>
+      </tbody>
+    </table>
+
+    <!-- ── Mapping ── -->
+    <h2>3. Ánh xạ trực tiếp với rule trong CLAUDE.md của bạn</h2>
+    <p>Đây là điểm "apply" giá trị nhất — tool giúp <em>đo lường</em> mức bạn tuân thủ chính các nguyên tắc đã viết:</p>
+    <table>
+      <thead><tr><th>Nhóm rule của tool</th><th>Tương ứng trong CLAUDE.md</th></tr></thead>
+      <tbody>
+        <tr><td>prompt-quality (vd "Lazy Prompting")</td><td>"Think Before Coding", state assumptions, convert vague→concrete</td></tr>
+        <tr><td>session-hygiene</td><td>Plan Mode, re-plan khi off-track, handoff cuối session</td></tr>
+        <tr><td>code-review</td><td>"Would a staff engineer approve this?", Verification Before Done</td></tr>
+        <tr><td>tool-mastery</td><td>Model &amp; Agent Routing (Opus/Sonnet/Codex), subagent strategy</td></tr>
+        <tr><td>context-management</td><td>"Use subagents to keep main context clean", context health</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ── Risks ── -->
+    <h2>4. Rủi ro &amp; điểm trừ</h2>
+    <ul>
+      <li><strong>Khoá vào VS Code:</strong> nếu bạn chạy Claude Code / Codex chủ yếu ở terminal, phải mở VS Code chỉ để xem dashboard.</li>
+      <li><strong>Không có trên Marketplace:</strong> phải tự build VSIX hoặc dùng Dev Container (cần Docker) → ma sát cài đặt + tự lo update.</li>
+      <li><strong>Experimental, không bảo hành:</strong> không phải sản phẩm MS chính thức; một vài tính năng đang bị tắt.</li>
+      <li><strong>AI features cần Copilot:</strong> rule compiler / skill finder / context review gọi VS Code Copilot LM API → cần Copilot license mới dùng được phần đó (các phần còn lại không cần).</li>
+      <li><strong>Phụ thuộc format log:</strong> giá trị phụ thuộc parser bám đúng định dạng log của từng harness — có thể lệch khi harness đổi format.</li>
+    </ul>
+
+    <!-- ── Recommendation ── -->
+    <h2>5. Khuyến nghị apply</h2>
+    <div class="callout warn">
+      <strong>Cách thử rủi ro thấp (đề xuất):</strong>
+      <ol style="margin:.5rem 0 0 1.2rem">
+        <li>Tải <strong>VSIX prebuilt</strong> từ Releases → cài vào VS Code (1.115+), tránh phải build.</li>
+        <li>Chạy "AI Engineer Coach: Open Dashboard", trỏ vào log Claude Code + Codex CLI có sẵn.</li>
+        <li>Xem 5 practice score &amp; danh sách anti-pattern trong ~1 tuần usage thật để xem signal có đúng không.</li>
+        <li>Nếu hợp: customize rule trong <code>.ai-engineer-coach/rules/</code> cho khớp Coding Behavior của bạn,
+            và <em>port các anti-pattern hay</em> vào <code>lessons.md</code> / CLAUDE.md.</li>
+      </ol>
+    </div>
+    <p>
+      Ngay cả khi không dùng extension lâu dài, <strong>tập 45 rule anti-pattern</strong> (file markdown trong repo)
+      đã là tài liệu tham khảo tốt để bồi đắp <code>lessons.md</code> và checklist review của bạn —
+      đó là giá trị "apply" chắc chắn nhất, không phụ thuộc việc có chạy tool hay không.
+    </p>
+
+    <p class="meta">Nguồn: github.com/microsoft/AI-Engineering-Coach (README, docs/, src/webview/page-config.ts, docs/AUTHORING_RULES.md). Truy cập 2026-06-14.</p>
+
+  </main>
+</body>
+</html>
