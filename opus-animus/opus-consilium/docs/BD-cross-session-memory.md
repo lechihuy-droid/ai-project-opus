@@ -84,7 +84,7 @@ python -c "from memory.indexer import parse_sections; print([h for h,_ in parse_
 **Việc làm:**
 - [x] Query rỗng → `raise ValueError`.
 - [x] `_sanitize`: nếu query chứa ký tự đặc biệt FTS5 (`" ( ) * :`), bọc thành phrase `"..."`.
-- [x] `SELECT path, section, kind, mtime, snippet(memory,2,'[',']','…',12), bm25(memory) FROM memory WHERE memory MATCH ? [AND kind=?] ORDER BY bm25(memory) LIMIT ?`.
+- [x] `SELECT path, section, kind, mtime, snippet(memory,2,'[',']','…',12), bm25(memory) FROM memory WHERE memory MATCH ? [AND kind=?] ORDER BY bm25(memory) + (status-boost −1.0) LIMIT ?` — xem SD §7 Ranking.
 - [x] Catch `sqlite3.OperationalError` → retry với query đã bọc phrase; vẫn lỗi → raise message rõ.
 - [x] Trả list dict theo SD §4.
 **Smoke test:** `python -c "from memory.search import search; print(search('memory/recall.db','Groq migration')[0]['path'])"` → expected: `ai/status.md`.

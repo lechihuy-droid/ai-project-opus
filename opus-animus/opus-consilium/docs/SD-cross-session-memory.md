@@ -115,7 +115,10 @@ QUERY (run_recall.py "<q>"):
 { "path": "ai/status.md", "section": "Current objective",
   "kind": "status", "mtime": "2026-05-20",
   "snippet": "…Migrate toàn bộ LLM calls từ [Groq] → Claude CLI…", "rank": -3.21 }
-# rank = bm25 (âm hơn = liên quan hơn); sort tăng dần theo bm25
+# rank = bm25 (âm hơn = liên quan hơn); sort tăng dần theo (rank + status-boost)
+# status-boost: kind 'status' được cộng -1.0 vào rank → ưu tiên nhẹ "trạng thái
+#   hiện tại" khi mở session. Đủ để status nhỉnh lúc bm25 sát nhau, KHÔNG đè được
+#   section khác khớp rõ hơn (chênh > 1.0). Xem Design decision §7.
 # query rỗng → raise ValueError (CLI bắt → usage, exit 2)
 # MATCH lỗi cú pháp (quote lệch) → catch OperationalError → bọc query thành phrase "..." retry
 # kind != None → thêm AND kind = ?
@@ -167,6 +170,7 @@ Rank dùng `bm25(memory)`.
 | Quyết định | Chọn | Lý do | Không chọn vì |
 |---|---|---|---|
 | Search engine | SQLite FTS5 (stdlib) | Zero dep, ranked bm25, snippet built-in, nhanh | Whoosh: thêm dep; vector DB: overkill single-user |
+| Ranking | bm25 + status-boost (−1.0) | `status.md` = "đang ở đâu", thường relevant nhất khi mở session → ưu tiên nhẹ. Hằng đủ nhỏ để không đè khớp rõ hơn | bm25 thuần: bỏ lỡ ngữ cảnh "current state"; boost lớn: đè sai session liên quan hơn |
 | LLM trong recall | Không | Tức thì + miễn phí + không chạm credit | LLM rerank: cost/latency vô ích cho keyword recall |
 | Index strategy | Full rebuild (MVP) | Idempotent by construction, corpus nhỏ < 3s | Incremental: phức tạp hơn, để P1 |
 | Section split | Level-2 `##` | Granular vừa phải, khớp cấu trúc doc hiện có | Mọi heading: section vụn; file-level: snippet kém |

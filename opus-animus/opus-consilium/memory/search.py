@@ -52,6 +52,10 @@ def _search_once(
         params.append(kind)
     params.append(limit)
 
+    # Ranking = bm25 (âm hơn = liên quan hơn) cộng một boost cố định cho kind
+    # 'status': khi mở session, "trạng thái hiện tại" thường là ký ức relevant
+    # nhất nên được ưu tiên nhẹ. Hằng -1.0 đủ để status nhỉnh khi điểm bm25 sát
+    # nhau, nhưng KHÔNG đè được một section khác khớp rõ ràng hơn (chênh > 1.0).
     sql = f"""
         SELECT
             path,
