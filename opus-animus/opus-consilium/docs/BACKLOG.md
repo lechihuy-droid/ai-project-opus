@@ -19,6 +19,7 @@
 | Feature | Weekly LLM Synthesis | Claude CLI → weekly report JSON | ✅ Done (2026-05-18) |
 | Feature | FDE Research Tab | Dashboard tab theo dõi FDE model adoption | ✅ Done (2026-05-18) |
 | Opt-3 | Hermes Skill Layer (A+B) | Wrap Module A+B thành Hermes skills | ❌ No-Go 2026-06-11 — Module C + Telegram bỏ, app LLM là interface; xem `opus-animus/docs/EVAL-hermes-agent-integration.html` |
+| MEM-1 | Cross-Session Memory (`recall`) | FTS5 index `ai/sessions`+`handoff`+`status`+wiki `INDEX.md`, no-LLM keyword recall | 🟡 SDD ready 2026-06-14 — RD/SD/BD tại `docs/*-cross-session-memory.md`; Phase 1(b) self-improving agent |
 | Idea | JP Stock Deep Dive | Thêm nguồn chứng khoán Nhật chất lượng | 🗂️ Idea (TODO root [IDEA-1]) |
 | Idea | Multi-topic Expansion | Thêm topic mới (macro, crypto...) | 🗂️ Idea (TODO root [IDEA-2]) |
 | Idea | Interactive Brief | Telegram inline buttons, webhook mode | 🗂️ Idea (TODO root [IDEA-3]) |

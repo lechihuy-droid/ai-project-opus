@@ -1,5 +1,5 @@
 # STATUS - opus-animus
-**Updated:** 2026-05-20
+**Updated:** 2026-06-14
 **Current owner:** Claude
 
 ## Active sub-systems
@@ -16,7 +16,10 @@
 
 ## Current objective
 
-> **CONS-LLM-MIGRATION**: Migrate toàn bộ LLM calls từ Groq → Claude CLI (`claude.cmd -p`). **Hoàn thành 2026-05-20.**
+> **MEM-1 / Cross-Session Memory (`recall`)**: Phase 1(b) của lộ trình self-improving agent (con đường C — dựng dần trên Claude Code). Bộ SDD đã viết (RD 🟡 In Review / SD / BD + Test Plan tại `opus-consilium/docs/*-cross-session-memory.md`). Chờ approve → giao Codex build. Plan tổng: `docs/SYNTHESIS-self-improving-agent-plan.html`.
+>
+> *Đã xong:* **CONS-LLM-MIGRATION** — Groq → Claude CLI, hoàn thành 2026-05-20 (chi tiết phần Current state bên dưới).
+> *Đã chốt:* **Hermes** → No-Go (2026-06-11, xem `docs/EVAL-hermes-agent-integration.html`).
 
 ## Current state (2026-05-20)
 
@@ -29,9 +32,9 @@
 
 ## Next step
 
-1. Kiểm tra pipeline thực tế: chạy `python run_collect.py --dry-run` → verify không còn Groq error.
-2. Xem xét `crews/` + Module A có cần giữ hay xóa hẳn.
-3. Tiếp tục backlog theo `docs/BACKLOG.md`.
+1. **[MEM-1]** Approve `RD-cross-session-memory.md` (🟡→🟢) + trả lời 5 Open Questions → SD → BD → giao Codex build theo BD (Step 0→6) + Test Plan.
+2. Sau MEM-1: Phase 1(a) Skills hoá 3 pipeline (RD riêng), rồi Phase 2 Hooks + Curator.
+3. (Tồn đọng) Xem xét `crews/` + Module A có cần giữ hay xóa hẳn; backlog `opus-consilium/docs/BACKLOG.md`.
 
 ## Constraints
 

@@ -185,10 +185,19 @@
     <!-- ── 6. Chốt ── -->
     <h2>6. Tóm tắt &amp; việc tiếp theo</h2>
     <p>Câu hỏi gốc "build mới Hermes hoàn toàn được không" → <strong>được nhưng không nên; và bây giờ thậm chí không cần</strong>: credit Agent SDK 15/6 biến Claude-native + Agent SDK thành nền chạy-trên-subscription cho cả 4 năng lực, còn pattern Hermes (Curator, durable queue, self-improve có test gate) lấp đúng 3 chỗ Claude-native chưa có sẵn — mà không phải gánh runtime thứ hai hay các lỗ hổng của Hermes.</p>
-    <p><strong>Cần bạn quyết để đi tiếp (SDD gate — chưa code):</strong></p>
+
+    <div class="callout green"><strong>Cập nhật 2026-06-14 — đã chốt hướng + viết SDD slice đầu.</strong> Lộ trình Phase 0→5 được xác nhận. RD viết trước được <strong>thu hẹp đúng Phase 1(b): <code>recall</code> (cross-session memory)</strong> — slice cụ thể nhất, giá trị cao nhất, thuần additive, <em>không</em> chạm tranh cãi Codex/credit (đó là Phase 3). Phase 1(a) "Skills hoá 3 pipeline" tách RD riêng sau, để giữ scope mỏng. Bộ SDD gate đã sẵn sàng review:
     <ul>
-      <li>Xác nhận lộ trình hợp nhất Phase 0→5 này.</li>
-      <li>Chốt RD viết trước: <strong>Phase 1</strong> (Skills hoá 3 pipeline + <code>recall</code>) là điểm khởi đầu giá trị cao nhất, rẻ nhất, không đổi runtime.</li>
+      <li><a href="../opus-consilium/docs/RD-cross-session-memory.md"><code>RD-cross-session-memory.md</code></a> — 🟡 In Review (Gate 1)</li>
+      <li><a href="../opus-consilium/docs/SD-cross-session-memory.md"><code>SD-cross-session-memory.md</code></a> — 🔵 Draft (Gate 2)</li>
+      <li><a href="../opus-consilium/docs/BD-cross-session-memory.md"><code>BD-cross-session-memory.md</code></a> — 🔵 Planning (kèm Test Plan, Codex thực thi)</li>
+    </ul>
+    <strong>Vì sao recall đi trước:</strong> pure SQLite FTS5, <em>không LLM</em> → tức thì, miễn phí, zero dep, không đụng <code>utils/llm.py</code>. Lấp đúng điểm yếu lớn nhất (mỗi session fresh) mà rủi ro gần như bằng 0.</div>
+
+    <p><strong>Việc tiếp theo (SDD gate — chưa code):</strong></p>
+    <ul>
+      <li>Approve <code>RD-cross-session-memory.md</code> (🟡→🟢) → SD → BD → giao Codex build theo BD.</li>
+      <li>Trả lời 5 Open Questions trong RD (đều đã có default an toàn — confirm hoặc đổi).</li>
       <li>Quyết việc nhánh: gộp 2 nhánh (<code>hermes-integration-eval</code> + <code>multi-agent-architecture</code>) về đâu, hay giữ riêng. Hiện tài liệu nằm 2 nhánh.</li>
     </ul>
 
