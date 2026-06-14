@@ -11,9 +11,9 @@
 
 - [ ] RD approved (Gate 1) — `RD-cross-session-memory.md` chuyển 🟢
 - [ ] SD approved (Gate 2) — `SD-cross-session-memory.md` chuyển 🟢
-- [ ] Python 3.11 khả dụng (`C:\Users\HUY\AppData\Local\Programs\Python\Python311\python.exe`)
-- [ ] `sqlite3` build có FTS5 (verify ở Step 0)
-- [ ] cwd: `opus-consilium/`
+- [x] Python 3.11 khả dụng (`C:\Users\HUY\AppData\Local\Programs\Python\Python311\python.exe`)
+- [x] `sqlite3` build có FTS5 (verify ở Step 0)
+- [x] cwd: `opus-consilium/`
 
 **Quy ước:** zero `pip install` (NFR-005). Mọi path qua `utils/config.py` hoặc relative từ module — không hardcode tuyệt đối.
 
@@ -24,7 +24,7 @@
 ### Step 0 — Spike: verify FTS5 + tokenizer
 **Mục tiêu:** Confirm môi trường chạy được trước khi build (bắt sớm NFR-005).
 **Việc làm:**
-- [ ] Chạy probe FTS5 cơ bản + tokenizer `remove_diacritics`.
+- [x] Chạy probe FTS5 cơ bản + tokenizer `remove_diacritics`.
 **Smoke test:**
 ```bash
 python -c "import sqlite3; c=sqlite3.connect(':memory:'); c.execute('CREATE VIRTUAL TABLE t USING fts5(x, tokenize=\"unicode61 remove_diacritics 2\")'); print('FTS5 OK')"
@@ -40,8 +40,8 @@ python -c "import sqlite3; c=sqlite3.connect(':memory:'); c.execute('CREATE VIRT
 - Tạo mới: `memory/__init__.py` (rỗng)
 - Tạo mới: `memory/sources.py` — `iter_sources()` + hằng `SOURCE_GLOBS`
 **Việc làm:**
-- [ ] Định nghĩa `SOURCE_GLOBS = [("../ai/sessions/*.md","session"), ("../ai/handoff-*.md","handoff"), ("../ai/status.md","status"), ("personal-wiki/INDEX.md","wiki-index")]` (P0); thêm `("../opus-lucida/ai/*.md","session")` (P1).
-- [ ] `iter_sources()` resolve glob tương đối từ thư mục `run_recall.py`, trả `[(Path, kind)]`; path không khớp → bỏ qua.
+- [x] Định nghĩa `SOURCE_GLOBS = [("../ai/sessions/*.md","session"), ("../ai/handoff-*.md","handoff"), ("../ai/status.md","status"), ("personal-wiki/INDEX.md","wiki-index")]` (P0); thêm `("../opus-lucida/ai/*.md","session")` (P1).
+- [x] `iter_sources()` resolve glob tương đối từ thư mục `run_recall.py`, trả `[(Path, kind)]`; path không khớp → bỏ qua.
 **Smoke test:** `python -c "from memory.sources import iter_sources; print(len(iter_sources()))"` → expected: ≥ 4.
 **Estimate:** 20 phút
 
@@ -52,9 +52,9 @@ python -c "import sqlite3; c=sqlite3.connect(':memory:'); c.execute('CREATE VIRT
 **Files:**
 - Tạo mới: `memory/indexer.py` — `parse_sections(text)`
 **Việc làm:**
-- [ ] Split trên dòng khớp `^## ` ; phần trước heading `##` đầu → `("", preamble)`.
-- [ ] Giữ heading text (bỏ `## `). Body = nội dung tới heading kế.
-- [ ] `text == ""` → `[]`.
+- [x] Split trên dòng khớp `^## ` ; phần trước heading `##` đầu → `("", preamble)`.
+- [x] Giữ heading text (bỏ `## `). Body = nội dung tới heading kế.
+- [x] `text == ""` → `[]`.
 **Smoke test:**
 ```bash
 python -c "from memory.indexer import parse_sections; print([h for h,_ in parse_sections(open('../ai/status.md',encoding='utf-8').read())])"
@@ -69,9 +69,9 @@ python -c "from memory.indexer import parse_sections; print([h for h,_ in parse_
 **Files:**
 - Sửa: `memory/indexer.py` — thêm `build_index(db_path, sources)` + `DB_PATH` default `memory/recall.db`
 **Việc làm:**
-- [ ] `DROP TABLE IF EXISTS memory` → `CREATE VIRTUAL TABLE … USING fts5(...)` (schema theo SD §5).
-- [ ] Mỗi file: read utf-8 (lỗi → `skipped+=1` + warn stderr), `parse_sections`, INSERT mỗi section với `mtime` = ISO date từ `path.stat().st_mtime`.
-- [ ] Trả `{files, sections, skipped}`.
+- [x] `DROP TABLE IF EXISTS memory` → `CREATE VIRTUAL TABLE … USING fts5(...)` (schema theo SD §5).
+- [x] Mỗi file: read utf-8 (lỗi → `skipped+=1` + warn stderr), `parse_sections`, INSERT mỗi section với `mtime` = ISO date từ `path.stat().st_mtime`.
+- [x] Trả `{files, sections, skipped}`.
 **Smoke test:** (qua Step 5 CLI) — tạm thời `python -c "from memory.indexer import build_index; from memory.sources import iter_sources; print(build_index('memory/recall.db', iter_sources()))"` → expected dict `{'files':≥4,'sections':>20,'skipped':0}` + file `memory/recall.db` tồn tại.
 **Estimate:** 40 phút
 
@@ -82,11 +82,11 @@ python -c "from memory.indexer import parse_sections; print([h for h,_ in parse_
 **Files:**
 - Tạo mới: `memory/search.py` — `search(db_path, query, limit=8, kind=None)` + helper `_sanitize(query)`
 **Việc làm:**
-- [ ] Query rỗng → `raise ValueError`.
-- [ ] `_sanitize`: nếu query chứa ký tự đặc biệt FTS5 (`" ( ) * :`), bọc thành phrase `"..."`.
-- [ ] `SELECT path, section, kind, mtime, snippet(memory,2,'[',']','…',12), bm25(memory) FROM memory WHERE memory MATCH ? [AND kind=?] ORDER BY bm25(memory) LIMIT ?`.
-- [ ] Catch `sqlite3.OperationalError` → retry với query đã bọc phrase; vẫn lỗi → raise message rõ.
-- [ ] Trả list dict theo SD §4.
+- [x] Query rỗng → `raise ValueError`.
+- [x] `_sanitize`: nếu query chứa ký tự đặc biệt FTS5 (`" ( ) * :`), bọc thành phrase `"..."`.
+- [x] `SELECT path, section, kind, mtime, snippet(memory,2,'[',']','…',12), bm25(memory) FROM memory WHERE memory MATCH ? [AND kind=?] ORDER BY bm25(memory) LIMIT ?`.
+- [x] Catch `sqlite3.OperationalError` → retry với query đã bọc phrase; vẫn lỗi → raise message rõ.
+- [x] Trả list dict theo SD §4.
 **Smoke test:** `python -c "from memory.search import search; print(search('memory/recall.db','Groq migration')[0]['path'])"` → expected: `ai/status.md`.
 **Estimate:** 40 phút
 
@@ -97,11 +97,11 @@ python -c "from memory.indexer import parse_sections; print([h for h,_ in parse_
 **Files:**
 - Tạo mới: `run_recall.py`
 **Việc làm:**
-- [ ] argparse: positional `query` (nargs?) ; subcommand-style: nếu arg đầu == `index` → build; ngược lại coi là query string.
-- [ ] Flags: `--json`, `--limit N` (default 8), `--kind`.
-- [ ] Query rỗng/thiếu → in usage, exit 2.
-- [ ] Format text: `N. [path § section] (mtime)\n   snippet`. `--json` → `json.dumps(results, ensure_ascii=False)`.
-- [ ] Không khớp → in "Không tìm thấy ký ức khớp…", exit 0.
+- [x] argparse: positional `query` (nargs?) ; subcommand-style: nếu arg đầu == `index` → build; ngược lại coi là query string.
+- [x] Flags: `--json`, `--limit N` (default 8), `--kind`.
+- [x] Query rỗng/thiếu → in usage, exit 2.
+- [x] Format text: `N. [path § section] (mtime)\n   snippet`. `--json` → `json.dumps(results, ensure_ascii=False)`.
+- [x] Không khớp → in "Không tìm thấy ký ức khớp…", exit 0.
 **Smoke test:**
 ```bash
 python run_recall.py index
@@ -166,15 +166,15 @@ Feature thuần additive — rollback đơn giản:
 
 ## Checklist Trước Khi Done
 
-- [ ] Step 0–6 smoke test pass
-- [ ] Unit U-1..U-9 pass
-- [ ] Integration IT-1..IT-5 pass
-- [ ] Edge EC-1..EC-3 pass
-- [ ] FR-001, FR-002, FR-003 có implementation (P0)
-- [ ] NFR-004 (idempotent) verify bằng U-4; NFR-005 (zero dep) verify bằng import trong env sạch không pip install
-- [ ] `memory/recall.db` đã vào `.gitignore` (Q2)
-- [ ] Không hardcode path tuyệt đối
-- [ ] Doc-sync: cập nhật `status.md` (objective done) + `TODO.md` ([MEM-1] → Done) + tick BD steps
+- [x] Step 0–6 smoke test pass
+- [x] Unit U-1..U-9 pass
+- [x] Integration IT-1..IT-5 pass
+- [x] Edge EC-1..EC-3 pass
+- [x] FR-001, FR-002, FR-003 có implementation (P0)
+- [x] NFR-004 (idempotent) verify bằng U-4; NFR-005 (zero dep) verify bằng import trong env sạch không pip install
+- [x] `memory/recall.db` đã vào `.gitignore` (Q2)
+- [x] Không hardcode path tuyệt đối
+- [x] Doc-sync: cập nhật `status.md` (objective done) + `TODO.md` ([MEM-1] → Done) + tick BD steps
 - [ ] Claude review diff trước khi merge
 
 ---

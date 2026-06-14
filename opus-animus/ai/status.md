@@ -1,6 +1,6 @@
 # STATUS - opus-animus
 **Updated:** 2026-06-14
-**Current owner:** Codex (handoff MEM-1 build — xem `ai/handoff-codex.md`)
+**Current owner:** Codex (MEM-1 built; awaiting Claude review)
 
 ## Active sub-systems
 
@@ -16,7 +16,7 @@
 
 ## Current objective
 
-> **MEM-1 / Cross-Session Memory (`recall`)**: Phase 1(b) của lộ trình self-improving agent (con đường C — dựng dần trên Claude Code). Bộ SDD đã viết (RD 🟡 In Review / SD / BD + Test Plan tại `opus-consilium/docs/*-cross-session-memory.md`). Chờ approve → giao Codex build. Plan tổng: `docs/SYNTHESIS-self-improving-agent-plan.html`.
+> **MEM-1 / Cross-Session Memory (`recall`)**: Built by Codex on 2026-06-14. `opus-consilium/run_recall.py` now indexes `ai/sessions`, `ai/handoff-*`, `ai/status.md`, `personal-wiki/INDEX.md`, and `opus-lucida/ai/*.md` into SQLite FTS5 at `memory/recall.db` (gitignored), with ranked snippets, `--json`, `--limit`, and `--kind`. Step 0→6 smoke tests + U-1..U-9 / IT-1..IT-5 / EC-1..EC-3 pass. Awaiting Claude review/merge.
 >
 > *Đã xong:* **CONS-LLM-MIGRATION** — Groq → Claude CLI, hoàn thành 2026-05-20 (chi tiết phần Current state bên dưới).
 > *Đã chốt:* **Hermes** → No-Go (2026-06-11, xem `docs/EVAL-hermes-agent-integration.html`).
@@ -32,7 +32,7 @@
 
 ## Next step
 
-1. **[MEM-1]** Approve `RD-cross-session-memory.md` (🟡→🟢) + trả lời 5 Open Questions → SD → BD → giao Codex build theo BD (Step 0→6) + Test Plan.
+1. **[MEM-1]** Claude review diff → merge.
 2. Sau MEM-1: Phase 1(a) Skills hoá 3 pipeline (RD riêng), rồi Phase 2 Hooks + Curator.
 3. (Tồn đọng) Xem xét `crews/` + Module A có cần giữ hay xóa hẳn; backlog `opus-consilium/docs/BACKLOG.md`.
 

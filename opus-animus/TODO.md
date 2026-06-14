@@ -132,16 +132,16 @@ Cuối session: cập nhật status + completed items vào TODO.md
 
 ## 🔵 Next — Cần RD/BD Trước Khi Build
 
-### [MEM-1] Cross-Session Memory — `recall` (Phase 1 self-improving agent) 🔴 HIGH
-**Status:** 🟡 SDD ready — RD/SD/BD đã viết, chờ approve để giao Codex build
-**Docs:** `opus-consilium/docs/RD-cross-session-memory.md` (🟡 In Review) · `SD-cross-session-memory.md` · `BD-cross-session-memory.md` (kèm Test Plan)
+### [MEM-1] Cross-Session Memory — `recall` (Phase 1 self-improving agent) ✅ DONE
+**Status:** 🟢 Built by Codex — Step 0→6 smoke + Test Plan pass; awaiting Claude review/merge
+**Docs:** `opus-consilium/docs/RD-cross-session-memory.md` · `SD-cross-session-memory.md` · `BD-cross-session-memory.md` (steps/checklist ticked)
 **Plan tổng:** `docs/SYNTHESIS-self-improving-agent-plan.html` — Phase 1(b)
 **Mục tiêu:** `python run_recall.py "<câu>"` → index FTS5 (`ai/sessions` + `handoff` + `status` + wiki `INDEX.md`) trả ranked snippet. Pure SQLite, **không LLM** → tức thì, miễn phí, zero dep. Lấp điểm yếu "mỗi session fresh".
 **Tuyến:** RD/SD/BD = Opus (done). Coding + test = Codex (`codex exec`) theo BD.
-**Việc cần làm trước khi code:**
-- [ ] Approve RD (🟡→🟢) + trả lời 5 Open Questions (đã có default)
-- [ ] Approve SD → BD
-- [ ] Giao Codex build theo BD (Step 0→6) + chạy Test Plan
+**Kết quả build:**
+- [x] Dùng default cho 5 Open Questions trong RD §5
+- [x] Codex build theo BD (Step 0→6) + chạy Test Plan
+- [x] `memory/recall.db` gitignored; recall rebuildable từ source
 - [ ] Claude review diff → merge
 **Sau MEM-1:** Phase 1(a) Skills hoá 3 pipeline (RD riêng) → Phase 2 Hooks + Curator.
 
