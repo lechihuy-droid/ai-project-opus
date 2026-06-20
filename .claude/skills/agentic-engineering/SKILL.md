@@ -32,9 +32,11 @@ Apply the 15-minute unit rule:
 
 ## Model Routing
 
-- Haiku: classification, boilerplate transforms, narrow edits
-- Sonnet: implementation and refactors
-- Opus: architecture, root-cause analysis, multi-file invariants
+Theo bảng Model & Agent Routing trong `CLAUDE.md`:
+
+- Opus (main session): plan, kiến trúc, SDD docs, review, quyết định trade-off, root-cause đa file
+- Sonnet: search, đọc, verify, sửa nhỏ, status, giải thích (routine)
+- Codex (`codex exec`): implement + viết test — Claude giao brief/BD, không tự code
 
 ## Session Strategy
 
