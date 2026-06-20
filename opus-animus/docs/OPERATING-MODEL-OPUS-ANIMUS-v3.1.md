@@ -45,7 +45,7 @@ Final naming convention:
 Opus Animus    = entire personal AI self-transformation workspace
 Opus Nexus     = user ↔ Animus interface; chat surface, dashboard, health/life tracking
 Opus Consilium = information brain; collect, filter, synthesize, route knowledge
-Opus Logos     = strategic reasoning brain; Famulus-like strategy, priority, roadmap, stop list
+Opus Logos     = strategic reasoning brain; Socius-like strategy, priority, roadmap, stop list
 Opus Rector    = PM execution brain; task breakdown, TODO, workflow, handoff, status
 Opus Lucida    = content engine; JLPT/video/content production
 WIKI           = long-term memory
@@ -65,10 +65,10 @@ Wiki remembers.
 Infra runs.
 ```
 
-Famulus should not be modeled as one agent.
+Socius should not be modeled as one agent.
 
 ```text
-Famulus = Nexus + Consilium + Logos + Rector
+Socius = Nexus + Consilium + Logos + Rector
 ```
 
 ---
