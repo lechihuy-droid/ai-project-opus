@@ -11,6 +11,9 @@ node_modules/
 .venv/
 __pycache__/
 
+# Local-only personal finance detail (exact balances — never commit, see FINANCE_DATA_STORAGE_POLICY).
+personal-finance/_local/
+
 # Local secrets and runtime state.
 .env
 .env.*
