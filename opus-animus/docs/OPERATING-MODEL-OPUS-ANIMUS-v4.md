@@ -21,6 +21,17 @@ v4 keeps the entire v3.1 model (naming, repo placement, memory layering, source-
 + Capability-Completeness Review       ("is this enough for an all-round assistant?")
 ```
 
+Revision 2026-06-21 — agent-loop & eval hardening (from an agent-eval review):
+
+```text
++ Controller Loop                     multi-step plan→act→observe→iterate, step budget   §8.1   [F2]
++ Eval & Observability Framework      traces, metrics, golden set, regression gates       §8.2   [F1,F7]
++ Typed Action Registry               deterministic side-effect gating, not LLM self-label §6     [F3]
++ Conflict-resolution arbiter         Logos arbitrates contradictory subsystem outputs     §3.3   [F4]
++ Feedback signal split + rule budget engagement vs outcome; bounded, reconciled lessons   §5     [F5]
++ Proactive state registered as SoT   §7.2                                                        [F6]
+```
+
 The repo-integration discipline from v3.1 still holds: **this is a plan.** Only create/update docs under `opus-animus/docs/`. Do not touch `AGENTS.md`, `ai/status.md`, `TODO.md`, or subsystem files until this is approved.
 
 ---
@@ -162,6 +173,22 @@ User Profile (§4) → biases all of the above toward goals/preferences/constrai
 → Primus assembles one coherent brief/nudge
 ```
 
+#### Conflict arbiter [F4]
+
+When subsystems contradict (e.g. Logos says "rest for recovery" but Rector says
+"deadline, push"), a brief must not ship both. **Logos is the final arbiter** of
+the day's recommendation, applying a fixed precedence:
+
+```text
+safety / health  >  hard deadline  >  goal priority  >  preference / convenience
+```
+
+```text
+Rule:
+- No brief may contain mutually contradictory suggestions.
+- Logos resolves the conflict and states the trade-off it made.
+```
+
 ### 3.4 Delivery modes
 
 | Mode | Mechanism | MVP |
@@ -240,18 +267,37 @@ This connects directly to existing repo assets: `GOALS.md`, `north-star.md`, and
 
 A "toàn năng" assistant improves. This closes the north-star loop `APPLY → OUTPUT → FEEDBACK` that the system was missing.
 
+**Signal quality [F5].** Distinguish two signals — accept ≠ useful:
+
+```text
+engagement signal  = accepted / snoozed / dismissed   (weak; user intent at the moment)
+outcome signal     = did the suggested task actually get DONE
+                     (strong; pulled from Rector / TODO completion, not from the click)
+```
+
+Ranking must weight the **outcome** signal above the engagement signal. A suggestion
+the user accepts but never completes is a *worse* signal than one acted on silently.
+
 ```text
 Correction loop
-  - When the user corrects Primus, Rector logs a rule (aligns with CLAUDE.md lessons.md).
-  - Repeated corrections become routing/priority adjustments.
+  - When the user corrects Primus, Rector logs a lesson (aligns with CLAUDE.md lessons.md).
+  - Repeated corrections become re-ranking heuristics — NOT model fine-tuning.
 
 Outcome loop
-  - Accepted vs dismissed proactive items are tracked.
-  - Logos uses acceptance signal to tune future suggestions.
+  - Track engagement + outcome per proactive item.
+  - Logos tunes future ranking from the outcome signal.
 
 Reflection loop
   - Weekly: Consilium + Wiki produce "what changed / what was learned / what to stop".
   - Output feeds DECISION-LOG.md and next week's WEEKLY-PLAN.md.
+```
+
+**Rule budget & reconciliation [F5].** Lessons must not grow unbounded or contradict:
+
+```text
+- Cap active lessons (e.g. ≤ 30); beyond that, merge or retire the weakest.
+- Weekly reconcile pass: detect and resolve contradictory lessons.
+- "Learning" here means heuristic re-ranking only — no fine-tuning, no opaque weights.
 ```
 
 ```text
@@ -262,7 +308,7 @@ Rule:
 
 ---
 
-## 6. Approval & Safety Gates (consolidated)
+## 6. Approval, Safety & Action Registry (consolidated)
 
 ```text
 1. Primus proposes; the user approves before any external action.
@@ -272,6 +318,35 @@ Rule:
 5. Health/life advice stays lifestyle-level, not medical diagnosis.
 6. Any system-created artifact is tagged with its source (e.g. source = opus-nexus).
 7. No agent may create a new source of truth without registering it (§7).
+```
+
+### 6.1 Typed Action Registry [F3]
+
+The safety gate must NOT depend on the LLM correctly self-labeling `action_type`.
+An LLM can mislabel a dangerous action as a harmless write. Therefore the action
+class is **determined by the tool, deterministically**, not by the model.
+
+```text
+- Every tool/capability is pre-registered with a fixed class:
+    read | draft | write | dangerous
+- The class comes from the registry, not from LLM output.
+- The LLM may REQUEST an action; the registry decides its gate.
+- Unregistered tool → treated as `dangerous` by default (deny-by-default).
+```
+
+Example registry entries:
+
+```text
+wiki.read              -> read
+brief.draft            -> draft
+calendar.events.insert -> write       (requires approval)
+file.delete            -> dangerous   (requires explicit confirm)
+telegram.send          -> write
+shell.exec             -> dangerous
+```
+
+```text
+Rule: the model proposes; the registry gates. Self-reported action_type is a hint, never the gate.
 ```
 
 ---
@@ -292,7 +367,10 @@ L5  Subsystem Memory      opus-*/ai/status.md
 L6  Long-term Knowledge   WIKI / personal-wiki
 L7  Personal / Health     opus-nexus/health/, opus-nexus/life/
 L8  User Profile          user-profile/ (goals, preferences, constraints)   ← elevated in v4
+L9  Run Traces            ai/traces/ (one record per intent_packet; eval/debug)  ← new [F1]
 ```
+
+L9 is append-only and is read by the eval framework (§8.2), not loaded during normal routing.
 
 ### 7.2 Source-of-truth map
 
@@ -307,6 +385,8 @@ L8  User Profile          user-profile/ (goals, preferences, constraints)   ← 
 | Research/information | `opus-consilium/` | global status |
 | Health/life logs | `opus-nexus/health/`, `life/` | global status |
 | User goals/preferences | `user-profile/` | status/handoff |
+| Proactive items + state | `opus-nexus/proactive/` (owned by Rector) | status/chat [F6] |
+| Run traces / eval logs | `ai/traces/` | status/handoff |
 | Long-term knowledge | WIKI / personal-wiki | handoff |
 | Runtime/scheduler | INFRA | TODO (except task index) |
 
@@ -339,6 +419,95 @@ intent_packet:
   required_sources: [ AGENTS.md, ai/status.md, selected subsystem status, user-profile ]
   expected_output: answer | strategy_brief | task_contract | research_summary | memory_update | health_summary | proactive_item
   approval_required: true | false
+  route_confidence: 0.0 - 1.0          # calibrated; drives clarify-vs-act (§8.2, §10) [F7]
+  plan: [ step ]                       # multi-step tasks; may chain subsystems [F2]
+  step_index: 0                        # current step in the controller loop [F2]
+```
+
+---
+
+## 8.1 Controller Loop [F2]
+
+Routing is one hop; real assistant tasks are multi-step. A single intent may need
+several steps that chain subsystems (e.g. *"plan my week"* = Consilium → Logos →
+Rector → Nexus). Primus runs an explicit loop, not a single dispatch.
+
+```text
+while not done and step_index < max_steps:
+    route(step)            # pick subsystem for this step
+    execute(step)          # run it; produce result + trace record (§8.2)
+    observe(result)        # check progress against the goal
+    decide:
+        - continue   -> next step (may be a different subsystem)
+        - finish     -> assemble final output
+        - ask        -> low confidence / missing input -> ask ONE question
+        - abort      -> dangerous/blocked -> stop, report
+```
+
+```text
+Loop guards:
+- max_steps budget (default small, e.g. 6) — prevents runaway loops.
+- progress check each iteration — no progress twice in a row -> ask or abort.
+- every step writes a trace record (L9) for eval/replay.
+- subsystem chaining: a step's output is typed input to the next step.
+```
+
+Single-hop questions (most chats) resolve in one iteration; the loop simply exits
+after the first `finish`.
+
+---
+
+## 8.2 Eval & Observability Framework [F1, F7]
+
+**The model must be able to measure itself.** Without traces and metrics, the
+feedback loop (§5) learns blind and regressions are invisible. This is mandatory
+infrastructure, not optional.
+
+### Traces (L9)
+
+```text
+ai/traces/YYYY-MM-DD.jsonl   # append-only, one record per loop step
+record: { id, ts, origin, user_input, intent_type, target_subsystem,
+          route_confidence, sources_loaded, action_class, output_kind,
+          step_index, user_verdict, outcome }
+```
+
+Traces make every loop **replayable and debuggable**.
+
+### Metrics
+
+```text
+- routing_accuracy        correct target_subsystem vs golden / vs correction
+- misroute_rate           share of turns the user re-routed
+- task_completion_rate    multi-step tasks that reached `finish`
+- proactive_precision     useful nudges / total nudges (outcome-weighted, §5)
+- false_nudge_rate        dismissed-without-action / total
+- approval_correctness    action_class matched real side-effect (§6.1)
+- clarify_rate            share of turns that asked instead of acting
+- brief_factuality        flagged hallucinations in briefs
+```
+
+### Golden set & regression gate
+
+```text
+evals/routing-goldens.jsonl   # ~50 labeled (input -> target_subsystem) cases
+- Run on every change to routing rules / prompts.
+- Block the change if routing_accuracy drops below baseline.
+```
+
+### Confidence calibration [F7]
+
+```text
+- Calibrate route_confidence against routing_accuracy on the golden set.
+- Only then set the clarify threshold (§10) — an uncalibrated threshold over- or
+  under-asks. Re-calibrate when the router prompt/model changes.
+```
+
+### Self-eval cadence
+
+```text
+Weekly: Consilium scores the past week's traces against the metrics above and
+writes a short self-eval into DECISION-LOG.md. Trend, not vibe, drives tuning.
 ```
 
 ---
@@ -365,24 +534,39 @@ Honest assessment of whether the model covers what a true Jarvis-class personal 
 | 14 | Calendar / time awareness | Nexus (PLAN doc) | 🟡 Planned in nexus transformation |
 | 15 | Multi-tool continuity (Claude/Codex/ChatGPT) | Memory L2 handoff | ✅ Designed |
 | 16 | Context-budget discipline | Context loading §7.1 | ✅ Designed |
-| 17 | Error / misroute fallback | §10 (new) | ⛔ Gap — added below |
+| 17 | Error / misroute fallback | §10 + §8.1 loop | ✅ Designed |
+| 18 | **Multi-step / chained tasks** | Controller Loop §8.1 | ✅ Designed (not built) |
+| 19 | **Self-measurement / evaluability** | Eval Framework §8.2 | ✅ Designed (not built) |
+| 20 | **Deterministic action gating** | Action Registry §6.1 | ✅ Designed |
 
 ### 9.1 Verdict
 
-The **design** is now broad enough to call an all-round assistant: with v4, the three missing pillars of a real assistant — **initiative (proactive), personalization, and learning (feedback)** — are present on paper. Two model-level gaps were found and are closed below (§10 fallback) or flagged (calendar wiring).
+The **design** is now broad enough to call an all-round assistant. v4 adds the three
+missing pillars of a real assistant — **initiative (proactive), personalization, and
+learning (feedback)** — and the 2026-06-21 eval-hardening revision closes the loop-level
+gaps an agent-eval review raised: it is now a **multi-step loop (not just a router)**, it
+is **measurable (traces + metrics + golden set)**, its **safety gate is deterministic**,
+and contradictory subsystems are **arbitrated**.
 
-The **honest reality**: almost everything is `Designed` or `Partial`, not `Built`. Logos, Rector, the Proactive Layer, and the Feedback Loop do not exist as code yet. v4 is a complete *blueprint*, not a working assistant.
+The **honest reality**: almost everything is `Designed` or `Partial`, not `Built`. Logos,
+Rector, the Proactive Layer, the Controller Loop, and the Eval Framework do not exist as
+code yet. v4 is a complete *blueprint* — and now an *evaluable* one — not a working
+assistant. Remaining flagged item: calendar wiring (§14 of the Nexus plan) is still only
+planned.
 
 ---
 
 ## 10. Fallback & Failure Handling (gap closed by review)
 
 ```text
-- Router low confidence → ask one clarifying question instead of guessing a write.
+- route_confidence below the calibrated threshold (§8.2) → ask one clarifying question
+  instead of guessing a write.
 - Subsystem unavailable → degrade gracefully: answer from what is available, state the gap.
 - Conflicting sources → prefer the registered source of truth (§7.2); flag the conflict.
+- Contradictory subsystem outputs → Logos arbitrates by precedence (§3.3).
+- No progress for two loop iterations (§8.1) → stop and ask or abort, never spin.
 - Proactive trigger with no relevant content → stay silent, do not manufacture a nudge.
-- Any action with action_type=dangerous → stop and require explicit confirmation.
+- Action whose registry class (§6.1) is dangerous → stop and require explicit confirmation.
 ```
 
 ---
@@ -397,20 +581,30 @@ Mark v3.1 as superseded.
 Do not update AGENTS.md / ai/status.md / TODO.md / subsystem files.
 ```
 
-### Phase 1 — After approval
+### Phase 1 — After approval (foundation: loop + eval BEFORE features [F1,F2])
 
 ```text
 - Write ai/routing/intent-router.md (invocation convention §2).
+- Stand up the eval foundation FIRST:
+    - ai/traces/ trace logging (§8.2, L9).
+    - evals/routing-goldens.jsonl (~50 labeled cases).
+    - the metric definitions + regression gate.
+- Define the Controller Loop contract (§8.1) and the Typed Action Registry (§6.1).
 - Add short pointers in AGENTS.md and ai/status.md to this file.
 - Wire user-profile/ (goals/preferences/constraints) as a loaded layer.
 - Add TODO tasks for: Rector layer, Logos layer, Proactive Layer.
 ```
 
+> Rationale (from the agent-eval review): building features before traces/metrics
+> exist means building on sand — nothing can be measured or regression-checked.
+
 ### Phase 2 — Build proactive MVP
 
 ```text
+- Instrument the loop with traces (§8.2) before shipping any suggestion.
 - Pull-mode daily brief first: Rector reads TODO + Nexus health + calendar → Primus brief.
-- Add Logos prioritization over the brief.
+- Add Logos prioritization + conflict arbitration (§3.3) over the brief.
+- Gate every external action through the Action Registry (§6.1).
 - Then push-mode via Infra scheduler → Telegram.
 - Add anti-annoyance rules (§3.7) before any push is enabled.
 ```
@@ -438,6 +632,9 @@ Each phase requires its own RD/BD per the repo's SDD rule before code.
 - Personalization: suggestions reflect goals/preferences/constraints.
 - Corrections and decisions are stored, never trapped in chat.
 - Logos owns reasoning; Rector owns execution; Consilium owns information; Nexus owns interface + health.
+- Every loop step leaves a trace; routing and proactive quality are reported as metrics, not vibes.
+- Multi-step tasks reach `finish` within the step budget or stop cleanly (ask/abort).
+- Action gating is deterministic: no external write depends on LLM self-labeling.
 ```
 
 ---
