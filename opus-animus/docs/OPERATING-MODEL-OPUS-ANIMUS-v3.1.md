@@ -1,9 +1,14 @@
 # Operating Model — Opus Animus v3.1
 
 **Date:** 2026-06-20  
-**Status:** Draft / Planning  
+**Status:** Superseded by [`OPERATING-MODEL-OPUS-ANIMUS-v4.md`](OPERATING-MODEL-OPUS-ANIMUS-v4.md)  
 **Scope:** Governance, routing, memory split, and operating model for `opus-animus/`  
 **Do not implement directly from this file without updating the relevant RD/BD or task files.**
+
+> **Note:** v4 supersedes this file. It keeps everything here and adds the Primus
+> invocation convention, a Proactive Layer (active reminders), a user-profile
+> model, a feedback/reflection loop, consolidated approval gates, and a
+> capability-completeness review. Read v4 for the current model.
 
 ---
 
