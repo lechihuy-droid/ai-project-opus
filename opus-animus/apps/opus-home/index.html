@@ -1,0 +1,2292 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>OPUS ANIMUS HOME</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80' fill='none'%3E%3Crect width='80' height='80' fill='%230B0D0C'/%3E%3Ccircle cx='40' cy='40' r='34' stroke='%23C9A84C' stroke-width='2'/%3E%3Cpolygon points='40,13 15.6,55 64.4,55' stroke='%23C9A84C' stroke-width='2' stroke-linejoin='round' fill='none'/%3E%3Cline x1='27.8' y1='34' x2='52.2' y2='34' stroke='%23C9A84C' stroke-width='2'/%3E%3Ccircle cx='40' cy='34' r='3' fill='%23C9A84C'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display+SC:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;1,400;1,500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --obsidian:#0B0D0C; --surface:#141918; --card:#1C2220; --elevated:#252E2B;
+  --border:#252E2B; --border-subtle:rgba(255,255,255,0.06);
+  --gold:#C9A84C; --gold-hover:#B8952A; --gold-dim:#7A6838;
+  --verdigris:#3DAA88; --verdigris-dim:#1E3828;
+  --text:#E8EDE9; --text-soft:#B4C4BC; --muted:#7A9088; --dim:#4D5E58;
+  --danger:#C04858; --danger-bg:#260F14;
+  --warn:#C9902A; --warn-bg:#261B08;
+}
+html,body,#root{height:100%;}
+body{font-family:"Inter",sans-serif;background:var(--obsidian);color:var(--text);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+button{font-family:inherit;cursor:pointer;}
+a{color:var(--gold);text-decoration:none;}
+a:hover{text-decoration:underline;}
+::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-track{background:var(--obsidian);} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+input{font-family:inherit;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useCallback, useRef } = React;
+
+// ── API ───────────────────────────────────────────────────────
+async function api(path, opts={}) {
+  const r = await fetch(path, opts);
+  if (!r.ok) throw new Error(`${r.status} ${await r.text()}`);
+  return r.json();
+}
+
+// ── Shared components ─────────────────────────────────────────
+function Label({ children, style={} }) {
+  return <div style={{ fontSize:11,fontWeight:600,letterSpacing:"0.07em",textTransform:"uppercase",color:"var(--muted)",...style }}>{children}</div>;
+}
+
+function Card({ children, style={}, gold=false }) {
+  return (
+    <div style={{
+      background:"var(--card)",
+      border:`1px solid ${gold?"rgba(201,168,76,0.22)":"var(--border-subtle)"}`,
+      borderTop: gold?"1px solid rgba(201,168,76,0.3)":"1px solid rgba(255,255,255,0.08)",
+      borderRadius:4, padding:"24px 22px",
+      boxShadow:"0 2px 12px rgba(0,0,0,0.4)", ...style
+    }}>{children}</div>
+  );
+}
+
+function GoldBar({ pct, height=5, color }) {
+  return (
+    <div style={{height,background:"var(--elevated)",borderRadius:1,overflow:"hidden",boxShadow:"inset 0 1px 3px rgba(0,0,0,0.5)"}}>
+      <div style={{height:"100%",width:`${Math.max(0,Math.min(1,pct||0))*100}%`,
+        background: color || "linear-gradient(90deg,#A8882C,#D4AF55,#C9A84C)",
+        boxShadow:"0 0 6px rgba(201,168,76,0.4)"}}/>
+    </div>
+  );
+}
+
+function StatusDot({ ok }) {
+  return <span style={{display:"inline-block",width:6,height:6,borderRadius:"50%",
+    background:ok?"var(--verdigris)":"var(--danger)",flexShrink:0,
+    boxShadow:ok?"0 0 5px rgba(61,170,136,0.6)":"0 0 5px rgba(192,72,88,0.6)"}}/>;
+}
+
+function Badge({ children, variant="warn" }) {
+  const styles = {
+    warn:  {background:"var(--warn-bg)",color:"var(--warn)"},
+    danger:{background:"var(--danger-bg)",color:"var(--danger)"},
+    ok:    {background:"var(--verdigris-dim)",color:"var(--verdigris)"},
+  };
+  return <span style={{fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:2,letterSpacing:"0.05em",textTransform:"uppercase",...styles[variant]}}>{children}</span>;
+}
+
+// ── Sidebar ───────────────────────────────────────────────────
+function Sidebar({ view, setView, date, lastRefresh, compact=false }) {
+  const nav = [
+    { key:"home",    label:"Home" },
+    { key:"wiki",    label:"Wiki" },
+    { key:"goals",   label:"Goals" },
+    { key:"intel",   label:"Intel" },
+    { key:"fde",     label:"FDE" },
+    { key:"lucida",  label:"Lucida" },
+    { key:"actio",   label:"Actio" },
+  ];
+  return (
+    <div style={{width:compact?"100%":200,background:"var(--surface)",borderRight:compact?"none":"1px solid var(--border-subtle)",borderBottom:compact?"1px solid var(--border-subtle)":"none",display:"flex",flexDirection:compact?"row":"column",flexShrink:0,minHeight:compact?"auto":"100vh",overflow:compact?"hidden":"visible"}}>
+      <div style={{padding:compact?"12px 14px":"20px 18px 16px",borderBottom:compact?"none":"1px solid var(--border-subtle)",borderRight:compact?"1px solid var(--border-subtle)":"none",flexShrink:0}}>
+        <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:32,height:32,flexShrink:0}}>
+            <circle cx="40" cy="40" r="34" stroke="#C9A84C" strokeWidth="1.5"/>
+            <polygon points="40,13 15.6,55 64.4,55" stroke="#C9A84C" strokeWidth="1.5" strokeLinejoin="round" fill="none"/>
+            <line x1="27.8" y1="34" x2="52.2" y2="34" stroke="#C9A84C" strokeWidth="1.5"/>
+            <circle cx="40" cy="34" r="2.5" fill="#C9A84C"/>
+          </svg>
+          <div>
+            <div style={{fontSize:15,fontWeight:400,color:"var(--gold)",letterSpacing:"0.04em",fontFamily:"'Playfair Display SC',serif",lineHeight:1.1}}>Opus Animus</div>
+            <div style={{fontSize:11,color:"#B4C4BC",fontStyle:"italic",marginTop:2,fontFamily:"'Cormorant Garamond',serif",lineHeight:1.2}}>Tác phẩm vĩ đại của Ý chí</div>
+          </div>
+        </div>
+      </div>
+      <nav style={{padding:compact?"8px":"10px 8px",flex:1,display:compact?"flex":"block",gap:compact?4:0,overflowX:compact?"auto":"visible"}}>
+        {nav.map(n => (
+          <button key={n.key} onClick={() => setView(n.key)} style={{
+            display:"block",width:compact?"auto":"100%",whiteSpace:compact?"nowrap":"normal",textAlign:"left",padding:"9px 12px",
+            background:view===n.key?"rgba(201,168,76,0.08)":"transparent",
+            border:"none",borderRadius:3,
+            color:view===n.key?"var(--gold)":"var(--muted)",
+            fontSize:13,fontWeight:view===n.key?600:400,
+            letterSpacing:"0.01em",marginBottom:2,
+            borderLeft:view===n.key?"2px solid var(--gold)":"2px solid transparent",
+            transition:"all .15s"
+          }}>{n.label}</button>
+        ))}
+      </nav>
+      <div style={{display:compact?"none":"block",padding:"14px 18px",borderTop:"1px solid var(--border-subtle)"}}>
+        <div style={{fontSize:11,color:"var(--muted)"}}>{date}</div>
+        {lastRefresh && <div style={{fontSize:10,color:"var(--dim)",marginTop:3}}>updated {lastRefresh}</div>}
+      </div>
+    </div>
+  );
+}
+
+// HOME view ─────────────────────────────────────────────────
+function HomeView({ data, setView }) {
+  if (!data) return <Loading/>;
+  const { life_tracks: lt, system_status, today } = data;
+  const f = lt.finance || {};
+  const h = lt.health  || {};
+  const c = lt.career  || {};
+
+  const financeRows = [
+    ["Lương", f["Thu nhập chính (lương)"]],
+    ["Passive", f["Thu nhập phụ (side/passive)"]],
+    ["Savings", f["Tiết kiệm/đầu tư"]],
+  ].filter(([,v]) => v && v !== "—");
+
+  const healthRows = [
+    ["Sleep",    h["Giấc ngủ"]],
+    ["Workout",  h["Tập luyện"]],
+    ["Energy",   h["Năng lượng buổi sáng"]],
+    ["Stress",   h["Stress level"]],
+  ];
+
+  const careerRows = [
+    ["Vị trí",  c["Vị trí"]],
+    ["Lương",   c["Lương"]],
+    ["Skill",   c["Skill được market định giá"]],
+  ];
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+      {/* Life Tracks */}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}>
+        <Card>
+          <Label style={{marginBottom:8}}>Finance</Label>
+          <div style={{fontSize:13,color:"var(--muted)",display:"flex",flexDirection:"column",gap:6}}>
+            {lt.freedom_target !== "—" && (
+              <div style={{display:"flex",justifyContent:"space-between"}}>
+                <span>Target</span>
+                <span style={{color:"var(--gold)",fontSize:12,fontWeight:500}}>{lt.freedom_target}</span>
+              </div>
+            )}
+            {financeRows.length > 0 ? financeRows.map(([k,v]) => (
+              <div key={k} style={{display:"flex",justifyContent:"space-between"}}>
+                <span>{k}</span><span style={{color:"var(--text-soft)",fontWeight:500}}>{v}</span>
+              </div>
+            )) : (
+              <div style={{color:"var(--dim)",fontSize:12,fontStyle:"italic"}}>Chưa điền — vào Goals để update</div>
+            )}
+          </div>
+        </Card>
+        <Card>
+          <Label style={{marginBottom:8}}>Health</Label>
+          <div style={{fontSize:13,color:"var(--muted)",display:"flex",flexDirection:"column",gap:6}}>
+            {healthRows.map(([k,v]) => (
+              <div key={k} style={{display:"flex",justifyContent:"space-between"}}>
+                <span>{k}</span><span style={{color:v&&v!=="—"?"var(--text-soft)":"var(--dim)",fontWeight:v&&v!=="—"?500:400}}>{v||"—"}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+        <Card>
+          <Label style={{marginBottom:8}}>Career</Label>
+          <div style={{fontSize:13,color:"var(--muted)",display:"flex",flexDirection:"column",gap:6}}>
+            {careerRows.map(([k,v]) => (
+              <div key={k} style={{display:"flex",justifyContent:"space-between"}}>
+                <span>{k}</span><span style={{color:v&&v!=="—"?"var(--text-soft)":"var(--dim)",fontWeight:v&&v!=="—"?500:400,maxWidth:120,textAlign:"right",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{v||"—"}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+
+      {/* System status */}
+      <Card>
+        <Label style={{marginBottom:10}}>System Status</Label>
+        <div style={{display:"flex",flexDirection:"column",gap:7}}>
+          {system_status.map((m,i) => (
+            <div key={i} style={{display:"flex",alignItems:"center",gap:10}}>
+              <StatusDot ok={m.ok}/>
+              <span style={{flex:1,fontFamily:"'JetBrains Mono',monospace",fontSize:13,color:"var(--text-soft)"}}>{m.name}</span>
+              <span style={{fontSize:12,color:"var(--muted)"}}>{m.last_run}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Today */}
+      <Card>
+        <Label style={{marginBottom:10}}>Today</Label>
+        <div style={{display:"flex",flexDirection:"column",gap:8}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <span style={{fontSize:13,color:"var(--text-soft)"}}>Reading list</span>
+            <span style={{fontSize:12,color:"var(--gold)",fontWeight:600}}>{today.articles} articles</span>
+          </div>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <span style={{fontSize:13,color:"var(--text-soft)"}}>Reflection W{today.reflection.week}</span>
+            {today.reflection.done
+              ? <Badge variant="ok">DONE</Badge>
+              : <Badge variant="danger">PENDING</Badge>}
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+// ── WIKI view ─────────────────────────────────────────────────
+function RadarLane({ lane, setView }) {
+  return (
+    <Card style={{padding:"18px 16px",display:"flex",flexDirection:"column",gap:14,minHeight:250}}>
+      <div>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,marginBottom:8}}>
+          <Label style={{color:lane.color}}>{lane.cadence}</Label>
+          <span style={{fontSize:11,color:"var(--muted)",border:"1px solid var(--border)",borderRadius:3,padding:"3px 7px"}}>{lane.mode}</span>
+        </div>
+        <div style={{fontSize:18,fontWeight:750,color:"var(--text)",lineHeight:1.2}}>{lane.title}</div>
+        <div style={{fontSize:12,color:"var(--muted)",marginTop:7,lineHeight:1.45}}>{lane.focus}</div>
+      </div>
+      <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+        {lane.tags.map(tag => (
+          <span key={tag} style={{fontSize:10,color:"var(--text-soft)",background:"rgba(255,255,255,0.045)",border:"1px solid var(--border-subtle)",borderRadius:3,padding:"4px 7px"}}>{tag}</span>
+        ))}
+      </div>
+      <div style={{marginTop:"auto",display:"flex",flexDirection:"column",gap:8}}>
+        <div style={{height:1,background:"var(--border-subtle)"}}/>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
+          <span style={{fontSize:12,color:"var(--muted)"}}>Route</span>
+          <span style={{fontSize:12,color:"var(--gold)",fontWeight:650,textAlign:"right"}}>{lane.route}</span>
+        </div>
+        <button onClick={() => setView(lane.view)} style={{alignSelf:"flex-start",padding:"7px 12px",background:"transparent",border:"1px solid var(--border)",borderRadius:3,color:"var(--text-soft)",fontSize:11,fontWeight:650}}>
+          Open {lane.cta}
+        </button>
+      </div>
+    </Card>
+  );
+}
+
+function FilterGate() {
+  const gates = [
+    ["Source confidence", "Tier 1/2 before conclusion"],
+    ["Anti-repetition", "No same thesis twice"],
+    ["Action impact", "Decision, skill, thesis, workflow"],
+    ["Wiki promotion", "Smallest durable page"],
+  ];
+  return (
+    <Card gold style={{padding:"18px 20px"}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:18,alignItems:"center"}}>
+        <div>
+          <Label style={{color:"var(--gold)",marginBottom:7}}>Signal Filter</Label>
+          <div style={{fontSize:19,fontWeight:750,color:"var(--text)",lineHeight:1.2}}>Only signals that change a decision survive.</div>
+          <div style={{fontSize:12,color:"var(--muted)",marginTop:7,lineHeight:1.45}}>Generic novelty is suppressed. The filter favors action, contradiction, evidence, and method improvement.</div>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:8}}>
+          {gates.map(([name, desc]) => (
+            <div key={name} style={{border:"1px solid var(--border-subtle)",borderRadius:4,padding:"10px 11px",background:"rgba(255,255,255,0.025)"}}>
+              <div style={{fontSize:12,fontWeight:700,color:"var(--text-soft)"}}>{name}</div>
+              <div style={{fontSize:11,color:"var(--muted)",marginTop:3,lineHeight:1.35}}>{desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function OutputRoute({ item, setView }) {
+  return (
+    <div style={{border:"1px solid var(--border-subtle)",borderRadius:4,padding:"12px 13px",background:"rgba(255,255,255,0.025)",minHeight:112,display:"flex",flexDirection:"column",gap:8}}>
+      <div style={{display:"flex",alignItems:"center",gap:8}}>
+        <span style={{width:7,height:7,borderRadius:"50%",background:item.color,boxShadow:`0 0 8px ${item.color}`}}/>
+        <div style={{fontSize:14,fontWeight:750,color:"var(--text)"}}>{item.title}</div>
+      </div>
+      <div style={{fontSize:12,color:"var(--muted)",lineHeight:1.42}}>{item.body}</div>
+      {item.view && (
+        <button onClick={() => setView(item.view)} style={{marginTop:"auto",alignSelf:"flex-start",padding:"5px 9px",background:"transparent",border:"1px solid var(--border)",borderRadius:3,color:"var(--muted)",fontSize:11}}>
+          {item.link}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function DecisionHomeView({ data, setView }) {
+  if (!data) return <Loading/>;
+  const { life_tracks: lt, system_status, today } = data;
+  const f = lt.finance || {};
+  const h = lt.health  || {};
+  const c = lt.career  || {};
+  const activeOps = system_status.filter(m => m.ok).length;
+  const radarLanes = [
+    {title:"Tech Learning Research",cadence:"Daily",mode:"default",color:"var(--verdigris)",focus:"Agent workflow, context hygiene, evaluation, governance, and tools worth testing in the workspace.",tags:["agent workflow","PACK.md","eval","security","tool test"],route:"skill / workflow update",view:"intel",cta:"Intel"},
+    {title:"CEO Business Model Research",cadence:"Weekly",mode:"strategic",color:"var(--gold)",focus:"Customer budget shifts, AI monetization, ROI pressure, operating model, and durable investment signals.",tags:["offer","pricing","ROI","customer budget","thesis"],route:"decision / thesis update",view:"wiki",cta:"Wiki"},
+    {title:"Competitor Intelligence",cadence:"Weekly + on-demand",mode:"FDE lens",color:"#60a5fa",focus:"Named competitor moves, partnerships, service packaging, AI CoE, governance offers, and FDE-lite gaps.",tags:["SIer","consulting","partnership","FDE","governance"],route:"response / watchlist",view:"fde",cta:"FDE"},
+  ];
+  const outputRoutes = [
+    {title:"Wiki", body:"Promote only durable conclusions, decisions, open questions, or hub-page updates.", color:"var(--gold)", view:"wiki", link:"Open Wiki"},
+    {title:"Action", body:"Turn a signal into a small test, workflow change, or weekly practice artifact.", color:"var(--verdigris)"},
+    {title:"Skill Update", body:"When briefs drift or repeat, patch the relevant PACK.md with a bounded edit.", color:"#60a5fa"},
+    {title:"Ignore", body:"Suppress novelty, generic benchmarks, repeated thesis, and unactionable launches.", color:"var(--dim)"},
+  ];
+  const trackBlock = (rows) => (
+    <div style={{fontSize:13,color:"var(--muted)",display:"flex",flexDirection:"column",gap:6}}>
+      {rows.map(([k,v]) => (
+        <div key={k} style={{display:"flex",justifyContent:"space-between",gap:12}}>
+          <span>{k}</span>
+          <span style={{color:v&&v!=="-"?"var(--text-soft)":"var(--dim)",fontWeight:v&&v!=="-"?500:400,maxWidth:180,textAlign:"right",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{v || "-"}</span>
+        </div>
+      ))}
+    </div>
+  );
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:16}}>
+      <section style={{background:"linear-gradient(145deg,#101614 0%,#171D1B 58%,#151300 100%)",border:"1px solid rgba(201,168,76,0.18)",borderRadius:4,padding:"26px 28px",boxShadow:"0 10px 30px rgba(0,0,0,0.42)"}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:24,alignItems:"end"}}>
+          <div>
+            <Label style={{color:"var(--gold)",marginBottom:8}}>Consilium Architecture</Label>
+            <div style={{fontFamily:"'Playfair Display SC',serif",fontSize:34,lineHeight:1.05,color:"var(--text)",letterSpacing:"0.01em"}}>Decision Brain</div>
+            <div style={{fontSize:13,color:"var(--text-soft)",marginTop:10,maxWidth:620,lineHeight:1.55}}>Radar → filter → decision → wiki/action/skill update. Consilium reads the world by asking what should change.</div>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))",gap:9}}>
+            <div style={{background:"rgba(0,0,0,0.18)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"12px 13px"}}>
+              <div style={{fontSize:24,fontWeight:800,color:"var(--gold)"}}>{today.articles}</div>
+              <div style={{fontSize:10,color:"var(--muted)",textTransform:"uppercase",letterSpacing:"0.06em"}}>raw signals today</div>
+            </div>
+            <div style={{background:"rgba(0,0,0,0.18)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"12px 13px"}}>
+              <div style={{fontSize:24,fontWeight:800,color:"var(--verdigris)"}}>{activeOps}/{system_status.length}</div>
+              <div style={{fontSize:10,color:"var(--muted)",textTransform:"uppercase",letterSpacing:"0.06em"}}>ops healthy</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:10}}>
+          <Label>Search Radar</Label>
+          <span style={{fontSize:12,color:"var(--muted)"}}>3 lines, one decision system</span>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:12}}>
+          {radarLanes.map(lane => <RadarLane key={lane.title} lane={lane} setView={setView}/>)}
+        </div>
+      </div>
+      <FilterGate/>
+      <Card>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:12}}>
+          <Label>Wiki / Action / Skill Update</Label>
+          <span style={{fontSize:12,color:"var(--muted)"}}>promotion happens after impact is clear</span>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:10}}>
+          {outputRoutes.map(item => <OutputRoute key={item.title} item={item} setView={setView}/>)}
+        </div>
+      </Card>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:12}}>
+        <Card>
+          <Label style={{marginBottom:10}}>Ops Pulse</Label>
+          <div style={{display:"flex",flexDirection:"column",gap:7}}>
+            {system_status.map((m,i) => {
+              const runLabel = m.last_run && m.last_run !== "-" && m.last_run.charCodeAt(0) !== 8212 ? m.last_run : (m.next_run ? `next ${m.next_run}` : "-");
+              return (
+                <div key={i} style={{display:"flex",alignItems:"center",gap:10}}>
+                  <StatusDot ok={m.ok}/>
+                  <span style={{flex:1,fontFamily:"'JetBrains Mono',monospace",fontSize:13,color:"var(--text-soft)"}}>{m.name}</span>
+                  <span style={{fontSize:12,color:"var(--muted)"}}>{runLabel}</span>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+        <Card>
+          <Label style={{marginBottom:10}}>Today</Label>
+          <div style={{display:"flex",flexDirection:"column",gap:8}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <span style={{fontSize:13,color:"var(--text-soft)"}}>Reading list</span>
+              <span style={{fontSize:12,color:"var(--gold)",fontWeight:600}}>{today.articles} articles</span>
+            </div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <span style={{fontSize:13,color:"var(--text-soft)"}}>Reflection W{today.reflection.week}</span>
+              {today.reflection.done ? <Badge variant="ok">DONE</Badge> : <Badge variant="danger">PENDING</Badge>}
+            </div>
+            <div style={{height:1,background:"var(--border-subtle)",margin:"4px 0"}}/>
+            <button onClick={() => setView("intel")} style={{alignSelf:"flex-start",padding:"7px 12px",background:"transparent",border:"1px solid var(--border)",borderRadius:3,color:"var(--text-soft)",fontSize:11,fontWeight:650}}>Open Intel</button>
+          </div>
+        </Card>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(210px,1fr))",gap:12}}>
+        <Card><Label style={{marginBottom:8}}>Finance</Label>{trackBlock([["Target", lt.freedom_target],["Passive", f["Thu nhập phụ (side/passive)"]],["Savings", f["Tiết kiệm/đầu tư"]]])}</Card>
+        <Card><Label style={{marginBottom:8}}>Health</Label>{trackBlock([["Sleep", h["Giấc ngủ"]],["Workout", h["Tập luyện"]],["Energy", h["Năng lượng buổi sáng"]]])}</Card>
+        <Card><Label style={{marginBottom:8}}>Career</Label>{trackBlock([["Exam", c["Ngày thi"]],["Daily", c["Daily target"]],["Pass", c["Pass condition"]]])}</Card>
+      </div>
+    </div>
+  );
+}
+
+function WikiView({ data }) {
+  if (!data) return <Loading/>;
+  const { wiki } = data;
+  const total = wiki.total || 1;
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:10}}>
+        {[
+          {val:wiki.total,  lbl:"Total Pages", gold:true},
+          {val:`+${wiki.week}`, lbl:"This Week"},
+          {val:wiki.inbox,  lbl:"Inbox"},
+          {val:wiki.topics.length, lbl:"Topics"},
+        ].map((s,i) => (
+          <Card key={i} style={{textAlign:"center",padding:"14px 12px"}}>
+            <div style={{fontSize:28,fontWeight:700,color:s.gold?"var(--gold)":"var(--text)",letterSpacing:"-0.02em",fontFamily:"'Playfair Display SC',serif"}}>{s.val}</div>
+            <div style={{fontSize:10,color:"var(--muted)",marginTop:4,letterSpacing:"0.06em",textTransform:"uppercase",fontWeight:500}}>{s.lbl}</div>
+          </Card>
+        ))}
+      </div>
+
+      <Card>
+        <Label style={{marginBottom:10}}>Topics</Label>
+        <div style={{display:"flex",flexDirection:"column",gap:8}}>
+          {wiki.topics.map((t,i) => (
+            <div key={i}>
+              <div style={{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:4}}>
+                <span style={{color:"var(--text-soft)",fontWeight:500}}>{t.name}</span>
+                <span style={{color:"var(--muted)"}}>{t.n} pages</span>
+              </div>
+              <div style={{height:4,background:"var(--elevated)",borderRadius:1,overflow:"hidden"}}>
+                <div style={{height:"100%",width:`${(t.n/total)*100}%`,background:i===0?"linear-gradient(90deg,#A8882C,#D4AF55)":"var(--verdigris)",borderRadius:1}}/>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {wiki.recent.length > 0 && (
+        <Card>
+          <Label style={{marginBottom:10}}>Recent Pages</Label>
+          <div style={{display:"flex",flexDirection:"column",gap:0}}>
+            {wiki.recent.map((r,i) => (
+              <div key={i} style={{padding:"9px 0",borderBottom:i<wiki.recent.length-1?"1px solid var(--border-subtle)":"none",display:"flex",alignItems:"center",gap:10}}>
+                <span style={{width:4,height:4,borderRadius:"50%",background:"var(--gold)",flexShrink:0,display:"inline-block"}}/>
+                <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:12,color:"var(--text-soft)"}}>{r}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+// ── GOALS view ────────────────────────────────────────────────
+function GoalsView() {
+  const [goals, setGoals] = useState(null);
+  const [editing, setEditing] = useState(null); // {track, field, value}
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  useEffect(() => { api("/api/goals").then(setGoals).catch(console.error); }, []);
+
+  async function saveField() {
+    if (!editing) return;
+    setSaving(true);
+    setMsg("");
+    try {
+      await api("/api/goals", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(editing),
+      });
+      setMsg("Saved ✓");
+      setEditing(null);
+      const fresh = await api("/api/goals");
+      setGoals(fresh);
+    } catch(e) {
+      setMsg("Error: " + e.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (!goals) return <Loading/>;
+
+  const tracks = [
+    { num:"1", label:"Track 1 — Tài Chính", data:goals.finance },
+    { num:"2", label:"Track 2 — Sức Khỏe",  data:goals.health },
+    { num:"3", label:"Track 3 — Sự Nghiệp", data:goals.career },
+  ];
+
+  const levels = [
+    {l:"L1",name:"Knowledge",pct:0.45,color:"var(--gold)"},
+    {l:"L2",name:"Skill",    pct:0.55,color:"var(--verdigris)"},
+    {l:"L3",name:"Product",  pct:0.05,color:"var(--muted)"},
+    {l:"L4",name:"Audience", pct:0.02,color:"var(--muted)"},
+    {l:"L5",name:"Capital",  pct:0.01,color:"var(--muted)"},
+  ];
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+      {msg && <div style={{padding:"10px 14px",borderRadius:4,background:msg.startsWith("Error")?"var(--danger-bg)":"var(--verdigris-dim)",color:msg.startsWith("Error")?"var(--danger)":"var(--verdigris)",fontSize:13}}>{msg}</div>}
+
+      {/* Life tracks edit */}
+      {tracks.map(tr => (
+        <Card key={tr.num}>
+          <Label style={{marginBottom:10}}>{tr.label}</Label>
+          <div style={{display:"flex",flexDirection:"column",gap:6}}>
+            {Object.entries(tr.data||{}).map(([field, val]) => {
+              const isEditing = editing?.track===tr.num && editing?.field===field;
+              return (
+                <div key={field} style={{display:"flex",alignItems:"center",gap:8,padding:"5px 0",borderBottom:"1px solid var(--border-subtle)"}}>
+                  <span style={{flex:1,fontSize:12,color:"var(--muted)"}}>{field}</span>
+                  {isEditing ? (
+                    <>
+                      <input
+                        autoFocus
+                        value={editing.value}
+                        onChange={e => setEditing({...editing,value:e.target.value})}
+                        onKeyDown={e => { if(e.key==="Enter") saveField(); if(e.key==="Escape") setEditing(null); }}
+                        style={{width:140,padding:"3px 8px",background:"var(--elevated)",border:"1px solid var(--gold-dim)",borderRadius:3,color:"var(--text)",fontSize:12,outline:"none"}}
+                      />
+                      <button onClick={saveField} disabled={saving} style={{padding:"3px 10px",background:"var(--gold)",border:"none",borderRadius:3,color:"#0B0D0C",fontSize:11,fontWeight:700}}>
+                        {saving ? "..." : "Save"}
+                      </button>
+                      <button onClick={() => setEditing(null)} style={{padding:"3px 8px",background:"transparent",border:"1px solid var(--border)",borderRadius:3,color:"var(--muted)",fontSize:11}}>✕</button>
+                    </>
+                  ) : (
+                    <>
+                      <span style={{fontSize:12,color:val&&val!=="—"?"var(--text-soft)":"var(--dim)",fontWeight:val&&val!=="—"?500:400,minWidth:80,textAlign:"right"}}>{val||"—"}</span>
+                      <button onClick={() => setEditing({track:tr.num,field,value:val==="—"?"":val})} style={{padding:"2px 8px",background:"transparent",border:"1px solid var(--border)",borderRadius:3,color:"var(--muted)",fontSize:10}}>Edit</button>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      ))}
+
+      {/* 5 Levels */}
+      <Card gold>
+        <Label style={{color:"var(--gold-dim)",marginBottom:4}}>Framework</Label>
+        <div style={{fontSize:13,color:"var(--text-soft)"}}>Knowledge → Skill → Product → Audience → Capital</div>
+        <div style={{fontSize:11,color:"var(--muted)",marginTop:4,fontStyle:"italic"}}>Jack Butcher — Levels of Wealth</div>
+      </Card>
+      {levels.map((lv,i) => (
+        <Card key={i}>
+          <div style={{display:"flex",alignItems:"flex-start",gap:14}}>
+            <div style={{width:36,height:36,background:"var(--elevated)",borderRadius:3,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700,fontSize:12,color:lv.color,flexShrink:0,fontFamily:"'Playfair Display SC',serif",border:`1px solid ${lv.color}22`}}>{lv.l}</div>
+            <div style={{flex:1}}>
+              <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
+                <span style={{fontWeight:600,fontSize:14,color:"var(--text)"}}>{lv.name}</span>
+                <span style={{fontSize:11,color:lv.color,fontWeight:600}}>{Math.round(lv.pct*100)}%</span>
+              </div>
+              <div style={{height:4,background:"var(--elevated)",borderRadius:1,overflow:"hidden",marginBottom:6}}>
+                <div style={{height:"100%",width:`${lv.pct*100}%`,background:lv.color,borderRadius:1}}/>
+              </div>
+              {lv.l==="L2" && goals.l2_skills?.length>0 && (
+                <div style={{display:"flex",flexDirection:"column",gap:2}}>
+                  {goals.l2_skills.slice(0,3).map((s,j) => (
+                    <div key={j} style={{fontSize:11,color:"var(--muted)"}}>{s.skill.substring(0,50)} — <span style={{color:"var(--text-soft)"}}>{s.current.substring(0,30)}</span></div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+// ── INTEL view ────────────────────────────────────────────────
+const TOPIC_META = {
+  AI:         { color:"var(--verdigris)",  label:"AI" },
+  COMPETITOR: { color:"#4A8FCC",           label:"Competitor" },
+  JP_STOCK:   { color:"var(--warn)",       label:"JP Market" },
+};
+
+function Stars({ score }) {
+  if (!score) return null;
+  const filled = Math.min(5, Math.max(0, score));
+  return (
+    <span style={{fontSize:12,letterSpacing:1,color:"var(--gold)"}}>
+      {"★".repeat(filled)}{"☆".repeat(5 - filled)}
+    </span>
+  );
+}
+
+function ArticleCard({ a }) {
+  const meta   = TOPIC_META[a.topic] || { color:"var(--muted)", label: a.topic || "—" };
+  const wikiOk = a.wiki_status === "ingested";
+
+  return (
+    <div style={{
+      background:"var(--card)",
+      border:"1px solid var(--border-subtle)",
+      borderTop:"1px solid rgba(255,255,255,0.08)",
+      borderRadius:4,padding:"16px 18px",
+      display:"flex",flexDirection:"column",gap:10,
+      boxShadow:"0 2px 12px rgba(0,0,0,0.4)",
+    }}>
+      {/* Top row */}
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8}}>
+        <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+          {a.goal_score > 0 && <Stars score={a.goal_score}/>}
+          <span style={{
+            fontSize:10,fontWeight:700,padding:"2px 7px",borderRadius:2,letterSpacing:"0.05em",textTransform:"uppercase",
+            background: meta.color + "22", color: meta.color,
+          }}>{meta.label}</span>
+        </div>
+        <span style={{
+          fontSize:10,fontWeight:600,padding:"2px 7px",borderRadius:2,flexShrink:0,
+          background: wikiOk ? "var(--verdigris-dim)" : "var(--elevated)",
+          color: wikiOk ? "var(--verdigris)" : "var(--dim)",
+          letterSpacing:"0.04em",
+        }}>{wikiOk ? "wiki ✓" : "pending"}</span>
+      </div>
+
+      {/* Title */}
+      <div style={{fontSize:13,fontWeight:600,color:"var(--text)",lineHeight:1.4}}>
+        {a.url
+          ? <a href={a.url} target="_blank" rel="noreferrer" style={{color:"var(--text)"}}>{a.title}</a>
+          : a.title}
+      </div>
+
+      {/* Source */}
+      <div style={{fontSize:11,color:"var(--muted)",display:"flex",gap:8,alignItems:"center"}}>
+        <span style={{background:"var(--elevated)",padding:"1px 6px",borderRadius:2,fontFamily:"'JetBrains Mono',monospace"}}>{a.source}</span>
+        <span>{a.date}</span>
+      </div>
+
+      {/* Summary */}
+      {a.summary && (
+        <div style={{
+          fontSize:12,color:"var(--text-soft)",lineHeight:1.55,
+          display:"-webkit-box",WebkitLineClamp:3,WebkitBoxOrient:"vertical",overflow:"hidden",
+        }}>{a.summary}</div>
+      )}
+
+      {/* For you */}
+      <div style={{borderTop:"1px solid var(--border-subtle)",paddingTop:8,marginTop:2}}>
+        <div style={{fontSize:10,fontWeight:600,color:"var(--gold-dim)",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:4}}>For you</div>
+        <div style={{fontSize:11,lineHeight:1.5,color: a.relevance ? "var(--text-soft)" : "var(--dim)",fontStyle: a.relevance ? "normal" : "italic"}}>
+          {a.relevance || "Relevance note — available after collect run"}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MiniMetric({ label, value }) {
+  return (
+    <div style={{background:"var(--elevated)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"8px 10px"}}>
+      <div style={{fontSize:18,fontWeight:700,color:"var(--gold)",lineHeight:1}}>{value}</div>
+      <div style={{fontSize:10,color:"var(--muted)",marginTop:4,textTransform:"uppercase",letterSpacing:"0.05em"}}>{label}</div>
+    </div>
+  );
+}
+
+function IntelReport({ report, onToggleUsed }) {
+  const r = report?.report;
+  if (!r) return <div style={{fontSize:12,color:"var(--muted)"}}>Loading report...</div>;
+  const emptyText = {fontSize:12,color:"var(--muted)",fontStyle:"italic"};
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
+        <MiniMetric label="articles" value={r.summary.article_count}/>
+        <MiniMetric label="used" value={r.summary.used_count}/>
+        <MiniMetric label="top score" value={r.summary.top_importance}/>
+      </div>
+
+      <div>
+        <div style={{fontSize:12,fontWeight:700,color:"var(--gold)",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:8}}>Executive Brief</div>
+        {r.executive_brief.length ? r.executive_brief.map((item, i) => (
+          <div key={i} style={{borderTop:i?"1px solid var(--border-subtle)":"none",paddingTop:i?8:0,marginTop:i?8:0}}>
+            <div style={{fontSize:13,fontWeight:650,color:"var(--text)",lineHeight:1.35}}>{item.title}</div>
+            <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.5,marginTop:4}}>{item.why}</div>
+            <div style={{fontSize:11,color:"var(--gold)",lineHeight:1.45,marginTop:4}}>Action: {item.action}</div>
+          </div>
+        )) : <div style={emptyText}>No executive brief yet.</div>}
+      </div>
+
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
+        <IntelList title="Strategic Signals" items={r.strategic_signals}/>
+        <IntelList title="Category Mix" items={r.category_mix}/>
+        <IntelList title="Actor Map" items={r.actor_map}/>
+      </div>
+
+      <div>
+        <div style={{fontSize:12,fontWeight:700,color:"var(--gold)",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:8}}>Top 5 Intelligence Items</div>
+        <div style={{display:"flex",flexDirection:"column",gap:8}}>
+          {r.top_items.map(item => (
+            <div key={item.slug} style={{background:"rgba(255,255,255,0.025)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"10px 12px"}}>
+              <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"flex-start"}}>
+                <div style={{minWidth:0}}>
+                  <div style={{fontSize:13,fontWeight:650,lineHeight:1.35}}>
+                    {item.url ? <a href={item.url} target="_blank" rel="noreferrer" style={{color:"var(--text)"}}>{item.title}</a> : item.title}
+                  </div>
+                  <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:6}}>
+                    <span style={{fontSize:10,color:"var(--gold)",border:"1px solid rgba(201,168,76,.35)",borderRadius:2,padding:"1px 6px"}}>{item.importance}/5</span>
+                    <span style={{fontSize:10,color:"var(--muted)",border:"1px solid var(--border)",borderRadius:2,padding:"1px 6px"}}>{item.category_label}</span>
+                    <span style={{fontSize:10,color:item.used_status==="used"?"var(--verdigris)":"var(--dim)",border:"1px solid var(--border)",borderRadius:2,padding:"1px 6px"}}>{item.used_status}</span>
+                  </div>
+                </div>
+                <button onClick={() => onToggleUsed(item)} style={{
+                  padding:"5px 9px",fontSize:11,borderRadius:3,cursor:"pointer",flexShrink:0,
+                  background:item.used_status==="used"?"var(--elevated)":"rgba(61,170,136,.14)",
+                  border:item.used_status==="used"?"1px solid var(--border)":"1px solid rgba(61,170,136,.35)",
+                  color:item.used_status==="used"?"var(--muted)":"var(--verdigris)",
+                }}>{item.used_status==="used" ? "Unused" : "Used"}</button>
+              </div>
+              <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.5,marginTop:8}}>{item.fpt_relevance}</div>
+              <div style={{fontSize:11,color:"var(--gold)",lineHeight:1.45,marginTop:5}}>Action: {item.recommended_action}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <IntelActions actions={r.recommended_actions}/>
+    </div>
+  );
+}
+
+function IntelList({ title, items }) {
+  return (
+    <div style={{background:"rgba(255,255,255,0.02)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"10px"}}>
+      <div style={{fontSize:10,fontWeight:700,color:"var(--muted)",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:7}}>{title}</div>
+      {items.length ? items.slice(0,6).map(item => (
+        <div key={item.label} style={{display:"flex",justifyContent:"space-between",gap:8,fontSize:11,color:"var(--text-soft)",lineHeight:1.45,marginTop:4}}>
+          <span>{item.label}</span>
+          <span style={{color:"var(--gold)",fontWeight:700}}>{item.count}</span>
+        </div>
+      )) : <div style={{fontSize:11,color:"var(--dim)",fontStyle:"italic"}}>None</div>}
+    </div>
+  );
+}
+
+function IntelActions({ actions }) {
+  return (
+    <div>
+      <div style={{fontSize:12,fontWeight:700,color:"var(--gold)",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:8}}>Recommended Actions</div>
+      {actions.length ? actions.map((a, i) => (
+        <div key={i} style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.5,marginTop:i?6:0}}>
+          <span style={{color:"var(--text)",fontWeight:650}}>{a.label}:</span> {a.text}
+          <div style={{color:"var(--gold)",fontSize:11}}>Next: {a.action}</div>
+        </div>
+      )) : <div style={{fontSize:12,color:"var(--muted)",fontStyle:"italic"}}>No action yet.</div>}
+    </div>
+  );
+}
+
+function IntelView() {
+  const [articles, setArticles] = useState(null);
+  const [filter,   setFilter]   = useState("all");
+  const [reports,  setReports]  = useState(null);
+  const [report,   setReport]   = useState(null);
+  const [activeDate, setActiveDate] = useState(null);
+
+  useEffect(() => {
+    api("/api/articles?limit=60&days_back=7").then(setArticles).catch(console.error);
+    api("/api/intel/reports?days_back=14").then(data => {
+      setReports(data.reports || []);
+      const firstDate = data.reports?.[0]?.date;
+      if (firstDate) {
+        setActiveDate(firstDate);
+        api(`/api/intel/report?date=${firstDate}&days_back=14`).then(setReport).catch(console.error);
+      }
+    }).catch(console.error);
+  }, []);
+
+  function loadReport(date) {
+    setActiveDate(date);
+    setReport(null);
+    api(`/api/intel/report?date=${date}&days_back=14`).then(setReport).catch(console.error);
+  }
+
+  async function toggleUsed(item) {
+    const endpoint = item.used_status === "used" ? "mark-unused" : "mark-used";
+    await api(`/api/intel/articles/${encodeURIComponent(item.slug)}/${endpoint}`, {method:"POST"});
+    if (activeDate) loadReport(activeDate);
+    api("/api/intel/reports?days_back=14").then(data => setReports(data.reports || [])).catch(console.error);
+  }
+
+  if (!articles || !reports) return <Loading/>;
+
+  const topics  = ["all", "AI", "COMPETITOR", "JP_STOCK"];
+  const counts  = topics.reduce((acc, t) => {
+    acc[t] = t === "all" ? articles.length : articles.filter(a => a.topic === t).length;
+    return acc;
+  }, {});
+  const filtered = filter === "all" ? articles : articles.filter(a => a.topic === filter);
+
+  const bySignal = [
+    { label:"AI-SDLC Productization", kw:["SDLC","software development","code generation","agentic","developer"] },
+    { label:"ROI / Proof Points",      kw:["ROI","productivity","faster","efficiency","cost"] },
+    { label:"Legacy Modernization",    kw:["COBOL","legacy","mainframe","migration","modernization"] },
+    { label:"SIer Partnership",        kw:["partnership","alliance","joint","collaboration","offshore"] },
+    { label:"Sovereign / On-prem AI",  kw:["on-premise","sovereign","Japanese LLM","private","compliance"] },
+  ].map(sig => ({
+    ...sig,
+    n: articles.filter(a =>
+      sig.kw.some(kw => (a.title + " " + a.summary).toLowerCase().includes(kw.toLowerCase()))
+    ).length,
+  }));
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+
+      {/* Daily report */}
+      <div style={{
+        background:"var(--card)",border:"1px solid var(--border-subtle)",borderRadius:4,
+        padding:"16px 18px",display:"flex",flexDirection:"column",gap:12,
+      }}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:12,flexWrap:"wrap"}}>
+          <div>
+            <div style={{fontSize:11,fontWeight:700,color:"var(--muted)",letterSpacing:"0.08em",textTransform:"uppercase"}}>Daily Intel Reports</div>
+            <div style={{fontSize:12,color:"var(--text-soft)",marginTop:3}}>Report rendered in Intel tab, grouped by article date.</div>
+          </div>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap",justifyContent:"flex-end"}}>
+            {reports.map(r => (
+              <button key={r.date} onClick={() => loadReport(r.date)} style={{
+                padding:"5px 10px",fontSize:11,borderRadius:3,cursor:"pointer",
+                background: activeDate===r.date ? "rgba(201,168,76,0.14)" : "transparent",
+                border: activeDate===r.date ? "1px solid rgba(201,168,76,0.4)" : "1px solid var(--border)",
+                color: activeDate===r.date ? "var(--gold)" : "var(--muted)",
+              }}>
+                {r.date.slice(5)} <span style={{opacity:.65}}>({r.count})</span>
+              </button>
+            ))}
+          </div>
+        </div>
+        <IntelReport report={report} onToggleUsed={toggleUsed}/>
+      </div>
+
+      {/* Signal bar */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:8}}>
+        {bySignal.map((s,i) => (
+          <div key={i} style={{
+            background:"var(--card)",border:"1px solid var(--border-subtle)",borderRadius:4,
+            padding:"10px 12px",textAlign:"center",
+          }}>
+            <div style={{fontSize:22,fontWeight:700,color:s.n>0?"var(--gold)":"var(--dim)",fontFamily:"'Playfair Display SC',serif",letterSpacing:"-0.01em"}}>{s.n}</div>
+            <div style={{fontSize:10,color:"var(--muted)",marginTop:3,lineHeight:1.3,letterSpacing:"0.03em"}}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Filter + count */}
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div style={{fontSize:12,color:"var(--muted)"}}>{filtered.length} articles today</div>
+        <div style={{display:"flex",gap:6}}>
+          {topics.map(t => (
+            <button key={t} onClick={() => setFilter(t)} style={{
+              padding:"4px 12px",fontSize:11,borderRadius:3,cursor:"pointer",
+              background: filter===t ? "rgba(201,168,76,0.12)" : "transparent",
+              border: filter===t ? "1px solid rgba(201,168,76,0.35)" : "1px solid var(--border)",
+              color: filter===t ? "var(--gold)" : "var(--muted)",
+            }}>
+              {t === "all" ? "All" : t}
+              {counts[t] > 0 && <span style={{marginLeft:5,fontSize:10,opacity:0.7}}>({counts[t]})</span>}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Card grid */}
+      {filtered.length > 0 ? (
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+          {filtered.map((a,i) => <ArticleCard key={i} a={a}/>)}
+        </div>
+      ) : (
+        <div style={{background:"var(--card)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"32px",textAlign:"center",color:"var(--muted)",fontSize:13}}>
+          Không có articles. Chạy Collect để fetch.
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── READING view ──────────────────────────────────────────────
+function SimpleIntelView() {
+  const [intel, setIntel] = useState(null);
+  const [activeDate, setActiveDate] = useState(null);
+  const [intelTab, setIntelTab] = useState("market");
+  const [summaryOpen, setSummaryOpen] = useState(false);
+  const [businessOpen, setBusinessOpen] = useState(false);
+  const [weekly, setWeekly] = useState(null);
+  const [weeklyLoaded, setWeeklyLoaded] = useState(false);
+
+  function loadSimpleIntel(date) {
+    setActiveDate(date || null);
+    setIntel(null);
+    const qs = date ? `?date=${date}&days_back=14` : "?days_back=14";
+    api(`/api/intel/simple${qs}`).then(data => {
+      setIntel(data);
+      setActiveDate(data.date);
+    }).catch(console.error);
+  }
+
+  function loadWeekly(week) {
+    setWeekly(null);
+    const qs = week ? `?week=${week}` : "";
+    api(`/api/intel/weekly${qs}`).then(data => {
+      setWeekly(data);
+      setWeeklyLoaded(true);
+    }).catch(console.error);
+  }
+
+  useEffect(() => { loadSimpleIntel(null); }, []);
+  useEffect(() => { if (intelTab === "weekly" && !weeklyLoaded) loadWeekly(null); }, [intelTab]);
+  if (!intel) return <Loading/>;
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:14,maxWidth:920}}>
+      <div style={{background:"var(--card)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"18px 20px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",gap:14,alignItems:"flex-start",flexWrap:"wrap"}}>
+          <div>
+            <div style={{fontSize:11,fontWeight:700,color:"var(--gold)",letterSpacing:"0.08em",textTransform:"uppercase"}}>AI Market Intel</div>
+            <div style={{fontSize:22,fontWeight:700,color:"var(--text)",marginTop:4,lineHeight:1.2}}>Thông tin mới nhất → Tóm tắt → Action</div>
+            <div style={{fontSize:12,color:"var(--muted)",marginTop:5}}>Bias: FPT Japan / AI-SDLC / FDE. Chỉ giữ phần cần đọc và hành động.</div>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,width:"100%",marginTop:6}}>
+            {[
+              {key:"market", label:"Market", desc:"Daily AI market changes"},
+              {key:"weekly", label:"Weekly Report", desc:"7-day research synthesis"},
+              {key:"github", label:"GitHub Repos", desc:"Weekly hot repositories"},
+            ].map(tab => (
+              <button key={tab.key} onClick={() => setIntelTab(tab.key)} style={{
+                padding:"10px 12px",fontSize:12,borderRadius:4,cursor:"pointer",textAlign:"left",
+                background: intelTab===tab.key ? "rgba(201,168,76,0.14)" : "transparent",
+                border: intelTab===tab.key ? "1px solid rgba(201,168,76,0.45)" : "1px solid var(--border)",
+                color: intelTab===tab.key ? "var(--gold)" : "var(--muted)",
+                fontWeight:650,
+              }}>
+                <div style={{fontSize:13,color:intelTab===tab.key ? "var(--gold)" : "var(--text)",fontWeight:750}}>{tab.label}</div>
+                <div style={{fontSize:10,color:"var(--muted)",marginTop:3,fontWeight:500}}>{tab.desc}</div>
+              </button>
+            ))}
+          </div>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap",justifyContent:"flex-end",width:"100%"}}>
+            {intelTab === "market" && intel.available_dates.map(d => (
+              <button key={d.date} onClick={() => loadSimpleIntel(d.date)} style={{
+                padding:"5px 10px",fontSize:11,borderRadius:3,cursor:"pointer",
+                background: activeDate===d.date ? "rgba(201,168,76,0.14)" : "transparent",
+                border: activeDate===d.date ? "1px solid rgba(201,168,76,0.4)" : "1px solid var(--border)",
+                color: activeDate===d.date ? "var(--gold)" : "var(--muted)",
+              }}>
+                {d.date.slice(5)} <span style={{opacity:.65}}>({d.count})</span>
+              </button>
+            ))}
+            {intelTab === "weekly" && weekly && (weekly.available_weeks || []).map(w => (
+              <button key={w} onClick={() => loadWeekly(w)} style={{
+                padding:"5px 10px",fontSize:11,borderRadius:3,cursor:"pointer",
+                background: weekly.week===w ? "rgba(201,168,76,0.14)" : "transparent",
+                border: weekly.week===w ? "1px solid rgba(201,168,76,0.4)" : "1px solid var(--border)",
+                color: weekly.week===w ? "var(--gold)" : "var(--muted)",
+              }}>
+                {w}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {intelTab === "github" ? <GithubRepoIntel/> :
+       intelTab === "weekly" ? <WeeklyReportView weekly={weekly} onLoadWeek={loadWeekly}/> : <>
+
+      <SimpleSection title="1. Thông tin mới nhất về thay đổi thị trường AI">
+        {intel.latest_changes.length ? (
+          <div style={{display:"flex",flexDirection:"column",gap:8}}>
+            {intel.latest_changes.map((item, i) => (
+              <div key={`${item.title}-${i}`} style={{background:"var(--card)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"13px 15px"}}>
+                <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"flex-start"}}>
+                  <div style={{fontSize:14,fontWeight:650,lineHeight:1.35}}>
+                    {item.url ? <a href={item.url} target="_blank" rel="noreferrer" style={{color:"var(--text)"}}>{item.title}</a> : item.title}
+                  </div>
+                  <span style={{fontSize:11,color:"var(--gold)",border:"1px solid rgba(201,168,76,.35)",borderRadius:3,padding:"2px 7px",flexShrink:0}}>{item.score}/5</span>
+                </div>
+                <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:7}}>
+                  <span style={{fontSize:10,color:"var(--muted)",background:"var(--elevated)",borderRadius:2,padding:"2px 6px"}}>{item.source || "source"}</span>
+                  <span style={{fontSize:10,color:"var(--muted)",background:"var(--elevated)",borderRadius:2,padding:"2px 6px"}}>{item.category}</span>
+                </div>
+                <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.5,marginTop:8}}>{item.why}</div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div style={{fontSize:13,color:"var(--muted)"}}>Chưa có dữ liệu. Chạy Search Radar lane để tạo report mới.</div>
+        )}
+      </SimpleSection>
+
+      <ExpandableSummary open={summaryOpen} onToggle={() => setSummaryOpen(!summaryOpen)} items={intel}/>
+
+      <BusinessKnowledgeBrief open={businessOpen} onToggle={() => setBusinessOpen(!businessOpen)} brief={intel.business_brief}/>
+
+      <SimpleSection title="2. Tóm tắt">
+        <SimpleList items={intel.summary}/>
+      </SimpleSection>
+
+      <SimpleSection title="3. Suggested action cho tôi">
+        <SimpleList items={intel.suggested_actions} highlight/>
+      </SimpleSection>
+      </>}
+    </div>
+  );
+}
+
+function WeeklyReportView({ weekly, onLoadWeek }) {
+  if (!weekly) return <Loading/>;
+
+  if (weekly.status === "no_report") {
+    return (
+      <div style={{background:"var(--card)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"28px 24px",textAlign:"center"}}>
+        <div style={{fontSize:14,color:"var(--muted)",lineHeight:1.8}}>
+          <div style={{fontSize:16,fontWeight:700,color:"var(--text)",marginBottom:8}}>Chưa có Weekly Report</div>
+          <div>Chạy lệnh sau để tạo report cho tuần <strong style={{color:"var(--gold)"}}>{weekly.week}</strong>:</div>
+          <code style={{display:"block",marginTop:12,background:"var(--elevated)",padding:"10px 16px",borderRadius:4,fontSize:13,color:"var(--verdigris)",textAlign:"left"}}>
+            python run_weekly.py
+          </code>
+          <div style={{marginTop:12,fontSize:12,color:"var(--muted)"}}>Hoặc chạy --dry-run để preview trước khi save.</div>
+        </div>
+      </div>
+    );
+  }
+
+  const sections = weekly.sections || [];
+  const overviewSection = sections.find(s => s.heading === "Tóm tắt tuần");
+  const top5Section = sections.find(s => s.heading === "Top 5 Stories");
+  const signalsSection = sections.find(s => s.heading === "Xu hướng tín hiệu");
+  const actorsSection = sections.find(s => s.heading === "Động thái các bên");
+  const actionsSection = sections.find(s => s.heading === "Kế hoạch hành động");
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:12}}>
+      {/* Header */}
+      <div style={{background:"var(--card)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"16px 20px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:8}}>
+          <div>
+            <div style={{fontSize:11,fontWeight:700,color:"var(--gold)",letterSpacing:"0.08em",textTransform:"uppercase"}}>Weekly Research</div>
+            <div style={{fontSize:20,fontWeight:700,color:"var(--text)",marginTop:3}}>{weekly.week}</div>
+            <div style={{fontSize:12,color:"var(--muted)",marginTop:4}}>{weekly.period} · {weekly.article_count} articles analyzed</div>
+          </div>
+          <div style={{fontSize:11,color: weekly.status==="ok" ? "var(--verdigris)" : "var(--muted)",border:"1px solid var(--border)",borderRadius:3,padding:"3px 10px"}}>
+            {weekly.status === "ok" ? "✓ LLM Synthesized" : weekly.status}
+          </div>
+        </div>
+        {overviewSection && (
+          <div style={{marginTop:14,fontSize:13,color:"var(--text-soft)",lineHeight:1.7,borderTop:"1px solid var(--border-subtle)",paddingTop:12}}>
+            {overviewSection.body}
+          </div>
+        )}
+      </div>
+
+      {/* Top 5 Stories */}
+      {top5Section && top5Section.items && top5Section.items.length > 0 && (
+        <SimpleSection title="Top 5 Stories tuần này">
+          <div style={{display:"flex",flexDirection:"column",gap:8}}>
+            {top5Section.items.map((item, i) => (
+              <div key={i} style={{background:"var(--card)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"13px 15px"}}>
+                <div style={{display:"flex",gap:10,alignItems:"flex-start"}}>
+                  <span style={{fontSize:18,fontWeight:800,color:"var(--gold)",opacity:.7,flexShrink:0,lineHeight:1}}>{i+1}</span>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:13,fontWeight:650,color:"var(--text)",lineHeight:1.4}}>{item.title}</div>
+                    <div style={{fontSize:11,color:"var(--muted)",marginTop:4}}>{item.source}</div>
+                    <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.5,marginTop:7}}>{item.why}</div>
+                    {item.action && (
+                      <div style={{fontSize:11,color:"var(--verdigris)",marginTop:6,fontStyle:"italic"}}>→ {item.action}</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </SimpleSection>
+      )}
+
+      {/* Signal Trends */}
+      {signalsSection && signalsSection.signals && signalsSection.signals.length > 0 && (
+        <SimpleSection title="Xu hướng tín hiệu tuần này">
+          <div style={{display:"flex",flexDirection:"column",gap:8}}>
+            {signalsSection.signals.map((sig, i) => (
+              <div key={i} style={{display:"flex",alignItems:"flex-start",gap:12,padding:"10px 14px",background:"var(--card)",border:"1px solid var(--border-subtle)",borderRadius:4}}>
+                <div style={{flexShrink:0,marginTop:2}}>
+                  <span style={{
+                    fontSize:11,fontWeight:700,padding:"2px 8px",borderRadius:3,
+                    background: sig.trend==="up" ? "rgba(100,200,150,.15)" : sig.trend==="down" ? "rgba(200,80,80,.12)" : "var(--elevated)",
+                    color: sig.trend==="up" ? "var(--verdigris)" : sig.trend==="down" ? "#e07070" : "var(--muted)",
+                    border: `1px solid ${sig.trend==="up" ? "rgba(100,200,150,.3)" : sig.trend==="down" ? "rgba(200,80,80,.2)" : "var(--border)"}`,
+                  }}>
+                    {sig.trend==="up" ? "↑ tăng" : sig.trend==="down" ? "↓ giảm" : "→ ổn định"}
+                  </span>
+                </div>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:13,fontWeight:650,color:"var(--text)"}}>{sig.name}</div>
+                  <div style={{fontSize:12,color:"var(--text-soft)",marginTop:4,lineHeight:1.5}}>{sig.summary}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </SimpleSection>
+      )}
+
+      {/* Actor Moves */}
+      {actorsSection && actorsSection.actors && actorsSection.actors.length > 0 && (
+        <SimpleSection title="Động thái các bên">
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+            {actorsSection.actors.map((actor, i) => (
+              <div key={i} style={{background:"var(--card)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"12px 14px"}}>
+                <div style={{fontSize:12,fontWeight:750,color:"var(--gold)",marginBottom:5}}>{actor.name}</div>
+                <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.5}}>{actor.summary}</div>
+              </div>
+            ))}
+          </div>
+        </SimpleSection>
+      )}
+
+      {/* Action Plan */}
+      {actionsSection && actionsSection.items && actionsSection.items.length > 0 && (
+        <SimpleSection title="Kế hoạch hành động tuần tới">
+          <div style={{display:"flex",flexDirection:"column",gap:6}}>
+            {actionsSection.items.map((item, i) => (
+              <div key={i} style={{display:"flex",gap:10,alignItems:"flex-start",padding:"10px 14px",background:"var(--card)",border:"1px solid var(--border-subtle)",borderRadius:4}}>
+                <span style={{fontSize:11,fontWeight:700,color:"var(--gold)",flexShrink:0,marginTop:1}}>{i+1}.</span>
+                <div style={{fontSize:13,color:"var(--text)",lineHeight:1.5}}>{item}</div>
+              </div>
+            ))}
+          </div>
+        </SimpleSection>
+      )}
+
+      {sections.length === 0 && (
+        <div style={{padding:"24px",textAlign:"center",color:"var(--muted)",fontSize:13}}>
+          Report trống — chạy lại <code>python run_weekly.py</code>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ExpandableSummary({ open, onToggle, items }) {
+  const review = items?.llm_review;
+  const detailed = items?.detailed_summary || [];
+  const preview = review?.sections?.[0]?.body || detailed?.[0] || "Chưa có tóm tắt chi tiết.";
+  return (
+    <div style={{background:"var(--card)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"16px 18px"}}>
+      <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"center",marginBottom:10}}>
+        <div>
+          <div style={{fontSize:13,fontWeight:700,color:"var(--gold)",letterSpacing:"0.04em"}}>{review?.title || "LLM review top 5 tin"}</div>
+          <div style={{fontSize:10,color:"var(--muted)",marginTop:3}}>
+            {review?.reading_time || "khoảng 5 phút"} · {review?.status === "llm" ? "LLM synthesis" : "fallback synthesis"}
+          </div>
+        </div>
+        <button onClick={onToggle} style={{
+          padding:"5px 10px",fontSize:11,borderRadius:3,cursor:"pointer",
+          background:"var(--elevated)",border:"1px solid var(--border)",color:"var(--text)"
+        }}>{open ? "Collapse" : "Expand"}</button>
+      </div>
+      <div style={{fontSize:13,color:"var(--text-soft)",lineHeight:1.6}}>
+        {open ? (
+          <div style={{display:"flex",flexDirection:"column",gap:10}}>
+            {review?.sections?.length ? review.sections.map((section, i) => (
+              <div key={i}>
+                <div style={{fontSize:12,fontWeight:700,color:"var(--text)",marginBottom:4}}>{section.heading}</div>
+                <div style={{whiteSpace:"pre-line"}}>{section.body}</div>
+              </div>
+            )) : detailed.map((p, i) => <div key={i}>{p}</div>)}
+          </div>
+        ) : (
+          <div>{preview}</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function BusinessKnowledgeBrief({ open, onToggle, brief }) {
+  const preview = brief?.sections?.[0]?.body || "Chưa có business knowledge brief cho ngày này.";
+  return (
+    <div style={{background:"var(--card)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"16px 18px"}}>
+      <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"center",marginBottom:10}}>
+        <div>
+          <div style={{fontSize:13,fontWeight:700,color:"var(--gold)",letterSpacing:"0.04em"}}>{brief?.title || "Business Knowledge"}</div>
+          <div style={{fontSize:10,color:"var(--muted)",marginTop:3}}>
+            {brief?.topic || "1 chủ đề / ngày"} · {brief?.reading_time || "khoảng 5 phút"}
+          </div>
+        </div>
+        <button onClick={onToggle} style={{
+          padding:"5px 10px",fontSize:11,borderRadius:3,cursor:"pointer",
+          background:"var(--elevated)",border:"1px solid var(--border)",color:"var(--text)"
+        }}>{open ? "Collapse" : "Expand"}</button>
+      </div>
+      <div style={{fontSize:13,color:"var(--text-soft)",lineHeight:1.6}}>
+        {open ? (
+          <div style={{display:"flex",flexDirection:"column",gap:10}}>
+            {(brief?.sections || []).map((section, i) => (
+              <div key={i}>
+                <div style={{fontSize:12,fontWeight:700,color:"var(--text)",marginBottom:4}}>{section.heading}</div>
+                <div style={{whiteSpace:"pre-line"}}>{section.body}</div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div>{preview}</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── FDE News Feed ───────────────────────────────────────────
+function FDENewsTab({ actorGroups }) {
+  const [news, setNews] = useState(null);
+  const [activeActor, setActiveActor] = useState(null);
+  const [activeTier, setActiveTier] = useState(null);
+  const [daysBack, setDaysBack] = useState(30);
+  const [loading, setLoading] = useState(false);
+
+  function loadNews(actor, days, tier) {
+    setLoading(true);
+    const qs = new URLSearchParams({ days_back: days });
+    if (actor) qs.set("actor", actor);
+    if (tier) qs.set("tier", tier);
+    api(`/api/intel/fde/news?${qs}`).then(r => setNews(r)).catch(console.error).finally(() => setLoading(false));
+  }
+
+  useEffect(() => { loadNews(activeActor, daysBack, activeTier); }, [activeActor, daysBack, activeTier]);
+
+  const groups = (news?.actor_groups || actorGroups || []);
+
+  const TIER_META = {
+    1: {label:"★ Featured", color:"#C9A84C", desc:"Cross-actor partnership (AI lab × Consulting/SIer)"},
+    2: {label:"Relevant",   color:"#60a5fa", desc:"2+ actor groups hoặc FDE pattern"},
+    3: {label:"Background", color:"#64748b", desc:"Single actor mention"},
+  };
+
+  function renderArticle(a, i) {
+    const matchedGroups = groups.filter(g => (a.actors||[]).includes(g.id));
+    const tierMeta = TIER_META[a.tier] || TIER_META[3];
+    const isFeatured = a.tier === 1;
+    return (
+      <div key={i} style={{
+        background:"var(--surface)",
+        border:isFeatured ? `1px solid ${tierMeta.color}66` : "1px solid var(--border-subtle)",
+        borderLeft:isFeatured ? `3px solid ${tierMeta.color}` : "1px solid var(--border-subtle)",
+        borderRadius:6, padding:"12px 14px"
+      }}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6,gap:10}}>
+          <a href={a.url||"#"} target="_blank" style={{fontSize:13,fontWeight:650,color:"var(--text)",textDecoration:"none",lineHeight:1.4,flex:1}}>{a.title}</a>
+          <div style={{display:"flex",gap:6,alignItems:"center",flexShrink:0}}>
+            <span style={{fontSize:10,fontWeight:700,color:tierMeta.color}}>{tierMeta.label}</span>
+            {a.goal_score && <span style={{fontSize:11,color:"var(--gold)"}}>{a.goal_score}/5</span>}
+          </div>
+        </div>
+        {a.summary && <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.6,marginBottom:8}}>{a.summary}</div>}
+        {isFeatured && a.tier_reasons && a.tier_reasons.length > 0 && (
+          <div style={{fontSize:10,color:tierMeta.color,marginBottom:6,fontStyle:"italic"}}>
+            Why featured: {a.tier_reasons.join(" · ")}
+          </div>
+        )}
+        <div style={{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap"}}>
+          <span style={{fontSize:10,color:"var(--muted)"}}>{a.source} · {a.date}</span>
+          {matchedGroups.map(g => (
+            <span key={g.id} style={{fontSize:10,fontWeight:600,padding:"2px 7px",borderRadius:10,border:`1px solid ${g.color}55`,color:g.color}}>{g.label}</span>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+      {/* Controls row 1: time + tier */}
+      <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
+        {[7,14,30,60].map(d => (
+          <button key={d} onClick={() => setDaysBack(d)} style={{
+            padding:"4px 10px",borderRadius:4,cursor:"pointer",fontSize:11,fontWeight:600,
+            background: daysBack===d ? "rgba(201,168,76,0.14)" : "transparent",
+            border: daysBack===d ? "1px solid rgba(201,168,76,0.45)" : "1px solid var(--border)",
+            color: daysBack===d ? "var(--gold)" : "var(--muted)",
+          }}>{d}d</button>
+        ))}
+        <span style={{color:"var(--border-subtle)",fontSize:12,margin:"0 2px"}}>|</span>
+        {[1,2,3].map(t => {
+          const m = TIER_META[t];
+          const count = news?.tier_counts?.[t] ?? 0;
+          return (
+            <button key={t} onClick={() => setActiveTier(activeTier===t ? null : t)} style={{
+              padding:"4px 10px",borderRadius:4,cursor:"pointer",fontSize:11,fontWeight:600,
+              background: activeTier===t ? `${m.color}22` : "transparent",
+              border: activeTier===t ? `1px solid ${m.color}88` : "1px solid var(--border)",
+              color: activeTier===t ? m.color : "var(--muted)",
+            }} title={m.desc}>{m.label} ({count})</button>
+          );
+        })}
+      </div>
+
+      {/* Controls row 2: actor chips */}
+      <div style={{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap"}}>
+        {groups.map(g => (
+          <button key={g.id} onClick={() => setActiveActor(activeActor===g.id ? null : g.id)} style={{
+            padding:"4px 10px",borderRadius:10,cursor:"pointer",fontSize:11,fontWeight:600,
+            background: activeActor===g.id ? `${g.color}22` : "transparent",
+            border: activeActor===g.id ? `1px solid ${g.color}88` : "1px solid var(--border)",
+            color: activeActor===g.id ? g.color : "var(--muted)",
+          }}>{g.label}</button>
+        ))}
+      </div>
+
+      {news && (
+        <div style={{fontSize:11,color:"var(--muted)"}}>
+          {news.total} bài trong {daysBack} ngày qua · Featured: {news.tier_counts?.[1] ?? 0}
+          {activeActor ? ` · ${groups.find(g=>g.id===activeActor)?.label||activeActor}` : ""}
+          {activeTier ? ` · tier ${activeTier}` : ""}
+          {" · "}Updated {news.updated_at}
+        </div>
+      )}
+
+      {loading && <div style={{color:"var(--muted)",fontSize:12,padding:8}}>Đang tải…</div>}
+
+      {news && news.total === 0 && !loading && (
+        <div style={{background:"var(--surface)",border:"1px solid var(--border-subtle)",borderRadius:6,padding:"24px 16px",textAlign:"center"}}>
+          <div style={{color:"var(--muted)",fontSize:13,marginBottom:6}}>Chưa có news liên quan trong {daysBack} ngày qua.</div>
+          <div style={{color:"var(--muted)",fontSize:11}}>Chạy Collect để fetch thêm · Nguồn: TechCrunch, VentureBeat, Reuters, Nikkei</div>
+        </div>
+      )}
+
+      {/* ── FEATURED SECTION (Cross-actor partnerships) ── */}
+      {news && news.featured && news.featured.length > 0 && !activeTier && !activeActor && (
+        <div style={{background:"linear-gradient(135deg, rgba(201,168,76,0.06), rgba(201,168,76,0.01))",border:"1px solid rgba(201,168,76,0.3)",borderRadius:6,padding:"14px 16px"}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+            <span style={{fontSize:11,fontWeight:700,color:"var(--gold)",letterSpacing:"0.07em",textTransform:"uppercase"}}>★ Featured Partnerships</span>
+            <span style={{fontSize:10,color:"var(--muted)"}}>AI lab × Consulting/SIer — pattern OpenAI+PwC</span>
+          </div>
+          <div style={{display:"flex",flexDirection:"column",gap:8}}>
+            {news.featured.map((a, i) => renderArticle(a, `f-${i}`))}
+          </div>
+        </div>
+      )}
+
+      {/* ── DATE-GROUPED FEED ── */}
+      {news && news.grouped && news.grouped.map(day => (
+        <div key={day.date}>
+          <div style={{fontSize:11,fontWeight:700,color:"var(--gold)",letterSpacing:"0.07em",textTransform:"uppercase",marginBottom:8,paddingBottom:4,borderBottom:"1px solid var(--border-subtle)"}}>
+            {day.date} <span style={{color:"var(--muted)",fontWeight:400,textTransform:"none",letterSpacing:"normal"}}>· {day.articles.length} bài</span>
+          </div>
+          <div style={{display:"flex",flexDirection:"column",gap:8}}>
+            {day.articles.map((a, i) => renderArticle(a, `${day.date}-${i}`))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── FDE Research Hub ────────────────────────────────────────
+function FDEView() {
+  const [data, setData] = useState(null);
+  const [tab, setTab] = useState("strategy");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    api("/api/intel/fde").then(r => setData(r)).catch(console.error).finally(() => setLoading(false));
+  }, []);
+
+  const LEVEL_COLOR = {5:"#4ade80", 4:"#86efac", 3:"#C9A84C", 2:"#94a3b8", 1:"#475569"};
+  const STATUS_BADGE = {
+    Originator: {bg:"rgba(201,168,76,0.18)", color:"#C9A84C"},
+    Adopting:   {bg:"rgba(74,222,128,0.14)", color:"#4ade80"},
+    Partial:    {bg:"rgba(148,163,184,0.14)", color:"#94a3b8"},
+    Opportunity:{bg:"rgba(96,165,250,0.14)", color:"#60a5fa"},
+  };
+  const PRIORITY_COLOR = {high:"#4ade80", medium:"#C9A84C", low:"#64748b"};
+
+  const tabs = [
+    {key:"strategy",  label:"Strategy", desc:"Why FDE cho IT Nhật"},
+    {key:"gap",       label:"Gap Analysis", desc:"SIer Nhật vs FDE"},
+    {key:"roadmap",   label:"Roadmap", desc:"3-phase áp dụng"},
+    {key:"benchmark", label:"Benchmark", desc:"Adoption Map"},
+    {key:"news",      label:"Daily News", desc:"Track signals"},
+    {key:"resources", label:"Resources", desc:"Đọc thêm"},
+  ];
+
+  const DIFFICULTY_COLOR = {high:"#f87171", medium:"#C9A84C", low:"#4ade80"};
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:18}}>
+      {/* Header */}
+      <div style={{borderBottom:"1px solid var(--border-subtle)",paddingBottom:14}}>
+        <div style={{fontSize:11,fontWeight:700,color:"var(--gold)",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:6}}>Business Transformation Playbook</div>
+        <div style={{fontSize:17,fontWeight:750,color:"var(--text)",marginBottom:6}}>FDE Model — Chuyển đổi mô hình IT Nhật</div>
+        <div style={{fontSize:12,color:"var(--muted)",lineHeight:1.55}}>
+          Mục đích: nghiên cứu mô hình Forward Deployed Engineer của Palantir để áp dụng cho doanh nghiệp IT
+          tại thị trường Nhật. Từ 人月 (man-month) → outcome-based services.
+        </div>
+      </div>
+
+      {/* Sub-tabs */}
+      <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+        {tabs.map(t => (
+          <button key={t.key} onClick={() => setTab(t.key)} style={{
+            padding:"7px 12px",borderRadius:4,cursor:"pointer",fontSize:11,fontWeight:600,textAlign:"left",
+            background: tab===t.key ? "rgba(201,168,76,0.14)" : "transparent",
+            border: tab===t.key ? "1px solid rgba(201,168,76,0.45)" : "1px solid var(--border)",
+            color: tab===t.key ? "var(--gold)" : "var(--muted)",
+            display:"flex",flexDirection:"column",gap:2,
+          }}>
+            <span style={{fontSize:12,color:tab===t.key ? "var(--gold)" : "var(--text)",fontWeight:700}}>{t.label}</span>
+            <span style={{fontSize:9,color:"var(--muted)",fontWeight:500}}>{t.desc}</span>
+          </button>
+        ))}
+      </div>
+
+      {loading && tab !== "news" && <div style={{color:"var(--muted)",fontSize:12}}>Loading…</div>}
+
+      {/* ── STRATEGY: Thesis + Concepts ── */}
+      {tab === "strategy" && data && (
+        <div style={{display:"flex",flexDirection:"column",gap:18}}>
+          {/* Thesis */}
+          <div style={{background:"linear-gradient(135deg, rgba(201,168,76,0.08), rgba(201,168,76,0.02))",border:"1px solid rgba(201,168,76,0.35)",borderRadius:6,padding:"16px 18px"}}>
+            <div style={{fontSize:13,fontWeight:750,color:"var(--gold)",marginBottom:10}}>{data.strategy_thesis.headline}</div>
+            <div style={{fontSize:12,color:"var(--text)",lineHeight:1.7,marginBottom:12,whiteSpace:"pre-line"}}>{data.strategy_thesis.body}</div>
+            <div style={{fontSize:11,fontWeight:700,color:"var(--muted)",letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:6}}>Why now</div>
+            <ul style={{margin:0,paddingLeft:18,color:"var(--text-soft)",fontSize:12,lineHeight:1.7}}>
+              {data.strategy_thesis.why_now.map((w, i) => <li key={i}>{w}</li>)}
+            </ul>
+          </div>
+
+          {/* Concepts */}
+          <div>
+            <div style={{fontSize:11,fontWeight:700,color:"var(--gold)",letterSpacing:"0.07em",textTransform:"uppercase",marginBottom:10}}>Key Concepts — với góc nhìn business</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+              {data.concepts.map(c => (
+                <div key={c.id} style={{background:"var(--surface)",border:"1px solid var(--border-subtle)",borderRadius:6,padding:"14px 16px"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+                    <span style={{fontSize:18}}>{c.icon}</span>
+                    <span style={{fontSize:13,fontWeight:700,color:"var(--text)"}}>{c.title}</span>
+                  </div>
+                  <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.6,marginBottom:10}}>{c.body}</div>
+                  {c.business_impact && (
+                    <div style={{background:"rgba(74,222,128,0.06)",borderLeft:"3px solid rgba(74,222,128,0.5)",padding:"8px 10px",borderRadius:3,marginBottom:8}}>
+                      <div style={{fontSize:9,fontWeight:700,color:"#4ade80",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:4}}>Business Impact</div>
+                      <div style={{fontSize:11,color:"var(--text-soft)",lineHeight:1.55}}>{c.business_impact}</div>
+                    </div>
+                  )}
+                  <div style={{fontSize:10,color:"var(--muted)",fontStyle:"italic"}}>{c.source}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── GAP ANALYSIS ── */}
+      {tab === "gap" && data && (
+        <div style={{display:"flex",flexDirection:"column",gap:12}}>
+          <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.6,padding:"10px 14px",background:"rgba(96,165,250,0.06)",borderLeft:"3px solid rgba(96,165,250,0.5)",borderRadius:3}}>
+            So sánh mô hình SIer Nhật truyền thống với FDE model trên 7 chiều quan trọng.
+            Mỗi gap có action cụ thể cần làm và mức độ khó để chuyển đổi.
+          </div>
+          {data.gap_analysis.map((g, i) => (
+            <div key={i} style={{background:"var(--surface)",border:"1px solid var(--border-subtle)",borderRadius:6,padding:"14px 16px"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+                <span style={{fontSize:13,fontWeight:700,color:"var(--text)"}}>{g.dimension}</span>
+                <span style={{fontSize:10,fontWeight:600,padding:"2px 8px",borderRadius:10,color:DIFFICULTY_COLOR[g.difficulty],border:`1px solid ${DIFFICULTY_COLOR[g.difficulty]}66`}}>
+                  {g.difficulty === "high" ? "Khó" : g.difficulty === "medium" ? "Trung bình" : "Dễ"}
+                </span>
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
+                <div style={{background:"rgba(248,113,113,0.05)",border:"1px solid rgba(248,113,113,0.2)",borderRadius:4,padding:"8px 10px"}}>
+                  <div style={{fontSize:9,fontWeight:700,color:"#f87171",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:4}}>SIer Nhật hiện tại</div>
+                  <div style={{fontSize:11,color:"var(--text-soft)",lineHeight:1.5}}>{g.current_sier}</div>
+                </div>
+                <div style={{background:"rgba(74,222,128,0.05)",border:"1px solid rgba(74,222,128,0.2)",borderRadius:4,padding:"8px 10px"}}>
+                  <div style={{fontSize:9,fontWeight:700,color:"#4ade80",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:4}}>FDE Model</div>
+                  <div style={{fontSize:11,color:"var(--text-soft)",lineHeight:1.5}}>{g.fde_model}</div>
+                </div>
+              </div>
+              <div style={{background:"rgba(201,168,76,0.06)",borderLeft:"3px solid var(--gold)",padding:"8px 10px",borderRadius:3}}>
+                <div style={{fontSize:9,fontWeight:700,color:"var(--gold)",letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:4}}>Action cần làm</div>
+                <div style={{fontSize:11,color:"var(--text)",lineHeight:1.55}}>{g.gap_action}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ── ROADMAP ── */}
+      {tab === "roadmap" && data && (
+        <div style={{display:"flex",flexDirection:"column",gap:14}}>
+          <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.6,padding:"10px 14px",background:"rgba(96,165,250,0.06)",borderLeft:"3px solid rgba(96,165,250,0.5)",borderRadius:3}}>
+            Lộ trình 3 phase chuyển đổi từ SIer truyền thống sang FDE-based business model.
+            Mỗi phase có goal, actions cụ thể, và success criteria đo được.
+          </div>
+          {data.roadmap.map((phase, i) => (
+            <div key={i} style={{background:"var(--surface)",border:`1px solid ${phase.color}55`,borderRadius:6,padding:"16px 18px",position:"relative"}}>
+              <div style={{position:"absolute",top:0,left:0,width:4,height:"100%",background:phase.color,borderRadius:"6px 0 0 6px"}}/>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+                <div>
+                  <div style={{fontSize:14,fontWeight:750,color:phase.color,marginBottom:2}}>{phase.phase}</div>
+                  <div style={{fontSize:11,color:"var(--muted)"}}>{phase.duration}</div>
+                </div>
+              </div>
+              <div style={{fontSize:12,color:"var(--text)",lineHeight:1.6,marginBottom:14,fontStyle:"italic"}}>{phase.goal}</div>
+
+              <div style={{fontSize:10,fontWeight:700,color:"var(--gold)",letterSpacing:"0.07em",textTransform:"uppercase",marginBottom:8}}>Actions</div>
+              <ol style={{margin:"0 0 14px 0",paddingLeft:20,color:"var(--text-soft)",fontSize:12,lineHeight:1.7}}>
+                {phase.actions.map((a, j) => <li key={j} style={{marginBottom:4}}>{a}</li>)}
+              </ol>
+
+              <div style={{fontSize:10,fontWeight:700,color:"#4ade80",letterSpacing:"0.07em",textTransform:"uppercase",marginBottom:8}}>Success Criteria</div>
+              <ul style={{margin:0,paddingLeft:20,color:"var(--text-soft)",fontSize:11,lineHeight:1.65}}>
+                {phase.success_criteria.map((s, j) => <li key={j} style={{marginBottom:3}}>{s}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ── BENCHMARK: Adoption Map ── */}
+      {tab === "benchmark" && data && (
+        <div style={{display:"flex",flexDirection:"column",gap:10}}>
+          <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.6,padding:"10px 14px",background:"rgba(96,165,250,0.06)",borderLeft:"3px solid rgba(96,165,250,0.5)",borderRadius:3}}>
+            Ai đang dùng FDE model và ở mức độ nào. So sánh để định vị mình.
+          </div>
+          {data.actors.map(actor => {
+            const badge = STATUS_BADGE[actor.status] || STATUS_BADGE.Partial;
+            return (
+              <div key={actor.name} style={{background:"var(--surface)",border:"1px solid var(--border-subtle)",borderRadius:6,padding:"14px 16px",display:"flex",gap:14,alignItems:"flex-start"}}>
+                <div style={{minWidth:32,paddingTop:2}}>
+                  <div style={{display:"flex",gap:3}}>
+                    {[1,2,3,4,5].map(i => (
+                      <div key={i} style={{width:6,height:20,borderRadius:2,background: i<=actor.level ? LEVEL_COLOR[actor.level] : "var(--border)"}}/>
+                    ))}
+                  </div>
+                </div>
+                <div style={{flex:1}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+                    <span style={{fontSize:13,fontWeight:700,color:"var(--text)"}}>{actor.name}</span>
+                    <span style={{fontSize:10,fontWeight:600,padding:"2px 7px",borderRadius:10,...badge}}>{actor.status}</span>
+                  </div>
+                  <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.55,marginBottom:8}}>{actor.summary}</div>
+                  <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                    {(actor.signals||[]).map(s => (
+                      <span key={s} style={{fontSize:10,color:"var(--muted)",padding:"2px 7px",border:"1px solid var(--border)",borderRadius:10}}>{s}</span>
+                    ))}
+                  </div>
+                </div>
+                {actor.url && (
+                  <a href={actor.url} target="_blank" style={{fontSize:11,color:"var(--gold)",textDecoration:"none",marginTop:2,flexShrink:0}}>→ Docs</a>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ── NEWS ── */}
+      {tab === "news" && <FDENewsTab actorGroups={data?.actor_groups || []}/>}
+
+      {/* ── RESOURCES: Research Queue + FDE Articles ── */}
+      {tab === "resources" && data && (
+        <div style={{display:"flex",flexDirection:"column",gap:18}}>
+          <div>
+            <div style={{fontSize:11,fontWeight:700,color:"var(--gold)",letterSpacing:"0.07em",textTransform:"uppercase",marginBottom:10}}>Priority Reading</div>
+            <div style={{display:"flex",flexDirection:"column",gap:8}}>
+              {data.research_queue.map((item, i) => (
+                <div key={i} style={{background:"var(--surface)",border:"1px solid var(--border-subtle)",borderRadius:6,padding:"12px 14px",display:"flex",gap:12,alignItems:"flex-start"}}>
+                  <div style={{fontSize:11,fontWeight:700,color:PRIORITY_COLOR[item.priority]||"var(--muted)",minWidth:42,marginTop:1}}>{item.priority}</div>
+                  <div style={{flex:1}}>
+                    <a href={item.url||"#"} target="_blank" style={{fontSize:13,fontWeight:600,color:"var(--text)",textDecoration:"none",lineHeight:1.4,display:"block",marginBottom:4}}>{item.title}</a>
+                    <div style={{fontSize:11,color:"var(--text-soft)",lineHeight:1.5,marginBottom:6}}>{item.note}</div>
+                    <span style={{fontSize:10,color:"var(--muted)",padding:"2px 7px",border:"1px solid var(--border)",borderRadius:10}}>{item.type}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {data.articles && data.articles.length > 0 && (
+            <div>
+              <div style={{fontSize:11,fontWeight:700,color:"var(--gold)",letterSpacing:"0.07em",textTransform:"uppercase",marginBottom:10}}>
+                FDE Articles trong raw/ ({data.article_count})
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {data.articles.map((a, i) => (
+                  <div key={i} style={{background:"var(--surface)",border:"1px solid var(--border-subtle)",borderRadius:6,padding:"12px 14px"}}>
+                    <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
+                      <a href={a.url||"#"} target="_blank" style={{fontSize:13,fontWeight:600,color:"var(--text)",textDecoration:"none",flex:1,marginRight:12,lineHeight:1.4}}>{a.title}</a>
+                      {a.goal_score && <span style={{fontSize:11,color:"var(--gold)",flexShrink:0}}>{a.goal_score}/5</span>}
+                    </div>
+                    <div style={{fontSize:11,color:"var(--text-soft)",lineHeight:1.55,marginBottom:6}}>{a.summary}</div>
+                    <div style={{fontSize:10,color:"var(--muted)"}}>{a.source} · {a.date}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function GithubRepoIntel() {
+  const [data, setData] = useState(null);
+  const [activeWeek, setActiveWeek] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  function loadRepos(week) {
+    setLoading(true);
+    const qs = week ? `?week=${week}&limit=10` : "?limit=10";
+    api(`/api/intel/github-repos${qs}`).then(result => {
+      setData(result);
+      setActiveWeek(result.week);
+    }).catch(console.error).finally(() => setLoading(false));
+  }
+
+  useEffect(() => { loadRepos(); }, []);
+
+  if (!data && loading) return <Loading/>;
+  const repos = data?.repos || [];
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:12}}>
+      <SimpleSection title="GitHub hot repos trong tuan">
+        <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"center",flexWrap:"wrap"}}>
+          <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.5}}>
+            10 repo trending, ranked lai theo AI-SDLC / FDE / market-intel workflow.
+            {data?.week && <span style={{color:"var(--muted)"}}> Week: {data.week}.</span>}
+            {data?.updated_at && <span style={{color:"var(--muted)"}}> Cap nhat: {data.updated_at}</span>}
+          </div>
+          <button onClick={() => loadRepos(activeWeek)} disabled={loading} style={{
+            padding:"6px 11px",fontSize:11,borderRadius:3,cursor:loading ? "default" : "pointer",
+            background:"var(--elevated)",border:"1px solid var(--border)",color:"var(--text)"
+          }}>{loading ? "Refreshing..." : "Refresh"}</button>
+        </div>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:10}}>
+          {(data?.available_weeks || []).map(w => (
+            <button key={w.week} onClick={() => loadRepos(w.week)} style={{
+              padding:"5px 10px",fontSize:11,borderRadius:3,cursor:"pointer",
+              background: activeWeek===w.week ? "rgba(201,168,76,0.14)" : "transparent",
+              border: activeWeek===w.week ? "1px solid rgba(201,168,76,0.4)" : "1px solid var(--border)",
+              color: activeWeek===w.week ? "var(--gold)" : "var(--muted)",
+            }}>
+              {w.label || w.week} <span style={{opacity:.65}}>({w.count})</span>
+            </button>
+          ))}
+        </div>
+        {data?.error && (
+          <div style={{fontSize:11,color:"var(--muted)",marginTop:8}}>
+            Live GitHub fetch loi, dang dung du lieu local da collect.
+          </div>
+        )}
+      </SimpleSection>
+
+      {repos.length ? repos.map(repo => (
+        <div key={repo.url || repo.name} style={{background:"var(--card)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"14px 16px"}}>
+          <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"flex-start"}}>
+            <div style={{minWidth:0}}>
+              <div style={{fontSize:14,fontWeight:700,lineHeight:1.35}}>
+                <span style={{color:"var(--gold)",marginRight:7}}>#{repo.rank}</span>
+                <a href={repo.url} target="_blank" rel="noreferrer" style={{color:"var(--text)"}}>{repo.name}</a>
+              </div>
+              <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:7}}>
+                {(repo.tags || []).map(tag => (
+                  <span key={tag} style={{fontSize:10,color:"var(--muted)",background:"var(--elevated)",borderRadius:2,padding:"2px 6px"}}>{tag}</span>
+                ))}
+                <span style={{fontSize:10,color:"var(--gold)",border:"1px solid rgba(201,168,76,.35)",borderRadius:2,padding:"2px 6px"}}>AI fit {repo.ai_score}/10</span>
+              </div>
+            </div>
+            <div style={{fontSize:10,color:"var(--muted)",textAlign:"right",whiteSpace:"nowrap"}}>
+              {repo.stars_this_week ? <div>{repo.stars_this_week.toLocaleString()} stars/week</div> : null}
+              {repo.stars_total ? <div>{repo.stars_total.toLocaleString()} total</div> : null}
+            </div>
+          </div>
+          <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.5,marginTop:10}}>{repo.summary}</div>
+          <div style={{fontSize:12,color:"var(--text)",lineHeight:1.5,marginTop:10,borderLeft:"2px solid var(--gold)",paddingLeft:10}}>
+            {repo.suggested_action}
+          </div>
+        </div>
+      )) : (
+        <SimpleSection title="No GitHub repo data">
+          <div style={{fontSize:13,color:"var(--muted)"}}>Khong lay duoc GitHub Trending. Bam Refresh hoac chay Collect lai.</div>
+        </SimpleSection>
+      )}
+    </div>
+  );
+}
+
+function SimpleSection({ title, children }) {
+  return (
+    <div style={{background:"var(--card)",border:"1px solid var(--border-subtle)",borderRadius:4,padding:"16px 18px"}}>
+      <div style={{fontSize:13,fontWeight:700,color:"var(--gold)",letterSpacing:"0.04em",marginBottom:10}}>{title}</div>
+      {children}
+    </div>
+  );
+}
+
+function SimpleList({ items, highlight=false }) {
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:8}}>
+      {(items || []).map((item, i) => (
+        <div key={i} style={{
+          fontSize:13,lineHeight:1.5,
+          color:highlight ? "var(--text)" : "var(--text-soft)",
+          borderLeft:highlight ? "2px solid var(--gold)" : "2px solid var(--border)",
+          paddingLeft:10,
+        }}>{item}</div>
+      ))}
+    </div>
+  );
+}
+
+// ── ChatGPT Handoff ───────────────────────────────────────────
+const BASE = "C:\\Users\\HUY\\AI\\OPUS ANIMUS\\opus-lucida\\";
+
+const HANDOFF_LANES = {
+  "wake-cluster": [
+    {
+      id:"content", label:"Content Accuracy",
+      color:"var(--verdigris)", colorDim:"var(--verdigris-dim)",
+      file1: BASE + "production\\decks\\03-script-outputs\\04-script-wake-cluster-draft.md",
+      file2: BASE + "production\\decks\\02-review-prompts\\01-copy-to-chatgpt-review-content-accuracy-step-by-step.md",
+    },
+    {
+      id:"method", label:"Method / 3-View",
+      color:"#4A8FCC", colorDim:"rgba(74,143,204,0.12)",
+      file1: BASE + "production\\decks\\03-script-outputs\\04-script-wake-cluster-draft.md",
+      file2: BASE + "production\\decks\\02-review-prompts\\03-copy-to-chatgpt-review-teaching-skeleton-step-by-step.md",
+    },
+    {
+      id:"flow", label:"Hook / Flow / CTA",
+      color:"var(--gold)", colorDim:"rgba(201,168,76,0.08)",
+      file1: BASE + "production\\decks\\03-script-outputs\\04-script-wake-cluster-draft.md",
+      file2: BASE + "production\\decks\\02-review-prompts\\02-copy-to-chatgpt-review-hook-flow-cta-step-by-step.md",
+    },
+  ],
+  "kai-gai-temade": [
+    {
+      id:"content", label:"Content Accuracy",
+      color:"var(--verdigris)", colorDim:"var(--verdigris-dim)",
+      file1: BASE + "production\\decks\\03-script-outputs\\01-script-internal-test-case-draft.md",
+      file2: BASE + "production\\decks\\02-review-prompts\\01-copy-to-chatgpt-review-content-accuracy-step-by-step.md",
+    },
+    {
+      id:"method", label:"Method / 3-View",
+      color:"#4A8FCC", colorDim:"rgba(74,143,204,0.12)",
+      file1: BASE + "production\\decks\\03-script-outputs\\01-script-internal-test-case-draft.md",
+      file2: BASE + "production\\decks\\02-review-prompts\\03-copy-to-chatgpt-review-teaching-skeleton-step-by-step.md",
+    },
+    {
+      id:"flow", label:"Hook / Flow / CTA",
+      color:"var(--gold)", colorDim:"rgba(201,168,76,0.08)",
+      file1: BASE + "production\\decks\\03-script-outputs\\01-script-internal-test-case-draft.md",
+      file2: BASE + "production\\decks\\02-review-prompts\\02-copy-to-chatgpt-review-hook-flow-cta-step-by-step.md",
+    },
+  ],
+};
+
+function PathRow({ num, label, path }) {
+  const [copied, setCopied] = useState(false);
+  const filename = path.split("\\").pop();
+  const folder   = path.split("\\").slice(-2,-1)[0];
+
+  function copyPath() {
+    navigator.clipboard.writeText(path).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  }
+
+  function openVSCode() {
+    window.open("vscode://file/" + path.replace(/\\/g,"/"), "_blank");
+  }
+
+  return (
+    <div style={{borderBottom:"1px solid var(--border-subtle)",paddingBottom:8,marginBottom:8}}>
+      <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:6}}>
+        <span style={{
+          width:16,height:16,borderRadius:"50%",flexShrink:0,fontSize:9,fontWeight:700,
+          display:"flex",alignItems:"center",justifyContent:"center",
+          background:"var(--elevated)",color:"var(--muted)",border:"1px solid var(--border)",
+        }}>{num}</span>
+        <span style={{fontSize:10,fontWeight:600,letterSpacing:"0.06em",textTransform:"uppercase",color:"var(--muted)"}}>{label}</span>
+      </div>
+      <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:10,lineHeight:1.6,marginBottom:6,paddingLeft:22}}>
+        <span style={{color:"var(--dim)"}}>{folder}\</span>
+        <span style={{color:"var(--text)",fontWeight:600}}>{filename}</span>
+      </div>
+      <div style={{display:"flex",gap:6,paddingLeft:22}}>
+        <button onClick={openVSCode} style={{
+          padding:"3px 10px",fontSize:10,fontWeight:600,borderRadius:3,cursor:"pointer",
+          background:"var(--elevated)",border:"1px solid var(--border)",color:"var(--soft)",
+        }}>↗ VSCode</button>
+        <button onClick={copyPath} style={{
+          padding:"3px 10px",fontSize:10,fontWeight:600,borderRadius:3,cursor:"pointer",
+          background: copied ? "var(--verdigris-dim)" : "var(--elevated)",
+          border: copied ? "1px solid rgba(61,170,136,0.3)" : "1px solid var(--border)",
+          color: copied ? "var(--verdigris)" : "var(--muted)",
+          transition:"all .2s",
+        }}>{copied ? "✓ Copied" : "Copy path"}</button>
+      </div>
+    </div>
+  );
+}
+
+function ChatGptHandoff({ topic }) {
+  const lanes = HANDOFF_LANES[topic] || HANDOFF_LANES["wake-cluster"];
+
+  return (
+    <Card>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+        <Label>ChatGPT Handoff — Review × 3</Label>
+        <span style={{fontSize:11,color:"var(--muted)"}}>Mỗi lane → 1 chat riêng</span>
+      </div>
+
+      <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10}}>
+        {lanes.map(lane => (
+          <div key={lane.id} style={{
+            border:`1px solid ${lane.color}22`,borderRadius:3,overflow:"hidden",
+          }}>
+            {/* lane header */}
+            <div style={{
+              padding:"7px 12px",borderBottom:`1px solid ${lane.color}22`,
+              background:lane.colorDim,
+              fontSize:11,fontWeight:700,color:lane.color,
+              letterSpacing:"0.05em",textTransform:"uppercase",
+            }}>{lane.label}</div>
+
+            <div style={{padding:"10px 12px"}}>
+              <PathRow num="1" label="Script cần review" path={lane.file1}/>
+              <PathRow num="2" label="Review prompt"     path={lane.file2}/>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{marginTop:10,padding:"7px 10px",background:"var(--elevated)",borderRadius:3,fontSize:11,color:"var(--muted)"}}>
+        Quy trình: mỗi lane → upload File 1 (script) + File 2 (review prompt) lên ChatGPT → nhận review report
+      </div>
+    </Card>
+  );
+}
+
+// ── LUCIDA view ───────────────────────────────────────────────
+const LUCIDA_TOPICS = [
+  {
+    id:"wake-cluster",
+    title:"わけだ・わけではない・わけがない・わけにはいかない",
+    label:"Wake Cluster",
+    role:"public-video-1",
+    roleLabel:"Public Video #1",
+  },
+  {
+    id:"kai-gai-temade",
+    title:"かい・がい・てまで",
+    label:"Kai Gai Temade",
+    role:"internal-benchmark",
+    roleLabel:"Internal Benchmark",
+  },
+];
+
+const CONTENT_STEPS = [
+  { id:0,  label:"Direction Lock",       desc:"Chốt topic + promise + CTA target",         gate:"human" },
+  { id:1,  label:"Source Consolidation", desc:"Gom raw notes + framework → normalized",     gate:"agent" },
+  { id:2,  label:"Lesson Architect",     desc:"Viết sample lesson — pain point + 3 View",   gate:"agent" },
+  { id:3,  label:"Script Brief",         desc:"Lesson → yêu cầu viết script",               gate:"agent" },
+  { id:4,  label:"Script Writer",        desc:"Viết script draft theo 18 slides",            gate:"agent" },
+  { id:5,  label:"Content Review",       desc:"Kiểm tra Japanese/grammar/nuance",            gate:"agent" },
+  { id:6,  label:"Method Review",        desc:"Kiểm tra 3 View — Meaning/Form/Usage",        gate:"agent" },
+  { id:7,  label:"Flow Review",          desc:"Kiểm tra hook, pacing, CTA",                  gate:"agent" },
+  { id:8,  label:"Script Integrator",    desc:"Tổng hợp 3 review → script final + log",     gate:"agent" },
+  { id:9,  label:"Deck Architect",       desc:"Script → Slide deck (Canva design brief)",    gate:"human" },
+  { id:10, label:"Worksheet Generator",  desc:"Teaching core → Worksheet (lead magnet)",     gate:"agent" },
+  { id:11, label:"Shorts Generator",     desc:"Script → Shorts pack (timestamps + text)",    gate:"agent" },
+  { id:12, label:"Bundle QA",            desc:"Review toàn bộ bundle — pass/revise",         gate:"human" },
+  { id:13, label:"Decision Logger",      desc:"Ghi bài học → framework update candidates",   gate:"agent" },
+];
+
+const VIDEO_STEPS = [
+  { id:"tts",      label:"Voice-over",   desc:"Azure TTS SSML (Viet + JP)",     tool:"Azure Neural TTS" },
+  { id:"slides",   label:"Slide Frames", desc:"Canva export → PNG/slide",       tool:"Canva → PNG" },
+  { id:"assembly", label:"Assembly",     desc:"MoviePy: frames + audio → MP4",  tool:"MoviePy" },
+  { id:"captions", label:"Captions",     desc:"Script timing → SRT → burn",     tool:"Script-to-SRT" },
+  { id:"shorts",   label:"Shorts Cut",   desc:"Cắt clips từ shorts pack",       tool:"FFmpeg" },
+  { id:"upload",   label:"Upload",       desc:"YouTube Data API v3",            tool:"YT Data API" },
+];
+
+// progress per topic (manual tracking — update khi làm xong từng step)
+const TOPIC_PROGRESS = {
+  "wake-cluster":    { content: 11, video: -1 }, // step 0-10 done, step 11 in progress
+  "kai-gai-temade":  { content:  9, video: -1 }, // step 0-8 done, step 9 in progress
+};
+
+function LucidaView() {
+  const [topic, setTopic] = useState("wake-cluster");
+  const t = LUCIDA_TOPICS.find(t => t.id === topic);
+  const prog = TOPIC_PROGRESS[topic] || { content:-1, video:-1 };
+
+  function stepStatus(idx, done, active) {
+    if (idx < done)  return "done";
+    if (idx === done) return "active";
+    return "pending";
+  }
+
+  const StatusIcon = ({ s }) => {
+    if (s === "done")    return <span style={{color:"var(--verdigris)",fontSize:14,lineHeight:1}}>✓</span>;
+    if (s === "active")  return <span style={{width:8,height:8,borderRadius:"50%",background:"var(--gold)",display:"inline-block",boxShadow:"0 0 6px rgba(201,168,76,0.7)"}} />;
+    return <span style={{width:8,height:8,borderRadius:"50%",background:"var(--elevated)",border:"1px solid var(--border)",display:"inline-block"}} />;
+  };
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+
+      {/* Topic selector */}
+      <Card gold>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:16,flexWrap:"wrap"}}>
+          <div>
+            <Label style={{color:"var(--gold-dim)",marginBottom:6}}>Lucida — Japanese N2</Label>
+            <div style={{fontSize:18,color:"var(--text)",fontWeight:600,letterSpacing:"0.01em",lineHeight:1.3}}>{t.title}</div>
+            <div style={{marginTop:6,display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
+              <span style={{fontSize:11,padding:"2px 8px",background:"rgba(201,168,76,0.12)",border:"1px solid rgba(201,168,76,0.25)",borderRadius:2,color:"var(--gold)",letterSpacing:"0.05em",textTransform:"uppercase",fontWeight:600}}>{t.roleLabel}</span>
+              <span style={{fontSize:12,color:"var(--muted)"}}>
+                Content: step {Math.min(prog.content+1,13)}/13
+                {prog.video >= 0 && <> · Video: step {prog.video+1}/6</>}
+              </span>
+            </div>
+          </div>
+          <div style={{display:"flex",gap:6,flexShrink:0}}>
+            {LUCIDA_TOPICS.map(tp => (
+              <button key={tp.id} onClick={() => setTopic(tp.id)} style={{
+                padding:"6px 12px",borderRadius:3,fontSize:11,fontWeight:600,
+                background:topic===tp.id?"rgba(201,168,76,0.12)":"transparent",
+                border:topic===tp.id?"1px solid rgba(201,168,76,0.35)":"1px solid var(--border)",
+                color:topic===tp.id?"var(--gold)":"var(--muted)",cursor:"pointer",
+              }}>{tp.label}</button>
+            ))}
+          </div>
+        </div>
+      </Card>
+
+      {/* Phase 1: Content Pipeline */}
+      <Card>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+          <Label>Phase 1 — Content Pipeline</Label>
+          <span style={{fontSize:11,color:"var(--muted)"}}>CrewAI · 14 steps</span>
+        </div>
+        <div style={{display:"flex",flexDirection:"column",gap:0}}>
+          {CONTENT_STEPS.map((s, i) => {
+            const status = stepStatus(s.id, prog.content, prog.content);
+            const isLast = i === CONTENT_STEPS.length - 1;
+            const isHumanGate = s.gate === "human";
+            return (
+              <div key={s.id} style={{display:"flex",gap:0,position:"relative"}}>
+                {/* connector line */}
+                {!isLast && (
+                  <div style={{
+                    position:"absolute",left:15,top:28,width:1,height:"calc(100% - 4px)",
+                    background: status==="done" ? "rgba(61,170,136,0.3)" : "var(--border-subtle)",
+                    zIndex:0,
+                  }}/>
+                )}
+                <div style={{
+                  display:"flex",alignItems:"flex-start",gap:12,padding:"8px 0",
+                  paddingLeft:4,width:"100%",zIndex:1,
+                  opacity: status==="pending" ? 0.45 : 1,
+                  transition:"opacity .15s",
+                }}>
+                  {/* circle + icon */}
+                  <div style={{
+                    width:22,height:22,borderRadius:"50%",flexShrink:0,
+                    display:"flex",alignItems:"center",justifyContent:"center",
+                    background: status==="done" ? "var(--verdigris-dim)" : status==="active" ? "rgba(201,168,76,0.1)" : "var(--elevated)",
+                    border: status==="done" ? "1px solid rgba(61,170,136,0.4)" : status==="active" ? "1px solid rgba(201,168,76,0.4)" : "1px solid var(--border)",
+                    marginTop:1,
+                  }}>
+                    <StatusIcon s={status}/>
+                  </div>
+                  {/* text */}
+                  <div style={{flex:1,paddingBottom:8}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+                      <span style={{
+                        fontSize:13,fontWeight:status==="active"?600:500,
+                        color:status==="active"?"var(--gold)":status==="done"?"var(--text)":"var(--text-soft)",
+                      }}>{s.label}</span>
+                      {isHumanGate && (
+                        <span style={{fontSize:10,padding:"1px 6px",background:"var(--warn-bg)",color:"var(--warn)",borderRadius:2,letterSpacing:"0.04em",fontWeight:600}}>HUMAN</span>
+                      )}
+                    </div>
+                    <div style={{fontSize:11,color:"var(--muted)",marginTop:2}}>{s.desc}</div>
+                  </div>
+                  <span style={{fontSize:10,color:"var(--dim)",flexShrink:0,paddingTop:4}}>{s.id}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
+      {/* Human gate separator */}
+      <div style={{display:"flex",alignItems:"center",gap:12}}>
+        <div style={{flex:1,height:1,background:"var(--border-subtle)"}}/>
+        <div style={{fontSize:11,color:"var(--warn)",padding:"4px 12px",background:"var(--warn-bg)",borderRadius:2,fontWeight:600,letterSpacing:"0.05em"}}>HUMAN GATE — Review script + Canva slides → Export PNG</div>
+        <div style={{flex:1,height:1,background:"var(--border-subtle)"}}/>
+      </div>
+
+      {/* Phase 2: Video Pipeline */}
+      <Card>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+          <Label>Phase 2 — Video Rendering</Label>
+          <span style={{fontSize:11,color:"var(--muted)"}}>Python sequential · 6 stages</span>
+        </div>
+        <div style={{display:"flex",gap:0,overflowX:"auto",paddingBottom:4}}>
+          {VIDEO_STEPS.map((s, i) => {
+            const status = prog.video < 0 ? "pending" : stepStatus(i, prog.video, prog.video);
+            const isLast = i === VIDEO_STEPS.length - 1;
+            return (
+              <React.Fragment key={s.id}>
+                <div style={{
+                  display:"flex",flexDirection:"column",alignItems:"center",gap:6,
+                  minWidth:100,flex:1,opacity:status==="pending"?0.45:1,
+                  transition:"opacity .15s",
+                }}>
+                  <div style={{
+                    width:36,height:36,borderRadius:"50%",
+                    display:"flex",alignItems:"center",justifyContent:"center",
+                    background: status==="done" ? "var(--verdigris-dim)" : status==="active" ? "rgba(201,168,76,0.1)" : "var(--elevated)",
+                    border: status==="done" ? "1px solid rgba(61,170,136,0.4)" : status==="active" ? "1px solid rgba(201,168,76,0.4)" : "1px solid var(--border)",
+                    flexShrink:0,
+                  }}>
+                    <StatusIcon s={status}/>
+                  </div>
+                  <div style={{textAlign:"center"}}>
+                    <div style={{fontSize:12,fontWeight:600,color:status==="active"?"var(--gold)":"var(--text-soft)"}}>{s.label}</div>
+                    <div style={{fontSize:10,color:"var(--muted)",marginTop:2,lineHeight:1.4}}>{s.desc}</div>
+                    <div style={{fontSize:10,color:"var(--dim)",marginTop:3,padding:"1px 5px",background:"var(--elevated)",borderRadius:2,display:"inline-block"}}>{s.tool}</div>
+                  </div>
+                </div>
+                {!isLast && (
+                  <div style={{display:"flex",alignItems:"center",paddingBottom:36,flexShrink:0,paddingLeft:2,paddingRight:2}}>
+                    <span style={{color:"var(--border)",fontSize:14}}>→</span>
+                  </div>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+        {prog.video < 0 && (
+          <div style={{marginTop:10,padding:"8px 12px",background:"var(--elevated)",borderRadius:3,fontSize:12,color:"var(--muted)"}}>
+            Chưa bắt đầu — hoàn thành Bundle QA (step 12) trước.
+          </div>
+        )}
+      </Card>
+
+      {/* ChatGPT Handoff */}
+      <ChatGptHandoff topic={topic}/>
+
+      {/* Architecture note */}
+      <Card>
+        <Label style={{marginBottom:8}}>Automation Architecture</Label>
+        <div style={{display:"flex",flexDirection:"column",gap:6,fontSize:12,color:"var(--muted)"}}>
+          {[
+            ["Content Pipeline","CrewAI","6 agents — LessonArchitect → ScriptWriter → 3 Reviewers → Integrator"],
+            ["Video Rendering","Python sequential","tts → assembly → captions → shorts → upload"],
+            ["LLM","Groq (Llama 3.3 70B)","1 model, role-based — không cần multi-model"],
+            ["Voice","Azure Neural TTS","ja-JP-NanamiNeural + vi-VN-HoaiMyNeural · SSML mix"],
+            ["Slides","Canva → PNG","Upgrade sang HTML/Puppeteer khi > 5 videos"],
+          ].map(([k,v,note],i) => (
+            <div key={i} style={{display:"flex",gap:8,alignItems:"baseline",padding:"5px 0",borderBottom:i<4?"1px solid var(--border-subtle)":"none"}}>
+              <span style={{minWidth:130,color:"var(--text-soft)",fontWeight:500}}>{k}</span>
+              <span style={{minWidth:90,color:"var(--gold)",fontSize:11,fontWeight:600}}>{v}</span>
+              <span style={{color:"var(--dim)",fontSize:11}}>{note}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+    </div>
+  );
+}
+
+// ── Actio (Investing — US + JP stocks) ────────────────────────
+const ACTIO_SKILLS = [
+  {
+    name: "edinet-fetcher",
+    kind: "custom-jp",
+    desc: "Pull JP corporate filings (有価証券報告書, 四半期報告書, 臨時報告書) from EDINET API. Ticker → financials + MD&A.",
+    when: "Cần earnings/filing data của cty Nhật (e.g. 7203 Toyota, 6758 Sony)",
+  },
+  {
+    name: "jp-tax-account",
+    kind: "custom-jp",
+    desc: "Apply JP tax rules (新NISA / iDeCo / 特定口座) + foreign tax credit cho US holdings. Quyết định mua account nào.",
+    when: "Trước khi đặt lệnh, year-end tax planning, loss-harvesting",
+  },
+  {
+    name: "jp-fiscal-calendar",
+    kind: "custom-jp",
+    desc: "Resolve JP fiscal year, earnings windows, 権利落ち (ex-div), AGM dates. Handle FY-end exceptions ngoài Apr-Mar.",
+    when: "Schedule earnings reviews, dividend capture, thesis-tracker alerts",
+  },
+];
+
+const ACTIO_CORE_PLUGINS = [
+  { name:"equity-research", cmds:["/catalysts","/earnings","/earnings-preview","/initiate","/model-update","/morning-note","/screen","/sector","/thesis"] },
+  { name:"financial-analysis", cmds:["/3-statement-model","/competitive-analysis","/comps","/dcf","/debug-model","/lbo","/ppt-template"] },
+];
+
+const ACTIO_WORKFLOWS = [
+  { id:1, title:"Earnings prep cty JP", flow:"jp-fiscal-calendar → edinet-fetcher → /earnings-preview → /thesis" },
+  { id:2, title:"Mua US stock — account nào?", flow:"jp-tax-account → so sánh NISA vs 特定口座 + foreign tax credit" },
+  { id:3, title:"Screen ideas tuần", flow:"/screen → edinet-fetcher (verify JP fundamentals) → /initiate top 3" },
+  { id:4, title:"Year-end tax planning", flow:"jp-tax-account → audit loss-harvest + NISA quota + 損益通算" },
+  { id:5, title:"M&A / TOB event", flow:"edinet-fetcher (extraordinary) → /catalysts → tender decision tree" },
+];
+
+function ActioView() {
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+      <Card gold>
+        <Label style={{color:"var(--gold-dim)",marginBottom:6}}>opus-actio — Investing (US + JP)</Label>
+        <div style={{fontSize:17,color:"var(--text)",fontWeight:600,letterSpacing:"0.01em",lineHeight:1.3}}>Cổ phần · cổ phiếu · phần chia <span style={{fontStyle:"italic",fontWeight:400,color:"var(--muted)"}}>(Lat. actio)</span></div>
+        <div style={{fontSize:12,color:"var(--muted)",marginTop:8,lineHeight:1.6}}>
+          Workflow đầu tư cá nhân kết hợp <b style={{color:"var(--text-soft)"}}>Anthropic financial-services</b> core skills + 3 custom skill cho thị trường Nhật.
+          Skills draft analyst work — <span style={{color:"var(--warn)"}}>không phải investment advice</span>.
+        </div>
+      </Card>
+
+      <Card>
+        <Label style={{marginBottom:12}}>Custom JP Skills (3)</Label>
+        <div style={{display:"flex",flexDirection:"column",gap:10}}>
+          {ACTIO_SKILLS.map(s => (
+            <div key={s.name} style={{padding:"10px 12px",background:"var(--elevated)",borderRadius:3,border:"1px solid var(--border-subtle)"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
+                <span style={{fontSize:13,fontWeight:700,color:"var(--gold)",fontFamily:"monospace"}}>{s.name}</span>
+                <span style={{fontSize:10,padding:"2px 7px",background:"rgba(201,168,76,0.12)",border:"1px solid rgba(201,168,76,0.25)",borderRadius:2,color:"var(--gold)",letterSpacing:"0.05em",textTransform:"uppercase",fontWeight:600}}>{s.kind}</span>
+              </div>
+              <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.5,marginBottom:4}}>{s.desc}</div>
+              <div style={{fontSize:11,color:"var(--muted)",fontStyle:"italic"}}>Trigger: {s.when}</div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card>
+        <Label style={{marginBottom:12}}>Core Plugins (Anthropic financial-services)</Label>
+        <div style={{display:"flex",flexDirection:"column",gap:10}}>
+          {ACTIO_CORE_PLUGINS.map(p => (
+            <div key={p.name} style={{padding:"10px 12px",background:"var(--elevated)",borderRadius:3,border:"1px solid var(--border-subtle)"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                <span style={{fontSize:13,fontWeight:700,color:"var(--text)",fontFamily:"monospace"}}>{p.name}</span>
+                <span style={{fontSize:10,padding:"2px 7px",background:"rgba(61,170,136,0.14)",border:"1px solid rgba(61,170,136,0.35)",borderRadius:2,color:"var(--verdigris)",letterSpacing:"0.05em",textTransform:"uppercase",fontWeight:600}}>installed</span>
+              </div>
+              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                {p.cmds.map(c => (
+                  <span key={c} style={{fontSize:11,padding:"2px 7px",background:"rgba(255,255,255,0.04)",border:"1px solid var(--border)",borderRadius:2,color:"var(--text-soft)",fontFamily:"monospace"}}>{c}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{marginTop:10,fontSize:11,color:"var(--muted)",fontStyle:"italic"}}>
+          Cloned from <span style={{fontFamily:"monospace",color:"var(--text-soft)"}}>anthropics/financial-services</span> → <span style={{fontFamily:"monospace",color:"var(--text-soft)"}}>opus-actio/plugins/</span>
+        </div>
+      </Card>
+
+      <Card>
+        <Label style={{marginBottom:12}}>Workflow gợi ý (5)</Label>
+        <div style={{display:"flex",flexDirection:"column",gap:8}}>
+          {ACTIO_WORKFLOWS.map(w => (
+            <div key={w.id} style={{display:"flex",gap:12,alignItems:"flex-start",padding:"8px 4px",borderBottom:"1px solid var(--border-subtle)"}}>
+              <span style={{fontSize:11,fontWeight:700,color:"var(--gold)",minWidth:18}}>{String(w.id).padStart(2,"0")}</span>
+              <div style={{flex:1}}>
+                <div style={{fontSize:12,fontWeight:600,color:"var(--text)",marginBottom:2}}>{w.title}</div>
+                <div style={{fontSize:11,color:"var(--muted)",fontFamily:"monospace"}}>{w.flow}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card>
+        <Label style={{marginBottom:10}}>Files</Label>
+        <div style={{fontSize:11,fontFamily:"monospace",color:"var(--text-soft)",lineHeight:1.8}}>
+          <div>opus-animus/opus-actio/CLAUDE.md</div>
+          <div>opus-animus/opus-actio/USAGE.md  <span style={{color:"var(--muted)"}}>← cách dùng + setup</span></div>
+          <div>opus-animus/opus-actio/skills/edinet-fetcher/SKILL.md</div>
+          <div>opus-animus/opus-actio/skills/jp-tax-account/SKILL.md</div>
+          <div>opus-animus/opus-actio/skills/jp-fiscal-calendar/SKILL.md</div>
+          <div>opus-animus/opus-actio/ai/status.md</div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+// ── Loading / Error ───────────────────────────────────────────
+function Loading() {
+  return <div style={{padding:"40px 0",textAlign:"center",color:"var(--muted)",fontSize:13}}>Loading…</div>;
+}
+
+// ── APP ───────────────────────────────────────────────────────
+function App() {
+  const [view, setView] = useState("home");
+  const [data, setData] = useState(null);
+  const [lastRefresh, setLastRefresh] = useState("");
+  const [windowWidth, setWindowWidth] = useState(() => window.innerWidth);
+
+  const refresh = useCallback(() => {
+    api("/api/dashboard").then(d => {
+      setData(d);
+      setLastRefresh(new Date().toLocaleTimeString("vi-VN", {hour:"2-digit",minute:"2-digit"}));
+    }).catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    refresh();
+    const t = setInterval(refresh, 60000);
+    return () => clearInterval(t);
+  }, [refresh]);
+
+  useEffect(() => {
+    const onResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const isCompact = windowWidth < 760;
+
+  const views = {
+    home:    <DecisionHomeView data={data} setView={setView}/>,
+    wiki:    <WikiView    data={data}/>,
+    goals:   <GoalsView/>,
+    intel:   <SimpleIntelView/>,
+    fde:     <FDEView/>,
+    lucida:  <LucidaView/>,
+    actio:   <ActioView/>,
+  };
+
+  return (
+    <div style={{display:"flex",flexDirection:isCompact?"column":"row",height:"100%",minHeight:"100vh"}}>
+      <Sidebar view={view} setView={setView} date={data?.date||""} lastRefresh={lastRefresh} compact={isCompact}/>
+      <main style={{flex:1,overflow:"auto",padding:isCompact?"18px 14px 48px":"32px 24px 60px"}}>
+        <div style={{maxWidth:900,margin:"0 auto",width:"100%",display:"flex",flexDirection:"column"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:24,paddingBottom:14,borderBottom:"1px solid var(--border-subtle)"}}>
+            <span style={{fontSize:11,color:"var(--muted)",letterSpacing:"0.07em",textTransform:"uppercase",fontWeight:600}}>{view}</span>
+            <button onClick={refresh} style={{padding:"5px 12px",background:"transparent",border:"1px solid var(--border)",borderRadius:3,color:"var(--muted)",fontSize:11,cursor:"pointer"}}>Refresh</button>
+          </div>
+          {views[view]}
+        </div>
+      </main>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</body>
+</html>

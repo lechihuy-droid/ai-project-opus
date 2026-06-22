@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Opus Home Local Architecture</title>
+  <style>
+    :root{
+      --bg:#0b0d0c;
+      --panel:#141918;
+      --panel-2:#1b221f;
+      --line:#27312d;
+      --text:#e8ede9;
+      --muted:#8a9a93;
+      --soft:#b4c4bc;
+      --gold:#c9a84c;
+      --gold-2:#8a6f1c;
+      --green:#3daa88;
+      --green-bg:#183329;
+      --red:#c04858;
+      --red-bg:#2a1217;
+      --amber-bg:#2b2414;
+      --amber:#d6b15f;
+      --shadow:0 18px 40px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    body{padding:28px}
+    .wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+    .hero,.panel,.card{background:var(--panel);border:1px solid rgba(255,255,255,.06);box-shadow:var(--shadow);border-radius:6px}
+    .hero{padding:26px 26px 22px;border-top:1px solid rgba(201,168,76,.3);background:linear-gradient(145deg,#101614 0%,#171d1b 58%,#151300 100%)}
+    .eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+    h1{margin:8px 0 6px;font-size:34px;line-height:1.08;letter-spacing:0}
+    .lead{margin:0;color:var(--soft);max-width:960px;font-size:15px;line-height:1.65}
+    .grid{display:grid;grid-template-columns:1.35fr .9fr;gap:18px}
+    .panel{padding:18px}
+    .panel h2,.card h3{margin:0 0 12px;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+    .diagram{display:grid;grid-template-columns:1fr 80px 1fr 80px 1fr;gap:12px;align-items:center}
+    .node{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:14px 14px 12px;min-height:108px}
+    .node .tag{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+    .node .title{font-size:16px;font-weight:700;margin-bottom:6px}
+    .node .desc{font-size:13px;line-height:1.55;color:var(--soft)}
+    .arrow{height:2px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.95),transparent);position:relative}
+    .arrow:after{content:"";position:absolute;right:-2px;top:-4px;border-left:8px solid var(--gold);border-top:5px solid transparent;border-bottom:5px solid transparent}
+    .flow{display:grid;grid-template-columns:1fr 42px 1fr 42px 1fr;gap:12px;align-items:stretch}
+    .flowbox{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:14px}
+    .flowbox .head{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}
+    .flowbox .main{font-size:15px;font-weight:700;margin-bottom:6px}
+    .flowbox .sub{font-size:13px;line-height:1.55;color:var(--soft)}
+    .connector{display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:20px;font-weight:700}
+    .stack{display:flex;flex-direction:column;gap:14px}
+    .mini-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .card{padding:16px}
+    .row{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .pill{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:5px 9px;white-space:nowrap}
+    .ok{background:var(--green-bg);color:var(--green)}
+    .warn{background:var(--amber-bg);color:var(--amber)}
+    .bad{background:var(--red-bg);color:var(--red)}
+    ul{margin:10px 0 0;padding-left:18px;color:var(--soft);line-height:1.65}
+    li{margin:6px 0}
+    .matrix{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .metric{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:14px}
+    .metric .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+    .metric .v{font-size:18px;font-weight:700;margin-bottom:6px}
+    .metric .d{font-size:13px;line-height:1.55;color:var(--soft)}
+    .landscape{display:grid;grid-template-columns:260px 1fr;gap:14px;align-items:stretch}
+    .lane{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:14px}
+    .lane-title{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:700;margin-bottom:10px}
+    .route{display:grid;grid-template-columns:110px 1fr 120px;gap:10px;align-items:start;border-top:1px solid rgba(255,255,255,.06);padding:10px 0}
+    .route:first-of-type{border-top:0;padding-top:0}
+    .route-name{font-size:13px;font-weight:700;color:var(--text)}
+    .route-desc{font-size:12px;line-height:1.55;color:var(--soft)}
+    .score{font-size:11px;text-align:right;color:var(--muted)}
+    .score strong{display:block;font-size:13px;color:var(--text);margin-bottom:2px}
+    .priority{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .action{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:6px}
+    .bullet{width:10px;height:10px;border-radius:50%;background:var(--gold);margin-top:6px;flex:0 0 auto}
+    .footer{color:var(--muted);font-size:12px;line-height:1.6}
+    code{font-family:ui-monospace,SFMono-Regular,Consolas,Monaco,monospace;color:#d8e0da}
+    @media (max-width: 980px){
+      body{padding:16px}
+      .grid,.mini-grid,.matrix{grid-template-columns:1fr}
+      .landscape,.priority,.route{grid-template-columns:1fr}
+      .score{text-align:left}
+      .diagram{grid-template-columns:1fr;gap:10px}
+      .arrow{display:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Local web app system architecture</div>
+      <h1>Opus Home as a local dashboard platform</h1>
+      <p class="lead">
+        Browser UI + FastAPI backend + client-side state is the current architecture.
+        The main risk is metric semantics drifting between session history and unique progress.
+        The target state is one contract for stats, one owner per metric type, and explicit labels in the UI.
+      </p>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Runtime Flow</h2>
+        <div class="diagram">
+          <div class="node">
+            <div class="tag">Client</div>
+            <div class="title">Browser</div>
+            <div class="desc">Opens <code>localhost:8765</code> and renders shell + iframe surfaces.</div>
+          </div>
+          <div class="arrow"></div>
+          <div class="node">
+            <div class="tag">Server</div>
+            <div class="title">FastAPI</div>
+            <div class="desc">Serves HTML, static assets, and API routes from a single local process.</div>
+          </div>
+          <div class="arrow"></div>
+          <div class="node">
+            <div class="tag">Data</div>
+            <div class="title">localStorage + JSON</div>
+            <div class="desc">Quiz state, history, weak state, and question bank snapshots live locally.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Current Assessment</h2>
+        <div class="stack">
+          <div class="action">
+            <div class="bullet"></div>
+            <div>
+              <div style="font-weight:700;margin-bottom:4px">Strength</div>
+              <div class="footer">Fast iteration, no remote dependency, low latency, easy to run on the same workstation.</div>
+            </div>
+          </div>
+          <div class="action">
+            <div class="bullet" style="background:var(--red)"></div>
+            <div>
+              <div style="font-weight:700;margin-bottom:4px">Weakness</div>
+              <div class="footer">Two metric systems are easy to confuse: <code>session history</code> versus <code>unique progress</code>.</div>
+            </div>
+          </div>
+          <div class="action">
+            <div class="bullet" style="background:var(--amber)"></div>
+            <div>
+              <div style="font-weight:700;margin-bottom:4px">Operational Risk</div>
+              <div class="footer">Browser cache can keep old UI bundles alive even after source changes if headers are not strict.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Simple Flow Diagram</h2>
+      <div class="flow">
+        <div class="flowbox">
+          <div class="head">Entry</div>
+          <div class="main">Browser opens Home</div>
+          <div class="sub">Single local URL. Home is the shell and the control plane.</div>
+        </div>
+        <div class="connector">→</div>
+        <div class="flowbox">
+          <div class="head">Backend</div>
+          <div class="main">FastAPI serves routes</div>
+          <div class="sub">Static HTML, quiz assets, and API responses live in one local process.</div>
+        </div>
+        <div class="connector">→</div>
+        <div class="flowbox">
+          <div class="head">State</div>
+          <div class="main">localStorage + JSON</div>
+          <div class="sub">Session history, unique progress, weak progress, and question banks.</div>
+        </div>
+      </div>
+      <div style="margin-top:14px" class="flow">
+        <div class="flowbox">
+          <div class="head">Home owns</div>
+          <div class="main">Overview + summary</div>
+          <div class="sub">Shows user-facing progress and the metric contract debug block.</div>
+        </div>
+        <div class="flowbox">
+          <div class="head">PMP owns</div>
+          <div class="main">Quiz runtime</div>
+          <div class="sub">Question rendering, answer submission, session persistence, weak routing.</div>
+        </div>
+        <div class="flowbox">
+          <div class="head">Main risk</div>
+          <div class="main">Metric drift</div>
+          <div class="sub">A label can say “done” while the source actually measures unique progress.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Whole App Landscape</h2>
+      <div class="landscape">
+        <div class="lane">
+          <div class="lane-title">Control Plane</div>
+          <div class="flowbox">
+            <div class="head">Runtime</div>
+            <div class="main">Opus Home Shell</div>
+            <div class="sub">Sidebar chooses one view. Non-PMP views render inside the Home canvas. PMP renders fullscreen in an iframe.</div>
+          </div>
+          <div style="height:10px"></div>
+          <div class="flowbox">
+            <div class="head">Backend</div>
+            <div class="main">FastAPI :8765</div>
+            <div class="sub"><code>/api/*</code> feeds dashboard data. Static mounts serve Home and PMP assets.</div>
+          </div>
+          <div style="height:10px"></div>
+          <div class="flowbox">
+            <div class="head">State</div>
+            <div class="main">Mixed state model</div>
+            <div class="sub">Server APIs for knowledge views. Browser localStorage for quiz progress. Static arrays for some roadmap/product views.</div>
+          </div>
+        </div>
+
+        <div class="lane">
+          <div class="lane-title">Tabs and Ownership</div>
+          <div class="route">
+            <div class="route-name">Home</div>
+            <div class="route-desc">Executive dashboard: daily overview, radar lanes, PMP summary, output routes. It should be a summary layer, not a domain logic owner.</div>
+            <div class="score"><strong>7/10</strong>Improve source boundaries</div>
+          </div>
+          <div class="route">
+            <div class="route-name">Wiki</div>
+            <div class="route-desc">Knowledge snapshot from dashboard API. Useful as a read surface, but needs stronger navigation into source notes and freshness metadata.</div>
+            <div class="score"><strong>6.5/10</strong>Add provenance</div>
+          </div>
+          <div class="route">
+            <div class="route-name">Goals</div>
+            <div class="route-desc">Personal goal tracks. Currently more static than operational; should connect to actual tasks, status, and cadence.</div>
+            <div class="score"><strong>6/10</strong>Make executable</div>
+          </div>
+          <div class="route">
+            <div class="route-name">Intel</div>
+            <div class="route-desc">Market/weekly/GitHub intelligence view backed by API data. Strong candidate to become a first-class research workflow.</div>
+            <div class="score"><strong>7.5/10</strong>Unify filters</div>
+          </div>
+          <div class="route">
+            <div class="route-name">FDE</div>
+            <div class="route-desc">Strategic career/market track. It has multiple internal sub-tabs; risk is becoming a document viewer instead of decision tooling.</div>
+            <div class="score"><strong>7/10</strong>Add decisions</div>
+          </div>
+          <div class="route">
+            <div class="route-name">PMP Quiz</div>
+            <div class="route-desc">Embedded quiz app with its own router, data, storage, and stats. Most mature functionally, but highest state-consistency risk.</div>
+            <div class="score"><strong>7/10</strong>Centralize stats</div>
+          </div>
+          <div class="route">
+            <div class="route-name">Weak 360</div>
+            <div class="route-desc">Weakness drill layer over PMP data. Useful learning mode, but must not contaminate main quiz counters without explicit semantics.</div>
+            <div class="score"><strong>6.5/10</strong>Separate contract</div>
+          </div>
+          <div class="route">
+            <div class="route-name">Lucida</div>
+            <div class="route-desc">Content production pipeline view. Rich domain map, but likely too static unless wired to real production artifacts and QA status.</div>
+            <div class="score"><strong>6.5/10</strong>Connect artifacts</div>
+          </div>
+          <div class="route">
+            <div class="route-name">Actio</div>
+            <div class="route-desc">Investing workflow surface. Good concept boundary, but should clearly separate research, watchlist, decision log, and risk disclaimer.</div>
+            <div class="score"><strong>6/10</strong>Define workflow</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Cross-Tab Improvement Priorities</h2>
+      <div class="priority">
+        <div class="metric">
+          <div class="k">P0</div>
+          <div class="v">State contracts</div>
+          <div class="d">Define owner and source for every metric. Home should consume summaries, not re-derive domain logic.</div>
+        </div>
+        <div class="metric">
+          <div class="k">P1</div>
+          <div class="v">Navigation depth</div>
+          <div class="d">Tabs need drill-down paths from summary cards to underlying source, history, artifact, or decision record.</div>
+        </div>
+        <div class="metric">
+          <div class="k">P2</div>
+          <div class="v">Freshness</div>
+          <div class="d">Every data-backed tab should show last updated time, source count, and whether it is static or API-backed.</div>
+        </div>
+        <div class="metric">
+          <div class="k">P3</div>
+          <div class="v">Action model</div>
+          <div class="d">Each tab needs one primary next action. Otherwise Home becomes a collection of dashboards, not an operating system.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>System Map</h2>
+      <div class="mini-grid">
+        <div class="card">
+          <h3>Shell UI</h3>
+          <div class="row">
+            <div>
+              <div style="font-weight:700;margin-bottom:6px">Opus Home</div>
+              <div class="footer">Navigation, summary cards, and embedded app surfaces.</div>
+            </div>
+            <span class="pill ok">Owner: Home</span>
+          </div>
+          <ul>
+            <li>Reads dashboard snapshot from <code>/api/dashboard</code></li>
+            <li>Shows separate blocks for session stats and unique progress</li>
+            <li>Should not recompute quiz correctness from the wrong source</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Quiz Engine</h3>
+          <div class="row">
+            <div>
+              <div style="font-weight:700;margin-bottom:6px">PMP Quiz</div>
+              <div class="footer">Standalone router, renderer, storage, and weak mode logic.</div>
+            </div>
+            <span class="pill warn">Owner: Quiz</span>
+          </div>
+          <ul>
+            <li>Owns session history derivation</li>
+            <li>Owns unique seen/wrong sets</li>
+            <li>Exports explicit stats fields, not implicit guesses</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Persistence</h3>
+          <div class="row">
+            <div>
+              <div style="font-weight:700;margin-bottom:6px">localStorage</div>
+              <div class="footer">Client-side persistence for history, weak state, and progress.</div>
+            </div>
+            <span class="pill bad">Risk</span>
+          </div>
+          <ul>
+            <li>Needs schema versioning</li>
+            <li>Needs repair / migration logic</li>
+            <li>Should separate session and unique contracts physically</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Delivery</h3>
+          <div class="row">
+            <div>
+              <div style="font-weight:700;margin-bottom:6px">FastAPI Static Host</div>
+              <div class="footer">One local process mounts both the home shell and the quiz app.</div>
+            </div>
+            <span class="pill ok">Stable</span>
+          </div>
+          <ul>
+            <li>Must send no-cache headers</li>
+            <li>Should expose consistent asset paths</li>
+            <li>Should avoid mixed bundle ownership</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Action Items</h2>
+      <div class="stack">
+        <div class="action">
+          <div class="bullet"></div>
+          <div>
+            <div style="font-weight:700;margin-bottom:4px">New Action: Add a Stats Contract View</div>
+            <div class="footer">
+              Create a small debug panel in Home that prints the exact source for each metric:
+              <code>sessionAnswered</code>, <code>sessionCorrect</code>, <code>uniqueSeenCount</code>, <code>uniqueWrongCount</code>.
+              That makes semantic drift visible before it reaches the user.
+            </div>
+          </div>
+        </div>
+        <div class="action">
+          <div class="bullet" style="background:var(--amber)"></div>
+          <div>
+            <div style="font-weight:700;margin-bottom:4px">Recommended SA: Metric Contract Steward</div>
+            <div class="footer">
+              A dedicated architecture owner for stats semantics across Home, PMP, and weak mode. This role owns the
+              vocabulary, the storage schema, the migration path, and the UI labels for all counters.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Decision Matrix</h2>
+      <div class="matrix">
+        <div class="metric">
+          <div class="k">Architecture fit</div>
+          <div class="v">7.5 / 10</div>
+          <div class="d">Good for a local personal dashboard. Not yet ideal for highly reliable stats without a stronger contract layer.</div>
+        </div>
+        <div class="metric">
+          <div class="k">Main defect</div>
+          <div class="v">Semantics drift</div>
+          <div class="d">The same labels were used for both session totals and unique progress, which created the false impression that counts were wrong.</div>
+        </div>
+        <div class="metric">
+          <div class="k">Best next move</div>
+          <div class="v">Separate ownership</div>
+          <div class="d">Keep session history, unique progress, and weak progress as explicit, separate outputs everywhere.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="footer">
+      File: <code>opus-consilium/docs/SA-opus-home-local-architecture.html</code><br/>
+      Purpose: local review artifact for architecture and action selection.
+    </section>
+  </div>
+</body>
+</html>

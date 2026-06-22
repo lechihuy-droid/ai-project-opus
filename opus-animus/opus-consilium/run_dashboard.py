@@ -1,7 +1,8 @@
 ﻿"""
-OPUS ANIMUS HOME — local web dashboard
-python run_dashboard.py
-→ http://localhost:8765
+OPUS ANIMUS HOME — local web dashboard backend
+
+Canonical Home UI lives at:
+../apps/opus-home/index.html
 """
 import sys
 from pathlib import Path
@@ -20,6 +21,15 @@ from api.intel     import router as intel_router
 
 app = FastAPI(title="OPUS ANIMUS HOME", docs_url=None, redoc_url=None)
 
+
+@app.middleware("http")
+async def no_cache_headers(request, call_next):
+    response = await call_next(request)
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:8765"],
@@ -33,23 +43,11 @@ app.include_router(articles_router,  prefix="/api")
 app.include_router(actions_router,   prefix="/api")
 app.include_router(intel_router,     prefix="/api")
 
-# PMP Quiz — explicit routes so FastAPI doesn't swallow with the catch-all mount
-pmp_dir = Path(__file__).parent.parent / "apps" / "pmp-quiz"
-
-@app.get("/pmp", include_in_schema=False)
-@app.get("/pmp/", include_in_schema=False)
-def pmp_index():
-    index = pmp_dir / "index.html"
-    return Response(index.read_bytes(), media_type="text/html")
-
-# Serve pmp-quiz assets: /pmp/assets/*, /pmp/data/*
-if pmp_dir.exists():
-    app.mount("/pmp", StaticFiles(directory=str(pmp_dir)), name="pmp")
-
-# Serve dashboard/ last — catches everything else
-dashboard_dir = Path(__file__).parent / "dashboard"
-dashboard_dir.mkdir(exist_ok=True)
-app.mount("/", StaticFiles(directory=str(dashboard_dir), html=True), name="static")
+# Serve Opus Animus Home last — catches everything else
+home_dir = Path(__file__).parent.parent / "apps" / "opus-home"
+if not home_dir.exists():
+    raise RuntimeError(f"Opus Home UI directory missing: {home_dir}")
+app.mount("/", StaticFiles(directory=str(home_dir), html=True), name="static")
 
 if __name__ == "__main__":
     print("OPUS ANIMUS HOME -> http://localhost:8765")
