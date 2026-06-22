@@ -1,6 +1,12 @@
 # SA — System Architecture: Personal Agent
 **Date:** 2026-04-28
-**Status:** 🟢 Current
+**Status:** ⛔ Superseded → [`SA-opus-animus-v2.md`](SA-opus-animus-v2.md) (2026-06-21, v4-aligned)
+
+> ⚠️ **Lịch sử.** Doc này mô tả kiến trúc "personal-agent"/Groq trước khi đổi naming opus-* và trước Operating Model v4. Giữ lại để tham chiếu lịch sử pipeline Consilium (Module A/B/C). Kiến trúc hiện hành: **`SA-opus-animus-v2.md`**.
+
+---
+**Date:** 2026-04-28
+**Status (gốc):** 🟢 Current
 
 ---
 
