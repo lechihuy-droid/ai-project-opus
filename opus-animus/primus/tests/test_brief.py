@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import json
+import re
 
 from primus import providers
-from primus.brief import generate_brief
+from primus.brief import assemble_brief_text, generate_brief
 
 import logos.arbiter
 import logos.rank
@@ -21,6 +22,15 @@ def _intent_packet() -> dict:
         "date": DATE,
         "profile": {"active_goals": ["ANIMUS"]},
     }
+
+
+def _set_brief_env(monkeypatch, tmp_path) -> tuple:
+    traces_dir = tmp_path / "traces"
+    proactive_dir = tmp_path / "proactive"
+    monkeypatch.setenv("ANIMUS_BRIEF_NO_LLM", "1")
+    monkeypatch.setenv("ANIMUS_TRACES_DIR", str(traces_dir))
+    monkeypatch.setenv("ANIMUS_PROACTIVE_DIR", str(proactive_dir))
+    return traces_dir, proactive_dir
 
 
 def _patch_happy_path(monkeypatch) -> None:
@@ -56,10 +66,7 @@ def _patch_happy_path(monkeypatch) -> None:
 
 
 def test_generate_brief_happy_path_writes_trace_and_saves_items(monkeypatch, tmp_path):
-    traces_dir = tmp_path / "traces"
-    proactive_dir = tmp_path / "proactive"
-    monkeypatch.setenv("ANIMUS_TRACES_DIR", str(traces_dir))
-    monkeypatch.setenv("ANIMUS_PROACTIVE_DIR", str(proactive_dir))
+    traces_dir, _ = _set_brief_env(monkeypatch, tmp_path)
     _patch_happy_path(monkeypatch)
 
     brief_text, items = generate_brief(_intent_packet())
@@ -78,8 +85,7 @@ def test_generate_brief_happy_path_writes_trace_and_saves_items(monkeypatch, tmp
 
 
 def test_generate_brief_empty_path_returns_nothing_new(monkeypatch, tmp_path):
-    monkeypatch.setenv("ANIMUS_TRACES_DIR", str(tmp_path / "traces"))
-    monkeypatch.setenv("ANIMUS_PROACTIVE_DIR", str(tmp_path / "proactive"))
+    _set_brief_env(monkeypatch, tmp_path)
     monkeypatch.setattr(rector.tasks, "pull_due_tasks", lambda date, profile: [])
     monkeypatch.setattr(
         providers,
@@ -97,10 +103,72 @@ def test_generate_brief_empty_path_returns_nothing_new(monkeypatch, tmp_path):
 
 
 def test_returned_items_are_suggestion_only(monkeypatch, tmp_path):
-    monkeypatch.setenv("ANIMUS_TRACES_DIR", str(tmp_path / "traces"))
-    monkeypatch.setenv("ANIMUS_PROACTIVE_DIR", str(tmp_path / "proactive"))
+    _set_brief_env(monkeypatch, tmp_path)
     _patch_happy_path(monkeypatch)
 
     _, items = generate_brief(_intent_packet())
 
     assert all(item["requires_approval"] is True for item in items)
+
+
+def test_generate_brief_caps_returned_saved_and_displayed_items(monkeypatch, tmp_path):
+    _set_brief_env(monkeypatch, tmp_path)
+    monkeypatch.setenv("ANIMUS_BRIEF_MAX_ITEMS", "3")
+    monkeypatch.setattr(
+        rector.tasks,
+        "pull_due_tasks",
+        lambda date, profile: [
+            {
+                "id": f"ANIMUS-{index}",
+                "title": f"Prioritized task {index}",
+                "due": DATE,
+                "goal_ref": "ANIMUS",
+            }
+            for index in range(8)
+        ],
+    )
+    monkeypatch.setattr(
+        providers,
+        "nexus_context",
+        lambda date: {"health_summary": None, "calendar_today": None},
+    )
+    monkeypatch.setattr(providers, "consilium_info", lambda active_goals: [])
+
+    brief_text, items = generate_brief(_intent_packet())
+
+    assert len(items) == 3
+    assert len(rector.proactive.get_proactive_set(DATE)) == 3
+    numbered_lines = [
+        match.group(1)
+        for line in brief_text.splitlines()
+        if (match := re.match(r"^(\d+)\. ", line))
+    ]
+    assert numbered_lines == ["1", "2", "3"]
+
+
+def test_assemble_brief_skips_auto_echo_action_but_keeps_distinct_action():
+    brief_text = assemble_brief_text(
+        {"health_summary": None, "calendar_today": None},
+        [
+            {
+                "id": "auto-echo",
+                "source_subsystem": "RECTOR",
+                "priority": "medium",
+                "title": "Auto echo task",
+                "reason": "Due today.",
+                "suggested_action": "Xử lý: Auto echo task",
+            },
+            {
+                "id": "real-action",
+                "source_subsystem": "RECTOR",
+                "priority": "medium",
+                "title": "Real action task",
+                "reason": "Needs focus.",
+                "suggested_action": "Draft the review note.",
+            },
+        ],
+        [],
+    )
+
+    assert "Gợi ý: Xử lý:" not in brief_text
+    assert "Gợi ý: Draft the review note." in brief_text

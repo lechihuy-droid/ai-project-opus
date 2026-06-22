@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import os
 import re
 import sys
 from datetime import datetime, timedelta, timezone
@@ -30,6 +31,7 @@ import logos.rank, logos.arbiter
 
 JST = timezone(timedelta(hours=9))
 MAX_STEPS = 6
+DEFAULT_MAX_ITEMS = 5
 BRIEF_ACTION_TOOL_ID = "brief.draft"
 BRIEF_ACTION_CLASS = "draft"
 ACTION_BAR = "[Chấp nhận tất cả] [Chọn] [Để sau] [Bỏ qua]"
@@ -151,6 +153,7 @@ def generate_brief(intent_packet: dict) -> tuple[str, list[dict]]:
     observe(resolved)
 
     resolved = _gate_suggested_actions(resolved)
+    resolved = resolved[:_max_brief_items()]
     if not resolved:
         return _nothing_new_brief_text(), []
 
@@ -180,7 +183,7 @@ def assemble_brief_text(ctx: dict, resolved: list[dict], tradeoffs: list[dict]) 
         item_lines = [f"{index}. {priority}{title} ({source})"]
         if reason:
             item_lines.append(f"   Lý do: {reason}")
-        if action:
+        if action and action != f"Xử lý: {title}":
             item_lines.append(f"   Gợi ý: {action}")
         for note in tradeoff_by_item.get(str(item.get("id")), []):
             item_lines.append(f"   Đánh đổi: {note}")
@@ -287,8 +290,25 @@ def _nominal_tool_id(item: dict) -> str:
     return BRIEF_ACTION_TOOL_ID
 
 
+def _max_brief_items() -> int:
+    value = os.environ.get("ANIMUS_BRIEF_MAX_ITEMS")
+    if not value:
+        return DEFAULT_MAX_ITEMS
+    return int(value)
+
+
 def _safe_rank_llm(prompt: str) -> str:
-    raise RuntimeError("No external LLM is invoked by Primus brief generation")
+    if _env_truthy("ANIMUS_BRIEF_NO_LLM"):
+        raise RuntimeError("External LLM disabled by ANIMUS_BRIEF_NO_LLM")
+
+    from animus_core.llm import claude_cli
+
+    return claude_cli(prompt)
+
+
+def _env_truthy(name: str) -> bool:
+    value = os.environ.get(name, "")
+    return value.strip().casefold() not in {"", "0", "false", "no", "off"}
 
 
 def _log_step(
