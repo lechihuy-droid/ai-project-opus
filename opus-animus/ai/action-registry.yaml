@@ -1,0 +1,9 @@
+wiki.read: read
+brief.draft: draft
+calendar.events.insert: write
+telegram.send: write
+file.delete: dangerous
+shell.exec: dangerous
+collect.run: read
+wiki.ingest: write
+wiki.query: read

@@ -1,6 +1,8 @@
 # STATUS - opus-animus
-**Updated:** 2026-05-20
+**Updated:** 2026-06-22
 **Current owner:** Claude
+
+> **v4 governance:** [`docs/OPERATING-MODEL-OPUS-ANIMUS-v4.md`](../docs/OPERATING-MODEL-OPUS-ANIMUS-v4.md) · architecture [`docs/SA-opus-animus-v2.md`](../docs/SA-opus-animus-v2.md). Proactive daily brief (pull-mode) MVP built — run `python opus-animus/run_brief.py`.
 
 ## Active sub-systems
 
@@ -13,6 +15,9 @@
 | CONS / FDE Research Tab | Active | Dashboard tab theo dõi FDE model adoption, 8 actor groups |
 | HOME Dashboard | Active | FastAPI + React, `run_dashboard.py` → localhost:8765 |
 | LUCIDA / Wake Lane | Paused | Previous handoff in `opus-lucida/ai/handoff-codex.md` |
+| RECTOR / Execution brain | 🟢 Built MVP | `opus-rector/` — task pull + proactive store (single-writer) + signals |
+| LOGOS / Strategy brain | 🟢 Built MVP | `opus-logos/` — rank + arbiter (precedence) + decision-log + tune |
+| PRIMUS / Proactive brief | 🟢 Built MVP | `run_brief.py` pull-mode; eval foundation `animus_core/` + `evals/` |
 
 ## Current objective
 

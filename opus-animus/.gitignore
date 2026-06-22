@@ -1,0 +1,12 @@
+# Python artifacts
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Runtime data (generated, not source)
+ai/traces/*.jsonl
+opus-rector/proactive/*.json
+
+# Codex scratch
+.codex-*.md
+.codex-*.log

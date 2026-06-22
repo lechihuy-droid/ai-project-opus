@@ -1,0 +1,51 @@
+{"input": "Primus, hôm nay tôi nên tập trung gì?", "target_subsystem": "LOGOS", "lang": "vi", "note": "nên/ưu tiên -> strategy"}
+{"input": "Tuần này nên drop hướng nào để đỡ dàn trải?", "target_subsystem": "LOGOS", "lang": "vi", "note": "bỏ/hướng -> strategy"}
+{"input": "Có nên dừng dự án PMP quiz không?", "target_subsystem": "LOGOS", "lang": "vi", "note": "quyết định stop-list"}
+{"input": "Ưu tiên việc nào trước giữa research và viết slide?", "target_subsystem": "LOGOS", "lang": "vi", "note": "ưu tiên -> rank"}
+{"input": "What should I focus on this quarter?", "target_subsystem": "LOGOS", "lang": "en", "note": "strategy/priority"}
+{"input": "Quyết định: theo hướng FDE hay agent eval?", "target_subsystem": "LOGOS", "lang": "vi", "note": "quyết định"}
+{"input": "Cái này có đáng làm tiếp không hay bỏ?", "target_subsystem": "LOGOS", "lang": "vi", "note": "bỏ -> decision"}
+{"input": "Break task 'làm proactive brief' ra các bước nhỏ", "target_subsystem": "RECTOR", "lang": "vi", "note": "break/task"}
+{"input": "Cập nhật handoff cho session hôm nay", "target_subsystem": "RECTOR", "lang": "vi", "note": "handoff"}
+{"input": "Status các sub-system đang chạy thế nào?", "target_subsystem": "RECTOR", "lang": "vi", "note": "status"}
+{"input": "Tuần này còn task nào due chưa xong?", "target_subsystem": "RECTOR", "lang": "vi", "note": "tuần/task due"}
+{"input": "Add task: review PR X vào TODO", "target_subsystem": "RECTOR", "lang": "vi", "note": "task index"}
+{"input": "Break this epic into 2-hour steps", "target_subsystem": "RECTOR", "lang": "en", "note": "break/task"}
+{"input": "Đánh dấu task LUCIDA-3 là done", "target_subsystem": "RECTOR", "lang": "vi", "note": "task tracking"}
+{"input": "Tổng hợp tin AI tuần này giúp tôi", "target_subsystem": "CONSILIUM", "lang": "vi", "note": "tổng hợp/tin"}
+{"input": "Nguồn nào nói về FDE model adoption?", "target_subsystem": "CONSILIUM", "lang": "vi", "note": "nguồn"}
+{"input": "Có nghiên cứu nào mới về agent eval không?", "target_subsystem": "CONSILIUM", "lang": "vi", "note": "nghiên cứu"}
+{"input": "Tin gì đáng chú ý về thị trường JP hôm nay?", "target_subsystem": "CONSILIUM", "lang": "vi", "note": "tin -> information"}
+{"input": "Summarize this week's research on RLHF", "target_subsystem": "CONSILIUM", "lang": "en", "note": "summarize/research"}
+{"input": "Collect intel về competitor mới", "target_subsystem": "CONSILIUM", "lang": "vi", "note": "thông tin"}
+{"input": "Đọc giúp tôi paper này và tóm tắt", "target_subsystem": "CONSILIUM", "lang": "vi", "note": "tóm tắt -> information"}
+{"input": "Lưu insight này vào knowledge base", "target_subsystem": "WIKI", "lang": "vi", "note": "lưu/knowledge"}
+{"input": "Tôi đã ghi nhớ gì về RLHF rồi?", "target_subsystem": "WIKI", "lang": "vi", "note": "ghi nhớ -> memory query"}
+{"input": "Ghi cái này vào wiki cá nhân", "target_subsystem": "WIKI", "lang": "vi", "note": "wiki write"}
+{"input": "Save this note to long-term memory", "target_subsystem": "WIKI", "lang": "en", "note": "save/memory"}
+{"input": "Wiki có trang nào về Karpathy pattern không?", "target_subsystem": "WIKI", "lang": "vi", "note": "wiki query"}
+{"input": "Nhớ giúp tôi quyết định này cho lần sau", "target_subsystem": "WIKI", "lang": "vi", "note": "nhớ/lưu"}
+{"input": "Viết script cho bài JLPT N2 hôm nay", "target_subsystem": "LUCIDA", "lang": "vi", "note": "script/content"}
+{"input": "Regenerate slide 6 của deck N2", "target_subsystem": "LUCIDA", "lang": "vi", "note": "slide"}
+{"input": "Tạo video lesson cho ngữ pháp này", "target_subsystem": "LUCIDA", "lang": "vi", "note": "video"}
+{"input": "Draft content cho post tuần này", "target_subsystem": "LUCIDA", "lang": "vi", "note": "content"}
+{"input": "Make slides for the grammar point は vs が", "target_subsystem": "LUCIDA", "lang": "en", "note": "slides/content"}
+{"input": "Sửa layout slide bị tràn chữ", "target_subsystem": "LUCIDA", "lang": "vi", "note": "slide content fix"}
+{"input": "Sức khỏe tuần này của tôi thế nào?", "target_subsystem": "NEXUS", "lang": "vi", "note": "sức khỏe"}
+{"input": "Cân nặng tôi có giảm không?", "target_subsystem": "NEXUS", "lang": "vi", "note": "cân"}
+{"input": "Tối qua tôi ngủ mấy tiếng?", "target_subsystem": "NEXUS", "lang": "vi", "note": "ngủ"}
+{"input": "Lịch hôm nay có gì?", "target_subsystem": "NEXUS", "lang": "vi", "note": "lịch"}
+{"input": "How did I sleep this week?", "target_subsystem": "NEXUS", "lang": "en", "note": "sleep/health"}
+{"input": "Hôm nay tôi nên ăn gì cho đủ đạm?", "target_subsystem": "NEXUS", "lang": "vi", "note": "health/life"}
+{"input": "Chạy pipeline collect ngay bây giờ", "target_subsystem": "INFRA", "lang": "vi", "note": "chạy/pipeline"}
+{"input": "Scheduler nào đang chạy?", "target_subsystem": "INFRA", "lang": "vi", "note": "schedule"}
+{"input": "Chạy lại job weekly synthesis", "target_subsystem": "INFRA", "lang": "vi", "note": "job"}
+{"input": "Schedule daily collect lúc 5:30 JST", "target_subsystem": "INFRA", "lang": "en", "note": "schedule/job"}
+{"input": "Pipeline collect tối qua có lỗi không?", "target_subsystem": "INFRA", "lang": "vi", "note": "pipeline runtime"}
+{"input": "Logos: nên bỏ hướng X không?", "target_subsystem": "LOGOS", "lang": "vi", "note": "prefix override"}
+{"input": "Rector: cập nhật status sub-system", "target_subsystem": "RECTOR", "lang": "vi", "note": "prefix override"}
+{"input": "Consilium: nguồn nào nói về Y?", "target_subsystem": "CONSILIUM", "lang": "vi", "note": "prefix override"}
+{"input": "Wiki: tôi đã lưu gì về NISA?", "target_subsystem": "WIKI", "lang": "vi", "note": "prefix override"}
+{"input": "Lucida: regenerate slide 3", "target_subsystem": "LUCIDA", "lang": "vi", "note": "prefix override"}
+{"input": "Infra: scheduler nào đang chạy?", "target_subsystem": "INFRA", "lang": "vi", "note": "prefix override"}
+{"input": "Nexus: tuần này tôi tập mấy buổi?", "target_subsystem": "NEXUS", "lang": "vi", "note": "prefix override"}
