@@ -1,0 +1,1 @@
+# proactive item-set + state store (YYYY-MM-DD.json). Rector = single writer; Nexus reads via get_proactive_set(). Files added at runtime (Phase 4).
