@@ -1,5 +1,5 @@
 # STATUS - opus-actio
-**Updated:** 2026-05-20
+**Updated:** 2026-06-22
 **Current owner:** Claude
 
 ## Current objective
@@ -25,9 +25,24 @@ Workflow đầu tư cá nhân US + JP — **MVP-A: Claude Code-first** (0 API me
 - ✅ USAGE.md updated với MVP-A section
 - ✅ Overview HTML: `docs/OVERVIEW-after-finopt.html`
 
+### Finance DB — Layer A real data (done 2026-06-22)
+- ✅ Gom `personal-finance/_local` (số liệu thật) vào opus-actio, xoá nguồn cũ
+- ✅ SQLite `data/_local/finance.db` — snapshot-based, 7 bảng (snapshot / fx_rate / account / balance / holding / pf_summary / networth)
+- ✅ `data/schema.sql` (DDL, tracked) + `data/ingest_finance.py` (build script, tracked)
+- ✅ Raw layer immutable: `data/_local/raw/{YYYYMM}{networth,portfolio}.json` → build ra finance.db
+- ✅ `.gitignore` khoá `data/_local/` → Layer A không thể commit (FINANCE_DATA_STORAGE_POLICY)
+- ✅ Snapshot đầu: 2026-06 — range-level net-worth snapshot, holdings, and cash accounts verified locally
+- **Thêm tháng:** bỏ JSON vào `data/_local/raw/` → `python data/ingest_finance.py YYYYMM`
+- ✅ **Spending ledger (2026-06-22):** bảng `card_txn` + `data/ingest_cards.py` — nạp giao dịch thẻ từ private card sources verified locally, từ `data/_local/raw/cards/*.csv` (2025-02→2026-06). Idempotent, rebuild mỗi lần chạy.
+- ✅ Repo paths aligned to `C:/Users/HUY/workspace/ai-project-opus/opus-animus/opus-actio/`
+- ⚠️ Compatibility mode: root `finance-data/` and `personal-finance/` are still kept for older coding tasks; Actio holds the mirrored finance module until the remaining callers are migrated.
+- ⬜ (next) Đổ thêm snapshot tháng kế để bật query trend net-worth/allocation (phục vụ quỹ mua nhà)
+- ⬜ (defer) Bảng transaction ledger CHỨNG KHOÁN (mua/bán) — chưa có data trade history
+
 ### Pending manual
 - ⬜ Copy `portfolio.example.json` → `portfolio.json` và edit holdings thật
 - ⬜ Register EDINET API key (manual tại disclosure2.edinet-fi.go.jp)
+- ⚠️ Check external slash commands in `~/.claude/commands/`: if they still point to an old path, update them to `C:/Users/HUY/workspace/ai-project-opus/opus-animus/opus-actio/`.
 
 ## Next step — MVP-B (planned ~2026-05-27)
 

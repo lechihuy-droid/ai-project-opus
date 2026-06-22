@@ -23,8 +23,8 @@ Workflow gợi ý kết hợp **core skills** (Anthropic) + **3 custom JP skills
 
 1. **Copy portfolio template:**
    ```powershell
-   Copy-Item C:/Users/HUY/AI/opus-animus/opus-actio/data/portfolio.example.json `
-             C:/Users/HUY/AI/opus-animus/opus-actio/data/portfolio.json
+   Copy-Item C:/Users/HUY/workspace/ai-project-opus/opus-animus/opus-actio/data/portfolio.example.json `
+             C:/Users/HUY/workspace/ai-project-opus/opus-animus/opus-actio/data/portfolio.json
    ```
 2. Edit `data/portfolio.json` với holdings thật (xem `data/portfolio.schema.md`).
 3. (Optional) Register EDINET API key cho `actio-stock` JP filings.
@@ -194,7 +194,7 @@ Sau khi cài plugin core, gõ trong Claude:
 
 1. **Clone Anthropic plugins:**
    ```powershell
-   cd C:/Users/HUY/AI/opus-animus/opus-actio
+   cd C:/Users/HUY/workspace/ai-project-opus/opus-animus/opus-actio
    git clone --depth=1 https://github.com/anthropics/financial-services.git _ext
    Copy-Item -Recurse _ext/plugins/vertical-plugins/equity-research ./plugins/
    Copy-Item -Recurse _ext/plugins/vertical-plugins/financial-analysis ./plugins/
@@ -203,7 +203,7 @@ Sau khi cài plugin core, gõ trong Claude:
 
 2. **Register EDINET API key (free):**
    - https://disclosure2.edinet-fi.go.jp/weee0020.aspx → register → copy Subscription-Key
-   - Save vào `C:/Users/HUY/AI/opus-animus/.env`:
+   - Save vào `C:/Users/HUY/workspace/ai-project-opus/opus-animus/.env`:
      ```
      EDINET_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
      ```
