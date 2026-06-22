@@ -1,0 +1,41 @@
+{
+  "$schema": "./client-profile.schema.md",
+  "profile": {
+    "age": null,
+    "nationality": "VN",
+    "residence_country": "JP",
+    "residence_status": null,
+    "years_in_japan": null,
+    "japan_horizon": null,
+    "family_status": null,
+    "dependents": 0,
+    "vn_obligations": null
+  },
+  "employment": {
+    "job_stability": null,
+    "income_structure": null,
+    "employer_sector": null
+  },
+  "cashflow_jpy": {
+    "monthly_net_income": null,
+    "annual_bonus_net": null,
+    "side_income_monthly": null,
+    "monthly_expense": null
+  },
+  "risk": {
+    "risk_tolerance": null,
+    "max_drawdown_comfort_pct": null,
+    "investment_experience": null
+  },
+  "protection": {
+    "life_insurance": null,
+    "medical_insurance": null,
+    "disability_income": null,
+    "pension_enrolled": null
+  },
+  "cross_border": {
+    "currency_exposure_target": null,
+    "repatriation_plan": null
+  },
+  "note": "Placeholder template. Copy sang data/_local/client-profile.json va dien that. So nhay cam (luong, tuoi, chi tiet gia dinh) chi giu o _local (gitignored). Goals rieng o goals.json."
+}
