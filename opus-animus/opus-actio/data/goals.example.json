@@ -1,0 +1,7 @@
+{
+  "monthly_income_jpy": 500000,
+  "house_fund_target_jpy": 50000000,
+  "house_horizon_months": 24,
+  "current_fund_source": "idle_cash_beyond_ef",
+  "note": "Placeholder. Copy sang data/_local/goals.json và điền số thật."
+}
