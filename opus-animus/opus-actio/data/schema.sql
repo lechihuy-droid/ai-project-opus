@@ -85,6 +85,28 @@ CREATE TABLE IF NOT EXISTS networth (
   idle_cash_beyond_ef INTEGER
 );
 
+-- Liabilities complete the balance sheet: assets - debt = true net worth.
+CREATE TABLE IF NOT EXISTS liabilities (
+  id              INTEGER PRIMARY KEY,
+  snapshot_id     INTEGER REFERENCES snapshot(id) ON DELETE CASCADE,
+  kind            TEXT NOT NULL,      -- 'mortgage' | 'loan' | 'card_revolving' | 'other'
+  name            TEXT,
+  principal_jpy   INTEGER NOT NULL,   -- dư nợ còn lại
+  rate_pct        REAL,
+  term_months     INTEGER,
+  monthly_payment_jpy INTEGER,
+  start_date      TEXT,               -- 'YYYY-MM-DD'
+  note            TEXT
+);
+
+DROP VIEW IF EXISTS v_networth_true;
+CREATE VIEW v_networth_true AS
+SELECT n.snapshot_id,
+       n.net_worth AS assets_net_worth,
+       COALESCE((SELECT SUM(principal_jpy) FROM liabilities l WHERE l.snapshot_id=n.snapshot_id),0) AS total_liabilities,
+       n.net_worth - COALESCE((SELECT SUM(principal_jpy) FROM liabilities l WHERE l.snapshot_id=n.snapshot_id),0) AS true_net_worth
+FROM networth n;
+
 -- Credit-card transactions (Layer A — rebuilt from CSVs each run, idempotent)
 CREATE TABLE IF NOT EXISTS card_txn (
   id           INTEGER PRIMARY KEY,
