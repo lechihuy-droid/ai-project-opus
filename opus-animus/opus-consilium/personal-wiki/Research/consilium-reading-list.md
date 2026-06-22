@@ -88,7 +88,7 @@ competitor_intelligence
 tech_learning
 dx_japan
 ai_sdlc
-threat_lens
+impact_lens
 fde_lite
 opus_architecture
 governance_risk
@@ -182,11 +182,11 @@ URL: https://arxiv.org/html/2606.05608v1
 Source: arXiv
 Source tier: tier_e_research
 Layer: strategy
-Lane: threat_lens, ai_sdlc, opus_architecture, workforce_reskill
-Labels: agentic-sdlc, software-engineering-threat, control-plane, eval-loop, fde-lite
+Lane: impact_lens, ai_sdlc, opus_architecture, workforce_reskill
+Labels: agentic-sdlc, software-engineering-impact, control-plane, eval-loop, fde-lite
 Priority: P0
 Status: promoted
-Reason to read: Strong threat lens for code-centric software delivery, offshore/SI business models, and Opus control-plane design.
+Reason to read: Strong impact lens for code-centric software delivery, offshore/SI business models, and Opus control-plane design.
 Expected use: Update Strategy/agentic-operating-model.md, operator-topology.md, and wiki-eval-loop.md.
 Added date: 2026-06-22
 Decision label: test
@@ -197,6 +197,27 @@ Promotion result:
 ```text
 Promoted to: personal-wiki/Strategy/agentic-operating-model.md
 Related control artifact: opus-animus/ai/operator-topology.md
+```
+
+---
+
+### RL-20260622-002 — Do Proactive Agents Really Need an LLM to Decide When to Wake and What to Anchor?
+
+```text
+ID: RL-20260622-002
+Title: Do Proactive Agents Really Need an LLM to Decide When to Wake and What to Anchor?
+URL: https://arxiv.org/abs/2605.30152
+Source: arXiv
+Source tier: tier_e_research
+Layer: strategy, evidence
+Lane: opus_architecture, ai_sdlc, tech_learning
+Labels: proactive-agent, wake-pattern, context-routing, temporal-graph-learning, always-on-trigger, on-device-agent, consilium
+Priority: P0
+Status: queued
+Reason to read: Directly relevant to Consilium and Opus Animus architecture because it questions always-on LLM triggering and proposes a graph-first trigger/router for proactive assistants.
+Expected use: Update Consilium wake-pattern design, Opus proactive-agent architecture, and evidence notes for when to wake an LLM versus using lightweight graph/routing models.
+Added date: 2026-06-22
+Decision label: keep
 ```
 
 ---
@@ -229,7 +250,7 @@ Expected output:
 ```text
 Deep summary
 Strategic lens
-Threat / opportunity
+Opportunity / risk
 Implication for Opus / FDE-lite / CEO radar
 Promotion target
 Recommended wiki action
