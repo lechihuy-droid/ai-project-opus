@@ -38,18 +38,16 @@ def _animus_root() -> Path:
 
 
 def _health_summary(date: str) -> str | None:
-    health_dir = _animus_root() / "opus-nexus" / "health"
-    if not health_dir.exists():
-        return None
+    from . import vita
 
-    for health_path in _dated_files(health_dir, date, {".md", ".json"}):
-        if health_path.suffix.lower() == ".json":
-            summary = _json_summary(health_path)
-        else:
-            summary = _text_summary(health_path)
-        if summary:
-            return summary
-    return None
+    health = vita.vita_health(date)
+    workout = vita.vita_workout(date)
+    summaries = [
+        item.get("summary")
+        for item in (health, workout)
+        if isinstance(item, dict) and item.get("summary")
+    ]
+    return " ".join(summaries) if summaries else None
 
 
 def _calendar_today(date: str) -> str | None:

@@ -7,6 +7,7 @@ from primus.providers import consilium_info, nexus_context
 
 def test_nexus_context_missing_opus_nexus_degrades(monkeypatch, tmp_path):
     monkeypatch.setenv("ANIMUS_ROOT", str(tmp_path))
+    monkeypatch.setenv("OPUS_VITA_DATA", str(tmp_path))
 
     assert nexus_context("2026-06-22") == {
         "health_summary": None,
@@ -14,11 +15,21 @@ def test_nexus_context_missing_opus_nexus_degrades(monkeypatch, tmp_path):
     }
 
 
-def test_nexus_context_reads_health_file_for_date(monkeypatch, tmp_path):
+def test_nexus_context_reads_vita_health_file_for_date(monkeypatch, tmp_path):
     monkeypatch.setenv("ANIMUS_ROOT", str(tmp_path))
-    health_dir = tmp_path / "opus-nexus" / "health"
-    health_dir.mkdir(parents=True)
-    (health_dir / "2026-06-22.md").write_text("Sleep: 7h. Energy: medium.", encoding="utf-8")
+    monkeypatch.setenv("OPUS_VITA_DATA", str(tmp_path))
+    health_dir = tmp_path / "health-data"
+    health_dir.mkdir()
+    (health_dir / "2026-06-22.json").write_text(
+        json.dumps(
+            {
+                "date": "2026-06-22",
+                "meals": [{"total_kcal": 1800, "total_protein": 90}],
+                "sleep_hours": 7,
+            }
+        ),
+        encoding="utf-8",
+    )
 
     result = nexus_context("2026-06-22")
 
