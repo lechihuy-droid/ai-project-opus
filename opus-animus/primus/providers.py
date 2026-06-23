@@ -4,8 +4,12 @@ from __future__ import annotations
 
 import json
 import os
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
+
+
+JST = timezone(timedelta(hours=9))
 
 
 def nexus_context(date: str) -> dict:
@@ -15,21 +19,24 @@ def nexus_context(date: str) -> dict:
     }
 
 
-def consilium_info(active_goals: list[str]) -> list[dict]:
+def consilium_info(active_goals: list[str], date: str | None = None) -> list[dict]:
     goals = [goal.strip() for goal in active_goals if goal and goal.strip()]
     if not goals:
         return []
 
-    intel_dir = _animus_root() / "opus-consilium" / "logs" / "intel_reviews"
-    if not intel_dir.exists():
+    from . import consilium
+
+    review_date = date or datetime.now(JST).date().isoformat()
+    try:
+        intel_items = consilium.consilium_intel(review_date)
+    except Exception:
         return []
 
     items: list[dict] = []
-    for log_path in sorted(intel_dir.rglob("*.json")):
-        for raw_item in _intel_items(log_path):
-            info_item = _info_item_if_relevant(raw_item, goals)
-            if info_item is not None:
-                items.append(info_item)
+    for raw_item in intel_items:
+        info_item = _info_item_if_relevant(raw_item, goals)
+        if info_item is not None:
+            items.append(info_item)
     return items
 
 
@@ -115,58 +122,33 @@ def _text_summary(path: Path) -> str | None:
     return text or None
 
 
-def _intel_items(path: Path) -> list[dict]:
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
-        return []
-
-    return [item for item in _walk_items(data) if isinstance(item, dict)]
-
-
-def _walk_items(data: Any) -> list[Any]:
-    if isinstance(data, list):
-        return data
-    if not isinstance(data, dict):
-        return []
-
-    for key in ("info_items", "items", "intel_items", "reviews", "entries", "signals", "articles"):
-        value = data.get(key)
-        if isinstance(value, list):
-            return value
-
-    if _first_string(data, ("title", "headline", "topic", "name")):
-        return [data]
-    return []
-
-
 def _info_item_if_relevant(raw_item: dict, goals: list[str]) -> dict | None:
     title = _first_string(raw_item, ("title", "headline", "topic", "name"))
     reason = _first_string(raw_item, ("reason", "summary", "why", "content", "excerpt"))
-    topic = _first_string(raw_item, ("topic", "goal_ref", "title", "headline", "name"))
-    if not title or not reason or not topic:
+    topic = _first_string(raw_item, ("topic", "goal_ref", "goal"))
+    if not title or not reason:
         return None
 
-    matched_goal = _matched_goal(topic, raw_item, goals)
+    matched_goal = _matched_goal(raw_item, goals)
     if matched_goal is None:
         return None
 
     return {
         "title": title,
         "reason": reason,
+        "topic": topic or "",
         "goal_ref": _first_string(raw_item, ("goal_ref", "goal")) or matched_goal,
     }
 
 
-def _matched_goal(topic: str, raw_item: dict, goals: list[str]) -> str | None:
+def _matched_goal(raw_item: dict, goals: list[str]) -> str | None:
     item_text = _normalize(" ".join(_item_strings(raw_item)))
-    topic_text = _normalize(topic)
 
     for goal in goals:
         goal_text = _normalize(goal)
         if not goal_text:
             continue
-        if goal_text in item_text or topic_text in goal_text:
+        if goal_text in item_text:
             return goal
     return None
 

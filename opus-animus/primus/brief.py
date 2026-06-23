@@ -116,7 +116,7 @@ def generate_brief(intent_packet: dict) -> tuple[str, list[dict]]:
         "CONSILIUM",
         "info_items",
         ["docs/SD-proactive-brief.md", "primus/providers.py", "opus-consilium/logs"],
-        lambda: providers.consilium_info(active_goals),
+        lambda: providers.consilium_info(active_goals, date=date),
     )
     observe(info, empty_is_progress=True)
 
