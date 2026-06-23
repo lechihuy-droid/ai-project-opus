@@ -37,14 +37,14 @@ def test_nexus_context_reads_vita_health_file_for_date(monkeypatch, tmp_path):
 
 
 def test_consilium_info_missing_logs_degrades(monkeypatch, tmp_path):
-    monkeypatch.setenv("ANIMUS_ROOT", str(tmp_path))
+    monkeypatch.setenv("OPUS_CONSILIUM_LOGS", str(tmp_path / "missing"))
 
-    assert consilium_info(["AI trend radar"]) == []
+    assert consilium_info(["AI trend radar"], date="2026-06-22") == []
 
 
 def test_consilium_info_filters_to_active_goal_matches(monkeypatch, tmp_path):
-    monkeypatch.setenv("ANIMUS_ROOT", str(tmp_path))
-    intel_dir = tmp_path / "opus-consilium" / "logs" / "intel_reviews"
+    monkeypatch.setenv("OPUS_CONSILIUM_LOGS", str(tmp_path / "logs"))
+    intel_dir = tmp_path / "logs" / "intel_reviews"
     intel_dir.mkdir(parents=True)
     (intel_dir / "2026-06-22.json").write_text(
         json.dumps(
@@ -66,10 +66,11 @@ def test_consilium_info_filters_to_active_goal_matches(monkeypatch, tmp_path):
         encoding="utf-8",
     )
 
-    assert consilium_info(["AI trend radar"]) == [
+    assert consilium_info(["AI trend radar"], date="2026-06-22") == [
         {
             "title": "New model pricing shift",
             "reason": "Directly affects active AI monitoring work.",
+            "topic": "AI trend radar",
             "goal_ref": "AI trend radar",
         }
     ]

@@ -60,7 +60,7 @@ def _patch_happy_path(monkeypatch) -> None:
             "calendar_today": "Lịch bận 10:00-12:00.",
         },
     )
-    monkeypatch.setattr(providers, "consilium_info", lambda active_goals: [])
+    monkeypatch.setattr(providers, "consilium_info", lambda active_goals, date=None: [])
     monkeypatch.setattr(logos.rank, "rank", lambda items, profile, ctx, llm=None: items)
     monkeypatch.setattr(logos.arbiter, "arbitrate", lambda ranked: (ranked, []))
 
@@ -92,7 +92,7 @@ def test_generate_brief_empty_path_returns_nothing_new(monkeypatch, tmp_path):
         "nexus_context",
         lambda date: {"health_summary": None, "calendar_today": None},
     )
-    monkeypatch.setattr(providers, "consilium_info", lambda active_goals: [])
+    monkeypatch.setattr(providers, "consilium_info", lambda active_goals, date=None: [])
     monkeypatch.setattr(logos.rank, "rank", lambda items, profile, ctx, llm=None: items)
     monkeypatch.setattr(logos.arbiter, "arbitrate", lambda ranked: (ranked, []))
 
@@ -145,7 +145,7 @@ def test_generate_brief_caps_returned_saved_and_displayed_items(monkeypatch, tmp
         "nexus_context",
         lambda date: {"health_summary": None, "calendar_today": None},
     )
-    monkeypatch.setattr(providers, "consilium_info", lambda active_goals: [])
+    monkeypatch.setattr(providers, "consilium_info", lambda active_goals, date=None: [])
 
     brief_text, items = generate_brief(_intent_packet())
 
