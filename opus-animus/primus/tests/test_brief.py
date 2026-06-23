@@ -4,7 +4,7 @@ import json
 import re
 
 from primus import providers
-from primus.brief import assemble_brief_text, generate_brief
+from primus.brief import _active_goals, _profile, assemble_brief_text, generate_brief
 
 import logos.arbiter
 import logos.rank
@@ -100,6 +100,19 @@ def test_generate_brief_empty_path_returns_nothing_new(monkeypatch, tmp_path):
 
     assert "nothing-new" in brief_text
     assert items == []
+
+
+def test_brief_profile_defaults_to_loader(monkeypatch):
+    loaded = {"goals": [{"id": "career_ai_fde", "keywords": ["ai"]}], "preferences": {}, "constraints": {}}
+    monkeypatch.setattr("primus.brief.user_profile.load_user_profile", lambda: loaded)
+
+    assert _profile({"origin": "user"}) == loaded
+
+
+def test_active_goals_include_profile_goal_keywords():
+    assert _active_goals(
+        {"goals": [{"id": "career_ai_fde", "keywords": ["ai", "dashboard"]}]}
+    ) == ["career_ai_fde", "ai", "dashboard"]
 
 
 def test_returned_items_are_suggestion_only(monkeypatch, tmp_path):

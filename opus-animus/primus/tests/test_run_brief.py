@@ -6,8 +6,13 @@ import run_brief
 DATE = "2026-06-22"
 
 
-def test_first_pull_generates_brief(capsys):
+def test_first_pull_generates_brief(capsys, monkeypatch):
     calls: list[dict] = []
+    monkeypatch.setattr(
+        run_brief,
+        "_load_user_profile",
+        lambda: {"goals": [{"id": "career_ai_fde", "keywords": ["ai"]}], "preferences": {}, "constraints": {}},
+    )
 
     def fake_generate(intent_packet: dict):
         calls.append(intent_packet)
@@ -25,6 +30,7 @@ def test_first_pull_generates_brief(capsys):
             "origin": "user",
             "expected_output": "proactive_item set",
             "date": DATE,
+            "profile": {"goals": [{"id": "career_ai_fde", "keywords": ["ai"]}], "preferences": {}, "constraints": {}},
         }
     ]
     assert "Primus đề xuất" in capsys.readouterr().out
