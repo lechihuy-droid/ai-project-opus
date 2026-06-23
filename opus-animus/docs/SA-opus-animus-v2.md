@@ -186,11 +186,16 @@ opus-animus/
 | Infra (Task Scheduler) | 🟡 Jobs exist |
 | Lucida | 🟡 Partial |
 | Nexus (dashboard/health) | 🟡 Partial |
-| **Eval foundation** (traces/golden/registry) | ✅ Built (25 tests; eval gate PASS) |
-| **Logos / Rector** | ✅ Built MVP (8 + 12 tests) |
-| **Proactive brief** (pull-mode) | ✅ Built MVP (`run_brief.py`, 9 tests; live brief OK) |
-| Controller loop | ✅ Built (in `primus/brief.py`, 6-step trace) |
-| intent-router (full), user-profile wiring, push/Telegram | ⛔ Not built (router *eval* exists; brief uses fixed plan) |
+| **Eval foundation** (traces/golden/registry) | ✅ Built (eval gate PASS) |
+| **Logos / Rector** | ✅ Built MVP |
+| **Proactive brief** (pull-mode) | ✅ Built MVP (`run_brief.py`, live OK) |
+| Controller loop | ✅ Built (`primus/brief.py`, 6-step trace) |
+| **User-profile** (goals/prefs/constraints) | ✅ Wired (`user-profile/`, goal-aware ranking + relevance) |
+| **Nexus ← health/workout** | ✅ Wired (`primus/vita.py` ← `health-data/` + `workout-data/`) |
+| **Consilium intel → brief** | ✅ Wired (`primus/consilium.py`, goal relevance gate; degrades until intel logs exist) |
+| **Push-mode** (Infra → Telegram) | ✅ Built MVP one-way (`run_push_brief.py`; needs `.env` creds + scheduler) |
+| intent-router (full), Telegram 2-way | ⛔ Not built (router *eval* exists; brief uses fixed plan; push is one-way) |
+| Total tests | 78 pytest pass |
 
 ---
 

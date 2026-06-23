@@ -1,6 +1,6 @@
 # RD — Push-Mode Daily Brief (Infra → Telegram)
 **Date:** 2026-06-22
-**Status:** 🔵 Draft
+**Status:** 🟢 Implemented (2026-06-24, one-way MVP) — `run_push_brief.py` + `primus/telegram.py`; cần `.env` creds + đăng ký scheduler để bật
 **Author:** Lê Chí Huy + Claude
 **Phase:** v4 Phase 3 — chỉ làm SAU khi pull-mode ổn (đã build) + anti-annoyance (§3.7) bật trước khi push
 **Nguồn plan:** [`OPERATING-MODEL-OPUS-ANIMUS-v4.md`](OPERATING-MODEL-OPUS-ANIMUS-v4.md) §3.2, §3.4, §3.7, §7.2

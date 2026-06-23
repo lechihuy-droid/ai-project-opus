@@ -192,10 +192,12 @@ def _workout_summary(workout: dict) -> str:
 
     type_text = f" ({', '.join(workout['types'])})" if workout["types"] else ""
     streak_text = f"; chuỗi {workout['streak_days']} ngày" if workout.get("streak_days") else ""
-    return (
-        f"Đã tập: {workout['sessions']} buổi{type_text}, "
-        f"{_format_number(workout['total_min'])}'{streak_text}."
+    minutes_text = (
+        f", {_format_number(workout['total_min'])}'"
+        if workout.get("total_min")
+        else ""
     )
+    return f"Đã tập: {workout['sessions']} buổi{type_text}{minutes_text}{streak_text}."
 
 
 def _format_number(value: Any) -> str:
