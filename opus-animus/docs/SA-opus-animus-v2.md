@@ -3,8 +3,9 @@
 **Status:** 🟢 Current
 **Supersedes:** [`SA-system-architecture.md`](SA-system-architecture.md) (v1, 2026-04-28 — "personal-agent"/Groq era, pre-naming)
 **Governance ref:** [`OPERATING-MODEL-OPUS-ANIMUS-v4.md`](OPERATING-MODEL-OPUS-ANIMUS-v4.md)
+**Toàn cảnh hệ sinh thái (Actio/Nexus/Lucida/shared):** [`SA-opus-ecosystem.md`](SA-opus-ecosystem.md)
 
-> SA = bức tranh kiến trúc tổng. Governance/luật ở Operating Model v4; chi tiết interface ở các `SD-*`. Doc này là bản đồ, không phải spec implementation.
+> SA = bức tranh kiến trúc tổng. Doc này là nội bộ **agent core (Primus)**; bản đồ toàn ecosystem ở `SA-opus-ecosystem.md`. Governance/luật ở Operating Model v4; chi tiết interface ở các `SD-*`. Doc này là bản đồ, không phải spec implementation.
 
 ---
 
