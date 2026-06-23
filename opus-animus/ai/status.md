@@ -2,7 +2,7 @@
 **Updated:** 2026-06-22
 **Current owner:** Claude
 
-> **v4 governance:** [`docs/OPERATING-MODEL-OPUS-ANIMUS-v4.md`](../docs/OPERATING-MODEL-OPUS-ANIMUS-v4.md) · architecture [`docs/SA-opus-animus-v2.md`](../docs/SA-opus-animus-v2.md). Proactive daily brief (pull-mode) MVP built — run `python opus-animus/run_brief.py`.
+> **v4 governance:** [`docs/OPERATING-MODEL-OPUS-ANIMUS-v4.md`](../docs/OPERATING-MODEL-OPUS-ANIMUS-v4.md) · architecture [`docs/SA-system-architecture.md`](../docs/SA-system-architecture.md). Proactive daily brief (pull-mode) MVP built — run `python opus-animus/run_brief.py`.
 
 ## Active sub-systems
 

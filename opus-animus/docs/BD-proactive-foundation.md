@@ -182,7 +182,7 @@ opus-animus/
 
 ### Step 16 — Wire-up docs + handoff (Claude) · 45m
 - [ ] Thêm pointer ngắn trong `AGENTS.md` + `ai/status.md` trỏ tới v4 + subsystem mới (v4 Phase 1)
-- [ ] Cập nhật status: `opus-logos/ai/status.md` + `opus-rector/ai/status.md` → 🟢; `SA-opus-animus-v2.md §10` build-status
+- [ ] Cập nhật status: `opus-logos/ai/status.md` + `opus-rector/ai/status.md` → 🟢; `SA-system-architecture.md` build-status
 - [ ] Đánh dấu các step ✅ trong BD này
 - [ ] `/handoff`
 **Smoke test:** đọc lại status → khớp thực tế; không doc nào còn 🟡 sai.
