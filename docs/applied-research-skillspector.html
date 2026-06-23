@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nghiên cứu áp dụng — SkillSpector</title>
+  <link rel="stylesheet" href="../html-kit/styles.css">
+  <script src="../html-kit/diagram.js" defer></script>
+</head>
+<body>
+
+<header class="doc-header">
+  <span class="badge navy">Applied Research</span>
+  <span class="badge teal">Security</span>
+  <h1>SkillSpector — Nghiên cứu &amp; áp dụng vào workspace</h1>
+  <p class="lead">Đánh giá tool quét bảo mật AI agent skills của NVIDIA, vet như một dependency, và chạy thực tế trên toàn bộ skills/agents/commands của workspace này.</p>
+  <p class="text-small text-muted">Branch <code>claude/applied-research-875lua</code> · 2026-06-23 · static-only scan (không nhập API key)</p>
+</header>
+
+<!-- ───────────────────────── TL;DR ───────────────────────── -->
+<section>
+  <h2>TL;DR</h2>
+  <div class="callout">
+    <strong>SkillSpector dùng được, đáng tích hợp như một cổng vet trước khi cài skill lạ — nhưng đừng tin tuyệt đối điểm số khi chạy static-only.</strong>
+    Quét 38 mục nội bộ: <strong>0 finding độc hại thật</strong>, 28 mục sạch hoàn toàn, 10 mục bị flag. Phần lớn finding là <strong>false positive</strong> do khớp keyword trên prose tài liệu &amp; văn bản giấy phép. Chỉ 2 nhóm finding thật sự đáng làm: dependency chưa pin version (<code>dcf-model</code>) và thiếu khai báo <code>permissions</code>.
+  </div>
+  <div class="card-grid">
+    <div class="card"><span class="badge gray">Mục đã quét</span><h3>38</h3><p class="text-small">33 skill · 3 agent · 2 command</p></div>
+    <div class="card"><span class="badge green">Sạch hoàn toàn</span><h3>28</h3><p class="text-small">score 0, không issue</p></div>
+    <div class="card"><span class="badge navy">Bị flag</span><h3>10</h3><p class="text-small">22 issue, đa số false positive</p></div>
+    <div class="card"><span class="badge red">Độc hại thật</span><h3>0</h3><p class="text-small">không có malicious intent</p></div>
+  </div>
+</section>
+
+<!-- ───────────────────────── 1. SkillSpector là gì ───────────────────────── -->
+<section>
+  <h2>1 · SkillSpector là gì</h2>
+  <p>Tool dòng lệnh do <strong>NVIDIA</strong> phát hành (Apache-2.0, ~9.4k★, <code>v2.3.1</code>), quét <strong>AI agent skills</strong> (Claude Code, Cursor, Codex CLI…) để phát hiện lỗ hổng, mẫu độc hại và rủi ro bảo mật <em>trước khi cài</em>. Bối cảnh: skill chạy với "implicit trust" và gần như không được vet — nghiên cứu của họ nêu 26.1% skill có lỗ hổng và 5.2% có dấu hiệu độc hại.</p>
+
+  <div class="card-grid">
+    <div class="card"><h3>Đầu vào đa dạng</h3><p class="text-small">Git repo · URL · zip · thư mục · file <code>.md</code> đơn lẻ.</p></div>
+    <div class="card"><h3>64 pattern / 16–18 nhóm</h3><p class="text-small">prompt injection, data exfiltration, privilege escalation, supply chain, excessive agency, rogue agent, MCP least-privilege, YARA signatures, taint tracking…</p></div>
+    <div class="card"><h3>Phân tích 2 tầng</h3><p class="text-small">Static pattern nhanh + tầng LLM semantic <em>tùy chọn</em> để lọc ngữ cảnh.</p></div>
+    <div class="card"><h3>SCA trực tiếp</h3><p class="text-small">Tra <code>OSV.dev</code> realtime cho CVE, có fallback offline.</p></div>
+    <div class="card"><h3>Risk score 0–100</h3><p class="text-small">kèm severity + recommendation (SAFE / REVIEW / BLOCK).</p></div>
+    <div class="card"><h3>4 định dạng output</h3><p class="text-small">terminal · JSON · Markdown · SARIF (vào CI).</p></div>
+  </div>
+
+  <h3>Pipeline xử lý</h3>
+  <div class="diagram" data-chart='{
+    "type": "flow",
+    "nodes": [
+      {"id":"in","label":"Input\n(repo/url/zip/dir/.md)","shape":"terminal"},
+      {"id":"parse","label":"Tách components\n(md, scripts, yaml)","shape":"rect"},
+      {"id":"static","label":"Static: 64 pattern\n+ YARA + taint","shape":"rect"},
+      {"id":"sca","label":"SCA → OSV.dev\n(CVE lookup)","shape":"rect"},
+      {"id":"llm","label":"LLM semantic?","shape":"diamond"},
+      {"id":"sem","label":"Lọc ngữ cảnh\nbằng LLM","shape":"rect"},
+      {"id":"score","label":"Risk score 0–100\n+ recommendation","shape":"rect"},
+      {"id":"out","label":"terminal/json/md/sarif","shape":"terminal"}
+    ],
+    "edges": [
+      {"from":"in","to":"parse"},
+      {"from":"parse","to":"static"},
+      {"from":"static","to":"sca"},
+      {"from":"sca","to":"llm"},
+      {"from":"llm","to":"sem","label":"có key"},
+      {"from":"llm","to":"score","label":"--no-llm"},
+      {"from":"sem","to":"score"},
+      {"from":"score","to":"out"}
+    ]
+  }'></div>
+</section>
+
+<!-- ───────────────────────── 2. Vetting ───────────────────────── -->
+<section>
+  <h2>2 · Vetting trước khi cài (skill <code>dependency-vetting</code>)</h2>
+  <p>Theo checklist của chính workspace, đã clone để đọc (không chạy) và soi các điểm nhạy cảm:</p>
+  <table>
+    <thead><tr><th>Hạng mục</th><th>Kết quả</th><th>Đánh giá</th></tr></thead>
+    <tbody>
+      <tr><td>Nguồn chính chủ</td><td><code>github.com/NVIDIA/SkillSpector</code>, org NVIDIA, Apache-2.0</td><td><span class="badge green">OK</span> không typosquat</td></tr>
+      <tr><td>Build-system</td><td><code>hatchling</code> chuẩn, không gọi shell</td><td><span class="badge green">OK</span></td></tr>
+      <tr><td>Install hooks</td><td>Không có <code>preinstall/postinstall/setup.py</code> chạy lệnh; <code>[project.scripts]</code> chỉ đăng ký entrypoint CLI</td><td><span class="badge green">OK</span></td></tr>
+      <tr><td>Makefile <code>install</code></td><td><code>uv sync</code> hoặc <code>pip install -e .</code></td><td><span class="badge green">OK</span></td></tr>
+      <tr><td>Dependencies</td><td>typer, rich, httpx, pydantic, openai, langgraph, langchain, yara-python — đều uy tín</td><td><span class="badge green">OK</span></td></tr>
+      <tr><td>Secrets</td><td>API key chỉ cần cho tầng LLM <em>tùy chọn</em>; static chạy không cần key</td><td><span class="badge green">OK</span> chạy static-only</td></tr>
+      <tr><td>Isolation</td><td>Container remote ephemeral, không mount secret</td><td><span class="badge green">OK</span></td></tr>
+    </tbody>
+  </table>
+  <div class="callout">Kết luận vet: <strong>An toàn để cài và chạy trong container này.</strong> Cài qua <code>uv sync --python 3.12</code> (yêu cầu Python ≥3.12,&lt;3.14), chạy static-only bằng cờ <code>--no-llm</code> nên không gửi nội dung skill ra ngoài.</div>
+</section>
+
+<!-- ───────────────────────── 3. Cách áp dụng ───────────────────────── -->
+<section>
+  <h2>3 · Cách cài &amp; chạy</h2>
+  <pre><code># Cài (Python 3.12/3.13)
+git clone https://github.com/NVIDIA/SkillSpector &amp;&amp; cd SkillSpector
+uv sync --python 3.12          # hoặc: make install
+
+# Quét 1 skill — static-only, xuất JSON
+uv run skillspector scan ./my-skill/ --no-llm --format json -o report.json
+
+# Quét + tầng LLM semantic (cần 1 trong các key)
+export SKILLSPECTOR_PROVIDER=anthropic ANTHROPIC_API_KEY=...
+uv run skillspector scan ./my-skill/ -f sarif -o report.sarif</code></pre>
+  <p class="text-small text-muted">Trong báo cáo này dùng <code>--no-llm</code> để không phát sinh chi phí và không gửi nội dung skill ra provider.</p>
+</section>
+
+<!-- ───────────────────────── 4. Kết quả chạy ───────────────────────── -->
+<section>
+  <h2>4 · Kết quả quét toàn workspace (38 mục, static-only)</h2>
+
+  <div class="card-grid">
+    <div class="card"><span class="badge green">LOW</span><h3>36</h3></div>
+    <div class="card"><span class="badge" style="background:#B45309;color:#fff">MEDIUM</span><h3>1</h3></div>
+    <div class="card"><span class="badge red">HIGH</span><h3>1</h3></div>
+    <div class="card"><span class="badge gray">Tổng issue</span><h3>22</h3></div>
+  </div>
+
+  <h3>10 mục bị flag</h3>
+  <table>
+    <thead><tr><th>Skill / file</th><th>Score</th><th>Sev</th><th>Issue chính</th><th>Phán định</th></tr></thead>
+    <tbody>
+      <tr><td><code>skill-creator</code></td><td>65</td><td><span class="badge red">HIGH</span></td><td>Rogue Agent · "Self-Modification" (write/edit SKILL.md) ×3 + Scope Creep trên LICENSE.txt + thiếu permissions</td><td><span class="badge gray">False positive</span> — đây là tool tạo skill, sửa SKILL.md là <em>đúng chức năng</em></td></tr>
+      <tr><td><code>ppt-template-creator</code></td><td>31</td><td><span class="badge" style="background:#B45309;color:#fff">MED</span></td><td>Rogue Agent · "Write SKILL.md" ×2</td><td><span class="badge gray">False positive</span> — bước sinh skill từ template</td></tr>
+      <tr><td><code>dcf-model</code></td><td>20</td><td><span class="badge green">LOW</span></td><td>Supply Chain · dependency chưa pin (<code>openpyxl&gt;=3.0.0</code>, <code>requests&gt;=2.28.0</code>) + thiếu permissions</td><td><span class="badge green">THẬT</span> — nên pin version</td></tr>
+      <tr><td><code>earnings-analysis</code></td><td>11</td><td><span class="badge green">LOW</span></td><td>Excessive Agency match "without checking" trong prose cảnh báo</td><td><span class="badge gray">False positive</span></td></tr>
+      <tr><td><code>ib-check-deck</code></td><td>9</td><td><span class="badge green">LOW</span></td><td>Thiếu khai báo permissions</td><td><span class="badge navy">Info</span></td></tr>
+      <tr><td><code>code-reviewer</code> (agent)</td><td>8</td><td><span class="badge green">LOW</span></td><td>Excessive Agency match "Unbounded queries" — thực ra là tiêu chí review</td><td><span class="badge gray">False positive</span></td></tr>
+      <tr><td><code>initiating-coverage</code></td><td>7</td><td><span class="badge green">LOW</span></td><td>match "No verification needed" trong checklist</td><td><span class="badge gray">False positive</span></td></tr>
+      <tr><td><code>3-statement-model</code></td><td>7</td><td><span class="badge green">LOW</span></td><td>match "without checking" trong hướng dẫn</td><td><span class="badge gray">False positive</span></td></tr>
+      <tr><td><code>audit-xls</code></td><td>7</td><td><span class="badge green">LOW</span></td><td>match "without asking" trong template output</td><td><span class="badge gray">False positive</span></td></tr>
+      <tr><td><code>edinet-fetcher</code></td><td>5</td><td><span class="badge green">LOW</span></td><td>Data Exfiltration match URL API công khai <code>api.edinet-fi.go.jp</code></td><td><span class="badge gray">False positive</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Phân bố nguyên nhân của 22 issue</h3>
+  <table>
+    <thead><tr><th>Nhóm</th><th>Số</th><th>Bản chất ở workspace này</th></tr></thead>
+    <tbody>
+      <tr><td>Excessive Agency</td><td>10</td><td>Hầu hết khớp prose dạng "without checking / not limited to (LICENSE)"</td></tr>
+      <tr><td>Rogue Agent (Self-Modification)</td><td>5</td><td>Khớp "write/edit SKILL.md" của các meta-skill tạo skill</td></tr>
+      <tr><td>MCP Least Privilege</td><td>3</td><td><strong>Thật</strong> — skill chưa khai báo field <code>permissions</code></td></tr>
+      <tr><td>Supply Chain</td><td>3</td><td><strong>Thật</strong> — 2 dep chưa pin + 1 cảnh báo OSV offline</td></tr>
+      <tr><td>Data Exfiltration</td><td>1</td><td>Khớp URL API công khai hợp lệ</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ───────────────────────── 5. Phân tích ───────────────────────── -->
+<section>
+  <h2>5 · Phân tích — vì sao điểm cao không có nghĩa nguy hiểm</h2>
+  <div class="compare">
+    <div>
+      <h3>False positive điển hình</h3>
+      <ul>
+        <li><strong>Self-Modification</strong>: <code>skill-creator</code>/<code>ppt-template-creator</code> bị chấm HIGH vì có chữ "write/edit SKILL.md" — nhưng đó <em>là</em> nhiệm vụ của chúng.</li>
+        <li><strong>Scope Creep</strong>: khớp cụm "not limited to" nằm trong <code>LICENSE.txt</code> (boilerplate Apache).</li>
+        <li><strong>Autonomous Decision</strong>: khớp "without checking / without asking / No verification" trong văn bản <em>khuyên cẩn thận</em>.</li>
+        <li><strong>Data Exfiltration</strong>: khớp URL API công khai đã ghi rõ trong docs.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Finding thật, nên xử lý</h3>
+      <ul>
+        <li><span class="badge green">Làm</span> <strong>Pin dependency</strong> trong <code>dcf-model/requirements.txt</code>: đổi <code>&gt;=</code> sang <code>==</code> (hoặc thêm lockfile).</li>
+        <li><span class="badge navy">Cân nhắc</span> Thêm field <code>permissions:</code> vào front-matter SKILL.md để tool và người đọc thấy rõ phạm vi quyền (3 skill thiếu).</li>
+      </ul>
+      <p class="text-small text-muted">Cả hai đều là vệ sinh tốt, không phải lỗ hổng khẩn cấp.</p>
+    </div>
+  </div>
+  <div class="callout warn"><strong>Bài học áp dụng:</strong> static-only có recall tốt nhưng <em>precision thấp trên skill kiểu tài liệu</em>. Điểm số chỉ nên dùng để <strong>chọn mục cần soi tay</strong>, không dùng làm cổng chặn tự động. Tầng LLM semantic (cần API key) sẽ dập phần lớn false positive trên — đây chính là lý do tool thiết kế 2 tầng.</div>
+</section>
+
+<!-- ───────────────────────── 6. Đề xuất tích hợp ───────────────────────── -->
+<section>
+  <h2>6 · Đề xuất áp dụng vào workflow</h2>
+  <table>
+    <thead><tr><th>#</th><th>Đề xuất</th><th>Mức</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Bổ sung bước <strong>"scan SkillSpector trước khi cài skill bên thứ ba"</strong> vào chính skill <code>dependency-vetting</code> — đúng tinh thần đã có.</td><td><span class="badge green">Nên làm</span></td></tr>
+      <tr><td>2</td><td>Tạo slash command <code>/vet-skill &lt;path|url&gt;</code> gói lệnh <code>skillspector scan … --format markdown</code> để dùng nhanh.</td><td><span class="badge navy">Tùy chọn</span></td></tr>
+      <tr><td>3</td><td>Với skill <em>của mình</em>: chạy <strong>có tầng LLM</strong> (Anthropic key) để giảm false positive, chỉ review mục còn lại.</td><td><span class="badge navy">Tùy chọn</span></td></tr>
+      <tr><td>4</td><td>Pin dependency <code>dcf-model</code>; thêm <code>permissions</code> cho các skill có script thực thi (<code>skill-creator</code>, <code>ib-check-deck</code>, <code>dcf-model</code>).</td><td><span class="badge green">Nên làm</span></td></tr>
+      <tr><td>5</td><td><strong>Không</strong> dùng risk-score static-only làm cổng chặn CI tự động — sẽ chặn nhầm các meta-skill hợp lệ.</td><td><span class="badge red">Tránh</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ───────────────────────── 7. Giới hạn ───────────────────────── -->
+<section>
+  <h2>7 · Giới hạn của lần chạy này</h2>
+  <ul>
+    <li><strong>Static-only</strong> (<code>--no-llm</code>): không có tầng semantic → precision thấp như đã phân tích.</li>
+    <li><strong>OSV.dev bị chặn outbound</strong> trong môi trường remote (cảnh báo <code>SC4</code>): SCA dùng static fallback, kết quả CVE có thể chưa đầy đủ. Chạy ở môi trường có mạng tới <code>api.osv.dev</code> để đủ dữ liệu.</li>
+    <li>Mới quét skill/agent/command nội bộ; chưa quét dependency tree sâu của từng script Python.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Nguồn</h2>
+  <ul class="text-small">
+    <li><a href="https://github.com/NVIDIA/SkillSpector">github.com/NVIDIA/SkillSpector</a> — repo chính chủ, README, pyproject.toml, Makefile</li>
+    <li><a href="https://owasp.org/www-project-agentic-skills-top-10/skill-scanner-integration">OWASP — Agentic Skills Top 10 / Skill Scanner Integration</a></li>
+  </ul>
+  <p class="text-small text-muted">Dữ liệu thô: 38 file JSON scan trong scratchpad của session. Báo cáo tạo theo html-kit của workspace (CSS link external).</p>
+</section>
+
+</body>
+</html>
