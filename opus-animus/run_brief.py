@@ -43,11 +43,13 @@ def main(
         return 0
 
     generate = generate or _load_generate()
+    profile = _load_user_profile()
     brief_text, _items = generate(
         {
             "origin": "user",
             "expected_output": "proactive_item set",
             "date": brief_date,
+            "profile": profile,
         }
     )
     print(brief_text)
@@ -68,6 +70,12 @@ def _load_get_existing() -> GetExistingFn:
     from rector.proactive import get_proactive_set
 
     return get_proactive_set
+
+
+def _load_user_profile() -> dict[str, Any]:
+    from primus.profile import load_user_profile
+
+    return load_user_profile()
 
 
 if __name__ == "__main__":

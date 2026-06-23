@@ -23,7 +23,7 @@ def rank(items: list[dict], profile: dict, context: dict, llm: LLM | None = None
         except Exception:
             continue
 
-    return _heuristic_rank(items)
+    return _heuristic_rank(items, profile)
 
 
 def _default_llm(prompt: str) -> str:
@@ -118,10 +118,11 @@ def _apply_rankings(items: list[dict], rankings: dict[str, dict[str, Any]]) -> l
     return _sort_ranked(ranked)
 
 
-def _heuristic_rank(items: list[dict]) -> list[dict]:
+def _heuristic_rank(items: list[dict], profile: dict) -> list[dict]:
     ranked = []
+    active_keywords = _active_goal_keywords(profile)
     for index, item in enumerate(items):
-        score = _heuristic_score(item)
+        score = _heuristic_score(item, active_keywords)
         ranked.append(
             {
                 **item,
@@ -137,26 +138,101 @@ def _heuristic_rank(items: list[dict]) -> list[dict]:
     return sorted_items
 
 
-def _heuristic_score(item: dict) -> float:
-    priority = str(item.get("priority", "")).casefold()
-    score = {
-        "urgent": 0.8,
-        "high": 0.75,
-        "p0": 0.75,
-        "medium": 0.5,
-        "normal": 0.5,
-        "p1": 0.5,
-        "low": 0.25,
-        "p2": 0.25,
-    }.get(priority, 0.35)
+def _heuristic_score(item: dict, active_keywords: list[str]) -> float:
+    aligned = _is_goal_aligned(item, active_keywords)
+    due_or_high = _is_due_or_high(item)
+    if aligned and due_or_high:
+        score = 0.85
+    elif aligned:
+        score = 0.6
+    elif due_or_high:
+        score = 0.5
+    else:
+        score = 0.25
 
-    if any(item.get(key) for key in ("due", "due_date", "deadline", "hard_deadline")):
-        score += 0.15
-    if any(item.get(key) for key in ("goal_ref", "goal_refs", "goal", "goals")):
-        score += 0.1
     if item.get("blocked"):
         score -= 0.2
     return _clamp_score(score)
+
+
+def _active_goal_keywords(profile: dict) -> list[str]:
+    goals = profile.get("goals", []) if isinstance(profile, dict) else []
+    explicit = (
+        profile.get("active_goals", [])
+        or profile.get("active_goal_refs", [])
+        if isinstance(profile, dict)
+        else []
+    )
+    values: list[Any] = []
+    if isinstance(explicit, str):
+        values.append(explicit)
+    elif isinstance(explicit, list):
+        values.extend(explicit)
+
+    if isinstance(goals, str):
+        values.append(goals)
+    elif isinstance(goals, list):
+        for goal in goals:
+            if isinstance(goal, dict):
+                values.append(goal.get("id"))
+                keywords = goal.get("keywords", [])
+                if isinstance(keywords, str):
+                    values.append(keywords)
+                elif isinstance(keywords, list):
+                    values.extend(keywords)
+            else:
+                values.append(goal)
+
+    keywords: list[str] = []
+    seen: set[str] = set()
+    for value in values:
+        if value is None:
+            continue
+        keyword = str(value).strip()
+        key = keyword.casefold()
+        if keyword and key not in seen:
+            keywords.append(keyword)
+            seen.add(key)
+    return keywords
+
+
+def _is_goal_aligned(item: dict, active_keywords: list[str]) -> bool:
+    if not active_keywords:
+        return False
+    text = " ".join(
+        _text_parts(
+            [
+                item.get("title"),
+                item.get("reason"),
+                item.get("goal_ref"),
+                item.get("goal_refs"),
+            ]
+        )
+    ).casefold()
+    return any(keyword.casefold() in text for keyword in active_keywords)
+
+
+def _text_parts(values: list[Any]) -> list[str]:
+    parts: list[str] = []
+    for value in values:
+        if value is None:
+            continue
+        if isinstance(value, list):
+            parts.extend(_text_parts(value))
+        elif isinstance(value, dict):
+            parts.extend(_text_parts(list(value.values())))
+        else:
+            text = str(value).strip()
+            if text:
+                parts.append(text)
+    return parts
+
+
+def _is_due_or_high(item: dict) -> bool:
+    priority = str(item.get("priority", "")).casefold()
+    if priority in {"urgent", "high", "p0"}:
+        return True
+    return any(item.get(key) for key in ("due", "due_date", "deadline", "hard_deadline"))
 
 
 def _item_id(item: dict, index: int) -> str:

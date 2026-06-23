@@ -1,0 +1,101 @@
+[
+  {
+    "id": "finance_freedom",
+    "title": "Build personal financial freedom",
+    "area": "finance",
+    "keywords": [
+      "finance",
+      "tai chinh",
+      "tài chính",
+      "investing",
+      "dau tu",
+      "đầu tư",
+      "jp stock",
+      "portfolio",
+      "passive income",
+      "cashflow",
+      "capital",
+      "thesis"
+    ],
+    "priority": "high"
+  },
+  {
+    "id": "health_energy",
+    "title": "Protect durable physical and mental energy",
+    "area": "health",
+    "keywords": [
+      "health",
+      "suc khoe",
+      "sức khỏe",
+      "sleep",
+      "ngu",
+      "ngủ",
+      "workout",
+      "tap",
+      "tập",
+      "protein",
+      "dam",
+      "đạm",
+      "recovery",
+      "stress",
+      "burnout",
+      "energy"
+    ],
+    "priority": "high"
+  },
+  {
+    "id": "career_ai_fde",
+    "title": "Advance career through AI/FDE-level leverage",
+    "area": "career",
+    "keywords": [
+      "career",
+      "su nghiep",
+      "sự nghiệp",
+      "fde",
+      "ai",
+      "agent",
+      "intel",
+      "consilium",
+      "dashboard",
+      "production ai",
+      "visibility"
+    ],
+    "priority": "high"
+  },
+  {
+    "id": "knowledge_compounding",
+    "title": "Compound knowledge into decisions and output",
+    "area": "learning",
+    "keywords": [
+      "knowledge",
+      "tri thuc",
+      "tri thức",
+      "wiki",
+      "reflection",
+      "digest",
+      "systems thinking",
+      "opus animus",
+      "second brain",
+      "insight"
+    ],
+    "priority": "medium"
+  },
+  {
+    "id": "l3_product",
+    "title": "Choose and ship an L3 product direction",
+    "area": "product",
+    "keywords": [
+      "l3",
+      "product",
+      "san pham",
+      "sản phẩm",
+      "saas",
+      "consulting",
+      "mvp",
+      "monetize",
+      "user",
+      "time-to-revenue"
+    ],
+    "priority": "medium"
+  }
+]

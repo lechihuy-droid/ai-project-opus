@@ -24,6 +24,7 @@ for _IMPORT_DIR in reversed(
         sys.path.insert(0, _IMPORT_DIR_TEXT)
 
 from animus_core import trace, registry
+from primus import profile as user_profile
 from primus import providers
 import rector.tasks, rector.proactive
 import logos.rank, logos.arbiter
@@ -350,9 +351,14 @@ def _brief_date(intent_packet: dict) -> str:
 
 
 def _profile(intent_packet: dict) -> dict:
-    profile = intent_packet.get("profile") or intent_packet.get("user_profile") or {}
+    if "profile" in intent_packet:
+        profile = intent_packet.get("profile")
+    elif "user_profile" in intent_packet:
+        profile = intent_packet.get("user_profile")
+    else:
+        return user_profile.load_user_profile()
     if not isinstance(profile, dict):
-        return {}
+        return user_profile.load_user_profile()
     return profile
 
 
@@ -371,18 +377,30 @@ def _active_goals(profile: dict) -> list[str]:
         or []
     )
     if isinstance(raw_goals, str):
-        return [raw_goals]
-    if not isinstance(raw_goals, list):
-        return []
+        raw_goals = [raw_goals]
+    elif not isinstance(raw_goals, list):
+        raw_goals = []
 
     goals: list[str] = []
+    seen: set[str] = set()
+
+    def add(value: Any) -> None:
+        if value is None:
+            return
+        goal = str(value).strip()
+        key = goal.casefold()
+        if goal and key not in seen:
+            goals.append(goal)
+            seen.add(key)
+
     for goal in raw_goals:
         if isinstance(goal, dict):
             value = goal.get("id") or goal.get("ref") or goal.get("name") or goal.get("title")
         else:
             value = goal
-        if value:
-            goals.append(str(value))
+        add(value)
+    for keyword in user_profile.active_goal_keywords(profile):
+        add(keyword)
     return goals
 
 

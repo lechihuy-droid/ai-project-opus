@@ -44,3 +44,43 @@ def test_rank_falls_back_to_deterministic_heuristic_when_llm_raises():
     assert len(ranked) == len(ITEMS)
     assert all(item["rank_reason"] == "heuristic fallback" for item in ranked)
     assert all(0.0 <= item["score"] <= 1.0 for item in ranked)
+
+
+def test_heuristic_fallback_uses_goal_alignment_without_marking_everything_high():
+    def failing_llm(prompt: str) -> str:
+        raise RuntimeError("llm unavailable")
+
+    profile = {
+        "goals": [
+            {
+                "id": "career_ai_fde",
+                "keywords": ["ai", "consilium", "dashboard"],
+            }
+        ]
+    }
+    items = [
+        {
+            "id": "aligned",
+            "title": "Draft Consilium dashboard notes",
+            "reason": "Moves the AI/FDE career track forward.",
+            "priority": "low",
+        },
+        {
+            "id": "past-due",
+            "title": "Renew unrelated subscription",
+            "reason": "Admin task is past due.",
+            "due": "2026-01-01",
+            "priority": "low",
+        },
+        {
+            "id": "noise",
+            "title": "Clean downloads folder",
+            "priority": "low",
+        },
+    ]
+
+    ranked = rank(items, profile, CONTEXT, llm=failing_llm)
+
+    assert [item["id"] for item in ranked] == ["aligned", "past-due", "noise"]
+    assert [item["priority"] for item in ranked] == ["medium", "medium", "low"]
+    assert {item["priority"] for item in ranked} != {"high"}

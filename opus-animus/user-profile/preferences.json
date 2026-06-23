@@ -1,0 +1,13 @@
+{
+  "language": "vi",
+  "timezone": "Asia/Tokyo",
+  "quiet_hours": {
+    "start": "06:00",
+    "end": "22:00"
+  },
+  "workout_windows": [
+    "07:00-08:00",
+    "18:30-20:00"
+  ],
+  "meal_style": "high_protein"
+}
