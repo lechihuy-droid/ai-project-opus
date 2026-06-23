@@ -10,3 +10,6 @@ opus-rector/proactive/*.json
 # Codex scratch
 .codex-*.md
 .codex-*.log
+
+# secrets
+.env
