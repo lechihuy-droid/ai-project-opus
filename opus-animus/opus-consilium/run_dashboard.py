@@ -18,6 +18,7 @@ from api.goals     import router as goals_router
 from api.articles  import router as articles_router
 from api.actions   import router as actions_router
 from api.intel     import router as intel_router
+from api.actio     import router as actio_router
 
 app = FastAPI(title="OPUS ANIMUS HOME", docs_url=None, redoc_url=None)
 
@@ -42,6 +43,7 @@ app.include_router(goals_router,     prefix="/api")
 app.include_router(articles_router,  prefix="/api")
 app.include_router(actions_router,   prefix="/api")
 app.include_router(intel_router,     prefix="/api")
+app.include_router(actio_router,     prefix="/api")
 
 # Serve Opus Animus Home last — catches everything else
 home_dir = Path(__file__).parent.parent / "apps" / "opus-home"
