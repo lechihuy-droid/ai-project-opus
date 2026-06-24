@@ -6,7 +6,7 @@ tags: [reading-list, research-intake, strategic-articles, consilium, decision-br
 status: active
 confidence: medium
 created: 2026-06-22
-updated: 2026-06-22
+updated: 2026-06-25
 ---
 
 # Consilium Reading List
@@ -71,7 +71,7 @@ candidate
 
 ## Label Taxonomy
 
-... 
+...
 
 ## Reading Queue
 
@@ -101,8 +101,29 @@ Labels: harness-engineering, agent-operating-system, memory-system, workflow-eng
 Priority: P0
 Status: reading
 Reason to read: Directly aligned with Opus Animus architecture. Reframes agent success from model capability to harness capability including memory, workflow, planning, tools, and governance.
-Expected use: Refine Jarvis → PM Agent → Specialized Agent topology, define corporate memory architecture, governance loops, and AI-native operating system principles.
+Expected use: Refine Jarvis, PM Agent, and Specialized Agent topology; define memory architecture, governance loops, and AI-native operating system principles.
 Added date: 2026-06-22
+Decision label: keep
+```
+
+---
+
+### RL-20260625-004 — Model Context Protocol (MCP)
+
+```text
+ID: RL-20260625-004
+Title: Model Context Protocol (MCP)
+URL: https://modelcontextprotocol.io/
+Source: Anthropic / MCP Documentation
+Source tier: tier_c_platform
+Layer: strategy, action, evidence
+Lane: opus_architecture, ai_sdlc, fde_lite, governance_risk
+Labels: mcp, context-protocol, tool-abstraction, agent-interoperability, context-routing, opus-animus
+Priority: P0
+Status: queued
+Reason to read: MCP is relevant to Opus Animus because it defines a protocol layer for connecting agents, tools, files, memory, and working context.
+Expected use: Inform Opus tool routing, Consilium context interface, PM Agent integration design, and the boundary between local memory, external connectors, and agent runtime.
+Added date: 2026-06-25
 Decision label: keep
 ```
 
