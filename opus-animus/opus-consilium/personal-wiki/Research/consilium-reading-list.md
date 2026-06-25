@@ -6,7 +6,7 @@ tags: [reading-list, research-intake, strategic-articles, consilium, decision-br
 status: active
 confidence: medium
 created: 2026-06-22
-updated: 2026-06-25
+updated: 2026-06-26
 ---
 
 # Consilium Reading List
@@ -125,6 +125,51 @@ Reason to read: MCP is relevant to Opus Animus because it defines a protocol lay
 Expected use: Inform Opus tool routing, Consilium context interface, PM Agent integration design, and the boundary between local memory, external connectors, and agent runtime.
 Added date: 2026-06-25
 Decision label: keep
+```
+
+---
+
+### RL-20260626-005 — Agent Harness Research Pack 2026
+
+```text
+ID: RL-20260626-005
+Title: Agent Harness Research Pack 2026
+URL: https://arxiv.org/abs/2606.21856
+Source: Deep Research / arXiv / OpenReview
+Source tier: tier_e_research
+Layer: strategy, evidence, action
+Lane: opus_architecture, ai_sdlc, governance_risk, tech_learning, fde_lite
+Labels: harness-engineering, agent-harness, agent-operating-system, observability, verification, governance, safety-harness, evaluation-harness, trace-grounded-evaluation, opus-animus
+Priority: P0
+Status: queued
+Reason to read: Consolidates the newest 2026 research around LLM agent harnesses, including runtime governance, multi-user permissions, adaptive harness evolution, benchmarking, observability, safety, and trace-grounded repair/evaluation.
+Expected use: Refine OPUS ANIMUS agent architecture; define Jarvis/PM/Specialized Agent harness layers; map Harness Engineering to BD/RD automation; derive evaluation, observability, and governance requirements for production-grade agents.
+Added date: 2026-06-26
+Decision label: keep
+Verification note: Spot-checked key sources. Harness-MU, HarnessX, and Agent Harness Engineering: A Survey resolve to public arXiv/OpenReview full text. Remaining links require later source-by-source verification before wiki promotion.
+Primary verified anchors:
+- Harness-MU: A Safe, Governed, and Effective Harness for Multi-User LLM Agents — https://arxiv.org/abs/2606.21856
+- HarnessX: A Composable, Adaptive, and Evolvable Agent Harness Foundry — https://arxiv.org/abs/2606.14249
+- Agent Harness Engineering: A Survey — https://openreview.net/pdf/f358711a95aaaf61fdeffd4ef3fc60fba9b8da57.pdf
+Research pack URLs:
+- https://arxiv.org/html/2606.21856v1
+- https://arxiv.org/html/2606.20950v1
+- https://arxiv.org/abs/2606.14249
+- https://arxiv.org/html/2606.08348v1
+- https://arxiv.org/html/2606.06324v1
+- https://arxiv.org/html/2605.27922v1
+- https://arxiv.org/html/2605.27333v1
+- https://arxiv.org/html/2605.24134v1
+- https://arxiv.org/abs/2605.14271
+- https://arxiv.org/html/2605.18747v1
+- https://openreview.net/pdf/f358711a95aaaf61fdeffd4ef3fc60fba9b8da57.pdf
+- https://arxiv.org/abs/2604.13630
+- https://arxiv.org/abs/2604.25850
+- https://arxiv.org/html/2603.28013v2
+- https://arxiv.org/abs/2603.25723
+- https://arxiv.org/abs/2603.00991
+- https://arxiv.org/html/2602.06841v4
+- https://arxiv.org/html/2602.22480v1
 ```
 
 ---
