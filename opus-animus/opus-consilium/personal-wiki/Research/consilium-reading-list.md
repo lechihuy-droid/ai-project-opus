@@ -6,7 +6,7 @@ tags: [reading-list, research-intake, strategic-articles, consilium, decision-br
 status: active
 confidence: medium
 created: 2026-06-22
-updated: 2026-06-26
+updated: 2026-06-27
 ---
 
 # Consilium Reading List
@@ -170,6 +170,29 @@ Research pack URLs:
 - https://arxiv.org/abs/2603.00991
 - https://arxiv.org/html/2602.06841v4
 - https://arxiv.org/html/2602.22480v1
+```
+
+---
+
+### RL-20260626-006 — Awesome Code as Agent Harness Papers
+
+```text
+ID: RL-20260626-006
+Title: Awesome Code as Agent Harness Papers
+URL: https://github.com/YennNing/Awesome-Code-as-Agent-Harness-Papers
+Source: YennNing / GitHub curated research index
+Source tier: tier_e_research
+Layer: strategy, evidence, action
+Lane: opus_architecture, ai_sdlc, governance_risk, tech_learning, fde_lite
+Labels: code-as-agent-harness, harness-engineering, agent-harness, agent-operating-system, tool-orchestration, code-execution-substrate, verification, memory-system, multi-agent-coordination, opus-animus
+Priority: P0
+Status: queued
+Reason to read: Curated navigation hub for the Code as Agent Harness research direction. Useful for tracking the taxonomy and selecting specific papers relevant to Opus Animus rather than reading the entire archive sequentially.
+Expected use: Use as a research pack to identify papers for Jarvis/PM/Specialized Agent harness design, deterministic control flow, code-mediated agent execution, verification, traceability, memory, and multi-agent workflow orchestration.
+Added date: 2026-06-26
+Decision label: keep
+Reading mode: Do not read sequentially. Use as a lookup index and promote only individually verified high-value papers to the main wiki.
+Cross-reference: RL-20260622-003 — Agent Systems with Harness Engineering; RL-20260626-005 — Agent Harness Research Pack 2026.
 ```
 
 ---
