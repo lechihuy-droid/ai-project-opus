@@ -1,13 +1,16 @@
 """Readers for Opus Consilium daily intel reviews.
 
-Discovery in this repo:
-- No checked-in ``opus-consilium/logs/`` data files were present, so runtime
-  review JSON appears absent from the worktree.
-- ``opus-consilium/CLAUDE.md`` and ``run_collect.py`` document the daily output
-  as ``logs/intel_reviews/YYYY-MM-DD.json``.
+Data source:
+- The live pipeline (``run_collect.py`` daily 05:30 JST) writes
+  ``opus-consilium/logs/intel_reviews/YYYY-MM-DD.json``. These logs are gitignored,
+  so they exist only in the working checkout, not in isolated worktrees — run the
+  brief from the main checkout (or point ``OPUS_CONSILIUM_LOGS`` at the live logs)
+  to surface real intel instead of degrading to ``[]``.
 - ``tools/collect_tool.py:daily_synthesis`` writes a review object with
-  ``title``, ``reading_time``, and ``sections[]`` where section bodies may hold
-  article lines such as ``1. Article title - why it matters``.
+  ``title``, ``reading_time``, and ``sections[]`` where section bodies hold
+  numbered article lines such as ``1. Article title - why it matters`` under a
+  "Top N cần đọc" heading. Verified against a real review (see
+  ``tests/test_consilium.py::test_consilium_intel_parses_real_daily_synthesis_shape``).
 - ``api/intel.py`` can expose an API wrapper with ``llm_review`` plus structured
   article/change lists such as ``articles`` or ``latest_changes``.
 

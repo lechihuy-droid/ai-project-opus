@@ -211,13 +211,13 @@ opus-actio/
 
 | Khối | Trạng thái |
 |---|---|
-| Primus core (eval / Logos / Rector / brief pull+push / controller loop) | ✅ Built MVP (78 tests, eval gate PASS) |
+| Primus core (eval / Logos / Rector / brief pull+push / controller loop) | ✅ Built MVP (84 tests, eval gate PASS) |
 | User-profile (goal-aware ranking + relevance) | ✅ Wired |
 | Nexus health/workout → brief | ✅ Wired (`vita.py`); calendar qua nexus-commands |
-| Consilium intel → brief | ✅ Wired (`consilium.py`; degrade tới khi có intel logs) |
-| Push-mode (Infra → Telegram) | ✅ Built MVP one-way (cần `.env` creds + scheduler) |
+| Consilium intel → brief | ✅ Wired + verified vs real review shape (`consilium.py`); logs gitignored → chạy từ main checkout hoặc set `OPUS_CONSILIUM_LOGS` |
+| Push-mode (Infra → Telegram) | ✅ Built MVP one-way; unattended dùng heuristic ranker (`--use-llm` để bật LLM) |
 | Consilium (collector/wiki/intel/FDE) | ✅ Running |
-| **Actio** (đầu tư US+JP, wealth, JP tax) | ✅ Vận hành qua skills; **chưa wire** vào daily brief |
+| **Actio** (đầu tư US+JP, wealth, JP tax) | ✅ Vận hành qua skills + ✅ wired vào daily brief (read-only signals export, finance-goal-gated) |
 | Lucida (content) | 🟡 Partial |
 | apps (jlpt-n2-slides) | 🟡 Partial · pmp-quiz retired |
 | intent-router (full), Telegram 2-way | ⛔ Not built (router *eval* có; brief dùng fixed plan; push one-way) |

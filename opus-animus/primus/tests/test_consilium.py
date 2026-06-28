@@ -90,6 +90,52 @@ def test_consilium_info_keeps_only_goal_matching_items(monkeypatch, tmp_path):
     ]
 
 
+def test_consilium_intel_parses_real_daily_synthesis_shape(monkeypatch, tmp_path):
+    """Contract test against the live run_collect.py daily_synthesis output shape.
+
+    Mirrors opus-consilium/logs/intel_reviews/{date}.json as written by the real
+    pipeline: top-level title/reading_time/sections/status/date/generated_at with a
+    Vietnamese "Top N cần đọc" section whose body holds numbered article lines.
+    """
+
+    intel_dir = _intel_reviews_dir(tmp_path, monkeypatch)
+    (intel_dir / f"{DATE}.json").write_text(
+        json.dumps(
+            {
+                "title": "Daily Intel Review",
+                "reading_time": "6 phút",
+                "status": "ok",
+                "date": DATE,
+                "generated_at": f"{DATE}T05:30:00+09:00",
+                "sections": [
+                    {
+                        "heading": "Top 5 cần đọc",
+                        "body": (
+                            "1. White House yêu cầu OpenAI hoãn rollout GPT-5.6 - "
+                            "Tín hiệu chính sách ảnh hưởng lịch ra model.\n"
+                            "2. OpenAI's Jalapeño chip — Dịch chuyển chuỗi cung silicon."
+                        ),
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    assert consilium.consilium_intel(DATE) == [
+        {
+            "title": "White House yêu cầu OpenAI hoãn rollout GPT-5.6",
+            "reason": "Tín hiệu chính sách ảnh hưởng lịch ra model.",
+            "topic": "Top 5 cần đọc",
+        },
+        {
+            "title": "OpenAI's Jalapeño chip",
+            "reason": "Dịch chuyển chuỗi cung silicon.",
+            "topic": "Top 5 cần đọc",
+        },
+    ]
+
+
 def test_consilium_missing_dir_degrades_to_empty(monkeypatch, tmp_path):
     monkeypatch.setenv("OPUS_CONSILIUM_LOGS", str(tmp_path / "missing"))
 
