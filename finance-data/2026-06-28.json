@@ -1,0 +1,52 @@
+{
+  "date": "2026-06-28",
+  "transactions": [
+    {
+      "time": "11:47",
+      "type": "expense",
+      "amount": 7440,
+      "currency": "JPY",
+      "category": "groceries",
+      "description": "業務スーパー 京橋店",
+      "payment_method": "交通系IC",
+      "source": "receipt_uploaded_in_chat",
+      "receipt": {
+        "store": "業務スーパー 京橋店",
+        "phone": "06-6358-1205",
+        "purchase_time": "2026-06-28T11:47:00+09:00",
+        "receipt_no": "0005-5378768908",
+        "register_no": "T8120001057251",
+        "subtotal": 6890,
+        "tax": 550,
+        "total": 7440,
+        "tax_rate_8_amount": 7435,
+        "tax_rate_8_tax": 550,
+        "tax_rate_10_amount": 5,
+        "tax_rate_10_tax": 0,
+        "item_count": 20,
+        "ic_balance_after": 2091,
+        "card_last4": "7051",
+        "items": [
+          { "name": "青ねぎ", "amount": 158 },
+          { "name": "冬瓜", "amount": 198 },
+          { "name": "キャベツ", "amount": 100 },
+          { "name": "京都産きくな", "amount": 158 },
+          { "name": "紅すいき", "amount": 198 },
+          { "name": "オクラ", "amount": 158 },
+          { "name": "大阪産 かいわれ", "amount": 66, "quantity": 2, "unit_price": 33 },
+          { "name": "アメリカンチェリー", "amount": 498 },
+          { "name": "西瓜", "amount": 398 },
+          { "name": "すもも", "amount": 1196, "quantity": 2, "unit_price": 598 },
+          { "name": "牛肉", "amount": 454 },
+          { "name": "鶏肉", "amount": 411 },
+          { "name": "から", "amount": 1780 },
+          { "name": "アーモンドバー", "amount": 478 },
+          { "name": "レジ袋大", "amount": 5 },
+          { "name": "スーパーカップ しょうゆ", "amount": 118 },
+          { "name": "スーパーカップ みそ", "amount": 118 },
+          { "name": "ホット＆スパイシースープ", "amount": 398 }
+        ]
+      }
+    }
+  ]
+}
