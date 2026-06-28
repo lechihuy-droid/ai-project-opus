@@ -60,6 +60,7 @@ sequenceDiagram
 2. Rector      → pull_due_tasks(date, profile)        → task items
 3. Nexus       → today_context(date)                  → health + calendar context
 4. Consilium   → relevant_info(active_goals)          → info items (relevance gate §3.7)
+4b. Actio      → finance_signals(active_goals)        → finance_alert items (read-only export, finance-goal-gated)
 5. user-profile→ goals/prefs/constraints              → bias cho bước 6
 6. Logos       → rank(items, profile, context)        → ranked
                → arbitrate(ranked)                    → resolved + trade-off (§3.3)
@@ -70,7 +71,7 @@ sequenceDiagram
 11. (sau phản hồi) update_proactive_state + record_engagement/outcome
 ```
 
-**Controller loop guards (§8.1):** max_steps (vd 6); no-progress 2 lần → ask/abort; mỗi step ghi trace; single-hop "hôm nay làm gì" thường kết thúc sau 1 vòng finish.
+**Controller loop guards (§8.1):** max_steps (7, gồm Actio finance step); no-progress 2 lần → ask/abort; mỗi step ghi trace; single-hop "hôm nay làm gì" thường kết thúc sau 1 vòng finish.
 
 ---
 

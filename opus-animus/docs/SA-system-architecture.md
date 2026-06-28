@@ -97,12 +97,13 @@ Mỗi message (user/proactive_trigger) → **intent_packet** (origin, intent_typ
 2. RECTOR    pull_due_tasks(date, profile)        ← TODO.md, WEEKLY-PLAN.md
 3. NEXUS     today_context(date)                  ← health-data/ + workout-data/ (primus/vita.py)
 4. CONSILIUM relevant_info(active_goals)          ← intel logs (primus/consilium.py, relevance-gated)
-5. user-profile/ bias ranking
-6. LOGOS     rank() + arbitrate()                 → resolved + trade-off (precedence)
-7. PRIMUS    assemble brief (§3.5), top-N, mỗi item requires_approval
-8. action-registry gắn class; write/dangerous ⇒ approval
-9. RECTOR    save_proactive_set() → opus-rector/proactive/{date}.json (single writer)
-10. trace mỗi step → ai/traces/{date}.jsonl ; push → Telegram (run_push_brief.py)
+5. ACTIO     finance_signals(active_goals)         ← opus-actio/data/_local/signals/{date}.json (read-only, finance-goal-gated)
+6. user-profile/ bias ranking
+7. LOGOS     rank() + arbitrate()                 → resolved + trade-off (precedence)
+8. PRIMUS    assemble brief (§3.5), top-N, mỗi item requires_approval
+9. action-registry gắn class; write/dangerous ⇒ approval
+10. RECTOR    save_proactive_set() → opus-rector/proactive/{date}.json (single writer)
+11. trace mỗi step → ai/traces/{date}.jsonl ; push → Telegram (run_push_brief.py)
 ```
 Chi tiết: [`SD-proactive-brief.md`](SD-proactive-brief.md), [`SD-opus-logos.md`](SD-opus-logos.md), [`SD-opus-rector.md`](SD-opus-rector.md), [`RD-push-mode.md`](RD-push-mode.md).
 
@@ -114,6 +115,7 @@ Chi tiết: [`SD-proactive-brief.md`](SD-proactive-brief.md), [`SD-opus-logos.md
 | Consilium | `opus-consilium/` (raw, intel, personal-wiki qua Module C) | RSS/web, goals |
 | Logos | `DECISION-LOG.md`, `opus-logos/ranking-rules.md` | user-profile, outcome (Rector), Nexus ctx |
 | Rector | `opus-rector/proactive/`, `opus-rector/lessons.md` | TODO.md, WEEKLY-PLAN.md, user-profile |
+| Actio | `opus-actio/data/_local/` (finance.db + signals export) | finance raw (local-only) |
 | Wiki | `personal-wiki/` (chỉ Module C ghi) | raw/ |
 
 **Single-writer:** mỗi store đúng 1 writer. Wiki = Module C; Proactive = Rector (DL-2026-06-21-01: deviation có chủ đích khỏi v4 §7.2). Cross-subsystem đọc qua **API**, không chạm file của nhau.

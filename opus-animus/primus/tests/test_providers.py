@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from primus.providers import consilium_info, nexus_context
+from primus.providers import actio_finance, consilium_info, nexus_context
 
 
 def test_nexus_context_missing_opus_nexus_degrades(monkeypatch, tmp_path):
@@ -72,5 +72,50 @@ def test_consilium_info_filters_to_active_goal_matches(monkeypatch, tmp_path):
             "reason": "Directly affects active AI monitoring work.",
             "topic": "AI trend radar",
             "goal_ref": "AI trend radar",
+        }
+    ]
+
+
+def _write_signals(tmp_path, payload) -> None:
+    signals_dir = tmp_path / "signals"
+    signals_dir.mkdir(parents=True, exist_ok=True)
+    (signals_dir / "2026-06-22.json").write_text(json.dumps(payload), encoding="utf-8")
+
+
+def test_actio_finance_skips_when_no_finance_goal_active(monkeypatch, tmp_path):
+    monkeypatch.setenv("OPUS_ACTIO_SIGNALS", str(tmp_path / "signals"))
+    _write_signals(tmp_path, [{"title": "Cash drag", "reason": "76% cash idle."}])
+
+    assert actio_finance(["health_energy"], date="2026-06-22") == []
+
+
+def test_actio_finance_missing_export_degrades(monkeypatch, tmp_path):
+    monkeypatch.setenv("OPUS_ACTIO_SIGNALS", str(tmp_path / "missing"))
+
+    assert actio_finance(["finance_freedom"], date="2026-06-22") == []
+
+
+def test_actio_finance_surfaces_signals_for_finance_goal(monkeypatch, tmp_path):
+    monkeypatch.setenv("OPUS_ACTIO_SIGNALS", str(tmp_path / "signals"))
+    _write_signals(
+        tmp_path,
+        [
+            {
+                "title": "Cash drag",
+                "reason": "76% net worth is idle cash vs house-fund target.",
+                "severity": "high",
+                "suggested_action": "Deploy ¥X into the core allocation.",
+            },
+            {"title": "no reason field"},
+        ],
+    )
+
+    assert actio_finance(["finance_freedom"], date="2026-06-22") == [
+        {
+            "title": "Cash drag",
+            "reason": "76% net worth is idle cash vs house-fund target.",
+            "priority": "high",
+            "suggested_action": "Deploy ¥X into the core allocation.",
+            "goal_ref": "finance_freedom",
         }
     ]

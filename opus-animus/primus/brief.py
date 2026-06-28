@@ -31,7 +31,7 @@ import logos.rank, logos.arbiter
 
 
 JST = timezone(timedelta(hours=9))
-MAX_STEPS = 6
+MAX_STEPS = 7
 DEFAULT_MAX_ITEMS = 5
 BRIEF_ACTION_TOOL_ID = "brief.draft"
 BRIEF_ACTION_CLASS = "draft"
@@ -120,8 +120,17 @@ def generate_brief(intent_packet: dict) -> tuple[str, list[dict]]:
     )
     observe(info, empty_is_progress=True)
 
-    candidate_items = run_step(
+    finance = run_step(
         3,
+        "ACTIO",
+        "finance_items",
+        ["docs/SD-proactive-brief.md", "primus/providers.py", "opus-actio/data/_local/signals"],
+        lambda: providers.actio_finance(active_goals, date=date),
+    )
+    observe(finance, empty_is_progress=True)
+
+    candidate_items = run_step(
+        4,
         "NEXUS",
         "proactive_items",
         [
@@ -129,13 +138,13 @@ def generate_brief(intent_packet: dict) -> tuple[str, list[dict]]:
             "docs/OPERATING-MODEL-OPUS-ANIMUS-v4.md",
             "ai/action-registry.yaml",
         ],
-        lambda: _build_candidate_items(date, tasks, ctx, info),
+        lambda: _build_candidate_items(date, tasks, ctx, info, finance),
     )
     if not observe(candidate_items) or not candidate_items:
         return _nothing_new_brief_text(), []
 
     ranked = run_step(
-        4,
+        5,
         "LOGOS",
         "ranked_items",
         ["docs/SD-proactive-brief.md", "docs/SD-opus-logos.md", "opus-logos/logos/rank.py"],
@@ -145,7 +154,7 @@ def generate_brief(intent_packet: dict) -> tuple[str, list[dict]]:
         return _nothing_new_brief_text(), []
 
     resolved, tradeoffs = run_step(
-        5,
+        6,
         "LOGOS",
         "resolved_items",
         ["docs/SD-proactive-brief.md", "docs/SD-opus-logos.md", "opus-logos/logos/arbiter.py"],
@@ -199,7 +208,13 @@ def assemble_brief_text(ctx: dict, resolved: list[dict], tradeoffs: list[dict]) 
     return "\n".join(lines)
 
 
-def _build_candidate_items(date: str, tasks: list[dict], ctx: dict, info_items: list[dict]) -> list[dict]:
+def _build_candidate_items(
+    date: str,
+    tasks: list[dict],
+    ctx: dict,
+    info_items: list[dict],
+    finance_items: list[dict] | None = None,
+) -> list[dict]:
     items: list[dict] = []
 
     for task in tasks or []:
@@ -263,7 +278,35 @@ def _build_candidate_items(date: str, tasks: list[dict], ctx: dict, info_items: 
         _copy_optional_fields(info, item, ("goal_ref", "source", "url"))
         items.append(item)
 
+    for signal in finance_items or []:
+        if not isinstance(signal, dict):
+            continue
+        title = _first_string(signal, ("title", "headline", "name"))
+        reason = _first_string(signal, ("reason", "summary", "why", "note"))
+        if not title or not reason:
+            continue
+        item = {
+            "id": _stable_item_id(date, "finance", f"{signal.get('goal_ref', '')}:{title}"),
+            "trigger": "threshold",
+            "source_subsystem": "ACTIO",
+            "kind": "finance_alert",
+            "title": title,
+            "reason": reason,
+            "priority": _signal_priority(signal),
+            "suggested_action": _first_string(signal, ("suggested_action", "action"))
+            or "Xem lại tài chính và quyết định có hành động hôm nay không.",
+            "requires_approval": True,
+            "state": "pending",
+        }
+        _copy_optional_fields(signal, item, ("goal_ref",))
+        items.append(item)
+
     return _gate_suggested_actions(_dedupe_item_ids(items))
+
+
+def _signal_priority(signal: dict) -> str:
+    priority = str(signal.get("priority", "")).strip().lower()
+    return priority if priority in {"high", "medium", "low"} else "medium"
 
 
 def _gate_suggested_actions(items: list[dict]) -> list[dict]:

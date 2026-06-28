@@ -40,6 +40,97 @@ def consilium_info(active_goals: list[str], date: str | None = None) -> list[dic
     return items
 
 
+FINANCE_MARKERS = (
+    "finance",
+    "finance_freedom",
+    "tai chinh",
+    "tài chính",
+    "investing",
+    "dau tu",
+    "đầu tư",
+    "portfolio",
+    "cashflow",
+    "passive income",
+    "capital",
+)
+
+
+def actio_finance(active_goals: list[str], date: str | None = None) -> list[dict]:
+    """Surface Actio finance signals for the brief, read-only.
+
+    Actio is the single writer of a daily signals export (``OPUS_ACTIO_SIGNALS``);
+    Primus only reads it, so real numbers never leave the gitignored data root and
+    the Actio finance.db schema stays decoupled from the brief. Signals appear only
+    when a finance-area goal is active, matching the suggestion-only gate.
+    """
+
+    if not _finance_goal_active(active_goals):
+        return []
+
+    review_date = date or datetime.now(JST).date().isoformat()
+    signals = _read_actio_signals(review_date)
+
+    items: list[dict] = []
+    for raw_item in signals:
+        if not isinstance(raw_item, dict):
+            continue
+        title = _first_string(raw_item, ("title", "headline", "name"))
+        reason = _first_string(raw_item, ("reason", "summary", "why", "note"))
+        if not title or not reason:
+            continue
+        items.append(
+            {
+                "title": title,
+                "reason": reason,
+                "priority": _signal_priority(raw_item),
+                "suggested_action": _first_string(raw_item, ("suggested_action", "action")) or "",
+                "goal_ref": _first_string(raw_item, ("goal_ref", "goal")) or "finance_freedom",
+            }
+        )
+    return items
+
+
+def _finance_goal_active(active_goals: list[str]) -> bool:
+    text = _normalize(" ".join(goal for goal in active_goals if isinstance(goal, str)))
+    return any(marker in text for marker in FINANCE_MARKERS)
+
+
+def _signal_priority(raw_item: dict) -> str:
+    priority = str(raw_item.get("priority", "")).strip().lower()
+    if priority in {"high", "medium", "low"}:
+        return priority
+    severity = str(raw_item.get("severity", "")).strip().lower()
+    if severity in {"high", "critical", "urgent"}:
+        return "high"
+    if severity in {"low", "info"}:
+        return "low"
+    return "medium"
+
+
+def _read_actio_signals(date: str) -> list[dict]:
+    root = _actio_signals_dir()
+    if root is None or not root.is_dir():
+        return []
+    path = root / f"{date}.json"
+    if not path.is_file():
+        return []
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return []
+    if isinstance(data, dict):
+        data = data.get("signals") or data.get("items") or []
+    return data if isinstance(data, list) else []
+
+
+def _actio_signals_dir() -> Path | None:
+    env_dir = os.environ.get("OPUS_ACTIO_SIGNALS")
+    if env_dir:
+        return Path(env_dir)
+    default = _animus_root() / "opus-actio" / "data" / "_local" / "signals"
+    return default if default.exists() else None
+
+
 def _animus_root() -> Path:
     return Path(os.environ.get("ANIMUS_ROOT", Path(__file__).resolve().parents[1]))
 

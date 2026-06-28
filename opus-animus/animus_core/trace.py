@@ -37,7 +37,7 @@ INTENT_TYPES = {
     "infra",
     "admin",
 }
-TARGET_SUBSYSTEMS = {"NEXUS", "CONSILIUM", "LOGOS", "RECTOR", "LUCIDA", "WIKI", "INFRA"}
+TARGET_SUBSYSTEMS = {"NEXUS", "CONSILIUM", "LOGOS", "RECTOR", "LUCIDA", "WIKI", "INFRA", "ACTIO"}
 ACTION_CLASSES = {"read", "draft", "write", "dangerous"}
 
 

@@ -10,8 +10,8 @@ from zoneinfo import ZoneInfo
 
 
 TRIGGERS = {"time", "event", "threshold"}
-SOURCE_SUBSYSTEMS = {"RECTOR", "LOGOS", "NEXUS", "CONSILIUM"}
-KINDS = {"task", "health_nudge", "calendar_prep", "knowledge_nudge", "info_alert"}
+SOURCE_SUBSYSTEMS = {"RECTOR", "LOGOS", "NEXUS", "CONSILIUM", "ACTIO"}
+KINDS = {"task", "health_nudge", "calendar_prep", "knowledge_nudge", "info_alert", "finance_alert"}
 PRIORITIES = {"high", "medium", "low"}
 ITEM_STATES = {"pending", "accepted", "snoozed", "dismissed"}
 ACTION_STATES = {"accepted", "snoozed", "dismissed"}
