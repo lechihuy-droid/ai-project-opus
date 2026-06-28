@@ -15,6 +15,14 @@ const ALLOWED_TYPES = new Set([
   'recovery','weekly_review','deep_work','study','personal_admin'
 ]);
 
+const DRIVE_MIME_TYPES = {
+  txt:  'text/plain',
+  md:   'text/plain',
+  html: 'text/html',
+  csv:  'text/csv',
+  json: 'application/json',
+};
+
 // ── OAuth ──────────────────────────────────────────────────────────────────
 async function getAccessToken() {
   const res = await fetch('https://oauth2.googleapis.com/token', {
@@ -35,9 +43,9 @@ async function getAccessToken() {
 // ── Validation ─────────────────────────────────────────────────────────────
 function validate(cmd) {
   if (!cmd.action) throw new Error('Missing "action"');
-  if (!cmd.title?.trim()) throw new Error('Missing "title"');
 
   if (cmd.action === 'add_event') {
+    if (!cmd.title?.trim()) throw new Error('Missing "title"');
     if (!cmd.start) throw new Error('Missing "start"');
     if (!cmd.end)   throw new Error('Missing "end"');
     const s = new Date(cmd.start), e = new Date(cmd.end);
@@ -53,8 +61,22 @@ function validate(cmd) {
   }
 
   if (cmd.action === 'add_task') {
+    if (!cmd.title?.trim()) throw new Error('Missing "title"');
     if (cmd.due && !/^\d{4}-\d{2}-\d{2}$/.test(cmd.due))
       throw new Error(`Invalid due date: ${cmd.due}`);
+    return;
+  }
+
+  if (cmd.action === 'send_email') {
+    if (!cmd.to?.trim())      throw new Error('Missing "to"');
+    if (!cmd.subject?.trim()) throw new Error('Missing "subject"');
+    if (!cmd.body?.trim())    throw new Error('Missing "body"');
+    return;
+  }
+
+  if (cmd.action === 'save_to_drive') {
+    if (!cmd.filename?.trim()) throw new Error('Missing "filename"');
+    if (!cmd.content?.trim())  throw new Error('Missing "content"');
     return;
   }
 
@@ -104,6 +126,70 @@ async function addTask(cmd, token) {
   return data.id;
 }
 
+// ── Gmail ──────────────────────────────────────────────────────────────────
+async function sendEmail(cmd, token) {
+  const headers = [
+    `To: ${cmd.to}`,
+    cmd.cc  ? `Cc: ${cmd.cc}`   : null,
+    cmd.bcc ? `Bcc: ${cmd.bcc}` : null,
+    `Subject: ${cmd.subject}`,
+    `MIME-Version: 1.0`,
+    `Content-Type: ${cmd.html ? 'text/html' : 'text/plain'}; charset=utf-8`,
+    '',
+    cmd.body
+  ].filter(l => l !== null).join('\r\n');
+
+  const raw = Buffer.from(headers).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+  const res = await fetch(
+    'https://gmail.googleapis.com/gmail/v1/users/me/messages/send',
+    {
+      method:  'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ raw })
+    }
+  );
+  const data = await res.json();
+  if (!res.ok) throw new Error(`Gmail send failed: ${JSON.stringify(data.error)}`);
+  return data.id;
+}
+
+// ── Google Drive ───────────────────────────────────────────────────────────
+async function saveToDrive(cmd, token) {
+  const ext = cmd.filename.split('.').pop().toLowerCase();
+  const mimeType = cmd.mime_type || DRIVE_MIME_TYPES[ext] || 'text/plain';
+  const metadata = { name: cmd.filename, mimeType };
+  if (cmd.folder_id) metadata.parents = [cmd.folder_id];
+
+  const boundary = 'nexus_drive_boundary_314159';
+  const body = [
+    `--${boundary}`,
+    'Content-Type: application/json; charset=UTF-8',
+    '',
+    JSON.stringify(metadata),
+    `--${boundary}`,
+    `Content-Type: ${mimeType}`,
+    '',
+    cmd.content,
+    `--${boundary}--`
+  ].join('\r\n');
+
+  const res = await fetch(
+    'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink',
+    {
+      method:  'POST',
+      headers: {
+        Authorization:  `Bearer ${token}`,
+        'Content-Type': `multipart/related; boundary="${boundary}"`
+      },
+      body
+    }
+  );
+  const data = await res.json();
+  if (!res.ok) throw new Error(`Drive upload failed: ${JSON.stringify(data.error)}`);
+  return data.webViewLink || data.id;
+}
+
 // ── Move processed file ────────────────────────────────────────────────────
 function archive(filePath) {
   const dest = path.join('nexus-commands', 'processed', path.basename(filePath));
@@ -148,9 +234,15 @@ async function main() {
         if (cmd.action === 'add_event') {
           const link = await addEvent(cmd, token);
           console.log(`  ✓ Event added: "${cmd.title}" (${cmd.start}) → ${link}`);
-        } else {
+        } else if (cmd.action === 'add_task') {
           const id = await addTask(cmd, token);
           console.log(`  ✓ Task added: "${cmd.title}"${cmd.due ? ` due ${cmd.due}` : ''}`);
+        } else if (cmd.action === 'send_email') {
+          const id = await sendEmail(cmd, token);
+          console.log(`  ✓ Email sent: "${cmd.subject}" → ${cmd.to} (id: ${id})`);
+        } else if (cmd.action === 'save_to_drive') {
+          const link = await saveToDrive(cmd, token);
+          console.log(`  ✓ Drive file saved: "${cmd.filename}" → ${link}`);
         }
         ok++;
       } catch (e) {
