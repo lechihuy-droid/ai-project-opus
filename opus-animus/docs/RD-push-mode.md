@@ -85,6 +85,7 @@ User đã tự chạy brief lúc 06:30 → 07:00 push thấy proactive store đ�
 | FR-08 | Cấu hình (giờ push, quiet hours, chat_id, enable/disable) tập trung 1 chỗ (`.env` + `push_config`) | P1 | Dễ chỉnh |
 | FR-09 | (Tương tác) lệnh Telegram `/xong <n>`, `/sau`, `/bỏ` cập nhật state item qua Rector | P2 | Sau MVP one-way |
 | FR-10 | Lệnh chạy tay `run_push_brief.py --dry-run` (sinh + in, KHÔNG gửi) để test | P1 | An toàn khi setup |
+| FR-11 | **Ranker reliability:** push unattended mặc định dùng heuristic ranker (`ANIMUS_BRIEF_NO_LLM=1`); cờ `--use-llm` để bật LLM ranker khi chạy tay | P1 | Tránh LLM hiccup làm degrade/drop brief lúc không có người trông |
 
 ---
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from collections.abc import Callable, Sequence
 from datetime import datetime, time
@@ -41,6 +42,7 @@ def main(
     profile: dict[str, Any] | ProfileFn | None = None,
 ) -> int:
     args = _parse_args([] if argv is None else argv)
+    _apply_rank_mode(args)
     now_jst = _coerce_jst(now)
     today = now_jst.date().isoformat()
     user_profile = _resolve_profile(profile)
@@ -94,7 +96,26 @@ def main(
 def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Push the Primus morning brief to Telegram.")
     parser.add_argument("--dry-run", action="store_true", help="Generate and print the brief without sending.")
+    parser.add_argument(
+        "--use-llm",
+        action="store_true",
+        help="Use the external LLM ranker. Default for unattended push is the deterministic heuristic ranker.",
+    )
     return parser.parse_args(argv)
+
+
+def _apply_rank_mode(args: argparse.Namespace) -> None:
+    """Default the unattended push to the deterministic heuristic ranker.
+
+    The scheduled job runs without a person watching, so LLM ranker hiccups would
+    silently degrade or drop the brief. Force the heuristic path unless the caller
+    explicitly opts into the LLM (``--use-llm``) or has already set the env var.
+    """
+
+    if args.use_llm:
+        os.environ.pop("ANIMUS_BRIEF_NO_LLM", None)
+        return
+    os.environ.setdefault("ANIMUS_BRIEF_NO_LLM", "1")
 
 
 def _coerce_jst(now: datetime | None) -> datetime:

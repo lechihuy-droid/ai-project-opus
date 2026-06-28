@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 
@@ -133,6 +134,42 @@ def test_send_failure_retries_once_and_traces_failure(monkeypatch, tmp_path):
     assert result == 0
     assert send_calls == [brief, brief]
     assert _output_kinds(traces_dir) == ["send_failed"]
+
+
+def test_unattended_push_defaults_to_heuristic_ranker(monkeypatch, tmp_path):
+    _set_env(monkeypatch, tmp_path)
+    monkeypatch.delenv("ANIMUS_BRIEF_NO_LLM", raising=False)
+    seen: list[str | None] = []
+
+    run_push_brief.main(
+        ["--dry-run"],
+        now=_now(7),
+        get_existing=lambda date: [],
+        generate=lambda intent: seen.append(os.environ.get("ANIMUS_BRIEF_NO_LLM"))
+        or ("brief", [{"id": "item-1"}]),
+        send=lambda text: True,
+        profile=PROFILE,
+    )
+
+    assert seen == ["1"]
+
+
+def test_use_llm_flag_clears_no_llm_env(monkeypatch, tmp_path):
+    _set_env(monkeypatch, tmp_path)
+    monkeypatch.setenv("ANIMUS_BRIEF_NO_LLM", "1")
+    seen: list[str | None] = []
+
+    run_push_brief.main(
+        ["--dry-run", "--use-llm"],
+        now=_now(7),
+        get_existing=lambda date: [],
+        generate=lambda intent: seen.append(os.environ.get("ANIMUS_BRIEF_NO_LLM"))
+        or ("brief", [{"id": "item-1"}]),
+        send=lambda text: True,
+        profile=PROFILE,
+    )
+
+    assert seen == [None]
 
 
 def test_dry_run_prints_but_never_sends(monkeypatch, tmp_path, capsys):
