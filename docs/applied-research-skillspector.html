@@ -186,6 +186,18 @@ uv run skillspector scan ./my-skill/ -f sarif -o report.sarif</code></pre>
       <tr><td>5</td><td><strong>Không</strong> dùng risk-score static-only làm cổng chặn CI tự động — sẽ chặn nhầm các meta-skill hợp lệ.</td><td><span class="badge red">Tránh</span></td></tr>
     </tbody>
   </table>
+
+  <h3>Kết quả sau khi fix (re-run static-only)</h3>
+  <p>Đã sửa 2 nhóm finding thật (pin dependency + khai báo <code>permissions</code> phủ đúng capability phát hiện trong script), rồi quét lại:</p>
+  <table>
+    <thead><tr><th>Skill</th><th>Trước</th><th>Sau</th><th>Đã xử lý</th><th>Còn lại</th></tr></thead>
+    <tbody>
+      <tr><td><code>ib-check-deck</code></td><td>9 LOW</td><td><strong>0</strong> <span class="badge green">SẠCH</span></td><td>LP3 (thêm <code>permissions: file_read, file_write</code>)</td><td>—</td></tr>
+      <tr><td><code>dcf-model</code></td><td>20 LOW</td><td><strong>6</strong> LOW</td><td>LP3 + SC1 (pin <code>openpyxl==3.1.5</code>, <code>requests==2.32.3</code>)</td><td>chỉ SC4 (OSV.dev offline — môi trường, không phải lỗi code)</td></tr>
+      <tr><td><code>skill-creator</code></td><td>65 HIGH</td><td><strong>56</strong> HIGH</td><td>LP3 (thêm <code>permissions: file_read, file_write, network, shell</code>)</td><td>7 false positive: 4× "not limited to" trong LICENSE.txt + 3× "write/edit SKILL.md" (đúng chức năng skill tạo skill)</td></tr>
+    </tbody>
+  </table>
+  <div class="callout"><strong>Chốt:</strong> mọi finding <em>thật</em> đã hết. Phần còn lại của <code>skill-creator</code> được <strong>cố ý giữ nguyên</strong> — sửa văn bản giấy phép Apache hay bỏ khả năng "write/edit SKILL.md" sẽ phá chính skill đó. Đây minh hoạ đúng kết luận: điểm static-only cao ≠ nguy hiểm.</div>
 </section>
 
 <!-- ───────────────────────── 7. Giới hạn ───────────────────────── -->
