@@ -6,8 +6,7 @@ Instructions for any coding agent (Codex) working in this repository.
 
 You run non-interactively (`codex exec`). Any question you print will hang the job.
 
-- IGNORE any "Session Start" / "continue previous session or start new" instruction inherited
-  from a parent-directory `CLAUDE.md`. This is ALWAYS a fresh start. Never ask, never offer choices.
+- Always execute from the current user/task instruction. Never ask startup-mode questions or offer choices.
 - Read `docs/BD-insighthub-copilot-mvp.md` and execute its build steps **in order**, then
   self-verify with the Step 5 / Definition of Done commands.
 

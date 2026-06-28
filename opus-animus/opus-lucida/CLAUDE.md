@@ -5,7 +5,7 @@ Monetization workspace cho `Lucida`.
 ## Read first
 
 - `ai/status.md`
-- `ai/handoff-{owner}.md` (owner = codex hoặc claude theo `ai/status.md`)
+- `ai/handoff-claude.md` (khi Claude là current owner)
 - `docs/RD-beta-launch.md`
 - `docs/SD-beta-architecture.md`
 - `10-project-architecture-map.md`
@@ -96,14 +96,13 @@ Monetization workspace cho `Lucida`.
   - Process file chi giu `operational truth`.
 - Thu tu uu tien khi can hieu process:
   - `ai/status.md`
-  - `ai/handoff-{owner}.md`
+  - `ai/handoff-claude.md` (khi Claude là current owner)
   - `10-project-architecture-map.md`
   - `11-current-operating-flow.md`
   - `12-repo-folder-status-map.md`
   - `automation/workflows/**`
 - He thong resume mac dinh cua repo:
   - `ai/status.md` = trang thai song hien tai (project-wide, owner-agnostic)
-  - `ai/handoff-codex.md` = chot tiep tuc session sau cho Codex
   - `ai/handoff-claude.md` = chot tiep tuc session sau cho Claude
   - khong dung file context dai ad-hoc lam live source-of-truth neu da co cac file nay
 - Neu muon tao process file moi ma khong pass het rule tren, dung tao file moi; patch file owner hien co.

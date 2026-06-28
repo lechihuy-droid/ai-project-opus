@@ -104,6 +104,6 @@ late manual wording cleanup as the main language method.
 
 ```text
 For Wake work, resume from this file first.
-Use project-level ai/handoff-{owner}.md only when you need
+Use project-level ai/status.md only when you need
 cross-project context or system-level decisions.
 ```

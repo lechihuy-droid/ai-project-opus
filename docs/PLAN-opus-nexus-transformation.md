@@ -128,7 +128,7 @@ End-of-week summary:
 ```
 health-data/         — daily health/meal logs (JSON per day)
 workout-data/        — workout sessions
-finance-data/        — finance transactions
+opus-animus/opus-actio/finance-data/ — finance transactions
 nexus-commands/      — command queue (LLM commits here)
 nexus-commands/processed/  — archive after execution
 health-app/          — app source + docs

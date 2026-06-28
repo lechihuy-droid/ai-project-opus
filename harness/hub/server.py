@@ -1,0 +1,306 @@
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+
+HUB_DIR = Path(__file__).resolve().parent
+if str(HUB_DIR) not in sys.path:
+    sys.path.insert(0, str(HUB_DIR))
+
+from fastapi import FastAPI, HTTPException, Query
+from fastapi.responses import FileResponse, PlainTextResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
+
+import config
+from services import behavior, board, gitjobs, inspect_evals, replay, runs, suites, trigger, usage
+
+
+app = FastAPI(title="Harness Hub")
+WEB_DIR = config.HUB_DIR / "web"
+app.mount("/static", StaticFiles(directory=WEB_DIR), name="static")
+
+
+def _http_error(exc: Exception) -> HTTPException:
+    if isinstance(exc, PermissionError):
+        return HTTPException(status_code=403, detail=str(exc))
+    if isinstance(exc, FileNotFoundError):
+        return HTTPException(status_code=404, detail=str(exc))
+    return HTTPException(status_code=500, detail=str(exc))
+
+
+@app.get("/")
+def index() -> FileResponse:
+    return FileResponse(WEB_DIR / "index.html")
+
+
+@app.get("/api/health")
+def health() -> dict[str, object]:
+    return {
+        "ok": True,
+        "root": str(config.ROOT),
+        "runs_dir": str(config.RUNS_DIR),
+        "port": config.PORT,
+    }
+
+
+@app.get("/api/runs")
+def api_runs() -> list[dict[str, object]]:
+    return runs.list_runs()
+
+
+@app.get("/api/jobs")
+def api_jobs() -> list[dict[str, object]]:
+    return gitjobs.list_jobs()
+
+
+@app.post("/api/jobs")
+def api_create_job(payload: dict[str, object]) -> dict[str, object]:
+    brief = payload.get("brief")
+    agent = payload.get("agent") or "codex"
+    if not isinstance(brief, str) or not brief.strip():
+        raise HTTPException(status_code=400, detail="brief is required")
+    if not isinstance(agent, str):
+        raise HTTPException(status_code=400, detail="agent must be a string")
+    if agent not in config.JOB_ALLOW_AGENTS:
+        raise HTTPException(status_code=400, detail=f"Unsupported agent: {agent}")
+    try:
+        return gitjobs.create_job(brief, agent)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except (OSError, PermissionError, RuntimeError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.get("/api/jobs/{job_id}")
+def api_job(job_id: str) -> dict[str, object]:
+    try:
+        job = dict(gitjobs.get_job(job_id))
+        patch = gitjobs.diff(job_id)
+        if patch:
+            job["diff"] = patch
+        return job
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.post("/api/jobs/{job_id}/approve")
+def api_job_approve(job_id: str) -> dict[str, object]:
+    try:
+        return gitjobs.approve(job_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+    except (OSError, RuntimeError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.get("/api/jobs/{job_id}/stream")
+def api_job_stream(job_id: str) -> StreamingResponse:
+    try:
+        gitjobs.get_job(job_id)
+        return StreamingResponse(gitjobs.stream_events(job_id), media_type="text/event-stream")
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.post("/api/jobs/{job_id}/accept")
+def api_job_accept(job_id: str) -> dict[str, object]:
+    try:
+        return gitjobs.accept(job_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except (FileNotFoundError, PermissionError, RuntimeError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.post("/api/jobs/{job_id}/rollback")
+def api_job_rollback(job_id: str) -> dict[str, object]:
+    try:
+        return gitjobs.rollback(job_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except (FileNotFoundError, PermissionError, RuntimeError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.post("/api/jobs/{job_id}/reject")
+def api_job_reject(job_id: str) -> dict[str, object]:
+    try:
+        return gitjobs.reject(job_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except (FileNotFoundError, PermissionError, RuntimeError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.get("/api/jobs/{job_id}/diff")
+def api_job_diff(job_id: str) -> PlainTextResponse:
+    try:
+        return PlainTextResponse(gitjobs.diff(job_id), media_type="text/plain; charset=utf-8")
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.post("/api/runs/trigger")
+def api_trigger(payload: dict[str, object]) -> dict[str, str]:
+    suite = payload.get("suite")
+    check = payload.get("check")
+    if not isinstance(suite, str) or not suite:
+        raise HTTPException(status_code=400, detail="suite is required")
+    if check is not None and not isinstance(check, str):
+        raise HTTPException(status_code=400, detail="check must be a string")
+    try:
+        stream_id = trigger.start_run(suite, check)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except OSError as exc:
+        raise _http_error(exc) from exc
+    return {"stream_id": stream_id}
+
+
+@app.get("/api/runs/stream/{stream_id}")
+def api_run_stream(stream_id: str) -> StreamingResponse:
+    try:
+        return StreamingResponse(trigger.stream_events(stream_id), media_type="text/event-stream")
+    except FileNotFoundError as exc:
+        raise _http_error(exc) from exc
+
+
+@app.get("/api/runs/budget/{stream_id}")
+def api_run_budget(stream_id: str) -> dict[str, object]:
+    try:
+        return trigger.budget_status(stream_id)
+    except FileNotFoundError as exc:
+        raise _http_error(exc) from exc
+
+
+@app.get("/api/runs/compare")
+def api_run_compare(a: str = Query(..., min_length=1), b: str = Query(..., min_length=1)) -> dict[str, object]:
+    try:
+        return runs.compare_runs(a, b)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.get("/api/runs/{run_id}")
+def api_run(run_id: str) -> dict[str, object]:
+    try:
+        return runs.get_run(run_id)
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.get("/api/runs/{run_id}/artifact")
+def api_run_artifact(run_id: str, rel: str = Query(..., min_length=1)) -> PlainTextResponse:
+    try:
+        return PlainTextResponse(runs.read_artifact(run_id, rel), media_type="text/plain; charset=utf-8")
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.get("/api/suites")
+def api_suites() -> list[dict[str, object]]:
+    return suites.list_suites()
+
+
+@app.get("/api/suites/{suite_id}")
+def api_suite(suite_id: str) -> dict[str, object]:
+    try:
+        return suites.get_suite(suite_id)
+    except FileNotFoundError as exc:
+        raise _http_error(exc) from exc
+
+
+@app.get("/api/usage")
+def api_usage(
+    source: str | None = None,
+    model: str | None = None,
+    since: str | None = None,
+) -> list[dict[str, object]]:
+    try:
+        return usage.collect_usage({"source": source, "model": model, "since": since})
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.get("/api/usage/rollup")
+def api_usage_rollup(
+    source: str | None = None,
+    model: str | None = None,
+    since: str | None = None,
+) -> dict[str, object]:
+    try:
+        events = usage.collect_usage({"source": source, "model": model, "since": since})
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return usage.rollup(events)
+
+
+@app.get("/api/tools")
+def api_tools(
+    source: str | None = None,
+    model: str | None = None,
+    since: str | None = None,
+) -> dict[str, object]:
+    try:
+        events, _warnings = behavior.collect_tool_events()
+        filtered = behavior.filter_tool_events(events, {"source": source, "model": model, "since": since})
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return behavior.tool_rollup(filtered)
+
+
+@app.get("/api/inspect/logs")
+def api_inspect_logs() -> list[dict[str, object]]:
+    return inspect_evals.list_logs()
+
+
+@app.get("/api/inspect/mep")
+def api_inspect_mep() -> dict[str, object]:
+    try:
+        return inspect_evals.latest_mep()
+    except FileNotFoundError as exc:
+        raise _http_error(exc) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/api/board")
+def api_board() -> dict[str, object]:
+    return board.task_board()
+
+
+@app.get("/api/sessions")
+def api_sessions() -> list[dict[str, object]]:
+    return replay.list_sessions()
+
+
+@app.get("/api/sessions/loops")
+def api_session_loops() -> list[dict[str, object]]:
+    return behavior.session_loops()
+
+
+@app.get("/api/sessions/{session}/replay")
+def api_session_replay(session: str) -> dict[str, object]:
+    try:
+        return replay.session_replay(session)
+    except FileNotFoundError as exc:
+        raise _http_error(exc) from exc
+
+
+@app.on_event("startup")
+def _warm_usage_cache() -> None:
+    import threading
+
+    threading.Thread(target=usage.warm, name="usage-warm", daemon=True).start()
+    threading.Thread(target=behavior.warm, name="behavior-warm", daemon=True).start()
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="127.0.0.1", port=config.PORT)

@@ -171,48 +171,12 @@ Phân tuyến công việc theo loại task:
 
 ---
 
-## Session Start — MANDATORY (project có `ai/` folder)
+## Session Behavior
 
-**STOP. Trước khi response message đầu tiên — ask:**
-
-> "Bạn muốn **tiếp tục** session trước hay **bắt đầu mới**?
-> - Tiếp tục → tôi sẽ đọc `ai/status.md` và `ai/handoff-claude.md` của project hiện tại
-> - Mới → cho tôi biết bạn muốn làm gì"
-
-**Do NOT skip this even if:**
-- The user's first message seems like a clear task
-- The user jumps straight into a question
-- The project context seems obvious
-
-**Exception:** Skip nếu user nói rõ "fresh start" / "bắt đầu mới" trong message đầu, HOẶC project hiện tại không có folder `ai/`.
-
-**Project root detection:** Walk up từ cwd cho đến khi tìm folder có subfolder `ai/`. Nếu không có (vd `html-kit/`, `apps/pmp-quiz/` chưa setup) → skip Session Start, làm việc bình thường.
-
----
-
-### Nếu user chọn Continue:
-1. Read `ai/status.md` — current owner + objective + active sub-systems
-2. Read `ai/handoff-claude.md` (owner Claude) HOẶC `ai/handoff-codex.md` (owner Codex theo status.md) — exact next action
-3. Confirm: "Tôi hiểu task hiện tại là [X], tiếp tục từ bước [Y]. Đúng không?"
-4. Wait for user confirmation before proceeding
-
-### Nếu session involves opus-animus (after the above):
-- Ask "Bạn muốn làm việc với sub-system nào?" — list từ `opus-animus/ai/status.md`
-- Read only that section của `todo.md`
-- Track progress với TaskCreate/TaskUpdate trong session
-
----
-
-### End of session — type `/handoff`:
-
-Slash command `/handoff` (global, ở `~/.claude/commands/handoff.md`) sẽ:
-1. Auto-detect project root (folder gần nhất có `ai/`)
-2. Overwrite `ai/handoff-claude.md` (Claude) theo schema
-3. Update `ai/status.md` (current owner + updated date)
-4. Tạo `ai/sessions/YYYY-MM-DD-[task].md`
-5. Update `todo.md` nếu có
-
-**Schema chuẩn:** `ai/status.md` chứa state owner-agnostic (objective, sub-systems, locked decisions). `ai/handoff-{owner}.md` chứa state per-tool (exact next action, files touched, validation). KHÔNG duplicate "next step" giữa hai file.
+- Start from the user's latest request.
+- Treat that request as the active task.
+- Read project state files only when the user explicitly asks to resume prior state or the task depends on current project status.
+- Do not run or require a status checkpoint flow unless the user explicitly asks for one.
 
 ## CLI — Use terminal instead of sidebar for long sessions
 

@@ -8,6 +8,90 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from utils.config import personal_wiki_dir, raw_dir
 
+ROOT = Path(__file__).parent.parent
+
+
+def _markdown_section(text: str, heading: str) -> str:
+    pattern = rf"^##\s+{re.escape(heading)}\s*$"
+    match = re.search(pattern, text, flags=re.MULTILINE)
+    if not match:
+        return ""
+    rest = text[match.end():]
+    next_heading = re.search(r"^##\s+", rest, flags=re.MULTILINE)
+    return rest[: next_heading.start()].strip() if next_heading else rest.strip()
+
+
+def _markdown_subsections(text: str, heading: str) -> list[str]:
+    sections = []
+    pattern = rf"^###\s+{re.escape(heading)}\s*$"
+    for match in re.finditer(pattern, text, flags=re.MULTILINE):
+        rest = text[match.end():]
+        next_heading = re.search(r"^###\s+|^##\s+", rest, flags=re.MULTILINE)
+        sections.append(rest[: next_heading.start()].strip() if next_heading else rest.strip())
+    return sections
+
+
+def _compact_markdown_text(text: str, limit: int = 360) -> str:
+    cleaned = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("```"):
+            continue
+        if stripped.startswith("- "):
+            stripped = stripped[2:].strip()
+        cleaned.append(stripped)
+    compact = " ".join(cleaned)
+    compact = re.sub(r"\s+", " ", compact).strip()
+    return compact[:limit].rstrip() + ("..." if len(compact) > limit else "")
+
+
+def _markdown_bullets(text: str, limit: int = 5) -> list[str]:
+    bullets = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("- "):
+            bullets.append(stripped[2:].strip())
+        if len(bullets) >= limit:
+            break
+    return bullets
+
+
+def latest_daily_brief() -> dict:
+    daily_dir = ROOT / "logs" / "daily"
+    if not daily_dir.exists():
+        return {"available": False, "message": "Run run_daily.py to create a Consilium daily brief."}
+
+    files = sorted(daily_dir.glob("*.md"), key=lambda path: path.stat().st_mtime, reverse=True)
+    if not files:
+        return {"available": False, "message": "Run run_daily.py to create a Consilium daily brief."}
+
+    path = files[0]
+    text = path.read_text(encoding="utf-8", errors="replace")
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    title = next((line.lstrip("# ").strip() for line in lines if line.startswith("# ")), path.stem)
+    meta = next((line for line in lines if line.startswith("Brief ")), "")
+    decision_text = _markdown_section(text, "Decision")
+    suggested_actions = [
+        _compact_markdown_text(section, limit=220)
+        for section in _markdown_subsections(text, "Suggested action")
+        if section.strip()
+    ][:3]
+    wiki_updates = []
+    for section in _markdown_subsections(text, "Wiki updates"):
+        wiki_updates.extend(_markdown_bullets(section, limit=4))
+
+    return {
+        "available": True,
+        "date": path.stem,
+        "title": title,
+        "mode": "LLM-assisted" if "LLM-assisted" in meta else "deterministic",
+        "local_only": "local-only" in meta.lower() or "local-only" in text.lower(),
+        "decision": _compact_markdown_text(decision_text, limit=420),
+        "suggested_actions": suggested_actions,
+        "wiki_updates": wiki_updates[:5],
+        "path": str(path.relative_to(ROOT)),
+    }
+
 
 def wiki_stats() -> dict:
     wiki = personal_wiki_dir()

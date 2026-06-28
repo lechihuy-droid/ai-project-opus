@@ -80,7 +80,7 @@ Nếu CI gate fail → fix trước khi sang Phase H visual review.
 
 ## Hard gates — không skip
 
-1. **Step 0 sign-off REQUIRED trước khi code.** Đọc RD+SD+BD, update `ai/handoff-codex.md`:
+1. **Step 0 sign-off REQUIRED trước khi code.** Đọc RD+SD+BD, record verdict in the current session/status notes:
    - `APPROVED FOR BUILD RD v0.4 / SD v0.2 / BD v0.2` → proceed Step 1
    - `REQUEST CHANGES` → list concerns, không code
    - `REJECT` → escalate user
@@ -116,7 +116,7 @@ Liệt kê trong BD §"Open Items for Phase 4 Implementation":
 
 | Trigger | Action |
 |---|---|
-| Sau Step 0 | Update `ai/handoff-codex.md` verdict |
+| Sau Step 0 | Record Codex verdict in current session/status notes |
 | Mỗi phase done | Tick BD checkbox ✅ + 1-line summary |
 | CI gate fail | Stop, fix, re-run trước Phase H Step 21 |
 | Phase H gate fail | Stop, report user, không proceed Phase I |
@@ -125,7 +125,7 @@ Liệt kê trong BD §"Open Items for Phase 4 Implementation":
 
 ## Bắt đầu
 
-Đọc RD/SD/BD → suy nghĩ → viết verdict + concerns vào `ai/handoff-codex.md`. Không code đến khi Step 0 sign-off.
+Đọc RD/SD/BD → suy nghĩ → viết verdict + concerns vào current session/status notes. Không code đến khi Step 0 sign-off.
 
 ---END---
 
@@ -151,7 +151,7 @@ cat opus-lucida/docs/codex-bootstrap-slide-agent.md | codex
 
 ## Sau Codex Step 0
 
-Check `opus-lucida/ai/handoff-codex.md`:
+Check the current Codex session/status notes:
 - `APPROVED` → Codex tự bắt đầu Step 1
 - `REQUEST CHANGES` → forward concerns về Claude session để revise
 - `REJECT` → escalate

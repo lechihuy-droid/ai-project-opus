@@ -28,7 +28,7 @@ Project continuity should be tracked through:
 
 ```text
 ai/status.md
-ai/handoff-{owner}.md     # owner = codex hoặc claude
+ai/handoff-claude.md      # khi Claude là current owner
 ```
 
 ---

@@ -2,7 +2,7 @@ from datetime import datetime
 from fastapi import APIRouter
 from .data import (
     wiki_stats, system_status,
-    reflection_status, today_articles_count, parse_goals,
+    reflection_status, today_articles_count, parse_goals, latest_daily_brief,
 )
 
 router = APIRouter()
@@ -30,4 +30,5 @@ def get_dashboard():
             "reflection": refl,
             "goal_last_review": 0,
         },
+        "daily_brief": latest_daily_brief(),
     }

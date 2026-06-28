@@ -76,7 +76,7 @@ Review notes: apps/slide-agent/lessons/wake-cluster/VISUAL-REVIEW.md and AUDIO-S
 1. Design rules are still only partially compiled into validation beyond the Wake-specific checks
 2. Human review is still needed before audio/video lock
 3. Browser plugin Node REPL was unavailable in the last session; verification used Playwright export + PNG spot-check
-4. Status/handoff must remain live resume source instead of ad-hoc context files
+4. Status must remain live resume source instead of ad-hoc context files
 
 ## Active truth files
 
@@ -106,5 +106,5 @@ apps/slide-agent/
 
 ## If interrupted
 
--> Read `ai/handoff-codex.md` (current owner) for exact next action.
--> When switching to Claude, read `ai/handoff-claude.md`.
+-> Read `ai/status.md` for current project state and exact next action.
+-> When Claude is current owner, read `ai/handoff-claude.md`.

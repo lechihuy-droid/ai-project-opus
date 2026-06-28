@@ -1,6 +1,6 @@
 # Plan: UI/UX Transformation — Opus Nexus
 
-> **Input:** `docs/handoff-codex-uiux.md` (review brief) + `docs/PLAN-opus-nexus-transformation.md` (product) + `health-app/dashboard.html` (source, ~2257 dòng)
+> **Input:** `docs/review-uiux-opus-nexus.md` (review brief) + `docs/PLAN-opus-nexus-transformation.md` (product) + `health-app/dashboard.html` (source, ~2257 dòng)
 > **Mục tiêu:** Một plan transform UI/UX có cơ sở — review theo quan điểm có sẵn (A–G), so sánh app cùng loại, và chốt repo GitHub tham chiếu design.
 > **Ràng buộc (giữ nguyên từ handoff §7):** single-file, không thêm CDN, giữ dark-bento identity, chỉ đụng HTML/CSS/render — không đụng JS logic.
 > **Ngày:** 2026-05-30

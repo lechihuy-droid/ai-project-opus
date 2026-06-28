@@ -11,7 +11,6 @@ Workspace monetization branch cua `OPUS ANIMUS`, tap trung vao:
 - Live status board:
   - `ai/status.md`
 - Live resume handoff:
-  - `ai/handoff-codex.md` (Codex)
   - `ai/handoff-claude.md` (Claude)
 - Foundation docs da co:
   - `docs/RD-beta-launch.md`
@@ -39,7 +38,6 @@ analytics/   KPI, experiments, feedback
 ## Active files
 
 - `ai/status.md`
-- `ai/handoff-codex.md`
 - `ai/handoff-claude.md`
 - `strategy/business-plan/01-business-plan.md`
 - `framework/lesson-method/02-framework-lesson-method.md`
@@ -72,7 +70,6 @@ ai/status.md
 Live resume handoff:
 
 ```text
-ai/handoff-codex.md     # Codex owner
 ai/handoff-claude.md    # Claude owner
 ```
 

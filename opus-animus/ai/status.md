@@ -12,7 +12,7 @@
 | CONS / Module C Wiki | Running | wiki-poll (5min) + wiki-lint-weekly |
 | CONS / FDE Research Tab | Active | Dashboard tab theo dõi FDE model adoption, 8 actor groups |
 | HOME Dashboard | Active | FastAPI + React, `run_dashboard.py` → localhost:8765 |
-| LUCIDA / Wake Lane | Paused | Previous handoff in `opus-lucida/ai/handoff-codex.md` |
+| LUCIDA / Wake Lane | Paused | Previous lane context in `opus-lucida/production/00-active/wake-cluster/HANDOFF.md` |
 
 ## Current objective
 

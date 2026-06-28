@@ -10,7 +10,6 @@
 This file is no longer the primary live handoff system.
 Use:
 - ai/status.md
-- ai/handoff-codex.md (Codex)
 - ai/handoff-claude.md (Claude)
 
 Keep this file only as a legacy context log.

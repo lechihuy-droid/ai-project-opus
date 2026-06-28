@@ -17,11 +17,11 @@ updated: 2026-05-20
 *Tracks every ingest run — quality signal over time*
 
 ## Legacy Stats Snapshot (stale)
-*Updated: 2026-06-05 09:14*
+*Updated: 2026-06-28 01:11*
 
 | Metric | Value |
 |---|---|
-| Total wiki pages | 457 |
+| Total wiki pages | 458 |
 | Topics | AI: 15 · Tech: 3 · Stock: 0 · Personal: 0 |
 | Raw articles (processed) | 198 |
 | processed.txt entries | 198 |
@@ -32,7 +32,7 @@ updated: 2026-05-20
 
 | Metric | Value |
 |---|---|
-| Total wiki pages | 457 |
+| Total wiki pages | 458 |
 | Topics | AI: 351; Stock: 79; Personal: 7; FDE: 6; Tech: 3; Research: 2; Business: 1; root: 1 |
 | Status mix | seed: 415; evergreen: 21; missing status: 14 |
 | Source-seed pages | 382 |
@@ -336,3 +336,4 @@ Decision label: **test**. Keep the three-lane audit as the gate between raw coll
 | 2026-06-01 05:30 | content-collector | 55 | 5 dropped | 50 | 25 | 0 | 457 | google-ai-blog:4→3; aws-ml-blog:11→10; nvidia-blog:4→4; simon-willison:6→6; hf-blog:5→5; import-ai:1→1; interconnects:1→1; hf-papers:11→10; github-trending-ai:12→10 |
 | 2026-06-02 05:30 | content-collector | 93 | 14 dropped | 79 | 49 | 0 | 457 | google-ai-blog:5→4; aws-ml-blog:11→10; nvidia-blog:9→9; simon-willison:6→6; hf-blog:6→6; import-ai:2→2; interconnects:2→2; arxiv-ai:11→10; arxiv-lg:20→10; hf-papers:10→10; github-trending-ai:11→10 |
 | 2026-06-05 09:14 | content-collector | 94 | 16 dropped | 78 | 60 | 0 | 457 | google-ai-blog:5→4; aws-ml-blog:10→10; nvidia-blog:11→10; simon-willison:3→3; hf-blog:8→8; import-ai:1→1; interconnects:2→2; arxiv-ai:11→10; arxiv-lg:18→10; hf-papers:13→10; github-trending-ai:12→10 |
+| 2026-06-28 01:11 | content-collector | 152 | 49 dropped | 103 | 41 | 0 | 458 | openai-news:10→9; microsoft-official-blog:3→3; microsoft-azure-blog:1→1; google-ai-blog:1→1; aws-ml-blog:11→10; nvidia-blog:10→10; techcrunch-ai:10→10; simon-willison:7→7; hf-blog:9→9; import-ai:1→1; interconnects:1→1; arxiv-ai:14→10; nikkei-asia:22→10; hf-papers:14→10; github-trending-ai:12→10; itmedia-enterprise:16→0; everest-group:8→0; hfs-research:2→1 |

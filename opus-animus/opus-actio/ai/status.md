@@ -35,7 +35,7 @@ Workflow đầu tư cá nhân US + JP — **MVP-A: Claude Code-first** (0 API me
 - **Thêm tháng:** bỏ JSON vào `data/_local/raw/` → `python data/ingest_finance.py YYYYMM`
 - ✅ **Spending ledger (2026-06-22):** bảng `card_txn` + `data/ingest_cards.py` — nạp giao dịch thẻ từ private card sources verified locally, từ `data/_local/raw/cards/*.csv` (2025-02→2026-06). Idempotent, rebuild mỗi lần chạy.
 - ✅ Repo paths aligned to `C:/Users/HUY/workspace/ai-project-opus/opus-animus/opus-actio/`
-- ⚠️ Compatibility mode: root `finance-data/` and `personal-finance/` are still kept for older coding tasks; Actio holds the mirrored finance module until the remaining callers are migrated.
+- ✅ Root finance compatibility copies removed; Actio is now canonical for `finance-data/` and `personal-finance/`.
 - ⬜ (next) Đổ thêm snapshot tháng kế để bật query trend net-worth/allocation (phục vụ quỹ mua nhà)
 - ⬜ (defer) Bảng transaction ledger CHỨNG KHOÁN (mua/bán) — chưa có data trade history
 

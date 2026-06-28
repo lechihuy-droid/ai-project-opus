@@ -318,6 +318,7 @@ function OutputRoute({ item, setView }) {
 function DecisionHomeView({ data, setView }) {
   if (!data) return <Loading/>;
   const { life_tracks: lt, system_status, today } = data;
+  const brief = data.daily_brief || {};
   const f = lt.finance || {};
   const h = lt.health  || {};
   const c = lt.career  || {};
@@ -364,6 +365,29 @@ function DecisionHomeView({ data, setView }) {
           </div>
         </div>
       </section>
+      <Card gold>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:14,marginBottom:12}}>
+          <div>
+            <Label style={{color:"var(--gold)",marginBottom:7}}>Daily Decision Brief</Label>
+            <div style={{fontSize:18,fontWeight:750,color:"var(--text)",lineHeight:1.25}}>{brief.available ? brief.title : "No daily brief yet"}</div>
+            <div style={{fontSize:11,color:"var(--muted)",marginTop:4}}>{brief.available ? `${brief.date} · ${brief.mode} · local-only` : "Run run_daily.py to generate the local Consilium brief."}</div>
+          </div>
+          {brief.available && <Badge variant={brief.mode === "LLM-assisted" ? "ok" : "warn"}>{brief.mode}</Badge>}
+        </div>
+        <div style={{fontSize:13,color:"var(--text-soft)",lineHeight:1.58,marginBottom:12}}>{brief.available ? brief.decision : brief.message}</div>
+        {brief.available && brief.suggested_actions?.length > 0 && (
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:8,marginBottom:12}}>
+            {brief.suggested_actions.map((action, i) => (
+              <div key={i} style={{border:"1px solid var(--border-subtle)",borderRadius:4,padding:"9px 10px",background:"rgba(255,255,255,0.025)",fontSize:12,color:"var(--muted)",lineHeight:1.45}}>
+                <span style={{color:"var(--gold)",fontWeight:700,marginRight:6}}>{i+1}.</span>{action}
+              </div>
+            ))}
+          </div>
+        )}
+        <button onClick={() => setView("intel")} style={{padding:"7px 12px",background:"transparent",border:"1px solid var(--border)",borderRadius:3,color:"var(--text-soft)",fontSize:11,fontWeight:650}}>
+          Open Intel
+        </button>
+      </Card>
       <div>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:10}}>
           <Label>Search Radar</Label>

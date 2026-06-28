@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harness Hub</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="/static/styles-hub.css">
+  <script src="/static/charts.js" defer></script>
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header class="hub-header">
+    <div class="hub-header-inner">
+      <a class="hub-brand" href="#/" aria-label="Harness Hub home">
+        <span class="hub-mark">Harness</span>
+        <span class="hub-brand-title">Harness Hub</span>
+      </a>
+      <nav class="hub-nav" aria-label="Main navigation">
+        <a href="#/" data-route="/">Dashboard</a>
+        <a href="#/runs" data-route="/runs">Runs</a>
+        <a href="#/jobs" data-route="/jobs">Jobs</a>
+        <a href="#/suites" data-route="/suites">Suites</a>
+        <a href="#/usage" data-route="/usage">Usage</a>
+        <a href="#/tools" data-route="/tools">Tools</a>
+        <a href="#/inspect" data-route="/inspect">Inspect</a>
+        <a href="#/board" data-route="/board">Board</a>
+        <a href="#/sessions" data-route="/sessions">Sessions</a>
+      </nav>
+    </div>
+  </header>
+  <main id="app" class="hub-app">
+    <div class="card">Loading...</div>
+  </main>
+</body>
+</html>
