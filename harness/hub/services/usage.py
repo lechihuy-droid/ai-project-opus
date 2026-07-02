@@ -13,86 +13,127 @@ from parsers import claude_sessions, codex_sessions, inspect_eval
 
 CACHE_TTL_SECONDS = 30.0
 _USAGE_CACHE: dict[str, Any] = {"expires": 0.0, "events": [], "warnings": [], "fingerprint": None}
-_DISK_CACHE = config.HUB_DIR / ".cache" / "usage.json"
+_DISK_CACHE = config.HUB_DIR / ".cache" / "usage_files.json"
 _LOCK = threading.RLock()
 
 
-def _source_files() -> list[Path]:
-    """All raw usage source files (cheap glob; used only for the fingerprint)."""
-    files: list[Path] = []
-    claude = config.USAGE_SOURCES.get("claude")
-    if isinstance(claude, Path) and claude.exists():
-        files.extend(claude.glob("*/*.jsonl"))
-    for codex_dir in config.USAGE_SOURCES.get("codex") or []:
-        if isinstance(codex_dir, Path) and codex_dir.exists():
-            files.extend(codex_dir.glob("*.jsonl"))
-    inspect = config.USAGE_SOURCES.get("inspect")
-    if isinstance(inspect, Path) and inspect.exists():
-        files.extend(inspect.glob("*.eval"))
-    return files
+def _cache_key(path: Path) -> str:
+    return str(path.resolve())
 
 
-def _fingerprint() -> str:
-    """Stat-only signature of the source set: rebuild only when a file is added/changed."""
-    count = 0
-    max_mtime = 0
-    for path in _source_files():
-        try:
-            stat = path.stat()
-        except OSError:
-            continue
-        count += 1
-        if stat.st_mtime_ns > max_mtime:
-            max_mtime = stat.st_mtime_ns
-    return f"{count}:{max_mtime}"
-
-
-def _load_disk(fingerprint: str) -> tuple[list[dict[str, Any]], list[str]] | None:
+def _load_disk() -> dict[str, Any]:
     try:
         data = json.loads(_DISK_CACHE.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
-        return None
-    if data.get("fingerprint") != fingerprint:
-        return None
-    return data.get("events") or [], data.get("warnings") or []
+        return {"files": {}}
+    if not isinstance(data, dict):
+        return {"files": {}}
+    files = data.get("files")
+    if not isinstance(files, dict):
+        return {"files": {}}
+    return {"files": files}
 
 
-def _save_disk(fingerprint: str, events: list[dict[str, Any]], warnings: list[str]) -> None:
+def _save_disk(cache: dict[str, Any]) -> None:
     try:
         _DISK_CACHE.parent.mkdir(parents=True, exist_ok=True)
-        _DISK_CACHE.write_text(
-            json.dumps({"fingerprint": fingerprint, "events": events, "warnings": warnings}),
-            encoding="utf-8",
-        )
+        _DISK_CACHE.write_text(json.dumps(cache, sort_keys=True), encoding="utf-8")
     except OSError:
         pass
 
 
-def _build() -> tuple[list[dict[str, Any]], list[str]]:
+def _source_records() -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    for parser in (claude_sessions, codex_sessions, inspect_eval):
+        for path in parser.paths():
+            try:
+                stat = path.stat()
+            except OSError:
+                continue
+            records.append(
+                {
+                    "parser": parser,
+                    "path": path,
+                    "key": _cache_key(path),
+                    "mtime_ns": stat.st_mtime_ns,
+                    "size": stat.st_size,
+                }
+            )
+    return records
+
+
+def _source_signature(records: list[dict[str, Any]]) -> tuple[tuple[str, int, int], ...]:
+    return tuple((str(item["key"]), int(item["mtime_ns"]), int(item["size"])) for item in records)
+
+
+def _entry_is_current(entry: Any, mtime_ns: int, size: int) -> bool:
+    return (
+        isinstance(entry, dict)
+        and entry.get("mtime_ns") == mtime_ns
+        and entry.get("size") == size
+        and isinstance(entry.get("events"), list)
+        and isinstance(entry.get("warnings"), list)
+    )
+
+
+def _collect_from_files(
+    records: list[dict[str, Any]], cache: dict[str, Any]
+) -> tuple[list[dict[str, Any]], list[str], bool]:
+    files = cache.setdefault("files", {})
+    if not isinstance(files, dict):
+        files = {}
+        cache["files"] = files
+
     events: list[dict[str, Any]] = []
     warnings: list[str] = []
-    for parser in (claude_sessions, codex_sessions, inspect_eval):
-        parser_events, parser_warnings = parser.collect()
-        events.extend(parser_events)
-        warnings.extend(parser_warnings)
+    changed = False
+    current_keys = {str(record["key"]) for record in records}
+
+    stale_keys = [key for key in files if key not in current_keys]
+    for key in stale_keys:
+        del files[key]
+        changed = True
+
+    for record in records:
+        parser = record["parser"]
+        path = record["path"]
+        key = str(record["key"])
+        mtime_ns = int(record["mtime_ns"])
+        size = int(record["size"])
+        entry = files.get(key)
+
+        if _entry_is_current(entry, mtime_ns, size):
+            file_events = entry["events"]
+            file_warnings = entry["warnings"]
+        else:
+            file_events, file_warnings = parser.parse_file(path)
+            files[key] = {
+                "mtime_ns": mtime_ns,
+                "size": size,
+                "events": file_events,
+                "warnings": file_warnings,
+            }
+            changed = True
+
+        events.extend(file_events)
+        warnings.extend(file_warnings)
+
     events.sort(key=lambda item: str(item.get("ts") or ""), reverse=True)
-    return events, warnings
+    return events, warnings, changed
 
 
 def _collect_all() -> tuple[list[dict[str, Any]], list[str]]:
     now = time.monotonic()
-    fingerprint = _fingerprint()
     with _LOCK:
-        # In-memory cache valid only while the source set is unchanged.
-        if _USAGE_CACHE["expires"] > now and _USAGE_CACHE["fingerprint"] == fingerprint:
-            return list(_USAGE_CACHE["events"]), list(_USAGE_CACHE["warnings"])
+        records = _source_records()
+        fingerprint = _source_signature(records)
+        if _USAGE_CACHE.get("expires", 0.0) > now and _USAGE_CACHE.get("fingerprint") == fingerprint:
+            return list(_USAGE_CACHE.get("events", [])), list(_USAGE_CACHE.get("warnings", []))
 
-        disk = _load_disk(fingerprint)
-        if disk is not None:
-            events, warnings = disk
-        else:
-            events, warnings = _build()
-            _save_disk(fingerprint, events, warnings)
+        disk_cache = _load_disk()
+        events, warnings, changed = _collect_from_files(records, disk_cache)
+        if changed:
+            _save_disk(disk_cache)
 
         _USAGE_CACHE.update(
             {"expires": now + CACHE_TTL_SECONDS, "events": events, "warnings": warnings, "fingerprint": fingerprint}

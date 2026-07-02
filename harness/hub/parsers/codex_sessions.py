@@ -20,6 +20,10 @@ def _paths() -> list[Path]:
     return sorted(paths)
 
 
+def paths() -> list[Path]:
+    return _paths()
+
+
 def _rollout_ts(path: Path) -> str:
     match = re.search(r"rollout-(\d{4}-\d{2}-\d{2})T(\d{2})-(\d{2})-(\d{2})", path.name)
     if match:
@@ -124,47 +128,58 @@ def _usage_event(path: Path, model: str, command: str | None, calls: int, usage:
     )
 
 
+def parse_file(path: Path) -> tuple[list[dict[str, Any]], list[str]]:
+    events: list[dict[str, Any]] = []
+    warnings: list[str] = []
+    model: str | None = None
+    command: str | None = None
+    calls = 0
+    last_usage: dict[str, Any] | None = None
+
+    try:
+        with path.open("r", encoding="utf-8", errors="replace") as handle:
+            for line_number, line in enumerate(handle, start=1):
+                text = line.strip()
+                if not text:
+                    continue
+                try:
+                    obj = json.loads(text)
+                except json.JSONDecodeError as exc:
+                    warnings.append(f"{path}: line {line_number}: {exc}")
+                    continue
+                if not isinstance(obj, dict):
+                    continue
+                if model is None:
+                    model = _model_from_obj(obj)
+                if command is None:
+                    command = _find_string(obj, "cwd")
+                payload = _token_payload(obj)
+                if payload is None:
+                    continue
+                calls += 1
+                usage = _usage_from_payload(payload)
+                if usage is not None:
+                    last_usage = usage
+    except OSError as exc:
+        warnings.append(f"{path}: {exc}")
+        return events, warnings
+
+    if calls and last_usage is None:
+        warnings.append(f"{path}: token_count events found without token usage")
+        return events, warnings
+    if last_usage is not None:
+        events.append(_usage_event(path, model or "codex:unknown", command, calls, last_usage))
+
+    return events, warnings
+
+
 def collect() -> tuple[list[dict[str, Any]], list[str]]:
     events: list[dict[str, Any]] = []
     warnings: list[str] = []
 
-    for path in _paths():
-        model: str | None = None
-        command: str | None = None
-        calls = 0
-        last_usage: dict[str, Any] | None = None
-        try:
-            with path.open("r", encoding="utf-8", errors="replace") as handle:
-                for line_number, line in enumerate(handle, start=1):
-                    text = line.strip()
-                    if not text:
-                        continue
-                    try:
-                        obj = json.loads(text)
-                    except json.JSONDecodeError as exc:
-                        warnings.append(f"{path}: line {line_number}: {exc}")
-                        continue
-                    if not isinstance(obj, dict):
-                        continue
-                    if model is None:
-                        model = _model_from_obj(obj)
-                    if command is None:
-                        command = _find_string(obj, "cwd")
-                    payload = _token_payload(obj)
-                    if payload is None:
-                        continue
-                    calls += 1
-                    usage = _usage_from_payload(payload)
-                    if usage is not None:
-                        last_usage = usage
-        except OSError as exc:
-            warnings.append(f"{path}: {exc}")
-            continue
-
-        if calls and last_usage is None:
-            warnings.append(f"{path}: token_count events found without token usage")
-            continue
-        if last_usage is not None:
-            events.append(_usage_event(path, model or "codex:unknown", command, calls, last_usage))
+    for path in paths():
+        file_events, file_warnings = parse_file(path)
+        events.extend(file_events)
+        warnings.extend(file_warnings)
 
     return events, warnings

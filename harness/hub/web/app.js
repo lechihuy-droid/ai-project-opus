@@ -1,11 +1,44 @@
 const app = document.getElementById("app");
+const hubShell = document.getElementById("hub-shell");
+const sidebarToggle = document.getElementById("hub-sidebar-toggle");
+const sidebarBackdrop = document.getElementById("hub-sidebar-backdrop");
 const usageFilters = { source: "", model: "", since: "" };
 const toolFilters = { source: "", model: "", since: "" };
+const CHAT_STORAGE_KEY = "harness-hub-chat";
+const CHAT_SCROLL_THRESHOLD = 72;
+const CHAT_COPY_NOTICE_MS = 1600;
+const CHAT_MODEL_CATEGORIES = ["All", "Primary", "Fast", "Judge", "Cheap", "Fallback", "Multimodal"];
+const CHAT_EMPTY_PROMPTS = [
+  "Summarize this failure and suggest next checks.",
+  "Draft a short test plan for this change.",
+  "List risks before shipping this update.",
+];
+const chatState = {
+  models: [],
+  modelCatalog: [],
+  defaultModel: "",
+  model: "",
+  selectedCategory: "All",
+  searchQuery: "",
+  modelPickerOpen: false,
+  modelPickerActiveIndex: 0,
+  modelCopyNotice: "",
+  messages: [],
+  sending: false,
+  userNearBottom: true,
+  copiedMessageIndex: null,
+};
 let autoRefreshTimer = null;
 let jobEventSource = null;
+let chatAbortController = null;
+let shellChromeReady = false;
+let shellStatusTimer = null;
 
 window.addEventListener("hashchange", route);
-window.addEventListener("DOMContentLoaded", route);
+window.addEventListener("DOMContentLoaded", () => {
+  initShellChrome();
+  route();
+});
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -21,6 +54,109 @@ function inlineMarkdown(value) {
   text = text.replace(/`([^`]+)`/g, "<code>$1</code>");
   text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
   return text;
+}
+
+function safeMarkdownLanguage(value) {
+  const first = String(value || "").trim().split(/\s+/)[0] || "";
+  return /^[A-Za-z0-9_+.#-]{1,32}$/.test(first) ? first : "";
+}
+
+function renderMarkdownCodeBlock(escapedCode, language) {
+  const safeLanguage = safeMarkdownLanguage(language);
+  const label = safeLanguage ? `<span class="md-code-label">${escapeHtml(safeLanguage)}</span>` : "";
+  return `<pre class="md-pre">${label}<button class="md-code-copy" type="button" data-md-code-copy>Copy</button><code>${escapedCode}</code></pre>`;
+}
+
+async function copyMarkdownCodeBlock(button) {
+  const code = button.closest(".md-pre")?.querySelector("code");
+  const text = code?.textContent || "";
+  try {
+    const copied = await copyTextToClipboard(text);
+    if (!copied) showCopyFallback(text);
+  } catch (_error) {
+    showCopyFallback(text);
+  }
+  const previousLabel = button.textContent || "Copy";
+  button.textContent = "Copied";
+  button.classList.add("is-copied");
+  window.setTimeout(() => {
+    button.textContent = previousLabel;
+    button.classList.remove("is-copied");
+  }, CHAT_COPY_NOTICE_MS);
+}
+
+function extractMarkdownCodeBlocks(escapedSource) {
+  const blocks = [];
+  const output = [];
+  const lines = String(escapedSource || "").replace(/\r\n?/g, "\n").split("\n");
+  let inCode = false;
+  let code = [];
+  let language = "";
+
+  const pushCodeBlock = () => {
+    const index = blocks.length;
+    blocks.push(renderMarkdownCodeBlock(code.join("\n"), language));
+    output.push(`\x00MD_CODE_BLOCK_${index}\x00`);
+    code = [];
+    language = "";
+  };
+
+  lines.forEach((line) => {
+    if (!inCode) {
+      const openingFence = line.match(/^```(.*)$/);
+      if (openingFence) {
+        inCode = true;
+        language = openingFence[1] || "";
+        code = [];
+        return;
+      }
+      output.push(line);
+      return;
+    }
+    if (/^```\s*$/.test(line)) {
+      inCode = false;
+      pushCodeBlock();
+      return;
+    }
+    code.push(line);
+  });
+
+  if (inCode) pushCodeBlock();
+  return { text: output.join("\n"), blocks };
+}
+
+function restoreInlineMarkdownTokens(text, tokens) {
+  return String(text || "").replace(/\x00MD_INLINE_(\d+)\x00/g, (_match, index) => tokens[Number(index)] || "");
+}
+
+function restoreLinkMarkdownTokens(text, tokens) {
+  return String(text || "").replace(/\x00MD_LINK_(\d+)\x00/g, (_match, index) => tokens[Number(index)] || "");
+}
+
+function isSafeMarkdownHref(value) {
+  return /^https?:\/\//i.test(String(value || "").trim());
+}
+
+function renderMarkdownInlineEscaped(value) {
+  const tokens = [];
+  const linkTokens = [];
+  let text = String(value || "").replace(/`([^`\n]+)`/g, (_match, code) => {
+    const index = tokens.length;
+    tokens.push(`<code>${code}</code>`);
+    return `\x00MD_INLINE_${index}\x00`;
+  });
+
+  text = text.replace(/\[([^\]\n]+)\]\(([^)\s]+)\)/g, (match, label, href) => {
+    const safeHref = String(href || "").trim();
+    if (!isSafeMarkdownHref(safeHref)) return match;
+    const index = linkTokens.length;
+    linkTokens.push(`<a href="${safeHref}" target="_blank" rel="noopener noreferrer">${label}</a>`);
+    return `\x00MD_LINK_${index}\x00`;
+  });
+  text = text.replace(/\*\*([^*\n]+(?:\*(?!\*)[^*\n]*)*)\*\*/g, "<strong>$1</strong>");
+  text = text.replace(/(^|[\s([{>])\*([^*\s][^*\n]*?[^*\s]|\S)\*(?=$|[\s)\]},.!?:;<])/g, "$1<em>$2</em>");
+  text = text.replace(/(^|[\s([{>])_([^_\s][^_\n]*?[^_\s]|\S)_(?=$|[\s)\]},.!?:;<])/g, "$1<em>$2</em>");
+  return restoreInlineMarkdownTokens(restoreLinkMarkdownTokens(text, linkTokens), tokens);
 }
 
 async function getJson(path) {
@@ -46,10 +182,136 @@ async function postJson(path, body) {
     body: JSON.stringify(body),
   });
   if (!response.ok) {
-    const message = await response.text();
+    const raw = await response.text();
+    let message = raw;
+    try {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.detail) message = Array.isArray(parsed.detail) ? parsed.detail.join("; ") : String(parsed.detail);
+    } catch (_error) {
+      /* keep raw response text */
+    }
     throw new Error(`${response.status} ${response.statusText}: ${message}`);
   }
   return response.json();
+}
+
+function setSidebarOpen(open) {
+  if (!hubShell || !sidebarToggle) return;
+  hubShell.classList.toggle("sidebar-open", open);
+  sidebarToggle.setAttribute("aria-expanded", open ? "true" : "false");
+}
+
+function closeSidebarOnMobile() {
+  if (window.matchMedia("(max-width: 900px)").matches) {
+    setSidebarOpen(false);
+  }
+}
+
+function statusChip(id) {
+  return document.getElementById(id);
+}
+
+function setStatusChip(id, status, label, ariaLabel) {
+  const chip = statusChip(id);
+  if (!chip) return;
+  chip.dataset.status = status;
+  chip.setAttribute("aria-label", ariaLabel || label);
+  const labelNode = chip.querySelector(".hub-status-label");
+  if (labelNode) labelNode.textContent = label;
+}
+
+const LIVE_RUN_STATES = new Set(["running", "in-progress", "in_progress", "in progress"]);
+
+function countLiveRuns(runs) {
+  if (!Array.isArray(runs)) return 0;
+  return runs.filter((run) => {
+    const state = String(run?.state || run?.status || "").toLowerCase();
+    return LIVE_RUN_STATES.has(state);
+  }).length;
+}
+
+async function updateShellStatus() {
+  setStatusChip("hub-status-server", "ok", "server", "Server online");
+  const [governanceResult, runsResult] = await Promise.allSettled([
+    getJson("/api/governance"),
+    getJson("/api/runs"),
+  ]);
+
+  if (governanceResult.status === "fulfilled") {
+    const governance = governanceResult.value || {};
+    const level = Number(governance.degradation || 0);
+    const blocked = Array.isArray(governance.blocked_tiers) ? governance.blocked_tiers.length : 0;
+    setStatusChip(
+      "hub-status-degradation",
+      level > 0 ? "warn" : "ok",
+      `deg L${formatNumber(level)}`,
+      `Degradation L${formatNumber(level)}, ${formatNumber(blocked)} blocked tiers`,
+    );
+  } else {
+    setStatusChip("hub-status-degradation", "unknown", "deg L?", "Degradation unknown");
+  }
+
+  if (runsResult.status === "fulfilled") {
+    const liveRuns = countLiveRuns(runsResult.value);
+    setStatusChip("hub-status-runs", "ok", `${formatNumber(liveRuns)} runs`, `${formatNumber(liveRuns)} live runs`);
+  } else {
+    setStatusChip("hub-status-runs", "unknown", "? runs", "Live runs unknown");
+  }
+}
+
+function initShellChrome() {
+  if (shellChromeReady) return;
+  shellChromeReady = true;
+  sidebarToggle?.addEventListener("click", () => {
+    setSidebarOpen(!hubShell?.classList.contains("sidebar-open"));
+  });
+  sidebarBackdrop?.addEventListener("click", () => setSidebarOpen(false));
+  app?.addEventListener("click", async (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const codeCopyButton = target.closest("[data-md-code-copy]");
+    if (!(codeCopyButton instanceof HTMLButtonElement)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    await copyMarkdownCodeBlock(codeCopyButton);
+  });
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    if (!target.closest(".chat-export-menu")) closeChatExportMenu();
+    if (!target.closest(".chat-model-picker")) closeChatModelPicker();
+  });
+  document.querySelectorAll(".hub-sidebar .hub-nav a[data-route]").forEach((link) => {
+    link.addEventListener("click", closeSidebarOnMobile);
+  });
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      setSidebarOpen(false);
+      closeChatExportMenu();
+      closeChatModelPicker();
+    }
+  });
+  window.addEventListener("resize", () => {
+    if (!window.matchMedia("(max-width: 900px)").matches) {
+      setSidebarOpen(false);
+    }
+  });
+  updateShellStatus();
+  shellStatusTimer = window.setInterval(updateShellStatus, 15000);
+}
+
+function parseSseBlock(block) {
+  const dataLines = [];
+  let eventName = "message";
+  block.split(/\r?\n/).forEach((line) => {
+    if (line.startsWith("event:")) eventName = line.slice(6).trim();
+    if (line.startsWith("data:")) dataLines.push(line.slice(5).trimStart());
+  });
+  return { eventName, data: dataLines.join("\n") };
+}
+
+function renderMultilineText(value) {
+  return escapeHtml(value).replace(/\r?\n/g, "<br>");
 }
 
 function formatNumber(value) {
@@ -94,12 +356,20 @@ function clearJobStream() {
   }
 }
 
+function clearChatStream() {
+  if (chatAbortController) {
+    chatAbortController.abort();
+    chatAbortController = null;
+  }
+}
+
 function setAutoRefresh(callback) {
   clearAutoRefresh();
   autoRefreshTimer = window.setInterval(callback, 10000);
 }
 
 let lastRunsSignature = null;
+let dashboardRenderToken = 0;
 
 function runsSignature(runs) {
   if (!Array.isArray(runs) || !runs.length) return "0:";
@@ -107,7 +377,7 @@ function runsSignature(runs) {
 }
 
 // Poll /api/runs only; when a new run appears, hand the fresh runs to a patch
-// callback that updates just the run-related nodes in place — no full DOM
+// callback that updates just the run-related nodes in place - no full DOM
 // rebuild, no usage/board re-fetch, so the view never visibly jumps.
 function autoRefreshOnNewRuns(hash, patch) {
   setAutoRefresh(async () => {
@@ -145,6 +415,45 @@ function dashLatestCardInner(runs) {
     <p class="muted">${latest ? escapeHtml(latest.suite_name || latest.suite) : "No run data"}</p>`;
 }
 
+function dashUsageCardInner(usageRollup) {
+  const usageTotals = usageRollup ? usageRollup.totals : { total_tokens: 0, calls: 0 };
+  const topModel = usageRollup && usageRollup.by_model.length ? usageRollup.by_model[0].model : "n/a";
+  return `
+    <span class="badge navy">Usage 7d</span>
+    <div class="metric">${formatNumber(usageTotals.total_tokens)} <span class="metric-label">incl. cache</span></div>
+    <p class="muted">${renderCacheLine(usageTotals)}</p>
+    <p class="muted">${formatNumber(usageTotals.calls)} calls &middot; ${escapeHtml(topModel)}</p>`;
+}
+
+function dashUsageLoadingCardInner() {
+  return `
+    <span class="badge navy">Usage 7d</span>
+    <div class="skeleton-line" aria-hidden="true"></div>
+    <p class="muted">Loading...</p>`;
+}
+
+function dashEntropyCardInner(entropy) {
+  const flaggedEntropy = (entropy || []).filter((item) => item.flagged).length;
+  return `
+    <span class="badge ${flaggedEntropy ? "red" : "green"}">High Entropy</span>
+    <div class="metric">${formatNumber(flaggedEntropy)}</div>
+    <p class="muted">flagged sessions</p>
+    <a class="link-button" href="#/violations">Open</a>`;
+}
+
+function dashEntropyLoadingCardInner() {
+  return `
+    <span class="badge navy">High Entropy</span>
+    <div class="skeleton-line" aria-hidden="true"></div>
+    <p class="muted">Loading...</p>
+    <a class="link-button" href="#/violations">Open</a>`;
+}
+
+function patchDashboardSlowCard(renderToken, id, html) {
+  if (renderToken !== dashboardRenderToken || (location.hash || "#/") !== "#/") return;
+  setHtml(id, html);
+}
+
 function patchDashboardRuns(runs) {
   setHtml("dash-runs-card", dashRunsCardInner(runs));
   setHtml("dash-latest-card", dashLatestCardInner(runs));
@@ -165,8 +474,14 @@ function usageQuery(filters) {
 }
 
 function setActiveNav(path) {
-  document.querySelectorAll(".hub-nav a").forEach((link) => {
-    link.classList.toggle("active", link.dataset.route === path);
+  document.querySelectorAll(".hub-sidebar .hub-nav a[data-route]").forEach((link) => {
+    const active = link.dataset.route === path;
+    link.classList.toggle("active", active);
+    if (active) {
+      link.setAttribute("aria-current", "page");
+    } else {
+      link.removeAttribute("aria-current");
+    }
   });
 }
 
@@ -200,6 +515,62 @@ function statusBadge(status) {
   const navy = new Set(["running", "awaiting-review"]);
   const color = green.has(normalized) ? "green" : red.has(normalized) ? "red" : navy.has(normalized) ? "navy" : "gray";
   return `<span class="badge ${color}">${escapeHtml(normalized)}</span>`;
+}
+
+function tierBadge(tier) {
+  const normalized = String(tier || "unknown").toLowerCase();
+  const css = normalized.replace(/_/g, "-");
+  return `<span class="badge tier-badge tier-${escapeHtml(css)}">${escapeHtml(normalized)}</span>`;
+}
+
+function tierBadges(tiers) {
+  const rows = Array.isArray(tiers) ? tiers : [];
+  return rows.length ? rows.map(tierBadge).join(" ") : '<span class="badge gray">none</span>';
+}
+
+function decisionBadge(decision) {
+  const normalized = String(decision || "not run").toLowerCase();
+  const color = normalized === "deny" ? "red" : normalized === "warn" ? "gray" : normalized === "allow" ? "green" : "gray";
+  return `<span class="badge ${color}">${escapeHtml(normalized)}</span>`;
+}
+
+function renderTextList(rows, emptyText) {
+  const source = Array.isArray(rows) ? rows : rows ? [rows] : [];
+  const items = source.filter(Boolean);
+  if (!items.length) return `<p class="muted">${escapeHtml(emptyText)}</p>`;
+  return `<ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+}
+
+function provenanceBadge(row) {
+  const role = String(row?.provenance_role || row?.role || "unknown").toLowerCase();
+  const trust = String(row?.trust || "trusted").toLowerCase();
+  const color = trust === "untrusted" ? "red" : role === "model" ? "navy" : "gray";
+  return `<span class="badge ${color} provenance-badge">${escapeHtml(role)}:${escapeHtml(trust)}</span>`;
+}
+
+function violationTotal(run) {
+  return Number(run?.violations?.total || 0);
+}
+
+function violationBadge(total) {
+  const count = Number(total || 0);
+  return `<span class="badge ${count ? "red" : "green"}">${formatNumber(count)} violations</span>`;
+}
+
+function violationTrendLine(runs) {
+  const points = (runs || []).slice(0, 8).reverse().map((run) => `${escapeHtml(run.run_id || "")}: ${formatNumber(violationTotal(run))}`);
+  return points.length ? points.join(" / ") : "No runs";
+}
+
+function renderViolationSummary(violations) {
+  const data = violations || {};
+  return `
+    <div class="card">
+      ${violationBadge(data.total)}
+      <div class="metric">${formatNumber(data.total)}</div>
+      <p class="muted">Boundary failed: ${formatNumber(data.failed_boundary_checks)} &middot; dangerous: ${formatNumber(data.dangerous_command_checks)} &middot; tier&gt;=execute: ${formatNumber(data.evidence_commands_tier_execute_or_above)}</p>
+    </div>
+  `;
 }
 
 function boardLatestLine(board) {
@@ -257,6 +628,90 @@ function formatDiffstat(stat) {
   return `${files} files, +${insertions}/-${deletions}`;
 }
 
+function formatJobRuns(job) {
+  const count = Number(job?.run_count || 0);
+  const cap = Number(job?.run_cap || 0);
+  return `runs: ${formatNumber(count)}/${cap ? formatNumber(cap) : "n/a"}`;
+}
+
+function jobArtifactSource(job) {
+  return String(job?.provenance?.source || job?.source || "unknown");
+}
+
+function isHighRiskJob(job) {
+  const tier = String(job?.max_tier || "").toLowerCase();
+  return tier === "network" || tier === "destructive";
+}
+
+function renderJobRiskBanner(job) {
+  if (!isHighRiskJob(job)) return "";
+  return `
+    <div class="job-risk-banner">
+      <strong>High-risk diff</strong>
+      ${tierBadge(job.max_tier)}
+      <span>Review network or destructive changes before accepting.</span>
+    </div>
+  `;
+}
+
+function renderGovernanceCard(governance) {
+  const data = governance || { degradation: 0, blocked_tiers: [] };
+  const level = Number(data.degradation || 0);
+  return `
+    <div class="card governance-card ${level > 0 ? "alert" : ""}">
+      <span class="badge ${level > 0 ? "red" : "green"}">Governance</span>
+      <div class="metric">${formatNumber(level)}</div>
+      <p class="muted">blocked: ${tierBadges(data.blocked_tiers || [])}</p>
+      <a class="link-button" href="#/governance">Open</a>
+    </div>
+  `;
+}
+
+function renderInformFindings(findings) {
+  const rows = Array.isArray(findings) ? findings : [];
+  if (!rows.length) return '<p class="muted">No L1 findings.</p>';
+  return `
+    <ul class="finding-list">
+      ${rows.map((item) => `
+        <li>
+          <span class="badge ${item.type === "injection_pattern" ? "red" : "gray"}">${escapeHtml(item.type || "finding")}</span>
+          <code>${escapeHtml(item.pattern || "")}</code>
+          <span class="muted">offset ${escapeHtml(item.offset ?? "")}</span>
+        </li>
+      `).join("")}
+    </ul>
+  `;
+}
+
+function renderJobPolicy(job) {
+  const reasons = job.l2_decision === "warn" ? (job.l2_warnings || []) : (job.l2_reasons || []);
+  return `
+    <div class="policy-panel">
+      <div>
+        <h3>L1 Inform</h3>
+        ${renderInformFindings(job.inform_findings || [])}
+      </div>
+      <div>
+        <h3>L2 Verify</h3>
+        <div>${decisionBadge(job.l2_decision)}</div>
+        ${renderTextList(reasons, "No L2 reasons.")}
+      </div>
+      ${(job.approval_block_reasons || []).length ? `
+        <div class="approval-block">
+          <h3>Approve Blocked</h3>
+          ${renderTextList(job.approval_block_reasons, "No block reasons.")}
+        </div>
+      ` : ""}
+      ${(job.flag_reasons || []).length ? `
+        <div class="approval-block">
+          <h3>Finished Flagged</h3>
+          ${renderTextList(job.flag_reasons, "No flag reasons.")}
+        </div>
+      ` : ""}
+    </div>
+  `;
+}
+
 function renderJobsTable(jobs) {
   if (!jobs.length) {
     return '<p class="muted">No jobs found.</p>';
@@ -266,6 +721,8 @@ function renderJobsTable(jobs) {
       <td>${jobLink(job)}</td>
       <td>${statusBadge(job.status)}</td>
       <td>${escapeHtml(job.agent || "")}</td>
+      <td>${tierBadge(job.max_tier)}</td>
+      <td class="nowrap">${escapeHtml(formatJobRuns(job))}</td>
       <td>${escapeHtml(formatDiffstat(job.diffstat))}</td>
       <td class="nowrap">${escapeHtml(job.created_at || "")}</td>
     </tr>
@@ -273,7 +730,7 @@ function renderJobsTable(jobs) {
   return `
     <div class="table-scroll">
       <table>
-        <thead><tr><th>Job</th><th>Status</th><th>Agent</th><th>Diffstat</th><th>Created</th></tr></thead>
+        <thead><tr><th>Job</th><th>Status</th><th>Agent</th><th>Tier</th><th>Runs</th><th>Diffstat</th><th>Created</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>
@@ -292,6 +749,10 @@ function renderJobCreateForm() {
         <select name="agent">
           <option value="codex" selected>codex</option>
         </select>
+      </label>
+      <label class="job-check">
+        <input name="allow_override" type="checkbox">
+        Allow blocked tier override
       </label>
       <button class="link-button" type="submit">Create job</button>
       <span id="job-create-error" class="error-text"></span>
@@ -397,9 +858,10 @@ function wireJobActions(jobId) {
       try {
         await runJobAction(jobId, action);
       } catch (error) {
+        const message = error.message || String(error);
+        await renderJob(jobId);
         const result = document.getElementById("job-action-result");
-        if (result) result.innerHTML = `<span class="error-text">${escapeHtml(error.message || error)}</span>`;
-        button.disabled = false;
+        if (result) result.innerHTML = `<span class="error-text">${escapeHtml(message)}</span>`;
       }
     });
   });
@@ -417,6 +879,7 @@ function wireJobCreateForm() {
       const job = await postJson("/api/jobs", {
         brief: String(data.get("brief") || ""),
         agent: String(data.get("agent") || "codex"),
+        allow_override: data.get("allow_override") === "on",
       });
       location.hash = `#/jobs/${encodeURIComponent(job.id)}`;
     } catch (error) {
@@ -435,6 +898,7 @@ function renderRunsTable(runs) {
       <td>${escapeHtml(run.suite_name || run.suite)}</td>
       <td>${statusBadge(run.status)}</td>
       <td class="nowrap">${escapeHtml(`${run.passed}/${run.total}`)}</td>
+      <td class="nowrap">${violationBadge(violationTotal(run))}</td>
       <td class="nowrap">${escapeHtml(run.duration_seconds)}s</td>
       <td class="nowrap">${escapeHtml(run.finished_at || run.started_at || "")}</td>
     </tr>
@@ -442,7 +906,7 @@ function renderRunsTable(runs) {
   return `
     <div class="table-scroll">
       <table>
-        <thead><tr><th>Run</th><th>Suite</th><th>Status</th><th>Checks</th><th>Duration</th><th>Finished</th></tr></thead>
+        <thead><tr><th>Run</th><th>Suite</th><th>Status</th><th>Checks</th><th>Violations</th><th>Duration</th><th>Finished</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>
@@ -519,6 +983,26 @@ function wireRunCompare(runs) {
   });
 }
 
+function renderIntegrityPanel(integrity) {
+  const suites = integrity?.suites || [];
+  const failing = suites.filter((item) => !item.ok);
+  const rows = suites.map((item) => `
+    <tr>
+      <td><code>${escapeHtml(item.suite)}</code></td>
+      <td>${item.ok ? '<span class="badge green">ok</span>' : '<span class="badge red">mismatch</span>'}</td>
+      <td><code>${escapeHtml(String(item.actual || "").slice(0, 16))}</code></td>
+    </tr>
+  `).join("");
+  return `
+    <div class="card integrity-card ${failing.length ? "integrity-fail" : ""}">
+      <span class="badge ${failing.length ? "red" : "green"}">Suite Integrity</span>
+      <div class="metric">${formatNumber(failing.length)}</div>
+      <p class="muted">${formatNumber(suites.length)} signed suite manifests checked.</p>
+      ${rows ? `<details><summary>Manifest signatures</summary><div class="table-scroll"><table><thead><tr><th>Suite</th><th>Status</th><th>Actual</th></tr></thead><tbody>${rows}</tbody></table></div></details>` : ""}
+    </div>
+  `;
+}
+
 function renderSuitesTable(suites) {
   if (!suites.length) {
     return '<p class="muted">No suites found.</p>';
@@ -555,6 +1039,7 @@ function renderChecksTable(checks, withLogs) {
         <td><code>${escapeHtml(check.id)}</code></td>
         <td>${escapeHtml(check.type)}</td>
         <td>${check.status ? statusBadge(check.status) : ""}</td>
+        <td>${check.command_tier ? tierBadge(check.command_tier) : ""}</td>
         <td>${escapeHtml(check.message || check.hint || "")}</td>
         <td class="nowrap">${check.duration_seconds === undefined ? "" : `${escapeHtml(check.duration_seconds)}s`}</td>
         <td>${logs}</td>
@@ -564,25 +1049,32 @@ function renderChecksTable(checks, withLogs) {
   return `
     <div class="table-scroll">
       <table>
-        <thead><tr><th>Check</th><th>Type</th><th>Status</th><th>Message</th><th>Duration</th><th>Logs</th></tr></thead>
+        <thead><tr><th>Check</th><th>Type</th><th>Status</th><th>Tier</th><th>Message</th><th>Duration</th><th>Logs</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>
   `;
 }
 
-function flushList(buffer, output) {
+function flushMarkdownList(state, output) {
+  if (!state.items.length) {
+    return;
+  }
+  output.push(`<${state.type}>${state.items.map((item) => `<li>${renderMarkdownInlineEscaped(item)}</li>`).join("")}</${state.type}>`);
+  state.items = [];
+  state.type = "";
+}
+
+function flushMarkdownParagraph(buffer, output) {
   if (!buffer.length) {
     return;
   }
-  output.push(`<ul>${buffer.map((item) => `<li>${inlineMarkdown(item)}</li>`).join("")}</ul>`);
+  output.push(`<p>${buffer.map(renderMarkdownInlineEscaped).join("<br>")}</p>`);
   buffer.length = 0;
 }
 
-function flushTable(buffer, output) {
-  if (!buffer.length) {
-    return;
-  }
+function flushMarkdownTable(buffer, output) {
+  if (!buffer.length) return;
   const rows = buffer
     .filter((line) => !/^\|\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(line))
     .map((line) => line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((cell) => cell.trim()));
@@ -594,8 +1086,8 @@ function flushTable(buffer, output) {
   output.push(`
     <div class="table-scroll">
       <table>
-        <thead><tr>${head.map((cell) => `<th>${inlineMarkdown(cell)}</th>`).join("")}</tr></thead>
-        <tbody>${body.map((row) => `<tr>${row.map((cell) => `<td>${inlineMarkdown(cell)}</td>`).join("")}</tr>`).join("")}</tbody>
+        <thead><tr>${head.map((cell) => `<th>${renderMarkdownInlineEscaped(cell)}</th>`).join("")}</tr></thead>
+        <tbody>${body.map((row) => `<tr>${row.map((cell) => `<td>${renderMarkdownInlineEscaped(cell)}</td>`).join("")}</tr>`).join("")}</tbody>
       </table>
     </div>
   `);
@@ -603,53 +1095,63 @@ function flushTable(buffer, output) {
 }
 
 function renderMarkdown(markdown) {
+  const escaped = escapeHtml(markdown);
+  const extracted = extractMarkdownCodeBlocks(escaped);
   const output = [];
   const tableBuffer = [];
-  const listBuffer = [];
-  const lines = String(markdown || "").split(/\r?\n/);
-  let inCode = false;
-  let code = [];
+  const paragraphBuffer = [];
+  const listState = { type: "", items: [] };
+  const lines = extracted.text.split("\n");
 
   for (const line of lines) {
-    if (line.startsWith("```")) {
-      flushTable(tableBuffer, output);
-      flushList(listBuffer, output);
-      if (inCode) {
-        output.push(`<pre><code>${escapeHtml(code.join("\n"))}</code></pre>`);
-        code = [];
-      }
-      inCode = !inCode;
+    const codeToken = line.match(/^\x00MD_CODE_BLOCK_(\d+)\x00$/);
+    if (codeToken) {
+      flushMarkdownTable(tableBuffer, output);
+      flushMarkdownList(listState, output);
+      flushMarkdownParagraph(paragraphBuffer, output);
+      output.push(extracted.blocks[Number(codeToken[1])] || "");
       continue;
     }
-    if (inCode) {
-      code.push(line);
+
+    if (!line.trim()) {
+      flushMarkdownTable(tableBuffer, output);
+      flushMarkdownList(listState, output);
+      flushMarkdownParagraph(paragraphBuffer, output);
       continue;
     }
+
     if (line.trim().startsWith("|")) {
-      flushList(listBuffer, output);
+      flushMarkdownList(listState, output);
+      flushMarkdownParagraph(paragraphBuffer, output);
       tableBuffer.push(line);
       continue;
     }
-    flushTable(tableBuffer, output);
-    if (line.startsWith("- ")) {
-      listBuffer.push(line.slice(2));
+
+    flushMarkdownTable(tableBuffer, output);
+    const unordered = line.match(/^\s*[-*]\s+(.+)$/);
+    const ordered = line.match(/^\s*\d+\.\s+(.+)$/);
+    if (unordered || ordered) {
+      flushMarkdownParagraph(paragraphBuffer, output);
+      const nextType = ordered ? "ol" : "ul";
+      if (listState.type && listState.type !== nextType) flushMarkdownList(listState, output);
+      listState.type = nextType;
+      listState.items.push((ordered || unordered)[1]);
       continue;
     }
-    flushList(listBuffer, output);
-    if (line.startsWith("# ")) {
-      output.push(`<h2>${inlineMarkdown(line.slice(2))}</h2>`);
-    } else if (line.startsWith("## ")) {
-      output.push(`<h3>${inlineMarkdown(line.slice(3))}</h3>`);
-    } else if (line.trim()) {
-      output.push(`<p>${inlineMarkdown(line)}</p>`);
+
+    flushMarkdownList(listState, output);
+    const heading = line.match(/^(#{1,6})\s+(.+)$/);
+    if (heading) {
+      flushMarkdownParagraph(paragraphBuffer, output);
+      output.push(`<h4 class="md-heading md-heading-${heading[1].length}">${renderMarkdownInlineEscaped(heading[2])}</h4>`);
+      continue;
     }
+    paragraphBuffer.push(line);
   }
 
-  flushTable(tableBuffer, output);
-  flushList(listBuffer, output);
-  if (inCode) {
-    output.push(`<pre><code>${escapeHtml(code.join("\n"))}</code></pre>`);
-  }
+  flushMarkdownTable(tableBuffer, output);
+  flushMarkdownList(listState, output);
+  flushMarkdownParagraph(paragraphBuffer, output);
   return output.join("");
 }
 
@@ -739,16 +1241,16 @@ function wireSuiteRunButtons() {
 async function renderDashboard() {
   setActiveNav("/");
   setLoading("Dashboard");
+  const renderToken = ++dashboardRenderToken;
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-  const [runs, suites, usageRollup, board] = await Promise.all([
+  const [runs, suites, board, governance] = await Promise.all([
     getJson("/api/runs"),
     getJson("/api/suites"),
-    getJson(`/api/usage/rollup${usageQuery({ since: sevenDaysAgo })}`).catch(() => null),
     getJson("/api/board").catch(() => null),
+    getJson("/api/governance").catch(() => null),
   ]);
-  const latest = runs[0];
-  const usageTotals = usageRollup ? usageRollup.totals : { total_tokens: 0, calls: 0 };
-  const topModel = usageRollup && usageRollup.by_model.length ? usageRollup.by_model[0].model : "n/a";
+  if (renderToken !== dashboardRenderToken || (location.hash || "#/") !== "#/") return;
+  const recentViolations = runs.slice(0, 8).reduce((sum, run) => sum + violationTotal(run), 0);
   app.innerHTML = `
     <div class="page-hero">
       <h1>Dashboard</h1>
@@ -763,12 +1265,14 @@ async function renderDashboard() {
         <p class="muted">Checks: ${escapeHtml(suites.reduce((sum, suite) => sum + suite.check_count, 0))}</p>
       </div>
       <div class="card" id="dash-latest-card">${dashLatestCardInner(runs)}</div>
+      <div class="card" id="dash-usage-card">${dashUsageLoadingCardInner()}</div>
+      <div class="card" id="dash-entropy-card">${dashEntropyLoadingCardInner()}</div>
       <div class="card">
-        <span class="badge navy">Usage 7d</span>
-        <div class="metric">${formatNumber(usageTotals.total_tokens)} <span class="metric-label">incl. cache</span></div>
-        <p class="muted">${renderCacheLine(usageTotals)}</p>
-        <p class="muted">${formatNumber(usageTotals.calls)} calls &middot; ${escapeHtml(topModel)}</p>
+        <span class="badge ${recentViolations ? "red" : "green"}">Violations</span>
+        <div class="metric">${formatNumber(recentViolations)}</div>
+        <p class="muted">${violationTrendLine(runs)}</p>
       </div>
+      ${renderGovernanceCard(governance)}
       <div class="card task-board-card">
         <span class="badge navy">Task Board</span>
         <div class="metric">${escapeHtml(board && board.owner ? board.owner : "n/a")}</div>
@@ -786,6 +1290,16 @@ async function renderDashboard() {
   wireSuiteRunButtons();
   lastRunsSignature = runsSignature(runs);
   autoRefreshOnNewRuns("#/", patchDashboardRuns);
+  getJson(`/api/usage/rollup${usageQuery({ since: sevenDaysAgo })}`)
+    .catch(() => null)
+    .then((usageRollup) => {
+      patchDashboardSlowCard(renderToken, "dash-usage-card", dashUsageCardInner(usageRollup));
+    });
+  getJson("/api/sessions/entropy")
+    .catch(() => [])
+    .then((entropy) => {
+      patchDashboardSlowCard(renderToken, "dash-entropy-card", dashEntropyCardInner(entropy));
+    });
 }
 
 async function renderRuns() {
@@ -814,8 +1328,9 @@ async function renderRun(runId) {
     <div class="card">
       ${statusBadge(summary.status)}
       <h2>${escapeHtml(summary.run_id)}</h2>
-      <p class="muted">${escapeHtml(summary.suite_name || summary.suite)} · ${escapeHtml(summary.passed)}/${escapeHtml(summary.total)} checks · ${escapeHtml(summary.duration_seconds)}s</p>
+      <p class="muted">${escapeHtml(summary.suite_name || summary.suite)} &middot; ${escapeHtml(summary.passed)}/${escapeHtml(summary.total)} checks &middot; ${escapeHtml(summary.duration_seconds)}s</p>
     </div>
+    ${renderViolationSummary(detail.violations || summary.violations)}
     <h2>Checks</h2>
     ${renderChecksTable(detail.checks, true)}
     <h2>Artifacts</h2>
@@ -860,17 +1375,24 @@ async function renderJob(jobId) {
     <div class="hub-actions"><a class="link-button" href="#/jobs">Back to jobs</a></div>
     <div class="card">
       ${statusBadge(job.status)}
+      ${tierBadge(job.max_tier)}
       <h2>${escapeHtml(job.id)}</h2>
-      <p class="muted">${escapeHtml(job.agent || "")} &middot; ${escapeHtml(formatDiffstat(job.diffstat))}</p>
+      <p class="muted job-meta-line">
+        <span>${escapeHtml(job.agent || "")} &middot; ${escapeHtml(formatDiffstat(job.diffstat))}</span>
+        <span class="badge gray">${escapeHtml(formatJobRuns(job))}</span>
+        <span class="badge gray">source: ${escapeHtml(jobArtifactSource(job))}</span>
+        <span class="badge ${job.brief_ok ? "green" : "red"}">brief ${job.brief_ok ? "ok" : "changed"}</span>
+      </p>
       <p>${escapeHtml(job.brief || "")}</p>
       <p class="muted"><code>${escapeHtml(job.branch || "")}</code></p>
       <p class="muted">Base <code>${escapeHtml(job.base_sha || "")}</code></p>
       <p class="muted">Created ${escapeHtml(job.created_at || "")}${job.started_at ? ` &middot; started ${escapeHtml(job.started_at)}` : ""}${job.finished_at ? ` &middot; finished ${escapeHtml(job.finished_at)}` : ""}</p>
+      ${renderJobPolicy(job)}
       ${renderJobActions(job)}
       <div id="job-action-result" class="muted"></div>
     </div>
     ${job.status === "running" ? renderJobStreamPanel(job) : ""}
-    ${showDiff ? `<h2>Diff</h2>${renderJobDiff(job.diff || "")}` : ""}
+    ${showDiff ? `<h2>Diff</h2>${renderJobRiskBanner(job)}${renderJobDiff(job.diff || "")}` : ""}
   `;
   wireJobActions(job.id);
   if (job.status === "running") {
@@ -881,8 +1403,11 @@ async function renderJob(jobId) {
 async function renderSuites() {
   setActiveNav("/suites");
   setLoading("Suites");
-  const suites = await getJson("/api/suites");
-  app.innerHTML = `<h2>Suites</h2>${renderSuitesTable(suites)}`;
+  const [suites, integrity] = await Promise.all([
+    getJson("/api/suites"),
+    getJson("/api/integrity").catch(() => null),
+  ]);
+  app.innerHTML = `<h2>Suites</h2>${integrity ? renderIntegrityPanel(integrity) : ""}${renderSuitesTable(suites)}`;
   wireSuiteRunButtons();
 }
 
@@ -896,7 +1421,7 @@ async function renderSuite(suiteId) {
       <span class="badge navy">${escapeHtml(suite.id)}</span>
       <h2>${escapeHtml(suite.name)}</h2>
       <p>${escapeHtml(suite.description || "")}</p>
-      <p class="muted">${escapeHtml(suite.check_count)} checks · ${escapeHtml(suite.path)}</p>
+      <p class="muted">${escapeHtml(suite.check_count)} checks &middot; ${escapeHtml(suite.path)}</p>
       <div class="hub-actions">
         <button class="link-button" type="button" data-suite-run="${escapeHtml(suite.id)}">Run</button>
       </div>
@@ -1029,6 +1554,1146 @@ async function renderUsage() {
   window.HubCharts.barChart(document.getElementById("usage-day-chart-all"), rollup.by_day, "day", "total_tokens");
 }
 
+function normalizeChatModelCatalog(catalog, models) {
+  const allowed = new Set(models);
+  const rows = Array.isArray(catalog) ? catalog : [];
+  const normalized = rows.map((row, index) => {
+    const id = String(row?.id || "");
+    if (!id || (allowed.size && !allowed.has(id))) return null;
+    return {
+      rank: Number(row?.rank || index + 1),
+      id,
+      shortName: String(row?.shortName || id),
+      label: String(row?.label || id),
+      category: String(row?.category || "Fallback"),
+      bestFor: String(row?.bestFor || ""),
+      strengths: Array.isArray(row?.strengths) ? row.strengths.map((item) => String(item)) : [],
+      weaknesses: Array.isArray(row?.weaknesses) ? row.weaknesses.map((item) => String(item)) : [],
+      recommendedUse: String(row?.recommendedUse || ""),
+      avoidWhen: String(row?.avoidWhen || ""),
+      unavailable: Boolean(row?.unavailable),
+    };
+  }).filter(Boolean);
+  if (normalized.length) return normalized;
+  return models.map((id, index) => ({
+    rank: index + 1,
+    id,
+    shortName: id,
+    label: id,
+    category: "Fallback",
+    bestFor: "",
+    strengths: [],
+    weaknesses: [],
+    recommendedUse: "",
+    avoidWhen: "",
+    unavailable: false,
+  }));
+}
+
+function getChatModelCatalog() {
+  return chatState.modelCatalog.length ? chatState.modelCatalog : normalizeChatModelCatalog([], chatState.models);
+}
+
+function getChatModelById(modelId) {
+  return getChatModelCatalog().find((row) => row.id === modelId) || null;
+}
+
+function getSelectedChatModelRow() {
+  return getChatModelById(getCurrentChatModel()) || getChatModelCatalog()[0] || null;
+}
+
+function isChatModelSelectable(row) {
+  return Boolean(row && !row.unavailable);
+}
+
+function chatModelDisplayLabel(row) {
+  if (!row) return "No model available";
+  return `${row.label}${row.unavailable ? " (unavailable)" : ""}`;
+}
+
+function chatModelCategoryClass(category) {
+  return String(category || "fallback").toLowerCase().replace(/[^a-z0-9]+/g, "-") || "fallback";
+}
+
+function getFilteredChatModels() {
+  const query = chatState.searchQuery.trim().toLowerCase();
+  return getChatModelCatalog().filter((row) => {
+    const categoryMatch = chatState.selectedCategory === "All" || row.category === chatState.selectedCategory;
+    if (!categoryMatch) return false;
+    if (!query) return true;
+    return [row.shortName, row.id, row.category].some((value) => String(value).toLowerCase().includes(query));
+  });
+}
+
+function clampChatModelActiveIndex(models) {
+  if (!models.length) {
+    chatState.modelPickerActiveIndex = 0;
+    return;
+  }
+  chatState.modelPickerActiveIndex = Math.max(0, Math.min(chatState.modelPickerActiveIndex, models.length - 1));
+  if (isChatModelSelectable(models[chatState.modelPickerActiveIndex])) return;
+  const selectableIndex = models.findIndex(isChatModelSelectable);
+  chatState.modelPickerActiveIndex = selectableIndex >= 0 ? selectableIndex : 0;
+}
+
+function renderChatModelCategoryChips() {
+  return CHAT_MODEL_CATEGORIES.map((category) => {
+    const active = chatState.selectedCategory === category;
+    return `
+      <button class="chat-model-chip chat-model-control${active ? " is-active" : ""}" type="button" data-chat-model-category="${escapeHtml(category)}" aria-pressed="${active ? "true" : "false"}">
+        ${escapeHtml(category)}
+      </button>
+    `;
+  }).join("");
+}
+
+function renderChatModelList() {
+  const rows = getFilteredChatModels();
+  clampChatModelActiveIndex(rows);
+  if (!rows.length) {
+    return '<div class="chat-model-empty" role="status">No matching models.</div>';
+  }
+  return rows.map((row, index) => {
+    const selected = row.id === chatState.model;
+    const active = index === chatState.modelPickerActiveIndex;
+    const unavailable = Boolean(row.unavailable);
+    return `
+      <button class="chat-model-option chat-model-control${selected ? " is-selected" : ""}${active ? " is-active" : ""}${unavailable ? " is-unavailable" : ""}" id="chat-model-option-${index}" type="button" role="option" aria-selected="${selected ? "true" : "false"}" aria-disabled="${unavailable ? "true" : "false"}" data-chat-model-id="${escapeHtml(row.id)}" data-chat-model-unavailable="${unavailable ? "true" : "false"}" ${unavailable ? "disabled" : ""}>
+        ${escapeHtml(chatModelDisplayLabel(row))}
+      </button>
+    `;
+  }).join("");
+}
+
+function renderChatModelBullets(items) {
+  if (!items.length) return '<li class="muted">None listed.</li>';
+  return items.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+}
+
+function renderChatModelDetail() {
+  const row = getSelectedChatModelRow();
+  if (!row) {
+    return '<section class="chat-model-detail" aria-label="Selected model details"><p class="muted">No model selected.</p></section>';
+  }
+  const categoryClass = chatModelCategoryClass(row.category);
+  const copied = chatState.modelCopyNotice === "Copied";
+  const unavailableNote = row.unavailable
+    ? '<p class="muted chat-model-unavailable-note">Unavailable for this session.</p>'
+    : "";
+  return `
+    <section class="chat-model-detail" aria-label="Selected model details">
+      <div class="chat-model-detail-header">
+        <h2>${escapeHtml(row.shortName)}</h2>
+        <span class="chat-model-badge chat-model-badge-${categoryClass}">${escapeHtml(row.category)}</span>
+      </div>
+      <div class="chat-model-id-row">
+        <code class="chat-model-full-id">${escapeHtml(row.id)}</code>
+        <button class="chat-model-id-copy" type="button" data-chat-copy-model-id>Copy</button>
+      </div>
+      ${unavailableNote}
+      <div class="chat-model-detail-grid">
+        <div class="chat-model-detail-item">
+          <span class="chat-model-detail-label">Best for</span>
+          <p>${escapeHtml(row.bestFor)}</p>
+        </div>
+        <div class="chat-model-detail-item">
+          <span class="chat-model-detail-label">Recommended use</span>
+          <p>${escapeHtml(row.recommendedUse)}</p>
+        </div>
+        <div class="chat-model-detail-item">
+          <span class="chat-model-detail-label">Strengths</span>
+          <ul>${renderChatModelBullets(row.strengths)}</ul>
+        </div>
+        <div class="chat-model-detail-item">
+          <span class="chat-model-detail-label">Weaknesses</span>
+          <ul>${renderChatModelBullets(row.weaknesses)}</ul>
+        </div>
+        <div class="chat-model-detail-item chat-model-detail-wide">
+          <span class="chat-model-detail-label">Avoid when</span>
+          <p>${escapeHtml(row.avoidWhen)}</p>
+        </div>
+      </div>
+      <div class="chat-model-detail-footer">
+        <button class="link-button" type="button" data-chat-copy-model-id>${copied ? "Copied" : "Copy model ID"}</button>
+        <span class="chat-model-copy-status" id="chat-model-copy-status" aria-live="polite">${escapeHtml(chatState.modelCopyNotice)}</span>
+      </div>
+    </section>
+  `;
+}
+
+function renderChatModelPickerContent() {
+  const selected = getSelectedChatModelRow();
+  const label = chatModelDisplayLabel(selected);
+  const filteredRows = getFilteredChatModels();
+  clampChatModelActiveIndex(filteredRows);
+  const activeDescendant = chatState.modelPickerOpen && filteredRows.length ? `chat-model-option-${chatState.modelPickerActiveIndex}` : "";
+  return `
+    <div class="chat-model-categories" aria-label="Model categories">
+      ${renderChatModelCategoryChips()}
+    </div>
+    <div class="chat-model-select">
+      <button class="chat-model-toggle chat-model-control" id="chat-model-toggle" type="button" aria-haspopup="listbox" aria-expanded="${chatState.modelPickerOpen ? "true" : "false"}" aria-controls="chat-model-menu">
+        <span class="chat-model-toggle-label">${escapeHtml(label)}</span>
+        <span class="chat-model-toggle-icon">${chatIconSvg("chevron")}</span>
+      </button>
+      <div class="chat-model-menu" id="chat-model-menu" ${chatState.modelPickerOpen ? "" : "hidden"}>
+        <label class="chat-model-search-wrap">
+          <span class="sr-only">Search models</span>
+          <input class="chat-model-search chat-model-control" id="chat-model-search" type="search" value="${escapeHtml(chatState.searchQuery)}" placeholder="Search model, id, category" autocomplete="off" aria-controls="chat-model-list" aria-activedescendant="${escapeHtml(activeDescendant)}">
+        </label>
+        <div class="chat-model-list" id="chat-model-list" role="listbox" aria-label="Models">
+          ${renderChatModelList()}
+        </div>
+      </div>
+    </div>
+    ${renderChatModelDetail()}
+  `;
+}
+
+function renderChatModelPicker() {
+  return `
+    <div class="chat-model-picker" id="chat-model-picker">
+      ${renderChatModelPickerContent()}
+    </div>
+  `;
+}
+
+function refreshChatModelPicker(options = {}) {
+  const picker = document.getElementById("chat-model-picker");
+  if (!picker) return;
+  picker.innerHTML = renderChatModelPickerContent();
+  updateChatControls();
+  if (options.focusSearch && chatState.modelPickerOpen) {
+    const search = document.getElementById("chat-model-search");
+    if (search instanceof HTMLInputElement) {
+      search.focus();
+      search.setSelectionRange(search.value.length, search.value.length);
+    }
+  }
+  if (options.scrollActive) {
+    window.requestAnimationFrame(() => {
+      document.getElementById(`chat-model-option-${chatState.modelPickerActiveIndex}`)?.scrollIntoView({ block: "nearest" });
+    });
+  }
+}
+
+function setChatModelPickerOpen(open, options = {}) {
+  chatState.modelPickerOpen = Boolean(open && !chatState.sending);
+  if (chatState.modelPickerOpen && !chatState.searchQuery) {
+    const rows = getFilteredChatModels();
+    const selectedIndex = rows.findIndex((row) => row.id === chatState.model);
+    chatState.modelPickerActiveIndex = selectedIndex >= 0 ? selectedIndex : 0;
+  }
+  refreshChatModelPicker({ focusSearch: options.focusSearch, scrollActive: chatState.modelPickerOpen });
+}
+
+function closeChatModelPicker() {
+  if (!chatState.modelPickerOpen) return;
+  setChatModelPickerOpen(false);
+}
+
+function firstAvailableChatModelId() {
+  const defaultRow = getChatModelById(chatState.defaultModel);
+  if (isChatModelSelectable(defaultRow)) return defaultRow.id;
+  const firstAvailable = getChatModelCatalog().find(isChatModelSelectable);
+  return firstAvailable ? firstAvailable.id : "";
+}
+
+function markChatModelUnavailable(modelId) {
+  if (!modelId) return;
+  const row = chatState.modelCatalog.find((item) => item.id === modelId);
+  if (!row) return;
+  row.unavailable = true;
+  if (chatState.model === modelId) {
+    const nextModel = firstAvailableChatModelId();
+    if (nextModel && nextModel !== modelId) chatState.model = nextModel;
+  }
+  chatState.modelPickerOpen = false;
+  chatState.modelPickerActiveIndex = 0;
+  chatState.modelCopyNotice = "";
+  refreshChatModelPicker();
+}
+
+function selectChatModel(modelId) {
+  const row = getChatModelById(modelId);
+  if (chatState.sending || !chatState.models.includes(modelId) || !isChatModelSelectable(row)) return;
+  chatState.model = modelId;
+  chatState.searchQuery = "";
+  chatState.modelPickerOpen = false;
+  chatState.modelCopyNotice = "";
+  saveChatPersistence();
+  refreshChatModelPicker();
+  updateChatControls();
+}
+
+function setChatModelCategory(category) {
+  if (chatState.sending || !CHAT_MODEL_CATEGORIES.includes(category)) return;
+  chatState.selectedCategory = category;
+  chatState.modelPickerActiveIndex = 0;
+  refreshChatModelPicker();
+}
+
+function moveChatModelActive(delta) {
+  const rows = getFilteredChatModels();
+  const selectableIndexes = rows
+    .map((row, index) => isChatModelSelectable(row) ? index : -1)
+    .filter((index) => index >= 0);
+  if (!selectableIndexes.length) return;
+  const currentPosition = selectableIndexes.indexOf(chatState.modelPickerActiveIndex);
+  if (currentPosition < 0) {
+    chatState.modelPickerActiveIndex = delta > 0 ? selectableIndexes[0] : selectableIndexes[selectableIndexes.length - 1];
+  } else {
+    const nextPosition = (currentPosition + delta + selectableIndexes.length) % selectableIndexes.length;
+    chatState.modelPickerActiveIndex = selectableIndexes[nextPosition];
+  }
+  refreshChatModelPicker({ focusSearch: true, scrollActive: true });
+}
+
+function selectActiveChatModel() {
+  const row = getFilteredChatModels()[chatState.modelPickerActiveIndex];
+  if (isChatModelSelectable(row)) selectChatModel(row.id);
+}
+
+function setChatModelCopyNotice(message) {
+  chatState.modelCopyNotice = message;
+  refreshChatModelPicker();
+  window.setTimeout(() => {
+    if (chatState.modelCopyNotice === message) {
+      chatState.modelCopyNotice = "";
+      refreshChatModelPicker();
+    }
+  }, CHAT_COPY_NOTICE_MS);
+}
+
+async function copySelectedChatModelId() {
+  const modelId = getCurrentChatModel();
+  if (!modelId) return;
+  try {
+    const copied = await copyTextToClipboard(modelId);
+    if (copied) {
+      setChatModelCopyNotice("Copied");
+    } else {
+      showCopyFallback(modelId);
+      setChatModelCopyNotice("Clipboard unavailable; text selected.");
+    }
+  } catch (_error) {
+    showCopyFallback(modelId);
+    setChatModelCopyNotice("Clipboard unavailable; text selected.");
+  }
+}
+
+function getCurrentChatModel() {
+  return chatState.model || chatState.defaultModel || chatState.models[0] || "";
+}
+
+function normalizeStoredChatMessage(message) {
+  const role = message?.role === "user" ? "user" : message?.role === "assistant" ? "assistant" : "";
+  if (!role) return null;
+  const normalized = {
+    role,
+    content: String(message.content || ""),
+  };
+  if (role === "assistant") {
+    if (message.reasoning) normalized.reasoning = String(message.reasoning);
+    if (message.model) normalized.model = String(message.model);
+    if (message.usage && typeof message.usage === "object") normalized.usage = message.usage;
+    if (message.error) normalized.error = String(message.error);
+    if (message.done === true || message.usage || (message.model && !message.error)) normalized.done = true;
+  }
+  return normalized;
+}
+
+function loadChatPersistence() {
+  let raw = "";
+  try {
+    raw = window.localStorage ? window.localStorage.getItem(CHAT_STORAGE_KEY) : "";
+  } catch (_error) {
+    raw = "";
+  }
+  if (!raw) return;
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === "object") {
+      chatState.model = parsed.selectedModelId
+        ? String(parsed.selectedModelId)
+        : parsed.model
+          ? String(parsed.model)
+          : chatState.model;
+      chatState.messages = Array.isArray(parsed.messages)
+        ? parsed.messages.map(normalizeStoredChatMessage).filter(Boolean)
+        : [];
+    }
+  } catch (_error) {
+    try {
+      window.localStorage?.removeItem(CHAT_STORAGE_KEY);
+    } catch (_storageError) {
+      /* ignore storage cleanup failures */
+    }
+    chatState.messages = [];
+  }
+}
+
+function saveChatPersistence() {
+  try {
+    if (!window.localStorage) return;
+    const messages = chatState.messages.map(normalizeStoredChatMessage).filter(Boolean);
+    window.localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify({
+      model: chatState.model,
+      selectedModelId: chatState.model,
+      messages,
+    }));
+  } catch (_error) {
+    /* localStorage can be unavailable in private or locked-down contexts */
+  }
+}
+
+function clearChatPersistence() {
+  try {
+    window.localStorage?.removeItem(CHAT_STORAGE_KEY);
+  } catch (_error) {
+    /* ignore storage cleanup failures */
+  }
+}
+
+function chatHasMessages() {
+  return chatState.messages.length > 0;
+}
+
+function chatUsageTokens(usage) {
+  return {
+    input: Number(usage?.input_tokens || 0),
+    output: Number(usage?.output_tokens || 0),
+  };
+}
+
+function renderChatUsage(usage) {
+  if (!usage) return "";
+  const tokens = chatUsageTokens(usage);
+  return `
+    <p class="muted chat-usage">
+      in ${formatNumber(tokens.input)} / out ${formatNumber(tokens.output)} tok
+    </p>
+  `;
+}
+
+function renderChatError(message) {
+  if (!message) return "";
+  const keyHelp = String(message).startsWith("NVIDIA_API_KEY")
+    ? "<br><span>Set NVIDIA_API_KEY in .env and restart Hub.</span>"
+    : "";
+  return `<div class="chat-error error-text">${escapeHtml(message)}${keyHelp}</div>`;
+}
+
+function chatIconSvg(name) {
+  const attrs = 'class="chat-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+  if (name === "copy") {
+    return `<svg ${attrs}><path d="M8 8h10v10H8z"></path><path d="M6 16H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"></path></svg>`;
+  }
+  if (name === "refresh") {
+    return `<svg ${attrs}><path d="M20 12a8 8 0 1 1-2.34-5.66"></path><path d="M20 4v6h-6"></path></svg>`;
+  }
+  if (name === "chevron") {
+    return `<svg ${attrs}><path d="M6 9l6 6 6-6"></path></svg>`;
+  }
+  return `<svg ${attrs}><path d="M12 3l1.5 5 5 1.5-5 1.5-1.5 5-1.5-5-5-1.5 5-1.5L12 3z"></path><path d="M19 15l.7 2.3L22 18l-2.3.7L19 21l-.7-2.3L16 18l2.3-.7L19 15z"></path></svg>`;
+}
+
+function renderChatPromptChips() {
+  return CHAT_EMPTY_PROMPTS.map((prompt) => `
+    <button class="chat-prompt-chip" type="button" data-chat-prompt="${escapeHtml(prompt)}">${escapeHtml(prompt)}</button>
+  `).join("");
+}
+
+function renderChatRoleMeta(role, message) {
+  const isUser = role === "user";
+  const label = isUser ? "You" : "Assistant";
+  const avatar = isUser ? '<span class="chat-role-initial">U</span>' : chatIconSvg("spark");
+  return `
+    <div class="chat-bubble-meta">
+      <span class="chat-role-avatar chat-role-avatar-${role}" aria-hidden="true">${avatar}</span>
+      <span class="chat-role-label">${label}</span>
+      ${message.streaming ? '<span class="chat-state-pill">streaming</span>' : ""}
+    </div>
+  `;
+}
+
+function renderChatReasoning(message) {
+  const reasoning = String(message.reasoning || "");
+  if (!reasoning) return "";
+  const lineCount = reasoning.trim() ? reasoning.trim().split(/\r?\n/).length : 0;
+  const lineLabel = `${formatNumber(lineCount)} line${lineCount === 1 ? "" : "s"}`;
+  return `
+    <details class="chat-reasoning">
+      <summary>
+        <span class="chat-reasoning-title">
+          ${chatIconSvg("spark")}
+          <span class="chat-reasoning-show">Show thinking</span>
+          <span class="chat-reasoning-hide">Hide thinking</span>
+        </span>
+        <span class="chat-reasoning-size">${lineLabel}</span>
+        <span class="chat-reasoning-chevron">${chatIconSvg("chevron")}</span>
+      </summary>
+      <div class="chat-reasoning-text">${renderMultilineText(reasoning)}</div>
+    </details>
+  `;
+}
+
+function isLastAssistantMessage(index) {
+  for (let i = chatState.messages.length - 1; i >= 0; i -= 1) {
+    if (chatState.messages[i]?.role === "assistant") return i === index;
+  }
+  return false;
+}
+
+function renderChatMessageActions(message, index) {
+  if (message.role !== "assistant") return "";
+  const didCopy = chatState.copiedMessageIndex === index;
+  const canRegenerate = isLastAssistantMessage(index);
+  return `
+    <div class="chat-message-actions" aria-label="Assistant message actions">
+      <button class="chat-action chat-action-icon${didCopy ? " is-copied" : ""}" type="button" title="Copy" aria-label="${didCopy ? "Copied" : "Copy"}" data-chat-copy-index="${index}" ${message.content ? "" : "disabled"}>${chatIconSvg("copy")}</button>
+      ${didCopy ? '<span class="chat-action-feedback" aria-live="polite">Copied</span>' : ""}
+      ${canRegenerate ? `<button class="chat-action chat-action-icon" type="button" title="Regenerate" aria-label="Regenerate" data-chat-regenerate-index="${index}" ${chatState.sending ? "disabled" : ""}>${chatIconSvg("refresh")}</button>` : ""}
+    </div>
+  `;
+}
+
+function renderChatMessageContent(message, role) {
+  if (!message.content) {
+    return message.streaming ? '<span class="muted">...</span>' : "";
+  }
+  if (role === "assistant" && message.done === true && !message.streaming) {
+    return renderMarkdown(message.content);
+  }
+  return renderMultilineText(message.content);
+}
+
+function renderChatStreamingIndicator(message) {
+  if (!message.streaming) return "";
+  if (message.content) return '<span class="chat-stream-caret" aria-hidden="true"></span><span class="sr-only">streaming</span>';
+  return '<span class="chat-stream-dot" aria-label="streaming"></span>';
+}
+
+function renderChatMessagesHtml() {
+  if (!chatState.messages.length) {
+    return `
+      <div class="chat-empty">
+        <div class="chat-empty-copy">
+          <strong>Ready.</strong>
+          <span>Choose a model and send a message.</span>
+        </div>
+        <div class="chat-empty-prompts" aria-label="Example prompts">
+          ${renderChatPromptChips()}
+        </div>
+      </div>
+    `;
+  }
+  return chatState.messages.map((message, index) => {
+    const role = message.role === "user" ? "user" : "assistant";
+    const content = renderChatMessageContent(message, role);
+    const actions = renderChatMessageActions(message, index);
+    return `
+      <div class="chat-row chat-row-${role}">
+        <div class="chat-bubble chat-bubble-${role}">
+          ${renderChatRoleMeta(role, message)}
+          ${role === "assistant" ? renderChatReasoning(message) : ""}
+          <div class="chat-text">${content}${renderChatStreamingIndicator(message)}</div>
+          ${renderChatError(message.error)}
+          ${role === "assistant" ? renderChatUsage(message.usage) : ""}
+          ${actions}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function isChatNearBottom(target) {
+  return target.scrollHeight - target.scrollTop - target.clientHeight <= CHAT_SCROLL_THRESHOLD;
+}
+
+function setChatJumpVisible(visible) {
+  const jump = document.getElementById("chat-jump-latest");
+  if (jump) jump.hidden = !visible;
+}
+
+function scrollChatToBottom() {
+  const target = document.getElementById("chat-messages");
+  if (!target) return;
+  target.scrollTop = target.scrollHeight;
+  chatState.userNearBottom = true;
+  setChatJumpVisible(false);
+}
+
+function updateChatJumpButton() {
+  const target = document.getElementById("chat-messages");
+  if (!target) return;
+  chatState.userNearBottom = isChatNearBottom(target);
+  setChatJumpVisible(chatHasMessages() && !chatState.userNearBottom);
+}
+
+function updateChatMessages(options = {}) {
+  const target = document.getElementById("chat-messages");
+  if (!target) return;
+  const forceScroll = Boolean(options.forceScroll);
+  const previousScrollTop = target.scrollTop;
+  const shouldScroll = forceScroll || isChatNearBottom(target);
+  target.innerHTML = renderChatMessagesHtml();
+  if (shouldScroll) {
+    scrollChatToBottom();
+  } else {
+    target.scrollTop = previousScrollTop;
+    chatState.userNearBottom = false;
+    setChatJumpVisible(chatHasMessages());
+  }
+}
+
+function updateChatComposerMeta() {
+  const input = document.getElementById("chat-input");
+  const counter = document.getElementById("chat-char-count");
+  if (counter) counter.textContent = formatNumber(String(input?.value || "").length);
+  if (input) {
+    input.style.height = "auto";
+    input.style.height = `${Math.min(input.scrollHeight, 180)}px`;
+  }
+}
+
+function setChatNotice(message) {
+  const notice = document.getElementById("chat-copy-status");
+  if (!notice) return;
+  notice.textContent = message || "";
+}
+
+function showChatNotice(message) {
+  setChatNotice(message);
+  window.setTimeout(() => {
+    const notice = document.getElementById("chat-copy-status");
+    if (notice && notice.textContent === message) notice.textContent = "";
+  }, CHAT_COPY_NOTICE_MS);
+}
+
+function setChatExportOpen(open) {
+  const exportToggle = document.getElementById("chat-export-toggle");
+  const exportOptions = document.getElementById("chat-export-options");
+  const exportMenu = document.querySelector(".chat-export-menu");
+  const toolbar = document.querySelector(".chat-toolbar");
+  const isOpen = Boolean(open && exportToggle && !exportToggle.disabled && exportOptions);
+  if (exportOptions) exportOptions.hidden = !isOpen;
+  if (exportToggle) exportToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  exportMenu?.classList.toggle("is-open", isOpen);
+  toolbar?.classList.toggle("is-export-open", isOpen);
+}
+
+function closeChatExportMenu() {
+  setChatExportOpen(false);
+}
+
+function updateChatControls() {
+  const input = document.getElementById("chat-input");
+  const send = document.getElementById("chat-send");
+  const modelMenu = document.getElementById("chat-model-menu");
+  const modelToggle = document.getElementById("chat-model-toggle");
+  const newChat = document.getElementById("chat-new");
+  const exportToggle = document.getElementById("chat-export-toggle");
+  const exportMarkdown = document.getElementById("chat-export-md");
+  const exportJson = document.getElementById("chat-export-json");
+  const copyTranscript = document.getElementById("chat-copy-transcript");
+  const hasMessages = chatHasMessages();
+  if (chatState.sending && chatState.modelPickerOpen) {
+    chatState.modelPickerOpen = false;
+    if (modelMenu) modelMenu.hidden = true;
+    if (modelToggle) modelToggle.setAttribute("aria-expanded", "false");
+  }
+  if (input) input.disabled = chatState.sending;
+  if (send) {
+    send.textContent = chatState.sending ? "Stop" : "Send";
+    send.disabled = !chatState.sending && !chatState.model;
+  }
+  document.querySelectorAll(".chat-model-control").forEach((control) => {
+    if (control instanceof HTMLButtonElement || control instanceof HTMLInputElement) {
+      control.disabled = chatState.sending || control.getAttribute("data-chat-model-unavailable") === "true";
+    }
+  });
+  if (newChat) newChat.disabled = chatState.sending;
+  if (exportToggle) exportToggle.disabled = chatState.sending || !hasMessages;
+  if (exportMarkdown) exportMarkdown.disabled = chatState.sending || !hasMessages;
+  if (exportJson) exportJson.disabled = chatState.sending || !hasMessages;
+  if (copyTranscript) copyTranscript.disabled = chatState.sending || !hasMessages;
+  if (!hasMessages || chatState.sending) {
+    closeChatExportMenu();
+  }
+  updateChatComposerMeta();
+}
+
+function handleChatSseBlock(block, assistantIndex, requestModel) {
+  if (!block.trim()) return;
+  const parsed = parseSseBlock(block);
+  const payload = parsed.data ? JSON.parse(parsed.data) : {};
+  const message = chatState.messages[assistantIndex];
+  if (!message) return;
+
+  if (parsed.eventName === "delta") {
+    message.content = String(message.content || "") + String(payload.text || "");
+  } else if (parsed.eventName === "reasoning") {
+    message.reasoning = String(message.reasoning || "") + String(payload.text || "");
+  } else if (parsed.eventName === "done") {
+    message.streaming = false;
+    message.done = true;
+    message.usage = payload.usage || null;
+    message.model = payload.model || chatState.model;
+  } else if (parsed.eventName === "error") {
+    message.streaming = false;
+    message.done = false;
+    message.error = String(payload.message || "Chat stream error");
+    if (Number(payload.code) === 410) {
+      markChatModelUnavailable(requestModel || chatState.model);
+    }
+  }
+  saveChatPersistence();
+  updateChatMessages();
+}
+
+async function streamChatResponse(requestMessages, assistantIndex) {
+  chatAbortController = new AbortController();
+  const requestModel = chatState.model;
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: requestMessages, model: requestModel }),
+      signal: chatAbortController.signal,
+    });
+    if (!response.ok) {
+      const raw = await response.text();
+      let message = `${response.status} ${response.statusText}`;
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.detail) message = String(parsed.detail);
+      } catch (_error) {
+        if (raw) message = raw;
+      }
+      throw new Error(message);
+    }
+    if (!response.body) throw new Error("Empty chat stream");
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const parts = buffer.split(/\r?\n\r?\n/);
+      buffer = parts.pop() || "";
+      parts.forEach((part) => handleChatSseBlock(part, assistantIndex, requestModel));
+    }
+    buffer += decoder.decode();
+    handleChatSseBlock(buffer, assistantIndex, requestModel);
+  } catch (error) {
+    if (error.name !== "AbortError") {
+      const message = chatState.messages[assistantIndex];
+      if (message) {
+        message.error = error.message || String(error);
+        message.streaming = false;
+        message.done = false;
+      }
+    }
+  } finally {
+    const message = chatState.messages[assistantIndex];
+    if (message) message.streaming = false;
+    chatState.sending = false;
+    chatAbortController = null;
+    saveChatPersistence();
+    updateChatMessages();
+    updateChatControls();
+  }
+}
+
+function chatRequestMessages() {
+  return chatState.messages
+    .filter((message) => (message.role === "user" || message.role === "assistant") && message.content)
+    .map((message) => ({ role: message.role, content: message.content }));
+}
+
+async function sendChatMessage(text) {
+  const priorMessages = chatRequestMessages();
+  const userMessage = { role: "user", content: text };
+  const requestMessages = [...priorMessages, userMessage];
+  chatState.messages.push(userMessage);
+  const assistantIndex = chatState.messages.push({ role: "assistant", content: "", reasoning: "", streaming: true, done: false }) - 1;
+  chatState.sending = true;
+  saveChatPersistence();
+  updateChatMessages({ forceScroll: true });
+  updateChatControls();
+  await streamChatResponse(requestMessages, assistantIndex);
+}
+
+async function regenerateChatResponse(assistantIndex) {
+  if (chatState.sending || !isLastAssistantMessage(assistantIndex)) return;
+  let userIndex = -1;
+  for (let i = assistantIndex - 1; i >= 0; i -= 1) {
+    if (chatState.messages[i]?.role === "user") {
+      userIndex = i;
+      break;
+    }
+  }
+  if (userIndex < 0) return;
+  chatState.messages = chatState.messages.slice(0, assistantIndex);
+  const requestMessages = chatRequestMessages();
+  const newAssistantIndex = chatState.messages.push({ role: "assistant", content: "", reasoning: "", streaming: true, done: false }) - 1;
+  chatState.sending = true;
+  saveChatPersistence();
+  updateChatMessages({ forceScroll: true });
+  updateChatControls();
+  await streamChatResponse(requestMessages, newAssistantIndex);
+}
+
+function formatChatFileTimestamp(date) {
+  const pad = (value) => String(value).padStart(2, "0");
+  return [
+    date.getFullYear(),
+    pad(date.getMonth() + 1),
+    pad(date.getDate()),
+  ].join("") + "-" + [
+    pad(date.getHours()),
+    pad(date.getMinutes()),
+    pad(date.getSeconds()),
+  ].join("");
+}
+
+function appendMarkdownReasoning(lines, reasoning) {
+  const text = String(reasoning || "");
+  if (!text) return;
+  const parts = text.split(/\r?\n/);
+  lines.push(`> Reasoning (collapsed): ${parts[0]}`);
+  parts.slice(1).forEach((line) => {
+    lines.push(`> ${line}`);
+  });
+  lines.push("");
+}
+
+function buildChatMarkdown(exportedAt = new Date().toISOString()) {
+  const model = getCurrentChatModel();
+  const lines = [`# Harness Hub Chat - ${model} - ${exportedAt}`, ""];
+  chatState.messages.forEach((message) => {
+    if (message.role === "user") {
+      lines.push(`**You:** ${String(message.content || "")}`, "");
+      return;
+    }
+    if (message.role === "assistant") {
+      const tokens = chatUsageTokens(message.usage);
+      lines.push(`**Assistant** (${message.model || model}, in ${tokens.input} / out ${tokens.output} tok):`, "");
+      appendMarkdownReasoning(lines, message.reasoning);
+      lines.push(String(message.content || ""), "");
+    }
+  });
+  return lines.join("\n").trimEnd() + "\n";
+}
+
+function buildChatJson(exportedAt = new Date().toISOString()) {
+  const turns = chatState.messages.map((message) => {
+    const turn = {
+      role: message.role === "user" ? "user" : "assistant",
+      content: String(message.content || ""),
+    };
+    if (message.reasoning) turn.reasoning = String(message.reasoning);
+    if (message.model) turn.model = String(message.model);
+    if (message.usage) turn.usage = message.usage;
+    return turn;
+  });
+  return JSON.stringify({ exported_at: exportedAt, model: getCurrentChatModel(), turns }, null, 2) + "\n";
+}
+
+function downloadChatFile(content, filename, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+function exportChat(format) {
+  if (!chatHasMessages()) return;
+  const now = new Date();
+  const exportedAt = now.toISOString();
+  const stamp = formatChatFileTimestamp(now);
+  if (format === "json") {
+    downloadChatFile(buildChatJson(exportedAt), `chat-${stamp}.json`, "application/json");
+  } else {
+    downloadChatFile(buildChatMarkdown(exportedAt), `chat-${stamp}.md`, "text/markdown");
+  }
+}
+
+function showCopyFallback(text) {
+  const fallback = document.getElementById("chat-copy-fallback");
+  if (!fallback) return;
+  fallback.hidden = false;
+  fallback.value = text;
+  fallback.focus();
+  fallback.select();
+}
+
+async function copyTextToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return true;
+  }
+  const fallback = document.getElementById("chat-copy-fallback");
+  if (!fallback) return false;
+  fallback.hidden = false;
+  fallback.value = text;
+  fallback.focus();
+  fallback.select();
+  try {
+    const copied = document.execCommand("copy");
+    if (copied) fallback.hidden = true;
+    return copied;
+  } catch (_error) {
+    return false;
+  }
+}
+
+async function copyChatText(text, copiedMessageIndex = null) {
+  try {
+    const copied = await copyTextToClipboard(text);
+    if (copied) {
+      showChatNotice("Copied");
+    } else {
+      showCopyFallback(text);
+      showChatNotice("Clipboard unavailable; text selected.");
+    }
+  } catch (_error) {
+    showCopyFallback(text);
+    showChatNotice("Clipboard unavailable; text selected.");
+  }
+  if (copiedMessageIndex !== null) {
+    chatState.copiedMessageIndex = copiedMessageIndex;
+    updateChatMessages();
+    window.setTimeout(() => {
+      if (chatState.copiedMessageIndex === copiedMessageIndex) {
+        chatState.copiedMessageIndex = null;
+        updateChatMessages();
+      }
+    }, CHAT_COPY_NOTICE_MS);
+  }
+}
+
+function wireChat() {
+  const form = document.getElementById("chat-form");
+  const input = document.getElementById("chat-input");
+  const modelPicker = document.getElementById("chat-model-picker");
+  const messages = document.getElementById("chat-messages");
+  const newChat = document.getElementById("chat-new");
+  const exportToggle = document.getElementById("chat-export-toggle");
+  const exportOptions = document.getElementById("chat-export-options");
+  const copyTranscript = document.getElementById("chat-copy-transcript");
+  const jump = document.getElementById("chat-jump-latest");
+
+  modelPicker?.addEventListener("click", async (event) => {
+    event.stopPropagation();
+    closeChatExportMenu();
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const categoryButton = target.closest("[data-chat-model-category]");
+    if (categoryButton instanceof HTMLButtonElement) {
+      setChatModelCategory(categoryButton.getAttribute("data-chat-model-category") || "All");
+      return;
+    }
+    const toggle = target.closest("#chat-model-toggle");
+    if (toggle instanceof HTMLButtonElement) {
+      setChatModelPickerOpen(!chatState.modelPickerOpen, { focusSearch: true });
+      return;
+    }
+    const option = target.closest("[data-chat-model-id]");
+    if (option instanceof HTMLButtonElement) {
+      selectChatModel(option.getAttribute("data-chat-model-id") || "");
+      return;
+    }
+    const copyModel = target.closest("[data-chat-copy-model-id]");
+    if (copyModel instanceof HTMLButtonElement) {
+      await copySelectedChatModelId();
+    }
+  });
+  modelPicker?.addEventListener("input", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement) || target.id !== "chat-model-search") return;
+    chatState.searchQuery = target.value;
+    chatState.modelPickerActiveIndex = 0;
+    refreshChatModelPicker({ focusSearch: true });
+  });
+  modelPicker?.addEventListener("keydown", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    if (event.key === "Escape") {
+      closeChatModelPicker();
+      document.getElementById("chat-model-toggle")?.focus();
+      return;
+    }
+    if (!chatState.modelPickerOpen && target.closest("#chat-model-toggle") && event.key === "ArrowDown") {
+      event.preventDefault();
+      setChatModelPickerOpen(true, { focusSearch: true });
+      return;
+    }
+    if (!chatState.modelPickerOpen) return;
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      moveChatModelActive(1);
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      moveChatModelActive(-1);
+    } else if (event.key === "Enter" && target.closest("#chat-model-search")) {
+      event.preventDefault();
+      selectActiveChatModel();
+    }
+  });
+  newChat?.addEventListener("click", () => {
+    if (chatState.sending) return;
+    clearChatStream();
+    chatState.messages = [];
+    chatState.sending = false;
+    chatState.userNearBottom = true;
+    clearChatPersistence();
+    setChatNotice("");
+    updateChatMessages({ forceScroll: true });
+    updateChatControls();
+  });
+  exportToggle?.addEventListener("click", (event) => {
+    event.preventDefault();
+    if (exportToggle.disabled || !exportOptions) return;
+    setChatExportOpen(exportOptions.hidden);
+  });
+  document.getElementById("chat-export-md")?.addEventListener("click", () => {
+    exportChat("md");
+    closeChatExportMenu();
+  });
+  document.getElementById("chat-export-json")?.addEventListener("click", () => {
+    exportChat("json");
+    closeChatExportMenu();
+  });
+  copyTranscript?.addEventListener("click", async () => {
+    if (copyTranscript.disabled || !chatHasMessages()) return;
+    await copyChatText(buildChatMarkdown());
+  });
+  jump?.addEventListener("click", scrollChatToBottom);
+  messages?.addEventListener("scroll", updateChatJumpButton);
+  messages?.addEventListener("click", async (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const promptButton = target.closest("[data-chat-prompt]");
+    if (promptButton instanceof HTMLButtonElement) {
+      const prompt = promptButton.getAttribute("data-chat-prompt") || "";
+      if (input && !input.disabled) {
+        input.value = prompt;
+        updateChatComposerMeta();
+        input.focus();
+        input.setSelectionRange(input.value.length, input.value.length);
+      }
+      return;
+    }
+    const copyButton = target.closest("[data-chat-copy-index]");
+    if (copyButton) {
+      const index = Number(copyButton.getAttribute("data-chat-copy-index"));
+      const message = chatState.messages[index];
+      if (message?.role === "assistant") {
+        await copyChatText(String(message.content || ""), index);
+      }
+      return;
+    }
+    const regenerateButton = target.closest("[data-chat-regenerate-index]");
+    if (regenerateButton) {
+      const index = Number(regenerateButton.getAttribute("data-chat-regenerate-index"));
+      await regenerateChatResponse(index);
+    }
+  });
+  input?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      form?.requestSubmit();
+    }
+  });
+  input?.addEventListener("input", updateChatComposerMeta);
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (chatState.sending) {
+      clearChatStream();
+      updateChatControls();
+      return;
+    }
+    const text = String(input?.value || "").trim();
+    if (!text) return;
+    if (input) input.value = "";
+    updateChatComposerMeta();
+    await sendChatMessage(text);
+  });
+}
+
+async function renderChat() {
+  setActiveNav("/chat");
+  setLoading("Chat");
+  loadChatPersistence();
+  const data = await getJson("/api/chat/models");
+  chatState.models = Array.isArray(data.models) ? data.models : [];
+  chatState.modelCatalog = normalizeChatModelCatalog(data.catalog, chatState.models);
+  chatState.defaultModel = String(data.default || "");
+  if (!CHAT_MODEL_CATEGORIES.includes(chatState.selectedCategory)) chatState.selectedCategory = "All";
+  chatState.modelPickerOpen = false;
+  chatState.searchQuery = "";
+  chatState.modelPickerActiveIndex = 0;
+  chatState.modelCopyNotice = "";
+  if (!chatState.model || !chatState.models.includes(chatState.model)) {
+    chatState.model = chatState.defaultModel || chatState.models[0] || "";
+  }
+  app.innerHTML = `
+    <div class="chat-page">
+      <div class="page-hero chat-page-hero">
+        <h1>Chat</h1>
+        <p class="lead">NVIDIA OpenAI-compatible chat stream for Harness Hub.</p>
+      </div>
+      <section class="card chat-panel">
+        <div class="chat-toolbar">
+          <div class="chat-model-field">
+            <span class="sr-only">Model</span>
+            ${renderChatModelPicker()}
+          </div>
+          <div class="chat-toolbar-actions">
+            <button class="link-button" type="button" id="chat-new">+ New chat</button>
+            <div class="chat-export-menu">
+              <button class="link-button" type="button" id="chat-export-toggle" aria-haspopup="menu" aria-expanded="false" aria-controls="chat-export-options">Export v</button>
+              <div class="chat-export-options" id="chat-export-options" role="menu" hidden>
+                <button type="button" id="chat-export-md" role="menuitem">Markdown (.md)</button>
+                <button type="button" id="chat-export-json" role="menuitem">JSON (.json)</button>
+              </div>
+            </div>
+            <button class="link-button" type="button" id="chat-copy-transcript">Copy transcript</button>
+            <span class="chat-copy-status" id="chat-copy-status" aria-live="polite"></span>
+          </div>
+        </div>
+        <div class="chat-messages-wrap">
+          <div id="chat-messages" class="chat-messages" aria-live="polite"></div>
+          <button id="chat-jump-latest" class="chat-jump-latest" type="button" hidden>Jump to latest</button>
+        </div>
+        <form id="chat-form" class="chat-form">
+          <div class="chat-input-wrap">
+            <textarea id="chat-input" rows="3" placeholder="Message the selected model"></textarea>
+            <div class="chat-composer-meta">
+              <span>Enter to send - Shift+Enter for newline</span>
+              <span><span id="chat-char-count">0</span> chars</span>
+            </div>
+          </div>
+          <button id="chat-send" class="link-button" type="submit">Send</button>
+        </form>
+        <textarea id="chat-copy-fallback" class="chat-copy-fallback" aria-label="Copy fallback text" readonly hidden></textarea>
+      </section>
+    </div>
+  `;
+  updateChatMessages({ forceScroll: true });
+  updateChatControls();
+  wireChat();
+}
+
 function renderToolFilters() {
   const sinceDate = toolFilters.since ? toolFilters.since.slice(0, 10) : "";
   return `
@@ -1062,6 +2727,7 @@ function renderToolsTable(rows) {
   const body = rows.map((item) => `
     <tr>
       <td><code>${escapeHtml(item.tool)}</code></td>
+      <td>${tierBadge(item.tier)}</td>
       <td class="nowrap">${formatNumber(item.count)}</td>
       <td class="nowrap">${formatNumber(item.sessions)}</td>
       <td>${(item.models || []).map(escapeHtml).join(", ")}</td>
@@ -1070,7 +2736,7 @@ function renderToolsTable(rows) {
   return `
     <div class="table-scroll">
       <table>
-        <thead><tr><th>Tool</th><th>Calls</th><th>Sessions</th><th>Models</th></tr></thead>
+        <thead><tr><th>Tool</th><th>Tier</th><th>Calls</th><th>Sessions</th><th>Models</th></tr></thead>
         <tbody>${body}</tbody>
       </table>
     </div>
@@ -1247,12 +2913,21 @@ function loopMetaBySession(loops) {
   return map;
 }
 
-function renderSessionsTable(sessions, loops = []) {
+function entropyMetaBySession(entropy) {
+  const map = new Map();
+  (entropy || []).forEach((item) => {
+    if (item && item.session) map.set(item.session, item);
+  });
+  return map;
+}
+
+function renderSessionsTable(sessions, loops = [], entropy = []) {
   if (!sessions.length) return '<p class="muted">No sessions found.</p>';
   const loopMap = loopMetaBySession(loops);
+  const entropyMap = entropyMetaBySession(entropy);
   const rows = sessions.map((session) => `
     <tr>
-      <td>${sessionLink(session)} ${loopMap.get(session.session)?.loop_risk ? '<span class="badge red loop-risk-badge">Loop risk</span>' : ""}</td>
+      <td>${sessionLink(session)} ${loopMap.get(session.session)?.loop_risk ? '<span class="badge red loop-risk-badge">Loop risk</span>' : ""} ${entropyMap.get(session.session)?.flagged ? '<span class="badge red loop-risk-badge">High entropy</span>' : ""}</td>
       <td>${escapeHtml(session.source)}</td>
       <td class="nowrap">${escapeHtml(session.ts || "")}</td>
       <td class="nowrap">${loopMap.get(session.session) ? `${formatLatency(loopMap.get(session.session).avg_latency_s)} / ${formatLatency(loopMap.get(session.session).max_latency_s)}` : "n/a"}</td>
@@ -1265,21 +2940,111 @@ function renderSessionsTable(sessions, loops = []) {
 async function renderSessions() {
   setActiveNav("/sessions");
   setLoading("Sessions");
-  const [sessions, loops] = await Promise.all([
+  const [sessions, loops, entropy] = await Promise.all([
     getJson("/api/sessions"),
     getJson("/api/sessions/loops").catch(() => []),
+    getJson("/api/sessions/entropy").catch(() => []),
   ]);
   app.innerHTML = `
     <div class="hub-actions"><a class="link-button" href="#/">Back to dashboard</a></div>
     <h2>Sessions</h2>
-    ${renderSessionsTable(sessions, loops)}
+    ${renderSessionsTable(sessions, loops, entropy)}
+  `;
+}
+
+function renderEntropyTable(rows) {
+  const flagged = (rows || []).filter((item) => item.flagged);
+  if (!flagged.length) return '<p class="muted">No high-entropy sessions found.</p>';
+  const body = flagged.map((item) => `
+    <tr>
+      <td><a href="#/sessions/${encodeURIComponent(item.session)}">${escapeHtml(item.session)}</a></td>
+      <td>${escapeHtml(item.source)}</td>
+      <td class="nowrap">${formatNumber(item.actions)}</td>
+      <td class="nowrap">${escapeHtml(Math.round(Number(item.max_violation_rate || 0) * 100))}%</td>
+      <td>${escapeHtml(item.top_reason || "")}</td>
+    </tr>
+  `).join("");
+  return `<div class="table-scroll"><table><thead><tr><th>Session</th><th>Source</th><th>Actions</th><th>Max rate</th><th>Top reason</th></tr></thead><tbody>${body}</tbody></table></div>`;
+}
+
+async function renderViolations() {
+  setActiveNav("/violations");
+  setLoading("Violations");
+  const entropy = await getJson("/api/sessions/entropy");
+  const flagged = entropy.filter((item) => item.flagged).length;
+  app.innerHTML = `
+    <div class="hub-actions"><a class="link-button" href="#/">Back to dashboard</a></div>
+    <h2>Violations / Entropy</h2>
+    <div class="card">
+      <span class="badge ${flagged ? "red" : "green"}">Flagged Sessions</span>
+      <div class="metric">${formatNumber(flagged)}</div>
+      <p class="muted">Windowed violation rate over tool calls and tool errors.</p>
+    </div>
+    ${renderEntropyTable(entropy)}
+  `;
+}
+
+function renderGovernanceDenials(rows) {
+  const data = Array.isArray(rows) ? rows : [];
+  if (!data.length) return '<p class="muted">No recent denials.</p>';
+  const body = data.map((item) => `
+    <tr>
+      <td class="nowrap">${escapeHtml(item.ts || "")}</td>
+      <td>${item.job_id ? `<a href="#/jobs/${encodeURIComponent(item.job_id)}">${escapeHtml(item.job_id)}</a>` : ""}</td>
+      <td>${renderTextList(item.reasons || [], "No reasons.")}</td>
+    </tr>
+  `).join("");
+  return `<div class="table-scroll"><table><thead><tr><th>Time</th><th>Job</th><th>Reasons</th></tr></thead><tbody>${body}</tbody></table></div>`;
+}
+
+function renderGovernanceFindings(rows) {
+  const data = Array.isArray(rows) ? rows : [];
+  if (!data.length) return '<p class="muted">No recent L1 findings.</p>';
+  const body = data.map((item) => `
+    <tr>
+      <td class="nowrap">${escapeHtml(item.ts || "")}</td>
+      <td>${item.job_id ? `<a href="#/jobs/${encodeURIComponent(item.job_id)}">${escapeHtml(item.job_id)}</a>` : ""}</td>
+      <td><span class="badge ${item.type === "injection_pattern" ? "red" : "gray"}">${escapeHtml(item.type || "")}</span></td>
+      <td><code>${escapeHtml(item.pattern || "")}</code></td>
+      <td class="nowrap">${escapeHtml(item.offset ?? "")}</td>
+    </tr>
+  `).join("");
+  return `<div class="table-scroll"><table><thead><tr><th>Time</th><th>Job</th><th>Type</th><th>Pattern</th><th>Offset</th></tr></thead><tbody>${body}</tbody></table></div>`;
+}
+
+async function renderGovernance() {
+  setActiveNav("/governance");
+  setLoading("Governance");
+  const governance = await getJson("/api/governance");
+  const level = Number(governance.degradation || 0);
+  app.innerHTML = `
+    <div class="hub-actions"><a class="link-button" href="#/">Back to dashboard</a></div>
+    <div class="page-hero">
+      <h1>Governance</h1>
+      <p class="lead">Rule-based runtime constraints for Harness Hub jobs.</p>
+    </div>
+    <div class="card-grid usage-metrics">
+      <div class="card governance-card ${level > 0 ? "alert" : ""}">
+        <span class="badge ${level > 0 ? "red" : "green"}">Degradation</span>
+        <div class="metric">${formatNumber(level)}</div>
+        <p class="muted">Current level</p>
+      </div>
+      <div class="card">
+        <span class="badge navy">Blocked Tiers</span>
+        <p class="governance-tier-line">${tierBadges(governance.blocked_tiers || [])}</p>
+      </div>
+    </div>
+    <h2>Recent Denials</h2>
+    ${renderGovernanceDenials(governance.recent_denials || [])}
+    <h2>Recent L1 Findings</h2>
+    ${renderGovernanceFindings(governance.recent_findings || [])}
   `;
 }
 
 function renderReplayColumn(title, rows, renderRow, attrsForRow = () => "") {
   const pane = title.toLowerCase();
   const body = rows.length
-    ? rows.map((row) => `<div class="replay-item" data-ts="${escapeHtml(row.ts || "")}" ${attrsForRow(row)}>${renderRow(row)}</div>`).join("")
+    ? rows.map((row) => `<div class="replay-item" data-pane="${escapeHtml(pane)}" data-trust="${escapeHtml(row.trust || "trusted")}" data-ts="${escapeHtml(row.ts || "")}" ${attrsForRow(row)}>${renderRow(row)}</div>`).join("")
     : '<p class="muted">Empty.</p>';
   return `<section class="replay-pane" data-pane-section="${escapeHtml(pane)}"><h3>${escapeHtml(title)}</h3>${body}<p class="muted replay-filter-empty" hidden>No matching rows.</p></section>`;
 }
@@ -1288,7 +3053,7 @@ function renderToolCalls(calls) {
   if (!calls || !calls.length) return "";
   return calls.map((call) => `
     <details>
-      <summary>${escapeHtml(call.name)}</summary>
+      <summary>${escapeHtml(call.name)} ${tierBadge(call.tier)}${call.command_tier ? ` <span class="command-tier">cmd ${tierBadge(call.command_tier)}</span>` : ""}</summary>
       <pre><code>${escapeHtml(JSON.stringify(call.input, null, 2))}</code></pre>
     </details>
   `).join("");
@@ -1321,20 +3086,28 @@ function updateReplayEmptyState(pane) {
 function wireReplayFilters() {
   const agentTools = document.getElementById("filter-agent-tools");
   const monitorErrors = document.getElementById("filter-monitor-errors");
+  const untrustedOnly = document.getElementById("filter-untrusted-only");
   const apply = () => {
     const onlyAgentTools = Boolean(agentTools?.checked);
     const onlyMonitorErrors = Boolean(monitorErrors?.checked);
-    document.querySelectorAll('[data-pane="agent"]').forEach((item) => {
-      item.hidden = onlyAgentTools && item.dataset.hasTools !== "1";
+    const onlyUntrusted = Boolean(untrustedOnly?.checked);
+    document.querySelectorAll(".replay-item").forEach((item) => {
+      let hidden = onlyUntrusted && item.dataset.trust !== "untrusted";
+      if (item.dataset.pane === "agent") {
+        hidden = hidden || (onlyAgentTools && item.dataset.hasTools !== "1");
+      }
+      if (item.dataset.pane === "monitor") {
+        hidden = hidden || (onlyMonitorErrors && item.dataset.kind !== "error");
+      }
+      item.hidden = hidden;
     });
-    document.querySelectorAll('[data-pane="monitor"]').forEach((item) => {
-      item.hidden = onlyMonitorErrors && item.dataset.kind !== "error";
-    });
+    updateReplayEmptyState("outline");
     updateReplayEmptyState("agent");
     updateReplayEmptyState("monitor");
   };
   agentTools?.addEventListener("change", apply);
   monitorErrors?.addEventListener("change", apply);
+  untrustedOnly?.addEventListener("change", apply);
   apply();
 }
 
@@ -1351,20 +3124,21 @@ async function renderSessionReplay(sessionId) {
     <div class="replay-filters">
       <label><input id="filter-agent-tools" type="checkbox"> Agent with tool calls</label>
       <label><input id="filter-monitor-errors" type="checkbox"> Monitor errors only</label>
+      <label><input id="filter-untrusted-only" type="checkbox"> Untrusted only</label>
     </div>
     <div class="replay-grid">
-      ${renderReplayColumn("Outline", replay.outline || [], (row) => `<span class="badge gray">${escapeHtml(row.kind)}</span><p>${escapeHtml(row.text)}</p><p class="muted">${escapeHtml(row.ts || "")}</p>`)}
+      ${renderReplayColumn("Outline", replay.outline || [], (row) => `${provenanceBadge(row)} <span class="badge gray">${escapeHtml(row.kind)}</span><p>${escapeHtml(row.text)}</p><p class="muted">${escapeHtml(row.ts || "")}</p>`)}
       ${renderReplayColumn(
         "Agent",
         replay.agent || [],
-        (row) => `<p>${escapeHtml(row.text || "")}</p>${renderToolCalls(row.tool_calls)}<p class="muted">${renderReplayTimestamp(row)}</p>`,
-        (row) => `data-pane="agent" data-has-tools="${row.tool_calls && row.tool_calls.length ? "1" : "0"}"`,
+        (row) => `${provenanceBadge(row)}<p>${escapeHtml(row.text || "")}</p>${renderToolCalls(row.tool_calls)}<p class="muted">${renderReplayTimestamp(row)}</p>`,
+        (row) => `data-has-tools="${row.tool_calls && row.tool_calls.length ? "1" : "0"}"`,
       )}
       ${renderReplayColumn(
         "Monitor",
         replay.monitor || [],
-        (row) => `<span class="badge ${row.kind === "error" ? "red" : "gray"}">${escapeHtml(row.kind)}</span><p>${escapeHtml(row.tool || "")}</p><pre>${escapeHtml(row.summary || "")}</pre><p class="muted">${escapeHtml(row.ts || "")}</p>`,
-        (row) => `data-pane="monitor" data-kind="${escapeHtml(row.kind || "")}"`,
+        (row) => `${provenanceBadge(row)} <span class="badge ${row.kind === "error" ? "red" : "gray"}">${escapeHtml(row.kind)}</span> ${tierBadge(row.tier)}<p>${escapeHtml(row.tool || "")}</p><pre>${escapeHtml(row.summary || "")}</pre><p class="muted">${escapeHtml(row.ts || "")}</p>`,
+        (row) => `data-kind="${escapeHtml(row.kind || "")}"`,
       )}
     </div>
   `;
@@ -1391,6 +3165,7 @@ function wireArtifactButtons(runId) {
 async function route() {
   clearAutoRefresh();
   clearJobStream();
+  clearChatStream();
   const hash = location.hash || "#/";
   const parts = hash.slice(1).split("/").filter(Boolean).map(decodeURIComponent);
   try {
@@ -1408,10 +3183,16 @@ async function route() {
       await renderSuite(parts[1]);
     } else if (parts[0] === "suites") {
       await renderSuites();
+    } else if (parts[0] === "chat") {
+      await renderChat();
     } else if (parts[0] === "usage") {
       await renderUsage();
     } else if (parts[0] === "tools") {
       await renderTools();
+    } else if (parts[0] === "violations") {
+      await renderViolations();
+    } else if (parts[0] === "governance") {
+      await renderGovernance();
     } else if (parts[0] === "inspect") {
       await renderInspect();
     } else if (parts[0] === "board") {

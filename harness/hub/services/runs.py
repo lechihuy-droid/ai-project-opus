@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 import config
+from services import risk
 from services.boundary import resolve_in_root
 
 
@@ -24,6 +25,87 @@ def _read_json(path: Path) -> dict[str, Any]:
 def _as_checks(summary: dict[str, Any]) -> list[dict[str, Any]]:
     results = summary.get("results", [])
     return results if isinstance(results, list) else []
+
+
+def _read_trace_checks(run_dir: Path) -> list[dict[str, Any]]:
+    trace_path = run_dir / "trace.jsonl"
+    checks: list[dict[str, Any]] = []
+    try:
+        with trace_path.open("r", encoding="utf-8", errors="replace") as handle:
+            for line in handle:
+                text = line.strip()
+                if not text:
+                    continue
+                try:
+                    item = json.loads(text)
+                except json.JSONDecodeError:
+                    continue
+                if isinstance(item, dict):
+                    checks.append(item)
+    except OSError:
+        return []
+    return checks
+
+
+def _checks_for_report(summary: dict[str, Any], run_dir: Path) -> list[dict[str, Any]]:
+    checks = _as_checks(summary)
+    return checks if checks else _read_trace_checks(run_dir)
+
+
+def _evidence_command(check: dict[str, Any]) -> Any:
+    evidence = check.get("evidence")
+    if not isinstance(evidence, dict):
+        return None
+    return evidence.get("command")
+
+
+def _check_text(check: dict[str, Any]) -> str:
+    parts = [
+        check.get("id"),
+        check.get("type"),
+        check.get("status"),
+        check.get("message"),
+        check.get("hint"),
+        check.get("suite"),
+    ]
+    evidence = check.get("evidence")
+    if isinstance(evidence, dict):
+        parts.extend(evidence.get(key) for key in ("detail", "stderr", "stdout"))
+    return " ".join(str(part) for part in parts if part is not None).lower()
+
+
+def _violation_summary(summary: dict[str, Any], run_dir: Path) -> dict[str, Any]:
+    failed_boundary = 0
+    dangerous_checks = 0
+    high_tier_commands = 0
+    tier_counts: dict[str, int] = {}
+    commands: list[dict[str, Any]] = []
+
+    for check in _checks_for_report(summary, run_dir):
+        if not isinstance(check, dict):
+            continue
+        text = _check_text(check)
+        status = str(check.get("status") or "").lower()
+        if status != "pass" and ("boundary" in text or "outside project root" in text or "outside-root" in text):
+            failed_boundary += 1
+
+        command = _evidence_command(check)
+        tier = risk.classify_command(command) if command is not None else risk.UNKNOWN
+        if "dangerous command" in text or "dangerous-command" in text or "shell launcher" in text or tier == "destructive":
+            dangerous_checks += 1
+        if risk.tier_at_least(tier, "execute"):
+            high_tier_commands += 1
+            tier_counts[tier] = tier_counts.get(tier, 0) + 1
+            commands.append({"id": check.get("id"), "tier": tier, "command": command})
+
+    return {
+        "total": failed_boundary + dangerous_checks + high_tier_commands,
+        "failed_boundary_checks": failed_boundary,
+        "dangerous_command_checks": dangerous_checks,
+        "evidence_commands_tier_execute_or_above": high_tier_commands,
+        "tier_counts": dict(sorted(tier_counts.items())),
+        "commands": commands[:20],
+    }
 
 
 def _duration_seconds(summary: dict[str, Any]) -> float:
@@ -60,6 +142,7 @@ def _run_summary(summary: dict[str, Any], path: Path) -> dict[str, Any]:
         "started_at": summary.get("started_at"),
         "finished_at": summary.get("finished_at"),
         "duration_seconds": _duration_seconds(summary),
+        "violations": _violation_summary(summary, path.parent),
     }
 
 
@@ -147,6 +230,9 @@ def _checks_with_logs(summary: dict[str, Any], run_dir: Path) -> list[dict[str, 
         evidence = check.get("evidence")
         logs: list[str] = []
         if isinstance(evidence, dict):
+            command = evidence.get("command")
+            if command is not None:
+                check["command_tier"] = risk.classify_command(command)
             for key, value in evidence.items():
                 if not key.endswith("_log"):
                     continue
@@ -171,6 +257,7 @@ def get_run(run_id: str) -> dict[str, Any]:
     return {
         "summary": _run_summary(summary, summary_path),
         "checks": _checks_with_logs(summary, run_dir),
+        "violations": _violation_summary(summary, run_dir),
         "report_md": report_md,
         "artifacts": _list_artifacts(run_dir),
     }

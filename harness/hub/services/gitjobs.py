@@ -14,10 +14,12 @@ from pathlib import Path
 from typing import Any, Iterator
 
 import config
+from services import governance, inform, integrity, risk, verify
 from services.boundary import resolve_in_root
 
 
 JOB_ID_RE = re.compile(r"^j-[0-9a-z-]+$")
+JOB_ARTIFACT_SOURCE = "codex-agent"
 
 
 @dataclass
@@ -37,6 +39,18 @@ _STREAMS: dict[str, JobStream] = {}
 
 def _now() -> str:
     return datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _parse_time(value: Any) -> datetime | None:
+    if not isinstance(value, str) or not value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=UTC)
+    return parsed.astimezone(UTC)
 
 
 def _run_git(cwd: Path, args: list[str], check: bool = True) -> subprocess.CompletedProcess[str]:
@@ -100,6 +114,11 @@ def _new_job_id() -> str:
     return f"j-{datetime.now(UTC):%Y%m%d}-{uuid.uuid4().hex[:10]}"
 
 
+def _per_job_branch(job_id: str) -> str:
+    _validate_job_id(job_id)
+    return f"opus-job/{job_id}"
+
+
 def _worktree_path(job: dict[str, Any]) -> Path:
     worktree = job.get("worktree")
     if not isinstance(worktree, str) or not worktree:
@@ -147,6 +166,32 @@ def _agent_command(job: dict[str, Any]) -> list[str]:
         "workspace-write",
         str(job.get("brief") or ""),
     ]
+
+
+def verify_brief(job: dict[str, Any]) -> bool:
+    return integrity.verify_text(str(job.get("brief") or ""), job.get("brief_sig"))
+
+
+def _public_job(job: dict[str, Any]) -> dict[str, Any]:
+    data = dict(job)
+    data.setdefault("max_tier", "read_only")
+    data.setdefault("run_count", 0)
+    data.setdefault("allow_override", False)
+    data.setdefault("inform_findings", [])
+    data.setdefault("l2_decision", None)
+    data.setdefault("l2_reasons", [])
+    data.setdefault("l2_warnings", [])
+    data.setdefault("approval_block_reasons", [])
+    data.setdefault("flagged", False)
+    data.setdefault("flag_reasons", [])
+    data["run_cap"] = int(config.JOB_MAX_RUNS)
+    provenance = data.get("provenance")
+    if not isinstance(provenance, dict):
+        provenance = {}
+    provenance.setdefault("source", JOB_ARTIFACT_SOURCE)
+    data["provenance"] = provenance
+    data["brief_ok"] = verify_brief(data)
+    return data
 
 
 def _budget_payload(stream: JobStream) -> dict[str, Any]:
@@ -213,13 +258,50 @@ def _compute_diffstat(worktree: Path, base_sha: str) -> dict[str, int]:
     return {"files": files, "insertions": insertions, "deletions": deletions}
 
 
-def _write_diff_patch(job: dict[str, Any]) -> None:
+def _classify_diff_files(worktree: Path, base_sha: str) -> list[str]:
+    result = _run_git(worktree, ["diff", "--name-status", base_sha], check=False)
+    tiers: list[str] = []
+    for line in result.stdout.splitlines():
+        parts = line.split("\t")
+        if len(parts) < 2:
+            continue
+        status = parts[0].upper()
+        if status.startswith("D"):
+            tiers.append("destructive")
+        else:
+            tiers.append("write")
+    return tiers
+
+
+def _classify_diff_commands(diff_text: str) -> list[str]:
+    tiers: list[str] = []
+    for line in diff_text.splitlines():
+        if not line.startswith("+") or line.startswith("+++"):
+            continue
+        tier = risk.classify_command(line[1:].strip())
+        if tier != risk.UNKNOWN:
+            tiers.append(tier)
+    return tiers
+
+
+def _compute_max_tier(worktree: Path, base_sha: str, diff_text: str) -> str:
+    tiers = ["read_only", *_classify_diff_files(worktree, base_sha), *_classify_diff_commands(diff_text)]
+    computed = risk.max_tier(*tiers)
+    return computed if computed in risk.TIER_RANK else "read_only"
+
+
+def _write_diff_patch(job: dict[str, Any]) -> str:
     job_id = str(job["id"])
     worktree = _worktree_path(job)
     base_sha = str(job["base_sha"])
     _stage_intent_to_add(worktree)
     result = _run_git(worktree, ["diff", base_sha], check=False)
     _job_diff_path(job_id).write_text(result.stdout, encoding="utf-8", errors="replace")
+    return result.stdout
+
+
+def _delete_job_branch(job_id: str) -> None:
+    _run_git(config.ROOT, ["branch", "-D", _per_job_branch(job_id)], check=False)
 
 
 def _finalize_job(job_id: str, exit_code: int) -> dict[str, Any]:
@@ -227,7 +309,18 @@ def _finalize_job(job_id: str, exit_code: int) -> dict[str, Any]:
     job["exit_code"] = exit_code
     job["finished_at"] = _now()
     job["diffstat"] = _compute_diffstat(_worktree_path(job), str(job["base_sha"]))
-    _write_diff_patch(job)
+    diff_text = _write_diff_patch(job)
+    job["max_tier"] = _compute_max_tier(_worktree_path(job), str(job["base_sha"]), diff_text)
+    blocked = governance.effective_blocked_tiers()
+    flag_reasons: list[str] = []
+    if not bool(job.get("allow_override")) and str(job.get("max_tier") or "") in blocked:
+        flag_reasons.append(f"job finished with blocked tier: {job['max_tier']}")
+    job["flagged"] = bool(flag_reasons)
+    job["flag_reasons"] = flag_reasons
+    if flag_reasons:
+        governance.raise_degradation(job_id, flag_reasons)
+    else:
+        governance.record_clean_job()
     job["status"] = "awaiting-review"
     _write_job(job)
     return job
@@ -286,8 +379,9 @@ def _pump(stream: JobStream) -> None:
     )
 
 
-def create_job(brief: str, agent: str = "codex") -> dict[str, Any]:
-    brief = str(brief or "").strip()
+def create_job(brief: str, agent: str = "codex", allow_override: bool = False) -> dict[str, Any]:
+    brief, inform_findings = inform.sanitize_text(brief)
+    brief = brief.strip()
     if not brief:
         raise ValueError("brief is required")
     _validate_agent(agent)
@@ -300,7 +394,7 @@ def create_job(brief: str, agent: str = "codex") -> dict[str, Any]:
         job_id = _new_job_id()
         job_dir = _job_dir(job_id, must_exist=False)
 
-    branch = f"opus-job/{job_id}"
+    branch = _per_job_branch(job_id)
     worktree = job_dir / "wt"
     job_dir.mkdir(parents=True, exist_ok=False)
     try:
@@ -319,13 +413,30 @@ def create_job(brief: str, agent: str = "codex") -> dict[str, Any]:
             "exit_code": None,
             "diffstat": {"files": 0, "insertions": 0, "deletions": 0},
             "log": f"jobs/{job_id}/stdout.log",
+            "max_tier": "read_only",
+            "run_count": 0,
+            "allow_override": bool(allow_override),
+            "inform_findings": inform_findings,
+            "l2_decision": None,
+            "l2_reasons": [],
+            "l2_warnings": [],
+            "approval_block_reasons": [],
+            "flagged": False,
+            "flag_reasons": [],
+            "brief_sig": integrity.sign_text(brief),
+            "provenance": {"source": JOB_ARTIFACT_SOURCE},
         }
         _write_job(job)
+        try:
+            governance.record_findings(job_id, inform_findings)
+        except OSError:
+            pass
         _job_log_path(job_id).write_text("", encoding="utf-8")
         return job
     except Exception:
         if worktree.exists():
             _run_git(config.ROOT, ["worktree", "remove", "--force", str(worktree)], check=False)
+        _delete_job_branch(job_id)
         try:
             job_dir.rmdir()
         except OSError:
@@ -343,7 +454,7 @@ def list_jobs() -> list[dict[str, Any]]:
             with (job_dir / "job.json").open("r", encoding="utf-8") as handle:
                 data = json.load(handle)
             if isinstance(data, dict) and JOB_ID_RE.fullmatch(str(data.get("id") or "")):
-                jobs.append(data)
+                jobs.append(_public_job(data))
         except (OSError, PermissionError, ValueError, json.JSONDecodeError):
             continue
     jobs.sort(key=lambda item: str(item.get("created_at") or ""), reverse=True)
@@ -351,7 +462,7 @@ def list_jobs() -> list[dict[str, Any]]:
 
 
 def get_job(job_id: str) -> dict[str, Any]:
-    return _read_job(job_id)
+    return _public_job(_read_job(job_id))
 
 
 def approve(job_id: str) -> dict[str, Any]:
@@ -359,11 +470,50 @@ def approve(job_id: str) -> dict[str, Any]:
     if job.get("status") != "awaiting-approval":
         raise ValueError(f"Job is not awaiting approval: {job_id}")
     _validate_agent(str(job.get("agent") or ""))
+    run_count = int(job.get("run_count") or 0)
+    if run_count >= int(config.JOB_MAX_RUNS):
+        raise ValueError("run cap exceeded")
+    if not verify_brief(job):
+        job["approval_block_reasons"] = ["brief signature mismatch"]
+        _write_job(job)
+        governance.record_denial(job_id, job["approval_block_reasons"])
+        raise ValueError("brief signature mismatch")
+
+    created_at = _parse_time(job.get("created_at"))
+    ttl_seconds = int(config.JOB_TTL_SECONDS)
+    if created_at is None or (datetime.now(UTC) - created_at).total_seconds() > ttl_seconds:
+        reasons = [f"job token expired after {ttl_seconds}s"]
+        job["approval_block_reasons"] = reasons
+        _write_job(job)
+        governance.record_denial(job_id, reasons)
+        raise ValueError("; ".join(reasons))
 
     worktree = _worktree_path(job)
     log_path = _job_log_path(job_id)
     log_path.write_text("", encoding="utf-8")
     command = _agent_command(job)
+    check_job = dict(job)
+    check_job["command"] = command
+    check_job["diff"] = diff(job_id)
+    l2 = verify.rule_check(check_job)
+    job["l2_decision"] = l2["decision"]
+    job["l2_reasons"] = list(l2.get("reasons") or [])
+    job["l2_warnings"] = list(l2.get("reasons") or []) if l2["decision"] == "warn" else []
+    job["approval_block_reasons"] = []
+    if l2["decision"] == "deny":
+        _write_job(job)
+        governance.record_denial(job_id, job["l2_reasons"], escalate=True)
+        raise ValueError("; ".join(job["l2_reasons"]))
+
+    blocked = governance.effective_blocked_tiers()
+    max_tier = str(job.get("max_tier") or "read_only")
+    if not bool(job.get("allow_override")) and max_tier in blocked:
+        reasons = [f"tier blocked at degradation {governance.status()['degradation']}: {max_tier}"]
+        job["approval_block_reasons"] = reasons
+        _write_job(job)
+        governance.record_denial(job_id, reasons)
+        raise ValueError("; ".join(reasons))
+
     env = os.environ.copy()
     env.setdefault("PYTHONIOENCODING", "utf-8")
 
@@ -371,6 +521,7 @@ def approve(job_id: str) -> dict[str, Any]:
     job["started_at"] = _now()
     job["finished_at"] = None
     job["exit_code"] = None
+    job["run_count"] = run_count + 1
     _write_job(job)
 
     try:
@@ -412,6 +563,8 @@ def rollback(job_id: str) -> dict[str, Any]:
     worktree = _worktree_path(job)
     _run_git(worktree, ["reset", "--hard", str(job["base_sha"])])
     _run_git(worktree, ["clean", "-fd"])
+    _run_git(worktree, ["checkout", "--detach", str(job["base_sha"])], check=False)
+    _delete_job_branch(job_id)
     job["status"] = "rolledback"
     job["finished_at"] = _now()
     job["diffstat"] = _compute_diffstat(worktree, str(job["base_sha"]))
@@ -426,6 +579,7 @@ def reject(job_id: str) -> dict[str, Any]:
         raise ValueError(f"Job has already started: {job_id}")
     worktree = _worktree_path(job)
     _run_git(config.ROOT, ["worktree", "remove", "--force", str(worktree)])
+    _delete_job_branch(job_id)
     job["status"] = "rejected"
     job["finished_at"] = _now()
     _write_job(job)

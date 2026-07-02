@@ -22,6 +22,8 @@ FIXTURE_RUN_ID = "20260627-234104-workspace-smoke"
 def client(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> TestClient:
     monkeypatch.setattr(config, "RUNS_DIR", FIXTURE_RUNS_DIR)
     monkeypatch.setattr(config, "JOBS_DIR", tmp_path / "api-jobs")
+    monkeypatch.setattr(config, "GOVERNANCE_STATE_FILE", tmp_path / ".cache" / "governance.json")
+    monkeypatch.setattr(config, "JOB_BLOCKED_TIERS", ["destructive"])
     monkeypatch.setattr(config, "OPUS_AI_DIR", FIXTURE_BOARD_DIR)
     monkeypatch.setattr(
         config,
@@ -35,7 +37,7 @@ def client(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> TestClient:
     runs._RUNS_CACHE.update({"expires": 0.0, "base": None, "items": []})
     monkeypatch.setattr(behavior, "_DISK_CACHE", tmp_path / "api-behavior.json")
     behavior._BEHAVIOR_CACHE.update(
-        {"expires": 0.0, "events": [], "warnings": [], "sessions": [], "fingerprint": None}
+        {"expires": 0.0, "events": [], "warnings": [], "sessions": [], "entropy": [], "fingerprint": None}
     )
     trigger._STREAMS.clear()
     gitjobs._STREAMS.clear()
@@ -163,6 +165,39 @@ def test_behavior_endpoints(client: TestClient) -> None:
     loops = loops_response.json()
     assert len(loops) == 2
     assert all("loop_risk" in item for item in loops)
+
+
+def test_group_a_read_endpoints(client: TestClient, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    entropy_response = client.get("/api/sessions/entropy")
+    assert entropy_response.status_code == 200
+    entropy = entropy_response.json()
+    assert len(entropy) == 2
+    assert all("max_violation_rate" in item for item in entropy)
+
+    suites_dir = tmp_path / "suites"
+    suites_dir.mkdir()
+    (suites_dir / "api-suite.json").write_text('{"id":"api-suite","checks":[]}\n', encoding="utf-8")
+    monkeypatch.setattr(config, "SUITES_DIR", suites_dir)
+    monkeypatch.setattr(config, "HMAC_KEY_FILE", tmp_path / ".hmac_key")
+    monkeypatch.setattr(config, "INTEGRITY_SIGS_FILE", tmp_path / ".cache" / "suite_sigs.json")
+
+    integrity_response = client.get("/api/integrity")
+    assert integrity_response.status_code == 200
+    integrity = integrity_response.json()
+    assert integrity["ok"] is True
+    assert integrity["count"] == 1
+    assert integrity["suites"][0]["suite"] == "api-suite.json"
+
+
+def test_governance_endpoint(client: TestClient) -> None:
+    response = client.get("/api/governance")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["degradation"] == 0
+    assert data["blocked_tiers"] == ["destructive"]
+    assert data["recent_denials"] == []
+    assert data["recent_findings"] == []
 
 
 def test_spa_index(client: TestClient) -> None:

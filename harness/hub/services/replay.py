@@ -10,6 +10,7 @@ from typing import Any, Iterable
 
 import config
 from parsers.common import file_ts, normalize_ts
+from services import risk
 
 
 @dataclass(frozen=True)
@@ -181,6 +182,25 @@ def _summary(value: Any, limit: int = 1200) -> str:
     return text[:limit] + ("..." if len(text) > limit else "")
 
 
+def _provenance(role: str, trust: str) -> dict[str, str]:
+    return {"provenance_role": role, "trust": trust}
+
+
+def _command_tier(input_data: Any) -> str | None:
+    command = risk.command_from_input(input_data)
+    if command is None:
+        return None
+    return risk.classify_command(command)
+
+
+def _tool_call(name: str, input_data: Any) -> dict[str, Any]:
+    row = {"name": name, "input": input_data, "tier": risk.classify_action(name, input_data)}
+    command_tier = _command_tier(input_data)
+    if command_tier is not None:
+        row["command_tier"] = command_tier
+    return row
+
+
 def _parse_latency_ts(value: Any) -> dt.datetime | None:
     if not isinstance(value, str) or not value:
         return None
@@ -221,7 +241,7 @@ def _outline_from_todos(ts: str, input_data: Any, outline: list[dict[str, Any]])
             continue
         status = todo.get("status")
         prefix = f"{status}: " if isinstance(status, str) and status else ""
-        outline.append({"ts": ts, "kind": "todo", "text": prefix + content})
+        outline.append({"ts": ts, "kind": "todo", "text": prefix + content, **_provenance("model", "trusted")})
 
 
 def _outline_from_plan_args(ts: str, args: Any, outline: list[dict[str, Any]]) -> None:
@@ -239,7 +259,7 @@ def _outline_from_plan_args(ts: str, args: Any, outline: list[dict[str, Any]]) -
             continue
         status = item.get("status")
         prefix = f"{status}: " if isinstance(status, str) and status else ""
-        outline.append({"ts": ts, "kind": "plan", "text": prefix + step})
+        outline.append({"ts": ts, "kind": "plan", "text": prefix + step, **_provenance("model", "trusted")})
 
 
 def _claude_replay(record: SessionRecord) -> dict[str, Any]:
@@ -247,6 +267,7 @@ def _claude_replay(record: SessionRecord) -> dict[str, Any]:
     agent: list[dict[str, Any]] = []
     monitor: list[dict[str, Any]] = []
     tool_names: dict[str, str] = {}
+    tool_tiers: dict[str, str] = {}
 
     for obj in _iter_jsonl(record.path):
         ts = normalize_ts(obj.get("timestamp"), record.path)
@@ -268,29 +289,51 @@ def _claude_replay(record: SessionRecord) -> dict[str, Any]:
                     input_data = block.get("input")
                     tool_id = block.get("id")
                     if isinstance(name, str) and name:
+                        tier = risk.classify_action(name, input_data)
                         if isinstance(tool_id, str):
                             tool_names[tool_id] = name
-                        tool_calls.append({"name": name, "input": input_data})
+                            tool_tiers[tool_id] = tier
+                        tool_calls.append(_tool_call(name, input_data))
                         if name.lower() in {"todowrite", "todo_write"}:
                             _outline_from_todos(ts, input_data, outline)
             if texts or tool_calls:
-                agent.append({"ts": ts, "role": "assistant", "text": "\n".join(texts), "tool_calls": tool_calls})
+                agent.append(
+                    {
+                        "ts": ts,
+                        "role": "assistant",
+                        "text": "\n".join(texts),
+                        "tool_calls": tool_calls,
+                        **_provenance("model", "trusted"),
+                    }
+                )
         elif kind == "user":
             for block in _blocks(message.get("content")):
                 if not isinstance(block, dict) or block.get("type") != "tool_result":
                     continue
                 tool_id = block.get("tool_use_id")
                 tool = tool_names.get(tool_id) if isinstance(tool_id, str) else None
+                tier = tool_tiers.get(tool_id) if isinstance(tool_id, str) else risk.classify_tool(tool)
                 monitor.append(
                     {
                         "ts": ts,
                         "kind": "error" if block.get("is_error") else "tool_result",
                         "tool": tool,
+                        "tier": tier,
                         "summary": _summary(block.get("content")),
+                        **_provenance("tool", "untrusted"),
                     }
                 )
         elif kind == "file-history-snapshot":
-            monitor.append({"ts": ts, "kind": "file", "tool": None, "summary": "file history snapshot"})
+            monitor.append(
+                {
+                    "ts": ts,
+                    "kind": "file",
+                    "tool": None,
+                    "tier": risk.UNKNOWN,
+                    "summary": "file history snapshot",
+                    **_provenance("system", "trusted"),
+                }
+            )
 
     _add_agent_latencies(agent)
     return {"session": record.session, "source": record.source, "outline": outline, "agent": agent, "monitor": monitor}
@@ -312,6 +355,7 @@ def _codex_replay(record: SessionRecord) -> dict[str, Any]:
     agent: list[dict[str, Any]] = []
     monitor: list[dict[str, Any]] = []
     tool_names: dict[str, str] = {}
+    tool_tiers: dict[str, str] = {}
 
     for obj in _iter_jsonl(record.path):
         ts = _codex_ts(obj, record.path)
@@ -322,7 +366,15 @@ def _codex_replay(record: SessionRecord) -> dict[str, Any]:
         if event_type == "event_msg" and payload_type == "agent_message":
             text = payload.get("message")
             if isinstance(text, str) and text:
-                agent.append({"ts": ts, "role": "assistant", "text": text, "tool_calls": []})
+                agent.append(
+                    {
+                        "ts": ts,
+                        "role": "assistant",
+                        "text": text,
+                        "tool_calls": [],
+                        **_provenance("model", "trusted"),
+                    }
+                )
             continue
 
         if event_type != "response_item":
@@ -333,22 +385,51 @@ def _codex_replay(record: SessionRecord) -> dict[str, Any]:
             call_id = payload.get("call_id") or payload.get("id")
             args = payload.get("arguments", payload.get("input"))
             if isinstance(name, str) and name:
+                parsed_args = _json_arg(args)
+                tier = risk.classify_action(name, parsed_args)
                 if isinstance(call_id, str):
                     tool_names[call_id] = name
-                agent.append({"ts": ts, "role": "assistant", "text": "", "tool_calls": [{"name": name, "input": _json_arg(args)}]})
+                    tool_tiers[call_id] = tier
+                agent.append(
+                    {
+                        "ts": ts,
+                        "role": "assistant",
+                        "text": "",
+                        "tool_calls": [_tool_call(name, parsed_args)],
+                        **_provenance("model", "trusted"),
+                    }
+                )
                 if name.endswith("update_plan") or name == "update_plan":
                     _outline_from_plan_args(ts, args, outline)
         elif payload_type == "function_call_output":
             call_id = payload.get("call_id")
             tool = tool_names.get(call_id) if isinstance(call_id, str) else None
+            tier = tool_tiers.get(call_id) if isinstance(call_id, str) else risk.classify_tool(tool)
             output = payload.get("output")
             summary = _summary(output)
             is_error = "Exit code: 1" in summary or "Traceback" in summary
-            monitor.append({"ts": ts, "kind": "error" if is_error else "tool_result", "tool": tool, "summary": summary})
+            monitor.append(
+                {
+                    "ts": ts,
+                    "kind": "error" if is_error else "tool_result",
+                    "tool": tool,
+                    "tier": tier,
+                    "summary": summary,
+                    **_provenance("tool", "untrusted"),
+                }
+            )
         elif payload_type == "message":
             text = _text_from_content(payload.get("content"))
             if text:
-                agent.append({"ts": ts, "role": "assistant", "text": text, "tool_calls": []})
+                agent.append(
+                    {
+                        "ts": ts,
+                        "role": "assistant",
+                        "text": text,
+                        "tool_calls": [],
+                        **_provenance("model", "trusted"),
+                    }
+                )
 
     _add_agent_latencies(agent)
     return {"session": record.session, "source": record.source, "outline": outline, "agent": agent, "monitor": monitor}

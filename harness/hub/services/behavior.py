@@ -4,12 +4,13 @@ import datetime as dt
 import json
 import threading
 import time
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
 import config
 from parsers.codex_sessions import _model_from_obj as _codex_model_from_obj
-from services import replay, usage
+from services import replay, risk, usage
 
 
 CACHE_TTL_SECONDS = 30.0
@@ -18,71 +19,34 @@ _BEHAVIOR_CACHE: dict[str, Any] = {
     "events": [],
     "warnings": [],
     "sessions": [],
+    "entropy": [],
     "fingerprint": None,
 }
-_DISK_CACHE = config.HUB_DIR / ".cache" / "behavior.json"
+_DISK_CACHE = config.HUB_DIR / ".cache" / "behavior_files.json"
 _LOCK = threading.RLock()
 
 
-def _source_files() -> list[Path]:
-    """All Claude/Codex session source files used for behavior analytics."""
-    files: list[Path] = []
-    claude = config.USAGE_SOURCES.get("claude")
-    if isinstance(claude, Path) and claude.exists():
-        files.extend(claude.glob("*/*.jsonl"))
-    roots = config.USAGE_SOURCES.get("codex") or []
-    if isinstance(roots, Path):
-        roots = [roots]
-    for root in roots:
-        if isinstance(root, Path) and root.exists():
-            files.extend(root.rglob("*.jsonl"))
-    return files
+def _cache_key(path: Path) -> str:
+    return str(path.resolve())
 
 
-def _fingerprint() -> str:
-    """Stat-only signature of the source set: rebuild only when a file is added/changed."""
-    count = 0
-    max_mtime = 0
-    for path in _source_files():
-        try:
-            stat = path.stat()
-        except OSError:
-            continue
-        count += 1
-        if stat.st_mtime_ns > max_mtime:
-            max_mtime = stat.st_mtime_ns
-    return f"{count}:{max_mtime}"
-
-
-def _load_disk(fingerprint: str) -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]]] | None:
+def _load_disk() -> dict[str, Any]:
     try:
         data = json.loads(_DISK_CACHE.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
-        return None
-    if data.get("fingerprint") != fingerprint:
-        return None
-    return data.get("events") or [], data.get("warnings") or [], data.get("sessions") or []
+        return {"files": {}}
+    if not isinstance(data, dict):
+        return {"files": {}}
+    files = data.get("files")
+    if not isinstance(files, dict):
+        return {"files": {}}
+    return {"files": files}
 
 
-def _save_disk(
-    fingerprint: str,
-    events: list[dict[str, Any]],
-    warnings: list[str],
-    sessions: list[dict[str, Any]],
-) -> None:
+def _save_disk(cache: dict[str, Any]) -> None:
     try:
         _DISK_CACHE.parent.mkdir(parents=True, exist_ok=True)
-        _DISK_CACHE.write_text(
-            json.dumps(
-                {
-                    "fingerprint": fingerprint,
-                    "events": events,
-                    "warnings": warnings,
-                    "sessions": sessions,
-                }
-            ),
-            encoding="utf-8",
-        )
+        _DISK_CACHE.write_text(json.dumps(cache, sort_keys=True), encoding="utf-8")
     except OSError:
         pass
 
@@ -113,13 +77,71 @@ def _latency_values(agent_ts: list[str]) -> list[float]:
     return values
 
 
-def _tool_event(record: replay.SessionRecord, tool: str, model: str | None, ts: str) -> dict[str, Any]:
+def _tool_event(
+    record: replay.SessionRecord,
+    tool: str,
+    model: str | None,
+    ts: str,
+    input_data: Any = None,
+) -> dict[str, Any]:
     return {
         "tool": tool,
+        "tier": risk.classify_action(tool, input_data),
         "source": record.source,
         "model": model,
         "session": record.session,
         "ts": ts,
+    }
+
+
+def _action(tool: str | None, ts: str, input_data: Any = None, is_error: bool = False, tier: str | None = None) -> dict[str, Any]:
+    name = tool or "unknown"
+    return {
+        "tool": name,
+        "ts": ts,
+        "tier": tier or risk.classify_action(name, input_data),
+        "is_error": bool(is_error),
+    }
+
+
+def _entropy_summary(record: replay.SessionRecord, actions: list[dict[str, Any]]) -> dict[str, Any]:
+    previous_tool: str | None = None
+    reason_counts: Counter[str] = Counter()
+    scored: list[dict[str, Any]] = []
+
+    for item in actions:
+        tool = str(item.get("tool") or "unknown")
+        tier = str(item.get("tier") or risk.UNKNOWN)
+        reasons: list[str] = []
+        if previous_tool is not None and tool == previous_tool:
+            reasons.append("repeat_tool")
+        if tier in {"network", "destructive"}:
+            reasons.append("high_tier")
+        if item.get("is_error"):
+            reasons.append("error")
+        previous_tool = tool
+
+        for reason in reasons:
+            reason_counts[reason] += 1
+        scored.append({**item, "violation": bool(reasons), "reasons": reasons})
+
+    max_rate = 0.0
+    if scored:
+        window = max(1, min(int(config.ENTROPY_WINDOW), len(scored)))
+        for index in range(0, len(scored) - window + 1):
+            chunk = scored[index : index + window]
+            rate = sum(1 for item in chunk if item["violation"]) / window
+            if rate > max_rate:
+                max_rate = rate
+
+    top_reason = reason_counts.most_common(1)[0][0] if reason_counts else None
+    return {
+        "session": record.session,
+        "source": record.source,
+        "actions": len(scored),
+        "max_violation_rate": round(max_rate, 6),
+        "flagged": max_rate > float(config.ENTROPY_THRESHOLD),
+        "top_reason": top_reason,
     }
 
 
@@ -161,15 +183,31 @@ def _session_stats(record: replay.SessionRecord, session_events: list[dict[str, 
     }
 
 
-def _claude_session(record: replay.SessionRecord) -> tuple[list[dict[str, Any]], list[str]]:
+def _claude_session(record: replay.SessionRecord) -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]]]:
     events: list[dict[str, Any]] = []
     agent_ts: list[str] = []
+    actions: list[dict[str, Any]] = []
     current_model: str | None = None
+    tool_names: dict[str, str] = {}
+    tool_tiers: dict[str, str] = {}
 
     for obj in replay._iter_jsonl(record.path):
+        ts = replay.normalize_ts(obj.get("timestamp"), record.path)
+        if obj.get("type") == "user":
+            message = obj.get("message") if isinstance(obj.get("message"), dict) else {}
+            for block in replay._blocks(message.get("content")):
+                if not isinstance(block, dict) or block.get("type") != "tool_result":
+                    continue
+                if not block.get("is_error"):
+                    continue
+                tool_id = block.get("tool_use_id")
+                tool = tool_names.get(tool_id) if isinstance(tool_id, str) else None
+                tier = tool_tiers.get(tool_id) if isinstance(tool_id, str) else None
+                actions.append(_action(tool, ts, is_error=True, tier=tier))
+            continue
+
         if obj.get("type") != "assistant":
             continue
-        ts = replay.normalize_ts(obj.get("timestamp"), record.path)
         message = obj.get("message") if isinstance(obj.get("message"), dict) else {}
         model = message.get("model")
         if isinstance(model, str) and model:
@@ -184,9 +222,16 @@ def _claude_session(record: replay.SessionRecord) -> tuple[list[dict[str, Any]],
                 has_agent_row = True
             elif block_type == "tool_use":
                 name = block.get("name")
+                input_data = block.get("input")
+                tool_id = block.get("id")
                 if isinstance(name, str) and name:
                     has_agent_row = True
-                    events.append(_tool_event(record, name, current_model, ts))
+                    tier = risk.classify_action(name, input_data)
+                    if isinstance(tool_id, str):
+                        tool_names[tool_id] = name
+                        tool_tiers[tool_id] = tier
+                    events.append(_tool_event(record, name, current_model, ts, input_data))
+                    actions.append(_action(name, ts, input_data, tier=tier))
         if has_agent_row:
             agent_ts.append(ts)
 
@@ -194,13 +239,16 @@ def _claude_session(record: replay.SessionRecord) -> tuple[list[dict[str, Any]],
     for event in events:
         if not event.get("model"):
             event["model"] = final_model
-    return events, agent_ts
+    return events, agent_ts, actions
 
 
-def _codex_session(record: replay.SessionRecord) -> tuple[list[dict[str, Any]], list[str]]:
+def _codex_session(record: replay.SessionRecord) -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]]]:
     events: list[dict[str, Any]] = []
     agent_ts: list[str] = []
+    actions: list[dict[str, Any]] = []
     current_model: str | None = None
+    tool_names: dict[str, str] = {}
+    tool_tiers: dict[str, str] = {}
 
     for obj in replay._iter_jsonl(record.path):
         if current_model is None:
@@ -222,9 +270,25 @@ def _codex_session(record: replay.SessionRecord) -> tuple[list[dict[str, Any]], 
 
         if payload_type == "function_call":
             name = payload.get("name")
+            call_id = payload.get("call_id") or payload.get("id")
+            args = replay._json_arg(payload.get("arguments", payload.get("input")))
             if isinstance(name, str) and name:
-                events.append(_tool_event(record, name, current_model, ts))
+                tier = risk.classify_action(name, args)
+                if isinstance(call_id, str):
+                    tool_names[call_id] = name
+                    tool_tiers[call_id] = tier
+                events.append(_tool_event(record, name, current_model, ts, args))
+                actions.append(_action(name, ts, args, tier=tier))
                 agent_ts.append(ts)
+        elif payload_type == "function_call_output":
+            call_id = payload.get("call_id")
+            output = payload.get("output")
+            summary = replay._summary(output)
+            is_error = "Exit code: 1" in summary or "Traceback" in summary
+            if is_error:
+                tool = tool_names.get(call_id) if isinstance(call_id, str) else None
+                tier = tool_tiers.get(call_id) if isinstance(call_id, str) else None
+                actions.append(_action(tool, ts, is_error=True, tier=tier))
         elif payload_type == "message":
             text = replay._text_from_content(payload.get("content"))
             if text:
@@ -234,25 +298,40 @@ def _codex_session(record: replay.SessionRecord) -> tuple[list[dict[str, Any]], 
     for event in events:
         if not event.get("model"):
             event["model"] = final_model
-    return events, agent_ts
+    return events, agent_ts, actions
 
 
-def _build() -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]]]:
+def _analyze_record(record: replay.SessionRecord) -> dict[str, Any]:
+    try:
+        if record.source == "claude":
+            session_events, agent_ts, actions = _claude_session(record)
+        else:
+            session_events, agent_ts, actions = _codex_session(record)
+    except Exception as exc:
+        return {"events": [], "session_stat": None, "entropy": None, "warning": f"{record.path}: {exc}"}
+    return {
+        "events": session_events,
+        "session_stat": _session_stats(record, session_events, agent_ts),
+        "entropy": _entropy_summary(record, actions),
+        "warning": None,
+    }
+
+
+def _build() -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]], list[dict[str, Any]]]:
     events: list[dict[str, Any]] = []
     warnings: list[str] = []
     sessions: list[dict[str, Any]] = []
+    entropy: list[dict[str, Any]] = []
 
     for record in replay._records().values():
-        try:
-            if record.source == "claude":
-                session_events, agent_ts = _claude_session(record)
-            else:
-                session_events, agent_ts = _codex_session(record)
-        except Exception as exc:
-            warnings.append(f"{record.path}: {exc}")
-            continue
-        events.extend(session_events)
-        sessions.append(_session_stats(record, session_events, agent_ts))
+        result = _analyze_record(record)
+        events.extend(result["events"])
+        if result["session_stat"] is not None:
+            sessions.append(result["session_stat"])
+        if result["entropy"] is not None:
+            entropy.append(result["entropy"])
+        if result["warning"] is not None:
+            warnings.append(result["warning"])
 
     events.sort(key=lambda item: str(item.get("ts") or ""), reverse=True)
     sessions.sort(
@@ -264,26 +343,153 @@ def _build() -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]]]:
         ),
         reverse=True,
     )
-    return events, warnings, sessions
+    entropy.sort(
+        key=lambda item: (
+            bool(item.get("flagged")),
+            float(item.get("max_violation_rate") or 0),
+            int(item.get("actions") or 0),
+            str(item.get("session") or ""),
+        ),
+        reverse=True,
+    )
+    return events, warnings, sessions, entropy
 
 
-def _collect_all() -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]]]:
+def _source_records() -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    for record in replay._records().values():
+        try:
+            stat = record.path.stat()
+        except OSError:
+            continue
+        records.append(
+            {
+                "record": record,
+                "key": _cache_key(record.path),
+                "mtime_ns": stat.st_mtime_ns,
+                "size": stat.st_size,
+            }
+        )
+    return records
+
+
+def _source_signature(records: list[dict[str, Any]]) -> tuple[tuple[str, int, int, str, str], ...]:
+    return tuple(
+        (
+            str(item["key"]),
+            int(item["mtime_ns"]),
+            int(item["size"]),
+            str(item["record"].source),
+            str(item["record"].session),
+        )
+        for item in records
+    )
+
+
+def _entry_is_current(entry: Any, record: replay.SessionRecord, mtime_ns: int, size: int) -> bool:
+    return (
+        isinstance(entry, dict)
+        and entry.get("mtime_ns") == mtime_ns
+        and entry.get("size") == size
+        and entry.get("source") == record.source
+        and entry.get("session") == record.session
+        and isinstance(entry.get("events"), list)
+        and (isinstance(entry.get("session_stat"), dict) or entry.get("session_stat") is None)
+        and (isinstance(entry.get("entropy"), dict) or entry.get("entropy") is None)
+        and (isinstance(entry.get("warning"), str) or entry.get("warning") is None)
+    )
+
+
+def _collect_from_files(
+    records: list[dict[str, Any]], cache: dict[str, Any]
+) -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]], list[dict[str, Any]], bool]:
+    files = cache.setdefault("files", {})
+    if not isinstance(files, dict):
+        files = {}
+        cache["files"] = files
+
+    events: list[dict[str, Any]] = []
+    warnings: list[str] = []
+    sessions: list[dict[str, Any]] = []
+    entropy: list[dict[str, Any]] = []
+    changed = False
+    current_keys = {str(record["key"]) for record in records}
+
+    stale_keys = [key for key in files if key not in current_keys]
+    for key in stale_keys:
+        del files[key]
+        changed = True
+
+    for item in records:
+        record = item["record"]
+        key = str(item["key"])
+        mtime_ns = int(item["mtime_ns"])
+        size = int(item["size"])
+        entry = files.get(key)
+
+        if _entry_is_current(entry, record, mtime_ns, size):
+            result = entry
+        else:
+            result = _analyze_record(record)
+            files[key] = {
+                "mtime_ns": mtime_ns,
+                "size": size,
+                "source": record.source,
+                "session": record.session,
+                "events": result["events"],
+                "session_stat": result["session_stat"],
+                "entropy": result["entropy"],
+                "warning": result["warning"],
+            }
+            changed = True
+
+        events.extend(result["events"])
+        if result["session_stat"] is not None:
+            sessions.append(result["session_stat"])
+        if result["entropy"] is not None:
+            entropy.append(result["entropy"])
+        if result["warning"] is not None:
+            warnings.append(result["warning"])
+
+    events.sort(key=lambda item: str(item.get("ts") or ""), reverse=True)
+    sessions.sort(
+        key=lambda item: (
+            bool(item.get("loop_risk")),
+            int(item.get("max_consecutive") or 0),
+            int(item.get("total_tool_calls") or 0),
+            str(item.get("session") or ""),
+        ),
+        reverse=True,
+    )
+    entropy.sort(
+        key=lambda item: (
+            bool(item.get("flagged")),
+            float(item.get("max_violation_rate") or 0),
+            int(item.get("actions") or 0),
+            str(item.get("session") or ""),
+        ),
+        reverse=True,
+    )
+    return events, warnings, sessions, entropy, changed
+
+
+def _collect_all() -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]], list[dict[str, Any]]]:
     now = time.monotonic()
-    fingerprint = _fingerprint()
     with _LOCK:
+        records = _source_records()
+        fingerprint = _source_signature(records)
         if _BEHAVIOR_CACHE["expires"] > now and _BEHAVIOR_CACHE["fingerprint"] == fingerprint:
             return (
                 list(_BEHAVIOR_CACHE["events"]),
                 list(_BEHAVIOR_CACHE["warnings"]),
                 list(_BEHAVIOR_CACHE["sessions"]),
+                list(_BEHAVIOR_CACHE["entropy"]),
             )
 
-        disk = _load_disk(fingerprint)
-        if disk is not None:
-            events, warnings, sessions = disk
-        else:
-            events, warnings, sessions = _build()
-            _save_disk(fingerprint, events, warnings, sessions)
+        disk_cache = _load_disk()
+        events, warnings, sessions, entropy, changed = _collect_from_files(records, disk_cache)
+        if changed:
+            _save_disk(disk_cache)
 
         _BEHAVIOR_CACHE.update(
             {
@@ -291,10 +497,11 @@ def _collect_all() -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]
                 "events": events,
                 "warnings": warnings,
                 "sessions": sessions,
+                "entropy": entropy,
                 "fingerprint": fingerprint,
             }
         )
-        return list(events), list(warnings), list(sessions)
+        return list(events), list(warnings), list(sessions), list(entropy)
 
 
 def warm() -> None:
@@ -306,7 +513,7 @@ def warm() -> None:
 
 
 def collect_tool_events() -> tuple[list[dict[str, Any]], list[str]]:
-    events, warnings, _sessions = _collect_all()
+    events, warnings, _sessions, _entropy = _collect_all()
     return events, warnings
 
 
@@ -347,7 +554,7 @@ def tool_rollup(events: list[dict[str, Any]]) -> dict[str, Any]:
 
         tool_row = by_tool.setdefault(
             tool,
-            {"tool": tool, "count": 0, "_sessions": set(), "_models": set()},
+            {"tool": tool, "tier": risk.classify_tool(tool), "count": 0, "_sessions": set(), "_models": set()},
         )
         day_row = by_day.setdefault(day, {"day": day, "count": 0})
         tool_row["count"] += 1
@@ -360,6 +567,7 @@ def tool_rollup(events: list[dict[str, Any]]) -> dict[str, Any]:
     tool_rows = [
         {
             "tool": row["tool"],
+            "tier": row["tier"],
             "count": row["count"],
             "sessions": len(row["_sessions"]),
             "models": sorted(row["_models"]),
@@ -375,5 +583,10 @@ def tool_rollup(events: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def session_loops() -> list[dict[str, Any]]:
-    _events, _warnings, sessions = _collect_all()
+    _events, _warnings, sessions, _entropy = _collect_all()
     return sessions
+
+
+def session_entropy() -> list[dict[str, Any]]:
+    _events, _warnings, _sessions, entropy = _collect_all()
+    return entropy

@@ -16,6 +16,10 @@ def _paths() -> list[Path]:
     return sorted(root.glob("*.eval"))
 
 
+def paths() -> list[Path]:
+    return _paths()
+
+
 def _get(obj: Any, key: str, default: Any = None) -> Any:
     if isinstance(obj, dict):
         return obj.get(key, default)
@@ -115,22 +119,30 @@ def _read_zip_json(path: Path) -> list[dict[str, Any]]:
     return events
 
 
+def parse_file(path: Path) -> tuple[list[dict[str, Any]], list[str]]:
+    warnings: list[str] = []
+
+    try:
+        events = _read_with_inspect_ai(path)
+    except Exception as exc:
+        try:
+            events = _read_zip_json(path)
+        except Exception as fallback_exc:
+            warnings.append(f"{path}: {exc}; fallback failed: {fallback_exc}")
+            return [], warnings
+        if not events:
+            warnings.append(f"{path}: {exc}; no fallback model_usage found")
+            return [], warnings
+    return events, warnings
+
+
 def collect() -> tuple[list[dict[str, Any]], list[str]]:
     events: list[dict[str, Any]] = []
     warnings: list[str] = []
 
-    for path in _paths():
-        try:
-            file_events = _read_with_inspect_ai(path)
-        except Exception as exc:
-            try:
-                file_events = _read_zip_json(path)
-            except Exception as fallback_exc:
-                warnings.append(f"{path}: {exc}; fallback failed: {fallback_exc}")
-                continue
-            if not file_events:
-                warnings.append(f"{path}: {exc}; no fallback model_usage found")
-                continue
+    for path in paths():
+        file_events, file_warnings = parse_file(path)
         events.extend(file_events)
+        warnings.extend(file_warnings)
 
     return events, warnings

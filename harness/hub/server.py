@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -13,7 +14,7 @@ from fastapi.responses import FileResponse, PlainTextResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 import config
-from services import behavior, board, gitjobs, inspect_evals, replay, runs, suites, trigger, usage
+from services import behavior, board, chat, gitjobs, governance, inspect_evals, integrity, replay, runs, suites, trigger, usage
 
 
 app = FastAPI(title="Harness Hub")
@@ -27,6 +28,29 @@ def _http_error(exc: Exception) -> HTTPException:
     if isinstance(exc, FileNotFoundError):
         return HTTPException(status_code=404, detail=str(exc))
     return HTTPException(status_code=500, detail=str(exc))
+
+
+def _sse(event: str, data: dict[str, object]) -> str:
+    return f"event: {event}\ndata: {json.dumps(data)}\n\n"
+
+
+def _chat_messages(value: object) -> list[dict[str, str]]:
+    if not isinstance(value, list):
+        raise HTTPException(status_code=400, detail="messages must be a list")
+    messages: list[dict[str, str]] = []
+    for item in value:
+        if not isinstance(item, dict):
+            raise HTTPException(status_code=400, detail="messages must contain objects")
+        role = item.get("role")
+        content = item.get("content")
+        if role not in {"user", "assistant"}:
+            raise HTTPException(status_code=400, detail="message role must be user or assistant")
+        if not isinstance(content, str):
+            raise HTTPException(status_code=400, detail="message content must be a string")
+        messages.append({"role": role, "content": content})
+    if not messages:
+        raise HTTPException(status_code=400, detail="messages is required")
+    return messages
 
 
 @app.get("/")
@@ -44,6 +68,44 @@ def health() -> dict[str, object]:
     }
 
 
+@app.get("/api/chat/models")
+def api_chat_models() -> dict[str, object]:
+    return {
+        "models": config.CHAT_MODELS,
+        "default": config.CHAT_DEFAULT_MODEL,
+        "catalog": config.CHAT_MODEL_CATALOG,
+    }
+
+
+@app.post("/api/chat")
+def api_chat(payload: dict[str, object]) -> StreamingResponse:
+    model = payload.get("model") or config.CHAT_DEFAULT_MODEL
+    if not isinstance(model, str):
+        raise HTTPException(status_code=400, detail="model must be a string")
+    if model not in config.CHAT_MODELS:
+        raise HTTPException(status_code=400, detail=f"Unsupported chat model: {model}")
+    messages = _chat_messages(payload.get("messages"))
+
+    def events():
+        try:
+            for item in chat.stream_chat(messages, model, config.CHAT_MAX_TOKENS):
+                item_type = item.get("type")
+                if item_type == "reasoning":
+                    yield _sse("reasoning", {"text": item.get("text", "")})
+                elif item_type == "delta":
+                    yield _sse("delta", {"text": item.get("text", "")})
+                elif item_type == "done":
+                    yield _sse("done", {"usage": item.get("usage", {}), "model": item.get("model", model)})
+        except chat.ChatUpstreamError as exc:
+            yield _sse("error", {"message": str(exc), "code": exc.code or None})
+        except chat.ChatAuthError as exc:
+            yield _sse("error", {"message": str(exc) or chat.AUTH_ERROR_MESSAGE, "code": None})
+        except Exception:
+            yield _sse("error", {"message": "Chat stream error", "code": None})
+
+    return StreamingResponse(events(), media_type="text/event-stream")
+
+
 @app.get("/api/runs")
 def api_runs() -> list[dict[str, object]]:
     return runs.list_runs()
@@ -58,6 +120,7 @@ def api_jobs() -> list[dict[str, object]]:
 def api_create_job(payload: dict[str, object]) -> dict[str, object]:
     brief = payload.get("brief")
     agent = payload.get("agent") or "codex"
+    allow_override = bool(payload.get("allow_override"))
     if not isinstance(brief, str) or not brief.strip():
         raise HTTPException(status_code=400, detail="brief is required")
     if not isinstance(agent, str):
@@ -65,7 +128,7 @@ def api_create_job(payload: dict[str, object]) -> dict[str, object]:
     if agent not in config.JOB_ALLOW_AGENTS:
         raise HTTPException(status_code=400, detail=f"Unsupported agent: {agent}")
     try:
-        return gitjobs.create_job(brief, agent)
+        return gitjobs.create_job(brief, agent, allow_override=allow_override)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except (OSError, PermissionError, RuntimeError) as exc:
@@ -215,6 +278,21 @@ def api_suite(suite_id: str) -> dict[str, object]:
         raise _http_error(exc) from exc
 
 
+@app.get("/api/integrity")
+def api_integrity() -> dict[str, object]:
+    results = integrity.verify_suites()
+    return {
+        "ok": all(bool(item.get("ok")) for item in results),
+        "suites": results,
+        "count": len(results),
+    }
+
+
+@app.get("/api/governance")
+def api_governance() -> dict[str, object]:
+    return governance.status()
+
+
 @app.get("/api/usage")
 def api_usage(
     source: str | None = None,
@@ -282,6 +360,11 @@ def api_sessions() -> list[dict[str, object]]:
 @app.get("/api/sessions/loops")
 def api_session_loops() -> list[dict[str, object]]:
     return behavior.session_loops()
+
+
+@app.get("/api/sessions/entropy")
+def api_session_entropy() -> list[dict[str, object]]:
+    return behavior.session_entropy()
 
 
 @app.get("/api/sessions/{session}/replay")
