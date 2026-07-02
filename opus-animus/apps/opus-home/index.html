@@ -2199,6 +2199,8 @@ function ActioView() {
   if (!d) return <Loading/>;
 
   const b=d.balance, cf=d.cashflow, ips=d.ips, rt=d.retire, sp=d.spending;
+  const hh=b.alloc_household||{}, sl=b.alloc_sleeve||{}, opp=d.opportunity||{}, mtg=d.mortgage, fx=d.fx, prot=d.protection, tr=d.trend||[];
+  const spikes = new Set((sp.category_delta||[]).filter(x=>x.spike).map(x=>x.category));
 
   return (
     <div style={{display:"flex",flexDirection:"column",gap:14}}>
@@ -2208,7 +2210,7 @@ function ActioView() {
           <div>
             <Label style={{color:"var(--gold-dim)",marginBottom:6}}>opus-actio — Net worth thật</Label>
             <div style={{fontSize:30,fontWeight:700,color:"var(--gold)",letterSpacing:"0.01em",lineHeight:1.1,fontFamily:"'Playfair Display SC',serif"}}>{yen(b.true_net_worth)}</div>
-            <div style={{fontSize:12,color:"var(--muted)",marginTop:4}}>{man(b.true_net_worth)} · nợ {yen(b.total_liabilities)} · cập nhật {b.as_of}</div>
+            <div style={{fontSize:12,color:"var(--muted)",marginTop:4}}>{man(b.true_net_worth)} · nợ {yen(b.total_liabilities)} · {b.as_of} {d.staleness&&d.staleness.stale && <Badge variant="danger">dữ liệu cũ {d.staleness.age_days}d</Badge>}</div>
           </div>
           <div style={{textAlign:"right"}}>
             <div style={{fontSize:11,color:"var(--muted)"}}>tiền mặt {b.cash_pct}% · đầu tư {b.invested_pct}%</div>
@@ -2218,13 +2220,50 @@ function ActioView() {
         </div>
       </Card>
 
+      {/* ── ⚡ Action ngay (synthesized) ── */}
+      {d.actions && d.actions.length>0 && (
+        <Card gold>
+          <Label style={{color:"var(--gold-dim)",marginBottom:12}}>⚡ Hành động ngay</Label>
+          <div style={{display:"flex",flexDirection:"column",gap:12}}>
+            {d.actions.map((a,i)=>(
+              <div key={i} style={{display:"flex",gap:12,alignItems:"flex-start"}}>
+                <span style={{fontSize:15,fontWeight:700,color:"var(--gold)",minWidth:20,lineHeight:1.3}}>{a.rank}</span>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:13,fontWeight:600,color:"var(--text)",lineHeight:1.4}}>{a.title}</div>
+                  <div style={{fontSize:11,color:"var(--muted)",marginTop:2,lineHeight:1.5}}>{a.why}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {/* ── Allocation 2 cấp (fix framing) ── */}
+      <Card>
+        <Label style={{marginBottom:10}}>Phân bổ tài sản (household)</Label>
+        {["equity","bond","cash"].map(k=>(
+          <div key={k} style={{marginBottom:8}}>
+            <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:"var(--muted)",marginBottom:3}}>
+              <span style={{textTransform:"capitalize"}}>{k}</span><span style={{color:"var(--text)",fontWeight:600}}>{hh[k]}%</span>
+            </div>
+            <GoldBar pct={(hh[k]||0)/100} color={k==="cash"?"linear-gradient(90deg,#8a7a3a,#c9a84c)":"linear-gradient(90deg,#3DAA88,#6FCBB0)"}/>
+          </div>
+        ))}
+        <div style={{fontSize:11,color:"var(--dim)",marginTop:8,lineHeight:1.5}}>
+          Trong sleeve đầu tư: equity {sl.equity}% {ips.growth_target?`(mục tiêu growth ${ips.growth_target.equity}%)`:""} — chỉ chiếm {b.invested_pct}% tài sản, KHÔNG phải household over-risk.
+        </div>
+        <div style={{marginTop:12,padding:"10px 12px",background:"var(--warn-bg)",borderRadius:3,fontSize:12,color:"var(--warn)",lineHeight:1.5}}>
+          Idle cash {yen(opp.idle_cash)} ở ~0% → phí cơ hội <b>~{yen(opp.annual_cost)}/năm</b> @ {opp.assumed_real_return_pct}%.
+        </div>
+      </Card>
+
       {/* ── Balance + Cashflow ── */}
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:14}}>
         <Card>
           <Label style={{marginBottom:10}}>Bảng cân đối</Label>
           <StatRow label="Tiền mặt" value={yen(b.cash_total)} sub={b.cash_pct+"%"}/>
           <StatRow label="Đầu tư" value={yen(b.invested_total)} sub={b.invested_pct+"%"}/>
-          <StatRow label="Idle cash (sau EF)" value={yen(b.idle_cash_beyond_ef)} color="var(--warn)"/>
+          <StatRow label="Surplus cash (sau goals)" value={yen(d.surplus_cash)} color="var(--warn)"/>
           <div style={{marginTop:10,fontSize:11,color:"var(--muted)",lineHeight:1.7}}>
             {b.accounts.slice(0,4).map((a,i)=>(
               <div key={i} style={{display:"flex",justifyContent:"space-between",gap:8}}>
@@ -2252,7 +2291,7 @@ function ActioView() {
 
       {/* ── Goals ── */}
       <Card>
-        <Label style={{marginBottom:12}}>Mục tiêu</Label>
+        <Label style={{marginBottom:12}}>Mục tiêu <span style={{fontWeight:400,color:"var(--dim)",textTransform:"none",letterSpacing:0}}>(cash netted tuần tự)</span></Label>
         <div style={{display:"flex",flexDirection:"column",gap:12}}>
           {d.goals.map(g => (
             <div key={g.id}>
@@ -2268,6 +2307,7 @@ function ActioView() {
             </div>
           ))}
         </div>
+        <div style={{fontSize:10,color:"var(--dim)",marginTop:10}}>Surplus cash sau mọi mục tiêu tiền mặt: <span style={{color:"var(--warn)"}}>{yen(d.surplus_cash)}</span></div>
       </Card>
 
       {/* ── Retire + IPS ── */}
@@ -2278,42 +2318,105 @@ function ActioView() {
               <Label>Hưu / FI</Label>
               <Badge variant={rt.on_track?"ok":"danger"}>{rt.on_track?`FI @${rt.fi_age}`:"behind"}</Badge>
             </div>
-            <StatRow label={`FIRE number (SWR ${rt.swr_pct}%)`} value={yen(rt.fire_number)}/>
-            <StatRow label={`Dự phóng @${rt.retire_age}`} value={yen(rt.projected_at_retire)}/>
+            <StatRow label={`FIRE (SWR ${rt.swr_pct}%)`} value={yen(rt.fire_number)} sub={rt.fire_range?`dải ${man(rt.fire_range[0])}–${man(rt.fire_range[1])}`:""}/>
+            <StatRow label={`Dự phóng @${rt.retire_age}`} value={yen(rt.projected_at_retire)} sub={rt.proj_range?`dải ${man(rt.proj_range[0])}–${man(rt.proj_range[1])}`:""}/>
             <StatRow label="Thặng dư" value={yen(rt.surplus)} color={rt.surplus>=0?"var(--verdigris)":"var(--danger)"}/>
-            <div style={{fontSize:10,color:"var(--dim)",marginTop:8}}>core {man(rt.core)} + bridge {man(rt.bridge)} · đóng {yen(rt.contrib_monthly)}/th · real {rt.real_return_pct}%</div>
+            <div style={{fontSize:10,color:"var(--dim)",marginTop:8,lineHeight:1.5}}>core {man(rt.core)} + bridge {man(rt.bridge)} · đóng {yen(rt.contrib_monthly)}/th · 年金 {man(rt.nenkin_annual)}/năm từ 65 · real {rt.real_return_pct}%</div>
           </Card>
         )}
         {ips && (
           <Card>
-            <Label style={{marginBottom:10}}>IPS — chính sách vs thực tế</Label>
-            <StatRow label="Equity (sleeve đầu tư)" value={ips.actual_alloc.equity+"%"} sub={ips.growth_target?`mục tiêu ${ips.growth_target.equity}%`:""} color={ips.drift_pp&&Math.abs(ips.drift_pp.equity)>5?"var(--warn)":"var(--text)"}/>
-            <StatRow label="Bond" value={ips.actual_alloc.bond+"%"} sub={ips.growth_target?`mục tiêu ${ips.growth_target.bond}%`:""}/>
+            <Label style={{marginBottom:10}}>Concentration <span style={{fontWeight:400,color:"var(--dim)",textTransform:"none",letterSpacing:0}}>(trong sleeve)</span></Label>
+            <StatRow label="Equity sleeve" value={sl.equity+"%"} sub={ips.growth_target?`mục tiêu ${ips.growth_target.equity}%`:""}/>
+            <StatRow label="Equity household" value={hh.equity+"%"} color="var(--verdigris)"/>
             {ips.violations.length>0 ? (
               <div style={{marginTop:10}}>
-                <div style={{fontSize:10,fontWeight:700,color:"var(--danger)",letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:6}}>Vượt trần {ips.max_single_name_pct}% single-name</div>
+                <div style={{fontSize:10,fontWeight:700,color:"var(--warn)",letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:6}}>Vượt trần {ips.max_single_name_pct}% single-name</div>
                 {ips.violations.map(v=>(
                   <div key={v.code} style={{display:"flex",justifyContent:"space-between",fontSize:12,padding:"3px 0"}}>
                     <span style={{color:"var(--text-soft)"}}>{v.name} <span style={{fontFamily:"monospace",color:"var(--dim)"}}>{v.code}</span></span>
-                    <span style={{color:"var(--danger)",fontWeight:700}}>{v.pct}%</span>
+                    <span style={{color:"var(--warn)",fontWeight:700}}>{v.pct}%</span>
                   </div>
                 ))}
+                <div style={{fontSize:10,color:"var(--dim)",marginTop:6,lineHeight:1.5}}>Concentration trong sleeve đầu tư — không phải household risk.</div>
               </div>
             ) : <div style={{fontSize:11,color:"var(--verdigris)",marginTop:10}}>Không vi phạm concentration ✓</div>}
           </Card>
         )}
       </div>
 
-      {/* ── Spending + Due ── */}
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:14}}>
+      {/* ── Mortgage scenario ── */}
+      {mtg && (
         <Card>
-          <Label style={{marginBottom:10}}>Chi tiêu — {sp.latest_month||"—"}</Label>
-          {sp.categories.slice(0,6).map((c,i)=>(
+          <Label style={{marginBottom:10}}>Kịch bản vay nhà <span style={{fontWeight:400,color:"var(--dim)",textTransform:"none",letterSpacing:0}}>(minh hoạ)</span></Label>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:"0 24px"}}>
+            <div>
+              <StatRow label="Giá nhà" value={yen(mtg.price)}/>
+              <StatRow label={`Vay (full ${100-mtg.down_payment_pct}%)`} value={yen(mtg.loan)}/>
+              <StatRow label="諸費用" value={yen(mtg.closing_costs)}/>
+              <StatRow label={`Trả/tháng @${mtg.rate_pct}% × ${mtg.term_years}y`} value={yen(mtg.monthly_payment)}/>
+            </div>
+            <div>
+              <StatRow label="DTI" value={mtg.dti_pct+"%"} color={mtg.dti_pct>30?"var(--warn)":"var(--verdigris)"}/>
+              <StatRow label="住宅ローン控除 năm 1" value={yen(mtg.tax_credit_yr1)} color="var(--verdigris)"/>
+              <StatRow label="Tiền mặt sau mua" value={yen(mtg.post_purchase_cash)}/>
+              <StatRow label="Cashflow sau trả góp" value={yen(mtg.cashflow_after)} color={mtg.cashflow_after>0?"var(--verdigris)":"var(--danger)"}/>
+            </div>
+          </div>
+          <div style={{fontSize:10,color:"var(--dim)",marginTop:8}}>{mtg.note}</div>
+        </Card>
+      )}
+
+      {/* ── Spending + FX + Protection ── */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(230px,1fr))",gap:14}}>
+        <Card>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+            <Label>Chi tiêu — {sp.latest_month||"—"}</Label>
+            {sp.delta_vs_avg_pct!=null && <Badge variant={sp.delta_vs_avg_pct<=0?"ok":"warn"}>{sp.delta_vs_avg_pct>0?"+":""}{sp.delta_vs_avg_pct}% vs avg</Badge>}
+          </div>
+          {sp.categories.slice(0,5).map((c,i)=>(
             <div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:12,padding:"4px 0",borderBottom:"1px solid var(--border-subtle)"}}>
-              <span style={{color:"var(--text-soft)"}}>{c.category} <span style={{color:"var(--dim)",fontSize:10}}>×{c.n}</span></span>
+              <span style={{color:"var(--text-soft)"}}>{c.category} <span style={{color:"var(--dim)",fontSize:10}}>×{c.n}</span>{spikes.has(c.category)&&<span style={{color:"var(--danger)"}}> 🔺</span>}</span>
               <span style={{fontFamily:"monospace",color:"var(--text)"}}>{yen(c.total)}</span>
             </div>
           ))}
+        </Card>
+        {fx && (
+          <Card>
+            <Label style={{marginBottom:10}}>Tỷ giá</Label>
+            <StatRow label={`USD đầu tư (${fx.usd_invested_pct}%)`} value={yen(fx.usd_invested)}/>
+            <div style={{fontSize:11,color:"var(--muted)",marginTop:8,lineHeight:1.5}}>{fx.note}</div>
+            <div style={{fontSize:10,color:"var(--dim)",marginTop:6}}>base {fx.base_currency} · hồi hương: {fx.repatriation_plan||"—"}</div>
+          </Card>
+        )}
+        {prot && (
+          <Card>
+            <Label style={{marginBottom:10}}>Bảo vệ</Label>
+            <div style={{fontSize:12,color:"var(--text-soft)",lineHeight:1.9}}>
+              <div>Y tế: <span style={{color:"var(--text)"}}>{prot.medical_insurance||"—"}</span></div>
+              <div>Tàn tật: <span style={{color:"var(--text)"}}>{prot.disability_income||"—"}</span></div>
+              <div>Hưu: <span style={{color:"var(--text)"}}>{prot.pension_enrolled||"—"}</span>{prot.pension_since?` (từ ${prot.pension_since})`:""}</div>
+            </div>
+            {prot.gaps&&prot.gaps.length>0 && <div style={{marginTop:8}}><Badge variant="warn">thiếu: {prot.gaps.join(", ")}</Badge></div>}
+          </Card>
+        )}
+      </div>
+
+      {/* ── NW trend + Review due ── */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:14}}>
+        <Card>
+          <Label style={{marginBottom:10}}>Xu hướng net worth</Label>
+          {tr.length>=2 ? (
+            <div>
+              {tr.map((p,i)=>(
+                <div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:12,padding:"3px 0",borderBottom:"1px solid var(--border-subtle)"}}>
+                  <span style={{color:"var(--muted)"}}>{p.as_of}</span>
+                  <span style={{fontFamily:"monospace",color:"var(--text)"}}>{yen(p.true_net_worth)}</span>
+                </div>
+              ))}
+              <div style={{fontSize:11,color:"var(--verdigris)",marginTop:8}}>Δ {yen(tr[tr.length-1].true_net_worth - tr[0].true_net_worth)} ({tr[0].as_of} → {tr[tr.length-1].as_of})</div>
+            </div>
+          ) : <div style={{fontSize:12,color:"var(--muted)",lineHeight:1.6}}>Chỉ 1 snapshot ({b.as_of}) — cần snapshot thứ 2 để có xu hướng.</div>}
         </Card>
         <Card>
           <Label style={{marginBottom:10}}>Review đến hạn</Label>
