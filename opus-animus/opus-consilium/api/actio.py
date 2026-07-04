@@ -27,6 +27,8 @@ from typing import Any
 
 from fastapi import APIRouter, Body
 
+from .kpi_status import get_kpi_status
+
 router = APIRouter()
 
 ACTIO_DATA = Path(__file__).parent.parent.parent / "opus-actio" / "data"
@@ -98,6 +100,17 @@ def _fmt_jpy(value):
     return "unknown" if n is None else f"{int(round(n)):,} JPY"
 
 
+def _fmt_compact(value):
+    n = _num(value)
+    if n is None:
+        return "unknown"
+    if abs(n) >= 1_000_000:
+        return f"¥{n / 1_000_000:.2f}M"
+    if abs(n) >= 1_000:
+        return f"¥{n / 1_000:.0f}K"
+    return f"¥{int(n)}"
+
+
 def _fmt_pct(value, digits=0):
     n = _num(value)
     if n is None:
@@ -166,7 +179,7 @@ def _kpi(kid, label, target, actual, verdict):
         "label": label,
         "target": target,
         "actual": actual,
-        "verdict": verdict if verdict in {"ok", "warn", "violation", "unknown"} else "unknown",
+        "verdict": verdict if verdict in {"pending", "ok", "warn", "breach"} else "pending",
     }
 
 
@@ -563,6 +576,8 @@ def actio_plan():
     current_year = today.strftime("%Y")
 
     monthly_cfg = _as_dict(cfg.get("monthly"))
+    payday_day = int(_num(monthly_cfg.get("payday_day"), 25) or 25)
+    action_templates = _as_dict(cfg.get("action_templates"))
     house_cfg = _as_dict(cfg.get("house"))
     dca_cfg = _as_dict(cfg.get("dca"))
     thresholds = _as_dict(cfg.get("kpi_thresholds"))
@@ -799,20 +814,31 @@ def actio_plan():
 
     savings_min = _num(thresholds.get("savings_rate_min_pct"))
     savings_rate = _num(cfw.get("savings_rate_pct"))
-    savings_verdict = "unknown" if savings_min is None or savings_rate is None else ("ok" if savings_rate >= savings_min else "violation")
+    savings_verdict = get_kpi_status(
+        "threshold_band",
+        actual=savings_rate,
+        threshold=savings_min,
+        direction=">=",
+    )
 
     contrib_pct = _safe_pct(contrib_actual_total, waterfall_total)
-    if contrib_pct is None:
-        contrib_verdict = "unknown"
-    elif contrib_pct >= 100:
-        contrib_verdict = "ok"
-    elif contrib_actual_total > 0:
-        contrib_verdict = "warn"
-    else:
-        contrib_verdict = "violation"
+    contrib_pending = contrib_actual_total == 0 and today.day < payday_day
+    contrib_verdict = get_kpi_status(
+        "threshold_band",
+        actual=contrib_pct,
+        threshold=100,
+        direction=">=",
+        pending=contrib_pending,
+    )
 
     idle_cash = _num(_as_dict(ov.get("opportunity")).get("idle_cash"))
-    idle_verdict = "unknown" if idle_cash is None else ("ok" if idle_cash <= 0 else "warn")
+    expected_idle_now = dca_total * (1 - dca_due_months / dca_months) if dca_months > 0 else dca_total
+    idle_verdict = get_kpi_status(
+        "threshold_band",
+        actual=idle_cash,
+        threshold=expected_idle_now,
+        direction="<=",
+    )
 
     single_limit = _num(thresholds.get("single_name_max_pct"), _num(ips.get("max_single_name_pct")))
     positions = _as_list(ips.get("positions"))
@@ -822,12 +848,22 @@ def actio_plan():
         single_pcts = [_num(_as_dict(v).get("pct")) for v in _as_list(ips.get("violations"))]
         single_pcts = [p for p in single_pcts if p is not None]
     single_max = max(single_pcts) if single_pcts else None
-    single_verdict = "unknown" if single_limit is None or single_max is None else ("ok" if single_max <= single_limit else "violation")
+    single_verdict = get_kpi_status(
+        "threshold_band",
+        actual=single_max,
+        threshold=single_limit,
+        direction="<=",
+    )
 
     drift_limit = _num(thresholds.get("drift_max_pp"))
     drift_values = [abs(v) for v in (_num(x) for x in _as_dict(ips.get("drift_pp")).values()) if v is not None]
     drift_max = max(drift_values) if drift_values else None
-    drift_verdict = "unknown" if drift_limit is None or drift_max is None else ("ok" if drift_max <= drift_limit else "warn")
+    drift_verdict = get_kpi_status(
+        "threshold_band",
+        actual=drift_max,
+        threshold=drift_limit,
+        direction="<=",
+    )
 
     nisa_target = _num(thresholds.get("nisa_annual_target"))
     nisa_actual_year = 0
@@ -836,53 +872,93 @@ def actio_plan():
             for key, value in _as_dict(values).items():
                 if "nisa" in str(key):
                     nisa_actual_year += _num(value, 0) or 0
-    if nisa_target is None:
-        nisa_verdict = "unknown"
-    elif nisa_actual_year >= nisa_target:
-        nisa_verdict = "ok"
-    elif nisa_actual_year > 0:
-        nisa_verdict = "warn"
-    else:
-        nisa_verdict = "violation"
+    nisa_verdict = get_kpi_status(
+        "threshold_band",
+        actual=nisa_actual_year,
+        threshold=nisa_target,
+        direction=">=",
+    )
 
     dti_stress_max = _num(house_cfg.get("dti_stress_max_pct"))
     dti_stress = _num(_as_dict(house).get("dti_stress_pct")) if house else None
-    dti_verdict = "unknown" if dti_stress is None or dti_stress_max is None else ("ok" if dti_stress <= dti_stress_max else "violation")
+    dti_verdict = get_kpi_status(
+        "threshold_band",
+        actual=dti_stress,
+        threshold=dti_stress_max,
+        direction="<=",
+    )
 
-    fi_state = north_star.get("on_track")
-    fi_verdict = "unknown" if fi_state is None else ("ok" if fi_state else "violation")
+    fi_verdict = get_kpi_status("boolean_flip", is_ok=north_star.get("on_track"))
 
     glide_target_now = _bond_target_for_age(age, glide_cfg)
+    long["glide_target_now"] = glide_target_now
     bond_actual = _num(long.get("bond_actual_pct"))
     glide_diff = abs(bond_actual - glide_target_now) if bond_actual is not None and glide_target_now is not None else None
-    glide_verdict = "unknown" if glide_diff is None or drift_limit is None else ("ok" if glide_diff <= drift_limit else "warn")
+    glide_verdict = get_kpi_status(
+        "threshold_band",
+        actual=glide_diff,
+        threshold=drift_limit,
+        direction="<=",
+    )
 
     review_count = len(_as_list(ov.get("review_due")))
+    review_verdict = get_kpi_status("count_step", count=review_count)
     oneoff_overdue = [item for item in oneoff if item.get("overdue")]
     oneoff_overdue_count = len(oneoff_overdue)
     oneoff_max_days = max([item.get("overdue_days") or 0 for item in oneoff_overdue], default=0)
     oneoff_limit = _num(thresholds.get("oneoff_overdue_days"))
-    if oneoff_overdue_count == 0:
-        oneoff_verdict = "ok"
-    elif oneoff_limit is not None and oneoff_max_days > oneoff_limit:
-        oneoff_verdict = "violation"
-    else:
-        oneoff_verdict = "warn"
+    oneoff_verdict = get_kpi_status(
+        "day_severity",
+        overdue_count=oneoff_overdue_count,
+        max_days=oneoff_max_days,
+        limit_days=oneoff_limit,
+    )
+
+    dca_verdict = get_kpi_status(
+        "threshold_band",
+        actual=dca_done_months,
+        threshold=dca_due_months,
+        direction=">=",
+        pending=dca_due_months == 0,
+    )
 
     kpis = [
         _kpi("savings_rate", "Savings rate", f">={_fmt_pct(savings_min)}", _fmt_pct(savings_rate), savings_verdict),
         _kpi("contrib", "Contrib vs waterfall", "100%", _fmt_pct(contrib_pct), contrib_verdict),
-        _kpi("idle_cash", "Idle ngoai EF+reserve", "0 by schedule", _fmt_jpy(idle_cash), idle_verdict),
-        _kpi("dca", "DCA tranche", "on schedule", f"{dca_done_months}/{dca_months or 0}", "unknown" if dca["on_schedule"] is None else ("ok" if dca["on_schedule"] else "warn")),
+        _kpi("idle_cash", "Idle ngoai EF+reserve", _fmt_compact(expected_idle_now), _fmt_compact(idle_cash), idle_verdict),
+        _kpi("dca", "DCA tranche", f">={dca_due_months}/{dca_months or 0}", f"{dca_done_months}/{dca_months or 0}", dca_verdict),
         _kpi("single_name", "Single-name max", f"<={_fmt_pct(single_limit)}", _fmt_pct(single_max, 1), single_verdict),
         _kpi("drift", "Sleeve drift", f"<={_fmt_pp(drift_limit)}", _fmt_pp(drift_max), drift_verdict),
-        _kpi("nisa", "NISA nam nay", _fmt_m(nisa_target), _fmt_jpy(nisa_actual_year), nisa_verdict),
+        _kpi("nisa", "NISA nam nay", _fmt_compact(nisa_target), _fmt_compact(nisa_actual_year), nisa_verdict),
         _kpi("dti", "DTI @stress", f"<={_fmt_pct(dti_stress_max)}", _fmt_pct(dti_stress, 1), dti_verdict),
         _kpi("fi", "FI progress", "on-track band", f"FI @{north_star.get('fi_age')}" if north_star.get("fi_age") else "unknown", fi_verdict),
-        _kpi("glide", "Bond vs glide", _fmt_pct(glide_target_now, 1), _fmt_pct(bond_actual, 1), glide_verdict),
-        _kpi("review", "Review due", "0 due", str(review_count), "ok" if review_count == 0 else "warn"),
-        _kpi("oneoff", "One-off <= threshold", "0 overdue", str(oneoff_overdue_count), oneoff_verdict),
+        _kpi("glide", "Bond vs glide", f"<={_fmt_pp(drift_limit)}", _fmt_pp(glide_diff), glide_verdict),
+        _kpi("review", "Review due", "0", str(review_count), review_verdict),
+        _kpi("oneoff", "One-off <= threshold", "0", str(oneoff_overdue_count), oneoff_verdict),
     ]
+
+    nisa_lifetime = {
+        "value": None,
+        "cap": 18_000_000,
+        "note": "TODO: chưa có nguồn dữ liệu cumulative NISA lifetime — cần track riêng (không suy ra từ contrib_actual_all vì lịch sử trước khi app này chạy không có trong đó).",
+    }
+
+    next_action = {"message": "Mọi chỉ số ổn định.", "severity": "ok"}
+    selected_kpi = None
+    for severity in ("breach", "warn"):
+        selected_kpi = next((kpi for kpi in kpis if kpi.get("verdict") == severity), None)
+        if selected_kpi:
+            break
+    if selected_kpi:
+        template = _as_dict(action_templates.get(selected_kpi["id"])).get(selected_kpi["verdict"])
+        if isinstance(template, str):
+            try:
+                message = template.format(actual=selected_kpi["actual"], target=selected_kpi["target"])
+            except Exception:
+                message = f"{selected_kpi['label']}: {selected_kpi['actual']} (target {selected_kpi['target']})"
+        else:
+            message = f"{selected_kpi['label']}: {selected_kpi['actual']} (target {selected_kpi['target']})"
+        next_action = {"message": message, "severity": selected_kpi["verdict"]}
 
     return {
         "ok": True,
@@ -893,4 +969,6 @@ def actio_plan():
         "medium": medium,
         "long": long,
         "kpis": kpis,
+        "nisa_lifetime": nisa_lifetime,
+        "next_action": next_action,
     }

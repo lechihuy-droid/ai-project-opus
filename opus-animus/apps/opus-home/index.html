@@ -2537,15 +2537,62 @@ function PlanView() {
   const fireRangeText = rangeText(ns.fire_range);
   const fireProgress = ns.fire_number ? (Number(ns.net_worth_now) || 0) / ns.fire_number : 0;
   const dcaProgress = dca.months ? (Number(dca.done_months) || 0) / dca.months : 0;
-  const glideKpi = kpis.find(k => k.id === "glide") || {};
   const poolKey = `pool_${scenario}`;
   const pctText = v => v==null ? "—" : `${v}%`;
-  const verdictColor = verdict => ({
+  const nextAction = d.next_action || {message:"Mọi chỉ số ổn định.", severity:"ok"};
+  const nisaLifetime = d.nisa_lifetime || {};
+  const verdictColor = status => ({
+    pending:"var(--muted)",
     ok:"var(--verdigris)",
     warn:"var(--warn)",
-    violation:"var(--danger)",
-    unknown:"var(--muted)",
-  }[verdict] || "var(--muted)");
+    breach:"var(--danger)",
+  }[status] || "var(--muted)");
+  const verdictIcon = status => ({
+    pending:"○",
+    ok:"✓",
+    warn:"!",
+    breach:"×",
+  }[status] || "○");
+  const kpiById = kpis.reduce((acc, k) => {
+    if (k && k.id) acc[k.id] = k;
+    return acc;
+  }, {});
+  const kpiGroups = [
+    {key:"foundation", label:"Foundation", ids:["savings_rate","idle_cash","dti"]},
+    {key:"structure", label:"Structure", ids:["nisa","nisa_lifetime","contrib"]},
+    {key:"growth", label:"Growth", ids:["drift","single_name","glide","dca"]},
+    {key:"governance", label:"Governance", ids:["review","oneoff"]},
+  ];
+  const renderKpiCard = k => {
+    if (!k) return null;
+    const color = verdictColor(k.verdict);
+    return (
+      <div key={k.id} style={{background:"var(--card)",border:`1px solid ${color}`,borderRadius:4,padding:"12px 13px",minHeight:92}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8}}>
+          <div style={{fontSize:10,fontWeight:700,letterSpacing:"0.06em",textTransform:"uppercase",color:"var(--muted)",lineHeight:1.25}}>{k.label}</div>
+          <span aria-label={k.verdict} title={k.verdict} style={{fontSize:12,fontWeight:800,color,lineHeight:1}}>{verdictIcon(k.verdict)}</span>
+        </div>
+        <div style={{fontSize:16,fontWeight:750,color,marginTop:7,wordBreak:"break-word"}}>{k.actual}</div>
+        <div style={{fontSize:10,color:"var(--dim)",marginTop:5,lineHeight:1.35}}>target {k.target}</div>
+      </div>
+    );
+  };
+  const renderNisaLifetimeCard = () => {
+    const hasValue = nisaLifetime.value != null;
+    const status = nisaLifetime.verdict || "pending";
+    const color = verdictColor(status);
+    return (
+      <div key="nisa_lifetime" title={nisaLifetime.note || ""} style={{background:"var(--card)",border:`1px solid ${color}`,borderRadius:4,padding:"12px 13px",minHeight:92}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8}}>
+          <div style={{fontSize:10,fontWeight:700,letterSpacing:"0.06em",textTransform:"uppercase",color:"var(--muted)",lineHeight:1.25}}>NISA lifetime</div>
+          <span aria-label={status} title={status} style={{fontSize:12,fontWeight:800,color,lineHeight:1}}>{verdictIcon(status)}</span>
+        </div>
+        <div style={{fontSize:16,fontWeight:750,color,marginTop:7,wordBreak:"break-word"}}>{hasValue ? `${fm(nisaLifetime.value)} / ${fm(nisaLifetime.cap)}` : "N/A"}</div>
+        <div style={{fontSize:10,color:"var(--dim)",marginTop:5,lineHeight:1.35}}>target {nisaLifetime.cap != null ? fm(nisaLifetime.cap) : "—"}</div>
+        {!hasValue && nisaLifetime.note && <div style={{fontSize:9,color:"var(--dim)",marginTop:5,lineHeight:1.3}}>{nisaLifetime.note}</div>}
+      </div>
+    );
+  };
   const tabs = [
     {key:"month", label:"THÁNG"},
     {key:"five", label:"5 NĂM"},
@@ -2574,17 +2621,28 @@ function PlanView() {
         </div>
       </Card>
 
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:10}}>
-        {kpis.map(k => {
-          const color = verdictColor(k.verdict);
-          return (
-            <div key={k.id} style={{background:"var(--card)",border:`1px solid ${color}`,borderRadius:4,padding:"12px 13px",minHeight:92}}>
-              <div style={{fontSize:10,fontWeight:700,letterSpacing:"0.06em",textTransform:"uppercase",color:"var(--muted)",lineHeight:1.25}}>{k.label}</div>
-              <div style={{fontSize:16,fontWeight:750,color,marginTop:7,wordBreak:"break-word"}}>{k.actual}</div>
-              <div style={{fontSize:10,color:"var(--dim)",marginTop:5,lineHeight:1.35}}>{k.target}</div>
+      <Card style={{
+        padding:"14px 16px",
+        border:`1px solid ${verdictColor(nextAction.severity)}`,
+        borderLeft:`3px solid ${verdictColor(nextAction.severity)}`,
+        background:nextAction.severity==="ok" ? "rgba(61,170,136,0.045)" : "var(--card)"
+      }}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10}}>
+          <Label>Next action</Label>
+          <span aria-label={nextAction.severity} title={nextAction.severity} style={{fontSize:13,fontWeight:800,color:verdictColor(nextAction.severity)}}>{verdictIcon(nextAction.severity)}</span>
+        </div>
+        <div style={{fontSize:13,color:nextAction.severity==="ok" ? "var(--muted)" : "var(--text-soft)",marginTop:6,lineHeight:1.45}}>{nextAction.message || "Mọi chỉ số ổn định."}</div>
+      </Card>
+
+      <div style={{display:"flex",flexDirection:"column",gap:12}}>
+        {kpiGroups.map(group => (
+          <div key={group.key}>
+            <Label style={{marginBottom:7}}>{group.label}</Label>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:10}}>
+              {group.ids.map(id => id === "nisa_lifetime" ? renderNisaLifetimeCard() : renderKpiCard(kpiById[id]))}
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
 
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,flexWrap:"wrap"}}>
@@ -2732,7 +2790,7 @@ function PlanView() {
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:14}}>
             <Card>
               <Label style={{marginBottom:10}}>Glide path</Label>
-              <StatRow label="Target bond now" value={glideKpi.target || "—"}/>
+              <StatRow label="Target bond now" value={pctText(long.glide_target_now)}/>
               <StatRow label="Actual bond" value={pctText(long.bond_actual_pct)} color="var(--gold)"/>
               {glide.map(g => (
                 <StatRow key={g.age} label={`Age ${g.age}`} value={`${pctText(g.equity)} equity / ${pctText(g.bond)} bond`}/>

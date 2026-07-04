@@ -34,6 +34,17 @@
 - ✅ `plan-v3.md` bump v3.2 (changelog đầy đủ trong header)
 - ⬜ Còn mở: remittance kéo dài bao lâu (ảnh hưởng retirement expense nếu tiếp tục sau 60) · xin báo giá thật 2 gói bảo hiểm (`insurance_review` deadline 2026-09-30) · commit các thay đổi này khi user yêu cầu
 
+### KPI status engine refactor (2026-07-05, chiều)
+- User đưa refactor prompt lớn (6 phase: status band, next-action banner, group 4 nhóm, format compact, a11y, xoá FI card trùng). Claude làm Phase 0 discovery trước khi giao Codex — phát hiện 3 mismatch với giả định đề bài (không JS test framework, verdict tính ở backend không phải frontend, currency card là string đã format sẵn không phải số thô) + xác nhận 3 bug thật (drift không bao giờ lên breach dù vượt gần 2× ngưỡng; DTI 34.2%/35% hiện "ok" sai; contrib 0% trước ngày lương hiện "violation" sai thay vì pending) — hỏi user 3 quyết định phạm vi trước khi code (currency fix ở backend, áp 4-state cho cả 12 KPI, test bằng pytest có sẵn).
+- ✅ Viết `docs/BD-kpi-status-refactor.md` — BD chi tiết cho Codex: `kpi_status.py` (pure fn 4 kind: threshold_band/count_step/day_severity/boolean_flip), pytest, wire 12 KPI trong `actio.py`, `_fmt_compact()`, `next_action` + `action_templates` trong plan-config, `nisa_lifetime` (N/A + TODO, không bịa số), PlanView 4 nhóm + banner + icon/aria-label + bỏ card `fi` trùng hero.
+- ✅ Codex implement xong, không commit/push. Claude verify độc lập:
+  - `pytest opus-consilium/api/tests/ -v` → **10/10 pass** (kể cả `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1` — plugin `hydra` cài global không tương thích Python 3.11, phải tắt autoload khi chạy pytest cho project này từ giờ)
+  - Đọc lại `kpi_status.py` + diff `actio.py` khớp 100% BD
+  - Restart `run_dashboard.py` (load code mới) → curl xác nhận **3 bug đã fix với data thật**: drift 9.4pp→**breach** (trước max chỉ warn) · DTI 34.2%/35%→**warn** (trước "ok" sai) · contrib 0%→**pending** (trước "violation" sai, vì hôm nay 07-05 chưa tới payday_day=25)
+  - Browser verify: banner Next Action hiện đúng breach cao nhất (idle_cash), 4 nhóm Foundation/Structure/Growth/Governance render đúng, card `fi` đã biến mất khỏi grid (chỉ còn ở hero badge), NISA lifetime card hiện "N/A" + note TODO (không bịa số), `aria-label="breach"` có trên DOM, console sạch, số tài chính (net worth/FIRE/waterfall) không đổi so với trước refactor
+  - 1 lần gặp "renderer frozen"/"page still loading" trên tab cũ — xác nhận chỉ là glitch của công cụ browser automation (tab mới render bình thường ngay), không phải bug code
+- ⬜ TODO còn lại (đã ghi trong BD/next_action payload): nguồn dữ liệu NISA lifetime thật, báo giá bảo hiểm — chưa liên quan file này. Chưa commit thay đổi Phase-refactor này.
+
 ## Objective trước — MVP-A: Claude Code-first (0 API metered, dùng Pro flat-fee).
 
 ## State
