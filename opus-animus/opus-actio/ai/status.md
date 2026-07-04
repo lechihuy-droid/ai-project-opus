@@ -15,6 +15,14 @@
 - ✅ Claude verify (2026-07-04): kpis[12] đúng verdict · waterfall 5 bậc khớp config · DTI @current 24.9% / @stress 34.2% (gate_ok) · checklist persist qua reload + restart server (plan-state.json) · đổi plan-config.json → API đổi theo (không cần restart) · 3 tab nội bộ THÁNG/5 NĂM/TỚI HƯU render, toggle 3/4/5% chạy · tab Actio cũ nguyên vẹn, console sạch · không số thật trong diff tracked
 - ✅ Bug fix (Codex): `actio_overview()` retire dict thiếu `nenkin_start_age` → bridge years=0; đã thêm field, bridge card giờ 5 năm / 年金 từ 65 (restart run_dashboard.py để nhận code — đã restart)
 
+### Plan v3.1 — review 2 vòng + bảo hiểm (2026-07-04, chiều)
+- ✅ `data/_local/review-plan-v3-2026-07.md` — review trung/dài hạn: quan điểm plan + verify toán độc lập + đánh giá 生命保険 + 2 vòng phản biện (山崎元-style, FP協会/CFP-style) + final
+- ✅ 3 sửa chính xác: **DCA pool ¥3.68M → ¥6.08M** (trừ EF 2 lần) · FI-age deploy-idle ~48 → ~50 · **FIRE thiếu điều kiện housing** (mortgage 35y trả tới ~75, đoạn 60→75 ≈ ¥21M ngoài FIRE — quyết định năm 14 khi hết 控除)
+- ✅ Bảo hiểm chốt (mục 1.5 plan): 死亡 không mua (0 dependents) · 医療 không mua (高額療養費+EF) · 就業不能 tự bảo hiểm (option 掛け捨て) · nhà: 団信+火災 bắt buộc, 地震 khuyến nghị mạnh (vào gate 2.2) · 年金 10-year rule ~2027
+- ✅ `plan-v3.md` bump v3.1 (changelog trong header) + `plan-config.json` (dca.total 6,080,000, tranche title) — API nhận ngay, UI DCA hiển thị theo
+- ✅ Codex repo chores: toggle ¥↔万 trong PlanView (verify: Total ¥277,148 → 28万) + 2 commit: `5166f19` plan cockpit v3, `00b686b` harness hub
+- ⬜ Chờ thân chủ: vn_obligations? · ¥200k/tháng có gồm rent? · đồng ý quyết định bảo hiểm 1.5?
+
 ## Objective trước — MVP-A: Claude Code-first (0 API metered, dùng Pro flat-fee).
 
 ## State
