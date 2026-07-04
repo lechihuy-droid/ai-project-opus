@@ -1,5 +1,5 @@
 # STATUS - opus-actio
-**Updated:** 2026-07-04
+**Updated:** 2026-07-05
 **Current owner:** Claude
 
 ## Current objective
@@ -21,7 +21,18 @@
 - ✅ Bảo hiểm chốt (mục 1.5 plan): 死亡 không mua (0 dependents) · 医療 không mua (高額療養費+EF) · 就業不能 tự bảo hiểm (option 掛け捨て) · nhà: 団信+火災 bắt buộc, 地震 khuyến nghị mạnh (vào gate 2.2) · 年金 10-year rule ~2027
 - ✅ `plan-v3.md` bump v3.1 (changelog trong header) + `plan-config.json` (dca.total 6,080,000, tranche title) — API nhận ngay, UI DCA hiển thị theo
 - ✅ Codex repo chores: toggle ¥↔万 trong PlanView (verify: Total ¥277,148 → 28万) + 2 commit: `5166f19` plan cockpit v3, `00b686b` harness hub
-- ⬜ Chờ thân chủ: vn_obligations? · ¥200k/tháng có gồm rent? · đồng ý quyết định bảo hiểm 1.5?
+- ✅ Chờ thân chủ (đã trả lời 2026-07-05): vn_obligations=**có ¥30k/th VN** · ¥200k/tháng **có gồm rent** · bảo hiểm 1.5 → yêu cầu thêm khuyến nghị 就業不能保険
+
+### Plan v3.2 — cập nhật theo trả lời thân chủ (2026-07-05)
+- ✅ Chi phí thật 200k→**230,000** (200k sinh hoạt+rent + 30k remittance VN) — cập nhật `client-profile.json` (monthly_expense, profile.vn_obligations)
+- ✅ EF 12 tháng 2.4M→**2.76M**; savings/tháng 277,148→**247,148** (savings rate 58%→52%, vẫn ✅) — cập nhật `goals.json`
+- ✅ Waterfall + DCA tính lại: bond 30k→15k, DCA đệm 24,148→9,148 (tổng 247,148); DCA tranche one-off 6.08M→**5.72M** — cập nhật `plan-config.json` (version 3.2), thêm oneoff `insurance_review`
+- ✅ Verify API sống ngay không cần code: `cashflow.expense=230000, savings_rate_pct=51.8` (actio.py đã đọc `client-profile.cashflow_jpy.monthly_expense` sẵn ở dòng ~290) · waterfall API = 247,148 · dca.total=5,723,123 · UI hiển thị đúng encoding (収入保障保険 v.v. — mojibake chỉ là artifact print Python trên console, không phải lỗi thật)
+- ⚠️ **Known lag:** `idle_cash_beyond_ef`/`ef_buffer_12mo` trong finance.db vẫn baked theo EF cũ 2.4M (raw snapshot 202606, theo rule immutable không sửa raw/) — sẽ tự đúng khi ingest snapshot tháng kế tiếp; hiện phải trừ thủ công +360k khi tính DCA pool (đã làm trong plan-v3.md)
+- ✅ Bảng NW Y1–Y5 (PHẦN II) và khối 3-năm dài hạn (PHẦN III) trong `plan-v3.md` **tính lại hoàn toàn chính xác** (thấp hơn bảng v3.1 ~4–15%, do remittance + recompute rigorous hơn — kết luận tổng thể không đổi, pool vẫn >> FIRE mọi kịch bản)
+- ✅ Bảo hiểm 1.5 đổi quyết định: **死亡 → đổi sang MUA** 収入保障保険 (~¥40k/th benefit, 15-20y, ước phí ¥1-2k/th) — vì remittance làm PV nghĩa vụ ~¥5.9M (~37% NW) không còn bỏ qua được; **就業不能保険 KHUYẾN NGHỊ mua** mức khiêm tốn (~¥150k/th benefit, chờ 18mo khớp 傷病手当金, ước phí ¥3-5k/th) — review/hủy khi invested pool ≥20-25M (~Y2-Y3)
+- ✅ `plan-v3.md` bump v3.2 (changelog đầy đủ trong header)
+- ⬜ Còn mở: remittance kéo dài bao lâu (ảnh hưởng retirement expense nếu tiếp tục sau 60) · xin báo giá thật 2 gói bảo hiểm (`insurance_review` deadline 2026-09-30) · commit các thay đổi này khi user yêu cầu
 
 ## Objective trước — MVP-A: Claude Code-first (0 API metered, dùng Pro flat-fee).
 
