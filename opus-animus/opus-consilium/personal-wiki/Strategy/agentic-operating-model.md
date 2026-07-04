@@ -7,16 +7,19 @@ status: evergreen
 confidence: medium
 sources:
   - "McKinsey — Rewiring software delivery for the agentic era, 2026"
+  - "arXiv 2606.05608v1 — The End of Software Engineering: How AI Agents Are Fundamentally Restructuring the Software Paradigm, 2026"
 related: ["[[ai-trend-radar]]", "[[competitor-business-model-radar]]", "[[fde-model]]", "[[investment-theses]]", "[[open-questions]]"]
 applied:
   - "2026-06-06 - Created strategic lens page to separate long-term strategic frameworks from daily CEO news and competitor evidence."
   - "2026-06-06 - Added strategic watch criteria for DX, Japan enterprise IT, AI-SDLC, buyer budgets, regulation, and workforce shifts."
+  - "2026-06-22 - Added End of Software Engineering as a threat lens for code-centric delivery, offshore/SI business models, and Opus control-plane design."
 open_questions:
   - "Which strategic lenses deserve permanent radar categories?"
   - "Which daily CEO signals prove or weaken the agentic operating model thesis?"
   - "Which parts of Opus should become machine-readable control-plane artifacts first?"
+  - "Which software delivery workflows are agent-ready versus still requiring human judgment, domain context, and verification?"
 created: 2026-06-06
-updated: 2026-06-06
+updated: 2026-06-22
 ---
 
 # Agentic Operating Model
@@ -57,6 +60,15 @@ standardized workflow
 + smaller supervisory pods
 = agentic operating model
 ```
+
+Threat interpretation:
+
+```text
+code-centric delivery
+→ agentic control-plane engineering
+```
+
+The threat is not that software work disappears. The threat is that code/artifact production becomes commoditized while value moves toward intent design, workflow orchestration, memory, eval, policy, auditability, rollback, and outcome ownership.
 
 ---
 
@@ -164,6 +176,17 @@ Track changes that affect Huy's personal learning roadmap:
 - Japanese-language plus AI/DX bridge skill becoming valuable for Japan-facing delivery
 - education/content opportunities around AI-native Japanese work skills, DX literacy, and software delivery transformation
 
+### Threat Lens Radar
+
+Track signals that indicate software delivery value is moving away from static code/artifact production:
+
+- agents turning code into temporary execution tooling rather than durable product logic
+- agentic systems where memory, tools, policy, evaluation, and orchestration become the core engineering objects
+- benchmarks showing strong isolated-task performance but weak continuous-evolution performance
+- tooling that automates requirement-to-code-to-test loops with traceability and rollback
+- customers or vendors shifting from developer capacity to outcome ownership, workflow ownership, or managed agentic operations
+- SI/offshore margin pressure caused by automation of coding, documentation, testing, and maintenance work
+
 ---
 
 ## Strategic Signal Quality Filter
@@ -198,6 +221,7 @@ Implications:
 - Consilium wiki should accumulate decisions, methods, open questions, source-backed theses, and traceable context, not raw transcripts.
 - Automation should not increase before observability and write gates are clear.
 - Daily research should separate strategic lens, daily evidence, competitor proof, and action.
+- Treat `PACK.md`, status, handoff, scheduler docs, wiki routing, and tool boundaries as control-plane artifacts, not merely documentation.
 
 ---
 
@@ -222,6 +246,13 @@ Core deliverables:
 - knowledge infrastructure / wiki handoff plan
 
 This matches the thesis that buyers will pay for operating-model change, not just tooling.
+
+Threat-aware framing:
+
+```text
+Do not sell code production.
+Sell agent-ready workflow selection, control-plane design, evaluation gates, and measurable outcome improvement.
+```
 
 ---
 
@@ -358,6 +389,30 @@ Opus implication:
 - Keep packs and status files structured enough for agents.
 - Keep wiki updates selective and gated.
 - Add observability before increasing autonomy.
+
+Decision label: test.
+
+### Cao — The End of Software Engineering
+
+Strategic lens:
+
+```text
+Software delivery is shifting from code-centric engineering to agentic control-plane engineering.
+```
+
+Threat lens:
+
+- Code/artifact production may be commoditized faster than workflow ownership, eval, governance, and outcome design.
+- Offshore and SI business models based on man-month capacity, coding volume, documentation production, or phase-based delivery may face margin pressure.
+- The core engineering object may move from static code to reasoning loops, memory, context, tools, policy, evaluation, and audit trails.
+- Strong single-task agent performance does not remove the need for human judgment; continuous software evolution still needs context management, verification, technical-debt awareness, rollback, and governance.
+
+Opus implication:
+
+- Treat Opus ai layer as a control plane, not just a note folder.
+- Create `operator-topology.md` to map operator surfaces, control-plane artifacts, and execution subsystems.
+- Build `wiki-eval-loop.md`, surface compliance, and observability before adding more autonomy.
+- Keep FDE-lite focused on agent-ready workflow selection, guardrail design, evaluation, and measurable outcome improvement.
 
 Decision label: test.
 

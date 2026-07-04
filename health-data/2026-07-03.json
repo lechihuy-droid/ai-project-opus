@@ -1,0 +1,78 @@
+{
+  "date": "2026-07-03",
+  "meals": [
+    {
+      "time": "12:35",
+      "name": "Lunch",
+      "source": "text",
+      "items": [
+        {
+          "name": "Bukkake soba",
+          "grams": 350,
+          "kcal": 420,
+          "protein": 16.0,
+          "carb": 72.0,
+          "fat": 5.0,
+          "sugar": 4.0,
+          "fiber": 4.0,
+          "saturated_fat": 1.0,
+          "sodium_mg": 1300,
+          "alcohol": 0
+        },
+        {
+          "name": "Raw egg 1",
+          "grams": 50,
+          "kcal": 78,
+          "protein": 6.3,
+          "carb": 0.6,
+          "fat": 5.3,
+          "sugar": 0.5,
+          "fiber": 0.0,
+          "saturated_fat": 1.6,
+          "sodium_mg": 70,
+          "alcohol": 0
+        },
+        {
+          "name": "Onsen tamago 1",
+          "grams": 50,
+          "kcal": 78,
+          "protein": 6.3,
+          "carb": 0.6,
+          "fat": 5.3,
+          "sugar": 0.5,
+          "fiber": 0.0,
+          "saturated_fat": 1.6,
+          "sodium_mg": 70,
+          "alcohol": 0
+        },
+        {
+          "name": "Toriten 1 piece",
+          "grams": 90,
+          "kcal": 250,
+          "protein": 20.0,
+          "carb": 14.0,
+          "fat": 13.0,
+          "sugar": 1.0,
+          "fiber": 0.5,
+          "saturated_fat": 2.5,
+          "sodium_mg": 350,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 826,
+      "total_protein": 48.6,
+      "total_carb": 87.2,
+      "total_fat": 28.6,
+      "total_sugar": 6.0,
+      "total_fiber": 4.5,
+      "total_saturated_fat": 6.7,
+      "total_sodium_mg": 1790,
+      "total_alcohol": 0
+    }
+  ],
+  "water_ml": 0,
+  "steps": 0,
+  "sleep_hours": 0,
+  "weight_kg": 0,
+  "notes": "Lunch logged from text: bukkake soba, 1 raw egg, 1 onsen tamago, 1 toriten. Nutrition values are estimates."
+}
