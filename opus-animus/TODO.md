@@ -30,6 +30,7 @@ Cuối session: cập nhật status + completed items vào TODO.md
 | `HOME` | Personal home dashboard web app |
 | `CONS` | Opus Consilium — central inbox + routing |
 | `WIKI` | Personal wiki + knowledge system |
+| `MEM` | Cross-session memory / self-improving agent layer |
 | `NS` | North Star transformation layer |
 | `INFRA` | Infrastructure / scheduler |
 | `IDEA` | Ideas chưa scope |
@@ -45,7 +46,7 @@ Cuối session: cập nhật status + completed items vào TODO.md
 | Module C — Wiki Agent | ✅ Running | wiki-poll + wiki-lint-weekly — path fixed 2026-04-29 |
 | markitdown-agent | ✅ Integrated | Integrated mode, watch raw/inbox/ |
 | Content Collector batch | ✅ Running | Task Scheduler 05:30 active, last run OK |
-| Hermes Skill Layer | 🗂️ Idea | Sau khi pipeline stable ≥ 2 tuần |
+| Hermes Skill Layer | ❌ No-Go (2026-06-11) | Module C + Telegram đã bỏ, tương tác qua app LLM — xem EVAL doc |
 | **Lucida — TTS pipeline** | ✅ Done | edge-tts + Voicevox + RVC agent + assembly |
 | **Lucida — HTML slide pipeline** | ✅ Done | deck_generator + Playwright screenshot, 17 frames |
 | **Lucida — Multi-agent workflow** | ✅ Done | Gates A-K, runners 31-38, SOP docs |
@@ -130,6 +131,19 @@ Cuối session: cập nhật status + completed items vào TODO.md
 ---
 
 ## 🔵 Next — Cần RD/BD Trước Khi Build
+
+### [MEM-1] Cross-Session Memory — `recall` (Phase 1 self-improving agent) ✅ DONE
+**Status:** 🟢 Built by Codex — Step 0→6 smoke + Test Plan pass; awaiting Claude review/merge
+**Docs:** `opus-consilium/docs/RD-cross-session-memory.md` · `SD-cross-session-memory.md` · `BD-cross-session-memory.md` (steps/checklist ticked)
+**Plan tổng:** `docs/SYNTHESIS-self-improving-agent-plan.html` — Phase 1(b)
+**Mục tiêu:** `python run_recall.py "<câu>"` → index FTS5 (`ai/sessions` + `handoff` + `status` + wiki `INDEX.md`) trả ranked snippet. Pure SQLite, **không LLM** → tức thì, miễn phí, zero dep. Lấp điểm yếu "mỗi session fresh".
+**Tuyến:** RD/SD/BD = Opus (done). Coding + test = Codex (`codex exec`) theo BD.
+**Kết quả build:**
+- [x] Dùng default cho 5 Open Questions trong RD §5
+- [x] Codex build theo BD (Step 0→6) + chạy Test Plan
+- [x] `memory/recall.db` gitignored; recall rebuildable từ source
+- [ ] Claude review diff → merge
+**Sau MEM-1:** Phase 1(a) Skills hoá 3 pipeline (RD riêng) → Phase 2 Hooks + Curator.
 
 ### [LUCIDA-2] HOME Web Dashboard — Build
 **Status:** 🟢 Partially built inside `opus-consilium` — local FastAPI dashboard is now the active research/news tool surface
@@ -253,18 +267,11 @@ Cuối session: cập nhật status + completed items vào TODO.md
 
 ## 📋 Planned — Scope Rõ, Chưa Start
 
-### [OPT-3] Hermes Skill Layer
-**Điều kiện trigger:** Karpathy Wiki + Obsidian workflow ổn định, CLI operations rõ contract, pipeline stable ≥ 2 tuần không có major bug
-**Mô tả:** Future natural-language control layer cho OPUS ANIMUS. Wrap các operation đã ổn định thành skill để user nói tự nhiên thay vì gõ lệnh.
-**Scope hiện tại:** Backlog only — không implement trong WIKI-3.
-**Lưu ý:** Llama tool-calling bug đã gặp — verify format trước khi implement
-**Việc cần làm:**
-- [ ] Đọc Hermes skill API docs
-- [ ] Verify tool-calling format với Groq Llama-3.3-70b
-- [ ] Wrap run_research.py → skill esearch_crew`
-- [ ] Wrap run_daily.py → skill `daily_briefing`
-- [ ] Wrap stable wiki operations → skill `wiki_agent` (`ingest`, `query`, `connect`, `decide`, eview`, `used`)
-- [ ] Test trigger qua Telegram natural language
+### [OPT-3] Hermes Skill Layer — ❌ Closed No-Go (2026-06-11)
+**Mô tả:** Future natural-language control layer cho OPUS ANIMUS — wrap operations thành skill nói tự nhiên.
+**Kết luận:** Đánh giá đầy đủ tại `docs/EVAL-hermes-agent-integration.html`. Ban đầu GO có điều kiện, nhưng premise đổi: Module C + Telegram đã bỏ, tương tác chuyển qua cửa sổ app LLM → Hermes trùng vai trò interface layer, không đáng chi phí (API key mới + security hardening + runtime thứ hai). **Đóng.**
+**Điều kiện mở lại:** xuất hiện lại nhu cầu truy cập từ chat platform/mobile, hoặc cần cron có delivery đa kênh.
+**Lưu ý kỹ thuật (nếu mở lại):** Hermes skill = SKILL.md (markdown, chuẩn agentskills.io) gọi CLI — KHÔNG phải Python API. Ghi chú Groq Llama tool-calling cũ đã lỗi thời.
 
 ### [INFRA-1] markitdown-agent — Task Scheduler
 **Mô tả:** Auto-start markitdown-agent khi Windows boot thay vì chạy tay

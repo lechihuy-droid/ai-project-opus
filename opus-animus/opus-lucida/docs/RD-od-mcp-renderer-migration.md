@@ -212,7 +212,7 @@ Migration được coi là **DONE** khi:
 6. ✅ `apps/schema-html-prototype/` archived vào `99-archive/` với note rollback
 7. ✅ `06-slide-template-acceptance-process.md` bump v0.2 → v1.0 reflect OD = primary tool
 8. ✅ Smoke test: tạo 1 fake slide-plan với template thiếu slot → renderer exit ≠ 0 với error đúng slide_id
-9. ✅ Codex sign-off trên `ai/handoff-codex.md`
+9. ✅ Codex sign-off recorded in current session/status notes
 
 ---
 

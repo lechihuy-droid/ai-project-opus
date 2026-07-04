@@ -5,9 +5,28 @@ const KEY_SETTINGS = "pmp.settings";
 const KEY_SEEN = "pmp.seen";         // unique qids ever attempted
 const KEY_DAYS = "pmp.days";         // YYYY-MM-DD list of active days
 
-export function loadHistory() {
-  try { return JSON.parse(localStorage.getItem(KEY_HISTORY)) || []; }
+const WEAK_KEYS = {
+  history: "pmp.weak.history",
+  wrong: "pmp.weak.wrong",
+  seen: "pmp.weak.seen",
+  days: "pmp.weak.days",
+};
+
+function loadArray(key) {
+  try { return JSON.parse(localStorage.getItem(key)) || []; }
   catch { return []; }
+}
+
+function loadSet(key) {
+  return new Set(loadArray(key));
+}
+
+function saveSet(key, set) {
+  localStorage.setItem(key, JSON.stringify([...set]));
+}
+
+export function loadHistory() {
+  return loadArray(KEY_HISTORY);
 }
 
 export function saveSession(session) {
@@ -18,25 +37,23 @@ export function saveSession(session) {
 }
 
 export function loadWrongIds() {
-  try { return new Set(JSON.parse(localStorage.getItem(KEY_WRONG)) || []); }
-  catch { return new Set(); }
+  return loadSet(KEY_WRONG);
 }
 export function addWrong(qid) {
   const s = loadWrongIds(); s.add(qid);
-  localStorage.setItem(KEY_WRONG, JSON.stringify([...s]));
+  saveSet(KEY_WRONG, s);
 }
 export function removeWrong(qid) {
   const s = loadWrongIds(); s.delete(qid);
-  localStorage.setItem(KEY_WRONG, JSON.stringify([...s]));
+  saveSet(KEY_WRONG, s);
 }
 
 export function loadSeen() {
-  try { return new Set(JSON.parse(localStorage.getItem(KEY_SEEN)) || []); }
-  catch { return new Set(); }
+  return loadSet(KEY_SEEN);
 }
 export function addSeen(qid) {
   const s = loadSeen(); s.add(qid);
-  localStorage.setItem(KEY_SEEN, JSON.stringify([...s]));
+  saveSet(KEY_SEEN, s);
 }
 
 export function loadSettings() {
@@ -62,8 +79,7 @@ export function markActiveDay(d = new Date()) {
   }
 }
 export function loadActiveDays() {
-  try { return JSON.parse(localStorage.getItem(KEY_DAYS)) || []; }
-  catch { return []; }
+  return loadArray(KEY_DAYS);
 }
 
 export function computeStreak() {
@@ -85,9 +101,15 @@ export function computeStreak() {
 }
 
 export function computeStats(totalQuestions) {
-  const history = loadHistory();
-  const seen = loadSeen();
-  const wrong = loadWrongIds();
+  return computeStatsFrom({
+    totalQuestions,
+    history: loadHistory(),
+    seen: loadSeen(),
+    wrong: loadWrongIds(),
+  });
+}
+
+function computeStatsFrom({ totalQuestions, history, seen, wrong }) {
   const streak = computeStreak();
   let totalAnswered = 0, totalCorrect = 0;
   for (const s of history) { totalAnswered += s.total; totalCorrect += s.correct; }
@@ -156,4 +178,71 @@ export function clearAll() {
   localStorage.removeItem(KEY_WRONG);
   localStorage.removeItem(KEY_SEEN);
   localStorage.removeItem(KEY_DAYS);
+}
+
+export function loadWeakHistory() {
+  return loadArray(WEAK_KEYS.history);
+}
+
+export function loadCombinedHistory() {
+  const normal = loadHistory().map((session) => ({ ...session, track: "main" }));
+  const weak = loadWeakHistory().map((session) => ({ ...session, track: "weak" }));
+  return [...normal, ...weak]
+    .sort((a, b) => (b.startedAt || 0) - (a.startedAt || 0))
+    .slice(0, 400);
+}
+
+export function saveWeakSession(session) {
+  const all = loadWeakHistory();
+  all.unshift(session);
+  localStorage.setItem(WEAK_KEYS.history, JSON.stringify(all.slice(0, 200)));
+  markWeakActiveDay(new Date());
+}
+
+export function loadWeakWrongIds() {
+  return loadSet(WEAK_KEYS.wrong);
+}
+
+export function addWeakWrong(qid) {
+  const s = loadWeakWrongIds(); s.add(qid);
+  saveSet(WEAK_KEYS.wrong, s);
+}
+
+export function removeWeakWrong(qid) {
+  const s = loadWeakWrongIds(); s.delete(qid);
+  saveSet(WEAK_KEYS.wrong, s);
+}
+
+export function loadWeakSeen() {
+  return loadSet(WEAK_KEYS.seen);
+}
+
+export function addWeakSeen(qid) {
+  const s = loadWeakSeen(); s.add(qid);
+  saveSet(WEAK_KEYS.seen, s);
+}
+
+export function markWeakActiveDay(d = new Date()) {
+  const days = loadArray(WEAK_KEYS.days);
+  const k = ymd(d);
+  if (!days.includes(k)) {
+    days.push(k); days.sort();
+    localStorage.setItem(WEAK_KEYS.days, JSON.stringify(days));
+  }
+}
+
+export function computeWeakStats(totalQuestions) {
+  return computeStatsFrom({
+    totalQuestions,
+    history: loadWeakHistory(),
+    seen: loadWeakSeen(),
+    wrong: loadWeakWrongIds(),
+  });
+}
+
+export function clearWeakAll() {
+  localStorage.removeItem(WEAK_KEYS.history);
+  localStorage.removeItem(WEAK_KEYS.wrong);
+  localStorage.removeItem(WEAK_KEYS.seen);
+  localStorage.removeItem(WEAK_KEYS.days);
 }

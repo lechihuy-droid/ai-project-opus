@@ -36,7 +36,7 @@ Primary sources:
 - `opus-consilium/personal-wiki/`
 - `AGENTS.md`
 - `ai/status.md`
-- `ai/handoff-{owner}.md`
+- `ai/handoff-claude.md` when Claude context is relevant
 
 Optional sources:
 

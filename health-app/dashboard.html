@@ -791,7 +791,7 @@ async function reload() {
     const [h, w, f] = await Promise.all([
       loadModule('health-data',  currentRange),
       loadModule('workout-data', currentRange).catch(()=>({rows:[],idx:[]})),
-      loadModule('finance-data', currentRange).catch(()=>({rows:[],idx:[]}))
+      loadModule('opus-animus/opus-actio/finance-data', currentRange).catch(()=>({rows:[],idx:[]}))
     ]);
     cHealth  = h.rows;  healthIdx  = h.idx;  cHealth.forEach(validateHealthLog);
     cWorkout = w.rows;  workoutIdx = w.idx;

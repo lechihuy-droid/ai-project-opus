@@ -344,7 +344,7 @@ Existing data folders:
 ```text
 health-data/
 workout-data/
-finance-data/
+opus-animus/opus-actio/finance-data/
 ```
 
 New data folders to consider:

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EVAL — Tích hợp Hermes Agent vào Opus Animus</title>
+  <link rel="stylesheet" href="../../html-kit/styles.css">
+  <script src="../../html-kit/diagram.js" defer></script>
+</head>
+<body>
+
+  <header class="doc-header">
+    <span class="badge">EVAL</span>
+    <h1>Đánh giá tích hợp Hermes Agent vào Opus Animus</h1>
+    <p class="lead">Hiệu quả · Khả thi · Plan thực hiện — input cho RD trước khi code (SDD gate 1)</p>
+    <p class="meta">2026-06-11 · Nghiên cứu từ repo <code>github.com/NousResearch/hermes-agent</code> · Liên quan backlog [OPT-3]</p>
+  </header>
+
+  <main>
+
+    <!-- ── Verdict ── -->
+    <div class="callout risk"><strong>Kết luận cuối (cập nhật 2026-06-11): NO-GO — đóng [OPT-3].</strong> Premise thay đổi sau khi đánh giá: Module C (wiki agent) và Telegram đã bỏ, tương tác chuyển hết qua cửa sổ app LLM. Phần lớn giá trị của Hermes trong hệ này biến mất theo — chi tiết ở mục 0. Phân tích gốc bên dưới giữ nguyên làm tư liệu (kết luận ban đầu là GO có điều kiện, dựa trên premise còn Module C + khả năng bật lại Telegram).</div>
+
+    <!-- ── 0. Cập nhật premise ── -->
+    <h2>0. Cập nhật premise 2026-06-11 — vì sao đảo kết luận</h2>
+    <p>Thay đổi từ user: <strong>Module C và Telegram đã bỏ; tương tác qua cửa sổ app LLM</strong>. Đối chiếu với 5 giá trị chính ở mục 3:</p>
+    <table>
+      <thead><tr><th>Giá trị Hermes (mục 3)</th><th>Sau thay đổi</th><th>Lý do</th></tr></thead>
+      <tbody>
+        <tr><td>Hồi sinh kênh chat (Telegram/Discord)</td><td><span class="badge red">Mất</span></td><td>Telegram bỏ hẳn — không còn nhu cầu gateway đa nền tảng</td></tr>
+        <tr><td>Context hội thoại cho wiki ops</td><td><span class="badge red">Mất</span></td><td>Target chính là Module C — đã bỏ. App LLM tự có context hội thoại</td></tr>
+        <tr><td>NL interface thay CLI</td><td><span class="badge red">Đã có sẵn</span></td><td>Cửa sổ app LLM chính là NL interface — trùng vai trò, đúng phương án thay thế #2 ở mục 5</td></tr>
+        <tr><td>Cross-module orchestration</td><td><span class="badge gray">Giảm mạnh</span></td><td>App LLM làm được khi chạy trong workspace; ít module hơn sau khi bỏ Module C</td></tr>
+        <tr><td>Built-in cron + learning loop</td><td><span class="badge gray">Còn, nhưng không đủ</span></td><td>Cron delivery hướng tới chat platform (không còn dùng); Task Scheduler vẫn chạy ổn. Không đáng đổi lấy API key mới + security hardening + một runtime thứ hai phải vận hành</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Kết luận:</strong> Hermes là interface layer — khi interface đã là app LLM thì tích hợp Hermes là thêm một lớp trùng vai trò với chi phí và rủi ro thật (mục 4, 5). Đóng [OPT-3]. Chỉ mở lại nếu xuất hiện lại nhu cầu truy cập từ chat platform/mobile hoặc cần cron có delivery đa kênh.</p>
+
+    <!-- ── 1. Hermes là gì ── -->
+    <h2>1. Hermes Agent là gì (cập nhật 2026-06)</h2>
+    <p>Hermes Agent là agent runtime mã nguồn mở (MIT) của Nous Research, ra mắt 25/02/2026, vượt 140.000 GitHub stars trong chưa đầy 3 tháng và hiện là agent được dùng nhiều nhất trên OpenRouter. Điểm khác biệt cốt lõi: <strong>learning loop tích hợp sẵn trong runtime</strong> — hoàn thành task phức tạp → tự sinh skill document → lần sau gặp task tương tự thì nạp skill đó làm context.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>Skills</h3>
+        <p>File <code>SKILL.md</code> (YAML frontmatter + markdown body) theo chuẩn mở agentskills.io — <strong>không phải Python class</strong>. Lưu tại <code>~/.hermes/skills/</code>. Agent tự sinh và tự cải thiện skill khi dùng. Cron job có thể nạp skill trước khi chạy prompt.</p>
+        <span class="badge green">Procedural memory</span>
+      </div>
+      <div class="card">
+        <h3>Gateway đa nền tảng</h3>
+        <p>Một gateway process route message từ 23 nền tảng: CLI/TUI, Telegram, Discord, Slack, WhatsApp, Signal, Email, Teams… kèm desktop app (từ v2026.6.5) và web dashboard admin.</p>
+        <span class="badge green">Telegram sẵn dùng</span>
+      </div>
+      <div class="card">
+        <h3>Memory</h3>
+        <p>3 lớp: agent-curated memory (tự nudge để persist), user modeling (Honcho dialectic), full-text search hội thoại cũ (FTS5 — từ v2026.5.28 không tốn LLM call).</p>
+        <span class="badge green">Cross-session</span>
+      </div>
+      <div class="card">
+        <h3>Runtime</h3>
+        <p>Python 3.11+, <code>pip install hermes-agent</code>, Windows native installer (tự lo Python/Node/ripgrep, không cần admin). Execution backend: local, Docker, SSH, Modal, Daytona. Built-in <strong>cron scheduler</strong> deliver kết quả tới bất kỳ platform nào. MCP client + có thể tự expose làm MCP server. Model tùy chọn: Anthropic, OpenRouter (200+), NVIDIA NIM, OpenAI, custom endpoint — đổi bằng <code>/model</code>.</p>
+        <span class="badge navy">Python 3.11 — khớp stack</span>
+      </div>
+    </div>
+
+    <div class="callout warn"><strong>Lưu ý maturity:</strong> tốc độ release rất nhanh (v2026.5.16 → 5.28 → 5.29 → 6.5 trong 3 tuần), Windows support mới ở mức beta từ v2026.5.16 (~1 tháng tuổi). API/behavior có thể đổi giữa các bản — phải pin version khi triển khai.</p></div>
+
+    <!-- ── 2. Map vào kiến trúc ── -->
+    <h2>2. Khớp vào kiến trúc Opus Animus</h2>
+    <p>Thiết kế Module C (wiki <code>2026-04-26-module-c-architecture.md</code>) đã dành sẵn chỗ cho Hermes ở Tầng 3 — Interface. Đánh giá này xác nhận thiết kế đó vẫn đúng, với một hiệu chỉnh quan trọng: <strong>điểm tích hợp là CLI contract, không phải Python API</strong>. Hermes skill chỉ là file markdown hướng dẫn agent chạy lệnh <code>python run_wiki.py query "..."</code> qua terminal tool — các CLI hiện có (<code>run_wiki.py</code>, <code>run_collect.py</code>, <code>run_daily.py</code>, <code>run_weekly.py</code>) chính là API mà Hermes tiêu thụ, không cần sửa dòng code nào trong pipeline.</p>
+
+    <div class="diagram" data-chart='{
+      "type": "flow",
+      "nodes": [
+        {"id":"u","label":"User (Telegram / CLI / Desktop)","shape":"terminal"},
+        {"id":"gw","label":"Hermes Gateway","shape":"rect"},
+        {"id":"core","label":"Hermes Agent Core + SKILL.md (opus-wiki, opus-brief...)","shape":"rect"},
+        {"id":"guard","label":"Approval + write-sandbox","shape":"diamond"},
+        {"id":"cli","label":"CLI contract: run_wiki.py / run_daily.py / run_collect.py","shape":"rect"},
+        {"id":"ops","label":"wiki_ops (ingest/query/lint) — KHONG doi","shape":"rect"},
+        {"id":"store","label":"raw/ + personal-wiki/ (chi Module C ghi)","shape":"terminal"}
+      ],
+      "edges": [
+        {"from":"u","to":"gw"},
+        {"from":"gw","to":"core"},
+        {"from":"core","to":"guard"},
+        {"from":"guard","to":"cli","label":"allow"},
+        {"from":"cli","to":"ops"},
+        {"from":"ops","to":"store"}
+      ]
+    }'></div>
+
+    <p><strong>Hệ quả với code sẵn có:</strong> <code>skills/wiki_skill.py</code> + <code>intent_classifier.py</code> được viết theo contract Python tưởng định (<code>as_hermes_skill()</code> dict) — contract này không tồn tại trong Hermes thật. Hai file vẫn dùng được ở chế độ standalone, nhưng phần intent classification trở nên thừa: Hermes core đã làm natural-language → intent tốt hơn. Không xóa, chỉ không mở rộng.</p>
+
+    <h3>Phân định ranh giới (quan trọng nhất)</h3>
+    <table>
+      <thead><tr><th>Thành phần</th><th>Vai trò</th><th>Ai sở hữu</th></tr></thead>
+      <tbody>
+        <tr><td><code>personal-wiki/</code></td><td>Knowledge brain — kiến thức dài hạn</td><td>Chỉ <code>wiki_ops/ingest.py</code> ghi. Hermes <strong>read-only qua CLI query</strong></td></tr>
+        <tr><td>Hermes memory + skills</td><td>Procedural memory — "cách làm việc với user", không phải kiến thức</td><td>Hermes (<code>~/.hermes/</code>) — nằm ngoài repo</td></tr>
+        <tr><td><code>raw/</code></td><td>Immutable sources</td><td>Pipeline hiện tại — Hermes không đụng</td></tr>
+        <tr><td>SKILL.md cho opus</td><td>Hướng dẫn Hermes gọi đúng CLI</td><td>Viết tay, version trong repo, symlink/copy sang <code>~/.hermes/skills/</code></td></tr>
+      </tbody>
+    </table>
+
+    <!-- ── 3. Hiệu quả ── -->
+    <h2>3. Đánh giá hiệu quả — Hermes thêm gì, không thêm gì</h2>
+    <div class="compare">
+      <div>
+        <div class="col-head">Thêm thật (giá trị mới)</div>
+        <div class="card" style="border-radius:0 0 4px 4px; margin:0;">
+          <ul>
+            <li><strong>Hồi sinh kênh chat không tốn công maintain:</strong> Telegram bot tự viết đã disable toàn hệ thống; Hermes gateway cho lại Telegram/Discord miễn phí công bảo trì — "lưu bài này", "tuần này có gì về FDE?" từ điện thoại.</li>
+            <li><strong>Context hội thoại:</strong> "thêm tag vào bài vừa lưu" hiểu được — điều CLI stateless không làm nổi. Đây đúng là gap §5.3 trong thiết kế Module C.</li>
+            <li><strong>Cross-module orchestration:</strong> một câu hỏi kéo cả wiki query + daily brief + collect log — hiện phải chạy tay 3 lệnh.</li>
+            <li><strong>Built-in cron:</strong> về dài hạn có thể thay các entry Task Scheduler kèm delivery kết quả vào chat (Task Scheduler hiện chỉ ghi log, không báo).</li>
+            <li><strong>Learning loop:</strong> quy trình thao tác lặp lại (audit-research rồi ingest, weekly review) tự đọng thành skill.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="col-head">Không thêm (đừng kỳ vọng)</div>
+        <div class="card" style="border-radius:0 0 4px 4px; margin:0;">
+          <ul>
+            <li><strong>Không thêm core functionality:</strong> ingest/query/lint/collect/synthesis đã chạy. Hermes chỉ đổi UX — đúng nhận định cũ trong thiết kế Module C §7.</li>
+            <li><strong>Không thay knowledge brain:</strong> memory của Hermes là về user/thao tác, không thay được wiki concept-first có cross-ref + traceability.</li>
+            <li><strong>Không thay Opus Home dashboard:</strong> review UI dạng visual (Intel, FDE tab) vẫn là dashboard.</li>
+            <li><strong>Không giảm chi phí LLM:</strong> ngược lại thêm một consumer LLM mới chạy thường trực (xem §4).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <thead><tr><th>Tiêu chí hiệu quả</th><th>Điểm</th><th>Ghi chú</th></tr></thead>
+      <tbody>
+        <tr><td>Giải quyết gap đã ghi nhận (NL interface, context, orchestration)</td><td><span class="badge green">Cao</span></td><td>Trùng khớp 4 việc Tầng 3 được thiết kế để làm</td></tr>
+        <tr><td>Tận dụng tài sản sẵn có</td><td><span class="badge green">Cao</span></td><td>CLI contract sạch sẵn — zero code change ở pipeline</td></tr>
+        <tr><td>Giá trị so với hiện trạng (dashboard + CLI vẫn ổn)</td><td><span class="badge gray">Trung bình</span></td><td>Nice-to-have về UX, không phải blocker của mục tiêu nào trong GOALS</td></tr>
+        <tr><td>Giá trị learning loop / self-evolution</td><td><span class="badge gray">Chưa rõ</span></td><td>Phụ thuộc tần suất dùng chat thực tế; đo ở pilot</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Hiệu quả tổng: 7/10</strong> — giá trị thật nhưng thuộc nhóm UX/leverage, không phải capability mới.</p>
+
+    <!-- ── 4. Khả thi ── -->
+    <h2>4. Đánh giá khả thi</h2>
+    <table>
+      <thead><tr><th>Khía cạnh</th><th>Đánh giá</th><th>Chi tiết</th></tr></thead>
+      <tbody>
+        <tr><td>Kỹ thuật — stack</td><td><span class="badge green">Thuận</span></td><td>Python 3.11 trùng khớp; <code>pip install hermes-agent</code>; Windows installer không cần admin; chạy local không cần 24/7 server</td></tr>
+        <tr><td>Kỹ thuật — điểm tích hợp</td><td><span class="badge green">Thuận</span></td><td>SKILL.md gọi CLI có sẵn; MCP nếu cần sâu hơn; cron built-in tương thích mô hình "chạy theo lịch" hiện tại</td></tr>
+        <tr><td>Windows maturity</td><td><span class="badge gray">Beta</span></td><td>Windows support mới từ v2026.5.16 — kỳ vọng gặp bug vặt; WSL2 là đường lui</td></tr>
+        <tr><td>LLM provider</td><td><span class="badge gray">Vướng</span></td><td>Toàn hệ thống đang dùng Claude CLI session auth (không API key). Hermes cần API key/endpoint riêng → phát sinh chi phí mới hoặc dùng OpenRouter/NVIDIA NIM free tier. <strong>Open question #1</strong></td></tr>
+        <tr><td>Bảo mật mặc định</td><td><span class="badge red">Kém — phải hardening</span></td><td>Xem §5. Audit công khai: 4 critical + 9 high ở config mặc định (v0.8.0); một phần đã vá ở các bản 2026.5.x</td></tr>
+        <tr><td>Vận hành — thêm 1 hệ chạy nền</td><td><span class="badge gray">Chi phí thật</span></td><td>Gateway process + version pinning + theo dõi release; thêm một thứ để hỏng</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Khả thi tổng: 6.5/10</strong> — không có blocker kỹ thuật; rào cản nằm ở security hardening + chọn LLM provider + Windows beta.</p>
+
+    <!-- ── 5. Rủi ro ── -->
+    <h2>5. Rủi ro &amp; biện pháp</h2>
+    <div class="callout risk"><strong>Rủi ro nghiêm trọng nhất với Opus Animus — skill poisoning:</strong> Consilium ingest nội dung web không tin cậy (RSS) mỗi ngày. Nếu Hermes đọc các nội dung đó và một lần bị prompt injection trong phiên có sinh skill, chỉ thị độc tồn tại <em>vĩnh viễn trên đĩa</em> dưới dạng SKILL.md và được nạp như trusted context ở các phiên sau. Đây là điểm giao trực tiếp giữa thiết kế self-improving của Hermes và pipeline collect của ta.</div>
+
+    <table>
+      <thead><tr><th>Rủi ro</th><th>Nguồn</th><th>Biện pháp bắt buộc</th></tr></thead>
+      <tbody>
+        <tr><td>Skill poisoning (persistent prompt injection)</td><td>Audit issue #7826, threat model công khai</td><td><strong>Tắt auto-skill-creation</strong> trong pilot; skill chỉ viết tay + review; định kỳ diff <code>~/.hermes/skills/</code></td></tr>
+        <tr><td>Shell không giới hạn ở local backend (C1) + đọc file tùy ý (C2)</td><td>Audit #7826</td><td>Approval mode bật, không YOLO mode; <code>HERMES_WRITE_SAFE_ROOT</code> trỏ vào sandbox; cân nhắc Docker backend nếu máy có Docker Desktop</td></tr>
+        <tr><td>API server không auth khi thiếu key</td><td>Security docs chính thức</td><td>Đặt <code>API_SERVER_KEY</code>, bind loopback, không mở 0.0.0.0</td></tr>
+        <tr><td>Vi phạm Karpathy invariant (ghi vào <code>personal-wiki/</code>)</td><td>Quy tắc nội bộ</td><td>Hermes không có quyền ghi repo; mọi ingest đi qua <code>run_wiki.py</code> (vẫn gate bởi audit-research)</td></tr>
+        <tr><td>Trùng lặp memory (Hermes nhớ ≠ wiki biết)</td><td>Thiết kế</td><td>Ranh giới §2: kiến thức → wiki, thao tác → Hermes; ghi vào SKILL.md hướng dẫn Hermes "kiến thức mới thì đề nghị ingest, không tự nhớ"</td></tr>
+        <tr><td>Breaking change giữa các release</td><td>Tốc độ release 3 bản/3 tuần</td><td>Pin version cụ thể; chỉ upgrade có chủ đích sau khi đọc changelog</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Phương án thay thế đã cân nhắc</h3>
+    <table>
+      <thead><tr><th>Phương án</th><th>Ưu</th><th>Nhược</th><th>Kết luận</th></tr></thead>
+      <tbody>
+        <tr><td>Giữ nguyên CLI + dashboard</td><td>Zero rủi ro, zero chi phí</td><td>Gap NL interface + mobile access còn nguyên</td><td>Baseline — Hermes phải thắng phương án này ở pilot</td></tr>
+        <tr><td>Claude Code skills/MCP làm interface</td><td>Dùng auth sẵn có, đã quen</td><td>Không có gateway Telegram, không cron delivery, không learning loop; session-bound</td><td>Tốt cho desktop, không giải quyết mobile/chat</td></tr>
+        <tr><td>Tự viết lại Telegram bot</td><td>Kiểm soát hoàn toàn</td><td>Đã thử và disable vì chi phí maintain — quay lại vết xe đổ</td><td>Loại</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ── 6. Plan ── -->
+    <h2>6. Plan thực hiện</h2>
+    <div class="callout warn"><strong>Vô hiệu theo premise mới (mục 0)</strong> — giữ làm tư liệu nếu [OPT-3] được mở lại trong tương lai.</div>
+    <p>Theo dev-approach: integration mới → full SDD (RD → SD → BD → build). Tổng effort ước tính <strong>6–9 ngày làm việc rải trong ~4 tuần</strong> (có gate chờ ổn định giữa các phase). Mỗi phase có điều kiện dừng/rollback rõ.</p>
+
+    <ul class="timeline">
+      <li>
+        <span class="time">Phase 0 — PoC cô lập (0.5–1 ngày)</span>
+        <p>Cài Hermes trên Windows (pin version, ví dụ v2026.6.5), config baseline an toàn: approval mode, tắt auto-skill, <code>HERMES_WRITE_SAFE_ROOT</code> vào folder sandbox, <code>API_SERVER_KEY</code>, loopback only. Chọn LLM provider tạm (OpenRouter hoặc NIM free tier). Viết tay 1 skill <code>opus-wiki-query/SKILL.md</code> chỉ cho phép chạy <code>python run_wiki.py query</code>. <br><strong>Verify:</strong> hỏi 5 câu qua TUI, so kết quả với chạy CLI trực tiếp — phải tương đương. <strong>Gate:</strong> fail hoặc Windows bug chặn đường → dừng, ghi lesson, cost = 1 ngày.</p>
+      </li>
+      <li>
+        <span class="time">Phase 1 — RD + SD (1 ngày, cần approve)</span>
+        <p>Viết <code>docs/RD-hermes-skill-layer.md</code> (usage-first: 5–7 câu lệnh NL thực tế user sẽ nói) + <code>SD-hermes-integration.md</code> (ranh giới §2, security baseline §5 thành contract, danh mục skill đợt 1, quyết định LLM provider chính thức từ Open question #1). Cập nhật <code>SA-system-architecture.md</code> Phase 6. <strong>Gate: user approve RD trước khi build.</strong></p>
+      </li>
+      <li>
+        <span class="time">Phase 2 — Skill đợt 1: read-only (2–3 ngày)</span>
+        <p>BD rồi build 3 skill viết tay, version trong repo tại <code>opus-consilium/skills/hermes/</code>, copy sang <code>~/.hermes/skills/</code> bằng script: <code>opus-wiki</code> (query + trạng thái audit queue), <code>opus-brief</code> (đọc daily/weekly logs, trả lời "tuần này có gì"), <code>opus-status</code> (collect log, task scheduler health). Tất cả read-only — chưa có skill nào ghi. <br><strong>Verify:</strong> dùng thật qua TUI ≥ 1 tuần; đo: số lần dùng/tuần, tỷ lệ trả lời đúng, có lần nào Hermes vượt quyền không (check approval log + diff skills folder hằng tuần).</p>
+      </li>
+      <li>
+        <span class="time">Phase 3 — Gateway + thao tác ghi có gate (2–3 ngày, sau khi Phase 2 ổn ≥ 2 tuần)</span>
+        <p>Bật Telegram gateway (đảo quyết định "Telegram disabled" — cần user xác nhận, Open question #2). Thêm skill <code>opus-ingest</code>: Hermes được chạy <code>run_wiki.py ingest --dry-run</code> rồi hỏi xác nhận trước khi ingest thật — giữ nguyên audit gate. Thí điểm 1 cron job Hermes (ví dụ nhắc weekly review + deliver vào Telegram) song song Task Scheduler, chưa thay thế.</p>
+      </li>
+      <li>
+        <span class="time">Phase 4 — Đánh giá &amp; quyết định mở rộng (0.5 ngày, sau 1 tháng)</span>
+        <p>Review số liệu Phase 2–3: nếu dùng &lt; 3 lần/tuần → giữ mức hiện tại hoặc gỡ (rollback = xóa <code>~/.hermes/</code> + tắt gateway, pipeline không bị ảnh hưởng vì zero code change). Nếu dùng thật → cân nhắc đợt 2: bật lại auto-skill có review gate, migrate dần cron, expose wiki query làm MCP server cho tool khác. Cập nhật BACKLOG/TODO.</p>
+      </li>
+    </ul>
+
+    <h3>Việc KHÔNG làm (chống scope creep)</h3>
+    <ul>
+      <li>Không dùng <code>hermes-agent-self-evolution</code> (DSPy+GEPA) ở giai đoạn này.</li>
+      <li>Không cho Hermes quyền ghi <code>personal-wiki/</code>, <code>raw/</code>, hay sửa code repo.</li>
+      <li>Không migrate toàn bộ Task Scheduler sang Hermes cron trước Phase 4.</li>
+      <li>Không viết thêm Python wrapper mới — <code>wiki_skill.py</code> giữ nguyên, không mở rộng.</li>
+    </ul>
+
+    <!-- ── 7. Open questions ── -->
+    <h2>7. Open questions — cần user trả lời trước Phase 1</h2>
+    <table>
+      <thead><tr><th>#</th><th>Câu hỏi</th><th>Ảnh hưởng</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>LLM provider cho Hermes: chấp nhận chi phí API mới (Anthropic/OpenRouter) hay dùng free tier (NIM) / local model qua RTX (nếu máy có GPU đủ)?</td><td>Chi phí vận hành thường trực + chất lượng intent</td></tr>
+        <tr><td>2</td><td>Có muốn đảo quyết định "Telegram disabled system-wide" không? Nếu không, Hermes chỉ còn giá trị ở TUI/desktop — giảm đáng kể lý do tích hợp.</td><td>Phạm vi Phase 3, một phần điểm hiệu quả §3</td></tr>
+        <tr><td>3</td><td>Máy Windows có Docker Desktop không? (quyết định local backend + sandbox hay Docker backend)</td><td>Mức hardening §5</td></tr>
+        <tr><td>4</td><td>Điều kiện trigger cũ của [OPT-3] là "pipeline stable ≥ 2 tuần" — xác nhận hiện đã đạt?</td><td>Thời điểm bắt đầu Phase 0</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ── Sources ── -->
+    <h2>Nguồn</h2>
+    <details>
+      <summary>Danh sách nguồn đã kiểm chứng (truy cập 2026-06-11)</summary>
+      <ul>
+        <li>Repo chính thức: <a href="https://github.com/NousResearch/hermes-agent">github.com/NousResearch/hermes-agent</a> (README + releases v2026.5.16 → v2026.6.5)</li>
+        <li>Docs chính thức: <a href="https://hermes-agent.nousresearch.com/docs/">hermes-agent.nousresearch.com/docs</a> — cron, security, skills</li>
+        <li>Security audit: <a href="https://github.com/NousResearch/hermes-agent/issues/7826">Issue #7826 — 4 Critical, 9 High (v0.8.0)</a>; <a href="https://github.com/NousResearch/hermes-agent/issues/40889">Issue #40889 — posture review</a></li>
+        <li>NVIDIA blog (nguồn seed trong wiki): <a href="https://blogs.nvidia.com/blog/rtx-ai-garage-hermes-agent-dgx-spark/">Hermes Unlocks Self-Improving AI Agents</a> — đã lưu <code>raw/articles/2026-05-17-hermes-*.md</code></li>
+        <li>Self-evolution (ngoài scope): <a href="https://github.com/NousResearch/hermes-agent-self-evolution">hermes-agent-self-evolution</a> (DSPy + GEPA)</li>
+        <li>Review bên thứ ba: dev.to deep dive v0.7.0; digitalapplied.com guide v0.10; hostinger.com skills guide; mindstudio.ai cron guide</li>
+      </ul>
+    </details>
+
+    <div class="callout">Tài liệu nội bộ liên quan: <code>opus-animus/TODO.md</code> [OPT-3] · <code>opus-consilium/docs/BACKLOG.md</code> [OPT-3] · <code>opus-consilium/wiki/2026-04-26-module-c-architecture.md</code> (thiết kế 3 tầng) · <code>opus-consilium/skills/wiki_skill.py</code> (wrapper theo contract cũ — giữ nguyên) · <a href="./EVAL-hermes-orchestration-loop.html">EVAL-hermes-orchestration-loop.html</a> (phân tích sâu orchestration + learning loop, 2026-06-12)</div>
+
+  </main>
+
+</body>
+</html>

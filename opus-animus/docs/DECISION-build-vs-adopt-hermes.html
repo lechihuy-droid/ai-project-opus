@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DECISION — Build mới Hermes hay không?</title>
+  <link rel="stylesheet" href="../../html-kit/styles.css">
+  <script src="../../html-kit/diagram.js" defer></script>
+</head>
+<body>
+
+  <header class="doc-header">
+    <span class="badge">DECISION</span>
+    <h1>Build mới "Hermes" hoàn toàn — nên hay không?</h1>
+    <p class="lead">Bản so sánh 3 con đường cho 4 năng lực bạn muốn · pre-RD, để quyết định</p>
+    <p class="meta">2026-06-13 · Tuyến Opus · Tiếp nối 2 bản EVAL Hermes trước</p>
+  </header>
+
+  <main>
+
+    <div class="callout"><strong>Khuyến nghị một dòng: KHÔNG build mới hoàn toàn. Dựng dần (incremental) trên nền Claude Code sẵn có.</strong> Bạn muốn cả 4 năng lực, nhưng nền hiện tại đã lấp 2 cái gần xong và 2 cái còn lại là lớp glue ~vài trăm dòng, không phải runtime mới. Tự build từ số 0 cả 4 = tái phát minh Hermes với ít người soi hơn; dùng Hermes thật = đã No-Go vì trùng vai trò interface. Con đường thứ ba thắng cả hai.</div>
+
+    <!-- ── 1. Ba con đường ── -->
+    <h2>1. Ba con đường — khung quyết định</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>A — Build mới hoàn toàn</h3>
+        <p>Tự viết runtime riêng: gateway, skill engine, memory store, orchestrator, loop. Độc lập Claude Code.</p>
+        <span class="badge red">Effort tháng–quý · rủi ro cao</span>
+      </div>
+      <div class="card">
+        <h3>B — Dùng Hermes sẵn</h3>
+        <p>Cài NousResearch/hermes-agent, viết SKILL.md gọi pipeline.</p>
+        <span class="badge gray">Đã No-Go (EVAL #1)</span>
+      </div>
+      <div class="card">
+        <h3>C — Dựng dần trên Claude Code</h3>
+        <p>Lấy 4 năng lực, map lên thứ đã có; chỉ build phần còn thiếu dưới dạng glue mỏng + quy trình.</p>
+        <span class="badge green">Khuyến nghị · effort ngày</span>
+      </div>
+    </div>
+
+    <p><strong>Vì sao A sai cho bối cảnh 1 người:</strong> giá trị của một agent runtime nằm ở phần "chán" — gateway đa nền tảng, recovery, sandbox, MCP, 19.900 skill catalog. Bạn không dùng phần lớn trong đó, và viết lại phần bạn <em>có</em> dùng thì thừa hưởng nguyên các lỗ hổng đã phân tích (skill poisoning, drift, security cùng UID) mà không có cộng đồng vá. Build mới chỉ hợp lý khi bạn có nhu cầu mà <em>cả</em> Claude Code lẫn Hermes đều không đáp ứng — hiện chưa có (xem mục 4).</p>
+
+    <!-- ── 2. Ma trận năng lực ── -->
+    <h2>2. Bốn năng lực bạn muốn — bạn đã có bao nhiêu?</h2>
+    <p>Đây là phần quan trọng nhất của quyết định. Với mỗi năng lực: Claude Code/workspace đã cho gì, khoảng cách thật, và nên build hay không.</p>
+
+    <table>
+      <thead><tr><th>Năng lực</th><th>Đã có trên nền hiện tại</th><th>Khoảng cách thật</th><th>Phán quyết</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Skill tự tích lũy</strong></td>
+          <td>Claude Code skills = markdown đúng chuẩn agentskills.io (cùng chuẩn Hermes dùng). Có <code>lessons/</code> + self-improvement loop trong CLAUDE.md.</td>
+          <td>Thiếu <strong>auto-distill</strong> (tự đúc skill sau task) + <strong>curator chu kỳ</strong> (grade/gộp/tỉa).</td>
+          <td><span class="badge green">Glue nhỏ</span> Hook + 1 lệnh curate định kỳ. Không cần runtime.</td>
+        </tr>
+        <tr>
+          <td><strong>Trí nhớ bền cross-session</strong></td>
+          <td><code>personal-wiki/</code> chính là long-term memory có cross-ref + traceability — <em>mạnh hơn</em> FTS5 của Hermes về chất lượng. Có <code>ai/handoff-*.md</code>, <code>status.md</code>.</td>
+          <td>Memory hiện <strong>thủ công</strong> (bạn gọi ingest). Thiếu: index session/handoff tự động + recall nhanh khi mở session mới.</td>
+          <td><span class="badge gray">Điểm yếu thật nhất</span> Đáng làm nhất. Build SQLite FTS index trên <code>ai/sessions/</code> + wiki. Glue vừa.</td>
+        </tr>
+        <tr>
+          <td><strong>Điều phối nhiều agent</strong></td>
+          <td>Claude Code có Agent/subagent tool (fan-out song song, isolation worktree) — đang dùng ngay trong session này.</td>
+          <td>Subagent là <strong>in-process, ephemeral</strong>: không durable, không retry/resume qua crash, không verifier gate chính thức.</td>
+          <td><span class="badge gray">Tùy nhu cầu</span> Đa số việc của bạn subagent đủ. Chỉ build durable queue (pattern Kanban) khi có job dài thật (Lucida render).</td>
+        </tr>
+        <tr>
+          <td><strong>Tự cải tiến an toàn</strong></td>
+          <td>Có git + test có thể chạy. Có thói quen review qua PR (đang dùng branch này).</td>
+          <td>Chưa có vòng <strong>variant → test → review → merge</strong> tự động cho prompt/skill.</td>
+          <td><span class="badge red">Làm cuối, thận trọng</span> Rủi ro cao nhất (drift/poisoning). Là quy trình + ít automation, human gate bắt buộc.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn"><strong>Phát hiện then chốt:</strong> 2/4 năng lực (skill, trí nhớ) bạn đã có <em>nền tốt hơn Hermes</em> — personal-wiki là knowledge graph thật, hơn hẳn skill-markdown phẳng. Cái bạn thiếu không phải "khả năng" mà là <strong>tự động hóa</strong> mấy thứ đang làm tay. Đó là lý do build mới hoàn toàn là sai hướng: bạn sẽ vứt đi tài sản mạnh nhất (wiki) để dựng lại thứ yếu hơn.</p></div>
+
+    <!-- ── 3. Lộ trình C ── -->
+    <h2>3. Nếu chọn C — lộ trình dựng dần theo giá trị/effort</h2>
+    <p>Không làm cùng lúc. Mỗi bước độc lập, có giá trị riêng, dừng được bất cứ lúc nào. Mỗi bước cần RD nhẹ trước khi code (SDD gate).</p>
+
+    <ul class="timeline">
+      <li>
+        <span class="time">Bước 1 — Trí nhớ bền (giá trị cao nhất)</span>
+        <p>Index <code>ai/sessions/</code> + <code>handoff-*.md</code> + wiki INDEX vào SQLite FTS5. Một lệnh <code>recall "&lt;câu&gt;"</code> trả về ngữ cảnh liên quan khi mở session. Lấp đúng điểm yếu nhất của Claude Code (mỗi session fresh). <strong>Verify:</strong> hỏi 5 câu về việc tuần trước, so với tự nhớ.</p>
+      </li>
+      <li>
+        <span class="time">Bước 2 — Skill tự tích lũy + curator</span>
+        <p>Hook sau task lớn → đề xuất distill thành skill (bạn duyệt, không tự ghi). Lệnh <code>curate</code> chu kỳ: grade/gộp/tỉa <code>lessons/</code> + skills. Mượn pattern Curator của Hermes nhưng giữ human gate.</p>
+      </li>
+      <li>
+        <span class="time">Bước 3 — Durable orchestration (chỉ khi cần)</span>
+        <p>Khi có job dài thật (Lucida video, batch research): SQLite queue + heartbeat + verifier gate trước synthesizer. Trước đó cứ dùng subagent. <strong>Trigger:</strong> có việc &gt;30 phút cần chạy nền + retry.</p>
+      </li>
+      <li>
+        <span class="time">Bước 4 — Tự cải tiến có gate (làm sau cùng)</span>
+        <p>Vòng variant → test → PR → human merge cho prompt/skill. Không tự ghi đè bao giờ. Chỉ làm khi 3 bước trên ổn định.</p>
+      </li>
+    </ul>
+
+    <p>Tổng nếu làm cả 4 bước: ước lượng <strong>5–8 ngày</strong> rải nhiều tuần — so với hàng tháng cho con đường A, và ra một hệ <em>của riêng bạn</em>, không phải runtime thứ hai phải nuôi.</p>
+
+    <!-- ── 4. Khi nào A mới đúng ── -->
+    <h2>4. Khi nào "build mới hoàn toàn" mới thực sự hợp lý?</h2>
+    <p>Để công bằng với phương án A — nó đúng nếu (và chỉ nếu) có một trong các điều kiện sau, mà hiện bạn chưa có:</p>
+    <table>
+      <thead><tr><th>Điều kiện kích hoạt A</th><th>Bạn có chưa?</th></tr></thead>
+      <tbody>
+        <tr><td>Cần chạy độc lập hoàn toàn khỏi Claude Code (vendor lock-in là vấn đề thật)</td><td><span class="badge gray">Chưa — đang hài lòng với Claude Code</span></td></tr>
+        <tr><td>Cần multi-host / nhiều máy phối hợp (Hermes single-host không đủ)</td><td><span class="badge gray">Chưa — chạy 1 máy Windows</span></td></tr>
+        <tr><td>Muốn học sâu bằng cách tự xây (mục tiêu giáo dục, không phải sản phẩm)</td><td><span class="badge gray">Nếu đây là mục tiêu thật thì A hợp lý — nhưng scope nhỏ lại, làm 1 năng lực để học</span></td></tr>
+        <tr><td>Có nhu cầu cụ thể cả Claude Code lẫn Hermes đều không làm được</td><td><span class="badge gray">Chưa nêu được nhu cầu nào như vậy</span></td></tr>
+      </tbody>
+    </table>
+    <div class="callout">Nếu động cơ là <strong>"muốn tự xây để hiểu/làm chủ"</strong> (chính đáng) — thì vẫn không build cả 4 cùng lúc. Chọn <strong>Bước 1 (trí nhớ)</strong> làm theo cách tự viết từ đầu: vừa học kiến trúc, vừa ra thứ dùng được, vừa không khóa mình vào dự án khổng lồ. Đó là cách "build mới" khôn ngoan.</div>
+
+    <!-- ── 5. Chốt ── -->
+    <h2>5. Tóm tắt quyết định</h2>
+    <div class="compare">
+      <div>
+        <div class="col-head">Nên</div>
+        <div class="card" style="border-radius:0 0 4px 4px; margin:0;">
+          <ul>
+            <li>Đi con đường C — dựng dần trên Claude Code.</li>
+            <li>Bắt đầu Bước 1 (trí nhớ bền) — giá trị cao nhất, lấp điểm yếu thật.</li>
+            <li>Giữ <code>personal-wiki/</code> làm brain — tài sản mạnh nhất.</li>
+            <li>Mỗi bước: RD nhẹ → build → verify, dừng được.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="col-head">Không nên</div>
+        <div class="card" style="border-radius:0 0 4px 4px; margin:0;">
+          <ul>
+            <li>Build cả 4 năng lực từ số 0 thành một runtime mới.</li>
+            <li>Vứt wiki để dựng lại skill-store phẳng kiểu Hermes.</li>
+            <li>Làm phần tự-cải-tiến trước khi có trí nhớ + skill ổn.</li>
+            <li>Fork Hermes.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <p><strong>Việc tiếp theo cần bạn quyết:</strong> xác nhận đi con đường C + Bước 1, để tôi viết <code>RD-cross-session-memory.md</code> (SDD gate 1). Hoặc nếu động cơ thật là "tự xây để học", nói rõ — tôi điều chỉnh lộ trình theo hướng giáo dục thay vì tối-ưu-effort.</p>
+
+    <div class="callout">Liên quan: <a href="./EVAL-hermes-agent-integration.html">EVAL-hermes-agent-integration.html</a> (No-Go tích hợp) · <a href="./EVAL-hermes-orchestration-loop.html">EVAL-hermes-orchestration-loop.html</a> (3 pattern đáng mượn) · <code>opus-animus/TODO.md</code> [OPT-3]</div>
+
+  </main>
+
+</body>
+</html>

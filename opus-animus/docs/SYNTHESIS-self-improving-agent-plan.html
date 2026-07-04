@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SYNTHESIS — Self-improving multi-agent system cho ai-project-opus</title>
+  <link rel="stylesheet" href="../../html-kit/styles.css">
+  <script src="../../html-kit/diagram.js" defer></script>
+</head>
+<body>
+
+  <header class="doc-header">
+    <span class="badge">SYNTHESIS</span>
+    <h1>Hợp nhất: Hermes-eval × Multi-agent architecture</h1>
+    <p class="lead">Một kế hoạch duy nhất cho 4 năng lực bạn muốn — xây trên Claude-native, mượn pattern Hermes, chạy trên subscription</p>
+    <p class="meta">2026-06-13 · Tuyến Opus · Gộp 3 bản EVAL/DECISION Hermes + báo cáo multi-agent architecture</p>
+  </header>
+
+  <main>
+
+    <div class="callout"><strong>Hai phân tích độc lập, một kết luận:</strong> nhánh Hermes-eval (bắt đầu từ "có nên tích hợp/build Hermes?") và báo cáo multi-agent architecture (bắt đầu từ "có nên thêm framework multi-agent?") gặp nhau ở cùng một câu trả lời — <strong>đừng thêm runtime/framework ngoài; formalize cái đã có thành Claude-native (Skills + Subagents + Hooks + MCP) và nâng gateway lên Claude Agent SDK.</strong> Báo cáo trả lời "dùng công cụ gì"; nhánh Hermes trả lời "mượn pattern nào để hệ tự tốt lên mà không drift". Ghép lại thành kế hoạch dưới đây.</div>
+
+    <!-- ── 1. Mảnh ghép quyết định ── -->
+    <h2>1. Mảnh ghép khoá lại quyết định</h2>
+    <p>Bản EVAL Hermes đầu tiên để ngỏ <strong>Open question #1: lấy LLM ở đâu cho agent chạy nền mà không phải trả API key riêng?</strong> — đây là rào cản khả thi lớn nhất. Báo cáo multi-agent trả lời đúng câu đó, và tôi đã xác minh lại với docs Anthropic:</p>
+    <table>
+      <thead><tr><th>Sự kiện</th><th>Chi tiết (đã verify 2026-06-13)</th></tr></thead>
+      <tbody>
+        <tr><td>Credit Agent SDK trên subscription</td><td>Từ <strong>15/06/2026</strong> (2 ngày nữa), Pro/Max/Team/Enterprise nhận credit Agent SDK hàng tháng <em>tách khỏi</em> quota chat. Phủ: Agent SDK usage + <code>claude -p</code> headless + app build trên SDK.</td></tr>
+        <tr><td>Mức credit</td><td>Pro <strong>$20</strong> · Max 5x <strong>$100</strong> · Max 20x <strong>$200</strong> /tháng. Xác thực qua OAuth token (<code>sk-ant-oat01-</code>) gắn tài khoản.</td></tr>
+        <tr><td>Ràng buộc mới (báo cáo chưa nêu)</td><td><span class="badge red">Hết tháng không cộng dồn</span> · per-user, không pool/share team · API-key account không nhận credit. → <strong>Automation chạy nền có trần ngân sách thật</strong> — phải tính token, không "miễn phí vô hạn".</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Hệ quả:</strong> rào cản "không muốn phụ thuộc API key trả phí" biến mất với mức dùng cá nhân — nhưng thay bằng một ràng buộc nhẹ hơn: <em>thiết kế pipeline nền sao cho vừa trần credit hàng tháng</em>. Điều này củng cố nguyên tắc "đừng kéo vector DB / consensus protocol / agent đông đúc vào" — vừa thừa cho 1 người, vừa đốt credit.</p>
+
+    <!-- ── 2. Bản đồ 4 năng lực ── -->
+    <h2>2. Bản đồ hợp nhất — 4 năng lực bạn muốn</h2>
+    <p>Đây là chỗ hai tài liệu ghép chặt nhất: mỗi năng lực = một primitive Claude-native (báo cáo) + một pattern mượn từ Hermes (EVAL) + phần nền bạn đã có.</p>
+    <table>
+      <thead><tr><th>Năng lực muốn</th><th>Primitive Claude-native</th><th>Pattern mượn từ Hermes</th><th>Nền đã có</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Skill tự tích lũy</strong></td>
+          <td>Skills (<code>SKILL.md</code>) + Plugins — progressive disclosure</td>
+          <td>Auto-distill sau task lớn + <strong>Curator chu kỳ 7 ngày</strong> (grade/gộp/tỉa)</td>
+          <td><code>lessons/</code> + self-improvement loop (CLAUDE.md). Chuẩn markdown trùng Hermes.</td>
+        </tr>
+        <tr>
+          <td><strong>Trí nhớ bền cross-session</strong></td>
+          <td>Markdown-as-memory + <strong>SQLite FTS5</strong> (KHÔNG vector DB)</td>
+          <td>Session search → recall ngữ cảnh khi mở phiên</td>
+          <td><code>personal-wiki/</code> (knowledge graph — mạnh hơn FTS phẳng của Hermes) + <code>ai/handoff-*.md</code></td>
+        </tr>
+        <tr>
+          <td><strong>Điều phối nhiều agent</strong></td>
+          <td>Subagents (nest 5 cấp, <code>/batch</code> song song) + orchestrator-worker qua Agent SDK</td>
+          <td><strong>Durable queue + heartbeat + verifier gate</strong> (Kanban) — chỉ khi có job dài</td>
+          <td>Task Scheduler (đơn lẻ) + CrewAI legacy (đang gỡ)</td>
+        </tr>
+        <tr>
+          <td><strong>Tự cải tiến an toàn</strong></td>
+          <td>Hooks (gate cứng) + SDD/PR workflow</td>
+          <td><strong>variant → test → PR → human merge</strong> (vòng offline GEPA), không tự ghi đè</td>
+          <td>git + branch + test có thể chạy</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout warn"><strong>Điểm nhấn không đổi qua cả hai tài liệu:</strong> ở quy mô 1 người, cái bạn thiếu không phải "khả năng" mà là <em>tự động hoá + formalize</em> những thứ đang làm tay. Cả hai phân tích đều cảnh báo cùng một cám dỗ cần tránh: kéo hạ tầng nặng (vector DB, message queue, framework đa agent, runtime thứ hai) vào một bài toán single-user.</div>
+
+    <!-- ── 3. Kiến trúc ── -->
+    <h2>3. Kiến trúc hợp nhất — orchestrator-worker</h2>
+    <div class="diagram" data-chart='{
+      "type": "flow",
+      "nodes": [
+        {"id":"sched","label":"Task Scheduler (trigger)","shape":"terminal"},
+        {"id":"orch","label":"Orchestrator — Agent SDK (chay tren credit 15/6)","shape":"rect"},
+        {"id":"mem","label":"Memory: markdown (wiki/ai) + SQLite FTS","shape":"rect"},
+        {"id":"skills","label":"Worker = Skills: collector / synth / wiki-curator","shape":"rect"},
+        {"id":"hooks","label":"Hooks: chan ghi raw/, audit, auto-load status","shape":"diamond"},
+        {"id":"mcp","label":"MCP: Telegram / SQLite / Obsidian","shape":"rect"},
+        {"id":"selfimp","label":"Self-improve: variant -> test -> PR (human gate)","shape":"rect"},
+        {"id":"dash","label":"FastAPI dashboard","shape":"terminal"}
+      ],
+      "edges": [
+        {"from":"sched","to":"orch","label":"trigger"},
+        {"from":"orch","to":"hooks","label":"qua gate"},
+        {"from":"hooks","to":"skills","label":"delegate"},
+        {"from":"orch","to":"mem","label":"recall/persist"},
+        {"from":"skills","to":"mcp","label":"action ra ngoai"},
+        {"from":"skills","to":"mem","label":"distill skill"},
+        {"from":"mem","to":"selfimp","label":"curator 7 ngay"},
+        {"from":"skills","to":"dash","label":"feed UI"}
+      ]
+    }'></div>
+    <p>So với sơ đồ trong báo cáo gốc: thêm 2 thành phần từ nhánh Hermes — <strong>Hooks làm gate cứng</strong> (chống skill poisoning + ép Karpathy invariant "chỉ wiki_ops ghi wiki") và <strong>vòng self-improve có test gate</strong> (chống drift mà Hermes vướng). Đây chính là 2 lỗ hổng lớn nhất của Hermes được bịt ngay từ thiết kế.</p>
+
+    <h3>Mô hình hai lớp — Claude điều phối, Codex thực thi</h3>
+    <p>Tách bạch hai vai "Claude" từng gây lẫn: nay chỉ còn <strong>một lớp Claude</strong> ở vị trí điều phối (Claude Code tương tác, Opus/Sonnet), và <strong>Codex (<code>codex exec</code>) là tác nhân thực thi headless cho cả hai loại việc</strong> — <em>build</em> (viết code + test từ BD) và <em>runtime</em> (vận hành pipeline: synthesis / filter / ingest / curator). Đây là quyết định mở rộng vai Codex: nó <strong>thay <code>claude -p</code></strong> làm runtime operator trong <code>utils/llm.py</code>, không chỉ làm coding như routing cũ.</p>
+
+    <div class="diagram" data-chart='{
+      "type": "flow",
+      "nodes": [
+        {"id":"u","label":"User","shape":"terminal"},
+        {"id":"claude","label":"Lop 1 - Claude Code (Opus/Sonnet): orchestration / plan / RD-SD-BD / review","shape":"rect"},
+        {"id":"codexb","label":"Lop 2 - Codex: build (viet code + test tu BD)","shape":"rect"},
+        {"id":"codexr","label":"Lop 2 - Codex: runtime operator (synthesis / filter / ingest / curator)","shape":"rect"},
+        {"id":"sched","label":"Task Scheduler","shape":"terminal"},
+        {"id":"store","label":"raw/ + personal-wiki/ (brain)","shape":"terminal"}
+      ],
+      "edges": [
+        {"from":"u","to":"claude","label":"yeu cau"},
+        {"from":"claude","to":"codexb","label":"giao BD/brief"},
+        {"from":"sched","to":"codexr","label":"trigger"},
+        {"from":"codexb","to":"store","label":"feature/skill"},
+        {"from":"codexr","to":"store","label":"ingest/synthesis"}
+      ]
+    }'></div>
+
+    <p><strong>Phân vai:</strong> Lớp 1 (Claude) <em>nghĩ</em> — plan, RD/SD/BD, kiến trúc, review, quyết định; không tự code, không tự chạy pipeline. Lớp 2 (Codex) <em>làm</em> — mọi thực thi không người trông: nhận BD từ Claude (build) hoặc trigger từ Task Scheduler (runtime), rồi ghi kết quả vào <code>raw/</code> + wiki.</p>
+
+    <div class="callout risk"><strong>Hệ quả phải biết khi chọn hướng này:</strong>
+    <ul>
+      <li><strong>Mất credit subscription cho lớp runtime.</strong> Codex là agent của OpenAI, không chạy trên credit Agent SDK 15/6 của Claude. Đưa runtime operator sang Codex tức là <em>đảo lại</em> chính ràng buộc "không phụ thuộc API key trả phí riêng" — lớp runtime giờ tính tiền theo OpenAI/Codex, không còn nằm trong subscription Claude.</li>
+      <li><strong>Codex là coding agent.</strong> Dùng cho tác vụ suy-luận-trên-văn-bản (lọc article, viết brief) là phi truyền thống — phải đo chất lượng synthesis ở pilot trước khi thay toàn bộ.</li>
+      <li><strong>Doc-sync:</strong> hai quy tắc CLAUDE.md cần cập nhật khi triển khai — "mọi LLM call dùng Claude CLI" và "Codex chỉ coding". Quyết định này cũng thay nội dung Phase 3 (runtime operator: Agent SDK/claude -p → Codex).</li>
+    </ul></div>
+
+    <!-- ── 4. Lộ trình ── -->
+    <h2>4. Lộ trình hợp nhất (gộp 4 bước Hermes-decision + 5 bước báo cáo)</h2>
+    <p>Hai lộ trình trùng nhau nhiều — gộp thành một chuỗi tăng dần, mỗi phase độc lập, dừng được, cần RD nhẹ trước khi code (SDD gate).</p>
+    <ul class="timeline">
+      <li>
+        <span class="time">Phase 0 — Giữ nguyên</span>
+        <p>Pipeline đang chạy ổn. KHÔNG refactor big-bang. Mọi thay đổi surgical theo Karpathy principles.</p>
+      </li>
+      <li>
+        <span class="time">Phase 1 — Nền: Skills + Trí nhớ (giá trị cao nhất, rẻ nhất)</span>
+        <p><strong>(a)</strong> Viết <code>SKILL.md</code> cho 3 pipeline cốt lõi (collector, synthesizer, wiki-curator) — chuẩn hoá script rời thành skill versioned, không đổi runtime. <strong>(b)</strong> Build <code>recall</code>: index <code>ai/sessions/</code> + <code>handoff-*.md</code> + wiki INDEX vào SQLite FTS5. Lấp đúng điểm yếu nhất (mỗi session fresh). <em>Đây là giao điểm "Bước 1 Skills" của báo cáo + "Bước 1 trí nhớ" của decision doc.</em></p>
+      </li>
+      <li>
+        <span class="time">Phase 2 — Hooks (gate cứng) + Curator</span>
+        <p>Hook <code>PreToolUse</code> chặn ghi <code>raw/</code>; <code>SessionStart</code> auto-load <code>ai/status.md</code>; audit log mọi tool call. Thêm lệnh <code>curate</code> chu kỳ grade/gộp/tỉa <code>lessons/</code> + skills (pattern Curator Hermes, giữ human gate). Biến luật mềm trong CLAUDE.md thành ràng buộc deterministic.</p>
+      </li>
+      <li>
+        <span class="time">Phase 3 — Pilot Codex làm runtime operator (thay claude -p)</span>
+        <p>Chọn MỘT pipeline ít rủi ro (weekly synthesizer). Cho <code>codex exec</code> đảm nhận lời gọi trong <code>utils/llm.py</code> thay <code>claude_cli()</code> shell-out. Đo: <strong>chất lượng synthesis có giữ được không</strong> (Codex vốn là coding agent), error-handling có sạch hơn không, và chi phí Codex/OpenAI ra sao (lớp này không còn nằm trong credit subscription Claude). Đây là feature &gt;20 dòng → cần RD→SD→BD approve.</p>
+      </li>
+      <li>
+        <span class="time">Phase 4 — MCP hoá I/O + Durable queue (khi cần)</span>
+        <p>Bọc Telegram + SQLite + Obsidian thành MCP server, tái dùng across pipelines. <em>Chỉ</em> thêm durable queue (SQLite + heartbeat + verifier gate, pattern Kanban) khi xuất hiện job dài thật (vd Lucida render &gt;30 phút cần retry) — trước đó subagent đủ.</p>
+      </li>
+      <li>
+        <span class="time">Phase 5 — Self-improve có gate + dọn legacy</span>
+        <p>Vòng variant → test → PR → human merge cho prompt/skill (không bao giờ tự ghi đè — bài học drift/poisoning của Hermes). Gỡ hẳn CrewAI <code>crews/</code> sau khi pilot chứng minh. Làm sau cùng, rủi ro cao nhất.</p>
+      </li>
+    </ul>
+
+    <!-- ── 5. Không làm ── -->
+    <h2>5. Danh sách "không làm" (hợp nhất cả hai tài liệu)</h2>
+    <div class="compare">
+      <div>
+        <div class="col-head">Từ nhánh Hermes</div>
+        <div class="card" style="border-radius:0 0 4px 4px; margin:0;">
+          <ul>
+            <li>Không build runtime mới từ số 0 cho cả 4 năng lực.</li>
+            <li>Không cho agent tự ghi đè skill (chống drift/poisoning).</li>
+            <li>Không vứt <code>personal-wiki/</code> để dựng skill-store phẳng.</li>
+            <li>Không fork Hermes; không dùng <code>hermes-agent-self-evolution</code> giai đoạn này.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="col-head">Từ báo cáo multi-agent</div>
+        <div class="card" style="border-radius:0 0 4px 4px; margin:0;">
+          <ul>
+            <li>Không thêm LangGraph/CrewAI/AutoGen/MetaGPT (buộc API key trả phí).</li>
+            <li>Không adopt nguyên claude-flow/SuperClaude (overkill cho 1 người).</li>
+            <li>Không kéo vector DB / mem0 / Letta ở quy mô single-user.</li>
+            <li>Tham khảo <code>anthropics/skills</code> + awesome-list để copy mẫu lẻ, không adopt cả bộ.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 6. Chốt ── -->
+    <h2>6. Tóm tắt &amp; việc tiếp theo</h2>
+    <p>Câu hỏi gốc "build mới Hermes hoàn toàn được không" → <strong>được nhưng không nên; và bây giờ thậm chí không cần</strong>: credit Agent SDK 15/6 biến Claude-native + Agent SDK thành nền chạy-trên-subscription cho cả 4 năng lực, còn pattern Hermes (Curator, durable queue, self-improve có test gate) lấp đúng 3 chỗ Claude-native chưa có sẵn — mà không phải gánh runtime thứ hai hay các lỗ hổng của Hermes.</p>
+
+    <div class="callout green"><strong>Cập nhật 2026-06-14 — đã chốt hướng + viết SDD slice đầu.</strong> Lộ trình Phase 0→5 được xác nhận. RD viết trước được <strong>thu hẹp đúng Phase 1(b): <code>recall</code> (cross-session memory)</strong> — slice cụ thể nhất, giá trị cao nhất, thuần additive, <em>không</em> chạm tranh cãi Codex/credit (đó là Phase 3). Phase 1(a) "Skills hoá 3 pipeline" tách RD riêng sau, để giữ scope mỏng. Bộ SDD gate đã sẵn sàng review:
+    <ul>
+      <li><a href="../opus-consilium/docs/RD-cross-session-memory.md"><code>RD-cross-session-memory.md</code></a> — 🟡 In Review (Gate 1)</li>
+      <li><a href="../opus-consilium/docs/SD-cross-session-memory.md"><code>SD-cross-session-memory.md</code></a> — 🔵 Draft (Gate 2)</li>
+      <li><a href="../opus-consilium/docs/BD-cross-session-memory.md"><code>BD-cross-session-memory.md</code></a> — 🔵 Planning (kèm Test Plan, Codex thực thi)</li>
+    </ul>
+    <strong>Vì sao recall đi trước:</strong> pure SQLite FTS5, <em>không LLM</em> → tức thì, miễn phí, zero dep, không đụng <code>utils/llm.py</code>. Lấp đúng điểm yếu lớn nhất (mỗi session fresh) mà rủi ro gần như bằng 0.</div>
+
+    <p><strong>Việc tiếp theo (SDD gate — chưa code):</strong></p>
+    <ul>
+      <li>Approve <code>RD-cross-session-memory.md</code> (🟡→🟢) → SD → BD → giao Codex build theo BD.</li>
+      <li>Trả lời 5 Open Questions trong RD (đều đã có default an toàn — confirm hoặc đổi).</li>
+      <li>Quyết việc nhánh: gộp 2 nhánh (<code>hermes-integration-eval</code> + <code>multi-agent-architecture</code>) về đâu, hay giữ riêng. Hiện tài liệu nằm 2 nhánh.</li>
+    </ul>
+
+    <div class="callout">Tài liệu nguồn — <strong>nhánh <code>claude/hermes-integration-eval-2iff1v</code>:</strong> <a href="./EVAL-hermes-agent-integration.html">EVAL tích hợp (No-Go)</a> · <a href="./EVAL-hermes-orchestration-loop.html">EVAL orchestration &amp; loop</a> · <a href="./DECISION-build-vs-adopt-hermes.html">DECISION build-vs-adopt</a>. <strong>Nhánh <code>claude/multi-agent-architecture-o7rps7</code>:</strong> <code>docs/research-multi-agent-architecture-2026.html</code> + plugin <code>opus-actio/plugins/equity-research/</code> (bộ Skills/commands/hooks mẫu thực tế).</div>
+
+  </main>
+
+</body>
+</html>

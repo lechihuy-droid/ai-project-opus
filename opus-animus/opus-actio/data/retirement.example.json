@@ -1,0 +1,15 @@
+{
+  "$schema": "./retirement.schema.md",
+  "retire_target_age": 0,
+  "life_expectancy": 0,
+  "annual_expense_retire_jpy": 0,
+  "kosei_nenkin_est_annual_jpy": 0,
+  "kosei_nenkin_start_age": 65,
+  "real_return_pct": 0,
+  "inflation_pct": 0,
+  "safe_withdrawal_rate_pct": 3.5,
+  "idecho_monthly_jpy": 0,
+  "nisa_monthly_jpy": 0,
+  "current_invested_source": "finance.db v_networth_true / invested_total",
+  "note": "Placeholder template. Copy to data/_local/retirement.json and fill real defaults there; do not put balances, income, contributions, or estimated 年金 amounts in tracked files."
+}

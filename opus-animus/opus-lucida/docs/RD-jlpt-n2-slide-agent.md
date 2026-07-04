@@ -287,7 +287,7 @@ Agent v1 + migration được coi là **DONE** khi:
 6. ✅ React app archived vào `99-archive/schema-html-prototype-pre-mcp/` với README rollback steps
 7. ✅ 5+ Lucida canonical docs updated trong cùng commit (FR-MIG-005)
 8. ✅ Smoke test: slide-plan thiếu slot → renderer exit ≠ 0 với error đúng slide_id
-9. ✅ Codex sign-off trên `ai/handoff-codex.md` + update `ai/status.md` renderer entry
+9. ✅ Codex sign-off recorded in current session/status notes + update `ai/status.md` renderer entry
 10. ✅ 1 lane mới (không phải Wake) chạy agent end-to-end, render → frames → audio → video PASS
 
 ---
@@ -302,10 +302,10 @@ Agent v1 + migration được coi là **DONE** khi:
 - Codex confirm: locked decision "Renderer owns HTML/CSS" được preserve clean (agent substitution engine = renderer role)
 - User confirm cost estimate ~30h worth it
 
-**Handoff Codex:**
+**Codex Review:**
 1. User forward RD này cho Codex
 2. Codex review trong session sau
-3. Codex update `ai/handoff-codex.md` với verdict (approve / request changes / reject)
+3. Codex records verdict in the current session/status notes (approve / request changes / reject)
 4. Nếu approve → Claude/Codex sang Phase 2 (SD)
 
 ---

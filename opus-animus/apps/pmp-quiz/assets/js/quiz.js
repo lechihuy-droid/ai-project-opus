@@ -1,5 +1,8 @@
 // Quiz state machine.
-import { addWrong, removeWrong, saveSession, addSeen } from "./storage.js";
+import {
+  addWrong, removeWrong, saveSession, addSeen,
+  addWeakWrong, removeWeakWrong, saveWeakSession, addWeakSeen,
+} from "./storage.js";
 
 // Normalize correct field → sorted string array.
 // "A" → ["A"],  "AC" → ["A","C"],  ["A","C"] → ["A","C"]
@@ -50,11 +53,16 @@ export class Quiz {
       correct: isCorrect,
       domain: q.domain,
     });
-    addSeen(q.id);
+    const weakMode = this.mode && this.mode.startsWith("weak-");
+    if (weakMode) addWeakSeen(q.id);
+    else addSeen(q.id);
+
     if (isCorrect) {
       if (this.mode === "review") removeWrong(q.id);
+      if (this.mode === "weak-review") removeWeakWrong(q.id);
     } else {
-      addWrong(q.id);
+      if (weakMode) addWeakWrong(q.id);
+      else addWrong(q.id);
     }
     return isCorrect;
   }
@@ -74,7 +82,8 @@ export class Quiz {
       byDomain: this.domainBreakdown(),
       wrongIds: this.answers.filter((a) => !a.correct).map((a) => a.qid),
     };
-    saveSession(session);
+    if (this.mode && this.mode.startsWith("weak-")) saveWeakSession(session);
+    else saveSession(session);
     return session;
   }
 

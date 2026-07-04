@@ -2,20 +2,12 @@
 
 Project state lives in:
 - `ai/status.md` — current objective + active sub-system
-- `ai/handoff-codex.md` — exact next action (Codex-specific)
 - `todo.md` — task details per sub-system
 
-Session start — mandatory first message:
-
-> "Bạn muốn **bắt đầu mới** hay **tiếp tục từ context cũ**?
-> - Tiếp tục → tôi sẽ đọc `ai/status.md` và `ai/handoff-codex.md`
-> - Mới → cho tôi biết muốn làm gì"
-
-If user chọn tiếp tục:
-1. Read `ai/status.md`
-2. Read `ai/handoff-codex.md`
-3. Confirm: "Tôi hiểu task hiện tại là [X], tiếp tục từ [bước Y]. Đúng không?"
-4. Ask which sub-system to work on, confirm against status.md
+Session start:
+- Use the user's latest instruction as the active task.
+- Read `ai/status.md` only when the user asks to resume prior project state or the task depends on current project ownership.
+- Do not use retired Codex handoff anchors.
 
 Rules:
 - Do not rely on conversation history as source of truth for project goals
@@ -27,16 +19,15 @@ Rules:
 During work:
 - Keep current task aligned with `ai/status.md`
 - If making architecture decisions → note in `docs/` (SA-system-architecture.md)
-- Do not update `ai/status.md`, `ai/handoff-codex.md`, session logs, or `todo.md` after every small command.
+- Do not update `ai/status.md`, session logs, or `todo.md` after every small command.
 - Only update project-state files at meaningful checkpoints: task switch, completed slice, before stopping, after risky context-changing work, or when the user explicitly asks for handoff/status persistence.
 - For normal implementation steps, command runs, smoke tests, and small UI/code edits, report status in chat only.
 
-When user says "cập nhật handoff":
+When user says "cập nhật trạng thái":
 1. Review entire conversation
-2. Fill `ai/handoff-codex.md`: task done, exact next action, files touched, risks
-3. Update `ai/status.md`: objective + next step + current owner
-4. Create session log at `ai/sessions/YYYY-MM-DD-[task].md`
-5. Update `todo.md` with completed items
+2. Update `ai/status.md`: objective + next step + current owner
+3. Create session log at `ai/sessions/YYYY-MM-DD-[task].md`
+4. Update `todo.md` with completed items
 
 Resume CLI (use terminal, not sidebar):
 - `codex resume --last`
@@ -54,7 +45,7 @@ When the user sends exactly `/handoff` while the active task is Lucida-related:
 3. Create a session log under `opus-lucida/ai/sessions/` only if that folder exists
 4. Report files updated and the exact next action
 
-For Lucida, do not use `ai/status.md` or `ai/handoff-codex.md` as the live handoff source. The live resume files are:
+For Lucida, do not use `ai/status.md` or Codex handoff files as the live handoff source. The live resume files are:
 
 ```text
 opus-lucida/STATUS.md

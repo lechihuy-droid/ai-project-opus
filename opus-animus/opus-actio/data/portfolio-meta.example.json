@@ -1,0 +1,38 @@
+{
+  "target_allocation": {
+    "us_equity": 0.5,
+    "jp_equity": 0.3,
+    "cash_jpy": 0.1,
+    "cash_usd": 0.1
+  },
+  "accounts": {
+    "nisa_growth": {
+      "limit_yearly": 2400000,
+      "limit_lifetime": 18000000,
+      "used_yearly": 0,
+      "used_lifetime": 0
+    },
+    "nisa_tsumitate": {
+      "limit_yearly": 1200000,
+      "used_yearly": 0
+    },
+    "tokutei": {
+      "loss_carry": 0,
+      "realized_gain_ytd": 0
+    },
+    "ideco": {
+      "monthly": 23000,
+      "ytd": 0
+    }
+  },
+  "positions_meta": {
+    "6501": {
+      "thesis": "",
+      "stop_loss": null,
+      "target_1y": null,
+      "added": null
+    }
+  },
+  "watchlist": [],
+  "note": "Planning overlay. Copy sang data/_local/portfolio-meta.json va dien thesis/stop_loss/target/quota that."
+}

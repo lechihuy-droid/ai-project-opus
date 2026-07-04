@@ -1,0 +1,231 @@
+{
+  "run_id": "20260627-234104-workspace-smoke",
+  "suite": "workspace-smoke",
+  "suite_name": "Workspace Smoke Harness",
+  "suite_path": "harness\\suites\\workspace-smoke.json",
+  "started_at": "2026-06-27T14:41:04+00:00",
+  "finished_at": "2026-06-27T14:41:07+00:00",
+  "status": "pass",
+  "passed": 11,
+  "failed": 0,
+  "total": 11,
+  "results": [
+    {
+      "id": "root-agents",
+      "type": "path_exists",
+      "severity": "normal",
+      "status": "pass",
+      "message": "Found file: AGENTS.md",
+      "hint": "Root operating rules should stay visible for every agent session.",
+      "started_at": "2026-06-27T14:41:04+00:00",
+      "duration_seconds": 0.004,
+      "evidence": {
+        "path": "AGENTS.md",
+        "kind": "file",
+        "exists": true
+      },
+      "finished_at": "2026-06-27T14:41:04+00:00",
+      "suite": "workspace-smoke"
+    },
+    {
+      "id": "animus-status",
+      "type": "file_contains",
+      "severity": "normal",
+      "status": "pass",
+      "message": "All required text found",
+      "hint": "Refresh opus-animus/ai/status.md or update the suite if the operating model changed.",
+      "started_at": "2026-06-27T14:41:04+00:00",
+      "duration_seconds": 0.001,
+      "evidence": {
+        "path": "opus-animus\\ai\\status.md",
+        "missing": []
+      },
+      "finished_at": "2026-06-27T14:41:04+00:00",
+      "suite": "workspace-smoke"
+    },
+    {
+      "id": "consilium-readme",
+      "type": "path_exists",
+      "severity": "normal",
+      "status": "pass",
+      "message": "Found file: opus-animus\\opus-consilium\\README.md",
+      "hint": "",
+      "started_at": "2026-06-27T14:41:04+00:00",
+      "duration_seconds": 0.002,
+      "evidence": {
+        "path": "opus-animus\\opus-consilium\\README.md",
+        "kind": "file",
+        "exists": true
+      },
+      "finished_at": "2026-06-27T14:41:04+00:00",
+      "suite": "workspace-smoke"
+    },
+    {
+      "id": "wiki-index",
+      "type": "path_exists",
+      "severity": "normal",
+      "status": "pass",
+      "message": "Found file: opus-animus\\opus-consilium\\personal-wiki\\INDEX.md",
+      "hint": "The Consilium wiki index is the routing map for recall and wiki work.",
+      "started_at": "2026-06-27T14:41:04+00:00",
+      "duration_seconds": 0.004,
+      "evidence": {
+        "path": "opus-animus\\opus-consilium\\personal-wiki\\INDEX.md",
+        "kind": "file",
+        "exists": true
+      },
+      "finished_at": "2026-06-27T14:41:04+00:00",
+      "suite": "workspace-smoke"
+    },
+    {
+      "id": "actio-schema",
+      "type": "path_exists",
+      "severity": "normal",
+      "status": "pass",
+      "message": "Found file: opus-animus\\opus-actio\\data\\schema.sql",
+      "hint": "",
+      "started_at": "2026-06-27T14:41:04+00:00",
+      "duration_seconds": 0.005,
+      "evidence": {
+        "path": "opus-animus\\opus-actio\\data\\schema.sql",
+        "kind": "file",
+        "exists": true
+      },
+      "finished_at": "2026-06-27T14:41:04+00:00",
+      "suite": "workspace-smoke"
+    },
+    {
+      "id": "profile-json",
+      "type": "json_load",
+      "severity": "normal",
+      "status": "pass",
+      "message": "JSON object with 6 keys",
+      "hint": "",
+      "started_at": "2026-06-27T14:41:04+00:00",
+      "duration_seconds": 0.002,
+      "evidence": {
+        "path": "user-profile\\preferences.json",
+        "detail": "JSON object with 6 keys"
+      },
+      "finished_at": "2026-06-27T14:41:04+00:00",
+      "suite": "workspace-smoke"
+    },
+    {
+      "id": "recall-fixtures",
+      "type": "glob_count",
+      "severity": "normal",
+      "status": "pass",
+      "message": "Found 2 matches",
+      "hint": "Recall tests need fixture markdown files.",
+      "started_at": "2026-06-27T14:41:04+00:00",
+      "duration_seconds": 0.003,
+      "evidence": {
+        "pattern": "C:\\Users\\HUY\\workspace\\ai-project-opus/opus-animus/opus-consilium/memory/_fixtures/*.md",
+        "count": 2,
+        "matches": [
+          "opus-animus\\opus-consilium\\memory\\_fixtures\\session.md",
+          "opus-animus\\opus-consilium\\memory\\_fixtures\\status.md"
+        ]
+      },
+      "finished_at": "2026-06-27T14:41:04+00:00",
+      "suite": "workspace-smoke"
+    },
+    {
+      "id": "compile-core-python",
+      "type": "python_compile",
+      "severity": "normal",
+      "status": "pass",
+      "message": "Compiled 6 files",
+      "hint": "Syntax failure here usually means a recent edit broke the Python pipeline before runtime.",
+      "started_at": "2026-06-27T14:41:04+00:00",
+      "duration_seconds": 0.051,
+      "evidence": {
+        "files": [
+          "harness\\run_harness.py",
+          "opus-animus\\run_home.py",
+          "opus-animus\\opus-consilium\\run_recall.py",
+          "opus-animus\\opus-consilium\\memory\\indexer.py",
+          "opus-animus\\opus-consilium\\memory\\search.py",
+          "opus-animus\\opus-consilium\\memory\\sources.py"
+        ],
+        "errors": []
+      },
+      "finished_at": "2026-06-27T14:41:04+00:00",
+      "suite": "workspace-smoke"
+    },
+    {
+      "id": "recall-tests",
+      "type": "command",
+      "severity": "normal",
+      "status": "pass",
+      "message": "Command exited 0",
+      "hint": "Run the saved stdout/stderr logs in the report; failing recall tests are the first repair target.",
+      "started_at": "2026-06-27T14:41:04+00:00",
+      "duration_seconds": 2.765,
+      "evidence": {
+        "command": [
+          "C:\\Users\\HUY\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+          "memory/test_recall.py"
+        ],
+        "cwd": "opus-animus\\opus-consilium",
+        "timeout_seconds": 60,
+        "returncode": 0,
+        "stdout_log": "harness\\runs\\20260627-234104-workspace-smoke\\logs\\recall-tests.stdout.txt",
+        "stderr_log": "harness\\runs\\20260627-234104-workspace-smoke\\logs\\recall-tests.stderr.txt"
+      },
+      "finished_at": "2026-06-27T14:41:07+00:00",
+      "suite": "workspace-smoke"
+    },
+    {
+      "id": "recall-index",
+      "type": "command",
+      "severity": "normal",
+      "status": "pass",
+      "message": "Command exited 0",
+      "hint": "The recall database should be rebuildable from checked-in markdown sources.",
+      "started_at": "2026-06-27T14:41:07+00:00",
+      "duration_seconds": 0.456,
+      "evidence": {
+        "command": [
+          "C:\\Users\\HUY\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+          "run_recall.py",
+          "index"
+        ],
+        "cwd": "opus-animus\\opus-consilium",
+        "timeout_seconds": 60,
+        "returncode": 0,
+        "stdout_log": "harness\\runs\\20260627-234104-workspace-smoke\\logs\\recall-index.stdout.txt",
+        "stderr_log": null
+      },
+      "finished_at": "2026-06-27T14:41:07+00:00",
+      "suite": "workspace-smoke"
+    },
+    {
+      "id": "recall-query-json",
+      "type": "command",
+      "severity": "normal",
+      "status": "pass",
+      "message": "Command exited 0",
+      "hint": "If this fails after recall-index passed, inspect memory/search.py and query parsing.",
+      "started_at": "2026-06-27T14:41:07+00:00",
+      "duration_seconds": 0.344,
+      "evidence": {
+        "command": [
+          "C:\\Users\\HUY\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+          "run_recall.py",
+          "weekly synthesis",
+          "--json",
+          "--limit",
+          "2"
+        ],
+        "cwd": "opus-animus\\opus-consilium",
+        "timeout_seconds": 30,
+        "returncode": 0,
+        "stdout_log": "harness\\runs\\20260627-234104-workspace-smoke\\logs\\recall-query-json.stdout.txt",
+        "stderr_log": null
+      },
+      "finished_at": "2026-06-27T14:41:07+00:00",
+      "suite": "workspace-smoke"
+    }
+  ]
+}

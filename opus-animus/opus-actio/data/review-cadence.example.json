@@ -1,0 +1,21 @@
+{
+  "$schema": "./review-cadence.schema.md",
+  "cadence": {
+    "morning": "daily",
+    "spending": "weekly",
+    "networth": "monthly",
+    "goals": "monthly",
+    "ips": "quarterly",
+    "portfolio": "quarterly",
+    "tax": "annual",
+    "retire": "annual"
+  },
+  "cadence_days": {
+    "daily": 1,
+    "weekly": 7,
+    "monthly": 30,
+    "quarterly": 91,
+    "annual": 365
+  },
+  "note": "Cadence map for /actio-review. Real run dates live in data/_local/review-state.json (gitignored). Contains no financial figures."
+}

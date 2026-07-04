@@ -1,0 +1,16 @@
+{
+  "monthly_jpy": {
+    "transport": 40000,
+    "groceries": 30000,
+    "dining": 20000,
+    "shopping": 30000,
+    "bills": 25000,
+    "subscription": 6000,
+    "health": 10000,
+    "travel": 20000,
+    "entertainment": 8000,
+    "services": 10000,
+    "other": 20000
+  },
+  "note": "Placeholder monthly JPY budget. User should copy/edit these values for real planning."
+}

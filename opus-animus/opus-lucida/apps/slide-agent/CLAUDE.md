@@ -5,7 +5,6 @@ Read first:
 - `../../docs/RD-jlpt-n2-slide-agent.md`
 - `../../docs/SD-jlpt-n2-slide-agent.md`
 - `../../docs/BD-jlpt-n2-slide-agent.md`
-- `../../ai/handoff-codex.md`
 
 ## Locked Contract
 

@@ -1,7 +1,7 @@
 # BD — Build Plan: Opus Nexus UI/UX — Phase 1 (Foundation)
 **Date:** 2026-05-30
 **Status:** ✅ Done (Steps 1–6 · commits 2daa8ec…d8d66cc)
-**Ref:** `docs/PLAN-uiux-transformation.md` (review A–G + §7/§8 addenda), `docs/handoff-codex-uiux.md`
+**Ref:** `docs/PLAN-uiux-transformation.md` (review A–G + §7/§8 addenda), `docs/review-uiux-opus-nexus.md`
 **Estimate:** ~2.5–3.5 giờ
 **Target file:** `health-app/dashboard.html` (single file)
 

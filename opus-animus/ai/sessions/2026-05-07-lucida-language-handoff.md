@@ -9,9 +9,9 @@ Realign Lucida handoff work to the existing project rule in `C:\Users\HUY\AI\opu
 - Verified that the project-wide handoff rule already exists in `AGENTS.md`.
 - Confirmed that resume authority should be:
   - `ai/status.md`
-  - `ai/handoff-codex.md`
+  - retired Codex resume anchor
 - Updated `ai/status.md` to match the actual active Lucida work.
-- Updated `ai/handoff-codex.md` with:
+- Updated the then-current Codex resume anchor with:
   - task
   - exact next action
   - touched files

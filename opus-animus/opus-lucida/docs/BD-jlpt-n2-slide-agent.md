@@ -16,7 +16,7 @@
 
 ## Phase 4 Execution Status - Codex 2026-05-14
 
-- [x] Step 0 sign-off written to `ai/handoff-codex.md`
+- [x] Step 0 sign-off recorded in session/status notes
 - [x] Phase A scaffold complete: `apps/slide-agent/`
 - [x] Phase B schemas complete: lesson, slide-plan, slots
 - [x] Phase C renderer complete: Mustache substitution, slot validator, deterministic output
@@ -72,10 +72,10 @@ Phase I — Doc sync + archive (24-26)   ~3h
 **Mục tiêu:** Codex confirm hiểu RD + SD; identify any blocking ambiguity before Phase A.
 **Việc làm:**
 - [ ] Codex đọc RD v0.3, SD v0.1, BD v0.1
-- [ ] Codex update `ai/handoff-codex.md` với: verdict (approve/request-changes), questions, locked decision interpretation acknowledgement
+- [ ] Codex record verdict in the current session/status notes: approve/request-changes, questions, locked decision interpretation acknowledgement
 - [ ] Nếu request-changes → Claude revises planning docs, loop
 - [ ] Nếu approve → mark RD+SD status v1.0, proceed Step 1
-**Smoke test:** `ai/handoff-codex.md` contains verdict line `Status: APPROVED FOR BUILD RD v0.4 / SD v0.2 / BD v0.2`
+**Smoke test:** current session/status notes contain verdict line `Status: APPROVED FOR BUILD RD v0.4 / SD v0.2 / BD v0.2`
 **Estimate:** 1-2h (Codex review + Q&A)
 
 ---
@@ -509,7 +509,7 @@ Nếu BD fail at any phase, rollback path:
 - [ ] NFR-007 Lucida content read-only verified (git diff `production/00-active/` empty except `frames/`)
 - [ ] NFR-008 audio sync verified (Step 22)
 - [ ] No hardcoded credentials (none expected anyway — agent reads filesystem only)
-- [ ] Codex sign-off on completion in `ai/handoff-codex.md`
+- [ ] Codex sign-off on completion recorded in current session/status notes
 - [ ] User sign-off after Phase H all 4 gates green
 
 ---

@@ -1,0 +1,37 @@
+{
+  "goals": [
+    {
+      "id": "emergency",
+      "name": "Emergency fund",
+      "type": "emergency",
+      "priority": "must_not_fail",
+      "target_jpy": 1200000,
+      "horizon_months": 0,
+      "risk_bucket": "preservation",
+      "funding_source": "cash"
+    },
+    {
+      "id": "house",
+      "name": "House down payment + fees",
+      "type": "house",
+      "priority": "important",
+      "target_jpy": 5000000,
+      "target_note": "Full-loan: target = down payment + 諸費用, KHONG phai gia nha",
+      "horizon_months": 18,
+      "risk_bucket": "preservation",
+      "funding_source": "idle_cash_beyond_ef"
+    },
+    {
+      "id": "retirement",
+      "name": "Retirement / FI",
+      "type": "retirement",
+      "priority": "important",
+      "target_jpy": null,
+      "horizon_months": 324,
+      "risk_bucket": "growth",
+      "funding_source": "invested"
+    }
+  ],
+  "monthly_savings_capacity_jpy": null,
+  "note": "Placeholder. Copy sang data/_local/goals.json va dien target/horizon that. risk_bucket: preservation(<3y, cash/bond) | balanced(3-10y) | growth(>10y, equity)."
+}

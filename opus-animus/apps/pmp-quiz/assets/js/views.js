@@ -26,29 +26,29 @@ const el = (tag, attrs = {}, children = []) => {
   return n;
 };
 
-// Quyết định smart CTA chính trên hero: ưu tiên theo phase + state.
+// QuyÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿t ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹nh smart CTA chÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­nh trÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªn hero: ÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°u tiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªn theo phase + state.
 function pickPrimaryCta(stats, plan) {
   const goal = plan?.dailyGoal || 30;
   const done = stats.todayAnswered || 0;
   const remain = Math.max(0, goal - done);
 
   if (!plan) {
-    return { label: "Thiết lập lịch học", action: "settings", sub: "Chọn ngày thi để app tự lên kế hoạch" };
+    return { label: "Set study plan", action: "settings", sub: "Choose your exam date so the app can plan the sprint" };
   }
   if (done >= goal) {
-    if (stats.wrongCount > 0) return { label: `Ôn thêm ${Math.min(10, stats.wrongCount)} câu sai`, action: "review", sub: "Đã đạt goal — bonus để nhớ lâu" };
-    return { label: "Xem thống kê hôm nay", action: "stats", sub: `Hoàn thành ${done}/${goal} câu · nghỉ ngơi nhé` };
+    if (stats.wrongCount > 0) return { label: `Review ${Math.min(10, stats.wrongCount)} wrong`, action: "review", sub: "Daily goal done - use bonus time for retention" };
+    return { label: "View today stats", action: "stats", sub: `Completed ${done}/${goal} questions today` };
   }
   if (plan.phase === "Review" && stats.wrongCount >= 5) {
-    return { label: `Ôn ${Math.min(20, stats.wrongCount)} câu sai`, action: "review", sub: `Còn ${remain} câu để đạt goal hôm nay` };
+    return { label: `Review ${Math.min(20, stats.wrongCount)} wrong`, action: "review", sub: `${remain} questions left for today's goal` };
   }
   if (plan.phase === "Mock") {
-    return { label: "Làm mock 60 câu", action: "practice", sub: "Mô phỏng đề — luyện áp lực thời gian" };
+    return { label: "Take 60-question mock", action: "practice", sub: "Timed exam-pressure practice" };
   }
   if (plan.phase === "Taper" && stats.wrongCount > 0) {
-    return { label: `Ôn nhẹ ${Math.min(10, stats.wrongCount)} câu sai`, action: "review", sub: "Giữ phong độ, đừng học nặng" };
+    return { label: `Light review ${Math.min(10, stats.wrongCount)} wrong`, action: "review", sub: "Keep sharp without heavy study" };
   }
-  return { label: `Luyện tập ${remain} câu mới`, action: "practice", sub: `${done}/${goal} câu hôm nay` };
+  return { label: `Practice ${remain} new questions`, action: "practice", sub: `${done}/${goal} questions today` };
 }
 
 function ringProgress(pctDone) {
@@ -89,35 +89,35 @@ export function renderHome({ stats, plan, tasks, weak, activity }, handlers) {
   // ===== 1. Hero =====
   const examStr = plan
     ? new Date(plan.examDate).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" })
-    : "—";
+    : "-";
 
   const hero = el("section", { class: "hero" }, [
     el("div", { class: "hero-left" }, [
       el("div", { class: "hero-countdown" }, [
-        el("div", { class: "count-num" }, plan ? String(plan.daysLeft) : "—"),
+        el("div", { class: "count-num" }, plan ? String(plan.daysLeft) : "-"),
         el("div", { class: "count-lbl" }, [
-          el("div", {}, "ngày đến kỳ thi"),
-          plan ? el("div", { class: "count-sub" }, `Thi ngày ${examStr}`) : null,
+          el("div", {}, "days until exam"),
+          plan ? el("div", { class: "count-sub" }, `Exam date ${examStr}`) : null,
         ]),
         plan ? el("span", { class: "phase-chip" }, plan.phase) : null,
       ]),
       el("div", { class: "hero-cta" }, [
         el("button", { class: "btn btn-lg", onclick: runCta }, [
-          el("span", { class: "btn-play-icon" }, "▶"),
+          el("span", { class: "btn-play-icon" }, ">"),
           el("span", {}, " " + cta.label),
         ]),
         el("div", { class: "cta-sub muted" }, cta.sub),
       ]),
       el("div", { class: "streak-line muted" },
         stats.streak > 0
-          ? `🔥 Streak ${stats.streak} ngày · đừng bỏ hôm nay`
-          : "Bắt đầu streak đầu tiên của bạn hôm nay"),
+          ? `Streak ${stats.streak} days - keep it today`
+          : "Start your first streak today"),
     ]),
     el("div", { class: "hero-right" }, [
       ringProgress(pctToday),
       el("div", { class: "ring-label" }, [
         el("div", { class: "ring-val" }, `${done}/${goal}`),
-        el("div", { class: "muted ring-sub" }, "câu hôm nay"),
+        el("div", { class: "muted ring-sub" }, "questions today"),
       ]),
     ]),
   ]);
@@ -131,17 +131,17 @@ export function renderHome({ stats, plan, tasks, weak, activity }, handlers) {
   const pct = (n) => (n / total) * 100;
   root.appendChild(el("section", { class: "coverage" }, [
     el("div", { class: "cov-head" }, [
-      el("span", { class: "muted" }, "Tiến độ toàn đề"),
-      el("span", {}, `${seen}/${total} câu · đúng ${stats.accuracy}%`),
+      el("span", { class: "muted" }, "Total coverage"),
+      el("span", {}, `${seen}/${total} questions - ${stats.accuracy}% accuracy`),
     ]),
     el("div", { class: "cov-bar" }, [
       el("div", { class: "cov-seg cov-correct", style: `width:${pct(correct)}%` }),
       el("div", { class: "cov-seg cov-wrong", style: `width:${pct(wrong)}%` }),
     ]),
     el("div", { class: "cov-legend muted" }, [
-      el("span", {}, `🟢 Đã đúng ${correct}`),
-      el("span", {}, `🔴 Cần ôn ${wrong}`),
-      el("span", {}, `⚪ Chưa làm ${total - seen}`),
+      el("span", {}, `Correct ${correct}`),
+      el("span", {}, `Review ${wrong}`),
+      el("span", {}, `Unseen ${total - seen}`),
     ]),
   ]));
 
@@ -149,42 +149,42 @@ export function renderHome({ stats, plan, tasks, weak, activity }, handlers) {
   if (plan) {
     const todayCard = el("section", { class: "card" }, [
       el("div", { class: "plan-head" }, [
-        el("h2", {}, "Hôm nay"),
-        el("span", { class: "phase-chip small" }, `${plan.phase} · ${plan.domainFocus}`),
+        el("h2", {}, "Today"),
+        el("span", { class: "phase-chip small" }, `${plan.phase} - ${plan.domainFocus}`),
       ]),
       el("p", { class: "muted" }, plan.focus),
     ]);
     const list = el("div", { class: "task-list" });
     if (tasks.length === 0) {
-      list.appendChild(el("div", { class: "empty" }, "Không có task hôm nay"));
+      list.appendChild(el("div", { class: "empty" }, "No tasks today"));
     }
     for (const t of tasks) {
-      const estimate = t.label.match(/(\d+)\s*câu/);
+      const estimate = t.label.match(/(\d+)\s*(?:questions|cau)/i);
       const mins = estimate ? Math.round(parseInt(estimate[1], 10) * 0.8) : null;
       list.appendChild(el("div", { class: "task" + (t.done ? " done" : "") }, [
-        el("div", { class: "task-check" + (t.done ? " checked" : "") }, t.done ? "✓" : ""),
+        el("div", { class: "task-check" + (t.done ? " checked" : "") }, t.done ? "ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ" : ""),
         el("div", { class: "task-body" }, [
           el("div", { class: "task-label" }, t.label),
           el("div", { class: "task-detail muted" }, [
             t.detail || "",
-            mins ? el("span", { class: "task-eta" }, ` · ≈ ${mins} phút`) : null,
+            mins ? el("span", { class: "task-eta" }, ` - approx ${mins} min`) : null,
           ]),
         ]),
         t.done
-          ? el("span", { class: "badge-done" }, "Xong")
+          ? el("span", { class: "badge-done" }, "Done")
           : el("button", {
               class: "btn btn-sm",
               onclick: () => t.action === "review" ? handlers.onStartReview() : handlers.onStartPractice(),
-            }, "Bắt đầu"),
+            }, "Start"),
       ]));
     }
     todayCard.appendChild(list);
     root.appendChild(todayCard);
   } else {
     root.appendChild(el("section", { class: "card setup-cta" }, [
-      el("h2", {}, "Thiết lập lịch học"),
-      el("p", { class: "muted" }, "Chọn ngày thi để app tự chia phase & gợi ý câu/ngày."),
-      el("button", { class: "btn", onclick: handlers.onOpenSettings }, "Thiết lập ngay"),
+      el("h2", {}, "Set study plan"),
+      el("p", { class: "muted" }, "Choose your exam date so the app can split phases and suggest a daily question goal."),
+      el("button", { class: "btn", onclick: handlers.onOpenSettings }, "Set plan"),
     ]));
   }
 
@@ -196,7 +196,7 @@ export function renderHome({ stats, plan, tasks, weak, activity }, handlers) {
     for (const a of activity) {
       const d = new Date(a.date);
       const level = a.count === 0 ? 0 : Math.min(4, Math.ceil((a.count / maxC) * 4));
-      heat.appendChild(el("div", { class: `heat-cell lvl-${level}`, title: `${a.date}: ${a.count} câu` }, [
+      heat.appendChild(el("div", { class: `heat-cell lvl-${level}`, title: `${a.date}: ${a.count} questions` }, [
         el("div", { class: "heat-day" }, dayLbl[d.getDay()]),
         el("div", { class: "heat-num" }, String(a.count)),
         el("div", { class: "heat-date" }, String(d.getDate())),
@@ -204,8 +204,8 @@ export function renderHome({ stats, plan, tasks, weak, activity }, handlers) {
     }
     root.appendChild(el("section", { class: "card heat-card" }, [
       el("div", { class: "section-row" }, [
-        el("h3", {}, "7 ngày gần nhất"),
-        el("span", { class: "muted" }, `${activity.reduce((n, a) => n + a.count, 0)} câu tuần này`),
+        el("h3", {}, "Last 7 days"),
+        el("span", { class: "muted" }, `${activity.reduce((n, a) => n + a.count, 0)} questions this week`),
       ]),
       heat,
     ]));
@@ -216,14 +216,14 @@ export function renderHome({ stats, plan, tasks, weak, activity }, handlers) {
     root.appendChild(el("section", { class: "card weak-card" }, [
       el("div", { class: "weak-head" }, [
         el("div", {}, [
-          el("div", { class: "weak-label muted" }, "Điểm yếu cần chú ý"),
-          el("div", { class: "weak-title" }, `${weak.domain} · ${weak.pct}% đúng`),
-          el("div", { class: "muted small" }, `${weak.correct}/${weak.total} câu đã làm trong domain này`),
+          el("div", { class: "weak-label muted" }, "Weak domain"),
+          el("div", { class: "weak-title" }, `${weak.domain} - ${weak.pct}% correct`),
+          el("div", { class: "muted small" }, `${weak.correct}/${weak.total} answered in this domain`),
         ]),
         el("button", {
           class: "btn",
           onclick: () => handlers.onStartDomain ? handlers.onStartDomain(weak.domain) : handlers.onStartPractice(),
-        }, "Luyện riêng 15 câu"),
+        }, "Practice 15"),
       ]),
     ]));
   }
@@ -231,27 +231,117 @@ export function renderHome({ stats, plan, tasks, weak, activity }, handlers) {
   // ===== 6. Mode cards compact =====
   const modes = el("section", { class: "mode-row" });
   modes.appendChild(el("button", { class: "mode-mini", onclick: () => handlers.onStartPractice() }, [
-    el("span", { class: "mini-ic" }, "📘"),
-    el("div", {}, [ el("div", { class: "mini-t" }, "Luyện tập"), el("div", { class: "mini-s muted" }, "Chọn số câu ngẫu nhiên") ]),
+    el("span", { class: "mini-ic" }, "ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€¹Ã…â€œ"),
+    el("div", {}, [ el("div", { class: "mini-t" }, "Practice 15"), el("div", { class: "mini-s muted" }, "ChÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân sÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u ngÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â«u nhiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªn") ]),
   ]));
   const revBtn = el("button", {
     class: "mode-mini" + (stats.wrongCount === 0 ? " dim" : ""),
     onclick: () => stats.wrongCount > 0 && handlers.onStartReview(),
   }, [
-    el("span", { class: "mini-ic" }, "🔁"),
+    el("span", { class: "mini-ic" }, "ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â"),
     el("div", {}, [
-      el("div", { class: "mini-t" }, "Ôn câu sai"),
-      el("div", { class: "mini-s muted" }, stats.wrongCount > 0 ? `${stats.wrongCount} câu trong danh sách` : "Chưa có câu sai"),
+      el("div", { class: "mini-t" }, "ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Ân cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u sai"),
+      el("div", { class: "mini-s muted" }, stats.wrongCount > 0 ? `${stats.wrongCount} cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u trong danh sÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ch` : "ChÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°a cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u sai"),
     ]),
   ]);
   modes.appendChild(revBtn);
   modes.appendChild(el("button", { class: "mode-mini", onclick: () => handlers.onStartMock ? handlers.onStartMock() : handlers.onStartPractice() }, [
-    el("span", { class: "mini-ic" }, "⏱️"),
-    el("div", {}, [ el("div", { class: "mini-t" }, "Mock exam"), el("div", { class: "mini-s muted" }, "60 câu liên tục") ]),
+    el("span", { class: "mini-ic" }, "ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â±ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â"),
+    el("div", {}, [ el("div", { class: "mini-t" }, "Mock exam"), el("div", { class: "mini-s muted" }, "60 cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u liÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªn tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¥c") ]),
+  ]));
+  modes.appendChild(el("button", { class: "mode-mini weak-mode", onclick: () => handlers.onOpenWeakness ? handlers.onOpenWeakness() : handlers.onStartPractice() }, [
+    el("span", { class: "mini-ic" }, "!"),
+    el("div", {}, [
+      el("div", { class: "mini-t" }, "Weak 360"),
+      el("div", { class: "mini-s muted" }, "Practice 15"),
+    ]),
   ]));
   root.appendChild(modes);
 
   return root;
+}
+
+export function renderWeaknessDashboard({ stats, categoryStats, totalQuestions }, handlers) {
+  const seen = stats.seenCount || 0;
+  const wrong = stats.wrongCount || 0;
+  const correct = Math.max(0, seen - wrong);
+  const unseen = Math.max(0, totalQuestions - seen);
+  const pctSeen = totalQuestions ? Math.round((seen / totalQuestions) * 100) : 0;
+
+  const root = el("div");
+  root.appendChild(el("section", { class: "card weak-hero" }, [
+    el("div", {}, [
+      el("div", { class: "weak-eyebrow" }, "Personal weak-area drill"),
+      el("h2", {}, "Weak 360"),
+      el("p", { class: "muted" },
+        "360 cau duoc chon tu error database cua ban: stakeholder sequencing, governance, authority boundary, communication, agile value, risk/opportunity, escalation traps."),
+    ]),
+    el("div", { class: "weak-hero-actions" }, [
+      el("button", { class: "btn btn-lg", onclick: () => handlers.onStart(30) }, "Start 30"),
+      el("button", { class: "btn secondary", onclick: () => handlers.onSetup() }, "Chon so cau"),
+      el("button", {
+        class: "btn secondary",
+        disabled: wrong === 0 ? "" : null,
+        onclick: () => wrong > 0 && handlers.onReviewWrong(),
+      }, wrong > 0 ? `On ${wrong} cau sai` : "Chua co cau sai"),
+    ]),
+  ]));
+
+  root.appendChild(el("section", { class: "weak-metrics" }, [
+    metricBox(`${seen}/${totalQuestions}`, "Da lam", `${pctSeen}% coverage`),
+    metricBox(`${correct}`, "Dang giu dung", "unique correct"),
+    metricBox(`${wrong}`, "Can on lai", "wrong list rieng"),
+    metricBox(`${stats.accuracy}%`, "Accuracy", `${stats.totalAnswered} luot tra loi`),
+  ]));
+
+  root.appendChild(el("section", { class: "card" }, [
+    el("div", { class: "cov-head" }, [
+      el("span", { class: "muted" }, "Tien do Weak 360"),
+      el("span", {}, `${unseen} cau chua lam`),
+    ]),
+    el("div", { class: "cov-bar" }, [
+      el("div", { class: "cov-seg cov-correct", style: `width:${totalQuestions ? (correct / totalQuestions) * 100 : 0}%` }),
+      el("div", { class: "cov-seg cov-wrong", style: `width:${totalQuestions ? (wrong / totalQuestions) * 100 : 0}%` }),
+    ]),
+    el("div", { class: "cov-legend muted" }, [
+      el("span", {}, `Dung ${correct}`),
+      el("span", {}, `Sai ${wrong}`),
+      el("span", {}, `Chua lam ${unseen}`),
+    ]),
+  ]));
+
+  const grid = el("div", { class: "weak-category-grid" });
+  for (const c of categoryStats) {
+    const done = c.seen || 0;
+    const pct = c.total ? Math.round((done / c.total) * 100) : 0;
+    grid.appendChild(el("button", { class: "weak-category", onclick: () => handlers.onStartCategory(c.name, 20) }, [
+      el("div", { class: "weak-cat-head" }, [
+        el("strong", {}, c.name.replaceAll("-", " ")),
+        el("span", {}, `${done}/${c.total}`),
+      ]),
+      el("div", { class: "weak-cat-bar" }, [
+        el("div", { style: `width:${pct}%` }),
+      ]),
+      el("div", { class: "muted small" }, `${pct}% done - ${c.wrong || 0} wrong`),
+    ]));
+  }
+  root.appendChild(el("section", { class: "card" }, [
+    el("div", { class: "section-row" }, [
+      el("h3", {}, "Practice by weakness"),
+      el("button", { class: "btn btn-sm secondary", onclick: handlers.onReset }, "Reset weak tracking"),
+    ]),
+    grid,
+  ]));
+
+  return root;
+}
+
+function metricBox(value, label, sub) {
+  return el("div", { class: "stat-box" }, [
+    el("div", { class: "num" }, value),
+    el("div", { class: "lbl" }, label),
+    sub ? el("div", { class: "muted small" }, sub) : null,
+  ]);
 }
 
 export function renderSettings(current, onSave, onCancel, totalQuestions = 1385) {
@@ -279,7 +369,7 @@ export function renderSettings(current, onSave, onCancel, totalQuestions = 1385)
   const redrawPreview = () => {
     preview.innerHTML = "";
     if (!dateInput.value) {
-      preview.appendChild(el("p", { class: "muted" }, "Chọn ngày thi để xem lịch học gợi ý."));
+      preview.appendChild(el("p", { class: "muted" }, "ChÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân ngÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y thi ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ xem lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹ch hÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Âc gÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â£i ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â½."));
       return;
     }
     const sched = generateSchedule(
@@ -293,8 +383,8 @@ export function renderSettings(current, onSave, onCancel, totalQuestions = 1385)
 
     preview.appendChild(el("div", { class: "schedule-head" }, [
       el("div", {}, [
-        el("strong", {}, `${sched.totalDays} ngày`),
-        el("span", { class: "muted" }, ` đến ngày thi · gợi ý ${suggested} câu/ngày`),
+        el("strong", {}, `${sched.totalDays} ngÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y`),
+        el("span", { class: "muted" }, ` ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿n ngÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y thi ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· gÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â£i ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â½ ${suggested} cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u/ngÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y`),
       ]),
       el("button", {
         type: "button",
@@ -303,7 +393,7 @@ export function renderSettings(current, onSave, onCancel, totalQuestions = 1385)
           goalInput.value = String(suggested);
           goalTouched = true;
         },
-      }, "Dùng gợi ý"),
+      }, "DÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ng gÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â£i ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â½"),
     ]));
 
     const list = el("ol", { class: "phase-list" });
@@ -312,9 +402,9 @@ export function renderSettings(current, onSave, onCancel, totalQuestions = 1385)
         el("div", { class: "phase-line" }, [
           el("span", { class: "phase-chip small" }, p.name),
           el("span", { class: "phase-dates" },
-            `${fmtDate(p.startDate)} – ${fmtDate(p.endDate)}`),
-          el("span", { class: "phase-days" }, `${p.days} ngày`),
-          el("span", { class: "phase-goal" }, `${p.goalPerDay} câu/ngày`),
+            `${fmtDate(p.startDate)} ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ ${fmtDate(p.endDate)}`),
+          el("span", { class: "phase-days" }, `${p.days} ngÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y`),
+          el("span", { class: "phase-goal" }, `${p.goalPerDay} cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u/ngÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y`),
         ]),
         el("div", { class: "phase-desc muted" }, p.description),
       ]));
@@ -333,7 +423,7 @@ export function renderSettings(current, onSave, onCancel, totalQuestions = 1385)
 
   setTimeout(redrawPreview, 0);
 
-  // ── AI Explain section (provider-aware) ──
+  // ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ AI Explain section (provider-aware) ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬
   const providerSelect = el("select", { class: "gemini-model-select" });
   for (const p of PROVIDERS) {
     const opt = el("option", { value: p.id }, p.label);
@@ -354,7 +444,7 @@ export function renderSettings(current, onSave, onCancel, totalQuestions = 1385)
   geminiKeyInp.addEventListener("change", () => localStorage.setItem(GEMINI_KEY_STORAGE, geminiKeyInp.value.trim()));
   geminiFields.appendChild(el("div", { class: "setup-row" }, [el("label", {}, "Model:"), geminiModelSel]));
   geminiFields.appendChild(el("div", { class: "setup-row" }, [el("label", {}, "API Key:"), geminiKeyInp]));
-  geminiFields.appendChild(el("p", { class: "muted small" }, "Lấy key miễn phí tại aistudio.google.com"));
+  geminiFields.appendChild(el("p", { class: "muted small" }, "LÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥y key miÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦n phÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­ tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡i aistudio.google.com"));
 
   // Copilot fields
   const copilotFields = el("div");
@@ -369,7 +459,7 @@ export function renderSettings(current, onSave, onCancel, totalQuestions = 1385)
   copilotTokenInp.addEventListener("change", () => localStorage.setItem(COPILOT_TOKEN_STORAGE, copilotTokenInp.value.trim()));
   copilotFields.appendChild(el("div", { class: "setup-row" }, [el("label", {}, "Model:"), copilotModelSel]));
   copilotFields.appendChild(el("div", { class: "setup-row" }, [el("label", {}, "GitHub Token:"), copilotTokenInp]));
-  copilotFields.appendChild(el("p", { class: "muted small" }, "Tạo PAT tại github.com/settings/tokens — cần scope models:read (hoặc dùng token Copilot)"));
+  copilotFields.appendChild(el("p", { class: "muted small" }, "TÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡o PAT tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡i github.com/settings/tokens ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â cÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â§n scope models:read (hoÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â·c dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ng token Copilot)"));
 
   const aiFieldsWrap = el("div");
   const refreshAiFields = () => {
@@ -383,39 +473,40 @@ export function renderSettings(current, onSave, onCancel, totalQuestions = 1385)
   refreshAiFields();
 
   return el("div", { class: "card" }, [
-    el("h2", {}, "Lịch học PMP"),
-    el("p", { class: "muted" }, "Chọn ngày thi — app tự chia 4 phase (Coverage → Review → Mock → Taper) và gợi ý câu/ngày."),
-    el("div", { class: "setup-row" }, [el("label", {}, "Ngày thi:"), dateInput]),
-    el("div", { class: "setup-row" }, [el("label", {}, "Câu / ngày:"), goalInput]),
+    el("h2", {}, "LÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹ch hÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Âc PMP"),
+    el("p", { class: "muted" }, "ChÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân ngÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y thi ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â app tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â± chia 4 phase (Coverage ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ Review ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ Mock ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ Taper) vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  gÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â£i ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â½ cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u/ngÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y."),
+    el("div", { class: "setup-row" }, [el("label", {}, "NgÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y thi:"), dateInput]),
+    el("div", { class: "setup-row" }, [el("label", {}, "CÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u / ngÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y:"), goalInput]),
     preview,
     el("div", { class: "quiz-actions" }, [
-      el("button", { class: "btn ghost", onclick: onCancel }, "Hủy"),
+      el("button", { class: "btn ghost", onclick: onCancel }, "HÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â§y"),
       el("button", {
         class: "btn",
         onclick: () => {
-          if (!dateInput.value) { alert("Chọn ngày thi trước"); return; }
+          if (!dateInput.value) { alert("ChÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân ngÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â y thi trÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Âºc"); return; }
           onSave({
             examDate: dateInput.value,
             dailyGoal: Math.max(5, parseInt(goalInput.value, 10) || 30),
           });
         },
-      }, "Lưu"),
+      }, "LÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°u"),
     ]),
     el("div", { class: "gemini-key-section" }, [
-      el("h3", {}, "Giải thích AI"),
-      el("p", { class: "muted" }, "Chọn AI provider để giải thích lý do sai sau mỗi câu trả lời sai."),
+      el("h3", {}, "GiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£i thÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­ch AI"),
+      el("p", { class: "muted" }, "ChÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân AI provider ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ giÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£i thÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­ch lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â½ do sai sau mÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Âi cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u trÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£ lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Âi sai."),
       el("div", { class: "setup-row" }, [el("label", {}, "Provider:"), providerSelect]),
       aiFieldsWrap,
     ]),
     el("div", { class: "gemini-key-section" }, [
-      el("h3", {}, "Data — Export / Import"),
-      el("p", { class: "muted" }, "Chuyển dữ liệu giữa các origin (ví dụ: localhost:8000 → localhost:8765)."),
+      el("h3", {}, "Data ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â Export / Import"),
+      el("p", { class: "muted" }, "ChuyÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢n dÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¯ liÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡u giÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¯a cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡c origin (vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­ dÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¥: localhost:8000 ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ localhost:8765)."),
       el("div", { class: "quiz-actions", style: "margin-top:10px" }, [
         el("button", {
           class: "btn secondary",
           onclick: () => {
             const PMP_KEYS = [
               "pmp.history", "pmp.wrong", "pmp.settings", "pmp.seen", "pmp.days",
+              "pmp.weak.history", "pmp.weak.wrong", "pmp.weak.seen", "pmp.weak.days",
               "pmp_ai_provider", "pmp_gemini_key", "pmp_gemini_model",
               "pmp_copilot_token", "pmp_copilot_model",
             ];
@@ -430,7 +521,7 @@ export function renderSettings(current, onSave, onCancel, totalQuestions = 1385)
             a.download = `pmp-backup-${new Date().toISOString().slice(0,10)}.json`;
             a.click();
           },
-        }, "⬇ Export backup"),
+        }, "ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ Export backup"),
         (() => {
           const fileInput = el("input", { type: "file", accept: ".json", style: "display:none" });
           fileInput.addEventListener("change", () => {
@@ -441,15 +532,15 @@ export function renderSettings(current, onSave, onCancel, totalQuestions = 1385)
               try {
                 const dump = JSON.parse(e.target.result);
                 for (const [k, v] of Object.entries(dump)) localStorage.setItem(k, v);
-                alert(`Imported ${Object.keys(dump).length} keys. Trang sẽ reload.`);
+                alert(`Imported ${Object.keys(dump).length} keys. Trang sÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â½ reload.`);
                 location.reload();
               } catch {
-                alert("File không hợp lệ.");
+                alert("File khÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ng hÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â£p lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡.");
               }
             };
             reader.readAsText(file);
           });
-          const btn = el("button", { class: "btn secondary", onclick: () => fileInput.click() }, "⬆ Import backup");
+          const btn = el("button", { class: "btn secondary", onclick: () => fileInput.click() }, "ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â  Import backup");
           const wrap = document.createDocumentFragment();
           wrap.appendChild(fileInput);
           wrap.appendChild(btn);
@@ -463,25 +554,25 @@ export function renderSettings(current, onSave, onCancel, totalQuestions = 1385)
 export function renderSetup(defaultN, maxN, onStart, onCancel, unseenCount = maxN) {
   const input = el("input", { type: "number", min: "5", max: String(maxN), value: String(defaultN) });
   return el("div", { class: "card" }, [
-    el("h2", {}, "Thiết lập phiên luyện tập"),
+    el("h2", {}, "ThiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿t lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p phiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªn luyÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡n tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­p"),
     el("p", { class: "muted" },
       unseenCount > 0
-        ? `Ưu tiên lấy câu chưa làm trước: còn ${unseenCount}/${maxN} câu.`
-        : "Bạn đã làm hết ngân hàng câu; phiên mới sẽ trộn lại toàn bộ.",
+        ? `ÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â¯u tiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªn lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¥y cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u chÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°a lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â m trÃƒÆ’Ã¢â‚¬Â Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Âºc: cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â²n ${unseenCount}/${maxN} cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u.`
+        : "BÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡n ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£ lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â m hÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿t ngÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢n hÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â ng cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u; phiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªn mÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‚Âºi sÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â½ trÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢n lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡i toÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â n bÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢.",
     ),
     el("div", { class: "setup-row" }, [
-      el("label", {}, "Số câu:"),
+      el("label", {}, "SÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u:"),
       input,
     ]),
     el("div", { class: "quiz-actions" }, [
-      el("button", { class: "btn secondary", onclick: onCancel }, "Hủy"),
+      el("button", { class: "btn secondary", onclick: onCancel }, "HÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â§y"),
       el("button", {
         class: "btn",
         onclick: () => {
           const n = Math.max(1, Math.min(maxN, parseInt(input.value, 10) || defaultN));
           onStart(n);
         },
-      }, "Bắt đầu"),
+      }, "BÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¯t ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â§u"),
     ]),
   ]);
 }
@@ -494,7 +585,7 @@ async function screenshotCard(cardEl, btn) {
   if (aiWrapEl)  aiWrapEl.style.visibility  = "hidden";
   const orig = btn.textContent;
   btn.disabled = true;
-  btn.textContent = "Đang chụp...";
+  btn.textContent = "ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚Âang chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¥p...";
   try {
     const canvas = await window.html2canvas(cardEl, {
       backgroundColor: "#1C2220",
@@ -508,7 +599,7 @@ async function screenshotCard(cardEl, btn) {
           await navigator.clipboard.write([
             new ClipboardItem({ "image/png": blob }),
           ]);
-          btn.textContent = "✓ Đã copy!";
+          btn.textContent = "ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£ copy!";
           setTimeout(() => { btn.textContent = orig; }, 2000);
           resolve();
         } catch (e) {
@@ -517,7 +608,7 @@ async function screenshotCard(cardEl, btn) {
       }, "image/png");
     });
   } catch (e) {
-    btn.textContent = "Lỗi clipboard";
+    btn.textContent = "LÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Âi clipboard";
     setTimeout(() => { btn.textContent = orig; }, 2000);
   } finally {
     if (actionsEl) actionsEl.style.visibility = "";
@@ -560,29 +651,29 @@ export function renderQuestion(quiz, onPick, onNext, picked, isCorrect, pendingM
   const confirmRow = isMulti && !isAnswered
     ? el("div", { class: "quiz-actions" }, [
         el("span", { class: "muted", style: "font-size:13px" },
-          staging.size > 0 ? `Đã chọn ${staging.size}/${needed}` : `Chọn ${needed} đáp án`),
+          staging.size > 0 ? `ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£ chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân ${staging.size}/${needed}` : `ChÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân ${needed} ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡p ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡n`),
         el("button", {
           class: "btn" + (staging.size === needed ? "" : " secondary"),
           disabled: staging.size !== needed ? "" : null,
           onclick: () => staging.size === needed && onSubmitMulti(),
-        }, `Xác nhận (${staging.size}/${needed})`),
+        }, `XÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡c nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­n (${staging.size}/${needed})`),
       ])
     : null;
 
   const kbdHints = ["A","B","C","D"];
   if (isMulti) kbdHints.push("E");
   const shortcutHint = el("div", { class: "shortcut-hint muted" }, [
-    "Phím tắt: ",
+    "PhÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­m tÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¯t: ",
     ...kbdHints.flatMap((k, i) => i === 0 ? [el("kbd",{},k)] : [" ", el("kbd",{},k)]),
-    isAnswered ? " · Enter để sang câu tiếp"
-      : isMulti ? " · Enter để xác nhận" : "",
+    isAnswered ? " ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· Enter ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ sang cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u tiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿p"
+      : isMulti ? " ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· Enter ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€ Ã¢â‚¬â„¢ xÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡c nhÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â­n" : "",
   ]);
 
   const card = el("div", { class: "card" }, [
     el("div", { class: "progress" }, [el("div", { class: "progress-bar" })]),
     el("div", { class: "qmeta" }, [
-      el("span", {}, `Câu ${quiz.index + 1}/${quiz.questions.length} · #${q.id}`
-        + (isMulti ? ` · Chọn ${needed} đáp án` : "")),
+      el("span", {}, `CÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u ${quiz.index + 1}/${quiz.questions.length} ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· #${q.id}`
+        + (isMulti ? ` ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· ChÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Ân ${needed} ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡p ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡n` : "")),
       el("span", {}, `Domain: ${q.domain}`),
     ]),
     el("div", { class: "qtext" }, q.question),
@@ -595,28 +686,28 @@ export function renderQuestion(quiz, onPick, onNext, picked, isCorrect, pendingM
   if (isAnswered) {
     const correctDisplay = correctArr.join(", ");
     card.appendChild(el("div", { class: isCorrect ? "feedback feedback-ok" : "feedback feedback-err" }, [
-      el("h4", {}, isCorrect ? "Đúng" : `Sai — Đáp án đúng: ${correctDisplay}`),
+      el("h4", {}, isCorrect ? "ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºng" : `Sai ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚ÂÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡p ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡n ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºng: ${correctDisplay}`),
       q.explanation ? el("div", {}, q.explanation) : null,
     ]));
 
     if (!isCorrect) {
       const aiBox = el("div", { class: "ai-explain-box" });
-      const explainBtn = el("button", { class: "btn btn-sm ai-explain-btn" }, "💡 Giải thích AI");
+      const explainBtn = el("button", { class: "btn btn-sm ai-explain-btn" }, "ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¡ GiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£i thÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­ch AI");
       explainBtn.addEventListener("click", async () => {
         explainBtn.disabled = true;
-        explainBtn.textContent = "Đang phân tích...";
+        explainBtn.textContent = "ÃƒÆ’Ã¢â‚¬Å¾Ãƒâ€šÃ‚Âang phÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢n tÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­ch...";
         const pickedDisplay = pickedArr.join(", ");
         try {
           const text = await explainWrongAnswer(q, pickedDisplay, correctDisplay);
           aiBox.innerHTML = "";
-          aiBox.appendChild(el("div", { class: "ai-label" }, "💡 Phân tích AI · PMP Coach"));
+          aiBox.appendChild(el("div", { class: "ai-label" }, "ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¡ PhÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢n tÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­ch AI ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· PMP Coach"));
           aiBox.appendChild(el("div", { class: "ai-text" }, text));
           explainBtn.style.display = "none";
         } catch (err) {
           aiBox.innerHTML = "";
-          aiBox.appendChild(el("div", { class: "ai-error muted" }, `Lỗi: ${err.message}`));
+          aiBox.appendChild(el("div", { class: "ai-error muted" }, `LÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Âi: ${err.message}`));
           explainBtn.disabled = false;
-          explainBtn.textContent = "💡 Thử lại";
+          explainBtn.textContent = "ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¡ ThÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â­ lÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¡i";
         }
       });
       card.appendChild(el("div", { class: "ai-explain-wrap" }, [explainBtn, aiBox]));
@@ -624,14 +715,14 @@ export function renderQuestion(quiz, onPick, onNext, picked, isCorrect, pendingM
 
     const screenshotBtn = el("button", {
       class: "btn secondary screenshot-btn",
-      title: "Chụp & copy vào clipboard",
+      title: "ChÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â¥p & copy vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â o clipboard",
       onclick: () => screenshotCard(card, screenshotBtn),
-    }, "📷 Copy");
+    }, "ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â· Copy");
 
     card.appendChild(el("div", { class: "quiz-actions" }, [
       screenshotBtn,
       el("button", { class: "btn", onclick: onNext },
-        quiz.isLast() ? "Xem kết quả ▶" : "Câu tiếp ▶"),
+        quiz.isLast() ? "Xem kÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿t quÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£ ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“Ãƒâ€šÃ‚Â¶" : "CÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u tiÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿p ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“Ãƒâ€šÃ‚Â¶"),
     ]));
   }
 
@@ -642,9 +733,9 @@ export function renderResult(session, onHome, onReviewWrong) {
   const root = el("div");
   root.appendChild(el("div", { class: "card" }, [
     el("div", { class: "result-summary" }, [
-      el("div", { class: "label" }, "Kết quả"),
+      el("div", { class: "label" }, "KÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â¿t quÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚ÂºÃƒâ€šÃ‚Â£"),
       el("div", { class: "big" }, `${session.pct}%`),
-      el("div", { class: "label" }, `${session.correct}/${session.total} câu đúng`),
+      el("div", { class: "label" }, `${session.correct}/${session.total} cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u ÃƒÆ’Ã¢â‚¬Å¾ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºng`),
     ]),
   ]));
 
@@ -654,7 +745,7 @@ export function renderResult(session, onHome, onReviewWrong) {
     const pct = s.total ? Math.round((s.correct / s.total) * 100) : 0;
     grid.appendChild(el("div", { class: "stat-box" }, [
       el("div", { class: "num" }, `${pct}%`),
-      el("div", { class: "lbl" }, `${d} · ${s.correct}/${s.total}`),
+      el("div", { class: "lbl" }, `${d} ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· ${s.correct}/${s.total}`),
     ]));
   }
   statsCard.appendChild(grid);
@@ -662,9 +753,9 @@ export function renderResult(session, onHome, onReviewWrong) {
 
   root.appendChild(el("div", { class: "card" }, [
     el("div", { class: "quiz-actions" }, [
-      el("button", { class: "btn secondary", onclick: onHome }, "Về trang chủ"),
+      el("button", { class: "btn secondary", onclick: onHome }, "VÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â trang chÃƒÆ’Ã‚Â¡Ãƒâ€šÃ‚Â»Ãƒâ€šÃ‚Â§"),
       session.wrongIds.length > 0
-        ? el("button", { class: "btn", onclick: onReviewWrong }, `Ôn ngay ${session.wrongIds.length} câu sai`)
+        ? el("button", { class: "btn", onclick: onReviewWrong }, `ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Ân ngay ${session.wrongIds.length} cÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢u sai`)
         : el("span", {}, ""),
     ]),
   ]));
@@ -673,34 +764,45 @@ export function renderResult(session, onHome, onReviewWrong) {
 
 export function renderHistory(history, onClear) {
   if (history.length === 0) {
-    return el("div", { class: "card" }, [el("div", { class: "empty" }, "Chưa có phiên nào.")]);
+    return el("div", { class: "card" }, [el("div", { class: "empty" }, "No sessions yet.")]);
   }
   const list = el("ul", { class: "history-list" });
   for (const s of history) {
     const d = new Date(s.startedAt);
+    const modeLabel = s.mode === "weak-review" ? "Weak 360 review"
+      : s.mode === "weak-practice" ? "Weak 360"
+      : s.mode === "review" ? "Review wrong"
+      : "Practice";
     list.appendChild(el("li", {}, [
-      el("span", {}, `${d.toLocaleString("vi-VN")} · ${s.mode === "review" ? "Ôn sai" : "Luyện tập"} · ${s.total} câu`),
+      el("span", {}, `${d.toLocaleString("vi-VN")} - ${modeLabel} - ${s.total} questions`),
       el("span", { class: "score" }, `${s.pct}% (${s.correct}/${s.total})`),
     ]));
   }
   return el("div", { class: "card" }, [
-    el("h2", {}, "Lịch sử phiên"),
+    el("h2", {}, "Session history"),
     list,
     el("div", { class: "quiz-actions" }, [
       el("span", {}, ""),
-      el("button", { class: "btn secondary", onclick: onClear }, "Xóa lịch sử"),
+      el("button", { class: "btn secondary", onclick: onClear }, "Clear all history"),
     ]),
   ]);
 }
 
 export function renderStats(history) {
   if (history.length === 0) {
-    return el("div", { class: "card" }, [el("div", { class: "empty" }, "Chưa có dữ liệu thống kê.")]);
+    return el("div", { class: "card" }, [el("div", { class: "empty" }, "No stats yet.")]);
   }
   const agg = {};
+  const tracks = {
+    main: { total: 0, correct: 0 },
+    weak: { total: 0, correct: 0 },
+  };
   let totalQ = 0, totalC = 0;
   for (const s of history) {
     totalQ += s.total; totalC += s.correct;
+    const track = s.mode && s.mode.startsWith("weak-") ? "weak" : "main";
+    tracks[track].total += s.total;
+    tracks[track].correct += s.correct;
     for (const [d, v] of Object.entries(s.byDomain || {})) {
       if (!agg[d]) agg[d] = { total: 0, correct: 0 };
       agg[d].total += v.total;
@@ -711,18 +813,26 @@ export function renderStats(history) {
   const boxes = el("div", { class: "stats-grid" });
   boxes.appendChild(el("div", { class: "stat-box" }, [
     el("div", { class: "num" }, `${overall}%`),
-    el("div", { class: "lbl" }, `Tổng · ${totalC}/${totalQ}`),
+    el("div", { class: "lbl" }, `All sessions - ${totalC}/${totalQ}`),
   ]));
+  for (const [track, s] of Object.entries(tracks)) {
+    if (!s.total) continue;
+    const pct = Math.round((s.correct / s.total) * 100);
+    boxes.appendChild(el("div", { class: "stat-box" }, [
+      el("div", { class: "num" }, `${pct}%`),
+      el("div", { class: "lbl" }, `${track === "weak" ? "Weak 360" : "Main quiz"} - ${s.correct}/${s.total}`),
+    ]));
+  }
   for (const [d, s] of Object.entries(agg)) {
     const pct = s.total ? Math.round((s.correct / s.total) * 100) : 0;
     boxes.appendChild(el("div", { class: "stat-box" }, [
       el("div", { class: "num" }, `${pct}%`),
-      el("div", { class: "lbl" }, `${d} · ${s.correct}/${s.total}`),
+      el("div", { class: "lbl" }, `${d} - ${s.correct}/${s.total}`),
     ]));
   }
   return el("div", { class: "card" }, [
-    el("h2", {}, "Thống kê tổng"),
-    el("p", { class: "muted" }, `Dựa trên ${history.length} phiên gần nhất`),
+    el("h2", {}, "Stats"),
+    el("p", { class: "muted" }, `Based on ${history.length} synced sessions from Main quiz and Weak 360.`),
     boxes,
   ]);
 }

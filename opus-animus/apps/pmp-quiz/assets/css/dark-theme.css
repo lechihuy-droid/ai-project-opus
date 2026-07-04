@@ -1,26 +1,24 @@
 /* ============================================================
-   OPUS ANIMUS — Dark Theme for PMP Quiz App
+   OPUS ANIMUS â€” Dark Theme for PMP Quiz App
    Drop-in replacement for assets/css/styles.css
    
-   Fonts: Playfair Display SC (headings) + Inter (UI)
-   Palette: Obsidian #0B0D0C · Gold #C9A84C · Verdigris #3DAA88
+   Fonts: system UI stack
+   Palette: Obsidian #0B0D0C Â· Gold #C9A84C Â· Verdigris #3DAA88
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
-
 :root {
-  --navy:       #0B0D0C;   /* was #051C2C — now obsidian */
-  --deep-blue:  #141918;   /* was #034B6F — now dark surface */
-  --blue:       #C9A84C;   /* was #2251FF — now gold */
-  --blue-hover: #B8952A;   /* was #1A3FD9 — now gold hover */
-  --cyan:       #3DAA88;   /* was #00A9F4 — now verdigris */
-  --bg:         #0B0D0C;   /* was #F7F8FA — now obsidian */
-  --surface:    #141918;   /* was #FFFFFF — now dark surface */
+  --navy:       #0B0D0C;   /* was #051C2C â€” now obsidian */
+  --deep-blue:  #141918;   /* was #034B6F â€” now dark surface */
+  --blue:       #C9A84C;   /* was #2251FF â€” now gold */
+  --blue-hover: #B8952A;   /* was #1A3FD9 â€” now gold hover */
+  --cyan:       #3DAA88;   /* was #00A9F4 â€” now verdigris */
+  --bg:         #0B0D0C;   /* was #F7F8FA â€” now obsidian */
+  --surface:    #141918;   /* was #FFFFFF â€” now dark surface */
   --border:     rgba(255,255,255,0.08); /* was #E6E8EB */
   --muted:      #7A9088;   /* was #8E9AA5 */
-  --text:       #E8EDE9;   /* was #0A1F2D — now light */
-  --text-soft:  #B4C4BC;   /* was #2B3A45 — now silver */
-  --success:    #3DAA88;   /* was #00A19A — now verdigris */
+  --text:       #E8EDE9;   /* was #0A1F2D â€” now light */
+  --text-soft:  #B4C4BC;   /* was #2B3A45 â€” now silver */
+  --success:    #3DAA88;   /* was #00A19A â€” now verdigris */
   --success-bg: #0D2620;   /* was #E1F5F3 */
   --danger:     #C04858;   /* was #E30613 */
   --danger-bg:  #260F14;   /* was #FDECEC */
@@ -34,12 +32,14 @@
   --gold-dim:   #7A6838;
   --verdigris:  #3DAA88;
   --dim:        #4D5E58;
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-ui);
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -65,7 +65,7 @@ body {
   border-bottom: 1px solid var(--border);
 }
 .topbar h1 {
-  font-family: "Playfair Display SC", serif;
+  font-family: var(--font-heading);
   font-size: 20px;
   font-weight: 700;
   color: var(--gold);
@@ -114,7 +114,7 @@ body {
   box-shadow: 0 2px 12px rgba(0,0,0,0.4);
 }
 .card h2 {
-  font-family: "Playfair Display SC", serif;
+  font-family: var(--font-heading);
   font-size: 20px;
   font-weight: 700;
   color: var(--text);
@@ -122,7 +122,7 @@ body {
   letter-spacing: 0.02em;
 }
 .card h3 {
-  font-family: "Playfair Display SC", serif;
+  font-family: var(--font-heading);
   font-size: 16px;
   font-weight: 700;
   color: var(--text);
@@ -171,6 +171,101 @@ body {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   margin-top: 14px;
+}
+
+.mode-mini.weak-mode {
+  border-color: rgba(201,168,76,0.35);
+  background: rgba(201,168,76,0.06);
+}
+
+.mode-mini.weak-mode .mini-ic {
+  color: var(--gold);
+  border-color: rgba(201,168,76,0.45);
+}
+
+.weak-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: center;
+  border-left: 3px solid var(--gold);
+}
+
+.weak-eyebrow {
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.weak-hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 180px;
+}
+
+.weak-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.weak-category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.weak-category {
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 15px;
+  color: var(--text);
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, transform .15s;
+}
+
+.weak-category:hover {
+  background: rgba(201,168,76,0.06);
+  border-color: rgba(201,168,76,0.45);
+  transform: translateY(-1px);
+}
+
+.weak-cat-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13px;
+  text-transform: capitalize;
+}
+
+.weak-cat-head span {
+  color: var(--gold);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.weak-cat-bar {
+  height: 5px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 12px 0 8px;
+}
+
+.weak-cat-bar div {
+  height: 100%;
+  background: linear-gradient(90deg, var(--verdigris), var(--gold));
 }
 
 /* Progress */
@@ -308,7 +403,7 @@ body {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.04em;
-  font-family: "Playfair Display SC", serif;
+  font-family: var(--font-heading);
 }
 
 /* Actions / buttons */
@@ -390,10 +485,10 @@ body {
 }
 .metric.accent { background: rgba(201,168,76,0.08); }
 .metric-val {
-  font-family: "Playfair Display SC", serif;
+  font-family: var(--font-heading);
   font-size: 26px;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   color: var(--text);
   line-height: 1.1;
 }
@@ -487,7 +582,7 @@ body {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   margin-bottom: 4px;
-  font-family: "Playfair Display SC", serif;
+  font-family: var(--font-heading);
 }
 .feedback-ok { background: var(--success-bg); border-color: var(--success); color: var(--text-soft); }
 .feedback-ok h4 { color: var(--success); }
@@ -528,7 +623,7 @@ body {
 }
 .ai-error { font-size: 13px; margin-top: 6px; }
 
-/* Screenshot button — same size as primary btn */
+/* Screenshot button â€” same size as primary btn */
 .screenshot-btn { min-width: 110px; }
 
 /* Gemini model select */
@@ -561,11 +656,11 @@ body {
 /* Result */
 .result-summary { text-align: center; padding: 24px 0 10px; }
 .result-summary .big {
-  font-family: "Playfair Display SC", serif;
+  font-family: var(--font-heading);
   font-size: 64px;
   font-weight: 700;
   color: var(--gold);
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   line-height: 1;
   margin: 10px 0;
 }
@@ -592,11 +687,11 @@ body {
   text-align: center;
 }
 .stat-box .num {
-  font-family: "Playfair Display SC", serif;
+  font-family: var(--font-heading);
   font-size: 28px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   line-height: 1.1;
 }
 .stat-box .lbl {
@@ -718,9 +813,9 @@ body {
 .hero-left { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
 .hero-countdown { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
 .count-num {
-  font-family: "Playfair Display SC", serif;
+  font-family: var(--font-heading);
   font-size: 56px; font-weight: 700; line-height: 1;
-  letter-spacing: -0.01em; color: var(--gold);
+  letter-spacing: 0; color: var(--gold);
 }
 .count-lbl { font-size: 14px; color: rgba(255,255,255,0.85); }
 .count-lbl > div:first-child { font-weight: 500; }
@@ -760,7 +855,7 @@ body {
 .ring-fg { fill: none; stroke: var(--gold); stroke-width: 9; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
 .ring-label { text-align: center; }
 .ring-val {
-  font-family: "Playfair Display SC", serif;
+  font-family: var(--font-heading);
   font-size: 18px; font-weight: 700; color: #fff;
 }
 .ring-sub { font-size: 11px; color: rgba(255,255,255,0.6); }
@@ -828,14 +923,14 @@ body {
 .heat-cell.lvl-3 { background: #254E35; color: #6DD4A0; }
 .heat-cell.lvl-4 { background: #2D6040; color: #9DEAD8; }
 .heat-day { font-weight: 600; font-size: 11px; opacity: 0.9; }
-.heat-num { font-size: 18px; font-weight: 700; font-family: "Playfair Display SC", serif; line-height: 1.1; }
+.heat-num { font-size: 18px; font-weight: 700; font-family: var(--font-heading); line-height: 1.1; }
 .heat-date { font-size: 10px; color: var(--muted); margin-top: 1px; }
 
 /* Weak domain card */
 .weak-card { margin-top: 18px; border-left: 3px solid var(--warn-border); }
 .weak-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
 .weak-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; color: var(--muted); }
-.weak-title { font-size: 20px; font-weight: 700; margin: 4px 0; color: var(--text); font-family: "Playfair Display SC", serif; }
+.weak-title { font-size: 20px; font-weight: 700; margin: 4px 0; color: var(--text); font-family: var(--font-heading); }
 
 /* Mode mini row */
 .mode-row {
@@ -858,7 +953,7 @@ body {
 .mode-mini:hover { border-color: rgba(201,168,76,0.4); transform: translateY(-1px); }
 .mode-mini.dim { opacity: 0.4; cursor: not-allowed; }
 .mini-ic { font-size: 22px; }
-.mini-t { font-weight: 600; font-size: 14px; color: var(--text); font-family: "Playfair Display SC", serif; }
+.mini-t { font-weight: 600; font-size: 14px; color: var(--text); font-family: var(--font-heading); }
 .mini-s { font-size: 12px; color: var(--muted); }
 
 @media (max-width: 720px) {

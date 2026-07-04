@@ -301,7 +301,7 @@ Alcohol:           0 g        (mục tiêu giảm mỡ)
 
 **Ảnh hóa đơn:** đọc tổng tiền + tên cửa hàng → tự categorize theo loại cửa hàng
 
-**Schema — `finance-data/YYYY-MM-DD.json`:**
+**Schema — `opus-animus/opus-actio/finance-data/YYYY-MM-DD.json`:**
 ```json
 {
   "date": "YYYY-MM-DD",
@@ -327,7 +327,7 @@ health:          500,000 VND
 bills:         2,000,000 VND
 ```
 
-**Ghi file:** `finance-data/YYYY-MM-DD.json` + cập nhật `finance-data/index.json`
+**Ghi file:** `opus-animus/opus-actio/finance-data/YYYY-MM-DD.json` + cập nhật `opus-animus/opus-actio/finance-data/index.json`
 
 **Reply format:**
 ```

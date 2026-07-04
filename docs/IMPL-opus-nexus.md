@@ -39,7 +39,7 @@
 |---|---|---|
 | `health-data/` | Daily health + meal logs (JSON per day) | `ghGet` via PAT in localStorage |
 | `workout-data/` | Workout sessions | `ghGet` via PAT |
-| `finance-data/` | Finance transactions | `ghGet` via PAT |
+| `opus-animus/opus-actio/finance-data/` | Finance transactions | `ghGet` via PAT |
 | Google Calendar | Upcoming events, free windows | `gapi.client.calendar` — OAuth GIS browser flow |
 | Google Tasks | Open tasks, overdue | `gapi.client.tasks` — same OAuth token |
 

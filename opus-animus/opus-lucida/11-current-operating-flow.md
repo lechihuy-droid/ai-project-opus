@@ -69,7 +69,6 @@ Lucida
 ```text
 README.md
 ai/status.md
-ai/handoff-codex.md
 ai/handoff-claude.md
 10-project-architecture-map.md
 strategy/standards/01-lucida-lesson-architecture-standard.md
@@ -219,7 +218,6 @@ Project continuity rule:
 
 ```text
 ai/status.md = live project state (project-wide, owner-agnostic)
-ai/handoff-codex.md = resume cho Codex
 ai/handoff-claude.md = resume cho Claude
 Do not rely on ad-hoc context files as the primary live handoff system
 once ai/ folder exists.

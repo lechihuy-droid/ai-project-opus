@@ -1,0 +1,45 @@
+{
+  "$schema": "./investment-policy.schema.md",
+  "risk": {
+    "capacity": "high",
+    "tolerance": "moderate",
+    "policy_note": "Capacity > tolerance: dung tolerance lam tran cam xuc cho phan growth, nhung allocation theo bucket."
+  },
+  "bucket_targets": {
+    "preservation": {
+      "equity": 0.0,
+      "bond": 0.2,
+      "cash": 0.8,
+      "note": "Goal <3y: nha, khan cap"
+    },
+    "balanced": {
+      "equity": 0.5,
+      "bond": 0.4,
+      "cash": 0.1,
+      "note": "Goal 3-10y"
+    },
+    "growth": {
+      "equity": 0.85,
+      "bond": 0.15,
+      "cash": 0.0,
+      "note": "Goal >10y: huu/FI"
+    }
+  },
+  "constraints": {
+    "max_single_name_pct": 10,
+    "max_sector_pct": 25,
+    "core_satellite": "Core = low-cost index (eMAXIS Slim / VT / VOO); satellite (single stock) <= 30% cua equity sleeve"
+  },
+  "rebalance": {
+    "drift_threshold_pct": 5,
+    "cadence": "quarterly_review",
+    "tax_order": "Harvest loss in Tokutei truoc, realize gain trong NISA"
+  },
+  "implementation": {
+    "equity_core": "NISA growth (index)",
+    "retirement": "iDeCo (employee kosei nenkin; contribution per eligibility) + NISA tsumitate",
+    "overflow": "Tokutei (taxable)",
+    "philosophy": "Vanguard: low-cost, diversified, buy-and-hold; khong san pham phi cao"
+  },
+  "note": "Placeholder policy template. Copy to data/_local/investment-policy.json and adjust there; do not put balances, income, holdings, or target amounts in tracked files."
+}

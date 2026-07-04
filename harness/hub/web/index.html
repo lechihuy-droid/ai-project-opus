@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harness Hub</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="/static/styles-hub.css">
+  <link rel="stylesheet" href="/static/styles-workspace.css">
+  <script src="/static/charts.js" defer></script>
+  <script src="/static/app.js" defer></script>
+  <script src="/static/workspace.js" defer></script>
+</head>
+<body>
+  <div class="hub-shell" id="hub-shell">
+    <header class="hub-header">
+      <div class="hub-header-inner">
+        <div class="hub-brand-group">
+          <button class="hub-menu-toggle" id="hub-sidebar-toggle" type="button" aria-controls="hub-sidebar" aria-expanded="false" aria-label="Toggle navigation">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </button>
+          <a class="hub-brand" href="#/" aria-label="Harness Hub home">
+            <span class="hub-mark">HARNESS</span>
+            <span class="hub-brand-title">Harness Hub</span>
+          </a>
+        </div>
+        <div class="hub-status-group" aria-label="System status" aria-live="polite">
+          <span class="hub-status-chip" id="hub-status-server" data-status="ok" aria-label="Server online">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span class="hub-status-label">server</span>
+          </span>
+          <span class="hub-status-chip" id="hub-status-degradation" data-status="unknown" aria-label="Degradation unknown">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span class="hub-status-label">deg L?</span>
+          </span>
+          <span class="hub-status-chip" id="hub-status-runs" data-status="unknown" aria-label="Live runs unknown">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span class="hub-status-label">? runs</span>
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <aside class="hub-sidebar" id="hub-sidebar" aria-label="Primary navigation">
+      <nav class="hub-nav" aria-label="Main navigation">
+        <section class="hub-nav-section" aria-labelledby="hub-nav-monitor">
+          <div class="hub-nav-label" id="hub-nav-monitor">MONITOR</div>
+          <a href="#/" data-route="/">Dashboard</a>
+          <a href="#/runs" data-route="/runs">Runs</a>
+          <a href="#/sessions" data-route="/sessions">Sessions</a>
+        </section>
+        <section class="hub-nav-section" aria-labelledby="hub-nav-control">
+          <div class="hub-nav-label" id="hub-nav-control">CONTROL</div>
+          <a href="#/jobs" data-route="/jobs">Jobs</a>
+          <a href="#/governance" data-route="/governance">Governance</a>
+          <a href="#/violations" data-route="/violations">Violations</a>
+        </section>
+        <section class="hub-nav-section" aria-labelledby="hub-nav-ai">
+          <div class="hub-nav-label" id="hub-nav-ai">AI</div>
+          <a href="#/chat" data-route="/chat">Chat</a>
+          <a href="#/workspace" data-route="/workspace">Workspace</a>
+          <a href="#/usage" data-route="/usage">Usage</a>
+        </section>
+        <section class="hub-nav-section" aria-labelledby="hub-nav-system">
+          <div class="hub-nav-label" id="hub-nav-system">SYSTEM</div>
+          <a href="#/suites" data-route="/suites">Suites</a>
+          <a href="#/tools" data-route="/tools">Tools</a>
+          <a href="#/inspect" data-route="/inspect">Inspect</a>
+          <a href="#/board" data-route="/board">Board</a>
+        </section>
+      </nav>
+    </aside>
+
+    <button class="hub-sidebar-backdrop" id="hub-sidebar-backdrop" type="button" aria-label="Close navigation"></button>
+
+    <main class="hub-content" id="hub-content">
+      <div id="app" class="hub-app">
+        <div class="card">Loading...</div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
