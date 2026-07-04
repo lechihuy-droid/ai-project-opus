@@ -120,7 +120,7 @@ Chuẩn hoá log agent thành event thống nhất. Mỗi parser expose `paths()
 Nguồn chân lý cho path và model:
 
 - **Paths:** `ROOT`, `RUNS_DIR`, `SUITES_DIR`, `JOBS_DIR`, `USAGE_SOURCES` (claude/codex/inspect), `INSPECT_MEP_DIR`.
-- **Chat:** `CHAT_MODEL_CATALOG` (20 model NVIDIA có rank/category/bestFor/strengths/weaknesses), `CHAT_MODELS` (derive từ catalog), `CHAT_DEFAULT_MODEL = nvidia/nemotron-3-super-120b-a12b`, `CHAT_MAX_TOKENS = 16384`, `CHAT_REASONING` (cờ reasoning theo prefix họ model).
+- **Chat:** `CHAT_MODEL_CATALOG` (21 model NVIDIA có rank/category/bestFor/strengths/weaknesses), `CHAT_MODELS` (derive từ catalog), `CHAT_DEFAULT_MODEL = nvidia/nemotron-3-super-120b-a12b`, `CHAT_MAX_TOKENS = 16384`, `CHAT_REASONING` (cờ reasoning theo prefix họ model).
 - **Guardrails job:** `STEP_CAP=50`, `JOB_TIME_CAP_SECONDS=1800`, `JOB_MAX_RUNS=3`, `JOB_BLOCKED_TIERS=[destructive]`, `JOB_ALLOW_AGENTS={codex}`, `JOB_TTL_SECONDS=3600`.
 - **Behavior thresholds:** `LOOP_CONSECUTIVE_THRESHOLD=12`, `ENTROPY_WINDOW=20`, `ENTROPY_THRESHOLD=0.3`.
 - `risk_tiers.json` + `load_risk_tiers()` — phân tầng tool/command/network/destructive.
@@ -146,7 +146,170 @@ Nguồn chân lý cho path và model:
 
 ---
 
-## 9. Bản đồ file nhanh
+## 9. Mở rộng: Super Agent Harness
+
+Harness Hub hiện là **control-plane**: giám sát, chat, usage, replay, suites,
+governance và git-jobs. Lớp mở rộng tiếp theo là **orchestration-plane** cho
+workflow khai báo, thư viện skill, và sub-agent có quản trị. Mục tiêu là giữ
+kiến trúc ghép nối lỏng: UI, cấu hình, runtime và execution backend tách nhau
+bằng file/schema rõ ràng.
+
+### Nguyên tắc kiến trúc
+
+- **Config-first, không framework-first.** Source of truth là file của Harness
+  (`workflow.yaml`, `agent.yaml`, `SKILL.md`, blackboard artifacts). LangGraph,
+  nếu dùng, chỉ là executor adapter phía sau, không phải format lõi.
+- **Markdown cho policy, YAML cho topology.** NLAH-style Markdown phù hợp cho
+  phase rules, verification rules, recovery rules và stopping conditions. Graph
+  node/edge/handoff nên là YAML/JSON có schema để validate, diff và test được.
+- **Sub-agent không spawn tự do.** Lead agent chỉ gửi child task request. Harness
+  chọn agent profile, scope, tool/skill allowlist, timeout, budget và risk tier.
+  Backend nên tái dùng substrate `gitjobs`/managed runner hiện có thay vì cho
+  agent tự chạy terminal process không kiểm soát.
+- **Skill read-only by default.** Skill package là source artifact. Agent được
+  đề xuất patch qua git-job/review flow; không tự mutate `SKILL.md` trực tiếp
+  khi gặp lỗi.
+- **Blackboard có schema, append-only.** Sub-agent phối hợp qua file chung có
+  cấu trúc, không chat trực tiếp với nhau và không ghi đè state quan trọng.
+
+### Substrate đề xuất
+
+```
+harness/hub/
+├─ workflows/
+│  ├─ code-agent.workflow.yaml   # graph: nodes, edges, handoff, stop rules
+│  └─ code-agent.policy.md       # NLAH rules: verify/recover/HITL
+├─ agents/
+│  └─ reviewer.agent.yaml        # model, tools, skills, budget, scope
+├─ skills/
+│  └─ <skill-name>/SKILL.md      # skill package + scripts/references
+├─ blackboard/
+│  └─ <run_id>/
+│     ├─ state.json              # typed shared state
+│     ├─ events.jsonl            # append-only timeline
+│     ├─ claims.jsonl            # findings/claims with provenance
+│     ├─ decisions.md            # human/agent decisions
+│     └─ artifacts/              # diffs, reports, generated files
+└─ services/
+   ├─ workflow.py                # parse/validate/execute workflow IR
+   ├─ agents.py                  # agent profiles + child task packets
+   ├─ skills.py                  # metadata index + progressive disclosure
+   ├─ orchestrator.py            # node execution + handoff + HITL gates
+   └─ blackboard.py              # append/read state/events/artifacts
+```
+
+Các thư mục trên là extension target, không thay thế `runs/`, `jobs/`,
+`.cache/` hay `services/*` hiện có. Runtime vẫn có thể chạy in-process trong
+FastAPI ở phase đầu.
+
+### Workflow customization
+
+Workflow không nên hardcode bằng vòng lặp Python. Runtime đọc workflow spec rồi
+chuyển thành một IR nhỏ:
+
+```
+workflow.yaml + policy.md
+  -> validate graph/schema/risk
+  -> build execution plan
+  -> execute node
+  -> write blackboard
+  -> verify / handoff / HITL
+```
+
+Endpoint tương lai:
+
+| Nhóm | Endpoint | Vai trò |
+|---|---|---|
+| Workflows | `GET /api/workflows`, `POST /api/workflows/validate` | đọc/validate workflow |
+| Workflow runs | `POST /api/workflows/{id}/runs`, `GET /api/workflows/runs/{id}/stream` | chạy + SSE |
+| Blackboard | `GET /api/blackboard/{run_id}` | đọc state/events/artifacts |
+
+LangGraph có thể được thêm sau như `services/langgraph_adapter.py`, nhận IR đã
+validate từ `workflow.py`. Không để UI hoặc config phụ thuộc trực tiếp vào
+LangGraph-specific object.
+
+### Skill Library
+
+Skill là package tái sử dụng, không chỉ là prompt:
+
+- `SKILL.md` chứa metadata, trigger rules, usage instructions, scripts và
+  references.
+- `skills.py` tạo index nhẹ: name, description, path, required tools, risk tier.
+- Progressive disclosure: prompt ban đầu chỉ thấy metadata. Khi workflow/agent
+  chọn skill, runtime mới đọc full `SKILL.md` và các resource cần thiết.
+- Telemetry: mỗi skill call ghi result/failure vào blackboard hoặc usage log.
+- Evolution: failure-mode patch phải đi qua proposed diff/git-job/review, không
+  auto-edit skill package.
+
+Endpoint tương lai:
+
+| Nhóm | Endpoint | Vai trò |
+|---|---|---|
+| Skills | `GET /api/skills` | metadata index |
+| Skill detail | `GET /api/skills/{id}` | read full package detail theo quyền |
+| Skill telemetry | `GET /api/skills/{id}/usage` | lỗi, success rate, recent runs |
+
+### Sub-agent orchestration
+
+Sub-agent được tạo từ **child task packet**:
+
+```json
+{
+  "parent_run_id": "run-...",
+  "objective": "Review UI drift against DESIGN.md",
+  "agent_profile": "reviewer",
+  "allowed_paths": ["harness/hub/web"],
+  "allowed_tools": ["read", "test", "screenshot"],
+  "skills": ["opus-design-reviewer"],
+  "budget": {"seconds": 900, "steps": 30},
+  "handoff_contract": "write findings to blackboard/claims.jsonl"
+}
+```
+
+Lead agent không tự cấp quyền mới cho child agent. `governance` kiểm tra
+profile, risk tier, blocked tiers, path scope và HITL trước khi launch. Child
+agent báo cáo bằng blackboard artifacts/events; parent tổng hợp từ đó.
+
+Endpoint tương lai:
+
+| Nhóm | Endpoint | Vai trò |
+|---|---|---|
+| Agents | `GET /api/agents` | agent profiles |
+| Child run | `POST /api/agents/runs` | tạo sub-agent managed run |
+| Child stream | `GET /api/agents/runs/{id}/stream` | SSE tiến trình |
+
+### Visual Workflow Builder
+
+Canvas kéo-thả là editor/visualizer cho file cấu hình, không phải nguồn chân lý.
+
+- Agent node -> `agents/*.yaml` reference.
+- Skill node gắn vào agent -> thêm skill id/path vào `skills:` của agent node.
+- Edge -> handoff logic trong `workflow.yaml`.
+- Save -> generate/patch YAML + validate schema + show diff.
+- Run -> gọi workflow run API.
+
+Frontend nên thêm sau khi headless runtime chạy ổn. Với constraint hiện tại
+(vanilla JS, không CDN/build step), phase đầu có thể dùng SVG/HTML thuần cho
+canvas đơn giản; không đưa dependency đồ thị nặng vào Hub.
+
+### Roadmap khuyến nghị
+
+1. **Declarative Core:** thêm schema + parser cho workflow/agent/skill index;
+   chạy workflow headless qua API; test parse/validate/handoff.
+2. **Managed Sub-agents:** tái dùng `gitjobs`/managed runner, child task packet,
+   blackboard append-only, replay được full chain.
+3. **Skill Library:** metadata index, progressive disclosure, telemetry, proposed
+   patch flow.
+4. **Visual Builder:** canvas edit YAML, validate trước khi save/run, git diff
+   đọc được bằng mắt.
+
+Go/no-go: **Go với scope cắt nhỏ.** Không build toàn bộ Super Agent Harness một
+lần. Build Declarative Harness Core trước; khi core chạy được bằng file + tests
++ replay, mới thêm visual builder và executor adapter.
+
+---
+
+## 10. Bản đồ file nhanh
 
 ```
 harness/hub/

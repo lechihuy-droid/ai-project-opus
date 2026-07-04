@@ -3166,8 +3166,11 @@ async function route() {
   clearAutoRefresh();
   clearJobStream();
   clearChatStream();
+  window.HubWorkspace?.unmount?.();
   const hash = location.hash || "#/";
   const parts = hash.slice(1).split("/").filter(Boolean).map(decodeURIComponent);
+  const isWorkspaceRoute = parts[0] === "workspace";
+  document.body.classList.toggle("route-workspace", isWorkspaceRoute);
   try {
     if (parts.length === 0) {
       await renderDashboard();
@@ -3185,6 +3188,13 @@ async function route() {
       await renderSuites();
     } else if (parts[0] === "chat") {
       await renderChat();
+    } else if (parts[0] === "workspace") {
+      setActiveNav("/workspace");
+      app.innerHTML = "";
+      if (!window.HubWorkspace?.mount) {
+        throw new Error("Workspace module failed to load.");
+      }
+      window.HubWorkspace.mount(app);
     } else if (parts[0] === "usage") {
       await renderUsage();
     } else if (parts[0] === "tools") {

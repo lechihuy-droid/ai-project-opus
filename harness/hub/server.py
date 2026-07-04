@@ -14,7 +14,28 @@ from fastapi.responses import FileResponse, PlainTextResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 import config
-from services import behavior, board, chat, gitjobs, governance, inspect_evals, integrity, replay, runs, suites, trigger, usage
+from services import (
+    behavior,
+    board,
+    chat,
+    gitjobs,
+    governance,
+    inspect_evals,
+    integrity,
+    replay,
+    runs,
+    runtime_agents,
+    runtime_events,
+    runtime_interrupts,
+    runtime_memory,
+    runtime_pipeline,
+    runtime_policy,
+    runtime_skills,
+    runtime_state,
+    suites,
+    trigger,
+    usage,
+)
 
 
 app = FastAPI(title="Harness Hub")
@@ -104,6 +125,113 @@ def api_chat(payload: dict[str, object]) -> StreamingResponse:
             yield _sse("error", {"message": "Chat stream error", "code": None})
 
     return StreamingResponse(events(), media_type="text/event-stream")
+
+
+@app.get("/api/agents")
+def api_agents() -> list[dict[str, object]]:
+    return runtime_agents.list_agents()
+
+
+@app.get("/api/agent/runs")
+def api_agent_runs() -> list[dict[str, object]]:
+    return runtime_state.list_runs()
+
+
+@app.post("/api/agent/runs")
+def api_create_agent_run(payload: dict[str, object]) -> StreamingResponse:
+    return StreamingResponse(runtime_pipeline.create_run_stream(payload), media_type="text/event-stream")
+
+
+@app.get("/api/agent/runs/{run_id}")
+def api_agent_run(run_id: str) -> dict[str, object]:
+    try:
+        return runtime_state.read_run(run_id)
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.get("/api/agent/runs/{run_id}/events")
+def api_agent_run_events(run_id: str) -> list[dict[str, object]]:
+    try:
+        return runtime_events.read_events(run_id)
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.post("/api/agent/runs/{run_id}/interrupts/{interrupt_id}/resume")
+def api_agent_run_interrupt_resume(run_id: str, interrupt_id: str, payload: dict[str, object]) -> StreamingResponse:
+    try:
+        runtime_state.read_run(run_id)
+        runtime_interrupts.get_interrupt(run_id, interrupt_id)
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+    return StreamingResponse(
+        runtime_pipeline.resume_run_stream(run_id, interrupt_id, payload),
+        media_type="text/event-stream",
+    )
+
+
+@app.get("/api/skills")
+def api_skills() -> list[dict[str, object]]:
+    return runtime_skills.list_skills()
+
+
+@app.get("/api/skills/{skill_id}/usage")
+def api_skill_usage(skill_id: str) -> dict[str, object]:
+    try:
+        return runtime_skills.skill_usage(skill_id)
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.get("/api/skills/{skill_id}")
+def api_skill(skill_id: str) -> dict[str, object]:
+    try:
+        return runtime_skills.get_skill(skill_id)
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.get("/api/memory")
+def api_memory() -> list[dict[str, object]]:
+    return runtime_memory.list_memory()
+
+
+@app.get("/api/memory/candidates")
+def api_memory_candidates() -> list[dict[str, object]]:
+    return runtime_memory.list_candidates()
+
+
+@app.post("/api/memory/candidates/{candidate_id}/accept")
+def api_memory_candidate_accept(candidate_id: str) -> dict[str, object]:
+    try:
+        return runtime_memory.accept_candidate(candidate_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.post("/api/memory/candidates/{candidate_id}/reject")
+def api_memory_candidate_reject(candidate_id: str) -> dict[str, object]:
+    try:
+        return runtime_memory.reject_candidate(candidate_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.get("/api/guardrails/decisions")
+def api_guardrail_decisions() -> list[dict[str, object]]:
+    return runtime_policy.list_decisions()
+
+
+@app.post("/api/guardrails/decisions/command")
+def api_guardrail_command_decision(payload: dict[str, object]) -> dict[str, object]:
+    subject_id = str(payload.get("subject_id") or "manual")
+    command = payload.get("command")
+    return runtime_policy.decide_command(subject_id, command)
 
 
 @app.get("/api/runs")

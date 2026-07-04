@@ -97,12 +97,12 @@ def test_chat_models_returns_catalog(client: TestClient) -> None:
     assert data["models"] == config.CHAT_MODELS
     assert data["default"] == "nvidia/nemotron-3-super-120b-a12b"
     assert data["catalog"] == config.CHAT_MODEL_CATALOG
-    assert len(data["catalog"]) == 20
+    assert len(data["catalog"]) == 21
 
 
 def test_chat_models_are_derived_from_catalog() -> None:
     assert config.CHAT_MODELS == [row["id"] for row in config.CHAT_MODEL_CATALOG]
-    assert len(config.CHAT_MODELS) == 20
+    assert len(config.CHAT_MODELS) == 21
 
 
 def test_chat_rejects_unknown_model(client: TestClient) -> None:

@@ -11,11 +11,17 @@ ROOT = HARNESS_DIR.parent
 RUNS_DIR = HARNESS_DIR / "runs"
 SUITES_DIR = HARNESS_DIR / "suites"
 JOBS_DIR = HUB_DIR / "jobs"
+RUNTIME_DIR = HUB_DIR / "runtime"
+RUNTIME_THREADS_DIR = RUNTIME_DIR / "threads"
+RUNTIME_RUNS_DIR = RUNTIME_DIR / "runs"
+RUNTIME_STORE_DIR = RUNTIME_DIR / "store"
 PORT = 8799
 STEP_CAP = 50
 JOB_AGENT_CMD = "codex"
 JOB_TIME_CAP_SECONDS = 1800
 JOB_MAX_RUNS = 3
+RUNTIME_MAX_CHILD_RUNS = 3
+RUNTIME_CHILD_TIMEOUT_SECONDS = 900
 JOB_BLOCKED_TIERS = ["destructive"]
 JOB_TTL_SECONDS = 3600
 JOB_ALLOW_AGENTS = {"codex"}
@@ -289,6 +295,18 @@ CHAT_MODEL_CATALOG: list[dict[str, Any]] = [
         "weaknesses": ["Lower priority than v1.5"],
         "recommendedUse": "Reserve fallback when v1.5 is unavailable.",
         "avoidWhen": "v1.5 or stronger Nemotron models are available.",
+    },
+    {
+        "rank": 21,
+        "id": "z-ai/glm-5.2",
+        "shortName": "GLM 5.2",
+        "label": "#21 GLM 5.2 - Agentic reasoning candidate",
+        "category": "Primary",
+        "bestFor": "Agentic reasoning / coding candidate",
+        "strengths": ["Reasoning", "Coding candidate", "Agentic workflows"],
+        "weaknesses": ["Newly added; needs harness benchmark"],
+        "recommendedUse": "Trial model for coding, planning, and agentic reasoning tasks.",
+        "avoidWhen": "You need a model already validated by local benchmark results.",
     },
 ]
 CHAT_MODELS = [row["id"] for row in CHAT_MODEL_CATALOG]
