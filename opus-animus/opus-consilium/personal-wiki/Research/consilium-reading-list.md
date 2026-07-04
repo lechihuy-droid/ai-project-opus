@@ -6,7 +6,7 @@ tags: [reading-list, research-intake, strategic-articles, consilium, decision-br
 status: active
 confidence: medium
 created: 2026-06-22
-updated: 2026-06-27
+updated: 2026-07-04
 ---
 
 # Consilium Reading List
@@ -193,6 +193,28 @@ Added date: 2026-06-26
 Decision label: keep
 Reading mode: Do not read sequentially. Use as a lookup index and promote only individually verified high-value papers to the main wiki.
 Cross-reference: RL-20260622-003 — Agent Systems with Harness Engineering; RL-20260626-005 — Agent Harness Research Pack 2026.
+```
+
+---
+
+### RL-20260704-007 — The Shift to Agentic AI: Evidence from Codex
+
+```text
+ID: RL-20260704-007
+Title: The Shift to Agentic AI: Evidence from Codex
+URL: https://arxiv.org/abs/2606.26959
+Source: arXiv
+Source tier: tier_e_research
+Layer: strategy, evidence, action
+Lane: tech_learning, opus_architecture, ai_sdlc, threat_lens, workforce_reskill
+Labels: agentic-ai, codex, multi-agent-operation, skills, agent-adoption, concurrent-agents, opus-animus, software-delivery-threat
+Priority: P0
+Status: queued
+Reason to read: Candidate evidence that agentic AI usage is shifting from single assistant interactions toward multi-agent operation, skill use, and more complex agent-managed workflows.
+Expected use: Deep-read to validate whether the paper should update operator-topology.md, skill-optimization-loop.md, wiki-eval-loop.md, and the Strategy/agentic-operating-model.md threat lens.
+Added date: 2026-07-04
+Decision label: test
+Verification note: Added from Consilium news scan. Verify abstract, methodology, and metrics before promoting to main wiki.
 ```
 
 ---
