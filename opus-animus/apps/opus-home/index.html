@@ -95,6 +95,7 @@ function Sidebar({ view, setView, date, lastRefresh, compact=false }) {
     { key:"fde",     label:"FDE" },
     { key:"lucida",  label:"Lucida" },
     { key:"actio",   label:"Actio" },
+    { key:"plan",    label:"Plan" },
   ];
   return (
     <div style={{width:compact?"100%":200,background:"var(--surface)",borderRight:compact?"none":"1px solid var(--border-subtle)",borderBottom:compact?"1px solid var(--border-subtle)":"none",display:"flex",flexDirection:compact?"row":"column",flexShrink:0,minHeight:compact?"auto":"100vh",overflow:compact?"hidden":"visible"}}>
@@ -2457,6 +2458,302 @@ function ActioView() {
   );
 }
 
+function PlanView() {
+  const [d, setD] = useState(null);
+  const [err, setErr] = useState(null);
+  const [tab, setTab] = useState("month");
+  const [scenario, setScenario] = useState("mid");
+  const [unit, setUnit] = useState("yen");
+
+  useEffect(() => {
+    api("/api/actio/plan").then(r => {
+      if (r.ok === false) setErr(r.error || "loi"); else setD(r);
+    }).catch(e => setErr(String(e)));
+  }, []);
+
+  const postPatch = patch => {
+    api("/api/actio/plan/state", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify(patch),
+    }).then(r => {
+      if (r.ok === false) throw new Error(r.error || "state update failed");
+    }).catch(e => setErr(String(e)));
+  };
+
+  const toggleChecklist = (id, checked) => {
+    const month = d?.monthly?.checklist_month;
+    if (!id || !month) return;
+    setD(prev => {
+      const monthly = prev?.monthly || {};
+      return {
+        ...prev,
+        monthly: {
+          ...monthly,
+          checklist: (monthly.checklist || []).map(item => item.id === id ? {...item, checked} : item),
+        },
+      };
+    });
+    postPatch({checklist:{[month]:{[id]:checked}}});
+  };
+
+  const toggleOneoff = (id, done) => {
+    if (!id) return;
+    const doneDate = done ? new Date().toISOString().slice(0, 10) : null;
+    setD(prev => {
+      const monthly = prev?.monthly || {};
+      return {
+        ...prev,
+        monthly: {
+          ...monthly,
+          oneoff: (monthly.oneoff || []).map(item => item.id === id ? {...item, done, done_date:doneDate, overdue:done ? false : item.overdue} : item),
+        },
+      };
+    });
+    postPatch({oneoff:{[id]:{done, done_date:doneDate}}});
+  };
+
+  if (err) return <Card><div style={{color:"var(--warn)",fontSize:13}}>Plan API: {err}</div><div style={{fontSize:11,color:"var(--muted)",marginTop:6}}>Can doc finance.db + plan-config.json local.</div></Card>;
+  if (!d) return <Loading/>;
+
+  const ns = d.north_star || {};
+  const monthly = d.monthly || {};
+  const medium = d.medium || {};
+  const long = d.long || {};
+  const kpis = d.kpis || [];
+  const waterfall = monthly.waterfall || [];
+  const oneoff = monthly.oneoff || [];
+  const dca = monthly.dca || {};
+  const years = medium.years || [];
+  const house = medium.house;
+  const blocks = long.blocks || [];
+  const glide = long.glide || [];
+  const bridge = long.bridge || {};
+  const waterfallTotal = waterfall.reduce((s, row) => s + (Number(row.amount) || 0), 0);
+  const projected = ns.projected_at_retire;
+  const fm = v => unit === "man" ? man(v) : yen(v);
+  const rangeText = v => Array.isArray(v) ? `${fm(v[0])} - ${fm(v[1])}` : fm(v);
+  const projectedText = rangeText(projected);
+  const fireRangeText = rangeText(ns.fire_range);
+  const fireProgress = ns.fire_number ? (Number(ns.net_worth_now) || 0) / ns.fire_number : 0;
+  const dcaProgress = dca.months ? (Number(dca.done_months) || 0) / dca.months : 0;
+  const glideKpi = kpis.find(k => k.id === "glide") || {};
+  const poolKey = `pool_${scenario}`;
+  const pctText = v => v==null ? "—" : `${v}%`;
+  const verdictColor = verdict => ({
+    ok:"var(--verdigris)",
+    warn:"var(--warn)",
+    violation:"var(--danger)",
+    unknown:"var(--muted)",
+  }[verdict] || "var(--muted)");
+  const tabs = [
+    {key:"month", label:"THÁNG"},
+    {key:"five", label:"5 NĂM"},
+    {key:"long", label:"TỚI HƯU"},
+  ];
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:14}}>
+      <Card gold>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:16,flexWrap:"wrap"}}>
+          <div style={{minWidth:240,flex:1}}>
+            <Label style={{color:"var(--gold-dim)",marginBottom:6}}>Actio Plan Cockpit</Label>
+            <div style={{fontSize:30,fontWeight:700,color:"var(--gold)",letterSpacing:"0.01em",lineHeight:1.1,fontFamily:"'Playfair Display SC',serif"}}>{fm(ns.net_worth_now)}</div>
+            <div style={{fontSize:12,color:"var(--muted)",marginTop:4}}>FIRE {fm(ns.fire_number)} · range {fireRangeText} · as of {d.as_of || "—"}</div>
+          </div>
+          <div style={{minWidth:220,textAlign:"right"}}>
+            <Badge variant={ns.on_track ? "ok" : "warn"}>{ns.fi_age ? `FI @${ns.fi_age}` : "FI unknown"}</Badge>
+            <div style={{marginTop:12}}>
+              <GoldBar pct={fireProgress}/>
+              <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:"var(--dim)",marginTop:4}}>
+                <span>{pctText(Math.round(Math.min(1, fireProgress) * 100))}</span>
+                <span>projected {projectedText}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:10}}>
+        {kpis.map(k => {
+          const color = verdictColor(k.verdict);
+          return (
+            <div key={k.id} style={{background:"var(--card)",border:`1px solid ${color}`,borderRadius:4,padding:"12px 13px",minHeight:92}}>
+              <div style={{fontSize:10,fontWeight:700,letterSpacing:"0.06em",textTransform:"uppercase",color:"var(--muted)",lineHeight:1.25}}>{k.label}</div>
+              <div style={{fontSize:16,fontWeight:750,color,marginTop:7,wordBreak:"break-word"}}>{k.actual}</div>
+              <div style={{fontSize:10,color:"var(--dim)",marginTop:5,lineHeight:1.35}}>{k.target}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+          {tabs.map(t => (
+            <button key={t.key} onClick={() => setTab(t.key)} style={{
+              padding:"7px 12px",borderRadius:3,border:"1px solid var(--border)",
+              background:tab===t.key?"rgba(201,168,76,0.12)":"transparent",
+              color:tab===t.key?"var(--gold)":"var(--muted)",fontSize:11,fontWeight:700,letterSpacing:"0.06em"
+            }}>{t.label}</button>
+          ))}
+        </div>
+        <button onClick={() => setUnit(unit === "yen" ? "man" : "yen")} title="Toggle yen / man" style={{
+          padding:"7px 10px",minWidth:44,borderRadius:3,border:"1px solid var(--border)",
+          background:"transparent",color:"var(--muted)",fontSize:11,fontWeight:800,cursor:"pointer"
+        }}>{unit === "yen" ? "\u00a5" : "\u4e07"}</button>
+      </div>
+
+      {tab === "month" && (
+        <div style={{display:"flex",flexDirection:"column",gap:14}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:14}}>
+            <Card>
+              <Label style={{marginBottom:10}}>Monthly waterfall</Label>
+              {waterfall.map(row => (
+                <StatRow key={row.id || row.bucket} label={row.bucket || row.id} value={fm(row.amount)}/>
+              ))}
+              <StatRow label="Total" value={fm(waterfallTotal)} color="var(--gold)"/>
+              <div style={{fontSize:10,color:"var(--dim)",marginTop:8}}>Base savings {fm(monthly.base_savings)} · leak before {fm(monthly.leak_before)}</div>
+            </Card>
+            <Card>
+              <Label style={{marginBottom:10}}>Checklist {monthly.checklist_month || ""}</Label>
+              <div style={{display:"flex",flexDirection:"column",gap:9}}>
+                {(monthly.checklist || []).map(item => (
+                  <label key={item.id} style={{display:"flex",gap:9,alignItems:"flex-start",fontSize:12,color:"var(--text-soft)",lineHeight:1.45}}>
+                    <input type="checkbox" checked={!!item.checked} onChange={e => toggleChecklist(item.id, e.target.checked)} style={{marginTop:2,accentColor:"var(--gold)"}}/>
+                    <span>{item.label}</span>
+                  </label>
+                ))}
+              </div>
+            </Card>
+          </div>
+
+          <Card gold>
+            <Label style={{color:"var(--gold-dim)",marginBottom:10}}>One-off actions</Label>
+            <div style={{display:"flex",flexDirection:"column",gap:9}}>
+              {oneoff.map(item => (
+                <label key={item.id} style={{display:"flex",gap:10,alignItems:"flex-start",fontSize:12,color:"var(--text-soft)",lineHeight:1.45}}>
+                  <input type="checkbox" checked={!!item.done} onChange={e => toggleOneoff(item.id, e.target.checked)} style={{marginTop:3,accentColor:"var(--gold)"}}/>
+                  <span style={{flex:1,textDecoration:item.done?"line-through":"none",color:item.done?"var(--muted)":"var(--text-soft)"}}>{item.title}<span style={{color:"var(--dim)"}}> · {item.deadline}</span></span>
+                  {item.done ? <Badge variant="ok">done</Badge> : item.overdue ? <Badge variant="danger">overdue</Badge> : null}
+                </label>
+              ))}
+            </div>
+          </Card>
+
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:14}}>
+            <Card>
+              <Label style={{marginBottom:10}}>Bonus rule</Label>
+              <StatRow label="Annual net" value={fm(monthly.bonus_rule?.annual_net)}/>
+              {(monthly.bonus_rule?.split || []).map(item => (
+                <StatRow key={item.label} label={item.label} value={pctText(item.pct)}/>
+              ))}
+            </Card>
+            <Card>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+                <Label>DCA progress</Label>
+                <Badge variant={dca.on_schedule ? "ok" : "warn"}>{dca.done_months || 0}/{dca.months || 0}</Badge>
+              </div>
+              <GoldBar pct={dcaProgress}/>
+              <div style={{display:"flex",justifyContent:"space-between",fontSize:11,color:"var(--muted)",marginTop:8}}>
+                <span>{fm(dca.done_amount)} done</span>
+                <span>{fm(dca.total)} total</span>
+              </div>
+            </Card>
+          </div>
+        </div>
+      )}
+
+      {tab === "five" && (
+        <div style={{display:"flex",flexDirection:"column",gap:14}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(170px,1fr))",gap:10}}>
+            {years.map(y => (
+              <Card key={y.year} style={{padding:"16px 15px"}}>
+                <Label style={{marginBottom:8}}>Year {y.year} · age {y.age}</Label>
+                <StatRow label="Invested" value={fm(y.invested)}/>
+                <StatRow label="Cash" value={fm(y.cash)}/>
+                <StatRow label="Net worth" value={fm(y.net_worth)} color="var(--gold)"/>
+                {y.focus && <div style={{fontSize:10,color:"var(--muted)",marginTop:7}}>{y.focus}</div>}
+              </Card>
+            ))}
+          </div>
+          {house && (
+            <Card gold>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+                <Label style={{color:"var(--gold-dim)"}}>House gate</Label>
+                <Badge variant={house.gate_ok == null ? "warn" : (house.gate_ok ? "ok" : "danger")}>{house.gate_ok ? "gate ok" : "watch"}</Badge>
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:"0 24px"}}>
+                <div>
+                  <StatRow label="Price" value={fm(house.price)}/>
+                  <StatRow label="Loan" value={fm(house.loan)}/>
+                  <StatRow label="Monthly payment" value={fm(house.monthly_payment)}/>
+                </div>
+                <div>
+                  <StatRow label={`DTI @current ${pctText(house.rate_pct)}`} value={pctText(house.dti_pct)} color={house.gate_ok ? "var(--verdigris)" : "var(--warn)"}/>
+                  <StatRow label={`DTI @stress ${pctText(house.stress_rate_pct)}`} value={pctText(house.dti_stress_pct)} color={house.gate_ok ? "var(--verdigris)" : "var(--danger)"}/>
+                  <StatRow label="Window years" value={(house.window_years || []).join(" - ") || "—"}/>
+                </div>
+              </div>
+            </Card>
+          )}
+        </div>
+      )}
+
+      {tab === "long" && (
+        <div style={{display:"flex",flexDirection:"column",gap:14}}>
+          <Card>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10,marginBottom:12,flexWrap:"wrap"}}>
+              <Label>Retirement blocks</Label>
+              <div style={{display:"flex",gap:5}}>
+                {[
+                  ["low","3%"],
+                  ["mid","4%"],
+                  ["high","5%"],
+                ].map(([key,label]) => (
+                  <button key={key} onClick={() => setScenario(key)} style={{
+                    padding:"5px 9px",borderRadius:3,border:"1px solid var(--border)",
+                    background:scenario===key?"rgba(201,168,76,0.12)":"transparent",
+                    color:scenario===key?"var(--gold)":"var(--muted)",fontSize:11,fontWeight:700
+                  }}>{label}</button>
+                ))}
+              </div>
+            </div>
+            <div style={{display:"flex",flexDirection:"column",gap:6}}>
+              {blocks.map((b,i) => (
+                <div key={i} style={{display:"grid",gridTemplateColumns:"90px 1fr 80px",gap:10,alignItems:"center",fontSize:12,padding:"7px 0",borderBottom:"1px solid var(--border-subtle)"}}>
+                  <span style={{color:"var(--muted)"}}>{(b.ages || []).join(" - ")}</span>
+                  <span style={{fontFamily:"monospace",color:"var(--text)",fontWeight:700}}>{fm(b[poolKey])}</span>
+                  <span style={{color:"var(--dim)",textAlign:"right"}}>{pctText(b.bond_pct)} bond</span>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:14}}>
+            <Card>
+              <Label style={{marginBottom:10}}>Glide path</Label>
+              <StatRow label="Target bond now" value={glideKpi.target || "—"}/>
+              <StatRow label="Actual bond" value={pctText(long.bond_actual_pct)} color="var(--gold)"/>
+              {glide.map(g => (
+                <StatRow key={g.age} label={`Age ${g.age}`} value={`${pctText(g.equity)} equity / ${pctText(g.bond)} bond`}/>
+              ))}
+            </Card>
+            <Card>
+              <Label style={{marginBottom:10}}>Bridge</Label>
+              <StatRow label="Bridge amount" value={fm(bridge.amount)}/>
+              <StatRow label="Bridge years" value={bridge.years ?? "—"}/>
+              <StatRow label={`Nenkin from ${bridge.nenkin_start_age || "—"}`} value={fm(bridge.nenkin_from65)}/>
+              <div style={{fontSize:10,color:"var(--dim)",marginTop:8}}>SWR {pctText(long.swr_pct)} · real return {pctText(long.real_return_pct)}</div>
+            </Card>
+          </div>
+        </div>
+      )}
+
+      <div style={{fontSize:10,color:"var(--dim)",textAlign:"center",fontStyle:"italic"}}>So lieu tu finance.db (local) · Khong phai loi khuyen dau tu</div>
+    </div>
+  );
+}
+
 // ── Loading / Error ───────────────────────────────────────────
 function Loading() {
   return <div style={{padding:"40px 0",textAlign:"center",color:"var(--muted)",fontSize:13}}>Loading…</div>;
@@ -2498,6 +2795,7 @@ function App() {
     fde:     <FDEView/>,
     lucida:  <LucidaView/>,
     actio:   <ActioView/>,
+    plan:    <PlanView/>,
   };
 
   return (

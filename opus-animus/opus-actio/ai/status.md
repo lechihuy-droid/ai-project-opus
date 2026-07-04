@@ -1,10 +1,21 @@
 # STATUS - opus-actio
-**Updated:** 2026-06-22
+**Updated:** 2026-07-04
 **Current owner:** Claude
 
 ## Current objective
 
-Workflow đầu tư cá nhân US + JP — **MVP-A: Claude Code-first** (0 API metered, dùng Pro flat-fee).
+**Plan Cockpit** — lớp vận hành plan tài chính v3 (theo dõi hành động, không chỉ chẩn đoán).
+
+### Plan v3 + app rebuild (2026-07-04)
+- ✅ `data/_local/plan-v3.md` — plan 3 chân trời gắn 15 tiêu chuẩn chuyên gia (S1–S15) + KPI contract; thay plan-v2
+- ✅ `docs/REVIEW-app-vs-plan-v3.md` — đánh giá app vs plan (5✅/3🟡/4🔴 — thiếu execution tracking)
+- ✅ `docs/PLAN-app-rebuild.md` + SDD: `RD-plan-cockpit.md` / `SD-plan-cockpit.md` / `BD-plan-cockpit.md`
+- ✅ `data/_local/plan-config.json` — tham số plan cho backend
+- ✅ Codex implement BD (backend /api/actio/plan v2 + plan-state + PlanView tab)
+- ✅ Claude verify (2026-07-04): kpis[12] đúng verdict · waterfall 5 bậc khớp config · DTI @current 24.9% / @stress 34.2% (gate_ok) · checklist persist qua reload + restart server (plan-state.json) · đổi plan-config.json → API đổi theo (không cần restart) · 3 tab nội bộ THÁNG/5 NĂM/TỚI HƯU render, toggle 3/4/5% chạy · tab Actio cũ nguyên vẹn, console sạch · không số thật trong diff tracked
+- ✅ Bug fix (Codex): `actio_overview()` retire dict thiếu `nenkin_start_age` → bridge years=0; đã thêm field, bridge card giờ 5 năm / 年金 từ 65 (restart run_dashboard.py để nhận code — đã restart)
+
+## Objective trước — MVP-A: Claude Code-first (0 API metered, dùng Pro flat-fee).
 
 ## State
 

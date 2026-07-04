@@ -18,12 +18,14 @@ Advisory framing (CFP household + Goldman IPS):
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
 from collections import defaultdict
 from datetime import date, datetime
 from pathlib import Path
+from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Body
 
 router = APIRouter()
 
@@ -47,6 +49,125 @@ def _load(path: Path):
         return json.loads(path.read_text(encoding="utf-8"))
     except Exception:
         return None
+
+
+def _load_plan_config():
+    data = _load(LOCAL / "plan-config.json")
+    return data if isinstance(data, dict) else {}
+
+
+def _load_plan_state():
+    data = _load(LOCAL / "plan-state.json")
+    return data if isinstance(data, dict) else {}
+
+
+def _save_plan_state(state):
+    target = LOCAL / "plan-state.json"
+    tmp = target.with_name(target.name + ".tmp")
+    tmp.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    os.replace(tmp, target)
+
+
+def _deep_merge(base, patch):
+    for key, value in patch.items():
+        if isinstance(value, dict) and isinstance(base.get(key), dict):
+            _deep_merge(base[key], value)
+        else:
+            base[key] = value
+    return base
+
+
+def _as_dict(value):
+    return value if isinstance(value, dict) else {}
+
+
+def _as_list(value):
+    return value if isinstance(value, list) else []
+
+
+def _num(value, default=None):
+    if isinstance(value, bool):
+        return default
+    if isinstance(value, (int, float)):
+        return float(value)
+    return default
+
+
+def _fmt_jpy(value):
+    n = _num(value)
+    return "unknown" if n is None else f"{int(round(n)):,} JPY"
+
+
+def _fmt_pct(value, digits=0):
+    n = _num(value)
+    if n is None:
+        return "unknown"
+    return f"{round(n, digits):g}%"
+
+
+def _fmt_pp(value, digits=1):
+    n = _num(value)
+    if n is None:
+        return "unknown"
+    return f"{round(n, digits):g}pp"
+
+
+def _fmt_m(value):
+    n = _num(value)
+    return "unknown" if n is None else f"{n / 1_000_000:g}M"
+
+
+def _safe_pct(numerator, denominator):
+    n = _num(numerator)
+    d = _num(denominator)
+    if n is None or not d:
+        return None
+    return 100 * n / d
+
+
+def _parse_iso_date(value):
+    if not value:
+        return None
+    try:
+        return datetime.strptime(str(value), "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+
+def _months_elapsed(start_month, today, total_months):
+    try:
+        start = datetime.strptime(str(start_month), "%Y-%m").date()
+    except ValueError:
+        return 0
+    elapsed = (today.year - start.year) * 12 + (today.month - start.month) + 1
+    return int(max(0, min(total_months or 0, elapsed)))
+
+
+def _bond_target_for_age(age, glide_cfg):
+    a = _num(age)
+    rows = []
+    for row in _as_list(glide_cfg):
+        age_to = _num(_as_dict(row).get("age_to"))
+        bond = _num(_as_dict(row).get("bond_pct"))
+        if age_to is not None and bond is not None:
+            rows.append((age_to, bond))
+    if a is None or not rows:
+        return None
+    rows.sort(key=lambda item: item[0])
+    for age_to, bond in rows:
+        if a <= age_to:
+            return bond
+    return rows[-1][1]
+
+
+def _kpi(kid, label, target, actual, verdict):
+    return {
+        "id": kid,
+        "label": label,
+        "target": target,
+        "actual": actual,
+        "verdict": verdict if verdict in {"ok", "warn", "violation", "unknown"} else "unknown",
+    }
 
 
 def _is_single_stock(code: str, cls: str) -> bool:
@@ -267,6 +388,7 @@ def actio_overview():
         retire = {
             "age": age, "retire_age": ret_age, "core": int(_fire(exp, nenkin, nstart, ret_age, swr, r) - max(0, nstart - ret_age) * exp),
             "bridge": int(max(0, nstart - ret_age) * exp),
+            "nenkin_start_age": nstart,
             "fire_number": int(fire), "projected_at_retire": int(proj),
             "surplus": int(proj - fire), "fi_age": fi_age,
             "contrib_monthly": ideco + nisa, "swr_pct": retire_cfg["safe_withdrawal_rate_pct"],
@@ -410,4 +532,365 @@ def actio_overview():
         "ips": ips_block, "retire": retire, "mortgage": mortgage,
         "spending": spending, "protection": protection, "fx": fx,
         "trend": trend, "review_due": due, "actions": actions,
+    }
+
+
+@router.get("/actio/plan/state")
+def actio_plan_state():
+    return {"ok": True, "state": _load_plan_state()}
+
+
+@router.post("/actio/plan/state")
+def actio_plan_state_update(patch: Any = Body(None)):
+    if not isinstance(patch, dict):
+        return {"ok": False, "error": "body must be a JSON object"}
+    state = _load_plan_state()
+    _deep_merge(state, patch)
+    _save_plan_state(state)
+    return {"ok": True, "state": state}
+
+
+@router.get("/actio/plan")
+def actio_plan():
+    ov = actio_overview()
+    if not ov.get("ok"):
+        return {"ok": False, "error": ov.get("error", "overview failed")}
+
+    cfg = _load_plan_config()
+    state = _load_plan_state()
+    today = date.today()
+    checklist_month = today.strftime("%Y-%m")
+    current_year = today.strftime("%Y")
+
+    monthly_cfg = _as_dict(cfg.get("monthly"))
+    house_cfg = _as_dict(cfg.get("house"))
+    dca_cfg = _as_dict(cfg.get("dca"))
+    thresholds = _as_dict(cfg.get("kpi_thresholds"))
+    glide_cfg = _as_list(cfg.get("glide"))
+
+    bal = _as_dict(ov.get("balance"))
+    cfw = _as_dict(ov.get("cashflow"))
+    ret = _as_dict(ov.get("retire"))
+    ips = _as_dict(ov.get("ips"))
+
+    waterfall = []
+    for item in _as_list(monthly_cfg.get("waterfall")):
+        row = _as_dict(item)
+        if row:
+            waterfall.append({
+                "id": row.get("id"),
+                "bucket": row.get("bucket"),
+                "amount": row.get("amount"),
+            })
+    waterfall_total = sum(_num(row.get("amount"), 0) or 0 for row in waterfall)
+
+    checklist_state = _as_dict(_as_dict(state.get("checklist")).get(checklist_month))
+    checklist = []
+    for item in _as_list(monthly_cfg.get("checklist_template")):
+        row = _as_dict(item)
+        item_id = row.get("id")
+        checklist.append({
+            "id": item_id,
+            "label": row.get("label"),
+            "checked": bool(checklist_state.get(item_id, False)),
+        })
+
+    oneoff_state = _as_dict(state.get("oneoff"))
+    oneoff = []
+    for item in _as_list(cfg.get("oneoff_actions")):
+        row = _as_dict(item)
+        item_id = row.get("id")
+        saved = _as_dict(oneoff_state.get(item_id))
+        done = bool(saved.get("done", False))
+        deadline = _parse_iso_date(row.get("deadline"))
+        overdue_days = (today - deadline).days if (deadline and not done and today > deadline) else 0
+        oneoff.append({
+            "id": item_id,
+            "title": row.get("title"),
+            "deadline": row.get("deadline"),
+            "done": done,
+            "done_date": saved.get("done_date"),
+            "overdue": overdue_days > 0,
+            "overdue_days": overdue_days,
+        })
+
+    contrib_actual_all = _as_dict(state.get("contrib_actual"))
+    contrib_actual_month = {
+        "ideco": 0,
+        "nisa": 0,
+        "bond": 0,
+        **_as_dict(contrib_actual_all.get(checklist_month)),
+    }
+    contrib_actual_total = sum(_num(v, 0) or 0 for v in contrib_actual_month.values())
+    if waterfall_total <= 0:
+        contrib_status = "no_target"
+    elif contrib_actual_total >= waterfall_total:
+        contrib_status = "complete"
+    elif contrib_actual_total > 0:
+        contrib_status = "partial"
+    else:
+        contrib_status = "target_not_yet_active"
+
+    dca_months = int(_num(dca_cfg.get("months"), 0) or 0)
+    dca_total = _num(dca_cfg.get("total"), 0) or 0
+    tranches = _as_dict(state.get("tranches"))
+    done_tranches = [_as_dict(v) for v in tranches.values() if _as_dict(v).get("done") is True]
+    dca_done_months = len(done_tranches)
+    dca_done_amount = int(sum(_num(v.get("amount"), 0) or 0 for v in done_tranches))
+    dca_due_months = _months_elapsed(dca_cfg.get("start_month"), today, dca_months)
+    dca = {
+        "total": dca_cfg.get("total"),
+        "start_month": dca_cfg.get("start_month"),
+        "months": dca_cfg.get("months"),
+        "done_amount": dca_done_amount,
+        "done_months": dca_done_months,
+        "due_months": dca_due_months,
+        "on_schedule": (dca_done_months >= dca_due_months) if dca_months else None,
+    }
+
+    base_savings = cfw.get("savings")
+    leak_before = None
+    if _num(base_savings) is not None:
+        leak_before = int(max(0, (_num(base_savings) or 0) - waterfall_total))
+    bonus_rule = _as_dict(monthly_cfg.get("bonus_rule"))
+    monthly = {
+        "base_savings": base_savings,
+        "waterfall": waterfall,
+        "leak_before": leak_before,
+        "bonus_rule": bonus_rule,
+        "checklist": checklist,
+        "checklist_month": checklist_month,
+        "oneoff": oneoff,
+        "contrib_status": contrib_status,
+        "contrib_actual_month": contrib_actual_month,
+        "dca": dca,
+    }
+
+    north_star = {
+        "net_worth_now": bal.get("true_net_worth"),
+        "projected_at_retire": ret.get("proj_range") or ret.get("projected_at_retire"),
+        "fire_number": ret.get("fire_number"),
+        "fire_range": ret.get("fire_range"),
+        "fi_age": ret.get("fi_age"),
+        "retire_age": ret.get("retire_age"),
+        "age": ret.get("age"),
+        "on_track": ret.get("on_track"),
+    }
+
+    r = (_num(ret.get("real_return_pct"), 0) or 0) / 100
+    annual_contrib = waterfall_total * 12 + (_num(bonus_rule.get("annual_net"), 0) or 0)
+    invested0 = _num(bal.get("invested_total"), 0) or 0
+    cash0 = _num(bal.get("cash_total"), 0) or 0
+    liab = _num(bal.get("total_liabilities"), 0) or 0
+    age = _num(north_star.get("age"))
+    ret_age = _num(north_star.get("retire_age"))
+
+    ef_floor = 0
+    for goal in _as_list(ov.get("goals")):
+        row = _as_dict(goal)
+        if row.get("id") == "emergency":
+            ef_floor = _num(row.get("target"), 0) or 0
+            break
+    cash_floor = int(ef_floor + (_num(house_cfg.get("reserve"), 0) or 0))
+
+    years = []
+    inv = invested0
+    cash = cash0
+    dca_remaining_months = dca_months
+    dca_monthly = dca_total / dca_months if dca_months else 0
+    window_years = set(house_cfg.get("window_years") or [])
+    if age is not None:
+        for y in range(1, 6):
+            deploy_months = min(12, max(0, dca_remaining_months))
+            tranche = dca_monthly * deploy_months
+            dca_remaining_months -= deploy_months
+            cash = max(cash_floor, cash - tranche)
+            inv = inv * (1 + r) + annual_contrib + tranche
+            row = {
+                "year": y,
+                "age": int(age + y),
+                "invested": int(inv),
+                "cash": int(cash),
+                "net_worth": int(inv + cash - liab),
+            }
+            focus = []
+            if deploy_months:
+                focus.append("DCA")
+            if y in window_years:
+                focus.append("house gate")
+            if focus:
+                row["focus"] = " + ".join(focus)
+            years.append(row)
+
+    house = None
+    mortgage = ov.get("mortgage")
+    if isinstance(mortgage, dict):
+        house = dict(mortgage)
+        rate_pct = _num(house.get("rate_pct"))
+        stress_add_pp = _num(house_cfg.get("stress_add_pp"), 0) or 0
+        stress_rate_pct = (rate_pct + stress_add_pp) if rate_pct is not None else None
+        income = _num(cfw.get("income"))
+        stress_payment = None
+        if stress_rate_pct is not None and house.get("loan") is not None and house.get("term_years"):
+            stress_payment = _amortized_monthly(
+                _num(house.get("loan"), 0) or 0,
+                stress_rate_pct / 100,
+                int(_num(house.get("term_years"), 0) or 0),
+            )
+        dti_stress_pct = round(100 * stress_payment / income, 1) if (stress_payment is not None and income) else None
+        dti_pct = _num(house.get("dti_pct"))
+        dti_max = _num(house_cfg.get("dti_max_pct"))
+        dti_stress_max = _num(house_cfg.get("dti_stress_max_pct"))
+        gate_ok = None
+        if dti_pct is not None and dti_stress_pct is not None and dti_max is not None and dti_stress_max is not None:
+            gate_ok = dti_pct <= dti_max and dti_stress_pct <= dti_stress_max
+        house.update({
+            "dti_stress_pct": dti_stress_pct,
+            "stress_rate_pct": round(stress_rate_pct, 2) if stress_rate_pct is not None else None,
+            "gate_ok": gate_ok,
+            "window_years": house_cfg.get("window_years"),
+        })
+
+    medium = {
+        "years": years,
+        "cash_floor": cash_floor,
+        "house": house,
+    }
+
+    blocks = []
+    if age is not None and ret_age is not None:
+        inv5 = inv
+        base_age = age + 5
+        a = base_age + 1
+        while a <= ret_age:
+            hi_age = min(a + 2, ret_age)
+            n = hi_age - base_age
+            pool = {}
+            for tag, rr in (("low", r - 0.01), ("mid", r), ("high", r + 0.01)):
+                pool[tag] = int(_fv(inv5, annual_contrib, rr, int(n)))
+            bond_pct = _bond_target_for_age(hi_age, glide_cfg)
+            equity_pct = round(100 - bond_pct, 1) if bond_pct is not None else None
+            blocks.append({
+                "ages": [int(a), int(hi_age)],
+                "pool_low": pool["low"],
+                "pool_mid": pool["mid"],
+                "pool_high": pool["high"],
+                "equity_pct": equity_pct,
+                "bond_pct": bond_pct,
+            })
+            a += 3
+
+    nstart = ret.get("nenkin_start_age")
+    bridge_years = max(0, nstart - ret_age) if (_num(nstart) is not None and ret_age is not None) else 0
+    alloc_sleeve = _as_dict(ips.get("alloc_sleeve"))
+    long = {
+        "blocks": blocks,
+        "glide": [{"age": b["ages"][1], "equity": b["equity_pct"], "bond": b["bond_pct"]} for b in blocks],
+        "bond_actual_pct": alloc_sleeve.get("bond"),
+        "bridge": {
+            "amount": ret.get("bridge"),
+            "years": bridge_years,
+            "nenkin_from65": ret.get("nenkin_annual"),
+            "nenkin_start_age": nstart,
+        },
+        "swr_pct": ret.get("swr_pct"),
+        "real_return_pct": ret.get("real_return_pct"),
+    }
+
+    savings_min = _num(thresholds.get("savings_rate_min_pct"))
+    savings_rate = _num(cfw.get("savings_rate_pct"))
+    savings_verdict = "unknown" if savings_min is None or savings_rate is None else ("ok" if savings_rate >= savings_min else "violation")
+
+    contrib_pct = _safe_pct(contrib_actual_total, waterfall_total)
+    if contrib_pct is None:
+        contrib_verdict = "unknown"
+    elif contrib_pct >= 100:
+        contrib_verdict = "ok"
+    elif contrib_actual_total > 0:
+        contrib_verdict = "warn"
+    else:
+        contrib_verdict = "violation"
+
+    idle_cash = _num(_as_dict(ov.get("opportunity")).get("idle_cash"))
+    idle_verdict = "unknown" if idle_cash is None else ("ok" if idle_cash <= 0 else "warn")
+
+    single_limit = _num(thresholds.get("single_name_max_pct"), _num(ips.get("max_single_name_pct")))
+    positions = _as_list(ips.get("positions"))
+    single_pcts = [_num(_as_dict(p).get("pct")) for p in positions if _as_dict(p).get("single_stock")]
+    single_pcts = [p for p in single_pcts if p is not None]
+    if not single_pcts:
+        single_pcts = [_num(_as_dict(v).get("pct")) for v in _as_list(ips.get("violations"))]
+        single_pcts = [p for p in single_pcts if p is not None]
+    single_max = max(single_pcts) if single_pcts else None
+    single_verdict = "unknown" if single_limit is None or single_max is None else ("ok" if single_max <= single_limit else "violation")
+
+    drift_limit = _num(thresholds.get("drift_max_pp"))
+    drift_values = [abs(v) for v in (_num(x) for x in _as_dict(ips.get("drift_pp")).values()) if v is not None]
+    drift_max = max(drift_values) if drift_values else None
+    drift_verdict = "unknown" if drift_limit is None or drift_max is None else ("ok" if drift_max <= drift_limit else "warn")
+
+    nisa_target = _num(thresholds.get("nisa_annual_target"))
+    nisa_actual_year = 0
+    for month, values in contrib_actual_all.items():
+        if str(month).startswith(current_year):
+            for key, value in _as_dict(values).items():
+                if "nisa" in str(key):
+                    nisa_actual_year += _num(value, 0) or 0
+    if nisa_target is None:
+        nisa_verdict = "unknown"
+    elif nisa_actual_year >= nisa_target:
+        nisa_verdict = "ok"
+    elif nisa_actual_year > 0:
+        nisa_verdict = "warn"
+    else:
+        nisa_verdict = "violation"
+
+    dti_stress_max = _num(house_cfg.get("dti_stress_max_pct"))
+    dti_stress = _num(_as_dict(house).get("dti_stress_pct")) if house else None
+    dti_verdict = "unknown" if dti_stress is None or dti_stress_max is None else ("ok" if dti_stress <= dti_stress_max else "violation")
+
+    fi_state = north_star.get("on_track")
+    fi_verdict = "unknown" if fi_state is None else ("ok" if fi_state else "violation")
+
+    glide_target_now = _bond_target_for_age(age, glide_cfg)
+    bond_actual = _num(long.get("bond_actual_pct"))
+    glide_diff = abs(bond_actual - glide_target_now) if bond_actual is not None and glide_target_now is not None else None
+    glide_verdict = "unknown" if glide_diff is None or drift_limit is None else ("ok" if glide_diff <= drift_limit else "warn")
+
+    review_count = len(_as_list(ov.get("review_due")))
+    oneoff_overdue = [item for item in oneoff if item.get("overdue")]
+    oneoff_overdue_count = len(oneoff_overdue)
+    oneoff_max_days = max([item.get("overdue_days") or 0 for item in oneoff_overdue], default=0)
+    oneoff_limit = _num(thresholds.get("oneoff_overdue_days"))
+    if oneoff_overdue_count == 0:
+        oneoff_verdict = "ok"
+    elif oneoff_limit is not None and oneoff_max_days > oneoff_limit:
+        oneoff_verdict = "violation"
+    else:
+        oneoff_verdict = "warn"
+
+    kpis = [
+        _kpi("savings_rate", "Savings rate", f">={_fmt_pct(savings_min)}", _fmt_pct(savings_rate), savings_verdict),
+        _kpi("contrib", "Contrib vs waterfall", "100%", _fmt_pct(contrib_pct), contrib_verdict),
+        _kpi("idle_cash", "Idle ngoai EF+reserve", "0 by schedule", _fmt_jpy(idle_cash), idle_verdict),
+        _kpi("dca", "DCA tranche", "on schedule", f"{dca_done_months}/{dca_months or 0}", "unknown" if dca["on_schedule"] is None else ("ok" if dca["on_schedule"] else "warn")),
+        _kpi("single_name", "Single-name max", f"<={_fmt_pct(single_limit)}", _fmt_pct(single_max, 1), single_verdict),
+        _kpi("drift", "Sleeve drift", f"<={_fmt_pp(drift_limit)}", _fmt_pp(drift_max), drift_verdict),
+        _kpi("nisa", "NISA nam nay", _fmt_m(nisa_target), _fmt_jpy(nisa_actual_year), nisa_verdict),
+        _kpi("dti", "DTI @stress", f"<={_fmt_pct(dti_stress_max)}", _fmt_pct(dti_stress, 1), dti_verdict),
+        _kpi("fi", "FI progress", "on-track band", f"FI @{north_star.get('fi_age')}" if north_star.get("fi_age") else "unknown", fi_verdict),
+        _kpi("glide", "Bond vs glide", _fmt_pct(glide_target_now, 1), _fmt_pct(bond_actual, 1), glide_verdict),
+        _kpi("review", "Review due", "0 due", str(review_count), "ok" if review_count == 0 else "warn"),
+        _kpi("oneoff", "One-off <= threshold", "0 overdue", str(oneoff_overdue_count), oneoff_verdict),
+    ]
+
+    return {
+        "ok": True,
+        "as_of": ov.get("as_of"),
+        "plan_version": cfg.get("version"),
+        "north_star": north_star,
+        "monthly": monthly,
+        "medium": medium,
+        "long": long,
+        "kpis": kpis,
     }
