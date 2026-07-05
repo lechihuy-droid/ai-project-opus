@@ -1,43 +1,73 @@
 {
+  "schema_version": "finance.v2",
   "date": "2026-07-05",
   "transactions": [
     {
+      "id": "2026-07-05-1813-gyomu-super-kyobashi",
       "time": "18:13",
       "type": "expense",
       "category": "food",
       "amount": 6224,
       "currency": "JPY",
       "description": "Weekly groceries at Gyomu Super Kyobashi",
-      "merchant": "業務スーパー 京橋店",
-      "payment_method": "credit_card",
-      "item_count": 25,
+      "merchant": {
+        "name": "業務スーパー 京橋店",
+        "chain": "業務スーパー",
+        "location_hint": "京橋"
+      },
+      "payment": {
+        "method": "credit_card",
+        "card_network": "VISA",
+        "sensitive_details_stored": false
+      },
+      "receipt": {
+        "source": "photo",
+        "receipt_total": 6224,
+        "tax_included": true,
+        "line_item_count": 25,
+        "confidence": "medium",
+        "notes": "Card details intentionally omitted. Some item names are estimated from receipt image."
+      },
+      "purchase_summary": {
+        "purpose": "weekly_groceries",
+        "themes": ["meal_prep", "high_fiber", "protein", "snacks"],
+        "groups": {
+          "vegetables": 1248,
+          "protein": 2261,
+          "dairy_eggs": 491,
+          "seasoning_oil": 924,
+          "snacks_grains": 842,
+          "other": 458
+        },
+        "notable_items": ["ブロッコリー", "こまつな", "しいたけ", "白身魚のフィレ", "豚肉", "赤たまご", "オーツ＆ホールグレイン"]
+      },
       "items": [
-        {"name": "たまねぎ", "amount": 198},
-        {"name": "じゃがいも", "amount": 100},
-        {"name": "ブロッコリー", "amount": 198},
-        {"name": "人参", "amount": 100},
-        {"name": "サニーレタス", "amount": 100},
-        {"name": "こまつな", "amount": 158},
-        {"name": "しいたけ", "amount": 98},
-        {"name": "洗い芋", "amount": 298},
-        {"name": "かいわれ 2個", "amount": 66},
-        {"name": "豚肉", "amount": 375},
-        {"name": "豚肉", "amount": 495},
-        {"name": "白身魚のフィレ", "amount": 428},
-        {"name": "豚バラスライス", "amount": 778},
-        {"name": "飲むヨーグルト", "amount": 198},
-        {"name": "レジ袋", "amount": 7},
-        {"name": "ゴールデンカレー辛口", "amount": 238},
-        {"name": "ごまドレッシング", "amount": 108},
-        {"name": "かぼちゃオリーブオイル", "amount": 578},
-        {"name": "旨辛シーフード", "amount": 118},
-        {"name": "赤たまご L 6個入り", "amount": 185},
-        {"name": "クリスピーフライドオニオン", "amount": 268},
-        {"name": "濃厚チェダーチーズ", "amount": 108},
-        {"name": "チョコ＆グラノーラ", "amount": 248},
-        {"name": "オーツ＆ホールグレイン", "amount": 218}
+        {"name": "たまねぎ", "amount": 198, "currency": "JPY", "group": "vegetables", "theme": ["meal_prep", "fiber"]},
+        {"name": "じゃがいも", "amount": 100, "currency": "JPY", "group": "carb", "theme": ["meal_prep"]},
+        {"name": "ブロッコリー", "amount": 198, "currency": "JPY", "group": "vegetables", "theme": ["fiber", "micronutrients"]},
+        {"name": "人参", "amount": 100, "currency": "JPY", "group": "vegetables", "theme": ["fiber", "meal_prep"]},
+        {"name": "サニーレタス", "amount": 100, "currency": "JPY", "group": "vegetables", "theme": ["fiber", "salad"]},
+        {"name": "こまつな", "amount": 158, "currency": "JPY", "group": "vegetables", "theme": ["fiber", "greens"]},
+        {"name": "しいたけ", "amount": 98, "currency": "JPY", "group": "vegetables", "theme": ["fiber", "mushroom"]},
+        {"name": "洗い芋", "amount": 298, "currency": "JPY", "group": "carb", "theme": ["meal_prep", "fiber"]},
+        {"name": "かいわれ 2個", "amount": 66, "currency": "JPY", "group": "vegetables", "theme": ["fiber", "salad"]},
+        {"name": "豚肉", "amount": 375, "currency": "JPY", "group": "protein", "theme": ["protein", "meal_prep"]},
+        {"name": "豚肉", "amount": 495, "currency": "JPY", "group": "protein", "theme": ["protein", "meal_prep"]},
+        {"name": "白身魚のフィレ", "amount": 428, "currency": "JPY", "group": "protein", "theme": ["protein", "lean_protein"]},
+        {"name": "豚バラスライス", "amount": 778, "currency": "JPY", "group": "protein", "theme": ["protein", "fatty_meat"]},
+        {"name": "飲むヨーグルト", "amount": 198, "currency": "JPY", "group": "dairy", "theme": ["dairy", "snack"]},
+        {"name": "レジ袋", "amount": 7, "currency": "JPY", "group": "other", "theme": ["misc"]},
+        {"name": "ゴールデンカレー辛口", "amount": 238, "currency": "JPY", "group": "seasoning", "theme": ["meal_prep", "curry"]},
+        {"name": "ごまドレッシング", "amount": 108, "currency": "JPY", "group": "seasoning", "theme": ["salad", "dressing"]},
+        {"name": "かぼちゃオリーブオイル", "amount": 578, "currency": "JPY", "group": "oil", "theme": ["cooking_oil"]},
+        {"name": "旨辛シーフード", "amount": 118, "currency": "JPY", "group": "processed_food", "theme": ["quick_meal"]},
+        {"name": "赤たまご L 6個入り", "amount": 185, "currency": "JPY", "group": "eggs", "theme": ["protein", "breakfast"]},
+        {"name": "クリスピーフライドオニオン", "amount": 268, "currency": "JPY", "group": "topping", "theme": ["topping", "salad"]},
+        {"name": "濃厚チェダーチーズ", "amount": 108, "currency": "JPY", "group": "dairy", "theme": ["dairy", "snack"]},
+        {"name": "チョコ＆グラノーラ", "amount": 248, "currency": "JPY", "group": "snack", "theme": ["snack", "carb"]},
+        {"name": "オーツ＆ホールグレイン", "amount": 218, "currency": "JPY", "group": "grains", "theme": ["fiber", "breakfast"]}
       ],
-      "notes": "Logged from receipt photo. Card details intentionally omitted. Some item names are estimated from the receipt image."
+      "notes": "finance.v2 adds receipt-level purchase detail, item groups, and themes so the app/analysis can answer what was bought, not only how much was spent."
     }
   ],
   "notes": "Weekly grocery shopping receipt. Total: 6224 JPY."
