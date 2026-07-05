@@ -1,0 +1,44 @@
+{
+  "date": "2026-07-05",
+  "transactions": [
+    {
+      "time": "18:13",
+      "type": "expense",
+      "category": "food",
+      "amount": 6224,
+      "currency": "JPY",
+      "description": "Weekly groceries at Gyomu Super Kyobashi",
+      "merchant": "業務スーパー 京橋店",
+      "payment_method": "credit_card",
+      "item_count": 25,
+      "items": [
+        {"name": "たまねぎ", "amount": 198},
+        {"name": "じゃがいも", "amount": 100},
+        {"name": "ブロッコリー", "amount": 198},
+        {"name": "人参", "amount": 100},
+        {"name": "サニーレタス", "amount": 100},
+        {"name": "こまつな", "amount": 158},
+        {"name": "しいたけ", "amount": 98},
+        {"name": "洗い芋", "amount": 298},
+        {"name": "かいわれ 2個", "amount": 66},
+        {"name": "豚肉", "amount": 375},
+        {"name": "豚肉", "amount": 495},
+        {"name": "白身魚のフィレ", "amount": 428},
+        {"name": "豚バラスライス", "amount": 778},
+        {"name": "飲むヨーグルト", "amount": 198},
+        {"name": "レジ袋", "amount": 7},
+        {"name": "ゴールデンカレー辛口", "amount": 238},
+        {"name": "ごまドレッシング", "amount": 108},
+        {"name": "かぼちゃオリーブオイル", "amount": 578},
+        {"name": "旨辛シーフード", "amount": 118},
+        {"name": "赤たまご L 6個入り", "amount": 185},
+        {"name": "クリスピーフライドオニオン", "amount": 268},
+        {"name": "濃厚チェダーチーズ", "amount": 108},
+        {"name": "チョコ＆グラノーラ", "amount": 248},
+        {"name": "オーツ＆ホールグレイン", "amount": 218}
+      ],
+      "notes": "Logged from receipt photo. Card details intentionally omitted. Some item names are estimated from the receipt image."
+    }
+  ],
+  "notes": "Weekly grocery shopping receipt. Total: 6224 JPY."
+}
