@@ -6,7 +6,7 @@ tags: [reading-list, research-intake, strategic-articles, consilium, decision-br
 status: active
 confidence: medium
 created: 2026-06-22
-updated: 2026-07-04
+updated: 2026-07-06
 ---
 
 # Consilium Reading List
@@ -215,6 +215,28 @@ Expected use: Deep-read to validate whether the paper should update operator-top
 Added date: 2026-07-04
 Decision label: test
 Verification note: Added from Consilium news scan. Verify abstract, methodology, and metrics before promoting to main wiki.
+```
+
+---
+
+### RL-20260706-008 — Agentic AI in Industry: Adoption Level and Deployment Barriers
+
+```text
+ID: RL-20260706-008
+Title: Agentic AI in Industry: Adoption Level and Deployment Barriers
+URL: https://arxiv.org/abs/2605.14675
+Source: arXiv
+Source tier: tier_e_research
+Layer: strategy, evidence, action
+Lane: tech_learning, governance_risk, fde_lite, opus_architecture, ai_sdlc
+Labels: agentic-ai, industry-adoption, deployment-barriers, verification-gap, human-in-the-loop, governance, production-readiness, fde-lite, opus-animus
+Priority: P0
+Status: queued
+Reason to read: Empirical industry study on agentic AI adoption across 16 practitioners and 12 companies. Especially relevant because it identifies a capability-deployment verification gap: organizations can demonstrate higher-level agent capabilities but cannot integrate them into production workflows without adequate output verification.
+Expected use: Deep-read to refine FDE-lite offer design, especially Agentic Workflow Verification & Guardrail Sprint; update Opus eval, observability, and governance requirements if findings are strong.
+Added date: 2026-07-06
+Decision label: test
+Verification note: arXiv abstract verified. Before promotion, inspect methodology, maturity framework, interview sample, and barrier taxonomy.
 ```
 
 ---
