@@ -1,0 +1,56 @@
+{
+  "schema_version": "finance.v2",
+  "description": "Daily finance log. Each date file stores transactions and can preserve receipt-level purchase details.",
+  "date_file_pattern": "finance-data/YYYY-MM-DD.json",
+  "index_file": "finance-data/index.json",
+  "transaction": {
+    "id": "string, stable unique id such as YYYY-MM-DD-HHmm-merchant-slug",
+    "time": "HH:mm",
+    "type": "expense | income",
+    "category": "food | transport | shopping | health | entertainment | bills | income | other",
+    "amount": "number, total transaction amount",
+    "currency": "JPY | VND | USD | ...",
+    "description": "short human-readable summary",
+    "merchant": {
+      "name": "store or vendor name",
+      "chain": "optional chain name",
+      "location_hint": "optional location"
+    },
+    "payment": {
+      "method": "cash | credit_card | debit_card | bank_transfer | e_money | unknown",
+      "card_network": "optional, e.g. VISA",
+      "sensitive_details_stored": false
+    },
+    "receipt": {
+      "source": "photo | text | email | manual",
+      "receipt_total": "number",
+      "tax_included": "boolean",
+      "line_item_count": "number",
+      "confidence": "high | medium | low",
+      "notes": "OCR/vision uncertainty and privacy notes"
+    },
+    "purchase_summary": {
+      "purpose": "weekly_groceries | eating_out | household | personal | ...",
+      "themes": ["meal_prep", "high_fiber", "protein", "snacks", "household"],
+      "groups": {
+        "vegetables": "sum amount",
+        "protein": "sum amount",
+        "dairy_eggs": "sum amount",
+        "seasoning_oil": "sum amount",
+        "snacks_grains": "sum amount",
+        "other": "sum amount"
+      },
+      "notable_items": ["item names useful for quick display"]
+    },
+    "items": [
+      {
+        "name": "receipt item name",
+        "amount": "number",
+        "currency": "JPY | VND | USD | ...",
+        "group": "vegetables | protein | carb | dairy | eggs | seasoning | oil | snack | grains | household | other",
+        "theme": ["fiber", "protein", "meal_prep", "breakfast", "snack"]
+      }
+    ],
+    "notes": "free text"
+  }
+}
