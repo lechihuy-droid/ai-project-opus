@@ -88,6 +88,119 @@ GraphRAG is a primary reference for the Harness Business Context Layer: requirem
 
 ## P1 — Highly Recommended
 
+### Langfuse
+
+- **Priority:** P1+
+- **Primary Category:** AgentOps & Observability
+- **Document Type:** Production Platform / Reference Implementation
+- **Maturity:** Production
+- **Difficulty:** Intermediate → Advanced
+- **Harness Level:** L6 — AgentOps / Observability
+- **Source:** GitHub / Docs
+- **URL:** https://github.com/langfuse/langfuse
+- **Docs:** https://langfuse.com/docs
+- **Overall Score:** 9.8 / 10
+
+**Labels**
+
+- AgentOps
+- Observability
+- Runtime Operations
+- Tracing
+- Prompt Management
+- Evaluation
+- Cost Monitoring
+- Session Replay
+- Production
+- Architecture
+
+**Why it matters**
+
+Langfuse fills a major gap in the Harness roadmap: production observability for LLM and agent systems. It is not an agent runtime, but it teaches how a runtime should be operated, traced, measured, evaluated, and debugged in production.
+
+**Apply to Harness**
+
+- Runtime tracing
+- Agent lifecycle monitoring
+- Tool execution tracing
+- Prompt versioning
+- Session replay
+- Cost and latency monitoring
+- Evaluation pipeline
+- Dataset-based regression testing
+- Production observability layer
+
+**What to study**
+
+- Trace model for agent steps and tool calls.
+- Prompt management and prompt versioning.
+- Evaluation datasets and score tracking.
+- How sessions are grouped and replayed.
+- How observability data should map to Harness run IDs, agent IDs, tool calls, and workflow IDs.
+
+**Recommendation**
+
+Use Langfuse as the primary P1+ study target for **L6 AgentOps**. Benchmark it as a potential observability backend for the Harness, but do not treat it as an orchestration/runtime replacement.
+
+---
+
+### OpenHands
+
+- **Priority:** P1+
+- **Primary Category:** Agent Runtime & Coding Agent Architecture
+- **Document Type:** Reference Architecture / Runtime Implementation
+- **Maturity:** Production Candidate
+- **Difficulty:** Advanced
+- **Harness Level:** L2 — Agent Runtime / Orchestration
+- **Source:** GitHub / Docs
+- **URL:** https://github.com/All-Hands-AI/OpenHands
+- **Docs:** https://docs.all-hands.dev/
+- **Overall Score:** 8.8 / 10
+
+**Labels**
+
+- Agent Runtime
+- Coding Agent
+- Planner
+- Executor
+- Sandbox
+- Tool Routing
+- Workspace Management
+- Human-in-the-Loop
+- Multi-step Execution
+- Architecture
+
+**Why it matters**
+
+OpenHands is one of the best open-source references for studying a full agent runtime around coding tasks. It is useful not because the Harness should copy or replace itself with OpenHands, but because it shows how planner, executor, tool access, sandbox, workspace, and human interaction can be organized in a real runtime.
+
+**Apply to Harness**
+
+- Agent loop design
+- Planner / executor separation
+- Runtime state management
+- Event system
+- Tool routing
+- Sandbox and workspace isolation
+- File editing workflow
+- Human-in-the-loop review
+- Multi-step coding task execution
+
+**What to study**
+
+- How tasks are represented and decomposed.
+- How the runtime manages state across multiple steps.
+- How sandbox and workspace access are controlled.
+- How tools are exposed to agents.
+- How user review or intervention is modeled.
+- Which runtime ideas can be adapted into a smaller BD Harness architecture.
+
+**Recommendation**
+
+Use OpenHands as the primary P1+ study target for **L2 Runtime Architecture**. Do not adopt it directly unless a future POC proves that its runtime can be simplified and integrated without excessive overlap.
+
+---
+
 ### Building a RAG Pipeline for 10M+ Documents With Near-Zero Hallucination
 
 - **Priority:** P1
