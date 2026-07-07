@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growth Operating System — Viet-Japan Platform</title>
+  <style>
+/* McKinsey-style design system — shared stylesheet */
+/* LLM outputs semantic HTML only; never re-output this CSS */
+
+:root {
+  --navy:       #051C2C;
+  --blue:       #0047AB;
+  --blue-mid:   #2563EB;
+  --blue-light: #E8F1FB;
+  --teal:       #00968A;
+  --red:        #C9002B;
+  --green:      #00875A;
+  --gray-50:    #F7F8FA;
+  --gray-100:   #ECEEF1;
+  --gray-200:   #D0D4DB;
+  --gray-500:   #6B7280;
+  --gray-800:   #1F2937;
+  --white:      #FFFFFF;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-sans:  "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono:  "Cascadia Code", "Fira Code", Consolas, monospace;
+  --radius:     4px;
+  --shadow:     0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+}
+
+/* ── Reset ────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: var(--font-sans);
+  color: var(--gray-800);
+  background: var(--white);
+  line-height: 1.6;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ── Typography ───────────────────────────────────────── */
+h1, h2, h3 { font-family: var(--font-serif); color: var(--navy); line-height: 1.25; }
+h1 { font-size: 2rem;   font-weight: 700; margin-bottom: .5rem; }
+h2 { font-size: 1.375rem; font-weight: 700; margin: 2rem 0 .75rem; border-bottom: 2px solid var(--navy); padding-bottom: .25rem; }
+h3 { font-size: 1.1rem;  font-weight: 700; margin: 1.5rem 0 .5rem; }
+h4 { font-size: .95rem;  font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: .06em; margin: 1.25rem 0 .4rem; }
+p  { margin-bottom: .875rem; }
+.lead { font-size: 1.125rem; color: var(--gray-500); margin-bottom: 1.5rem; }
+a  { color: var(--blue-mid); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Header ───────────────────────────────────────────── */
+.doc-header {
+  border-left: 4px solid var(--blue);
+  padding-left: 1rem;
+  margin-bottom: 2.5rem;
+}
+.doc-header .meta { font-size: .8rem; color: var(--gray-500); margin-top: .5rem; }
+
+/* ── Badge / Tag ──────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  padding: .2em .6em;
+  border-radius: var(--radius);
+  background: var(--blue-light);
+  color: var(--blue);
+  margin-bottom: .5rem;
+}
+.badge.red   { background: #FDECEA; color: var(--red); }
+.badge.green { background: #E6F6F0; color: var(--green); }
+.badge.gray  { background: var(--gray-100); color: var(--gray-500); }
+.badge.navy  { background: var(--navy); color: var(--white); }
+
+/* ── Card ─────────────────────────────────────────────── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+}
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+
+/* ── Table ────────────────────────────────────────────── */
+table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .9rem; }
+thead tr { background: var(--navy); color: var(--white); }
+thead th { padding: .6rem .875rem; text-align: left; font-family: var(--font-sans); font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; }
+tbody tr:nth-child(even) { background: var(--gray-50); }
+tbody tr:hover { background: var(--blue-light); }
+tbody td { padding: .55rem .875rem; border-bottom: 1px solid var(--gray-100); vertical-align: top; }
+
+/* ── Code ─────────────────────────────────────────────── */
+code { font-family: var(--font-mono); font-size: .85em; background: var(--gray-50); border: 1px solid var(--gray-200); padding: .1em .35em; border-radius: 3px; color: var(--navy); }
+pre  { background: var(--navy); color: #CBD5E1; padding: 1.25rem; border-radius: var(--radius); overflow-x: auto; margin-bottom: 1.25rem; font-size: .85rem; line-height: 1.7; }
+pre code { background: none; border: none; padding: 0; color: inherit; }
+
+/* ── Diff ─────────────────────────────────────────────── */
+.diff-add { background: #ECFDF5; color: #065F46; border-left: 3px solid var(--green); padding: .15rem .5rem; display: block; font-family: var(--font-mono); font-size: .85rem; }
+.diff-del { background: #FEF2F2; color: #991B1B; border-left: 3px solid var(--red);   padding: .15rem .5rem; display: block; font-family: var(--font-mono); font-size: .85rem; }
+.diff-ctx { padding: .15rem .5rem; display: block; font-family: var(--font-mono); font-size: .85rem; color: var(--gray-500); }
+
+/* ── Timeline ─────────────────────────────────────────── */
+.timeline { list-style: none; position: relative; padding-left: 1.75rem; }
+.timeline::before { content: ""; position: absolute; left: .5rem; top: .25rem; bottom: .25rem; width: 2px; background: var(--gray-200); }
+.timeline li { position: relative; margin-bottom: 1.25rem; }
+.timeline li::before { content: ""; position: absolute; left: -1.375rem; top: .4rem; width: 10px; height: 10px; border-radius: 50%; background: var(--blue); border: 2px solid var(--white); box-shadow: 0 0 0 2px var(--blue); }
+.timeline .time { font-size: .75rem; color: var(--gray-500); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+
+/* ── Tabs ─────────────────────────────────────────────── */
+.tabs { display: flex; gap: 0; border-bottom: 2px solid var(--gray-200); margin-bottom: 1.5rem; }
+.tab-btn { padding: .6rem 1.25rem; border: none; background: none; cursor: pointer; font-size: .9rem; color: var(--gray-500); border-bottom: 2px solid transparent; margin-bottom: -2px; font-family: var(--font-sans); transition: color .15s; }
+.tab-btn:hover { color: var(--navy); }
+.tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 600; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── Collapsible ──────────────────────────────────────── */
+details { border: 1px solid var(--gray-200); border-radius: var(--radius); margin-bottom: .75rem; }
+summary { padding: .75rem 1rem; cursor: pointer; font-weight: 600; color: var(--navy); list-style: none; display: flex; justify-content: space-between; }
+summary::after { content: "▸"; transition: transform .2s; }
+details[open] summary::after { transform: rotate(90deg); }
+details > *:not(summary) { padding: .75rem 1rem 1rem; border-top: 1px solid var(--gray-100); }
+
+/* ── Callout ──────────────────────────────────────────── */
+.callout { padding: 1rem 1.25rem; border-radius: var(--radius); border-left: 4px solid var(--blue); background: var(--blue-light); margin-bottom: 1.25rem; }
+.callout.warn { border-color: #D97706; background: #FFFBEB; }
+.callout.risk { border-color: var(--red); background: #FEF2F2; }
+
+/* ── Two-column compare ───────────────────────────────── */
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.compare .col-head { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; padding: .4rem .75rem; background: var(--navy); color: var(--white); border-radius: var(--radius) var(--radius) 0 0; }
+
+/* ── Slide deck ───────────────────────────────────────── */
+.slide { display: none; min-height: 480px; padding: 3rem; border: 1px solid var(--gray-200); border-radius: var(--radius); }
+.slide.active { display: flex; flex-direction: column; justify-content: center; }
+.slide-nav { text-align: center; margin-top: 1rem; }
+.slide-nav button { background: none; border: 1px solid var(--gray-200); padding: .4rem 1rem; border-radius: var(--radius); cursor: pointer; margin: 0 .25rem; }
+.slide-counter { font-size: .8rem; color: var(--gray-500); }
+
+/* ── Diagram ──────────────────────────────────────────── */
+.diagram { margin: 1.5rem 0; overflow-x: auto; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 1rem; }
+.diagram-caption { font-size: .78rem; color: var(--gray-500); margin-top: .4rem; }
+
+/* ── Utility ──────────────────────────────────────────── */
+.text-muted  { color: var(--gray-500); }
+.text-small  { font-size: .8rem; }
+.text-right  { text-align: right; }
+.mt-1 { margin-top: .5rem; }  .mt-2 { margin-top: 1rem; }  .mt-3 { margin-top: 1.5rem; }
+.mb-1 { margin-bottom: .5rem; } .mb-2 { margin-bottom: 1rem; } .mb-3 { margin-bottom: 1.5rem; }
+hr { border: none; border-top: 1px solid var(--gray-200); margin: 2rem 0; }
+
+</style>
+  <script>
+/* diagram.js — self-contained SVG renderer (flowchart + sequence)
+ * Usage: <div class="diagram" data-chart='{"type":"flow",...}'></div>
+ * No dependencies. Works offline. Include after styles.css.
+ */
+(function () {
+  'use strict';
+
+  const C = {
+    navy: '#051C2C', blue: '#0047AB', blueMid: '#2563EB',
+    blueLight: '#E8F1FB', teal: '#00968A', red: '#C9002B',
+    green: '#00875A', gray: '#6B7280', gray100: '#ECEEF1',
+    gray200: '#D0D4DB', white: '#FFFFFF',
+  };
+  const FONT = 'Segoe UI,system-ui,sans-serif';
+
+  /* ── SVG factory ─────────────────────────────────────── */
+  function el(tag, attrs, ...children) {
+    const ns = 'http://www.w3.org/2000/svg';
+    const e = document.createElementNS(ns, tag);
+    Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v));
+    children.forEach(c =>
+      e.appendChild(typeof c === 'string'
+        ? document.createTextNode(c)
+        : c)
+    );
+    return e;
+  }
+
+  function arrowMarker(id, color) {
+    const m = el('marker', { id, markerWidth: '10', markerHeight: '7', refX: '9', refY: '3.5', orient: 'auto' });
+    m.appendChild(el('polygon', { points: '0 0,10 3.5,0 7', fill: color }));
+    return m;
+  }
+
+  /* ── Flowchart ───────────────────────────────────────── */
+  function renderFlow(container, { nodes, edges }) {
+    const NW = 144, NH = 44, GX = 56, GY = 52;
+
+    // BFS level assignment
+    const lvl = {};
+    nodes.forEach(n => (lvl[n.id] = -1));
+    const inDeg = {};
+    nodes.forEach(n => (inDeg[n.id] = 0));
+    edges.forEach(e => (inDeg[e.to] = (inDeg[e.to] || 0) + 1));
+
+    const queue = nodes.filter(n => !inDeg[n.id]).map(n => ({ id: n.id, lv: 0 }));
+    while (queue.length) {
+      const { id, lv } = queue.shift();
+      if (lvl[id] >= lv || lv >= nodes.length) continue; // lv cap: cycles must not loop forever
+      lvl[id] = lv;
+      edges.filter(e => e.from === id).forEach(e => queue.push({ id: e.to, lv: lv + 1 }));
+    }
+    nodes.forEach(n => { if (lvl[n.id] < 0) lvl[n.id] = 0; });
+
+    const byLv = {};
+    nodes.forEach(n => ((byLv[lvl[n.id]] = byLv[lvl[n.id]] || []).push(n)));
+    const maxLv = Math.max(...Object.keys(byLv).map(Number));
+    const maxCols = Math.max(...Object.values(byLv).map(a => a.length));
+
+    const svgW = maxCols * (NW + GX) - GX + 80;
+    const svgH = (maxLv + 1) * (NH + GY) - GY + 80;
+
+    const pos = {};
+    Object.entries(byLv).forEach(([lv, ns]) => {
+      const rowW = ns.length * (NW + GX) - GX;
+      const ox = (svgW - rowW) / 2;
+      ns.forEach((n, i) => {
+        pos[n.id] = { x: ox + i * (NW + GX) + NW / 2, y: +lv * (NH + GY) + 40 + NH / 2 };
+      });
+    });
+
+    const root = el('svg', { width: svgW, height: svgH, xmlns: 'http://www.w3.org/2000/svg', style: 'display:block' });
+    const defs = el('defs', {});
+    defs.appendChild(arrowMarker('fa', C.gray));
+    root.appendChild(defs);
+
+    // Edges
+    edges.forEach(({ from, to, label }) => {
+      const f = pos[from], t = pos[to];
+      if (!f || !t) return;
+      const dy = t.y - f.y;
+      const cy1 = f.y + NH / 2 + dy * 0.35, cy2 = t.y - NH / 2 - dy * 0.35;
+      root.appendChild(el('path', {
+        d: `M${f.x},${f.y + NH / 2} C${f.x},${cy1} ${t.x},${cy2} ${t.x},${t.y - NH / 2 - 7}`,
+        fill: 'none', stroke: C.gray200, 'stroke-width': '1.5', 'marker-end': 'url(#fa)',
+      }));
+      if (label) {
+        const lx = (f.x + t.x) / 2, ly = (f.y + t.y) / 2;
+        root.appendChild(el('rect', { x: lx - 22, y: ly - 9, width: 44, height: 16, rx: 3, fill: C.white }));
+        root.appendChild(el('text', { x: lx, y: ly + 3, 'text-anchor': 'middle', fill: C.gray, 'font-size': '10', 'font-family': FONT }, label));
+      }
+    });
+
+    // Nodes
+    nodes.forEach(n => {
+      const p = pos[n.id];
+      if (!p) return;
+      const { x, y } = p;
+      const shape = n.shape || 'rect';
+
+      if (shape === 'terminal' || shape === 'oval') {
+        root.appendChild(el('rect', { x: x - NW / 2, y: y - NH / 2, width: NW, height: NH, rx: NH / 2, fill: C.navy }));
+        root.appendChild(el('text', { x, y: y + 4, 'text-anchor': 'middle', fill: C.white, 'font-size': '12', 'font-family': FONT, 'font-weight': '600' }, n.label));
+      } else if (shape === 'diamond') {
+        root.appendChild(el('polygon', {
+          points: `${x},${y - NH / 2} ${x + NW / 2},${y} ${x},${y + NH / 2} ${x - NW / 2},${y}`,
+          fill: C.blueLight, stroke: C.blue, 'stroke-width': '1.5',
+        }));
+        root.appendChild(el('text', { x, y: y + 4, 'text-anchor': 'middle', fill: C.navy, 'font-size': '11', 'font-family': FONT, 'font-weight': '600' }, n.label));
+      } else {
+        const fill = { process: C.blueLight, io: '#F0FDF4', default: C.blueLight };
+        root.appendChild(el('rect', { x: x - NW / 2, y: y - NH / 2, width: NW, height: NH, rx: 4, fill: fill[shape] || fill.default, stroke: C.blue, 'stroke-width': '1.5' }));
+        root.appendChild(el('text', { x, y: y + 4, 'text-anchor': 'middle', fill: C.navy, 'font-size': '12', 'font-family': FONT, 'font-weight': '600' }, n.label));
+      }
+    });
+
+    container.appendChild(root);
+  }
+
+  /* ── Sequence diagram ────────────────────────────────── */
+  function renderSequence(container, { actors, steps }) {
+    const CW = 160, RH = 52, PX = 40, PT = 64;
+    const W = actors.length * CW + PX * 2;
+    const H = steps.length * RH + PT + 48;
+
+    const root = el('svg', { width: W, height: H, xmlns: 'http://www.w3.org/2000/svg', style: 'display:block' });
+    const defs = el('defs', {});
+    defs.appendChild(arrowMarker('sa', C.blue));
+    defs.appendChild(arrowMarker('sr', C.teal));
+    root.appendChild(defs);
+
+    const cx = i => PX + i * CW + CW / 2;
+
+    // Actor boxes
+    actors.forEach((a, i) => {
+      const x = cx(i);
+      root.appendChild(el('rect', { x: x - 60, y: 8, width: 120, height: 32, rx: 4, fill: C.navy }));
+      root.appendChild(el('text', { x, y: 29, 'text-anchor': 'middle', fill: C.white, 'font-size': '12', 'font-family': FONT, 'font-weight': '600' }, a));
+    });
+
+    // Lifelines
+    actors.forEach((_, i) => {
+      root.appendChild(el('line', { x1: cx(i), y1: 40, x2: cx(i), y2: H - 16, stroke: C.gray200, 'stroke-width': '2', 'stroke-dasharray': '6,4' }));
+    });
+
+    // Steps
+    steps.forEach((s, i) => {
+      const fi = actors.indexOf(s.from);
+      const ti = actors.indexOf(s.to);
+      if (fi < 0 || ti < 0) return;
+      const y = PT + i * RH + RH / 2;
+      const x1 = cx(fi), x2 = cx(ti);
+      const isReturn = !!s.return;
+      const arrowColor = isReturn ? C.teal : C.blue;
+      const markerId = isReturn ? 'url(#sr)' : 'url(#sa)';
+
+      if (fi === ti) {
+        root.appendChild(el('path', {
+          d: `M${x1},${y} C${x1 + 50},${y} ${x1 + 50},${y + 28} ${x1},${y + 28}`,
+          fill: 'none', stroke: arrowColor, 'stroke-width': '1.5', 'marker-end': markerId,
+        }));
+      } else {
+        const dir = x2 > x1 ? -8 : 8;
+        const dash = isReturn ? '5,3' : null;
+        const lineAttrs = { x1, y1: y, x2: x2 + dir, y2: y, stroke: arrowColor, 'stroke-width': '1.5', 'marker-end': markerId };
+        if (dash) lineAttrs['stroke-dasharray'] = dash;
+        root.appendChild(el('line', lineAttrs));
+      }
+
+      const lx = fi === ti ? x1 + 28 : (x1 + x2) / 2;
+      root.appendChild(el('rect', { x: lx - 44, y: y - 17, width: 88, height: 14, rx: 2, fill: C.white }));
+      root.appendChild(el('text', { x: lx, y: y - 5, 'text-anchor': 'middle', fill: C.navy, 'font-size': '10', 'font-family': FONT, 'font-weight': '500' }, s.msg));
+    });
+
+    container.appendChild(root);
+  }
+
+  /* ── Init ────────────────────────────────────────────── */
+  function init() {
+    document.querySelectorAll('.diagram[data-chart]').forEach(container => {
+      try {
+        const data = JSON.parse(container.dataset.chart);
+        if (data.type === 'flow') renderFlow(container, data);
+        else if (data.type === 'sequence') renderSequence(container, data);
+        else container.textContent = `Unknown diagram type: ${data.type}`;
+      } catch (e) {
+        container.style.cssText = 'color:red;font-size:.85rem;padding:.5rem';
+        container.textContent = 'Diagram error: ' + e.message;
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+
+</script>
+</head>
+<body>
+
+  <header class="doc-header">
+    <span class="badge">GROWTH OS v2</span>
+    <h1>Growth Operating System — từ SNS insight đến pipeline &amp; monetization</h1>
+    <p class="lead">Không quản lý pipeline — quản lý <strong>dây chuyền sinh pipeline</strong>. SNS là cảm biến trên đất mượn; web app là nơi tích lũy profile trên đất sở hữu; vòng lặp tuần là động cơ. Pipeline nào cũng có ngày hết hạn.</p>
+    <p class="meta">2026-07-07 · v2 — vá 8 findings sau review McKinsey nội bộ (xem tab ★ Review) · Bổ trợ cho Business Plan v2.1 (§7.3 phễu tool chẩn đoán, §13 web app) · Thiết kế cho founder solo ~2h/ngày</p>
+  </header>
+
+  <main>
+
+  <div class="tab-group">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab(event,'g0')">01–02 · Tổng quan &amp; OS</button>
+      <button class="tab-btn" onclick="showTab(event,'g1')">03 · Insight</button>
+      <button class="tab-btn" onclick="showTab(event,'g2')">04 · Segment</button>
+      <button class="tab-btn" onclick="showTab(event,'g3')">05 · Insight→Pipeline</button>
+      <button class="tab-btn" onclick="showTab(event,'g4')">06 · Archetype</button>
+      <button class="tab-btn" onclick="showTab(event,'g5')">07 · Conversion</button>
+      <button class="tab-btn" onclick="showTab(event,'g6')">08 · Vòng lặp tuần</button>
+      <button class="tab-btn" onclick="showTab(event,'g7')">09 · Đo lường</button>
+      <button class="tab-btn" onclick="showTab(event,'g8')">10 · Monetization</button>
+      <button class="tab-btn" onclick="showTab(event,'g9')">11 · Case chạy thử</button>
+      <button class="tab-btn" onclick="showTab(event,'g10')">12 · Templates</button>
+      <button class="tab-btn" onclick="showTab(event,'g11')">13 · Bắt đầu từ đâu</button>
+      <button class="tab-btn" onclick="showTab(event,'g12')">14 · Cold start &amp; Content</button>
+      <button class="tab-btn" onclick="showTab(event,'g13')">15 · Setup kỹ thuật</button>
+      <button class="tab-btn" onclick="showTab(event,'g14')">★ Review v2</button>
+    </div>
+
+    <!-- ═══════════ 01 EXEC SUMMARY + 02 GROWTH OS ═══════════ -->
+    <div id="g0" class="tab-panel active">
+      <h2>01 · Executive Summary — 10 insight chiến lược</h2>
+      <div class="card-grid">
+        <div class="card"><h3>1 · Quản lý dây chuyền, không quản lý pipeline</h3><p>Pipeline là output có hạn sử dụng 2–6 tuần. Tài sản thật là: Signal DB + Segment board + quy trình tuần. Đừng yêu bất kỳ pipeline nào.</p></div>
+        <div class="card"><h3>2 · SNS là cảm biến trước khi là kênh phát</h3><p>Giá trị lớn nhất của TikTok/FB giai đoạn này không phải reach mà là <strong>dữ liệu pain miễn phí</strong>. Mỗi post là một thí nghiệm đo thị trường, view chỉ là phụ phẩm.</p></div>
+        <div class="card"><h3>3 · Comment tiếng Việt = dữ liệu định tính rẻ nhất</h3><p>Các group FB lớn có hàng nghìn comment pain mỗi tuần nhưng không ai khai thác có hệ thống. Người đầu tiên tag + đếm được chúng sẽ ra content hook nhanh hơn mọi đối thủ.</p></div>
+        <div class="card"><h3>4 · Tag 3 trục: Chủ đề × Cảm xúc × Ý định</h3><p>Chỉ tag chủ đề (VISA, JLPT) không sinh được hook. Hook nằm ở giao điểm: <em>VISA × ANXIETY × HỎI_UY_TÍN</em> cho content khác hẳn <em>VISA × CONFUSION × HỎI_CÁCH_LÀM</em>.</p></div>
+        <div class="card"><h3>5 · Segment theo khoảnh khắc, không theo nhân khẩu</h3><p>"Sắp gia hạn visa trong 60 ngày" dự đoán hành vi mạnh hơn "nam, 27 tuổi, kỹ sư". Trigger moment quyết định cả hook lẫn thời điểm mời trả tiền.</p></div>
+        <div class="card"><h3>6 · Trả giá trị trước, xin dữ liệu sau</h3><p>Delayed signup là luật (đã ghi trong DESIGN contract). Profile hỏi từng miếng theo từng lần quay lại — mỗi field phải đổi lấy một giá trị nhìn thấy được.</p></div>
+        <div class="card"><h3>7 · Trust là đơn vị tiền tệ của thị trường này</h3><p>Cộng đồng đã bị lừa nhiều (tour ma, môi giới đen). Mọi pipeline bắt buộc có ≥1 <strong>trust asset</strong> (bảng chi phí công khai, recap thật, dấu 明). Một trust incident giết cả thương hiệu, không chỉ một pipeline.</p></div>
+        <div class="card"><h3>8 · Monetization là giả thuyết test từ tuần 1</h3><p>Không đợi "đủ user rồi tính". Waitlist có ghi giá, bán 5 slot tư vấn, đặt cọc event — đo willingness-to-pay ngay khi pipeline chạy, trước khi build feature lớn.</p></div>
+        <div class="card"><h3>9 · Nhịp solo: 1 pipeline mới/tuần, tối đa 3 sống</h3><p>Với ~2h/ngày, quá 3 pipeline đồng thời là chết vì vận hành. Scoring model tồn tại để <em>từ chối</em> ý tưởng, không phải để xếp hạng cho vui.</p></div>
+        <div class="card"><h3>10 · Kill nhanh là tính năng</h3><p>Kill criteria viết <strong>trước khi</strong> launch, review đúng lịch, kill không tiếc. Một pipeline chết đúng hạn trả về data + insight; một pipeline zombie ăn mất tuần của pipeline tốt hơn.</p></div>
+      </div>
+
+      <h2 class="mt-3">02 · Growth Operating System — 4 lớp</h2>
+      <p>Hệ vận hành gồm 4 lớp chạy theo chu kỳ tuần. SNS và web app không phải hai thế giới — chúng là hai đầu của <strong>một ống dữ liệu</strong>, nối với nhau bằng <code>pipeline_id</code> gắn trên mọi link.</p>
+      <div class="compare">
+        <div>
+          <div class="col-head">Đất mượn — SNS (TikTok / IG / FB)</div>
+          <p>Vai trò: <strong>cảm biến + cửa hút</strong>. Thu signal thô (comment, save, DM, poll), test hook rẻ, không tích lũy được gì lâu dài. Thuật toán đổi là mất reach — vì vậy không xây tài sản ở đây.</p>
+        </div>
+        <div>
+          <div class="col-head">Đất sở hữu — Web app</div>
+          <p>Vai trò: <strong>bộ nhớ + máy đo tinh</strong>. Quiz result, profile field, event feedback là signal <em>tinh</em> — đo được, gắn với người thật, tích lũy theo thời gian. Monetization chỉ xảy ra ở đây.</p>
+        </div>
+      </div>
+      <div class="diagram" data-chart='{"type":"flow","nodes":[
+        {"id":"a","label":"SENSE · thu signal SNS","shape":"terminal"},
+        {"id":"b","label":"Tag 3 trục + Signal DB"},
+        {"id":"c","label":"Cluster → Segment board"},
+        {"id":"d","label":"Hypothesis backlog"},
+        {"id":"e","label":"Scoring → chọn 1 test","shape":"diamond"},
+        {"id":"f","label":"BUILD · content+landing+app action"},
+        {"id":"g","label":"MEASURE · funnel theo pipeline_id"},
+        {"id":"h","label":"LEARN · scale / iterate / kill","shape":"terminal"}
+      ],"edges":[
+        {"from":"a","to":"b"},{"from":"b","to":"c"},{"from":"c","to":"d"},
+        {"from":"d","to":"e"},{"from":"e","to":"f","label":"điểm cao nhất"},
+        {"from":"f","to":"g"},{"from":"g","to":"h"}
+      ]}'></div>
+      <p class="diagram-caption">Vòng lặp tuần: LEARN đổ ngược về SENSE — kết quả đo (kể cả pipeline chết) trở thành signal đầu vào của tuần sau. Diagram vẽ tuyến tính để dễ đọc; chu kỳ là 7 ngày.</p>
+      <div class="callout">
+        <strong>Nguyên tắc bất biến của OS:</strong> (1) mọi link SNS→app mang <code>pipeline_id</code>; (2) mọi pipeline có kill criteria trước khi launch; (3) mọi pipeline có ≥1 trust asset; (4) đỏ độc quyền cho cảnh báo lừa đảo; (5) APPI — CV/giấy tờ không lưu nếu chưa login, tư cách lưu trú tự khai + mã hóa; (6) Phase 1–2 không thu phí giới thiệu việc, không kickback tour (chưa có giấy phép).
+      </div>
+    </div>
+
+    <!-- ═══════════ 03 INSIGHT COLLECTION + TAXONOMY ═══════════ -->
+    <div id="g1" class="tab-panel">
+      <h2>03 · Insight Collection Framework</h2>
+      <p>Nguyên tắc phân cấp: <strong>signal trên đất mượn là quặng thô, signal trên đất sở hữu là quặng tinh</strong>. Toàn bộ hệ thống là một dây chuyền tinh luyện — kéo người từ nơi signal rẻ-nhưng-nhiễu về nơi signal đắt-nhưng-chính-xác.</p>
+      <table>
+        <thead><tr><th>Nguồn signal</th><th>Phản ánh pain gì</th><th>Độ tin cậy</th><th>Cách tag</th><th>Thành pipeline?</th><th>Liên quan tiền?</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Comment</strong></td><td>Pain nói ra được, câu hỏi lặp lại</td><td><span class="badge gray">Trung bình</span> — bias người rảnh, hay đùa theo trend</td><td>Đếm tần suất theo keyword; chỉ thành insight khi ≥5 lần/tuần từ ≥3 video khác nhau</td><td>Có — nguồn hook số 1</td><td>Gián tiếp</td></tr>
+          <tr><td><strong>DM</strong></td><td>Pain riêng tư, xấu hổ không dám hỏi công khai (visa, tiền, lừa đảo)</td><td><span class="badge green">Cao nhất</span> — người ta không DM để diễn</td><td>Tag đủ 3 trục + đánh dấu <code>WTP?</code> nếu hỏi giá/nhờ làm hộ</td><td>Có — DM lặp lại = pipeline candidate mạnh nhất</td><td><strong>Trực tiếp</strong> — "làm hộ em được không" = tín hiệu trả tiền</td></tr>
+          <tr><td><strong>Poll / sticker IG</strong></td><td>Ưu tiên tương đối giữa các lựa chọn</td><td><span class="badge gray">Thấp–TB</span> — bias theo đáp án mình đưa</td><td>Chỉ dùng để xếp hạng pain đã biết, không dùng để phát hiện pain mới</td><td>Dùng validate, không dùng khởi tạo</td><td>Không</td></tr>
+          <tr><td><strong>Câu hỏi khi live</strong></td><td>Pain khẩn cấp, đúng ngôn ngữ user</td><td><span class="badge green">Cao</span> — real-time, không soạn trước</td><td>Ghi âm/chép lại nguyên văn làm hook copy</td><td>Có — nguyên văn câu hỏi = title video tiếp theo</td><td>Gián tiếp</td></tr>
+          <tr><td><strong>Video retention</strong></td><td>Đo <em>hook</em> có trúng không — không đo pain</td><td><span class="badge green">Cao</span> cho hook, <span class="badge red">vô nghĩa</span> cho pain</td><td>Gắn với content_id + tag của video, so retention giữa các hook cùng chủ đề</td><td>Không trực tiếp — là metric của experiment</td><td>Không</td></tr>
+          <tr><td><strong>Save rate</strong></td><td>Nhu cầu <em>thật</em> nhưng kín — người ta lưu cái định dùng sau (checklist, thủ tục, mẹo)</td><td><span class="badge green">Cao</span> — hành vi riêng tư, không diễn cho ai xem</td><td>Save cao + share thấp = pain xấu hổ (visa, nợ, lương) → hợp tool ẩn danh</td><td><strong>Có — chỉ báo tốt nhất cho tool/checklist</strong></td><td>Có — save = "tôi sẽ cần cái này"</td></tr>
+          <tr><td><strong>Share rate</strong></td><td>Giá trị xã hội — gửi cho bạn/người thân</td><td><span class="badge gray">TB</span> — đo identity nhiều hơn pain</td><td>Share cao = chủ đề hợp share card / referral</td><td>Có — chọn chủ đề cho share card</td><td>Gián tiếp</td></tr>
+          <tr><td><strong>Search keyword</strong> (TikTok search, FB group search, Google Search Console sau này)</td><td>Intent chủ động — pain đủ mạnh để tự đi tìm</td><td><span class="badge green">Cao</span></td><td>Map keyword → DOMAIN tag; keyword có "cách", "bao nhiêu", "ở đâu" = INTENT khác nhau</td><td>Có — nguồn cho tips/SEO pipeline</td><td>Có — keyword chứa giá = WTP signal</td></tr>
+          <tr><td><strong>Group post</strong> (FB groups cộng đồng)</td><td>Pain dạng câu chuyện đầy đủ ngữ cảnh + cách cộng đồng tự xử lý hiện tại</td><td><span class="badge gray">TB</span> — có post câu tương tác, có seeding của môi giới</td><td>Tag thêm <code>WORKAROUND</code>: họ đang tự giải quyết bằng gì → đầu vào monetization map</td><td>Có — nguồn hiểu "giải pháp thay thế hiện tại"</td><td><strong>Có</strong> — thấy được họ đang trả tiền cho ai</td></tr>
+          <tr><td><strong>Reaction pattern</strong></td><td>Cường độ cảm xúc (angry/sad vs haha)</td><td><span class="badge red">Thấp</span> — nhiễu cao</td><td>Chỉ dùng bổ trợ khi cluster</td><td>Không</td><td>Không</td></tr>
+          <tr><td><strong>UGC / duet / video đáp</strong></td><td>Identity — user muốn được nhìn thấy là ai</td><td><span class="badge gray">TB</span></td><td>Tag <code>PRIDE</code>/<code>KHOE</code> — đầu vào cho share card &amp; referral design</td><td>Có — thiết kế moment "đáng khoe"</td><td>Gián tiếp</td></tr>
+          <tr><td><strong>Event feedback</strong> (đất sở hữu)</td><td>Trust đã được xác nhận hay chưa; pain về giá/khoảng cách/thời gian</td><td><span class="badge green">Rất cao</span> — người thật đã bỏ tiền/thời gian</td><td>Tag <code>EVENT_TRUST</code> + NPS; quote thật (xin phép) = trust asset cho pipeline sau</td><td>Có — nguồn recap content + social proof</td><td><strong>Trực tiếp</strong> — "giá này ok không" hỏi ngay tại event</td></tr>
+          <tr><td><strong>Quiz result</strong> (đất sở hữu)</td><td>Pain đo được chính xác: sai đúng câu nào, ngữ pháp nào, mức nào</td><td><span class="badge green">Rất cao</span> — hành vi thật, định lượng</td><td>Tự động: mỗi câu quiz gắn sẵn tag ngữ pháp → kết quả tự đổ vào Signal DB</td><td><strong>Có — máy sinh content hook chính xác nhất</strong> ("70% người làm sai câu này")</td><td>Có — điểm thấp lặp lại = candidate mua course</td></tr>
+          <tr><td><strong>Profile field</strong> (đất sở hữu)</td><td>Bối cảnh: vùng, tư cách lưu trú (tự khai), mục tiêu</td><td><span class="badge green">Cao</span> nhưng thưa (progressive)</td><td>Là <em>chiều phân tích</em> cho mọi signal khác, không phải signal độc lập</td><td>Không trực tiếp — dùng để cắt lát dữ liệu</td><td>Có — xác định segment nào đáng tiền</td></tr>
+          <tr><td><strong>Referral source</strong> (utm/pipeline_id)</td><td>Pipeline nào thực sự kéo được người</td><td><span class="badge green">Cao</span> — máy đo, không phải người khai</td><td>Bắt buộc trên mọi link: <code>utm_campaign=pipeline_id</code></td><td>Là xương sống đo lường của mọi pipeline</td><td>Có — nối revenue về đúng pipeline</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="mt-3">Taxonomy tag — 3 trục + độ mạnh</h3>
+      <p>Một signal được ghi thành: <code>DOMAIN × EMOTION × INTENT + strength(1–3) + nguồn + nguyên văn</code>. Hook và pipeline sinh ra từ <em>giao điểm</em>, không từ tag đơn lẻ.</p>
+      <div class="compare">
+        <div>
+          <div class="col-head">Trục 1 — DOMAIN (chủ đề)</div>
+          <p><code>JLPT_N2_GRAMMAR</code> · <code>JLPT_MOTIVATION</code> · <code>VISA_RENEWAL</code> · <code>VISA_CHANGE</code> · <code>JOB_SEARCH</code> · <code>JOB_WORKPLACE</code> (quan hệ công sở, 残業) · <code>LIVING_COST</code> · <code>TAX_NENKIN</code> · <code>HOUSING</code> · <code>LONELINESS</code> · <code>EVENT_TRUST</code> · <code>SIDE_INCOME</code> · <code>FAMILY_SUPPORT</code> · <code>SCHOOL_APPLICATION</code> · <code>SCAM_ALERT</code></p>
+        </div>
+        <div>
+          <div class="col-head">Trục 2 — EMOTION (cảm xúc)</div>
+          <p><code>ANXIETY</code> (sợ hậu quả) · <code>CONFUSION</code> (không biết làm thế nào) · <code>FRUSTRATION</code> (làm rồi không được) · <code>SHAME</code> (xấu hổ, chỉ dám DM) · <code>FOMO</code> (người khác được, mình không) · <code>DISTRUST</code> (sợ bị lừa) · <code>PRIDE</code> (muốn khoe thành quả)</p>
+        </div>
+      </div>
+      <div class="compare">
+        <div>
+          <div class="col-head">Trục 3 — INTENT (ý định)</div>
+          <p><code>HOI_CACH_LAM</code> (how-to) · <code>HOI_CHI_PHI</code> (bao nhiêu tiền — WTP signal) · <code>HOI_UY_TIN</code> (chỗ này thật không) · <code>NHO_LAM_HO</code> (làm hộ em — WTP mạnh nhất) · <code>XA_STRESS</code> (than, không cần giải pháp) · <code>KHOE</code> (khoe kết quả) · <code>TIM_BAN</code> (tìm người đi cùng) · <code>CANH_BAO</code> (báo lừa đảo)</p>
+        </div>
+        <div>
+          <div class="col-head">Strength (độ mạnh 1–3)</div>
+          <p><strong>1</strong> — xuất hiện lẻ tẻ, 1 nguồn. <strong>2</strong> — ≥5 lần/tuần hoặc ≥2 loại nguồn. <strong>3</strong> — ≥2 loại nguồn <em>và</em> có ít nhất 1 tín hiệu WTP (<code>HOI_CHI_PHI</code>/<code>NHO_LAM_HO</code>) hoặc save rate vượt trội. Chỉ strength ≥2 mới được lên Hypothesis backlog.</p>
+        </div>
+      </div>
+      <div class="callout warn">
+        <strong>Hai cạm bẫy đọc signal:</strong> (1) <em>Pain nói ra ≠ pain thật</em> — "không có tài liệu N2" thường là "không có feedback và cảm giác tiến bộ"; luôn hỏi "đằng sau câu này là job-to-be-done gì?". (2) <em>Signal to ≠ segment lớn</em> — 100 comment đùa theo trend thua 10 DM nghiêm túc. Trọng số theo độ tin cậy nguồn, không theo volume.
+      </div>
+    </div>
+
+    <!-- ═══════════ 04 SEGMENT ═══════════ -->
+    <div id="g2" class="tab-panel">
+      <h2>04 · Segment Discovery Method</h2>
+      <p>Segment không cắt theo nhân khẩu học mà theo <strong>trigger moment</strong> — khoảnh khắc đời sống đẩy pain lên đỉnh. Cùng một người có thể thuộc 3 segment trong 1 năm (mới sang → sắp thi N2 → sắp gia hạn visa). Vì vậy segment gắn với <em>trạng thái trong profile</em>, không gắn vĩnh viễn với user.</p>
+      <p>8 tiêu chí chấm mỗi segment (1–5): pain intensity · urgency · willingness-to-pay · trust barrier (điểm cao = khó) · SNS behavior (có quan sát được không) · content preference · khả năng làm app action · monetization fit.</p>
+
+      <h3>3 segment card đầy đủ (mẫu chuẩn)</h3>
+      <div class="card-grid">
+        <div class="card">
+          <h3>S1 · N2-Plateau — "học mãi không lên"</h3>
+          <p><strong>Trigger:</strong> trượt N2 / điểm mock thấp / còn 3 tháng đến kỳ thi (tháng 7 &amp; 12).<br>
+          <strong>Core anxiety:</strong> tốn 2 năm mà vẫn tầm N3 — sợ mình "không có khiếu", visa/việc tốt phụ thuộc N2.<br>
+          <strong>SNS behavior:</strong> save mẹo ngữ pháp, comment "học xong quên hết", xem video luyện đề đến hết.<br>
+          <strong>Hidden need:</strong> không thiếu tài liệu — thiếu <em>feedback nhanh + cảm giác tiến bộ đo được</em>.<br>
+          <strong>Hook tốt nhất:</strong> "70% người thi trượt vì 5 cấu trúc này — bạn sai câu nào?"<br>
+          <strong>App entry:</strong> quiz 10 câu Lucida, không cần login.<br>
+          <strong>Conversion action:</strong> làm hết quiz → xem phiếu điểm → đăng ký lưu tiến độ.<br>
+          <strong>Profile cần:</strong> mức hiện tại, kỳ thi mục tiêu, điểm yếu ngữ pháp (tự sinh từ quiz).<br>
+          <strong>Monetization:</strong> course ngữ pháp / premium quiz ¥980–4,900.<br>
+          <strong>Trust barrier:</strong> <span class="badge green">Thấp</span> — học tập không đụng tiền lớn/giấy tờ.<br>
+          <strong>Retention lever:</strong> streak mềm + biểu đồ tiến bộ theo tuần.<br>
+          <strong>Evidence cần:</strong> quiz_complete ≥30%, quay lại tuần 2 ≥15%.</p>
+        </div>
+        <div class="card">
+          <h3>S2 · Visa-Deadline — "sắp đến hạn mà chưa biết gì"</h3>
+          <p><strong>Trigger:</strong> còn 30–90 ngày đến hạn gia hạn / đổi tư cách (du học→việc làm).<br>
+          <strong>Core anxiety:</strong> sai một tờ giấy = mất quyền ở lại — hậu quả tối đa, kiến thức tối thiểu.<br>
+          <strong>SNS behavior:</strong> save checklist thủ tục rất cao, share thấp (xấu hổ), DM hỏi riêng, search "gia hạn visa cần giấy gì".<br>
+          <strong>Hidden need:</strong> không cần "thông tin" (Google có) — cần <em>xác nhận mình không sót gì</em> + một người tin được để hỏi.<br>
+          <strong>Hook:</strong> "Checklist 12 giấy tờ gia hạn — thiếu 1 trong 3 tờ này là bị trả hồ sơ."<br>
+          <strong>App entry:</strong> checklist tương tác theo loại tư cách, tick từng mục, không cần login.<br>
+          <strong>Conversion:</strong> lưu checklist + đặt reminder hạn nộp (cần email/LINE).<br>
+          <strong>Profile cần:</strong> loại tư cách (tự khai, mã hóa — APPI), tháng hết hạn, vùng.<br>
+          <strong>Monetization:</strong> workshop kiến thức ¥1,500 với 行政書士; Phase 3+ mới làm dịch vụ giấy tờ (license).<br>
+          <strong>Trust barrier:</strong> <span class="badge red">Rất cao</span> — thị trường đầy "dịch vụ visa" lừa.<br>
+          <strong>Retention:</strong> reminder theo mốc hồ sơ; hết việc là rời — chấp nhận, chuyển segment khác.<br>
+          <strong>Evidence:</strong> checklist save ≥20% người mở; ≥10 DM/tuần hỏi sâu.</p>
+        </div>
+        <div class="card">
+          <h3>S3 · Weekend-Lonely — "cuối tuần không biết đi đâu với ai"</h3>
+          <p><strong>Trigger:</strong> 3–18 tháng sau khi sang — hết giai đoạn sốc, bắt đầu thấy trống.<br>
+          <strong>Core anxiety:</strong> "mình sang đây để sống thế này thôi à" — cô đơn nhưng ngại thừa nhận.<br>
+          <strong>SNS behavior:</strong> comment "cho em theo với" dưới video camping/ski, tag bạn, <code>TIM_BAN</code> trong group.<br>
+          <strong>Hidden need:</strong> không phải "sự kiện" — cần <em>cái cớ an toàn để gặp người mới</em> mà không sợ kỳ quặc hay bị lừa tiền.<br>
+          <strong>Hook:</strong> recap event thật: ảnh nhóm + bảng chi phí công khai + "còn 6 chỗ đợt sau".<br>
+          <strong>App entry:</strong> trang event 1 cột kiểu Luma, bảng chi phí, dấu 明.<br>
+          <strong>Conversion:</strong> đăng ký event (tên + LINE/email), sau event → feedback + ảnh.<br>
+          <strong>Profile cần:</strong> vùng đang sống, sở thích.<br>
+          <strong>Monetization:</strong> event trả phí ¥2,000–5,000 (cost + margin công khai); sau này tour lớn khi có license.<br>
+          <strong>Trust barrier:</strong> <span class="badge gray">Trung bình</span> — sợ event ma, bom kèo.<br>
+          <strong>Retention:</strong> chuỗi event định kỳ + nhóm đã quen nhau.<br>
+          <strong>Evidence:</strong> tỉ lệ đăng ký→có mặt ≥70%; NPS ≥40; ≥30% đăng ký lại đợt sau.</p>
+        </div>
+      </div>
+
+      <h3 class="mt-3">Bảng 10 segment (dạng rút gọn)</h3>
+      <table>
+        <thead><tr><th>Segment</th><th>Trigger moment</th><th>Pain lõi / hidden need</th><th>Hook tốt nhất</th><th>App entry</th><th>Monetization path</th><th>Trust barrier</th><th>WTP</th></tr></thead>
+        <tbody>
+          <tr><td><strong>S1 N2-Plateau</strong></td><td>Trượt/mock thấp, 3 tháng trước kỳ thi</td><td>Thiếu feedback + cảm giác tiến bộ</td><td>"Bạn sai câu nào trong 5 câu này?"</td><td>Quiz Lucida</td><td>Course/premium ¥980–4,900</td><td><span class="badge green">Thấp</span></td><td>TB</td></tr>
+          <tr><td><strong>S2 Visa-Deadline</strong></td><td>30–90 ngày trước hạn</td><td>Cần xác nhận không sót giấy tờ</td><td>Checklist "thiếu 1 tờ là trả hồ sơ"</td><td>Checklist + reminder</td><td>Workshop ¥1,500; dịch vụ Phase 3+</td><td><span class="badge red">Rất cao</span></td><td><strong>Cao</strong></td></tr>
+          <tr><td><strong>S3 Weekend-Lonely</strong></td><td>3–18 tháng sau khi sang</td><td>Cớ an toàn để gặp người mới</td><td>Recap event thật + chi phí công khai</td><td>Trang event</td><td>Event phí ¥2–5K</td><td><span class="badge gray">TB</span></td><td>TB</td></tr>
+          <tr><td><strong>S4 Fresh-Arrival</strong> (TTS/kỹ năng đặc định &lt;6 tháng)</td><td>Vừa sang, mọi thứ lạ</td><td>Sợ bị "chém" vì không biết giá chuẩn</td><td>"5 thứ người mới sang trả đắt gấp đôi"</td><td>Tips + bảng giá chuẩn vùng</td><td>Chưa monetize — nuôi thành S1/S3</td><td><span class="badge green">Thấp</span></td><td>Thấp</td></tr>
+          <tr><td><strong>S5 Cost-Optimizer</strong> (thuế/nenkin)</td><td>Mùa 確定申告 (T2–3), nghỉ việc, về nước</td><td>Không biết mình được hoàn bao nhiêu</td><td>"Bạn có thể được hoàn X man — tính thử"</td><td>Tool tính tiền hoàn</td><td>Tư vấn ¥2,000/slot; guide trả phí</td><td><span class="badge gray">TB</span></td><td><strong>Cao</strong></td></tr>
+          <tr><td><strong>S6 Grad-Job-Hunter</strong> (du học sinh 就活)</td><td>Năm cuối, mùa 就活</td><td>Không biết CV/面接 chuẩn Nhật trông thế nào</td><td>"Up CV — chấm điểm theo chuẩn nhà tuyển dụng Nhật"</td><td>CV diagnosis (đã có demo)</td><td>Course 面接 ¥9,800; Phase 3 recruiter</td><td><span class="badge gray">TB</span></td><td>TB–Cao</td></tr>
+          <tr><td><strong>S7 Job-Switcher</strong> (đang làm, muốn đổi việc lương cao hơn)</td><td>Bất mãn lương/残業, đủ 1–3 năm kinh nghiệm</td><td>Không biết giá thị trường của bản thân</td><td>"Lương bạn đang thấp hơn thị trường bao nhiêu?"</td><td>Tool so lương theo ngành/vùng</td><td>Phase 3: partner recruiter (license)</td><td><span class="badge gray">TB</span></td><td>Cao (recruiter trả)</td></tr>
+          <tr><td><strong>S8 Event-Burned</strong> (từng bị tour/kèo lừa)</td><td>Vừa mất tiền hoặc chứng kiến phốt</td><td>Muốn đi tiếp nhưng cần bằng chứng minh bạch</td><td>Content bóc cơ chế lừa + cách kiểm tra</td><td>Trang trust: chi phí công khai + recap</td><td>Chính là người mua event/tour khi đã tin</td><td><span class="badge red">Cao</span></td><td>Cao</td></tr>
+          <tr><td><strong>S9 Side-Hustler</strong></td><td>Lương không đủ, muốn kiếm thêm</td><td>Phân biệt cơ hội thật / đa cấp</td><td>"3 dấu hiệu việc làm thêm lừa đảo"</td><td>Tips cảnh báo (đỏ) + baito board sau này</td><td>Thận trọng — dễ dính scam ecosystem; chỉ content</td><td><span class="badge red">Cao</span></td><td>Thấp</td></tr>
+          <tr><td><strong>S10 Family-Anchor</strong> (vợ/chồng theo visa gia đình, con nhỏ)</td><td>Con đến tuổi đi học / mẹ ở nhà cô lập</td><td>Thủ tục trường lớp + mạng lưới cùng cảnh</td><td>"Timeline nộp hồ sơ 保育園 — trễ 1 tháng là hết chỗ"</td><td>Checklist trường + event gia đình</td><td>Event gia đình; tư vấn giáo dục sau này</td><td><span class="badge gray">TB</span></td><td>TB</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>Cách dùng bảng:</strong> mỗi segment chỉ "sống" khi có evidence từ Signal DB (strength ≥2). Bảng trên là <em>giả thuyết khởi điểm</em> — tuần nào signal không nuôi segment nào thì segment đó ngủ đông, không xây pipeline cho nó. S4 là segment "nuôi" (không monetize, chuyển hoá thành S1/S3); S9 là segment "phòng thủ" (content cảnh báo xây trust, không kiếm tiền).
+      </div>
+    </div>
+
+    <!-- ═══════════ 05 INSIGHT → HYPOTHESIS ═══════════ -->
+    <div id="g3" class="tab-panel">
+      <h2>05 · Insight → Hypothesis Framework</h2>
+      <p>Công thức chuyển đổi 7 bước — mỗi insight strength ≥2 phải đi qua đủ chuỗi này trước khi thành pipeline:</p>
+      <div class="callout">
+        <code>Raw signal → Interpreted pain (pain thật sau câu nói) → Segment → Job-to-be-done → Conversion hypothesis ("nếu cho X thì họ sẽ làm Y vì Z") → Pipeline candidate → Test metric + ngưỡng</code>
+      </div>
+      <p>Hai câu hỏi bắt buộc ở bước Interpreted pain: <strong>"Họ đang thuê giải pháp này làm việc gì?"</strong> (JTBD) và <strong>"Vì sao các giải pháp sẵn có (Google, group FB, senpai) chưa giải quyết được?"</strong> — nếu không trả lời được câu 2, hypothesis sẽ chết vì "đã có chỗ khác làm rồi".</p>
+      <table>
+        <thead><tr><th>#</th><th>Raw signal</th><th>Interpreted pain</th><th>Segment</th><th>Job-to-be-done</th><th>Conversion hypothesis</th><th>Pipeline candidate</th><th>Test metric</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Comment lặp: "học mãi không nhớ わけ/はず/べき"</td><td>Không thiếu tài liệu — thiếu feedback nhanh + tiến bộ nhìn thấy được</td><td>S1</td><td>"Cho tôi biết tôi đang ở đâu và yếu chỗ nào"</td><td>Quiz 10 câu phân biệt + phiếu điểm cá nhân sẽ kéo họ rời TikTok vì kết quả cá nhân hoá không xem được trên video</td><td>Quiz わけ・はず・べき → phiếu điểm → lưu tiến độ</td><td>quiz_complete ≥30%, signup sau phiếu ≥8%</td></tr>
+          <tr><td>2</td><td>Save rate cao bất thường video "hoàn thuế nenkin khi về nước"</td><td>Biết là có tiền nhưng không biết của mình bao nhiêu + sợ thủ tục</td><td>S5</td><td>"Cho tôi con số CỦA TÔI, không phải lý thuyết"</td><td>Tool nhập 3 số (năm làm, lương, loại nenkin) → ra số ước tính sẽ chuyển save thụ động thành hành động</td><td>Tool tính hoàn thuế/nenkin → email kết quả → slot tư vấn</td><td>tool_complete ≥40%, để lại email ≥15%</td></tr>
+          <tr><td>3</td><td>DM: "event Fuji này thật không ạ, em sợ bị bom tiền"</td><td>Muốn đi nhưng đã bị lừa/nghe phốt — cần bằng chứng kiểm chứng được</td><td>S8→S3</td><td>"Cho tôi cách kiểm tra mà không phải tin lời ai"</td><td>Trang event có bảng chi phí công khai + recap ảnh đợt trước sẽ chuyển DM nghi ngờ thành đăng ký</td><td>Content "cách check kèo lừa" → trang event minh bạch → đăng ký cọc</td><td>DM→link click ≥50%, đăng ký ≥15% người click</td></tr>
+          <tr><td>4</td><td>Group post: "sắp hết hạn visa mà công ty không hỗ trợ gì"</td><td>Hoảng vì deadline + không có ai tin được để hỏi</td><td>S2</td><td>"Xác nhận giúp tôi là tôi không sót gì"</td><td>Checklist tick-được theo loại tư cách + reminder sẽ được save/dùng vì giảm anxiety ngay lập tức</td><td>Checklist visa → reminder email/LINE → workshop 行政書士</td><td>checklist mở→hoàn thành ≥25%, đặt reminder ≥12%</td></tr>
+          <tr><td>5</td><td>Live question: "lương 25man ở Tokyo có sống nổi không?"</td><td>Không có khung tham chiếu chi phí thật theo vùng</td><td>S4/S7</td><td>"Cho tôi bảng chi tiêu của người thật giống tôi"</td><td>Breakdown gross→net + chi phí mẫu theo vùng sẽ được share vì ai cũng muốn so</td><td>Video breakdown → tool gross→net (đã có trong demo) → profile vùng+lương range</td><td>share rate video ≥1.5%, tool dùng ≥500/tháng</td></tr>
+          <tr><td>6</td><td>Comment đều đặn: "học xong quên hết, chán bản thân quá"</td><td>Mất motivation vì không thấy tích lũy — pain cảm xúc, không phải kiến thức</td><td>S1</td><td>"Làm tôi thấy công sức không mất đi"</td><td>Streak mềm + biểu đồ "số câu đã đúng tích lũy" sẽ tăng quay lại tuần 2</td><td>Retention feature test (không phải acquisition)</td><td>D7 return ≥15% nhóm có streak vs nhóm không</td></tr>
+          <tr><td>7</td><td>Search keyword tăng: "chuyển việc kỹ sư ở Nhật lương bao nhiêu"</td><td>Nghi mình đang bị trả thấp nhưng không có dữ liệu chuẩn</td><td>S7</td><td>"Định giá tôi trên thị trường"</td><td>Tool so lương ẩn danh theo ngành/năm KN sẽ đổi được profile nghề nghiệp — dữ liệu đắt nhất</td><td>Tool so lương → profile nghề → (Phase 3) partner recruiter</td><td>tool_complete ≥35%, điền đủ ngành+KN ≥60% người làm</td></tr>
+          <tr><td>8</td><td>UGC: nhiều video khoe 合格通知 N2/N1 mùa kết quả</td><td>Đỗ là thành tựu identity lớn — muốn được công nhận</td><td>S1 (đã convert)</td><td>"Cho tôi cách khoe sang trọng"</td><td>Share card phiếu điểm đẹp (dấu 良) sẽ được share tự nhiên mùa kết quả → referral loop</td><td>Share card → link về quiz cho bạn của người khoe</td><td>sharecard_created ≥20% người đỗ, referral visit/card ≥3</td></tr>
+          <tr><td>9</td><td>Poll IG: 68% chọn "muốn học N2 nhưng không có thời gian"</td><td>Không phải thiếu thời gian — thiếu format vừa miếng (10 phút/ngày)</td><td>S1</td><td>"Cho tôi tiến bộ trong giờ nghỉ trưa"</td><td>Format "1 ngày 5 câu" push qua LINE sẽ giữ engagement hơn khóa dài</td><td>Daily micro-quiz qua LINE/notification</td><td>opt-in ≥25% user quiz, D30 còn mở ≥40%</td></tr>
+          <tr><td>10</td><td>Comment dưới video 保育園: "trễ mất đợt nộp, giờ phải đợi 1 năm"</td><td>Thủ tục có deadline cứng mà không ai nhắc</td><td>S10</td><td>"Nhắc tôi trước khi quá muộn"</td><td>Timeline + reminder theo tuổi con sẽ capture được segment mẹ bỉm chưa ai phục vụ</td><td>Timeline 保育園/nhập học → reminder → event gia đình</td><td>reminder đặt ≥10%, mở email nhắc ≥50%</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn"><strong>Kỷ luật:</strong> mỗi hypothesis viết thành 1 câu falsifiable: "Nếu [X] thì [≥N% làm Y] vì [Z]" — có con số ngưỡng ngay từ đầu. Không có ngưỡng = không phải hypothesis, chỉ là mong ước.</div>
+    </div>
+
+    <!-- ═══════════ 06 PIPELINE ARCHETYPES ═══════════ -->
+    <div id="g4" class="tab-panel">
+      <h2>06 · Pipeline Generation System — 7 archetype</h2>
+      <p>Pipeline cụ thể sinh ra bằng cách <strong>ghép segment vào archetype</strong> rồi điền 15 trường của Pipeline Card (tab Templates). Archetype là khuôn tái sử dụng; pipeline là bản in tạm thời từ khuôn — hết hạn thì bỏ, khuôn giữ lại.</p>
+      <div class="card-grid">
+        <div class="card">
+          <h3>A1 · Pain → Free Tool → Save Progress → Course</h3>
+          <p><code>Video pain → tool/quiz miễn phí → kết quả cá nhân → đăng ký lưu → upsell course</code></p>
+          <p><strong>Dùng khi:</strong> pain đo được bằng bài test (N2, lương, thuế); segment trust barrier thấp; đã có sẵn tool (Lucida). <strong>Không dùng khi:</strong> pain một-lần-rồi-thôi (visa xong là đi) — không có gì để "lưu tiến độ". <strong>KPI đầu:</strong> tool_complete, signup_after_value.</p>
+        </div>
+        <div class="card">
+          <h3>A2 · Trust → Event Proof → Registration → Paid Event</h3>
+          <p><code>Recap event thật → trang event chi phí công khai → đăng ký (cọc) → event trả phí</code></p>
+          <p><strong>Dùng khi:</strong> đã có ≥1 event thật để làm proof; segment S3/S8. <strong>Không dùng khi:</strong> chưa từng chạy event nào — không có proof thì đây là chính cái kèo mà S8 sợ. Event đầu tiên phải chạy gần như phi lợi nhuận để sản xuất trust asset. <strong>KPI:</strong> đăng ký→có mặt, NPS, đăng ký lại.</p>
+        </div>
+        <div class="card">
+          <h3>A3 · Search Intent → Tips → Checklist → Profile → Consultation</h3>
+          <p><code>Keyword chủ động → bài tips sâu → checklist tương tác → capture email/field → slot tư vấn</code></p>
+          <p><strong>Dùng khi:</strong> intent chủ động rõ (visa, thuế, trường học); pain có cấu trúc thủ tục. <strong>Không dùng khi:</strong> pain cảm xúc mơ hồ (loneliness) — không ai search "cách hết cô đơn"; dùng A2 cho loại đó. <strong>KPI:</strong> checklist complete, email capture, slot bán được.</p>
+        </div>
+        <div class="card">
+          <h3>A4 · Achievement → Share Card → Referral → Discount</h3>
+          <p><code>Khoảnh khắc tự hào (đỗ, điểm cao) → share card đẹp → bạn bè click → giảm giá cho cả hai</code></p>
+          <p><strong>Dùng khi:</strong> sản phẩm tạo được thành tựu thật + đúng mùa (kết quả JLPT tháng 1/8). <strong>Không dùng khi:</strong> chủ đề xấu hổ (visa, nợ, lương thấp) — không ai khoe checklist visa; và khi chưa có gì đáng khoe (đừng làm share card cho điểm 3/10). <strong>KPI:</strong> sharecard_created, referral visit, K-factor.</p>
+        </div>
+        <div class="card">
+          <h3>A5 · Anxiety → Guide → Assessment → Workshop</h3>
+          <p><code>Content gọi tên nỗi sợ → guide miễn phí → bài đánh giá "mức rủi ro của bạn" → workshop trả phí</code></p>
+          <p><strong>Dùng khi:</strong> anxiety cao + hậu quả thật (visa, thuế, hợp đồng); có chuyên gia đối tác (行政書士, 税理士) để workshop đáng tin. <strong>Không dùng khi:</strong> không có chuyên gia thật đứng lớp — bán anxiety mà không giải quyết được là con đường nhanh nhất thành "kênh lừa đảo tiếp theo". Tuyệt đối không thổi phồng nỗi sợ để bán. <strong>KPI:</strong> assessment complete, workshop seat bán.</p>
+        </div>
+        <div class="card">
+          <h3>A6 · Community Proof → Recap → Waitlist → Event Monetization</h3>
+          <p><code>UGC + recap sau event → FOMO có bằng chứng → waitlist đợt sau → mở bán giới hạn</code></p>
+          <p><strong>Dùng khi:</strong> event có nhịp lặp (camping mùa hè, ski mùa đông) và đợt trước thành công. <strong>Không dùng khi:</strong> event một lần không lặp; hoặc dùng scarcity giả ("còn 2 chỗ" khi còn 30) — S8 sẽ phát hiện và trust chết. <strong>KPI:</strong> waitlist join, waitlist→paid conversion.</p>
+        </div>
+        <div class="card">
+          <h3>A7 · Career Intent → Profile → Job/Partner Offer</h3>
+          <p><code>Tool định giá bản thân → profile nghề nghiệp giàu dữ liệu → (Phase 3) recruiter/partner trả tiền cho lead</code></p>
+          <p><strong>Dùng khi:</strong> Phase 3+, đã có giấy phép 職業紹介 hoặc partner có phép; pool profile đủ dày. <strong>Không dùng khi:</strong> Phase 1–2 — <span class="badge red">cấm thu phí giới thiệu</span>; giai đoạn này archetype chỉ chạy nửa đầu (tool → profile) để tích lũy pool, không bán lead. <strong>KPI:</strong> profile nghề hoàn chỉnh, (sau này) lead accepted rate.</p>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>Pipeline là output tạm thời.</strong> Một pipeline = 1 archetype × 1 segment × 1 hook cụ thể × 1 khung thời gian. Khi kill một pipeline, thứ chết là hook/cách ghép — archetype và segment vẫn sống và ghép lại kiểu khác. Đây là lý do OS quan trọng hơn mọi pipeline đơn lẻ.
+      </div>
+    </div>
+
+    <!-- ═══════════ 07 CONVERSION MECHANISMS ═══════════ -->
+    <div id="g5" class="tab-panel">
+      <h2>07 · Conversion Mechanism Design</h2>
+      <h3>Vì sao user chịu rời TikTok/Facebook để vào web?</h3>
+      <p>Chỉ có 3 lý do đủ mạnh — mọi CTA phải thuộc một trong ba: (1) <strong>kết quả cá nhân hoá</strong> mà video không thể cho ("điểm CỦA BẠN", "số tiền CỦA BẠN"); (2) <strong>cần lưu/dùng lại</strong> (checklist, tiến độ, reminder); (3) <strong>khan hiếm thật</strong> (event còn chỗ thật). "Xem thêm tại web" không thuộc nhóm nào — sẽ thất bại.</p>
+      <table>
+        <thead><tr><th>Thời điểm</th><th>Quy tắc</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Yêu cầu login</strong></td><td>Chỉ SAU khi user đã nhận giá trị (xem xong phiếu điểm/kết quả tool) và login đổi lấy lợi ích rõ: lưu tiến độ, nhận reminder. Không bao giờ chặn trước giá trị — delayed signup là luật.</td></tr>
+          <tr><td><strong>Hỏi profile</strong></td><td>Từng miếng (progressive): mỗi lần chỉ 1–2 field, mỗi field đổi lấy giá trị nhìn thấy ("nhập vùng → giá chuẩn vùng bạn"). Field nhạy cảm (tư cách lưu trú) chỉ hỏi khi feature cần nó thật, tự khai, mã hóa.</td></tr>
+          <tr><td><strong>Mời trả tiền</strong></td><td>Sau ≥1 khoảnh khắc aha + đã có trust asset trước mắt. Với trust barrier cao (S2): sau ≥2–3 lần tương tác. Giá luôn công khai cả cấu trúc chi phí.</td></tr>
+          <tr><td><strong>Mời share</strong></td><td>Ngay tại đỉnh cảm xúc DƯƠNG: vừa xem điểm tốt, vừa đỗ, vừa có ảnh event đẹp. Không mời share kết quả xấu/chủ đề xấu hổ.</td></tr>
+          <tr><td><strong>Retarget</strong></td><td>Giai đoạn đầu: bằng chính content SNS theo chủ đề (organic) + email/LINE đã capture. Chưa đốt tiền ads retarget khi funnel chưa chứng minh.</td></tr>
+          <tr><td><strong>Dừng</strong></td><td>Khi chạm kill criteria, hoặc khi user nói "không" 2 lần với cùng một offer — đổi offer hoặc để yên, không spam.</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="mt-3">10 cơ chế chuyển đổi</h3>
+      <table>
+        <thead><tr><th>Cơ chế</th><th>Định nghĩa</th><th>Segment</th><th>Ở đâu</th><th>Metric</th><th>Rủi ro khi dùng sai</th><th>Ví dụ Viet-Japan</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1 · Curiosity gap</strong></td><td>Mở một câu hỏi mà câu trả lời nằm ở app</td><td>Mọi segment</td><td>SNS</td><td>link CTR</td><td>Clickbait rỗng → mất trust vĩnh viễn với S8; gap phải được trả lời THẬT</td><td>"70% sai câu này của đề N2 12/2025 — bạn thuộc 30%?" → quiz</td></tr>
+          <tr><td><strong>2 · Self-diagnosis</strong></td><td>Bài test trả kết quả cá nhân hoá</td><td>S1 S5 S6 S7</td><td>App (hook ở SNS)</td><td>start→complete, complete→signup</td><td>Kết quả chung chung kiểu horoscope → cảm giác bị lừa; kết quả phải actionable</td><td>CV diagnosis 68/100 + 3 lỗi cụ thể (đã có trong demo)</td></tr>
+          <tr><td><strong>3 · Progress saving</strong></td><td>Login để không mất thứ đã tích lũy</td><td>S1</td><td>App</td><td>signup_after_value, D7 return</td><td>Bắt login khi chưa có gì đáng lưu → bounce; phải có ≥1 kết quả trước</td><td>"Lưu phiếu điểm + xem biểu đồ tiến bộ" sau quiz</td></tr>
+          <tr><td><strong>4 · Social proof</strong></td><td>Bằng chứng người-giống-mình đã làm</td><td>S3 S8</td><td>Cả hai</td><td>proof view→register</td><td>Proof giả/ảnh mượn — nếu bị bóc là chết thương hiệu; chỉ dùng ảnh/quote thật có phép</td><td>Recap 24 người đi Fuji + bảng chi phí thật từng khoản</td></tr>
+          <tr><td><strong>5 · Identity signaling</strong></td><td>Cho user khoe mình là ai</td><td>S1 (đã đỗ)</td><td>App→SNS</td><td>sharecard_created, referral/card</td><td>Card xấu/kỳ quặc không ai share; chủ đề xấu hổ không áp dụng</td><td>Share card 合格 N2 với dấu 良, đúng mùa kết quả</td></tr>
+          <tr><td><strong>6 · Event scarcity</strong></td><td>Chỗ giới hạn thật</td><td>S3</td><td>App</td><td>waitlist→paid</td><td>Scarcity giả bị phát hiện = thành "kèo lừa" trong mắt S8</td><td>"12/16 chỗ đã đặt" — đếm thật từ DB</td></tr>
+          <tr><td><strong>7 · Trust verification</strong></td><td>Cho user tự kiểm chứng thay vì bắt tin</td><td>S2 S8</td><td>App</td><td>trust page view→action</td><td>Minh bạch nửa vời (giấu margin) tệ hơn không minh bạch</td><td>Bảng chi phí công khai + dấu 明 + link nguồn chính phủ trong bài visa</td></tr>
+          <tr><td><strong>8 · Personalized recommendation</strong></td><td>Gợi ý bước tiếp theo từ profile/behavior</td><td>User đã có profile</td><td>App</td><td>rec CTR, next action rate</td><td>Gợi ý sai/lạc đề làm mất cảm giác "app hiểu mình"; cần đủ data mới bật</td><td>"Bạn yếu 文法 điều kiện — 5 câu hôm nay tập trung わけ"</td></tr>
+          <tr><td><strong>9 · Referral reward</strong></td><td>Thưởng cả người mời lẫn người được mời</td><td>S1 S3</td><td>App</td><td>K-factor, CAC referral vs organic</td><td>Thưởng tiền mặt hút cheater; thưởng bằng giá trị sản phẩm (tháng premium, ưu tiên chỗ event)</td><td>"Mời bạn làm quiz — cả hai được mở khóa bộ đề 12/2025"</td></tr>
+          <tr><td><strong>10 · Deadline pressure</strong></td><td>Mốc thời gian THẬT bên ngoài (kỳ thi, hạn visa, hạn nộp 保育園)</td><td>S1 S2 S10</td><td>Cả hai</td><td>reminder opt-in, action trước deadline</td><td>Deadline tự chế ("chỉ hôm nay!") = trick bán hàng rẻ tiền; chỉ dùng deadline thật của đời user</td><td>"Còn 89 ngày đến JLPT 7/12 — lộ trình 12 tuần bắt đầu tuần này"</td></tr>
+        </tbody>
+      </table>
+      <div class="callout risk"><strong>Ranh giới đạo đức = ranh giới chiến lược:</strong> với thị trường đã bị lừa nhiều, mọi cơ chế "giả" (scarcity giả, proof giả, deadline tự chế, thổi phồng anxiety) không chỉ sai đạo đức mà còn phá đúng cái moat duy nhất của platform — niềm tin có kiểm duyệt. Dùng sai một lần, S8 sẽ làm content bóc phốt về chính mình.</div>
+    </div>
+
+    <!-- ═══════════ 08 DATA FEEDBACK LOOP ═══════════ -->
+    <div id="g6" class="tab-panel">
+      <h2>08 · Data Feedback Loop — vận hành tuần</h2>
+      <h3>Bộ board (Google Sheet 1 file 6 sheet là đủ cho solo — đừng dựng tool)</h3>
+      <table>
+        <thead><tr><th>Board</th><th>Nội dung</th><th>Cập nhật</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1 · Signal DB</strong></td><td>Mỗi dòng 1 signal: ngày, nguồn, nguyên văn, DOMAIN, EMOTION, INTENT, strength, link</td><td>Hàng ngày 10–15 phút khi lướt SNS</td></tr>
+          <tr><td><strong>2 · Segment board</strong></td><td>10 segment × evidence tuần này (số signal, strength cao nhất) — segment nào đang "nóng"</td><td>Thứ 3</td></tr>
+          <tr><td><strong>3 · Hypothesis backlog</strong></td><td>Hypothesis card xếp theo score, trạng thái: mới / đang test / proven / killed</td><td>Thứ 4</td></tr>
+          <tr><td><strong>4 · Pipeline board</strong></td><td>Pipeline đang sống (tối đa 3): KPI tuần, so kill criteria, tuổi pipeline</td><td>Thứ 2 (review)</td></tr>
+          <tr><td><strong>5 · Content calendar</strong></td><td>Sinh từ pipeline đang sống: mỗi pipeline 2–3 content/tuần, mỗi content ghi hook + tag + pipeline_id</td><td>Thứ 4–5</td></tr>
+          <tr><td><strong>6 · Monetization tracker</strong></td><td>Các test WTP đang chạy: offer, giá, số người thấy, số người click/trả, verdict</td><td>Thứ 2</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="mt-3">Nhịp tuần (solo founder ~2h/ngày)</h3>
+      <div class="timeline">
+        <div><span class="time">Thứ 2</span><strong>Review &amp; decide (90')</strong> — đọc số của tuần trước theo pipeline_id; mỗi pipeline sống chọn 1 trong 3: scale / iterate / kill. Cập nhật Pipeline board + Monetization tracker. Viết 3 dòng "tuần trước học được gì" vào Weekly Review.</div>
+        <div><span class="time">Thứ 3</span><strong>Cluster insights (60')</strong> — quét Signal DB 7 ngày, gộp signal cùng giao điểm tag, nâng/hạ strength, cập nhật Segment board. Output: 1–3 insight strength ≥2.</div>
+        <div><span class="time">Thứ 4</span><strong>Hypothesis (60')</strong> — chạy insight qua chuỗi 7 bước, viết Hypothesis card, chấm score, chọn TỐI ĐA 1 pipeline mới (nếu đang &lt;3 sống). Lên khung content calendar.</div>
+        <div><span class="time">Thứ 5</span><strong>Build &amp; launch (2–3h)</strong> — sản xuất 2–3 content cho pipeline mới + content duy trì pipeline cũ; chỉnh landing/quiz nếu cần (giao Codex phần code); gắn pipeline_id vào mọi link. Đăng.</div>
+        <div><span class="time">Thứ 6–CN</span><strong>Collect (15'/ngày)</strong> — không phân tích, chỉ ghi signal mới vào Signal DB + trả lời comment/DM (chính việc trả lời cũng là mỏ signal). Cuối tuần là lúc SNS Việt hoạt động mạnh nhất — content chủ lực đăng thứ 6 tối/thứ 7.</div>
+      </div>
+
+      <h3 class="mt-3">Scoring model — chọn pipeline nào test trước</h3>
+      <p>Chấm 1–5 mỗi tiêu chí, nhân trọng số. Trọng số nghiêng về <strong>speed</strong> vì solo: một test nhanh ra số tuần này đáng giá hơn một test hoàn hảo ra số tháng sau.</p>
+      <table>
+        <thead><tr><th>Tiêu chí</th><th>Trọng số</th><th>Ghi chú chấm</th></tr></thead>
+        <tbody>
+          <tr><td>Pain intensity</td><td>20%</td><td>Từ strength + EMOTION (ANXIETY/FRUSTRATION cao điểm hơn)</td></tr>
+          <tr><td>Speed to test</td><td>20%</td><td>5 = launch được trong 1 tuần bằng thứ đã có (quiz, demo)</td></tr>
+          <tr><td>Implementation cost</td><td>15%</td><td>5 = zero code mới; 1 = cần Codex build feature</td></tr>
+          <tr><td>Monetization potential</td><td>15%</td><td>Có tín hiệu WTP trong signal chưa? Ai trả, bao nhiêu?</td></tr>
+          <tr><td>Audience size</td><td>10%</td><td>Ước từ volume signal + size group liên quan</td></tr>
+          <tr><td>Strategic fit</td><td>10%</td><td>Có nuôi profile pool + trust brand dài hạn không (A7 nửa đầu điểm cao dù chưa ra tiền)</td></tr>
+          <tr><td>Data quality</td><td>10%</td><td>Funnel đo được sạch bằng pipeline_id không, hay phải đoán</td></tr>
+          <tr><td><strong>Trust risk</strong></td><td><strong>Veto</strong></td><td>Không phải trọng số — là phủ quyết: pipeline nào có rủi ro trust ≥4/5 (đụng tiền lớn, giấy tờ, kỳ vọng dễ vỡ) thì hoặc thêm trust asset cho xuống ≤3, hoặc bỏ</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="mt-3">Decision rules (thứ 2 hàng tuần, không cảm tính)</h3>
+      <div class="compare">
+        <div>
+          <div class="col-head">Scale</div>
+          <p>KPI chính đạt ngưỡng <strong>2 tuần liên tiếp</strong> → tăng tần suất content, thêm biến thể hook, bật monetization test nếu chưa. Pipeline scale được "ghi danh" thành playbook — nhưng vẫn review hàng tuần vì hook mòn sau 4–8 tuần.</p>
+        </div>
+        <div>
+          <div class="col-head">Iterate</div>
+          <p>Một tầng funnel tốt, tầng sau gãy (hook tốt CTR cao nhưng quiz bỏ dở) → đổi <strong>đúng 1 biến</strong> ở tầng gãy, chạy thêm 1 tuần. Tối đa 2 vòng iterate — vòng 3 nghĩa là hypothesis sai, kill.</p>
+        </div>
+      </div>
+      <div class="callout risk"><strong>Kill</strong> khi: (1) chạm kill criteria đã viết trước; hoặc (2) sau 2 chu kỳ iterate vẫn dưới ½ ngưỡng; hoặc (3) bất kỳ trust incident nào (complaint lừa đảo, hiểu nhầm giá) — kill ngay không đợi số. Khi kill: ghi 3 dòng lesson vào Weekly Review, signal gốc trả về backlog với ghi chú "hypothesis X đã chết vì Y" — chính nó là input tuần sau.</div>
+    </div>
+
+    <!-- ═══════════ 09 MEASUREMENT ═══════════ -->
+    <div id="g7" class="tab-panel">
+      <h2>09 · Measurement System</h2>
+      <div class="callout"><strong>North Star:</strong> số <strong>profile sống</strong> — user có ≥1 field profile VÀ ≥1 hành động giá trị (quiz/checklist/event) trong 28 ngày. Đây là tài sản đúng nghĩa của "đất sở hữu": traffic không tích lũy, profile sống tích lũy. Mọi metric khác là nhánh dẫn vào con số này; revenue là hoa lợi thu trên nó.</div>
+      <h3>Metric tree — 3 tầng nối bằng pipeline_id</h3>
+      <table>
+        <thead><tr><th>Tầng</th><th>Metric</th><th>Trả lời câu hỏi</th><th>Benchmark khởi điểm (hiệu chỉnh sau 4 tuần data thật)</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="4"><strong>SNS<br>(hook có trúng?)</strong></td><td>Retention 3s/50%</td><td>Hook giữ được người xem không</td><td>≥30% xem hết nửa video</td></tr>
+          <tr><td>Save rate / Share rate</td><td>Nội dung có giá trị dùng lại / giá trị xã hội</td><td>save ≥1%, share ≥0.5%</td></tr>
+          <tr><td>Comment keyword + DM intent</td><td>Signal mới cho Signal DB (định tính)</td><td>≥5 signal tag-được / content</td></tr>
+          <tr><td>Link CTR (profile→link, comment link)</td><td>Động lực rời SNS đủ mạnh không</td><td>≥1% người xem profile click</td></tr>
+          <tr><td rowspan="5"><strong>Web app<br>(giá trị có được nhận?)</strong></td><td>landing_view → action_start</td><td>Landing giữ đúng lời hứa của hook</td><td>≥50%</td></tr>
+          <tr><td>action_start → action_complete (quiz/tool/checklist)</td><td>Giá trị có đủ hấp dẫn để làm hết</td><td>≥30%</td></tr>
+          <tr><td>complete → signup_after_value</td><td>Cơ chế lưu tiến độ/reminder có đáng đổi email</td><td>≥8%</td></tr>
+          <tr><td>profile_field_saved / user</td><td>Progressive profiling có chạy</td><td>≥2 field sau 2 lần visit</td></tr>
+          <tr><td>D7 / D28 return · sharecard_created · referral_visit</td><td>Retention + loop</td><td>D7 ≥15%; referral/card ≥2</td></tr>
+          <tr><td rowspan="3"><strong>Monetization<br>(ai trả, cho gì?)</strong></td><td>offer_view → pay_click</td><td>Offer + giá có đúng segment</td><td>≥5% với warm user</td></tr>
+          <tr><td>pay_click → pay_done (hoặc waitlist→cọc)</td><td>WTP thật, không phải tò mò</td><td>≥30% người click</td></tr>
+          <tr><td>Revenue / segment / pipeline_id</td><td>Segment nào nuôi được business</td><td>— (chính là output của Discovery)</td></tr>
+        </tbody>
+      </table>
+      <h3 class="mt-3">Event taxonomy — đặt tên <code>object_action</code>, property chuẩn</h3>
+      <p>Mọi event mang tối thiểu <code>{pipeline_id, segment_guess, src}</code>. <code>pipeline_id</code> lấy từ UTM khi vào app và <strong>dính theo session + user</strong> (first-touch) — đây là sợi chỉ nối SNS với revenue.</p>
+      <div class="compare">
+        <div>
+          <div class="col-head">Acquisition &amp; value</div>
+          <p><code>sns_link_click {platform, content_id}</code> · <code>landing_view</code> · <code>quiz_start / quiz_complete {quiz_id, score, weak_tags}</code> · <code>tool_start / tool_complete {tool_id, result_bucket}</code> · <code>checklist_start / checklist_done {list_id}</code> · <code>article_read {depth}</code></p>
+        </div>
+        <div>
+          <div class="col-head">Identity, loop &amp; money</div>
+          <p><code>signup_after_value {method}</code> · <code>profile_field_saved {field}</code> · <code>sharecard_created {card_type}</code> · <code>referral_visit {card_id}</code> · <code>event_view / event_register / event_checkin {event_id}</code> · <code>waitlist_join {offer_id, price_shown}</code> · <code>offer_view / pay_click / pay_done {offer_id, jpy}</code> · <code>return_visit {days_since}</code></p>
+        </div>
+      </div>
+      <div class="callout warn"><strong>Sàn cỡ mẫu (v2):</strong> không kết luận một tầng funnel khi tầng đó có &lt;100 lượt vào (&lt;30 với offer_view). Dưới sàn → kéo dài, không scale/kill. Quy ước ghi số: luôn viết "12/40" thay vì "30%" để cỡ mẫu hiện ra cùng tỉ lệ. Chi tiết + ngoại lệ ở tab 15.</div>
+      <p class="text-muted text-small">Dashboard logic: 1 view "funnel theo pipeline_id" (so kill criteria — dùng thứ 2 hàng tuần) + 1 view "revenue &amp; profile sống theo segment" (dùng hàng tháng, quyết định đầu tư segment). Không build thêm view nào khác cho đến khi hai view này được dùng đủ 8 tuần. Công cụ: GA4/Umami + Sheet là đủ; quiz result tự đổ tag vào Signal DB.</p>
+    </div>
+
+    <!-- ═══════════ 10 MONETIZATION DISCOVERY ═══════════ -->
+    <div id="g8" class="tab-panel">
+      <h2>10 · Monetization Discovery Method</h2>
+      <p>Monetization không được giả định — nó được <strong>phát hiện</strong> bằng cùng vòng lặp signal. 7 câu hỏi cho mỗi segment: họ đang trả tiền cho ai? · đang tự làm thủ công gì? · sợ rủi ro gì? · cần tiết kiệm thời gian hay giảm lo? · cần học / kết nối / tư vấn / cơ hội? · trả một lần hay subscription? · <strong>ai khác trả thay được?</strong> (trường tiếng, công ty, recruiter, sponsor, service provider).</p>
+      <table>
+        <thead><tr><th>Segment</th><th>Pain</th><th>Workaround hiện tại</th><th>Đang trả cho</th><th>Offer idea</th><th>Giá JPY</th><th>Validation test</th><th>Trust cần</th></tr></thead>
+        <tbody>
+          <tr><td>S1 N2-Plateau</td><td>Không tiến bộ</td><td>Tự học app miễn phí + group</td><td>Trường tiếng ¥50–150K/khóa (không cá nhân hoá)</td><td>Premium quiz + lộ trình theo điểm yếu; course ngắn theo cụm ngữ pháp</td><td>¥980/th hoặc ¥4,900/khóa</td><td>Waitlist ghi giá trên phiếu điểm</td><td>Thấp — chỉ cần quiz tốt</td></tr>
+          <tr><td>S2 Visa-Deadline</td><td>Sợ sót giấy tờ</td><td>Hỏi group (đáp án nhiễu), hỏi senpai</td><td>"Dịch vụ visa" trôi nổi ¥20–50K (nhiều lừa)</td><td>Workshop kiến thức với 行政書士; Phase 3: gói hồ sơ qua partner có phép</td><td>¥1,500 workshop; ¥15–30K gói (P3)</td><td>Bán 20 vé workshop trước khi tổ chức</td><td>Rất cao — cần mặt chuyên gia thật</td></tr>
+          <tr><td>S3 Weekend-Lonely</td><td>Không có cớ gặp người mới</td><td>Kèo group FB (hay bom)</td><td>Tour VN-organized ¥8–15K (chất lượng hên xui)</td><td>Event minh bạch chi phí, quy mô nhỏ</td><td>¥2–5K/event</td><td>Cọc ¥1K khi đăng ký — đo cam kết thật</td><td>TB — cần 1 recap thật</td></tr>
+          <tr><td>S5 Cost-Optimizer</td><td>Không biết mình được hoàn bao nhiêu</td><td>Bỏ luôn không đòi (mất tiền thật)</td><td>Đại lý hoàn thuế lấy 10–20% số hoàn</td><td>Tool tính miễn phí → guide tự làm ¥1,500 → tư vấn 30' ¥2,000</td><td>¥1,500–2,000</td><td>Bán 10 slot tư vấn thủ công trước khi nghĩ đến tự động</td><td>TB — con số phải đúng</td></tr>
+          <tr><td>S6 Grad-Job-Hunter</td><td>CV/面接 không chuẩn Nhật</td><td>Nhờ senpai xem hộ, template mạng</td><td>Trung tâm 就活 ¥30–100K</td><td>CV diagnosis miễn phí → course 面接 ¥9,800; trường tiếng trả sponsor để đưa tool cho học sinh (B2B!)</td><td>¥9,800 B2C; ¥8–15K/th B2B</td><td>Presale course cho 10 người đầu, hoàn tiền nếu hủy</td><td>TB</td></tr>
+          <tr><td>S7 Job-Switcher</td><td>Không biết giá thị trường bản thân</td><td>Đọc lén bảng lương, hỏi bạn</td><td>Không trả gì — nhưng <strong>recruiter trả ¥300K–1M/hire</strong></td><td>P1–2: tool so lương nuôi profile pool. P3: giới thiệu qua license</td><td>0 bây giờ; pool là khoản đầu tư</td><td>Đếm profile nghề hoàn chỉnh — mục tiêu 500 trước khi xin phép</td><td>Cao khi bán; thấp khi nuôi</td></tr>
+          <tr><td>S8/S10</td><td>Trust / thủ tục trường</td><td>Tự mò, hỏi group</td><td>Ít — thị trường bỏ trống</td><td>Đi kèm event (S8) và checklist+event gia đình (S10), chưa offer riêng</td><td>—</td><td>Theo dõi DM intent thêm 4 tuần</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <h3 class="mt-3">Test WTP nhẹ — trước khi build bất kỳ feature trả phí nào</h3>
+      <div class="card-grid">
+        <div class="card"><h3>Waitlist có giá</h3><p>"Khóa X — ¥4,900, mở tháng sau, giữ chỗ tại đây." Đo waitlist_join khi giá hiển thị rõ. Join không giá = tò mò; join thấy giá = intent.</p></div>
+        <div class="card"><h3>Bán trước số lượng nhỏ</h3><p>5–10 slot tư vấn / 20 vé workshop, làm thủ công hoàn toàn (Zoom + chuyển khoản). Bán hết nhanh = signal xây; ế = đổi offer, chưa mất công build.</p></div>
+        <div class="card"><h3>Đặt cọc</h3><p>Event lấy cọc ¥1,000. Vừa lọc bom kèo (pain vận hành thật) vừa là phép đo WTP sạch nhất.</p></div>
+        <div class="card"><h3>Fake door trung thực</h3><p>Nút "Nâng cấp — ¥980/th" dẫn tới "Tính năng đang hoàn thiện — để lại email nhận ưu đãi sớm". Đo pay_click theo segment. Dùng tiết chế: mỗi user chỉ gặp 1 lần; và vì đây là thị trường nhạy cảm lừa đảo — luôn nói thẳng "đang hoàn thiện", không giả vờ bán thứ chưa có.</p></div>
+      </div>
+      <h3 class="mt-3">3 phép đo giá (v2) — trước khi chốt bất kỳ con số ¥ nào</h3>
+      <table>
+        <thead><tr><th>Phép đo</th><th>Cách làm</th><th>Đọc kết quả</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Ladder 2 giá trên waitlist</strong></td><td>Cùng một offer, 50% người thấy giá A (vd ¥3,900), 50% thấy giá B (¥6,900) — chia theo pid chẵn/lẻ</td><td>Join rate B ≥ 70% của A → giá B đứng được; revenue kỳ vọng = giá × join rate, chọn giá tối đa hóa</td></tr>
+          <tr><td><strong>Hỏi sau khoảnh khắc aha</strong></td><td>Ngay sau phiếu điểm/kết quả tool, 1 câu duy nhất: "Khóa sửa đúng lỗ hổng này, mức giá nào bạn thấy hợp lý? ¥2,000 / ¥5,000 / ¥8,000 / không mua"</td><td>Mode của phân phối = vùng neo; "không mua" &gt;60% → offer sai, không phải giá sai</td></tr>
+          <tr><td><strong>Đọc phản ứng giá trong DM</strong></td><td>Khi báo giá trong DM (slot tư vấn, vé workshop), ghi lại nguyên văn phản hồi vào Signal DB với tag WTP</td><td>"Ok anh, em chuyển luôn" = giá dưới trần; mặc cả = đúng vùng; im lặng ≥3 người liên tiếp = quá trần</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn"><strong>Ngưỡng quyết định build:</strong> chỉ build feature trả phí khi test nhẹ cho thấy ≥30 người trả thật (hoặc cọc) trong một segment. Dưới ngưỡng đó, tiếp tục bán thủ công — thủ công không scale nhưng học nhanh gấp 10 lần.</div>
+    </div>
+
+    <!-- ═══════════ 11 EXAMPLE APPLICATION ═══════════ -->
+    <div id="g9" class="tab-panel">
+      <h2>11 · Example Application — 5 insight giả định chạy hết framework</h2>
+      <table>
+        <thead><tr><th>#</th><th>Raw insight (giả định)</th><th>Tag / Segment</th><th>Hypothesis</th><th>Pipeline (archetype)</th><th>KPI &amp; kill</th><th>Monetization experiment</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>40 comment/tuần trên 3 video: "わけ・はず・べき lẫn hết vào nhau"</td><td><code>JLPT_N2_GRAMMAR × FRUSTRATION × HOI_CACH_LAM</code> s3 → S1</td><td>Nếu có quiz 10 câu phân biệt 3 cấu trúc + phiếu điểm chỉ đúng lỗ hổng, ≥30% người vào sẽ làm hết vì họ cần biết "mình sai ở đâu" chứ không cần thêm lý thuyết</td><td><strong>A1</strong>: video "90% sai câu 7" → quiz → phiếu điểm → lưu tiến độ</td><td>complete ≥30%, signup ≥8%. Kill: &lt;15% complete sau 2 tuần + 1 iterate</td><td>Waitlist "khóa ngữ pháp suy luận ¥4,900" đặt ngay dưới phiếu điểm; ngưỡng: ≥20 join/tháng</td></tr>
+          <tr><td>2</td><td>DM tuần nào cũng có: "kèo Fuji này thật không ạ, em từng bị bom 8000 yên"</td><td><code>EVENT_TRUST × DISTRUST × HOI_UY_TIN</code> s3 → S8→S3</td><td>Nếu trang event công khai từng khoản chi phí + recap ảnh thật đợt trước, ≥15% người click từ DM/comment sẽ đăng ký vì họ muốn đi sẵn rồi — chỉ thiếu bằng chứng</td><td><strong>A2</strong>: content "5 cách check kèo lừa" → trang event dấu 明 → đăng ký cọc ¥1,000</td><td>click→register ≥15%, có mặt ≥70%. Kill: &lt;8% sau 2 event</td><td>Chính event là monetization: phí ¥3,000 (chi phí công khai ¥2,400 + vận hành ¥600 ghi rõ)</td></tr>
+          <tr><td>3</td><td>Video "hoàn nenkin khi về nước" save 4× trung bình kênh, share thấp</td><td><code>TAX_NENKIN × ANXIETY × HOI_CACH_LAM</code> save-pattern → S5</td><td>Save cao share thấp = nhu cầu thật nhưng riêng tư → tool ẩn danh "nhập 3 số ra tiền hoàn ước tính" sẽ có completion cao hơn hẳn bài viết</td><td><strong>A3</strong>: video → tool tính → kết quả + guide → email để nhận "checklist trước khi về nước"</td><td>tool complete ≥40%, email ≥15%. Kill: complete &lt;20%</td><td>10 slot "tư vấn hoàn thuế 30 phút ¥2,000" — thủ công, Zoom; bán hết trong 2 tuần = tín hiệu xây guide trả phí</td></tr>
+          <tr><td>4</td><td>Group post viral: "công ty bảo tự đi gia hạn visa, mình chưa làm bao giờ, còn 5 tuần"</td><td><code>VISA_RENEWAL × ANXIETY × HOI_CACH_LAM</code> s2 → S2</td><td>Nếu có checklist tick-được theo loại tư cách + reminder mốc thời gian, ≥25% người mở sẽ hoàn thành và ≥12% đặt reminder vì nó thay thế "đọc 20 bài group rồi vẫn hoang mang"</td><td><strong>A5</strong> (nửa guide): content gọi tên nỗi sợ → checklist → reminder → workshop</td><td>done ≥25%, reminder ≥12%. Kill: &lt;10% done — nghĩa là họ cần người làm hộ chứ không cần checklist → đổi hypothesis sang tư vấn</td><td>Workshop online ¥1,500 với 行政書士 khách mời — bán 20 vé trước, không đủ 12 vé thì hủy và hoàn (nói rõ từ đầu)</td></tr>
+          <tr><td>5</td><td>Mùa 就活: nhiều post du học sinh "nộp 30 công ty chưa được cái nào, CV có vấn đề gì không"</td><td><code>JOB_SEARCH × SHAME × NHO_LAM_HO</code> s3 → S6</td><td>Nếu CV diagnosis trả 3 lỗi cụ thể + điểm số trong 2 phút, ≥35% sẽ hoàn thành vì "nhờ người xem hộ" vốn là hành vi sẵn có nhưng xấu hổ — máy thì không phải ngại</td><td><strong>A1+A5</strong>: video lỗi CV phổ biến → up CV → 68/100 + 3 lỗi → login lưu / đăng ký course</td><td>upload→result ≥35%, dual-conversion ≥10%. Kill: upload &lt;15% (nghĩa là rào tâm lý up CV cao hơn dự đoán → đổi sang quiz 誤字 không cần file)</td><td>Presale "khóa 面接 cho du học sinh ¥9,800" 10 suất đầu ¥6,800, hoàn tiền nếu &lt;6 người. <span class="badge red">APPI</span>: CV không login = xóa ngay sau chẩn đoán</td></tr>
+        </tbody>
+      </table>
+      <p class="text-muted text-small">Cả 5 đều tuân chuỗi: insight → segment → hypothesis (falsifiable, có ngưỡng) → pipeline (có archetype + kill viết trước) → metric → monetization test nhẹ chạy song song ngay từ tuần đầu.</p>
+    </div>
+
+    <!-- ═══════════ 12 TEMPLATES ═══════════ -->
+    <div id="g10" class="tab-panel">
+      <h2>12 · Operating Templates — copy dùng hàng tuần</h2>
+      <details open><summary><strong>SNS Insight Log</strong> (1 dòng / signal — sheet Signal DB)</summary>
+<pre>Ngày | Nguồn (comment/DM/save/search/group/live) | Platform | Nguyên văn (giữ đúng lời user)
+DOMAIN | EMOTION | INTENT | Strength 1-3 | WTP signal? (y/n) | Link | Ghi chú</pre></details>
+      <details><summary><strong>Segment Card</strong></summary>
+<pre>Segment name:          Trigger moment:
+Core anxiety:          Visible SNS behavior:
+Hidden need:           Best content hook:
+Best app entry point:  Conversion action:
+Profile data needed:   Monetization path:
+Trust barrier (1-5):   Retention lever:
+Evidence required:     Evidence hiện có (từ Signal DB):</pre></details>
+      <details><summary><strong>Hypothesis Card</strong></summary>
+<pre>ID: H-[tuần]-[số]      Từ signal: [link Signal DB]
+Segment:               Job-to-be-done:
+Hypothesis (falsifiable): Nếu [làm X] thì [≥N% làm Y] vì [Z]
+Score: pain _/5 ×.20 + speed _/5 ×.20 + cost _/5 ×.15 + money _/5 ×.15
+     + audience _/5 ×.10 + fit _/5 ×.10 + data _/5 ×.10  =  ___
+Trust risk (1-5, ≥4 = veto hoặc thêm trust asset):
+Trạng thái: mới / đang test / proven / killed (lý do)</pre></details>
+      <details><summary><strong>Pipeline Card</strong> (15 trường)</summary>
+<pre>Pipeline ID: P-[tuần]-[tên]   Archetype: A_   Từ hypothesis: H-__
+Segment:            Pain:
+Trigger:            SNS content (2-3 hook):
+Hook chính:         Landing destination:
+Web app action:     Friction reducer (bỏ bước gì):
+Profile capture (field nào, đổi lấy gì):
+Trust asset:        Share/referral moment:
+Monetization trigger:
+KPI (ngưỡng):       Kill criteria (viết TRƯỚC launch):
+Next experiment nếu thành công:
+Ngày launch:        Review: mỗi thứ 2 | Tuổi tối đa: 6 tuần</pre></details>
+      <details><summary><strong>Experiment Card</strong> (test 1 biến khi iterate)</summary>
+<pre>Của pipeline: P-__    Tầng funnel gãy: [SNS hook / landing / action / signup / pay]
+Biến thay đổi (CHỈ 1):    Trước → Sau:
+Metric so sánh:           Chạy từ __ đến __ (7 ngày)
+Kết quả:                  Quyết định: giữ / trả lại / kill pipeline
+Vòng iterate thứ: 1 / 2 (vòng 3 không tồn tại — kill)</pre></details>
+      <details><summary><strong>Weekly Review</strong> (thứ 2, 3 phần × 3 dòng)</summary>
+<pre>Tuần: __
+[SỐ] Mỗi pipeline sống: KPI vs ngưỡng → scale / iterate / kill
+[HỌC] 3 điều tuần trước dạy mình (kể cả từ pipeline chết):
+[LÀM] Pipeline mới tuần này (nếu &lt;3 sống): H-__ | Không có gì đủ điểm → tuần "chỉ thu signal" cũng là quyết định hợp lệ</pre></details>
+      <details><summary><strong>Monetization Test Card</strong></summary>
+<pre>Offer:              Segment:            Giá (hiển thị rõ): ¥__
+Dạng test: waitlist-có-giá / bán trước N suất / cọc / fake-door-trung-thực
+Ai thấy offer (điều kiện):               Số người thấy:
+Click/join:         Trả thật/cọc:
+Ngưỡng "build": ≥30 người trả thật → build | dưới → bán thủ công tiếp / đổi offer
+Ghi chú WTP (họ nói gì về giá):</pre></details>
+    </div>
+
+    <!-- ═══════════ 13 FINAL RECOMMENDATION ═══════════ -->
+    <div id="g11" class="tab-panel">
+      <h2>13 · Bắt đầu từ đâu — khuyến nghị</h2>
+      <div class="callout"><strong>Bắt đầu bằng S1 N2-Plateau (pipeline chính) + S3/S8 Event (pipeline phụ, nhịp chậm).</strong> Không mở segment thứ ba trong 4 tuần đầu.</div>
+      <p><strong>Vì sao S1:</strong> (1) sản phẩm đã tồn tại — quiz Lucida chạy được trong demo, speed-to-test = 5/5; (2) trust barrier thấp nhất — học tập không đụng tiền lớn/giấy tờ, được phép sai trong lúc học vận hành; (3) audience lớn và signal dồi dào quanh năm, có 2 mùa cao điểm (kỳ thi 7 &amp; 12 — tháng 7 này là đúng mùa); (4) quan trọng nhất: <strong>quiz result là máy sinh signal tinh</strong> — mỗi người làm quiz tự nạp data "yếu ngữ pháp gì" vào Signal DB, nuôi content và các segment khác. S1 không chỉ là pipeline đầu tiên — nó là máy khởi động của toàn bộ OS.</p>
+      <p><strong>Vì sao S3/S8 song song nhịp chậm:</strong> event đầu tiên sản xuất trust asset (recap + bảng chi phí thật) mà mọi archetype khác cần về sau; và validation sprint trong plan tổng vốn đã có 2 test event. Một event/3–4 tuần, không hơn.</p>
+      <h3>2 tuần đầu tiên</h3>
+      <div class="callout warn"><strong>Điều kiện tiên quyết (v2):</strong> lịch dưới đây giả định đã xong <strong>Tuần 0 listening</strong> (tab 14) — Signal DB ≥100 dòng từ mỏ công khai. Kênh mới tinh mà đăng ngay là bắn hook không có đạn: chưa biết pain nào nóng, và cũng chưa có ai comment để đo.</div>
+      <div class="timeline">
+        <div><span class="time">T1 · Thứ 2–3</span>Dựng hạ tầng OS (nửa ngày): Sheet 6 board + UTM convention <code>pipeline_id</code> + GA4/Umami với event taxonomy tab 09. Viết Pipeline Card P-01 (A1 × S1 × hook わけ・はず・べき) — kill criteria viết luôn hôm nay.</div>
+        <div><span class="time">T1 · Thứ 4–5</span>Sản xuất 2 video cùng chủ đề khác hook (A/B: số liệu "90% sai" / đồng cảm "học 2 năm vẫn lẫn") theo SOP batch tab 14 — hook lấy nguyên văn từ Signal DB Tuần 0. Link quiz gắn <code>P-01-a/b</code>. Dưới phiếu điểm: waitlist "khóa ngữ pháp ¥4,900" (Monetization Test Card số 1). Đăng thứ 6 tối.</div>
+        <div><span class="time">T1 · Thứ 6–CN</span>Thu signal: ghi mọi comment/DM vào Signal DB — cộng dồn lên nền 100 dòng của Tuần 0 (kênh mới, comment trên video của mình còn ít là bình thường; mỏ công khai vẫn khai thác song song). Trả lời từng comment — mỗi câu trả lời là một lần đào signal.</div>
+        <div><span class="time">T2 · Thứ 2</span>Review đầu tiên: hook nào thắng (retention + CTR), funnel quiz rơi ở đâu, mấy người join waitlist. Quyết định iterate 1 biến.</div>
+        <div><span class="time">T2 · Thứ 3–5</span>Chạy biến thắng + thêm share card phiếu điểm (A4 test nhỏ). Công bố event #1 (picnic/BBQ chi phí thấp, cọc ¥1,000, bảng chi phí công khai) — trang event là landing thứ hai, <code>P-02</code>.</div>
+        <div><span class="time">T2 · CN</span>Weekly Review #2: đủ data để trả lời — hook nào sống, quiz funnel số thật bao nhiêu, WTP có tín hiệu chưa, event có ai cọc không. Từ đây OS tự chạy theo nhịp tab 08.</div>
+      </div>
+      <div class="compare">
+        <div>
+          <div class="col-head">Sau 2 tuần, thành công trông như</div>
+          <p>≥1 hook có CTR ≥1% · quiz complete ≥25–30% · ≥5 waitlist join có giá · ≥8 người cọc event · Signal DB ≥60 dòng đã tag · biết chính xác tầng funnel nào yếu nhất.</p>
+        </div>
+        <div>
+          <div class="col-head">Nếu dưới ngưỡng</div>
+          <p>Không phải thất bại — là data. Iterate đúng 1 biến/tuần theo tab 08; sau 2 vòng vẫn &lt;½ ngưỡng thì kill hook đó, quay lại Signal DB chọn giao điểm tag khác. OS được thiết kế đúng cho tình huống này.</p>
+        </div>
+      </div>
+      <p class="text-muted text-small">Ràng buộc không đổi trong mọi trường hợp: đỏ độc quyền cảnh báo lừa đảo · delayed signup · APPI (CV không login = xóa ngay; tư cách lưu trú tự khai + mã hóa) · Phase 1–2 không thu phí giới thiệu việc, không kickback tour · mọi con số benchmark ở đây là giả định làm việc, hiệu chỉnh bằng 4 tuần data thật đầu tiên.</p>
+    </div>
+
+
+    <!-- ═══════════ 14 COLD START & CONTENT SOP (v2) ═══════════ -->
+    <div id="g12" class="tab-panel">
+      <h2>14 · Cold Start &amp; Content Production SOP <span class="badge navy">v2</span></h2>
+      <div class="callout risk"><strong>Vá lỗ hổng lớn nhất của v1:</strong> OS giả định signal tự chảy về, nhưng kênh 0 follower thì comment/DM ≈ 0. Trước khi cảm biến của mình hoạt động, phải <strong>mượn cảm biến của người khác</strong> — cộng đồng Việt tại Nhật đã tập trung sẵn ở các group FB lớn và comment section của các kênh cùng ngách. Đó là mỏ signal công khai, hợp pháp, miễn phí.</div>
+
+      <h3>Tuần 0 (–2 → 0): Listening trước khi đăng — mục tiêu 100 dòng Signal DB</h3>
+      <table>
+        <thead><tr><th>Bước</th><th>Cách làm cụ thể</th><th>Thời gian</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1 · Lập danh sách mỏ</strong></td><td>Join 5–7 group FB lớn của người Việt tại Nhật (loại: tổng hợp cộng đồng theo vùng Tokyo/Osaka/Nagoya, học JLPT, việc làm–baito, mẹ bỉm ở Nhật). Follow 5–8 kênh TikTok/kênh YouTube cùng ngách. Ghi vào 1 sheet "Mỏ signal" kèm size.</td><td>1 buổi, 60'</td></tr>
+          <tr><td><strong>2 · Khai thác hàng ngày</strong></td><td>15'/ngày: vào 2 group, lọc bài nhiều comment nhất tuần; đọc comment section 1 video hot của kênh cùng ngách. Mỗi câu hỏi/câu than lặp lại = 1 dòng Signal DB, <strong>giữ nguyên văn</strong> — nguyên văn chính là hook bank sau này.</td><td>15'/ngày</td></tr>
+          <tr><td><strong>3 · Đo bằng search</strong></td><td>Gõ keyword vào TikTok search và ô search của group FB ("gia hạn visa", "N2", "hoàn thuế"…) — đọc autocomplete + bài top. Autocomplete = intent phổ biến nhất, ghi thành signal <code>SEARCH</code>.</td><td>2 buổi × 30'</td></tr>
+          <tr><td><strong>4 · Nghiệm thu Tuần 0</strong></td><td>Đủ ≥100 dòng đã tag → cluster lần đầu (chạy tab 03–04) → chọn giao điểm tag mạnh nhất làm pipeline P-01. Chưa đủ 100 dòng thì <strong>chưa quay video nào cả</strong> — kéo dài listening thêm 1 tuần.</td><td>Thứ 2 tuần 1</td></tr>
+        </tbody>
+      </table>
+      <p class="text-muted text-small">Ranh giới: chỉ đọc và ghi chép nội dung công khai làm nghiên cứu thị trường — không scrape tự động, không lưu tên/định danh người đăng (chỉ lưu nội dung pain + link), không seeding/quảng cáo trá hình trong group của người khác.</p>
+
+      <h3 class="mt-3">Chọn kênh — vai trò từng nền tảng (đừng chạy đều 3 kênh)</h3>
+      <table>
+        <thead><tr><th>Kênh</th><th>Vai trò</th><th>Vì sao</th><th>Nhịp</th></tr></thead>
+        <tbody>
+          <tr><td><strong>TikTok — kênh chính</strong></td><td>Discovery + đo hook</td><td>Thuật toán đẩy nội dung mới không cần follower — kênh 0 follower vẫn test được hook; retention/save đo được từng video</td><td>2 video mới/tuần</td></tr>
+          <tr><td><strong>Facebook (page + share vào group) — kênh phụ</strong></td><td>Reach cộng đồng + mỏ signal</td><td>Người Việt tại Nhật đông nhất ở FB; group là nơi pain dạng câu chuyện đầy đủ nhất</td><td>Recycle video TikTok + 1 post text/carousel/tuần</td></tr>
+          <tr><td><strong>Instagram Reels — kênh recycle</strong></td><td>Phủ thêm, gần như 0 công sức</td><td>Đăng lại video TikTok (xóa watermark); audience trẻ, du học sinh</td><td>Recycle 100%, không làm content riêng</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="mt-3">Content Production SOP — batch 1 buổi/tuần</h3>
+      <div class="timeline">
+        <div><span class="time">Script (thứ 4, 45')</span>Viết 2 script theo <strong>công thức 5 phần</strong>: ① hook ≤2 giây (lấy nguyên văn từ Signal DB — "học 2 năm vẫn lẫn わけ với はず?") → ② gọi tên pain đúng lời user → ③ MỘT giá trị duy nhất (1 video = 1 điều, tham 3 điều là hỏng retention) → ④ bằng chứng/demo (quay màn hình quiz, con số thật) → ⑤ CTA thuộc 1 trong 3 động lực rời SNS (tab 07) + link <code>?pid=</code>.</div>
+        <div><span class="time">Quay (thứ 5, 2h)</span>Batch 2–3 video một buổi, cùng setup. <strong>8 tuần đầu chỉ dùng 2 format cố định</strong> để biến số duy nhất là hook: (a) face-to-cam + text overlay; (b) quay màn hình quiz/tool + voiceover. Format ổn định thì mới so được video này với video kia.</div>
+        <div><span class="time">Đăng (thứ 6 tối + CN)</span>Giờ vàng SNS Việt: thứ 6 20–22h, CN 20–22h. Mỗi video một <code>pid</code> riêng (P-01-a/b) để đo hook nào thắng. Recycle sang FB/IG trong 10' bằng lịch có sẵn.</div>
+        <div><span class="time">Reply (15'/ngày)</span>Trả lời comment theo thứ tự ưu tiên: câu hỏi thật (= signal, ghi vào DB ngay) → DM → comment cảm xúc. Câu hỏi hay nhất tuần = hook của video tuần sau. Đây không phải chăm sóc fan — đây là <strong>vận hành cảm biến</strong>.</div>
+      </div>
+
+      <h3 class="mt-3">Time ledger — cộng sổ 14h/tuần (vá finding #2)</h3>
+      <table>
+        <thead><tr><th>Việc</th><th>Giờ/tuần</th><th>Ghi chú</th></tr></thead>
+        <tbody>
+          <tr><td>Review thứ 2 (số + quyết định)</td><td>1.5</td><td>Theo Weekly Review template</td></tr>
+          <tr><td>Cluster + hypothesis (thứ 3–4)</td><td>2.0</td><td>Gộp 2 buổi được nếu ít signal</td></tr>
+          <tr><td>Script + batch quay + đăng</td><td>3.5</td><td>2 video mới + recycle</td></tr>
+          <tr><td>Reply comment/DM + ghi signal</td><td>2.0</td><td>15–20'/ngày</td></tr>
+          <tr><td>Chỉnh landing/quiz (giao Codex, mình review)</td><td>1.0</td><td>Viết brief + nghiệm thu</td></tr>
+          <tr><td><strong>Đệm</strong> (event ops, monetization test thủ công, phát sinh)</td><td>4.0</td><td>Tuần có event tiêu hết đệm</td></tr>
+          <tr><td><strong>Tổng</strong></td><td><strong>14h</strong></td><td>= 2h/ngày × 7</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn"><strong>2 luật chống sập:</strong> (1) Tuần có event = KHÔNG pipeline mới, không ngoại lệ — event ăn hết 4h đệm. (2) Nếu 2 tuần liên tiếp vượt 14h → cắt theo thứ tự: giảm video mới 2→1 (giữ recycle) → hoãn pipeline mới → <em>không bao giờ cắt</em>: reply comment (cảm biến) và review thứ 2 (bộ não). OS chết vì founder kiệt sức nhanh hơn vì thiếu ý tưởng.</div>
+    </div>
+
+    <!-- ═══════════ 15 SETUP KỸ THUẬT SOP (v2) ═══════════ -->
+    <div id="g13" class="tab-panel">
+      <h2>15 · Setup kỹ thuật — SOP từng bước <span class="badge navy">v2</span></h2>
+      <p>Vá finding #3: mỗi hạng mục ghi rõ <strong>ai làm</strong> (tự làm không cần code / giao Codex kèm brief) và <strong>mất bao lâu</strong>. Toàn bộ hạ tầng dựng xong trong ~1 tuần lịch, ~6h công của mình + 3 task Codex.</p>
+      <table>
+        <thead><tr><th>#</th><th>Hạng mục</th><th>Cách làm cụ thể</th><th>Ai làm</th><th>Thời gian</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><strong>Sheet 6 board</strong></td><td>1 file Google Sheet, 6 sheet theo tab 08; cột theo template tab 12. Sheet "Signal DB" thêm data validation cho 3 cột tag (dropdown từ taxonomy — chống drift). Backup: Apps Script tự copy file mỗi Chủ nhật.</td><td>Tự làm (validation) + Codex (script backup)</td><td>60' + 30'</td></tr>
+          <tr><td>2</td><td><strong>Analytics</strong></td><td>Chọn MỘT: Umami Cloud (khuyến nghị — nhẹ, dashboard dễ đọc, đủ custom event) hoặc GA4 (miễn phí, mạnh hơn nhưng khó đọc). Tạo site → lấy snippet 1 dòng → dán vào template web app → khai custom events theo taxonomy tab 09 → tự test: mở app, làm 1 quiz, thấy event hiện lên là đạt.</td><td>Codex dán snippet + bắn events; mình verify</td><td>Codex 1–2h, verify 30'</td></tr>
+          <tr><td>3</td><td><strong>pipeline_id dính user</strong></td><td>Mọi link SNS mang <code>?pid=P-01-a</code>. Trong app: JS đọc query param → lưu <code>localStorage</code> theo kiểu <strong>first-touch</strong> (đã có pid thì không ghi đè) → gắn pid vào mọi event analytics + hidden field khi signup → từ đó pid nằm trong record user vĩnh viễn. Đây là sợi chỉ nối SNS→revenue.</td><td>Codex — brief đúng đoạn vừa rồi là đủ spec</td><td>Codex ~1h</td></tr>
+          <tr><td>4</td><td><strong>Quiz/tool → Signal DB</strong></td><td>Khi quiz_complete: gửi kết quả (quiz_id, score, weak_tags, pid — <em>không gửi định danh</em>) qua Apps Script Web App endpoint → append row vào sheet Signal DB với nguồn = <code>QUIZ</code>. Kết quả quiz tự trở thành signal tinh, không cần tay.</td><td>Codex</td><td>Codex 1–2h</td></tr>
+          <tr><td>5</td><td><strong>Email capture</strong></td><td>Tuần đầu: form đơn giản → ghi vào Sheet (cùng Apps Script #4). Chỉ chuyển sang ESP thật khi list &gt;300 người. Tốc độ trước, chỉn chu sau.</td><td>Codex (gộp vào #4)</td><td>—</td></tr>
+          <tr><td>6</td><td><strong>LINE Official Account</strong> — tầng nurture (vá finding #4)</td><td>Tạo LINE OA miễn phí (≤200 tin/tháng free — đủ cho 2 tháng đầu). Cadence cố định 3 chạm: <strong>T+0</strong> ngay sau capture — giao đúng thứ đã hứa (checklist/kết quả); <strong>T+3 ngày</strong> — 1 giá trị thêm cùng chủ đề (không bán gì); <strong>T+7 ngày</strong> — mời quay lại app hoặc offer nhẹ. Sau đó tối đa 1 broadcast/tuần. LINE là "đất thuê dài hạn" — giữa đất mượn (SNS) và đất sở hữu (app): nó kéo user quay về app khi thuật toán SNS không đẩy mình nữa.</td><td>Tự làm (LINE OA console, không cần code)</td><td>90' setup + soạn 3 tin mẫu</td></tr>
+          <tr><td>7</td><td><strong>2 view dashboard</strong></td><td>Trong chính file Sheet: view A "Funnel theo pid" — <code>=QUERY(events, "select count where pid='P-01' group by event_name")</code> so cạnh cột kill criteria; view B "Profile sống theo segment" — SUMIFS theo tháng. Không build gì ngoài 2 view này trong 8 tuần.</td><td>Tự làm (formula) hoặc Codex 30'</td><td>60'</td></tr>
+        </tbody>
+      </table>
+      <h3 class="mt-3">Tagging SOP — chống drift khi chỉ có 1 người tag (vá finding #7)</h3>
+      <table>
+        <thead><tr><th>Nguyên văn signal</th><th>Tag đúng</th><th>Vì sao — quy tắc rút ra</th></tr></thead>
+        <tbody>
+          <tr><td>"học 2 năm rồi mà thi vẫn trượt, chắc em không có khiếu"</td><td><code>JLPT_MOTIVATION × FRUSTRATION × XA_STRESS</code></td><td>Không phải hỏi cách làm — họ đang than. INTENT lấy theo <em>điều họ muốn nhận lại</em>, không theo chủ đề.</td></tr>
+          <tr><td>"gia hạn visa hết bao nhiêu tiền vậy mọi người?"</td><td><code>VISA_RENEWAL × CONFUSION × HOI_CHI_PHI</code> + WTP=y</td><td>Hỏi giá luôn kèm cờ WTP — kể cả khi hỏi phí nhà nước, nó lộ ra họ đang lên kế hoạch chi.</td></tr>
+          <tr><td>"ai từng đi kèo bên X chưa, uy tín không ạ?"</td><td><code>EVENT_TRUST × DISTRUST × HOI_UY_TIN</code></td><td>Nhắc tên bên thứ ba + xin xác nhận = HOI_UY_TIN, không phải HOI_CACH_LAM.</td></tr>
+          <tr><td>"có ai ở Saitama cuối tuần đi chụp lá đỏ không"</td><td><code>LONELINESS × (không rõ) × TIM_BAN</code></td><td>EMOTION được phép bỏ trống khi không rõ — <strong>không đoán</strong>. Tag thiếu tốt hơn tag sai.</td></tr>
+          <tr><td>"anh ơi làm hộ em hồ sơ được không, em gửi phí"</td><td><code>VISA_CHANGE × ANXIETY × NHO_LAM_HO</code> + WTP=y, strength 3</td><td>NHO_LAM_HO tự động strength 3 — tín hiệu monetization mạnh nhất hệ thống có.</td></tr>
+        </tbody>
+      </table>
+      <p class="text-muted text-small">Quy tắc khi phân vân: (1) chỉ chọn 1 tag/trục — phân vân giữa 2 DOMAIN nghĩa là nên tách thành 2 dòng; (2) mỗi thứ 3 khi cluster, đọc lại 10 dòng tag tuần trước — lệch thì sửa taxonomy chứ không sửa im lặng; (3) tag mới chỉ được thêm khi ≥5 signal không nhét vừa taxonomy hiện có.</p>
+      <div class="callout"><strong>Sàn cỡ mẫu (vá finding #5):</strong> không phán một tầng funnel khi tầng đó có <strong>&lt;100 lượt vào</strong> (với pay/waitlist: &lt;30 lượt thấy offer). Dưới sàn → kéo dài thêm 1 tuần, không scale cũng không kill. Ngoại lệ duy nhất: trust incident — kill ngay không cần mẫu. Ghi cỡ mẫu vào mọi ô số của Weekly Review: viết "12/40 (n nhỏ)" chứ không viết "30%".</div>
+    </div>
+
+    <!-- ═══════════ ★ REVIEW LOG v2 ═══════════ -->
+    <div id="g14" class="tab-panel">
+      <h2>★ Review McKinsey &amp; Change log v1 → v2</h2>
+      <p>Phương pháp review: soi v1 theo 4 trục — MECE &amp; nhất quán nội bộ · tính khả thi với ràng buộc thật (solo, 2h/ngày, không code) · độ cụ thể của cách thực hiện ("người khác cầm tài liệu này có tự làm được không?") · rủi ro hệ thống. Findings xếp theo severity:</p>
+      <table>
+        <thead><tr><th>#</th><th>Severity</th><th>Finding</th><th>Bằng chứng trong v1</th><th>Vá ở đâu (v2)</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><span class="badge red">Nghiêm trọng</span></td><td><strong>Cold-start bỏ ngỏ</strong> — OS cần signal để chạy nhưng kênh 0 follower không sinh signal; tuần 1 của tab 13 (v1) yêu cầu "≥30 dòng Signal DB" từ comment của video chưa ai xem</td><td>Tab 13: "Thu signal: mục tiêu ≥30 dòng" ngay tuần đầu đăng</td><td>Tab 14 — Tuần 0 listening: mượn mỏ signal công khai (group FB, comment kênh cùng ngách), sàn 100 dòng trước video đầu tiên; tab 13 thêm điều kiện tiên quyết</td></tr>
+          <tr><td>2</td><td><span class="badge red">Nghiêm trọng</span></td><td><strong>Capacity không cộng sổ</strong> — lịch tuần + 3 video + reply + event vượt xa 14h; founder là bottleneck chưa được mô hình hóa</td><td>Tab 08 ghi "2–3h build" nhưng sản xuất video với người mới là 2–3h/video</td><td>Tab 14 — time ledger 14h đóng khung, giảm 3→2 video mới + recycle, luật "tuần event không pipeline mới", thứ tự cắt tải khi quá 14h</td></tr>
+          <tr><td>3</td><td><span class="badge red">Nghiêm trọng</span></td><td><strong>Cách thực hiện kỹ thuật quá mỏng</strong> — "GA4/Umami + Sheet là đủ" không dựng được thành hệ thống thật nếu không biết code</td><td>Tab 09 chỉ có 1 dòng text-muted về công cụ</td><td>Tab 15 — SOP 7 hạng mục, mỗi cái ghi ai làm (tự làm/Codex + brief), thời gian; tổng ~1 tuần dựng xong</td></tr>
+          <tr><td>4</td><td><span class="badge navy">Cao</span></td><td><strong>Thiếu tầng nurture</strong> — email/LINE capture rồi không có gì xảy ra tiếp; user một-lần là mất</td><td>v1 không có bất kỳ cadence nào sau capture</td><td>Tab 15 mục 6 — LINE OA cadence 3 chạm (T+0/T+3/T+7), định vị "đất thuê dài hạn" giữa SNS và app</td></tr>
+          <tr><td>5</td><td><span class="badge navy">Cao</span></td><td><strong>Không có sàn cỡ mẫu</strong> — decision rule 2 tuần có thể scale/kill dựa trên 8 lượt truy cập</td><td>Tab 08 decision rules chỉ nói "đạt ngưỡng 2 tuần", không nói n</td><td>Tab 15 callout sàn mẫu (n≥100/tầng, ≥30 với offer) + tab 09 nhắc lại; quy ước viết "12/40" thay vì "30%"</td></tr>
+          <tr><td>6</td><td><span class="badge navy">Cao</span></td><td><strong>Pricing không có phương pháp</strong> — ¥980/¥4,900/¥9,800 là assert từ benchmark ngành, chưa có cách đo WTP theo giá</td><td>Tab 10 đưa giá thẳng vào offer</td><td>Tab 10 (v2) thêm "3 phép đo giá": ladder 2 giá trên waitlist, câu hỏi giá sau khoảnh khắc aha, đọc phản ứng giá trong DM</td></tr>
+          <tr><td>7</td><td><span class="badge gray">TB</span></td><td><strong>Tagging thiếu SOP</strong> — 1 người tự tag sẽ drift; taxonomy sẽ phình vô tổ chức</td><td>Tab 03 có taxonomy nhưng không có ví dụ chuẩn/quy tắc phân vân</td><td>Tab 15 — bảng 5 ví dụ tag chuẩn kèm quy tắc rút ra + 3 quy tắc chống drift + điều kiện thêm tag mới</td></tr>
+          <tr><td>8</td><td><span class="badge gray">TB</span></td><td><strong>Thiếu rủi ro cấp OS</strong> — có kill rule cho pipeline, không có cho chính hệ vận hành</td><td>v1 không có mục rủi ro</td><td>Bảng dưới đây</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="mt-3">Rủi ro cấp OS &amp; đối sách (vá finding #8)</h3>
+      <table>
+        <thead><tr><th>Rủi ro</th><th>Tín hiệu sớm</th><th>Đối sách</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Phụ thuộc 1 nền tảng</strong> — TikTok shadowban/đổi thuật toán, reach về 0 qua đêm</td><td>Reach giảm &gt;70% trong 2 tuần không rõ lý do</td><td>Ngay từ đầu: mọi video recycle sang FB/IG (đã trong SOP); tài sản thật là Signal DB + LINE list + profile — mất kênh không mất OS. Không mua follower, không dùng trick tăng reach (nguồn shadowban phổ biến nhất).</td></tr>
+          <tr><td><strong>Founder burnout</strong> — OS đòi nhịp tuần đều đặn vô hạn</td><td>2 tuần liên tiếp bỏ review thứ 2, hoặc vượt 14h</td><td>Thứ tự cắt tải ở tab 14. Chế độ "duy trì tối thiểu" hợp lệ: 1 recycle + reply + review = 4h/tuần, OS vẫn sống. Nghỉ có kế hoạch ≠ chết.</td></tr>
+          <tr><td><strong>Mất dữ liệu</strong> — Sheet xóa nhầm, không có backup</td><td>—</td><td>Apps Script backup tuần (tab 15 #1); Signal DB là tài sản số 1 của công ty giai đoạn này — đối xử như source code.</td></tr>
+          <tr><td><strong>Nghiện signal, bỏ build</strong> — listening mãi không launch (dạng procrastination trá hình)</td><td>3 tuần liên tiếp không có pipeline nào sống</td><td>Luật: từ tuần 1 trở đi luôn có ≥1 pipeline sống; tuần "chỉ thu signal" chỉ hợp lệ tối đa 2 tuần liên tiếp.</td></tr>
+          <tr><td><strong>Đo sai vì chính mình</strong> — tự click link, tự test quiz làm bẩn số</td><td>Số đẹp bất thường với n nhỏ</td><td>Lọc IP/device của mình khỏi analytics (Umami có sẵn tính năng này — 5 phút, làm ngay khi setup).</td></tr>
+        </tbody>
+      </table>
+      <p class="text-muted text-small">Change log v2 ngoài 3 tab mới: header lên v2 · tab 09 thêm callout sàn cỡ mẫu · tab 10 thêm "3 phép đo giá" · tab 13 thêm điều kiện tiên quyết Tuần 0 và giảm 3→2 video. Toàn bộ nội dung v1 còn lại giữ nguyên.</p>
+    </div>
+
+  </div><!-- /tab-group -->
+
+  </main>
+
+  <script>
+    function showTab(e, id) {
+      var group = e.target.closest('.tab-group');
+      group.querySelectorAll(':scope > .tabs > .tab-btn').forEach(function (b) { b.classList.remove('active'); });
+      group.querySelectorAll(':scope > .tab-panel').forEach(function (p) { p.classList.remove('active'); });
+      e.target.classList.add('active');
+      document.getElementById(id).classList.add('active');
+    }
+  </script>
+</body>
+</html>

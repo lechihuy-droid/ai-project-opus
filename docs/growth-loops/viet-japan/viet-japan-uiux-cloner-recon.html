@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viet-Japan Phase-1 UI/UX Cloner Recon</title>
+  <link rel="stylesheet" href="../html-kit/styles.css">
+  <script src="../html-kit/diagram.js" defer></script>
+</head>
+<body>
+  <header class="doc-header">
+    <span class="badge navy">UI/UX Research</span>
+    <h1>Viet-Japan Phase-1 UI/UX Cloner Recon</h1>
+    <p class="lead">Bản thu thập UI/UX theo báo cáo deep research, áp dụng workflow reconnaissance/spec của ai-website-cloner-template cho 6 màn hình Phase-1.</p>
+    <p class="meta">2026-07-06 · Input: C:\Users\HUY\Downloads\deep-research-report.md · Output: docs/viet-japan-uiux-cloner-recon.html</p>
+  </header>
+
+  <main>
+    <div class="callout warn">
+      <strong>Ghi chú phương pháp:</strong> Browser MCP của cloner không khả dụng trong phiên này, nên artifact này là "cloner-style UI/UX reconnaissance": đọc report, kiểm tra lại các site tham chiếu công khai, rồi chuyển thành spec triển khai. Chưa phải pixel-perfect screenshot extraction hay computed-style audit.
+    </div>
+
+    <h2>Quyết Định Cốt Lõi</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>IA & Navigation</h3>
+        <p>User-facing app dùng 5 mục nông: Home, Quiz, Events, Tips, Profile. Desktop dùng top nav; mobile dùng bottom nav. Sidebar chỉ dành cho Admin nếu cần.</p>
+        <span class="badge green">Copy</span>
+      </div>
+      <div class="card">
+        <h3>Homepage CTA</h3>
+        <p>Quiz là CTA chính vì always-on và low-friction. Event là CTA thứ hai trong fold đầu để giữ trust/community layer.</p>
+        <span class="badge green">Copy</span>
+      </div>
+      <div class="card">
+        <h3>Auth Timing</h3>
+        <p>Cho user làm quiz trước, chỉ mời login sau khi có kết quả hoặc muốn lưu tiến độ. Login là "save my progress", không phải cửa chặn.</p>
+        <span class="badge green">Copy</span>
+      </div>
+      <div class="card">
+        <h3>Trust First</h3>
+        <p>Event cần host rõ, chi phí minh bạch, time/location rõ, ảnh kỳ trước, attendee/waitlist state, FAQ/contact và policy dễ thấy.</p>
+        <span class="badge green">Copy</span>
+      </div>
+      <div class="card">
+        <h3>Profile Progressive</h3>
+        <p>Core identity trước: name/avatar/email. Visa, JLPT, nghề là relevance profile hỏi sau ngữ cảnh, có lý do và cho phép bỏ qua.</p>
+        <span class="badge green">Copy</span>
+      </div>
+      <div class="card">
+        <h3>Admin Scope</h3>
+        <p>Founder dashboard giống Plausible trước: một trang, đọc nhanh UTM/source, quiz, signup, event registration, content performance.</p>
+        <span class="badge green">Copy</span>
+      </div>
+    </div>
+
+    <h2>Growth Loop</h2>
+    <div class="diagram" data-chart='{
+      "type":"flow",
+      "nodes":[
+        {"id":"sns","label":"SNS traffic","shape":"terminal"},
+        {"id":"home","label":"Home: quiz primary + event secondary","shape":"rect"},
+        {"id":"quiz","label":"Guest quiz","shape":"rect"},
+        {"id":"result","label":"Result + feedback","shape":"rect"},
+        {"id":"login","label":"Login to save","shape":"diamond"},
+        {"id":"profile","label":"Profile + progress","shape":"rect"},
+        {"id":"event","label":"Event detail/register","shape":"rect"},
+        {"id":"share","label":"Share card","shape":"rect"},
+        {"id":"admin","label":"Founder dashboard","shape":"terminal"}
+      ],
+      "edges":[
+        {"from":"sns","to":"home","label":"UTM/referral"},
+        {"from":"home","to":"quiz","label":"primary CTA"},
+        {"from":"quiz","to":"result","label":"instant value"},
+        {"from":"result","to":"login","label":"save progress"},
+        {"from":"login","to":"profile","label":"yes"},
+        {"from":"home","to":"event","label":"secondary CTA"},
+        {"from":"event","to":"share","label":"registration success"},
+        {"from":"result","to":"share","label":"completion moment"},
+        {"from":"share","to":"sns","label":"viral loop"},
+        {"from":"home","to":"admin","label":"aggregated analytics"}
+      ]
+    }'></div>
+
+    <h2>Reference Map</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Module</th>
+          <th>Primary references</th>
+          <th>Signals collected</th>
+          <th>Decision for MVP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Home</td>
+          <td><a href="https://carrd.co/">Carrd</a>, <a href="https://linktr.ee/">Linktree</a>, Notion Sites</td>
+          <td>Carrd compresses value into simple, responsive one-page positioning. Linktree centers "one link", social distribution, creator trust and analytics.</td>
+          <td>One-screen value prop, two CTAs, proof strip, no heavy menu. Treat homepage as owned funnel entry, not social feed.</td>
+        </tr>
+        <tr>
+          <td>Quiz</td>
+          <td><a href="https://brilliant.org/">Brilliant</a>, <a href="https://www.typeform.com/">Typeform</a>, Kahoot</td>
+          <td>Brilliant frames learning as visual, interactive, adaptive and progress-driven. Typeform emphasizes conversational logic and high completion.</td>
+          <td>One question per screen/card, top progress, large taps, immediate feedback, result screen with review/save/share.</td>
+        </tr>
+        <tr>
+          <td>Events</td>
+          <td><a href="https://luma.com/">Luma</a>, <a href="https://www.doorkeeper.jp/">Doorkeeper</a>, <a href="https://www.meetup.com/">Meetup</a>, <a href="https://partiful.com/">Partiful</a></td>
+          <td>Luma is direct event creation/registration. Doorkeeper highlights Japanese community, region, topic, organizer and event lists. Meetup exposes attendee counts and group framing. Partiful proves low-friction mobile invite language.</td>
+          <td>Event detail must be trust-first: cover, title, time, place, price, host, attendees/seats, photos, FAQ, policy, sticky mobile register/waitlist CTA.</td>
+        </tr>
+        <tr>
+          <td>Profile</td>
+          <td>Linktree creator pages, Luma profile, Brilliant progress, GitHub activity surfaces</td>
+          <td>Best fit is lightweight identity plus progress/action modules, not a full social profile. Sensitive profile fields should be contextual.</td>
+          <td>Three cards: Learning, Events, Sharing. Relevance profile is a skippable prompt after value, not onboarding gate.</td>
+        </tr>
+        <tr>
+          <td>Tips / Blog</td>
+          <td><a href="https://wise.com/gb/blog/">Wise Blog</a>, <a href="https://tokyocheapo.com/">Tokyo Cheapo</a>, <a href="https://www.gitbook.com/">GitBook</a>, <a href="https://www.mintlify.com/">Mintlify</a></td>
+          <td>Wise has strong taxonomy for living abroad and country/location categories. Tokyo Cheapo combines local guides, events, neighborhoods and timely editorial content. GitBook/Mintlify provide docs-like trust and search mental model.</td>
+          <td>Media hub with knowledge-base spine: categories, updated date, TOC for procedure articles, related content, CTA back to Quiz/Event.</td>
+        </tr>
+        <tr>
+          <td>Admin</td>
+          <td><a href="https://plausible.io/">Plausible</a>, <a href="https://posthog.com/">PostHog</a>, <a href="https://linear.app/">Linear</a></td>
+          <td>Plausible explicitly prioritizes single-page, no-training analytics and UTM/campaign clarity. PostHog is useful later for funnels. Linear is useful only for density/status language.</td>
+          <td>One-page founder cockpit: acquisition, quiz funnel, signups, registrations, content, recent users, quick actions. Avoid enterprise analytics depth in beta.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Screen Specs</h2>
+
+    <details open>
+      <summary>HOME / Owned Funnel Entry</summary>
+      <p><strong>Role:</strong> Explain value in seconds and route users into the lowest-friction action.</p>
+      <table>
+        <tbody>
+          <tr><td>Layout</td><td>Hero full-width, concise H1, one supporting sentence, primary CTA "Làm quiz N2 ngay", secondary CTA "Xem event sắp tới". Below fold: proof/trust strip, quiz preview, event preview, latest tips.</td></tr>
+          <tr><td>Components</td><td>TopNav, Hero, DualCTA, TrustStrip, QuizPreviewCard, EventPreviewCard, LatestTipsList, Footer.</td></tr>
+          <tr><td>Behavior</td><td>Mobile bottom nav is persistent after first screen. Hero CTAs should remain visually stronger than nav. Event teaser can be time-sensitive but not replace quiz as default primary CTA.</td></tr>
+          <tr><td>Avoid</td><td>No feed, no community graph, no giant SaaS sidebar, no abstract brand-only hero.</td></tr>
+        </tbody>
+      </table>
+    </details>
+
+    <details open>
+      <summary>QUIZ / Lucida Guest Flow</summary>
+      <p><strong>Role:</strong> Deliver value before signup, then convert signup through progress saving.</p>
+      <table>
+        <tbody>
+          <tr><td>Layout</td><td>One question card per view, progress bar at top, large answer options, minimal distraction, result screen at completion.</td></tr>
+          <tr><td>Components</td><td>QuizShell, ProgressBar, QuestionCard, AnswerOption, FeedbackPanel, ResultSummary, ReviewMistakes, SaveProgressPrompt, ShareResultCard.</td></tr>
+          <tr><td>Behavior</td><td>Tap answer -> immediate feedback -> short explanation -> next. Login prompt appears only after result or when saving progress. Share appears after completion, never before first value.</td></tr>
+          <tr><td>Avoid</td><td>No forced account creation, no long multi-field setup, no noisy gamification before correctness/learning value.</td></tr>
+        </tbody>
+      </table>
+    </details>
+
+    <details open>
+      <summary>EVENTS / Trust Layer</summary>
+      <p><strong>Role:</strong> Make event registration feel organized, transparent and safe for Vietnamese users in Japan.</p>
+      <table>
+        <tbody>
+          <tr><td>List</td><td>Event cards show date block, title, city/online, price/free, host, capacity or attendee signal, and registration state.</td></tr>
+          <tr><td>Detail</td><td>Cover image, title, date/time, location map/link, cost, host card, previous gallery, guest/seat signal, registration form, waitlist state, FAQ/contact, cancellation/refund note.</td></tr>
+          <tr><td>Behavior</td><td>Sticky bottom CTA on mobile. If full, CTA becomes waitlist. Registration success should expose calendar add, share event, and profile enrichment only after success.</td></tr>
+          <tr><td>Avoid</td><td>No vague "DM us" registration as primary UX; no hidden fee; no anonymous organizer; no event page without proof of previous activity when available.</td></tr>
+        </tbody>
+      </table>
+    </details>
+
+    <details open>
+      <summary>PROFILE / Progress, Relevance, Privacy</summary>
+      <p><strong>Role:</strong> Give users a simple place to see progress and actions without turning the product into a social network.</p>
+      <table>
+        <tbody>
+          <tr><td>Core</td><td>Name, avatar, email/provider, language preference, privacy/settings link.</td></tr>
+          <tr><td>Progress</td><td>Learning card: N2 progress, recent quiz, streak/milestone if enabled. Event card: registered/upcoming/past. Share card: achievements and referral link.</td></tr>
+          <tr><td>Relevance</td><td>Optional JLPT/visa/job/region prompt after quiz completion or event registration. Microcopy: "để gợi ý nội dung phù hợp hơn; bỏ qua nếu chưa muốn".</td></tr>
+          <tr><td>Avoid</td><td>No forced sensitive fields at signup; no public social graph; no over-detailed analytics shown to users.</td></tr>
+        </tbody>
+      </table>
+    </details>
+
+    <details open>
+      <summary>TIPS / Media Hub With Knowledge Spine</summary>
+      <p><strong>Role:</strong> Build trust and SEO while routing readers back into quiz/event/profile loops.</p>
+      <table>
+        <tbody>
+          <tr><td>Hub</td><td>Featured guide, category blocks, latest updates, event-related articles, beginner path, search.</td></tr>
+          <tr><td>Article</td><td>Clear title, updated date, author/editor, category tags, TOC for procedure content, step list, related articles, CTA to quiz/event/profile where relevant.</td></tr>
+          <tr><td>Behavior</td><td>Locale-ready content model from day one. Allow Vietnamese-only initially, but keep route/copy architecture ready for ja/vi.</td></tr>
+          <tr><td>Avoid</td><td>No generic blog stream only; no undated procedure article; no AI-looking walls of text without structure.</td></tr>
+        </tbody>
+      </table>
+    </details>
+
+    <details open>
+      <summary>ADMIN / Founder Cockpit</summary>
+      <p><strong>Role:</strong> Give one operator daily clarity without analytics fatigue.</p>
+      <table>
+        <tbody>
+          <tr><td>Widgets</td><td>Visitors by source/medium/campaign, top landing pages, quiz starts/completions, signups, event registrations/waitlist, recent users, top tips, quick actions.</td></tr>
+          <tr><td>Layout</td><td>Plausible-like one-page dashboard first. Tables below charts. Sidebar acceptable here if admin grows, but beta can start with top tabs.</td></tr>
+          <tr><td>Behavior</td><td>UTM is invisible to user. Capture first touch and current session; display aggregate only. Add export later if operations require it.</td></tr>
+          <tr><td>Avoid</td><td>No PostHog-style deep product suite in beta; no vanity metrics without conversion context; no multi-level admin IA.</td></tr>
+        </tbody>
+      </table>
+    </details>
+
+    <h2>Component Inventory</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Area</th>
+          <th>Components</th>
+          <th>shadcn/ui base</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Shell</td><td>AppShell, DesktopTopNav, MobileBottomNav, Footer, LocaleToggle</td><td>NavigationMenu, Button, DropdownMenu</td></tr>
+        <tr><td>Home</td><td>Hero, DualCTA, TrustStrip, ModulePreview, SocialProof</td><td>Button, Card, Badge</td></tr>
+        <tr><td>Quiz</td><td>QuizShell, QuestionCard, AnswerOption, FeedbackPanel, ResultSummary, SaveProgressPrompt</td><td>Card, Progress, Button, AlertDialog, Toast</td></tr>
+        <tr><td>Events</td><td>EventCard, EventDetail, HostCard, Gallery, RegistrationForm, StickyCTA, WaitlistState</td><td>Card, Badge, Form, Dialog, Sheet, Avatar, Separator</td></tr>
+        <tr><td>Profile</td><td>ProfileHeader, LearningProgress, EventHistory, ShareAchievements, RelevanceProfilePrompt, PrivacySettings</td><td>Avatar, Card, Progress, Tabs, AlertDialog</td></tr>
+        <tr><td>Tips</td><td>ArticleHub, CategoryRail, ArticleTemplate, TOC, RelatedContent, SearchCommand</td><td>Command, Badge, Card, Accordion</td></tr>
+        <tr><td>Admin</td><td>MetricCards, AcquisitionTable, FunnelChart, EventOpsTable, RecentUsers, QuickActions</td><td>Table, Card, Tabs, Select, Skeleton</td></tr>
+        <tr><td>Share</td><td>QuizResultCard, EventSuccessCard, MilestoneCard, ReferralPanel</td><td>Card, Button, Tooltip, Toast</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Copy & Trust Rules</h2>
+    <div class="compare">
+      <div>
+        <div class="col-head">Use</div>
+        <div class="card">
+          <p>"Làm thử 3 câu N2 ngay"</p>
+          <p>"Lưu tiến độ của bạn"</p>
+          <p>"Host: tên, ảnh, mô tả ngắn, liên hệ"</p>
+          <p>"Bỏ qua nếu chưa muốn"</p>
+          <p>"Chia sẻ kết quả N2 của bạn"</p>
+        </div>
+      </div>
+      <div>
+        <div class="col-head">Avoid</div>
+        <div class="card">
+          <p>"Đăng ký để bắt đầu"</p>
+          <p>"Community/social feed"</p>
+          <p>"Liên hệ để biết chi phí"</p>
+          <p>"Cung cấp visa/JLPT/nghề để tiếp tục"</p>
+          <p>"Share để nhận thưởng"</p>
+        </div>
+      </div>
+    </div>
+
+    <h2>Visual Direction</h2>
+    <ul>
+      <li><strong>Density:</strong> marketing landing gọn ở Home, high-focus card flow ở Quiz, information-dense nhưng rõ ở Event/Admin.</li>
+      <li><strong>Palette:</strong> neutral foundation, one warm trust accent, one learning/progress accent, restrained success/warning/error states. Không dùng one-note purple/blue gradient hoặc beige-only palette.</li>
+      <li><strong>Typography:</strong> system sans hoặc font có Vietnamese/Japanese coverage tốt; line-height rộng cho article; button labels ngắn để fit mobile.</li>
+      <li><strong>Mobile:</strong> bottom nav 5 mục, sticky event CTA, quiz answer targets lớn, no nested cards, no text overlap.</li>
+      <li><strong>Trust:</strong> policy links visible in footer, login, profile privacy, event registration and account deletion flow.</li>
+    </ul>
+
+    <h2>Cloner Backlog Khi Có Browser MCP</h2>
+    <ul class="timeline">
+      <li>
+        <span class="time">Pass 1</span>
+        <p>Capture 1440px and 390px screenshots for Carrd, Linktree, Brilliant, Typeform, Luma, Doorkeeper, Tokyo Cheapo, Wise and Plausible.</p>
+      </li>
+      <li>
+        <span class="time">Pass 2</span>
+        <p>Extract computed styles: font families, sizes, colors, radii, spacing, shadows, sticky behaviors and mobile breakpoints.</p>
+      </li>
+      <li>
+        <span class="time">Pass 3</span>
+        <p>Interaction sweep: quiz/form progression, event registration/waitlist states, profile/share states, search/category navigation, analytics dashboard filters.</p>
+      </li>
+      <li>
+        <span class="time">Pass 4</span>
+        <p>Write per-component specs under docs/research/components/ and convert them into implementation tickets for Home -> Quiz -> Profile -> Events -> Share -> Tips -> Admin.</p>
+      </li>
+    </ul>
+
+    <h2>Implementation Order</h2>
+    <ol>
+      <li>Home shell + desktop top nav + mobile bottom nav.</li>
+      <li>Quiz guest flow + result screen.</li>
+      <li>Login-after-value + save progress + baseline profile.</li>
+      <li>Event list/detail/register/waitlist + trust blocks.</li>
+      <li>Share cards after quiz result and event success.</li>
+      <li>Tips/blog hub + article template + related content.</li>
+      <li>Founder admin dashboard with UTM/source and conversion widgets.</li>
+    </ol>
+
+    <h2>Sources Inspected</h2>
+    <p>Local report: <code>C:\Users\HUY\Downloads\deep-research-report.md</code>. Live references checked: <a href="https://github.com/JCodesMore/ai-website-cloner-template">ai-website-cloner-template</a>, <a href="https://carrd.co/">Carrd</a>, <a href="https://linktr.ee/">Linktree</a>, <a href="https://brilliant.org/">Brilliant</a>, <a href="https://www.typeform.com/">Typeform</a>, <a href="https://luma.com/">Luma</a>, <a href="https://www.doorkeeper.jp/">Doorkeeper</a>, <a href="https://www.meetup.com/">Meetup</a>, <a href="https://partiful.com/">Partiful</a>, <a href="https://wise.com/gb/blog/">Wise Blog</a>, <a href="https://tokyocheapo.com/">Tokyo Cheapo</a>, <a href="https://www.gitbook.com/">GitBook</a>, <a href="https://www.mintlify.com/">Mintlify</a>, <a href="https://plausible.io/">Plausible</a>, <a href="https://posthog.com/">PostHog</a>, <a href="https://linear.app/">Linear</a>.</p>
+  </main>
+</body>
+</html>

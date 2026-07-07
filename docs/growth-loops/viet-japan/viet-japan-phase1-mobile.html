@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kizuna Phase 1 - Mobile Demo</title>
+  <style>
+    :root {
+      --ink: #1D2129;
+      --muted: #5B6470;
+      --line: #DFE2E6;
+      --soft: #EEF0F2;
+      --wash: #F6F6F3;
+      --paper: #FFFFFF;
+      --hoc: #69A31E;
+      --event: #E0701C;
+      --tips: #D19A00;
+      --toi: #8C6FC9;
+      --home: #2563EB;
+      --stamp: #CB3A21;
+      --verify: #0D9488;
+      --marker: linear-gradient(transparent 55%, rgba(242,201,52,.55) 55%, rgba(242,201,52,.55) 92%, transparent 92%);
+      --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 70% 10%, rgba(37,99,235,.12), transparent 26%),
+        #E9E7E1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 10px;
+    }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    img { display: block; max-width: 100%; }
+
+    .device {
+      width: 414px;
+      max-width: 100%;
+      height: min(860px, calc(100vh - 40px));
+      background: var(--paper);
+      border: 3px solid var(--ink);
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 18px 56px rgba(29,33,41,.30);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    @media (max-width: 520px) {
+      body { padding: 0; display: block; background: var(--paper); }
+      .device { width: 100%; height: 100vh; border: 0; border-radius: 0; box-shadow: none; }
+    }
+
+    .top {
+      height: 58px;
+      border-bottom: 2.5px solid var(--ink);
+      display: flex;
+      align-items: baseline;
+      gap: 9px;
+      padding: 0 16px;
+      background: rgba(255,255,255,.95);
+      z-index: 5;
+      flex: none;
+    }
+    .top b { font-size: 22px; font-weight: 950; letter-spacing: -.04em; }
+    .top .jp { color: var(--muted); font-size: 11px; letter-spacing: .18em; font-weight: 850; }
+    .mini-stamp {
+      margin-left: auto;
+      color: var(--stamp);
+      border: 2px solid var(--stamp);
+      border-radius: 5px;
+      padding: 1px 6px;
+      font-size: 10px;
+      font-weight: 950;
+      transform: rotate(-4deg);
+    }
+
+    .screens { flex: 1; min-height: 0; position: relative; }
+    .screen {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      display: none;
+      padding-bottom: 90px;
+      background: var(--paper);
+    }
+    .screen.on { display: block; }
+    .wrap { padding: 16px; }
+    .hero { padding: 28px 16px 10px; }
+    .hero h1 {
+      font-size: 34px;
+      line-height: 1.14;
+      letter-spacing: -.055em;
+      font-weight: 950;
+      color: #0B2239;
+      margin-bottom: 10px;
+    }
+    h2 {
+      font-size: 25px;
+      line-height: 1.14;
+      letter-spacing: -.04em;
+      font-weight: 950;
+      color: #0B2239;
+      margin: 6px 0 12px;
+      display: inline-block;
+      border-bottom: 4px solid var(--ln);
+      padding-bottom: 4px;
+    }
+    h3 { font-size: 17px; line-height: 1.25; font-weight: 900; color: #0B2239; margin-bottom: 6px; }
+    p { font-size: 15.5px; line-height: 1.62; color: var(--muted); margin-bottom: 10px; }
+    .sub { font-size: 13.5px; color: var(--muted); line-height: 1.55; }
+    .line-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    .line-tag::before {
+      content: "";
+      width: 12px;
+      height: 12px;
+      background: var(--ln);
+      border-radius: 50%;
+    }
+    .hl, .yen {
+      background-image: var(--marker);
+      padding: 0 3px;
+      color: var(--ink);
+      font-weight: 850;
+    }
+    .yen { font-family: var(--mono); white-space: nowrap; }
+    .mono { font-family: var(--mono); }
+
+    .board {
+      border: 2.5px solid var(--ink);
+      border-radius: 13px;
+      overflow: hidden;
+      background: var(--paper);
+      margin-top: 14px;
+    }
+    .board-row {
+      border: 0;
+      border-bottom: 1.5px solid var(--soft);
+      background: var(--paper);
+      width: 100%;
+      display: grid;
+      grid-template-columns: 32px 1fr 18px;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      text-align: left;
+      color: var(--ink);
+    }
+    .board-row:last-child { border-bottom: 0; }
+    .board-row b { display: block; font-size: 15.5px; }
+    .board-row span span { display: block; font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+    .st {
+      width: 29px;
+      height: 29px;
+      border-radius: 50%;
+      border: 3.5px solid var(--ln);
+      display: grid;
+      place-items: center;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 950;
+      background: #fff;
+      color: var(--ink);
+    }
+    .go { color: #AEB7C2; font-weight: 950; font-size: 22px; }
+
+    .btn {
+      min-height: 48px;
+      width: 100%;
+      border: 0;
+      border-radius: 9px;
+      background: var(--ink);
+      color: #fff;
+      font-weight: 900;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .btn.line { background: var(--ln); }
+    .btn.ghost { background: #fff; color: var(--ink); border: 2px solid var(--ink); }
+    .btn.sns { background: #fff; color: var(--ink); border: 1.5px solid var(--line); }
+    .gap { height: 10px; }
+
+    .hanko {
+      width: 52px;
+      height: 52px;
+      border: 3px solid var(--stamp);
+      border-radius: 50%;
+      color: var(--stamp);
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(-8deg);
+      font-weight: 950;
+      line-height: 1.08;
+      flex: none;
+    }
+    .hanko .k { font-size: 17px; }
+    .hanko .r { font-size: 7px; letter-spacing: .05em; }
+    .stamp-tag {
+      display: inline-flex;
+      width: max-content;
+      color: var(--stamp);
+      border: 2px solid var(--stamp);
+      border-radius: 6px;
+      background: rgba(203,58,33,.04);
+      padding: 2px 8px;
+      font-size: 11.5px;
+      font-weight: 950;
+      transform: rotate(-2deg);
+    }
+    .trust-note {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border: 1.5px dashed #BBC4CD;
+      border-radius: 9px;
+      padding: 12px;
+      background: rgba(255,255,255,.72);
+    }
+    .trust-note p { margin: 0; font-size: 13.5px; color: var(--ink); }
+    .photo-card {
+      height: 230px;
+      border: 2.5px solid var(--ink);
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      margin: 14px 0;
+    }
+    .photo-card img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent, rgba(11,34,57,.72)); }
+    .photo-card .caption { position: absolute; left: 14px; right: 14px; bottom: 12px; z-index: 2; color: #fff; }
+    .photo-card .caption h3 { color: #fff; margin: 0 0 3px; }
+    .photo-card .caption p { color: rgba(255,255,255,.82); margin: 0; font-size: 13px; }
+
+    .ticket {
+      border: 2px solid var(--ink);
+      border-radius: 11px;
+      margin: 12px 0;
+      overflow: hidden;
+      background: #fff;
+    }
+    .ticket-top { border-left: 7px solid var(--ln); padding: 13px 14px 11px; }
+    .ticket-rip {
+      border-top: 2px dashed #BCC6D0;
+      margin: 0 11px;
+      position: relative;
+    }
+    .ticket-rip::before, .ticket-rip::after {
+      content: "";
+      position: absolute;
+      top: -8px;
+      width: 15px;
+      height: 15px;
+      background: #fff;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+    }
+    .ticket-rip::before { left: -21px; }
+    .ticket-rip::after { right: -21px; }
+    .ticket-bottom {
+      padding: 10px 14px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .qtrack { display: flex; gap: 5px; margin: 14px 0 16px; }
+    .qtrack i { flex: 1; height: 7px; border-radius: 999px; background: var(--soft); }
+    .qtrack i.done { background: var(--hoc); }
+    .question { font-size: 22px; line-height: 1.45; font-weight: 900; letter-spacing: -.025em; margin: 8px 0 18px; color: #0B2239; }
+    .opt {
+      width: 100%;
+      min-height: 56px;
+      border: 2px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+      text-align: left;
+      padding: 13px 14px;
+      margin: 9px 0;
+      font-size: 16px;
+      font-weight: 750;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .opt .no { color: var(--muted); font-family: var(--mono); font-weight: 900; }
+    .opt.ok { border-color: var(--hoc); background: #F4FAE9; }
+    .opt.ng { border-color: var(--stamp); background: #FDF3F1; }
+    .explain {
+      border-left: 4px solid var(--hoc);
+      background: var(--wash);
+      border-radius: 0 8px 8px 0;
+      padding: 12px 14px;
+      font-size: 14px;
+      line-height: 1.62;
+      margin-top: 12px;
+    }
+    .result {
+      border: 2.5px solid var(--ink);
+      border-radius: 13px;
+      padding: 18px 16px;
+      position: relative;
+      background: #fff;
+      margin: 12px 0;
+    }
+    .result .big {
+      font-family: var(--mono);
+      font-size: 58px;
+      font-weight: 800;
+      letter-spacing: -.07em;
+      line-height: .95;
+      color: #0B2239;
+      margin: 8px 0;
+    }
+    .result .hanko { position: absolute; right: 14px; top: 14px; }
+
+    table.cost { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 15px; }
+    table.cost td { padding: 9px 0; border-bottom: 1.5px dashed #CBD2DB; }
+    table.cost td:last-child { text-align: right; font-family: var(--mono); font-weight: 850; color: var(--ink); }
+    table.cost tr.total td { border-bottom: 0; font-weight: 950; }
+    .tipcard {
+      border: 2px solid var(--ink);
+      border-left: 7px solid var(--tips);
+      border-radius: 11px;
+      padding: 13px 14px;
+      margin: 12px 0;
+      background: #fff;
+    }
+    .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin: 12px 0; }
+    .metric {
+      border: 1.5px solid var(--line);
+      border-radius: 9px;
+      padding: 10px;
+      min-height: 92px;
+      background: #fff;
+    }
+    .metric b { display: block; font-family: var(--mono); color: #0B2239; font-size: 25px; margin: 7px 0 2px; }
+    .metric span { color: var(--muted); font-size: 11px; font-weight: 850; text-transform: uppercase; letter-spacing: .06em; }
+
+    .nav {
+      flex: none;
+      height: 74px;
+      border-top: 2.5px solid var(--ink);
+      background: var(--paper);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 6px 5px 8px;
+      gap: 2px;
+    }
+    .nav button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 10.5px;
+      font-weight: 850;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border-radius: 12px;
+    }
+    .nav button.on { color: var(--ink); }
+    .nav button.on .st { background: var(--ln); color: #fff; border-color: var(--ln); }
+    #toast {
+      position: absolute;
+      left: 50%;
+      bottom: 88px;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--ink);
+      color: #fff;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 800;
+      opacity: 0;
+      pointer-events: none;
+      max-width: calc(100% - 30px);
+      text-align: center;
+      transition: .2s ease;
+      z-index: 20;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+  <div class="device">
+    <header class="top" onclick="go('home')"><b>Kizuna</b><span class="jp">キズナ</span><span class="mini-stamp">検査済</span></header>
+    <div class="screens">
+      <section class="screen on" id="sc-home" style="--ln:var(--home)">
+        <div class="hero">
+          <span class="line-tag">Home</span>
+          <h1>Sống ở Nhật, có <span class="hl">hội mình</span> chỉ đường.</h1>
+          <p>Quiz N2, event đáng tin, tips có ngày cập nhật và profile nhẹ. Không feed, không chat, không bắt login trước.</p>
+        </div>
+        <div class="wrap">
+          <div class="photo-card">
+            <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=800&q=82" alt="Tokyo street">
+            <div class="caption"><h3>CN 19/7 · Picnic tiếng Việt</h3><p>Host rõ · chi phí rõ · còn 3 chỗ</p></div>
+          </div>
+          <div class="board">
+            <button class="board-row" style="--ln:var(--hoc)" onclick="go('hoc')"><span class="st">H</span><span><b>Luyện N2 miễn phí</b><span>3 phút · không cần tài khoản</span></span><span class="go">›</span></button>
+            <button class="board-row" style="--ln:var(--event)" onclick="go('event')"><span class="st">E</span><span><b>Event cuối tuần</b><span>picnic Kawaguchi · còn 3 chỗ</span></span><span class="go">›</span></button>
+            <button class="board-row" style="--ln:var(--tips)" onclick="go('tips')"><span class="st">T</span><span><b>Tips sống ở Nhật</b><span>nenkin · thuê nhà · baito</span></span><span class="go">›</span></button>
+          </div>
+          <div class="gap"></div>
+          <div class="trust-note"><span class="hanko"><span class="k">済</span><span class="r">KIZUNA</span></span><p>Dấu <strong>済</strong> nghĩa là đã duyệt tay: host rõ, chi phí công khai, content có ngày cập nhật.</p></div>
+        </div>
+      </section>
+
+      <section class="screen" id="sc-hoc" style="--ln:var(--hoc)">
+        <div class="wrap" id="quizBox"></div>
+      </section>
+
+      <section class="screen" id="sc-event" style="--ln:var(--event)">
+        <div class="wrap">
+          <span class="line-tag">Tuyến E · Event</span>
+          <h2>Event</h2>
+          <p>Meetup tự túc chi phí, host được xác minh. Mobile CTA nằm cuối flow để user đọc trust trước.</p>
+          <div class="ticket">
+            <div class="ticket-top"><span class="stamp-tag">済 host: Kizuna Team</span><h3 style="margin-top:10px">Picnic tiếng Việt: N2 + thuê nhà</h3><p class="sub mono">CN 19/7 · 10:00 · Yoyogi Park</p></div>
+            <div class="ticket-rip"></div>
+            <div class="ticket-bottom"><span class="yen">~¥3.000</span><strong style="color:var(--event)">CÒN 3 CHỖ</strong></div>
+          </div>
+          <div class="photo-card" style="height:190px">
+            <img src="https://images.unsplash.com/photo-1542640244-7e672d6cef4e?auto=format&fit=crop&w=800&q=82" alt="Japan summer">
+            <div class="caption"><h3>Album kỳ trước</h3><p>23 ảnh · 18 người tham gia</p></div>
+          </div>
+          <h3>Chi phí công khai</h3>
+          <table class="cost">
+            <tr><td>Xe đi chung</td><td>¥1.800</td></tr>
+            <tr><td>Phí picnic</td><td>¥900</td></tr>
+            <tr><td>Đồ ăn chung</td><td>~¥300</td></tr>
+            <tr class="total"><td>Tổng dự kiến</td><td><span class="yen">~¥3.000</span></td></tr>
+          </table>
+          <div class="trust-note"><span class="hanko"><span class="k">明</span><span class="r">MINH BẠCH</span></span><p>Không thu thêm khoản nào. Trả trực tiếp tại chỗ, Kizuna không thu hộ.</p></div>
+          <div class="gap"></div>
+          <button class="btn line" onclick="toast('Đã gửi đăng ký. Success screen sẽ mở share card.')">Đăng ký giữ chỗ</button>
+        </div>
+      </section>
+
+      <section class="screen" id="sc-tips" style="--ln:var(--tips)">
+        <div class="wrap">
+          <span class="line-tag">Tuyến T · Tips</span>
+          <h2>Tips sống ở Nhật</h2>
+          <p>Kiểu senpai kể lại: có con số, ngày cập nhật, checklist và CTA liên quan.</p>
+          <div class="tipcard">
+            <span class="stamp-tag">済 cập nhật</span>
+            <h3 style="margin-top:10px">Thuê nhà lần đầu: 7 khoản phí phải hỏi</h3>
+            <p>Shikikin, reikin, guarantor, cleaning fee và câu tiếng Nhật nên hỏi môi giới.</p>
+            <p class="sub mono">28/6/2026 · 6 phút đọc</p>
+          </div>
+          <div class="tipcard">
+            <span class="stamp-tag">済 kiểm chứng</span>
+            <h3 style="margin-top:10px">Nenkin: rời Nhật lấy lại bao nhiêu?</h3>
+            <p>Đóng 3 năm, lương ¥250K/tháng, nhận một lần khoảng <span class="yen">¥490.000</span>.</p>
+            <p class="sub mono">12/6/2026 · có công thức</p>
+          </div>
+          <button class="btn line" onclick="toast('Demo: mở search command')">Tìm thủ tục</button>
+        </div>
+      </section>
+
+      <section class="screen" id="sc-toi" style="--ln:var(--toi)">
+        <div class="wrap">
+          <span class="line-tag">Tuyến Ô · Tôi</span>
+          <h2>Tôi</h2>
+          <p>Profile là nơi lưu tiến độ, event và share card. Hỏi JLPT/vùng/visa sau khi user có lý do.</p>
+          <div class="result">
+            <span class="sub mono">Ngữ pháp N2 · tiến độ</span>
+            <div class="big">68<small>%</small></div>
+            <p>12/30 bài · streak 4 ngày</p>
+            <span class="hanko"><span class="k">良</span><span class="r">N2</span></span>
+          </div>
+          <div class="metric-grid">
+            <div class="metric"><span>Học</span><b>12</b><p class="sub">bài</p></div>
+            <div class="metric"><span>Event</span><b>2</b><p class="sub">sắp tới</p></div>
+            <div class="metric"><span>Share</span><b>5</b><p class="sub">click</p></div>
+          </div>
+          <button class="btn line" onclick="go('hoc'); startQuiz()">Tiếp tục học</button>
+          <div class="gap"></div>
+          <button class="btn sns" onclick="toast('Demo: OAuth Google/Facebook/LINE')">Đăng nhập để lưu tiến độ</button>
+          <div class="gap"></div>
+          <div class="trust-note"><span class="hanko"><span class="k">約</span><span class="r">CAM KẾT</span></span><p>Chỉ lấy tên + email. Không đọc bạn bè, không đăng hộ bạn.</p></div>
+        </div>
+      </section>
+    </div>
+
+    <div id="toast"></div>
+    <nav class="nav">
+      <button class="on" data-s="home" style="--ln:var(--home)" onclick="go('home')"><span class="st">0</span>Home</button>
+      <button data-s="hoc" style="--ln:var(--hoc)" onclick="go('hoc')"><span class="st">H</span>Học</button>
+      <button data-s="event" style="--ln:var(--event)" onclick="go('event')"><span class="st">E</span>Event</button>
+      <button data-s="tips" style="--ln:var(--tips)" onclick="go('tips')"><span class="st">T</span>Tips</button>
+      <button data-s="toi" style="--ln:var(--toi)" onclick="go('toi')"><span class="st">Ô</span>Tôi</button>
+    </nav>
+  </div>
+
+  <script>
+    const qs = [
+      { q: '彼は忙しい___、手伝ってくれた。', ops: ['にもかかわらず', 'おかげで', 'ばかりに', 'うちに'], a: 0, ex: 'にもかかわらず = mặc dù vậy. Bận nhưng vẫn giúp.' },
+      { q: '日本に来た___、日本語が全然わからなかった。', ops: ['ばかりに', '当時は', 'ところに', 'ばかりのころは'], a: 3, ex: '〜たばかりのころは = hồi mới làm gì. Tự nhiên nhất cho "hồi mới sang Nhật".' },
+      { q: 'この書類は月末___に提出してください。', ops: ['まで', 'までに', 'うちに', 'ながら'], a: 1, ex: 'までに = hạn chót cho một hành động một lần. Nộp giấy tờ dùng までに.' }
+    ];
+    let qi = 0, score = 0, ready = false;
+    function go(s) {
+      document.querySelectorAll('.screen').forEach(x => x.classList.remove('on'));
+      document.getElementById('sc-' + s).classList.add('on');
+      document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('on', b.dataset.s === s));
+      if (s === 'hoc' && !ready) renderIntro();
+    }
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2300);
+    }
+    function renderIntro() {
+      ready = true;
+      document.getElementById('quizBox').innerHTML =
+        '<span class="line-tag">Tuyến H · Học</span><h2>Luyện N2</h2><p>3 câu kiểu JLPT thật. Làm ngay, không cần tài khoản.</p><div class="qtrack"><i></i><i></i><i></i></div><button class="btn line" onclick="startQuiz()">Bắt đầu</button>';
+    }
+    function startQuiz() { qi = 0; score = 0; ready = true; renderQ(); }
+    function renderQ() {
+      const q = qs[qi];
+      const track = qs.map((_, i) => '<i class="' + (i < qi ? 'done' : '') + '"></i>').join('');
+      const ops = q.ops.map((o, i) => '<button class="opt" onclick="pick(' + i + ',this)"><span class="no">' + (i + 1) + '</span>' + o + '</button>').join('');
+      document.getElementById('quizBox').innerHTML = '<span class="line-tag">Câu ' + (qi + 1) + '/' + qs.length + '</span><div class="qtrack">' + track + '</div><div class="question">' + q.q + '</div>' + ops + '<div id="ex"></div>';
+    }
+    function pick(i, el) {
+      const q = qs[qi];
+      document.querySelectorAll('.opt').forEach((b, j) => { b.disabled = true; if (j === q.a) b.classList.add('ok'); });
+      if (i === q.a) score++; else el.classList.add('ng');
+      document.getElementById('ex').innerHTML = '<div class="explain"><strong>' + (i === q.a ? 'Đúng.' : 'Chưa đúng.') + '</strong> ' + q.ex + '</div><div class="gap"></div><button class="btn line" onclick="nextQ()">' + (qi < qs.length - 1 ? 'Câu tiếp' : 'Xem phiếu điểm') + '</button>';
+    }
+    function nextQ() { qi++; if (qi < qs.length) renderQ(); else result(); }
+    function result() {
+      const pct = Math.round(score / qs.length * 100);
+      document.getElementById('quizBox').innerHTML =
+        '<span class="line-tag">Phiếu điểm</span><div class="result"><span class="sub mono">Ngữ pháp N2 · đề thử</span><div class="big">' + pct + '<small>%</small></div><p>' + score + '/' + qs.length + ' câu đúng. Lưu tiến độ để nhận bài ôn tiếp theo.</p><span class="hanko"><span class="k">' + (pct >= 60 ? '良' : '努') + '</span><span class="r">KIZUNA</span></span></div><button class="btn line" onclick="go(\'toi\')">Lưu tiến độ</button><div class="gap"></div><button class="btn ghost" onclick="toast(\'Demo: tạo share card 1:1 và 9:16\')">Chia sẻ kết quả</button>';
+    }
+    renderIntro();
+  </script>
+</body>
+</html>

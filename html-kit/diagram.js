@@ -46,7 +46,7 @@
     const queue = nodes.filter(n => !inDeg[n.id]).map(n => ({ id: n.id, lv: 0 }));
     while (queue.length) {
       const { id, lv } = queue.shift();
-      if (lvl[id] >= lv) continue;
+      if (lvl[id] >= lv || lv >= nodes.length) continue; // lv cap: cycles must not loop forever
       lvl[id] = lv;
       edges.filter(e => e.from === id).forEach(e => queue.push({ id: e.to, lv: lv + 1 }));
     }

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo UI/UX — Kizuna (tên tạm)</title>
+<style>
+:root{
+  --ink:#1D2129; --ink-60:#5B6470; --ink-15:#DFE2E6; --ink-08:#EEF0F2;
+  --paper:#FFFFFF; --wash:#F6F6F3;
+  --hoc:#69A31E; --viec:#0084BF; --event:#E0701C; --tips:#E9B411; --toi:#8C6FC9;
+  --stamp:#CB3A21;
+  --marker:linear-gradient(transparent 55%, rgba(242,201,52,.55) 55%, rgba(242,201,52,.55) 92%, transparent 92%);
+  --mono:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#E9E7E1;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 12px;color:var(--ink)}
+.note{max-width:390px;font-size:13px;color:#6B6F76;margin-bottom:12px;text-align:center;line-height:1.5}
+.phone{width:390px;max-width:100%;height:780px;background:var(--paper);border-radius:26px;box-shadow:0 14px 44px rgba(29,33,41,.28);overflow:hidden;display:flex;flex-direction:column;position:relative}
+.screen{flex:1;overflow-y:auto;display:none}
+.screen.on{display:block}
+/* ── header: biển ga ── */
+.top{background:var(--paper);border-bottom:2.5px solid var(--ink);padding:12px 16px 10px;display:flex;align-items:baseline;gap:10px;position:sticky;top:0;z-index:5;cursor:pointer}
+.top .logo{font-weight:900;font-size:20px;letter-spacing:-.5px}
+.top .jp{font-size:11px;color:var(--ink-60);letter-spacing:2px}
+.top .mini-stamp{margin-left:auto;font-size:10px;font-weight:800;color:var(--stamp);border:2px solid var(--stamp);border-radius:4px;padding:1px 5px;transform:rotate(-4deg);letter-spacing:1px}
+/* ── nav: ga tàu ── */
+.nav{display:flex;border-top:2.5px solid var(--ink);background:var(--paper)}
+.nav button{flex:1;padding:8px 0 10px;border:none;background:none;font-size:10.5px;color:var(--ink-60);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit;font-weight:600;letter-spacing:.3px}
+.st{width:27px;height:27px;border-radius:50%;border:3.5px solid var(--ln,var(--ink-15));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12.5px;color:var(--ink);background:var(--paper);font-family:var(--mono)}
+.nav button.on{color:var(--ink);font-weight:800}
+.nav button.on .st{background:var(--ln);color:#fff;border-color:var(--ln)}
+/* ── line signage per screen ── */
+.line-head{padding:16px 16px 0}
+.line-tag{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:800;letter-spacing:2.5px;color:var(--ink-60)}
+.line-tag .dot{width:12px;height:12px;border-radius:50%;background:var(--ln)}
+.line-head h2{font-size:24px;font-weight:900;letter-spacing:-.4px;margin-top:6px;border-bottom:4px solid var(--ln);display:inline-block;padding-bottom:4px}
+/* ── shared ── */
+.wrap{padding:14px 16px 20px}
+h3{font-size:16.5px;font-weight:800}
+p{font-size:15.5px;line-height:1.65}
+.sub{font-size:13.5px;color:var(--ink-60);line-height:1.6}
+.yen{font-family:var(--mono);font-weight:700;background-image:var(--marker);padding:0 3px;white-space:nowrap}
+.mono{font-family:var(--mono)}
+.btn{display:block;width:100%;padding:14px;border:none;border-radius:8px;background:var(--ink);color:#fff;font-size:15.5px;font-weight:800;cursor:pointer;text-align:center;font-family:inherit;letter-spacing:.2px}
+.btn:active{transform:translateY(1px)}
+.btn.line{background:var(--ln)}
+.btn.ghost{background:var(--paper);color:var(--ink);border:2px solid var(--ink)}
+.btn.quiet{background:none;border:none;color:var(--ink-60);font-weight:600}
+.btn.sns{background:var(--paper);border:1.5px solid var(--ink-15);color:var(--ink);font-weight:700}
+.hr{height:1.5px;background:var(--ink-08);margin:16px 0}
+.back{background:none;border:none;color:var(--ink);font-size:14px;font-weight:800;cursor:pointer;padding:14px 16px 0;font-family:inherit}
+/* ── hanko stamp ── */
+.hanko{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:52px;height:52px;border:3px solid var(--stamp);border-radius:50%;color:var(--stamp);transform:rotate(-8deg);font-weight:900;line-height:1.1;flex:none}
+.hanko .k{font-size:17px}
+.hanko .r{font-size:7px;letter-spacing:.5px}
+.stamp-tag{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:800;color:var(--stamp);border:2px solid var(--stamp);border-radius:5px;padding:2px 8px;transform:rotate(-2deg);background:rgba(203,58,33,.04)}
+.trust-note{display:flex;gap:10px;align-items:flex-start;border:1.5px dashed var(--ink-15);border-radius:8px;padding:11px 12px;font-size:13.5px;line-height:1.55;color:var(--ink)}
+.trust-note .hanko{width:40px;height:40px;border-width:2.5px}
+.trust-note .hanko .k{font-size:13px}
+.trust-note .hanko .r{font-size:5.5px}
+/* ── bảng tuyến (home board) ── */
+.board{border:2.5px solid var(--ink);border-radius:12px;overflow:hidden;margin-top:14px}
+.board .row{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1.5px solid var(--ink-08);cursor:pointer;background:var(--paper)}
+.board .row:last-child{border-bottom:none}
+.board .row:active{background:var(--wash)}
+.board .st{flex:none}
+.board .row b{font-size:15.5px;display:block}
+.board .row span{font-size:12.5px;color:var(--ink-60)}
+.board .go{margin-left:auto;font-weight:900;color:var(--ink-15);font-size:18px}
+/* ── vé (ticket card) ── */
+.ticket{border:2px solid var(--ink);border-radius:10px;margin:12px 0;background:var(--paper);position:relative;overflow:hidden;cursor:pointer}
+.ticket .tk-top{padding:12px 14px 10px;border-left:6px solid var(--ln)}
+.ticket .tk-rip{border-top:2px dashed var(--ink-15);margin:0 10px;position:relative}
+.ticket .tk-rip::before,.ticket .tk-rip::after{content:"";position:absolute;top:-7px;width:14px;height:14px;border-radius:50%;background:var(--paper);border:2px solid var(--ink)}
+.ticket .tk-rip::before{left:-19px;clip-path:inset(0 0 0 50%)}
+.ticket .tk-rip::after{right:-19px;clip-path:inset(0 50% 0 0)}
+.ticket .tk-bot{padding:9px 14px 11px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ev-meta{font-size:13px;color:var(--ink-60);font-family:var(--mono);margin-top:3px}
+.slots{font-size:12px;font-weight:800;color:var(--event)}
+/* ── quiz ── */
+.qtrack{display:flex;gap:5px;margin:14px 0 4px}
+.qtrack i{flex:1;height:7px;border-radius:99px;background:var(--ink-08)}
+.qtrack i.done{background:var(--hoc)}
+.opt{display:block;width:100%;text-align:left;padding:13px 14px;margin:9px 0;border:2px solid var(--ink-15);border-radius:9px;background:var(--paper);font-size:16px;cursor:pointer;font-family:inherit;line-height:1.5;font-weight:600}
+.opt .no{font-family:var(--mono);color:var(--ink-60);font-weight:700;margin-right:8px}
+.opt.ok{border-color:var(--hoc);background:#F4FAE9}
+.opt.ok .no{color:var(--hoc)}
+.opt.ng{border-color:var(--stamp);background:#FDF3F1}
+.explain{border-left:4px solid var(--hoc);background:var(--wash);border-radius:0 8px 8px 0;padding:12px 14px;font-size:14px;line-height:1.65;margin-top:12px}
+/* ── kết quả: phiếu điểm ── */
+.result{border:2.5px solid var(--ink);border-radius:12px;padding:18px 16px 16px;margin:14px 0;position:relative;background:var(--paper)}
+.result .eyebrow{font-size:10.5px;letter-spacing:3px;font-weight:800;color:var(--ink-60)}
+.result .big{font-family:var(--mono);font-size:56px;font-weight:700;letter-spacing:-2px;line-height:1.05;margin-top:2px}
+.result .big small{font-size:22px;color:var(--ink-60);letter-spacing:0}
+.result .hanko{position:absolute;top:14px;right:14px;animation:stampIn .3s ease-out}
+@keyframes stampIn{0%{transform:rotate(-8deg) scale(1.6);opacity:0}70%{transform:rotate(-8deg) scale(.95);opacity:1}100%{transform:rotate(-8deg) scale(1)}}
+@media (prefers-reduced-motion: reduce){.result .hanko{animation:none}}
+/* ── việc ── */
+.jobcard{border:2px solid var(--ink);border-radius:10px;margin:12px 0;padding:13px 14px;background:var(--paper);border-left:6px solid var(--viec);cursor:pointer}
+.jobrow{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:5px}
+.tagline{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.tag{font-size:11.5px;font-weight:700;border:1.5px solid var(--ink-15);border-radius:5px;padding:2px 8px;color:var(--ink-60)}
+.tag.hot{border-color:var(--viec);color:var(--viec)}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.filters .tag{cursor:pointer;background:var(--wash)}
+/* CV lead */
+.cvlead{border:2.5px solid var(--ink);border-radius:12px;padding:15px 14px;margin-top:12px;cursor:pointer;background:var(--paper);display:flex;gap:12px;align-items:center}
+.cvlead:active{background:var(--wash)}
+/* form-style numbered issues */
+.issue{border:1.5px solid var(--ink-15);border-radius:9px;padding:12px 14px;margin:9px 0}
+.issue b .no{font-family:var(--mono);color:var(--stamp);margin-right:6px}
+/* ── cost table: hóa đơn ── */
+table.cost{width:100%;border-collapse:collapse;font-size:15px;margin:10px 0}
+table.cost td{padding:8px 2px;border-bottom:1.5px dashed var(--ink-15)}
+table.cost td:last-child{text-align:right;font-family:var(--mono);font-weight:700}
+table.cost tr.total td{font-weight:900;border-bottom:none;font-size:16px}
+/* ── tips ── */
+.tipcard{border:2px solid var(--ink);border-left:6px solid var(--tips);border-radius:10px;padding:13px 14px;margin:12px 0;background:var(--paper)}
+.tip-date{font-size:11.5px;color:var(--ink-60);font-family:var(--mono);margin-top:8px}
+/* ── misc ── */
+#toast{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13.5px;padding:10px 18px;border-radius:8px;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;z-index:9;max-width:92%}
+#toast.show{opacity:1}
+.empty{text-align:center;padding:26px 20px;color:var(--ink-60);font-size:14.5px;line-height:1.65}
+.hero{padding:26px 16px 8px}
+.hero h1{font-size:31px;font-weight:900;letter-spacing:-.8px;line-height:1.25}
+.hero .hl{background-image:var(--marker);padding:0 2px}
+.hero .sub{margin-top:8px}
+a{color:var(--ink);font-weight:700}
+</style>
+</head>
+<body>
+
+<p class="note"><strong>Demo bấm được</strong> · "Kizuna" là tên tạm. Ngôn ngữ thị giác: <em>mỗi mảng một tuyến tàu</em> (nav đáy = biểu tượng ga) · con dấu 済 = đã kiểm duyệt · tiền luôn được tô dạ quang.</p>
+
+<div class="phone">
+  <div class="top" onclick="go('home')"><span class="logo">Kizuna</span><span class="jp">キズナ</span><span class="mini-stamp">検査済</span></div>
+
+  <!-- ══ HOME: bảng tuyến ══ -->
+  <div class="screen on" id="sc-home">
+    <div class="hero">
+      <h1>Sống ở Nhật,<br>có <span class="hl">hội mình</span> chỉ đường.</h1>
+      <p class="sub">Không phải group Facebook trôi tin. Mọi thứ ở đây có kiểm duyệt, có con số, có người thật.</p>
+    </div>
+    <div class="wrap">
+      <div class="board">
+        <div class="row" style="--ln:var(--hoc)" onclick="go('hoc',null,event)">
+          <span class="st">H</span><div><b>Luyện N2 miễn phí</b><span>quiz 3 phút · không cần tài khoản</span></div><span class="go">→</span>
+        </div>
+        <div class="row" style="--ln:var(--viec)" onclick="go('viec',null,event)">
+          <span class="st">V</span><div><b>Việc làm đã kiểm duyệt</b><span>lương ghi rõ · miễn phí với bạn</span></div><span class="go">→</span>
+        </div>
+        <div class="row" style="--ln:var(--event)" onclick="go('event',null,event)">
+          <span class="st">E</span><div><b>Event cuối tuần này</b><span>cắm trại Kawaguchi · còn 3 chỗ</span></div><span class="go">→</span>
+        </div>
+        <div class="row" style="--ln:var(--tips)" onclick="go('tips',null,event)">
+          <span class="st">T</span><div><b>Tra thủ tục 5 phút</b><span>nenkin · đổi bằng lái · thuê nhà</span></div><span class="go">→</span>
+        </div>
+      </div>
+      <div style="height:14px"></div>
+      <div class="trust-note">
+        <span class="hanko"><span class="k">済</span><span class="r">KIZUNA</span></span>
+        <span>Dấu <strong>済</strong> nghĩa là đã duyệt tay: công ty xác minh mã pháp nhân, event công khai chi phí, <strong>không bao giờ</strong> thu phí người tìm việc.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ HỌC (tuyến H) ══ -->
+  <div class="screen" id="sc-hoc" style="--ln:var(--hoc)">
+    <div class="wrap" id="quiz-box"></div>
+  </div>
+
+  <!-- ══ VIỆC (tuyến V) ══ -->
+  <div class="screen" id="sc-viec" style="--ln:var(--viec)">
+    <div class="line-head"><span class="line-tag"><span class="dot"></span>TUYẾN V · VIỆC LÀM</span><br><h2>Việc làm</h2></div>
+    <div class="wrap">
+      <div class="cvlead" onclick="go('cv')">
+        <span class="hanko" style="border-color:var(--viec);color:var(--viec)"><span class="k">診</span><span class="r">30 GIÂY</span></span>
+        <div><b style="font-size:16px">CV của bạn có đang bị máy lọc loại?</b>
+        <p class="sub" style="margin-top:3px">Up CV — biết ngay yếu chỗ nào. Không cần tài khoản.</p></div>
+      </div>
+      <div class="filters">
+        <span class="tag" onclick="toast('Demo: lọc theo mức tiếng Nhật yêu cầu')">Tiếng Nhật N3+ ▾</span>
+        <span class="tag" onclick="toast('Demo: lọc theo vùng')">Kantō ▾</span>
+        <span class="tag" onclick="toast('Demo: chỉ hiện việc hỗ trợ đổi visa')">Hỗ trợ visa ▾</span>
+      </div>
+      <div class="jobcard" onclick="go('jobdetail')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><h3>Kỹ sư vận hành máy CNC</h3><span class="stamp-tag">済 đối tác</span></div>
+        <p class="sub">Seiko Kikai KK · Saitama</p>
+        <div class="jobrow"><span class="yen">¥260K–320K/tháng</span><span class="sub mono" style="font-size:11.5px">đăng 3/7 · hạn 31/7</span></div>
+        <div class="tagline"><span class="tag hot">N3 trở lên</span><span class="tag">Hỗ trợ đổi visa</span><span class="tag">Có ký túc xá</span></div>
+      </div>
+      <div class="jobcard">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><h3>Chế biến thực phẩm (Tokutei)</h3><span class="stamp-tag" style="transform:rotate(-1deg)">済 xác minh</span></div>
+        <p class="sub">Marufuku Foods · Chiba</p>
+        <div class="jobrow"><span class="yen">¥215K–240K/tháng</span><span class="sub mono" style="font-size:11.5px">đăng 1/7 · hạn 15/8</span></div>
+        <div class="tagline"><span class="tag hot">N4 trở lên</span><span class="tag">Tăng ca có phụ cấp</span></div>
+      </div>
+      <div class="jobcard">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px"><h3>IT helpdesk song ngữ Việt–Nhật</h3><span class="stamp-tag" style="transform:rotate(-3deg)">済 xác minh</span></div>
+        <p class="sub">TechBridge GK · Tokyo · remote 2 ngày/tuần</p>
+        <div class="jobrow"><span class="yen">¥350K–420K/tháng</span><span class="sub mono" style="font-size:11.5px">đăng 28/6 · hạn 20/7</span></div>
+        <div class="tagline"><span class="tag hot">N2 trở lên</span><span class="tag">Visa kỹ sư</span></div>
+      </div>
+      <p class="empty">Chưa thấy việc hợp? Khai trình độ ở ga <b>Ô · Tôi</b> —<br>có việc khớp N-level + vùng, báo bạn trước tiên.</p>
+    </div>
+  </div>
+
+  <!-- ══ CHẨN ĐOÁN CV ══ -->
+  <div class="screen" id="sc-cv" style="--ln:var(--viec)">
+    <button class="back" onclick="go('viec')">← Việc làm</button>
+    <div class="wrap" id="cv-box">
+      <span class="line-tag"><span class="dot"></span>TUYẾN V · CHẨN ĐOÁN CV</span>
+      <h2 style="font-size:23px;font-weight:900;margin-top:6px">Máy đọc CV kiểu Nhật</h2>
+      <p class="sub" style="margin:6px 0 14px">Chấm theo đúng rubric nhà tuyển dụng Nhật dùng để lọc hồ sơ — chỉ ra đúng chỗ khiến bạn rớt từ vòng giấy.</p>
+      <div class="ticket" onclick="cvResult()">
+        <div class="tk-top" style="text-align:center;padding:24px 14px 18px;border-left:none">
+          <span style="font-family:var(--mono);font-size:13px;color:var(--ink-60)">［PDF / ảnh chụp］</span>
+          <p style="font-weight:900;font-size:17px;margin-top:6px">Chạm để up CV</p>
+          <p class="sub" style="margin-top:3px">chưa có CV? trả lời 5 câu cũng chẩn đoán được</p>
+        </div>
+      </div>
+      <div class="trust-note" style="margin-top:12px">
+        <span class="hanko" style="width:40px;height:40px;border-width:2.5px"><span class="k" style="font-size:13px">約</span><span class="r" style="font-size:5.5px">CAM KẾT</span></span>
+        <span>Kizuna <strong>không lưu CV của bạn</strong> — chẩn đoán xong, không đăng nhập là file bị xóa ngay.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ JOB DETAIL ══ -->
+  <div class="screen" id="sc-jobdetail" style="--ln:var(--viec)">
+    <button class="back" onclick="go('viec')">← Việc làm</button>
+    <div class="wrap">
+      <span class="line-tag"><span class="dot"></span>TUYẾN V · TIN Đà DUYỆT</span>
+      <h2 style="font-size:23px;font-weight:900;margin-top:6px">Kỹ sư vận hành máy CNC</h2>
+      <p class="sub" style="margin-top:4px">Seiko Kikai KK · Saitama · <span class="mono">đăng 3/7 · hạn 31/7</span></p>
+      <div style="margin:12px 0;display:flex;gap:8px;align-items:center">
+        <span class="stamp-tag">済 đối tác dài hạn</span>
+        <a href="#" onclick="toast('Đã xác minh 法人番号 · 4 người Việt đang làm · 0 khiếu nại');return false" style="font-size:12.5px">vì sao tin được?</a>
+      </div>
+      <div class="hr"></div>
+      <h3>Điều kiện — ghi rõ như hóa đơn</h3>
+      <table class="cost">
+        <tr><td>Lương cơ bản</td><td>¥260K–320K</td></tr>
+        <tr><td>Tăng ca (TB 20h/tháng)</td><td>+¥40K–55K</td></tr>
+        <tr><td>Ký túc xá (trừ lương)</td><td>−¥20K</td></tr>
+        <tr><td>Tiếng Nhật yêu cầu</td><td style="font-family:inherit;font-weight:700">N3 trở lên</td></tr>
+        <tr class="total"><td>Thực nhận ước tính</td><td><span class="yen">~¥255K–330K</span></td></tr>
+      </table>
+      <div class="trust-note">
+        <span class="hanko" style="width:40px;height:40px;border-width:2.5px"><span class="k" style="font-size:13px">無</span><span class="r" style="font-size:5.5px">PHÍ = 0</span></span>
+        <span>Bạn <strong>không trả phí nào</strong> để ứng tuyển. Ai đòi phí nhân danh Kizuna → bấm báo cáo, xử lý trong 48h.</span>
+      </div>
+      <div style="height:14px"></div>
+      <button class="btn line" onclick="toast('Demo: DN chỉ thấy profile sau khi bạn xác nhận gửi')">Ứng tuyển bằng profile Kizuna</button>
+      <p class="sub" style="text-align:center;margin-top:8px">DN chỉ thấy profile khi bạn bấm ứng tuyển — không bao giờ tự động.</p>
+    </div>
+  </div>
+
+  <!-- ══ EVENT (tuyến E) ══ -->
+  <div class="screen" id="sc-event" style="--ln:var(--event)">
+    <div class="line-head"><span class="line-tag"><span class="dot"></span>TUYẾN E · EVENT</span><br><h2>Event</h2></div>
+    <div class="wrap">
+      <p class="sub">Meetup tự túc chi phí — host được đào tạo, tiền bạc công khai như vé tàu.</p>
+      <div class="ticket" onclick="go('evdetail')">
+        <div class="tk-top">
+          <h3>Cắm trại hồ Kawaguchi <span class="mono">#5</span></h3>
+          <p class="ev-meta">CN 19/7 · 9:00 → 17:00 · Yamanashi</p>
+        </div>
+        <div class="tk-rip"></div>
+        <div class="tk-bot">
+          <span class="yen">tự túc ~¥3.000</span>
+          <span class="slots">CÒN 3 CHỖ</span>
+        </div>
+      </div>
+      <div class="ticket">
+        <div class="tk-top">
+          <h3>BBQ sông Tama <span class="mono">#3</span></h3>
+          <p class="ev-meta">T7 1/8 · 11:00 → 16:00 · Tokyo</p>
+        </div>
+        <div class="tk-rip"></div>
+        <div class="tk-bot">
+          <span class="yen">tự túc ~¥2.000</span>
+          <span class="sub mono" style="font-size:12px">còn 12 chỗ</span>
+        </div>
+      </div>
+      <p class="empty">Tuyến trượt tuyết ❄ mở lịch tháng 11.<br><a href="#" onclick="toast('Đã đăng ký nhận tin! (demo)');return false">Báo tôi khi có lịch →</a></p>
+    </div>
+  </div>
+
+  <!-- ══ EVENT DETAIL ══ -->
+  <div class="screen" id="sc-evdetail" style="--ln:var(--event)">
+    <button class="back" onclick="go('event')">← Event</button>
+    <div class="wrap">
+      <span class="line-tag"><span class="dot"></span>TUYẾN E · VÉ SỰ KIỆN</span>
+      <h2 style="font-size:23px;font-weight:900;margin-top:6px">Cắm trại hồ Kawaguchi #5</h2>
+      <p class="ev-meta">CN 19/7 · 9:00 → 17:00 · Yamanashi · xe chung từ Shinjuku</p>
+      <div style="height:10px"></div>
+      <div style="border:2px dashed var(--ink-15);border-radius:9px;padding:22px;text-align:center;color:var(--ink-60);font-size:13px">［album kỳ #4 — 23 ảnh từ Instagram］</div>
+      <div style="margin:12px 0;display:flex;gap:8px;align-items:center">
+        <span class="stamp-tag">済 host: Kizuna Team</span>
+        <a href="#" onclick="toast('Cấp cao nhất: ≥10 event · 0 khiếu nại · SOP an toàn');return false" style="font-size:12.5px">vì sao tin được?</a>
+      </div>
+      <div class="hr"></div>
+      <h3>Chi phí — công khai từng khoản</h3>
+      <table class="cost">
+        <tr><td>Xe đi chung (chia đầu người)</td><td>¥1.800</td></tr>
+        <tr><td>Phí khu cắm trại</td><td>¥900</td></tr>
+        <tr><td>Đồ ăn chung (tự chọn góp)</td><td>~¥300</td></tr>
+        <tr class="total"><td>Tổng dự kiến</td><td><span class="yen">~¥3.000</span></td></tr>
+      </table>
+      <div class="trust-note">
+        <span class="hanko" style="width:40px;height:40px;border-width:2.5px"><span class="k" style="font-size:13px">明</span><span class="r" style="font-size:5.5px">MINH BẠCH</span></span>
+        <span>Không thu thêm khoản nào. Trả trực tiếp tại chỗ — Kizuna <strong>không thu hộ</strong>.</span>
+      </div>
+      <div style="height:14px"></div>
+      <button class="btn line" onclick="toast('Đã gửi đăng ký — host duyệt trong 24h (demo)')">Đăng ký — còn 3 chỗ</button>
+      <p class="sub" style="text-align:center;margin-top:8px">Host duyệt trong 24h · hủy miễn phí trước 3 ngày</p>
+    </div>
+  </div>
+
+  <!-- ══ TIPS (tuyến T) ══ -->
+  <div class="screen" id="sc-tips" style="--ln:var(--tips)">
+    <div class="line-head"><span class="line-tag"><span class="dot"></span>TUYẾN T · TIPS</span><br><h2>Thủ tục &amp; mẹo sống</h2></div>
+    <div class="wrap">
+      <p class="sub">Kiểu senpai kể lại: có con số, có ngày cập nhật, không lý thuyết suông.</p>
+      <div class="tipcard">
+        <h3>Đổi bằng lái Việt → Nhật: 4 bước</h3>
+        <p style="font-size:14.5px;margin-top:8px">Tổng chi phí chuẩn: thi <span class="yen">¥2.550</span> + cấp bằng <span class="yen">¥2.050</span> + dịch JAF <span class="yen">¥4.000</span> ≈ <span class="yen">¥8.600</span></p>
+        <p class="tip-date">✓ cập nhật 28/6/2026 · kiểm chứng tại Fuchū</p>
+      </div>
+      <div class="tipcard">
+        <h3>Nenkin: rời Nhật lấy lại bao nhiêu?</h3>
+        <p style="font-size:14.5px;margin-top:8px">Đóng 3 năm, lương ¥250K/tháng → nhận một lần ≈ <span class="yen">¥490.000</span> (trừ 20% thuế — có cách xin hoàn).</p>
+        <p class="tip-date">✓ cập nhật 12/6/2026</p>
+      </div>
+      <p class="empty">Sắp có máy tính nenkin tự động —<br>nhập số năm đóng, ra ngay số tiền của bạn.</p>
+    </div>
+  </div>
+
+  <!-- ══ TÔI (tuyến Ô) ══ -->
+  <div class="screen" id="sc-toi" style="--ln:var(--toi)">
+    <div class="line-head"><span class="line-tag"><span class="dot"></span>TUYẾN Ô · CỦA TÔI</span><br><h2>Tôi</h2></div>
+    <div class="wrap">
+      <p class="sub" style="margin-bottom:14px">Bạn đang đi vé ẩn danh — quiz, event xem thoải mái. Đăng nhập để lưu tiến độ và giữ chỗ.</p>
+      <button class="btn sns" onclick="login()">Tiếp tục với Google</button><div style="height:8px"></div>
+      <button class="btn sns" onclick="login()">Tiếp tục với Facebook</button><div style="height:8px"></div>
+      <button class="btn sns" onclick="login()">Tiếp tục với LINE</button>
+      <div style="height:14px"></div>
+      <div class="trust-note">
+        <span class="hanko" style="width:40px;height:40px;border-width:2.5px"><span class="k" style="font-size:13px">約</span><span class="r" style="font-size:5.5px">CAM KẾT</span></span>
+        <span>Chỉ lấy tên + email. Không đọc bạn bè, không đăng hộ bạn, không bán dữ liệu.</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <div class="nav">
+    <button data-s="hoc" style="--ln:var(--hoc)" onclick="go('hoc',this)"><span class="st">H</span>Học</button>
+    <button data-s="viec" style="--ln:var(--viec)" onclick="go('viec',this)"><span class="st">V</span>Việc</button>
+    <button data-s="event" style="--ln:var(--event)" onclick="go('event',this)"><span class="st">E</span>Event</button>
+    <button data-s="tips" style="--ln:var(--tips)" onclick="go('tips',this)"><span class="st">T</span>Tips</button>
+    <button data-s="toi" style="--ln:var(--toi)" onclick="go('toi',this)"><span class="st">Ô</span>Tôi</button>
+  </div>
+</div>
+
+<script>
+function go(s, btn, ev){
+  if(ev) ev.stopPropagation();
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));
+  document.getElementById('sc-'+s).classList.add('on');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('on'));
+  var navKey = s==='evdetail' ? 'event' : ((s==='jobdetail'||s==='cv') ? 'viec' : s);
+  var nb = document.querySelector('.nav button[data-s="'+navKey+'"]');
+  if(nb) nb.classList.add('on');
+  if(s==='hoc' && !quizStarted) renderIntro();
+}
+function toast(msg){
+  var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2200);
+}
+function login(){ toast('Demo: OAuth mở popup của Google/Meta/LINE'); }
+
+/* ── quiz tuyến H ── */
+var QS=[
+ {q:'「彼は忙しい___、手伝ってくれた。」',ops:['にもかかわらず','おかげで','ばかりに','うちに'],a:0,
+  ex:'にもかかわらず = "mặc dù ~ nhưng vẫn". Bận <em>mặc dù vậy</em> vẫn giúp — đúng nghĩa tương phản. おかげで là "nhờ có" (kết quả tốt), không hợp.'},
+ {q:'「日本に来た___、日本語が全然わからなかった。」',ops:['ばかりに','当時は','ところに','ばかりのころは'],a:3,
+  ex:'〜たばかりのころは = "hồi mới ~". Vừa đến Nhật thì chưa biết tiếng — tự nhiên nhất. ばかりに mang nghĩa "chỉ vì ~ (nên gặp chuyện xấu)", khác hẳn.'},
+ {q:'「この書類は月末___に提出してください。」',ops:['まで','までに','うちに','ながら'],a:1,
+  ex:'までに = hạn chót ("trước ngày X phải xong") — nộp giấy tờ là hành động 1 lần nên dùng までに. まで là "liên tục cho đến khi".'}
+];
+var quizStarted=false, qi=0, score=0;
+var NO=['①','②','③','④'];
+function renderIntro(){
+  document.getElementById('quiz-box').innerHTML =
+   '<span class="line-tag"><span class="dot"></span>TUYẾN H · HỌC</span>'+
+   '<h2 style="font-size:24px;font-weight:900;margin-top:6px;border-bottom:4px solid var(--hoc);display:inline-block;padding-bottom:4px">Luyện ngữ pháp N2</h2>'+
+   '<p class="sub" style="margin:10px 0 4px">3 câu kiểu đề JLPT thật. Làm ngay — không cần tài khoản.</p>'+
+   '<p style="font-size:14.5px;margin:10px 0 16px">📅 Kỳ thi tới: <b class="mono">CN 6/12/2026</b> — còn <span class="yen">22 tuần</span>. Hạn đăng ký dự kiến giữa tháng 9.</p>'+
+   '<button class="btn line" onclick="startQuiz()">Bắt đầu →</button>';
+}
+function startQuiz(){ quizStarted=true; qi=0; score=0; renderQ(); }
+function renderQ(){
+  var q=QS[qi];
+  var h='<span class="line-tag"><span class="dot"></span>TUYẾN H · CÂU '+(qi+1)+'/'+QS.length+'</span>';
+  h+='<div class="qtrack">'; for(var i=0;i<QS.length;i++) h+='<i class="'+(i<qi?'done':'')+'"></i>'; h+='</div>';
+  h+='<h3 style="margin:12px 0 4px;font-size:19px;line-height:1.6;font-weight:800">'+q.q+'</h3>';
+  q.ops.forEach(function(o,i){ h+='<button class="opt" onclick="pick('+i+',this)"><span class="no">'+NO[i]+'</span>'+o+'</button>'; });
+  h+='<div id="ex"></div>';
+  document.getElementById('quiz-box').innerHTML=h;
+}
+function pick(i,el){
+  var q=QS[qi];
+  document.querySelectorAll('.opt').forEach(function(b,j){
+    b.disabled=true;
+    if(j===q.a) b.classList.add('ok');
+  });
+  if(i===q.a){ score++; } else { el.classList.add('ng'); }
+  document.getElementById('ex').innerHTML =
+    '<div class="explain">'+(i===q.a?'<b style="color:var(--hoc)">Chuẩn.</b> ':'<b style="color:var(--stamp)">Chưa đúng.</b> ')+q.ex+'</div>'+
+    '<div style="height:12px"></div><button class="btn line" onclick="next()">'+(qi<QS.length-1?'Câu tiếp →':'Xem phiếu điểm')+'</button>';
+}
+function next(){ qi++; if(qi<QS.length) renderQ(); else renderResult(); }
+function renderResult(){
+  var pct=Math.round(score/QS.length*100);
+  var msg = pct===100?'Trình này thi được rồi đó.':(pct>=60?'Ổn — luyện thêm chút nữa là chắc suất.':'Không sao. Sai ở đây rẻ hơn sai trong phòng thi.');
+  document.getElementById('quiz-box').innerHTML =
+   '<span class="line-tag"><span class="dot"></span>TUYẾN H · PHIẾU ĐIỂM</span>'+
+   '<div class="result"><span class="eyebrow">NGỮ PHÁP N2 · ĐỀ THỬ</span>'+
+   '<div class="big">'+pct+'<small>%</small></div>'+
+   '<p class="sub">'+score+'/'+QS.length+' câu đúng · '+msg+'</p>'+
+   '<span class="hanko"><span class="k">'+(pct>=60?'良':'努')+'</span><span class="r">KIZUNA</span></span></div>'+
+   '<button class="btn" onclick="toast(\'Demo: mở share sheet với phiếu điểm\')">Khoe phiếu điểm</button><div style="height:8px"></div>'+
+   '<button class="btn ghost" onclick="go(\'toi\')">Lưu tiến độ — đăng nhập 1 chạm →</button>'+
+   '<p class="sub" style="text-align:center;margin-top:9px">Đăng nhập thì được gì? Lưu tiến độ + lộ trình N2 theo trình độ của bạn. Hết.</p>'+
+   '<button class="btn quiet" onclick="startQuiz()">Làm lại</button>';
+}
+
+/* ── chẩn đoán CV ── */
+function cvResult(){
+  document.getElementById('cv-box').innerHTML =
+   '<span class="line-tag"><span class="dot"></span>TUYẾN V · KẾT QUẢ CHẨN ĐOÁN</span>'+
+   '<div class="result"><span class="eyebrow">CV CỦA BẠN · RUBRIC KIỂU NHẬT</span>'+
+   '<div class="big">68<small>/100</small></div>'+
+   '<p class="sub">Máy lọc của DN Nhật có thể loại hồ sơ này — vì 3 chỗ dưới đây.</p>'+
+   '<span class="hanko"><span class="k">診</span><span class="r">KIZUNA</span></span></div>'+
+   '<div class="issue"><b><span class="no">①</span>Không ghi mục 資格 (bằng cấp)</b><p class="sub" style="margin-top:3px">DN lọc hồ sơ bằng máy theo mục này. Có JLPT N3 + bằng lái? Ghi vào, đúng format ngày cấp.</p></div>'+
+   '<div class="issue"><b><span class="no">②</span>Khoảng trống 8 tháng không giải thích</b><p class="sub" style="margin-top:3px">Người đọc sẽ đoán xấu. Một dòng "về nước chăm gia đình" là đủ đổi ấn tượng.</p></div>'+
+   '<div class="issue"><b><span class="no">③</span>志望動機 viết chung chung</b><p class="sub" style="margin-top:3px">"Muốn thử thách bản thân" ai cũng viết. Nêu 1 chi tiết về đúng công ty đó — mẫu có sẵn khi bạn lưu kết quả.</p></div>'+
+   '<div style="height:12px"></div>'+
+   '<button class="btn line" onclick="go(\'toi\')">Lưu kết quả + nhận mẫu CV chuẩn Nhật →</button><div style="height:8px"></div>'+
+   '<button class="btn ghost" onclick="go(\'viec\')">3 việc khớp N3 + nghề của bạn →</button>'+
+   '<button class="btn quiet" onclick="toast(\'Demo: share card phiếu 68/100\')">Khoe kết quả</button>';
+}
+</script>
+</body>
+</html>
