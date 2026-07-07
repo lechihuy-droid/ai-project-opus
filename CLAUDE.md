@@ -1,27 +1,25 @@
 # AI Workspace — Global Rules
 
-Parent-level context for all projects under `C:/Users/HUY/workspace/ai-workspace/`.
+Parent-level context for all projects under `C:/Users/HUY/workspace/ai-project-opus/`.
 
 ---
 
-## SDD — Spec-Driven Development (MANDATORY)
+## SDD — Spec-Driven Development (chỉ cho project lớn)
 
-**Rule:** Do not code any new feature without an approved Requirements Doc (RD).
+**Khi nào dùng full SDD (RD → SD → BD, mỗi bước chờ APPROVE):** project mới từ đầu, feature lớn nhiều tuần, hoặc thay đổi kiến trúc. Task thông thường KHÔNG cần RD/SD — chỉ cần plan/BD ngắn rồi giao Codex (xem Workflow Orchestration bên dưới).
 
-**Toolkit:** `C:/Users/HUY/workspace/ai-workspace/SDD-toolkit/`
+**Toolkit:** `C:/Users/HUY/workspace/ai-project-opus/SDD-toolkit/`
 - Process: `SDD-toolkit/workflow/sdd-process.md`
 - Checklist: `SDD-toolkit/workflow/checklist.md`
 - Templates: `SDD-toolkit/templates/` (RD, SD, BD, BACKLOG)
 - Bootstrap new project: `python SDD-toolkit/scripts/scaffold.py`
 
-**Phase gates:**
+**Phase gates (khi dùng full SDD):**
 1. **RD** (Requirements Doc) — usage-first, functional reqs, open questions → APPROVE before design
 2. **SD** (System Design) — architecture, interface contracts → APPROVE before build
 3. **BD** (Build Plan) — step-by-step, test plan → APPROVE before code
 4. **Implementation** — follow BD, no scope creep
 5. **Review** — test checklist pass → Done
-
-**When to skip RD:** Bug fix < 1h, config change, adding <20 clearly scoped lines.
 
 ---
 
@@ -103,69 +101,28 @@ Phân tuyến công việc theo loại task:
 - Bash tool: use `cmd //c "schtasks ..."` for Task Scheduler commands
 - **Response language: Vietnamese** — keep responses concise
 
+## Git & Data Safety
+
+User không rành git — AI tự thực hiện toàn bộ quy trình git, không yêu cầu user gõ lệnh.
+
+- **Trước mọi `git push`:** tự động `git fetch origin` + `git merge origin/main` rồi mới push — remote thường đi trước local (autosync từ máy khác + PR từ cloud agent). Không cần hỏi user trước khi merge.
+- **Conflict:** tự resolve phần rõ ràng; chỉ khi hai bên sửa cùng nội dung mới hỏi user bằng câu đơn giản ("bên A viết X, bên B viết Y — giữ cái nào?"), không bắt user đụng lệnh git.
+- **Pull Request:** KHÔNG cài đặt/auth `gh` CLI — đưa GitHub compare link để user bấm tạo PR.
+- **Dữ liệu nhạy cảm — cấm commit/push:** dữ liệu tài chính thật (`opus-animus/opus-actio/finance.db`, `data/_local/`), dữ liệu sức khỏe cá nhân, thông tin user profile. Không chép số liệu thật vào docs/report sẽ được push lên GitHub.
+
+---
+
 ## Projects
 
-| Folder | Description |
-|---|---|
-| `opus-animus/` | Personal AI agent — knowledge accumulation + self-transformation |
-| `SDD-toolkit/` | Reusable SDD methodology (templates, checklist, scaffold) |
-| `html-kit/` | Shared HTML/CSS/JS kit for self-contained document output |
+Root chứa nhiều project con (`opus-animus/`, `SDD-toolkit/`, `html-kit/`, `viet-japan-app/`, `health-app/`, `bd-ai-workflow/`, ...) — dùng `ls` để xem cấu trúc hiện tại thay vì bảng cứng dễ lỗi thời.
 
 ---
 
 ## HTML Output Kit
 
-**Rule:** Khi tạo documentation, report, diagram, comparison, hoặc bất kỳ structured output — ưu tiên single self-contained HTML file thay vì markdown.
+**Rule:** Khi tạo documentation, report, diagram, comparison, hoặc bất kỳ structured output — ưu tiên single self-contained HTML file thay vì markdown. Link `styles.css`/`diagram.js` externally (không inline) để tiết kiệm tokens.
 
-**Kit location:** `C:/Users/HUY/workspace/ai-workspace/html-kit/`
-
-| File | Vai trò |
-|---|---|
-| `styles.css` | McKinsey-style shared stylesheet — **không bao giờ output lại trong HTML** |
-| `diagram.js` | SVG renderer cho flowchart + sequence diagram từ JSON |
-| `template.html` | Khung HTML tối giản với đầy đủ component examples |
-
-**Token saving:** Link CSS externally thay vì inline `<style>` → tiết kiệm ~44% tokens.
-
-```html
-<link rel="stylesheet" href="./styles.css">
-<script src="./diagram.js" defer></script>
-```
-
-### Khi nào dùng HTML
-
-| Use case | Format |
-|---|---|
-| So sánh options, trade-off | Cards + compare 2 cột |
-| Sprint report, incident post-mortem | Cards + timeline + table |
-| Code review, PR writeup | Diff + annotated sections |
-| Architecture, API flow | Flowchart / Sequence diagram |
-| Research, explainer | Tabs + collapsible |
-| Presentation | Slide deck |
-
-### Diagram — JSON only, không viết SVG tay
-
-**Flowchart** (shapes: `rect`, `diamond`, `terminal`):
-```html
-<div class="diagram" data-chart='{
-  "type": "flow",
-  "nodes": [{"id":"s","label":"Start","shape":"terminal"}, ...],
-  "edges": [{"from":"s","to":"d","label":"Yes"}, ...]
-}'></div>
-```
-
-**Sequence** (`"return": true` → dashed arrow):
-```html
-<div class="diagram" data-chart='{
-  "type": "sequence",
-  "actors": ["Client","API","DB"],
-  "steps": [{"from":"Client","to":"API","msg":"POST /login"}, ...]
-}'></div>
-```
-
-### CSS classes nhanh
-
-`badge` `badge green/red/gray/navy` · `card` `card-grid` · `compare` · `callout` `callout warn/risk` · `timeline` · `tabs` + `tab-btn` + `tab-panel` · `details/summary` · `diff-add` `diff-del` `diff-ctx` · `diagram`
+**Kit location + chi tiết (classes, JSON diagram schema, khi nào dùng gì):** `C:/Users/HUY/workspace/ai-project-opus/html-kit/README.md`
 
 **Slash command:** `/html [mô tả]` — available in Claude Code
 
