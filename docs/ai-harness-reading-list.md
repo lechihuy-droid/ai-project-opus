@@ -48,3 +48,51 @@ This article is useful for designing the Retrieval Layer of the AI Harness / BD 
 **Classification note**
 
 Do not add a separate `RAG` label because it is already covered by `RAG & Knowledge Layer`.
+
+---
+
+### langchain-ai/openwiki
+
+- **Priority:** P1
+- **Primary Category:** Agent Documentation & Codebase Memory
+- **Document Type:** Tool / Reference Implementation
+- **Maturity:** Early Production / Emerging
+- **Difficulty:** Intermediate
+- **Source:** GitHub
+- **URL:** https://github.com/langchain-ai/openwiki
+
+**Labels**
+
+- Agent Documentation
+- Codebase Memory
+- Architecture
+- Implementation
+- Automation
+- CI Workflow
+- Context Engineering
+- Developer Tooling
+
+**Why it matters**
+
+OpenWiki is directly relevant to the AI Harness because it generates and maintains agent-facing documentation for a codebase. It is not just a reading resource; it is a practical tool pattern for keeping repository knowledge synchronized with code changes.
+
+**Apply to Harness**
+
+- Codebase Documentation Layer
+- Agent Context Layer
+- AGENTS.md / CLAUDE.md synchronization
+- CI-based documentation update workflow
+- Repository onboarding for coding agents
+- Long-term codebase memory
+- Developer workflow automation
+
+**Expected output after reading / testing**
+
+- Evaluate whether OpenWiki should be adopted as-is, cherry-picked, or used only as a design reference.
+- Extract a pattern for auto-maintained `openwiki/` documentation inside Harness-managed repositories.
+- Test compatibility with Codex / Claude Code / local repo workflow.
+- Define rules for when generated wiki content becomes trusted context versus auxiliary context.
+
+**Classification note**
+
+Do not classify this under `RAG & Knowledge Layer` as the primary category. It is closer to `Agent Documentation & Codebase Memory`: a repo-local context maintenance tool for coding agents.
