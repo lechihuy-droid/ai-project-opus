@@ -1,0 +1,90 @@
+# jp-trend-collector — nguồn thu thập
+# Sửa/thêm nguồn tại đây, không cần đụng code.
+
+news_sources:
+  - id: nhk_top
+    name: "NHK News Web — Tin chính"
+    type: rss
+    url: https://www3.nhk.or.jp/rss/news/cat0.xml
+    tier: 1
+    enabled: true
+  - id: nhk_spot
+    name: "NHK News Web — Tin nóng (spot)"
+    type: rss
+    url: https://www3.nhk.or.jp/rss/news/cat1.xml
+    tier: 1
+    enabled: true
+  - id: yahoo_top
+    name: "Yahoo! News Japan — Top Picks"
+    type: rss
+    url: https://news.yahoo.co.jp/rss/topics/top-picks.xml
+    tier: 1
+    enabled: true
+  - id: yahoo_domestic
+    name: "Yahoo! News Japan — Xã hội"
+    type: rss
+    url: https://news.yahoo.co.jp/rss/topics/domestic.xml
+    tier: 1
+    enabled: true
+  - id: asahi
+    name: "Asahi Shimbun — Headlines"
+    type: rss
+    url: https://www.asahi.com/rss/asahi/newsheadlines.rdf
+    tier: 1
+    enabled: true
+  - id: mainichi
+    name: "Mainichi Shimbun — Flash"
+    type: rss
+    url: https://mainichi.jp/rss/etc/mainichi-flash.rss
+    tier: 1
+    enabled: true
+  - id: itmedia
+    name: "ITmedia — Tin công nghệ"
+    type: rss
+    url: https://rss.itmedia.co.jp/rss/2.0/news_bursts.xml
+    tier: 2
+    enabled: true
+  - id: livedoor_news
+    name: "livedoor NEWS — Chủ đề chính"
+    type: rss
+    url: https://news.livedoor.com/topics/rss/top.xml
+    tier: 2
+    enabled: true
+  - id: soranews24
+    name: "SoraNews24 — Văn hoá / trend giới trẻ Nhật (EN)"
+    type: rss
+    url: https://soranews24.com/feed/
+    tier: 2
+    enabled: true
+
+# Google Trends Japan — top từ khóa tìm kiếm hàng ngày (unofficial API, có thể lỗi/đổi format).
+google_trends:
+  enabled: true
+  geo: JP
+
+# Facebook Graph API — CHỈ hoạt động hợp lệ với:
+#   (a) Page bạn là admin → dùng Page Access Token của chính page đó, hoặc
+#   (b) Page khác nhưng đã được Meta cấp quyền "Page Public Content Access" (cần App Review).
+# Không dùng cookie/login giả lập để cào FB — vi phạm điều khoản dịch vụ và rủi ro khoá tài khoản.
+facebook:
+  enabled: false
+  pages:
+    - id: "REPLACE_WITH_PAGE_ID_OR_USERNAME"
+      name: "Tên page để hiển thị trong báo cáo"
+
+# Từ khoá theo dõi — bài viết chứa các từ này sẽ được cộng điểm ưu tiên trong báo cáo.
+# Điền theo chủ đề kênh của bạn (vd: chủ đề Việt Nam tại Nhật).
+watch_keywords:
+  - 地震
+  - 台風
+  - ベトナム
+  - 技能実習
+  - 特定技能
+  - 円安
+  - 物価
+
+report:
+  top_per_source: 8
+  timezone: Asia/Tokyo
+  # Số từ khoá hot (kanji/katakana) hiển thị trong báo cáo
+  top_keywords: 15

@@ -1,0 +1,6 @@
+feedparser
+requests
+python-dotenv
+pyyaml
+python-dateutil
+pytrends
