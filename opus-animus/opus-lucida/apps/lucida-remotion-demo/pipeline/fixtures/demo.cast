@@ -1,0 +1,6 @@
+{"version":2,"width":80,"height":24,"duration":2.5,"title":"Fixture"}
+[0.1,"o","$ npm run render\r\n"]
+[0.4,"i","secret-input"]
+[0.8,"m","render"]
+[1.2,"o","Composition loaded\r\n"]
+[2.0,"r","100x30"]

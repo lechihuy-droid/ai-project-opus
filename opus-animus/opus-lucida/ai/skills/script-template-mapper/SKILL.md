@@ -77,9 +77,16 @@ code_explanation
 - Use code panel only when code or execution is central to the explanation.
 - Keep each scene under 5 visual objects unless the template explicitly supports more.
 
+## Catalog vs Registry Reality
+
+- Catalog có 81 `templateId` nhưng `src/templateRegistry.tsx` chỉ có ~9 adapter thực; nhiều `templateId` alias về CÙNG một adapter (vd: `bounce-text`, `glitch-text`, `chapter-title`, `title-split` đều render bằng HeroTitleAdapter).
+- "Đa dạng template" phải tính theo **adapter thực**, không theo tên `templateId` — chọn 4 templateId khác tên nhưng cùng adapter thì video vẫn đơn điệu.
+- Danh sách templateId → adapter được implement thật: xem `apps/lucida-remotion-demo/src/template-registry-map.json`.
+
 ## Completion Criteria
 
 - `video-map.json` is valid JSON.
+- Chạy `npm run validate:videomap` (trong `apps/lucida-remotion-demo/`) và PASS trước khi bàn giao cho `remotion-video-builder`.
 - Every scene has `id`, `intent`, `templateId`, `templateRole`, `content`, `style`, `motion`, `durationSec`, `subtitle`, and `reason`.
 - Total duration matches the requested target within 10%.
-- Template choices are varied when the script has varied intents.
+- Template choices are varied when the script has varied intents — varied theo adapter thực (xem Catalog vs Registry Reality), không chỉ theo tên templateId.

@@ -4,18 +4,14 @@ import path from "node:path";
 const appRoot = process.cwd();
 const catalogPath = path.resolve(appRoot, "../remotion-templates/template-catalog.json");
 const videoMapPath = path.resolve(appRoot, "video-map.json");
-const registryPath = path.resolve(appRoot, "src/templateRegistry.tsx");
+const registryMapPath = path.resolve(appRoot, "src/template-registry-map.json");
 
 const readJson = (filePath) => JSON.parse(fs.readFileSync(filePath, "utf8"));
 
 const catalog = readJson(catalogPath);
 const videoMap = readJson(videoMapPath);
-const registrySource = fs.readFileSync(registryPath, "utf8");
-const supportedTemplateIds = new Set(
-  [...registrySource.matchAll(/^\s+"([^"]+)":\s+[A-Za-z0-9_]+Adapter,/gm)].map(
-    (match) => match[1],
-  ),
-);
+const templateRegistryMap = readJson(registryMapPath);
+const supportedTemplateIds = new Set(Object.keys(templateRegistryMap));
 
 const errors = [];
 const warnings = [];

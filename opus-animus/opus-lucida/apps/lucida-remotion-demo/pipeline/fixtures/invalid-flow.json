@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "terminal-flow/v1",
+  "projectId": "",
+  "fps": 0,
+  "themeId": "",
+  "sources": [],
+  "mapping": {
+    "allowedFamilies": ["terminal"],
+    "allowedPresets": ["command"],
+    "defaultFamily": "editorial",
+    "defaultPreset": "missing",
+    "minSceneSeconds": 8,
+    "maxSceneSeconds": 3,
+    "maxItemsPerScene": 0
+  }
+}

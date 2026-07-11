@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "visual-flow/v1",
+  "projectId": "visual-demo",
+  "fps": 30,
+  "themeId": "lucida-editorial/v1",
+  "sources": [
+    {
+      "id": "script",
+      "type": "script",
+      "required": true,
+      "artifactId": "approved-script:v1"
+    },
+    {
+      "id": "demo",
+      "type": "asciicast",
+      "path": "input/demo.cast",
+      "captureInputEvents": false
+    }
+  ],
+  "mapping": {
+    "allowedFamilies": ["terminal", "editorial", "infographic"],
+    "allowedPresets": ["command", "headline-stat-grid"],
+    "defaultFamily": "editorial",
+    "defaultPreset": "headline-stat-grid",
+    "minSceneSeconds": 3,
+    "maxSceneSeconds": 8,
+    "maxItemsPerScene": 10
+  }
+}

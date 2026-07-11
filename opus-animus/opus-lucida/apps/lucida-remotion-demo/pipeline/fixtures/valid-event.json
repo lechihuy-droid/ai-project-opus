@@ -1,0 +1,16 @@
+{
+  "id": "event-001",
+  "sourceId": "demo",
+  "sourceRef": "input/demo.cast#event-1",
+  "kind": "output",
+  "timeSeconds": 1.2,
+  "frame": 36,
+  "text": "Composition loaded",
+  "level": "success",
+  "provenance": {
+    "sourceId": "demo",
+    "sourceRef": "input/demo.cast#event-1",
+    "sourceChecksum": "sha256:fixture",
+    "collectorVersion": "fixture/1"
+  }
+}

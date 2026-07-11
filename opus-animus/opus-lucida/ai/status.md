@@ -74,6 +74,10 @@ Verification: template validation PASS (14 templates) | tests PASS (4/4) | rende
 Review notes: apps/slide-agent/lessons/wake-cluster/VISUAL-REVIEW.md and AUDIO-SYNC.md
 ```
 
+## Backlog
+
+- **Audio/TTS pipeline cho `apps/lucida-remotion-demo/`** — video render hiện KHÔNG có audio track, caption timing chia đều tuyến tính. Cần RD riêng (chọn TTS engine, wire `<Audio>`, caption timing theo WhisperX word-timestamp) trước khi build. (Ghi nhận 2026-07-12, quyết định defer sau review flow create-video.)
+
 ## Current risks
 
 1. Design rules are still only partially compiled into validation beyond the Wake-specific checks

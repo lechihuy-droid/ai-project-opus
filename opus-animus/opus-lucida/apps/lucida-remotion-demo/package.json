@@ -7,10 +7,11 @@
   "private": true,
   "dependencies": {
     "@remotion/cli": "4.0.486",
+    "@remotion/google-fonts": "^4.0.486",
+    "@remotion/tailwind-v4": "4.0.486",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "remotion": "4.0.486",
-    "@remotion/tailwind-v4": "4.0.486",
     "tailwindcss": "4.0.0"
   },
   "devDependencies": {
@@ -24,13 +25,25 @@
   "scripts": {
     "dev": "remotion studio",
     "render": "node scripts/render-run.mjs",
-    "preflight": "npm run validate:director && npm run validate:registry && npx remotion compositions",
+    "preflight": "npm run validate:videomap && npm run validate:director && npm run validate:registry && npx remotion compositions",
     "qa:stills": "node scripts/render-scene-stills.mjs",
+    "validate:videomap": "node scripts/validate-video-map.mjs",
     "validate:director": "node scripts/validate-design-director.mjs",
     "validate:registry": "node scripts/validate-template-registry.mjs",
     "build": "remotion bundle",
     "upgrade": "remotion upgrade",
-    "lint": "eslint src && tsc"
+    "lint": "eslint src && tsc",
+    "validate:visual-contracts": "node scripts/validate-visual-input-contracts.mjs",
+    "test:visual-collectors": "node scripts/test-visual-collectors.mjs",
+    "collect:visual": "node scripts/collect-visual-inputs.mjs",
+    "test:visual-processors": "node scripts/test-visual-processors.mjs",
+    "process:visual": "node scripts/process-visual-inputs.mjs",
+    "test:visual-mapper": "node scripts/test-visual-mapper.mjs",
+    "map:visual": "node scripts/map-and-compile-visual-scenes.mjs",
+    "validate:generated-map": "node scripts/validate-generated-video-map.mjs",
+    "preview:generated": "node scripts/preview-generated-video.mjs",
+    "render:generated": "node scripts/render-generated-video.mjs",
+    "visual-flow": "node scripts/run-visual-flow.mjs"
   },
   "sideEffects": [
     "*.css"

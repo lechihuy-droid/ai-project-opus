@@ -1,35 +1,45 @@
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import { videoInput } from "./data";
+import {
+  createVideoInput,
+  defaultVideoMap,
+  type VideoInput,
+  type VideoMap,
+} from "./data";
 import { resolveTemplateAdapter, SceneShell } from "./templateRegistry";
 
-const totalFrames = videoInput.scenes.reduce(
-  (sum, scene) => sum + scene.durationFrames,
-  0,
-);
+export type MyCompositionProps = {
+  videoMap?: VideoMap;
+};
 
-const getSceneAtFrame = (frame: number) => {
+const getSceneAtFrame = (input: VideoInput, frame: number) => {
+  const totalFrames = input.scenes.reduce(
+    (sum, scene) => sum + scene.durationFrames,
+    0,
+  );
   let start = 0;
 
-  for (const scene of videoInput.scenes) {
+  for (const scene of input.scenes) {
     const end = start + scene.durationFrames;
     if (frame >= start && frame < end) {
-      return { scene, localFrame: frame - start, start, end };
+      return { scene, localFrame: frame - start, totalFrames };
     }
     start = end;
   }
 
-  const last = videoInput.scenes[videoInput.scenes.length - 1];
+  const last = input.scenes[input.scenes.length - 1];
   return {
     scene: last,
-    localFrame: last.durationFrames - 1,
-    start: totalFrames - last.durationFrames,
-    end: totalFrames,
+    localFrame: Math.max(0, last.durationFrames - 1),
+    totalFrames,
   };
 };
 
-export const MyComposition: React.FC = () => {
+export const MyComposition: React.FC<MyCompositionProps> = ({
+  videoMap = defaultVideoMap,
+}) => {
   const frame = useCurrentFrame();
-  const { scene, localFrame } = getSceneAtFrame(frame);
+  const input = createVideoInput(videoMap);
+  const { scene, localFrame, totalFrames } = getSceneAtFrame(input, frame);
   const Adapter = resolveTemplateAdapter(scene.templateId);
   const zoom = interpolate(frame, [0, totalFrames], [1, 1.025], {
     extrapolateRight: "clamp",
@@ -43,13 +53,13 @@ export const MyComposition: React.FC = () => {
         transformOrigin: "center center",
       }}
     >
-      <SceneShell scene={scene} localFrame={localFrame} theme={videoInput.theme}>
+      <SceneShell scene={scene} localFrame={localFrame} theme={input.theme}>
         <Adapter
           scene={scene}
           localFrame={localFrame}
           durationFrames={scene.durationFrames}
-          theme={videoInput.theme}
-          assets={videoInput.assets}
+          theme={input.theme}
+          assets={input.assets}
         />
       </SceneShell>
     </AbsoluteFill>

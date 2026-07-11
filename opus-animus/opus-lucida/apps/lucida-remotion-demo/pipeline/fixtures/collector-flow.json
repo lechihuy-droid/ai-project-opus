@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "visual-flow/v1",
+  "projectId": "collector-fixture",
+  "fps": 30,
+  "themeId": "lucida-command/v1",
+  "sources": [
+    {
+      "id": "script",
+      "type": "script",
+      "required": true,
+      "path": "pipeline/fixtures/collector-script.md"
+    },
+    {
+      "id": "command",
+      "type": "command",
+      "required": true,
+      "command": "node",
+      "args": ["-e", "process.stdout.write('flow-ok')"],
+      "timeoutSeconds": 10
+    },
+    {
+      "id": "cast",
+      "type": "asciicast",
+      "required": true,
+      "path": "pipeline/fixtures/demo.cast",
+      "captureInputEvents": false
+    }
+  ],
+  "mapping": {
+    "allowedFamilies": ["terminal", "editorial"],
+    "allowedPresets": ["command", "headline-stat-grid"],
+    "defaultFamily": "terminal",
+    "defaultPreset": "command",
+    "minSceneSeconds": 3,
+    "maxSceneSeconds": 8,
+    "maxItemsPerScene": 10
+  }
+}

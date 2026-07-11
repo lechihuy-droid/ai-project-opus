@@ -5,3 +5,6 @@ dist
 
 # Rendered/generated output lives outside git; source transcripts kept in input/ are tracked separately.
 /output/
+
+# Visual input pipeline runtime artifacts.
+/pipeline/runs/

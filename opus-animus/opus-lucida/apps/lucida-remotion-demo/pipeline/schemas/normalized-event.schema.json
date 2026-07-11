@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "normalized-event.schema.json",
+  "type": "object",
+  "required": ["id", "sourceId", "sourceRef", "kind", "provenance"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceRef": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": [
+        "narrative",
+        "command",
+        "output",
+        "log",
+        "code",
+        "tree",
+        "metric",
+        "marker",
+        "resize",
+        "design_token",
+        "layout_reference",
+        "motion_reference"
+      ]
+    },
+    "timeSeconds": {
+      "type": "number",
+      "minimum": 0
+    },
+    "frame": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "text": {
+      "type": "string"
+    },
+    "level": {
+      "enum": ["info", "success", "warning", "error"]
+    },
+    "data": {
+      "type": "object"
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "sourceId",
+        "sourceRef",
+        "sourceChecksum",
+        "collectorVersion"
+      ],
+      "properties": {
+        "sourceId": {
+          "type": "string"
+        },
+        "sourceRef": {
+          "type": "string"
+        },
+        "sourceChecksum": {
+          "type": "string",
+          "pattern": "^sha256:"
+        },
+        "collectorVersion": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

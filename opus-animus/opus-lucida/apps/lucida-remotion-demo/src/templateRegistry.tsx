@@ -15,6 +15,7 @@ import type {
   VideoScene,
   VisualAsset,
 } from "./data";
+import templateRegistryMap from "./template-registry-map.json";
 
 type Theme = VideoInput["theme"];
 
@@ -2003,38 +2004,29 @@ const UnsupportedTemplateAdapter: React.FC<TemplateAdapterProps> = ({
   </div>
 );
 
-export const templateRegistry = {
-  "animated-list": AnimatedListAdapter,
-  "animated-text": HeroTitleAdapter,
-  "bounce-text": HeroTitleAdapter,
-  "bubble-pop-text": HeroTitleAdapter,
-  "card-flip": AnimatedListAdapter,
-  "chapter-title": HeroTitleAdapter,
-  "cinematic-title-intro": HeroTitleAdapter,
-  "code-panel": CodePanelAdapter,
-  "comparison-chart": SplitScreenAdapter,
-  "diagram": DiagramAdapter,
-  "end-card": EndCardAdapter,
-  "gallery-grid": ImageCarouselAdapter,
-  "glitch-text": HeroTitleAdapter,
-  "image-carousel": ImageCarouselAdapter,
-  "image-comparison-slider": SplitScreenAdapter,
-  "masonry-gallery": ImageCarouselAdapter,
-  "notification-pop": AnimatedListAdapter,
-  "photo-stack": ImageCarouselAdapter,
-  "progress-bars": ProgressStepsAdapter,
-  "progress-steps": ProgressStepsAdapter,
-  "quote-card": QuoteCardAdapter,
-  "rotating-carousel": ImageCarouselAdapter,
-  "split-screen": SplitScreenAdapter,
-  "stat-counter": StatCounterAdapter,
-  "subscribe-reminder": EndCardAdapter,
-  "text-highlight": AnimatedListAdapter,
-  "title-split": HeroTitleAdapter,
-  "typewriter-subtitle": CodePanelAdapter,
+const adapterComponents = {
+  AnimatedListAdapter,
+  HeroTitleAdapter,
+  CodePanelAdapter,
+  SplitScreenAdapter,
+  DiagramAdapter,
+  EndCardAdapter,
+  ImageCarouselAdapter,
+  ProgressStepsAdapter,
+  QuoteCardAdapter,
+  StatCounterAdapter,
 } satisfies Record<string, TemplateAdapter>;
+
+export const templateRegistry: Record<string, TemplateAdapter> = Object.fromEntries(
+  Object.entries(templateRegistryMap as Record<string, string>).map(
+    ([templateId, adapterName]) => [
+      templateId,
+      adapterComponents[adapterName as keyof typeof adapterComponents],
+    ],
+  ),
+);
 
 export const supportedTemplateIds = Object.keys(templateRegistry);
 
 export const resolveTemplateAdapter = (templateId: string): TemplateAdapter =>
-  templateRegistry[templateId as keyof typeof templateRegistry] ?? UnsupportedTemplateAdapter;
+  templateRegistry[templateId] ?? UnsupportedTemplateAdapter;

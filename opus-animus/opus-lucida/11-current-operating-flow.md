@@ -225,6 +225,36 @@ once ai/ folder exists.
 
 ---
 
+## 5b. Remotion Script-To-Video Lane (hiện trạng — 2026-07-12)
+
+Lane này (`apps/lucida-remotion-demo/`) chạy theo flow skill-orchestrated:
+
+```text
+raw script + raw sources
+-> source-ingestor-cleaner   -> clean-brief.json
+-> script-template-mapper    -> video-map.json
+-> [GATE] validate:videomap + user review/approve
+-> remotion-video-builder    -> mp4 + still frames
+-> remotion-visual-qa        -> patch / re-render
+```
+
+Owner của flow: `ai/skills/remotion-script-to-video/SKILL.md`.
+
+Hiện trạng cần biết (không phải bug, là gap đã ghi nhận):
+
+```text
+- Video render ra KHÔNG có audio track — audio/TTS pipeline chưa nối,
+  chờ RD riêng trước khi build.
+- Caption timing chia đều tuyến tính theo số từ, không dùng WhisperX
+  word-timestamp; WhisperX hiện chỉ là tool STT rời.
+- Template catalog 81 id nhưng chỉ ~9 adapter thực trong
+  src/templateRegistry.tsx (nhiều id alias cùng adapter).
+- Bộ spec design/workflow/G00–G12 là roadmap, CHƯA implement —
+  xem apps/lucida-remotion-demo/design/workflow/README.md.
+```
+
+---
+
 ## 6. Active Wake Lane
 
 The current active topic lane is:

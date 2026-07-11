@@ -181,7 +181,13 @@ export type VideoInput = {
   scenes: VideoScene[];
 };
 
-const rawVideoMap = videoMapJson as VideoMap;
+export const defaultVideoMap = videoMapJson as VideoMap;
+
+export const videoMeta = {
+  fps: defaultVideoMap.video.fps,
+  width: defaultVideoMap.video.width,
+  height: defaultVideoMap.video.height,
+};
 
 const getNarration = (subtitle: SubtitleSpec): string[] => {
   if (subtitle.groups && subtitle.groups.length > 0) {
@@ -215,28 +221,35 @@ const getBullets = (content: SceneContent): string[] => {
   return [];
 };
 
-const normalizeScene = (scene: VideoMapScene): VideoScene => ({
+const normalizeScene = (
+  scene: VideoMapScene,
+  videoMap: VideoMap,
+): VideoScene => ({
   ...scene,
   kicker: scene.content.kicker ?? scene.intent,
   title: scene.content.title ?? scene.headline,
   narration: getNarration(scene.subtitle),
-  captionGroups: scene.subtitle.groups ?? getNarration(scene.subtitle).map((text) => ({
-    text,
-    lines: [text.split(/\s+/).filter(Boolean)],
-  })),
+  captionGroups:
+    scene.subtitle.groups ??
+    getNarration(scene.subtitle).map((text) => ({
+      text,
+      lines: [text.split(/\s+/).filter(Boolean)],
+    })),
   footer: scene.content.footer ?? "",
-  accent: scene.style.accent ?? rawVideoMap.theme.accent,
+  accent: scene.style.accent ?? videoMap.theme.accent,
   bullets: getBullets(scene.content),
   nodes: scene.content.nodes ?? [],
   links: scene.content.links ?? [],
-  durationFrames: Math.round(scene.durationSec * rawVideoMap.video.fps),
+  durationFrames: Math.round(scene.durationSec * videoMap.video.fps),
 });
 
-export const videoInput: VideoInput = {
-  title: rawVideoMap.video.title,
-  subtitle: rawVideoMap.video.subtitle,
-  sourceBlocks: rawVideoMap.video.sourceBlocks ?? [],
-  theme: rawVideoMap.theme,
-  assets: rawVideoMap.assets,
-  scenes: rawVideoMap.scenes.map(normalizeScene),
-};
+export const createVideoInput = (videoMap: VideoMap): VideoInput => ({
+  title: videoMap.video.title,
+  subtitle: videoMap.video.subtitle,
+  sourceBlocks: videoMap.video.sourceBlocks ?? [],
+  theme: videoMap.theme,
+  assets: videoMap.assets,
+  scenes: videoMap.scenes.map((scene) => normalizeScene(scene, videoMap)),
+});
+
+export const videoInput = createVideoInput(defaultVideoMap);

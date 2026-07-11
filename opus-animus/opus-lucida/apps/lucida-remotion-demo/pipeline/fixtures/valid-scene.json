@@ -1,0 +1,16 @@
+{
+  "sceneId": "scene-001",
+  "visualFamily": "terminal",
+  "preset": "command",
+  "themeId": "lucida-command/v1",
+  "durationInFrames": 150,
+  "title": "Render pipeline",
+  "blocks": [
+    {
+      "kind": "log",
+      "at": 24,
+      "text": "Composition loaded",
+      "sourceEventIds": ["event-001"]
+    }
+  ]
+}

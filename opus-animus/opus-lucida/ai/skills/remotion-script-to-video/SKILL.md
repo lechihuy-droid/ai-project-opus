@@ -15,6 +15,7 @@ raw script + optional raw sources
 -> clean-brief.json
 -> script-template-mapper
 -> video-map.json
+-> [GATE] validate:videomap + user review/approve
 -> remotion-video-builder
 -> rendered mp4 + still frames
 -> remotion-visual-qa
@@ -47,8 +48,15 @@ Read when needed:
 - Do not let one agent decide mapping, implementation, and QA without intermediate artifacts.
 - Let `source-ingestor-cleaner` automatically decide whether each source is content truth, style reference, embeddable asset, context-only, or ignored.
 - Keep `video-map.json` as the reviewable contract.
+- **Approval gate (bắt buộc):** sau khi `script-template-mapper` sinh `video-map.json`, DỪNG LẠI — chạy `npm run validate:videomap`, rồi trình user tóm tắt scene/template mapping và chờ user approve trước khi chạy `remotion-video-builder`. Chỉ bỏ qua gate này khi user nói rõ "chạy thẳng" / "không cần review".
 - If QA finds wrong visual mapping, fix `video-map.json` first.
 - If QA finds layout/render bugs, fix Remotion components.
+
+## Known Gaps (hiện trạng — cập nhật 2026-07-12)
+
+- **Video output KHÔNG có audio track.** Không adapter nào render `<Audio>`; `assets[].kind: "audio"` được khai báo trong contract nhưng không được consume. Audio/TTS pipeline chờ RD riêng trước khi build — không tự ý wire audio khi chưa có RD được approve.
+- **Caption timing là chia đều tuyến tính** (duration / số group / số từ) trong `SubtitleBar`, KHÔNG dùng word-level timestamp. WhisperX (`scripts/run-whisperx.ps1`) chỉ là tool STT rời, chưa nối vào caption timing.
+- **Template catalog (81) ≠ adapter thực (~9):** nhiều `templateId` alias về cùng một adapter trong `src/templateRegistry.tsx` — xem note trong `script-template-mapper/SKILL.md`.
 
 ## Completion Criteria
 

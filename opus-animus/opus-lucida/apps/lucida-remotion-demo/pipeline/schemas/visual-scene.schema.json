@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "visual-scene.schema.json",
+  "type": "object",
+  "required": [
+    "sceneId",
+    "visualFamily",
+    "preset",
+    "themeId",
+    "durationInFrames",
+    "blocks"
+  ],
+  "properties": {
+    "sceneId": { "type": "string", "minLength": 1 },
+    "visualFamily": {
+      "enum": [
+        "terminal",
+        "dashboard",
+        "editorial",
+        "infographic",
+        "code",
+        "data_visualization",
+        "product_demo",
+        "cinematic_typography"
+      ]
+    },
+    "preset": { "type": "string", "minLength": 1 },
+    "themeId": { "type": "string", "minLength": 1 },
+    "durationInFrames": { "type": "integer", "minimum": 1 },
+    "title": { "type": "string" },
+    "blocks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["kind", "at", "sourceEventIds"],
+        "properties": {
+          "kind": {
+            "enum": [
+              "command",
+              "output",
+              "log",
+              "code",
+              "tree",
+              "progress",
+              "metric",
+              "text",
+              "media"
+            ]
+          },
+          "at": { "type": "integer", "minimum": 0 },
+          "text": { "type": "string" },
+          "data": { "type": "object" },
+          "sourceEventIds": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "video-map.schema.json",
+  "type": "object",
+  "required": ["video", "theme", "assets", "scenes"],
+  "properties": {
+    "video": {
+      "type": "object",
+      "required": [
+        "title",
+        "subtitle",
+        "format",
+        "width",
+        "height",
+        "fps",
+        "durationSec",
+        "style",
+        "language"
+      ],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "subtitle": { "type": "string" },
+        "format": { "type": "string", "minLength": 1 },
+        "width": { "type": "number", "exclusiveMinimum": 0 },
+        "height": { "type": "number", "exclusiveMinimum": 0 },
+        "fps": { "type": "number", "exclusiveMinimum": 0 },
+        "durationSec": { "type": "number", "exclusiveMinimum": 0 },
+        "style": { "type": "string", "minLength": 1 },
+        "language": { "enum": ["vi", "en"] },
+        "sourceBlocks": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "theme": {
+      "type": "object",
+      "required": [
+        "name",
+        "accent",
+        "accentSoft",
+        "background",
+        "foreground",
+        "muted"
+      ],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "accent": { "type": "string", "minLength": 1 },
+        "accentSoft": { "type": "string", "minLength": 1 },
+        "background": { "type": "string", "minLength": 1 },
+        "foreground": { "type": "string", "minLength": 1 },
+        "muted": { "type": "string", "minLength": 1 }
+      }
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "src", "kind", "usage"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "src": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["image", "video", "audio"] },
+          "usage": {
+            "enum": ["embed_asset", "style_reference", "context_only"]
+          },
+          "alt": { "type": "string" }
+        }
+      }
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "intent",
+          "templateId",
+          "templateRole",
+          "durationSec",
+          "headline",
+          "subtitle",
+          "content",
+          "style",
+          "motion",
+          "reason"
+        ],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "intent": {
+            "enum": [
+              "hook",
+              "problem",
+              "comparison",
+              "process",
+              "system_architecture",
+              "list",
+              "use_case",
+              "takeaway",
+              "quote",
+              "code_explanation"
+            ]
+          },
+          "templateId": { "type": "string", "minLength": 1 },
+          "templateRole": {
+            "enum": [
+              "scene",
+              "transition",
+              "background_effect",
+              "accent_effect",
+              "subtitle",
+              "cta"
+            ]
+          },
+          "durationSec": { "type": "number", "exclusiveMinimum": 0 },
+          "headline": { "type": "string" },
+          "subtitle": {
+            "type": "object",
+            "required": ["text"],
+            "properties": {
+              "text": { "type": "string" },
+              "segments": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "groups": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["text", "lines"],
+                  "properties": {
+                    "text": { "type": "string" },
+                    "lines": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                      }
+                    },
+                    "weight": { "enum": ["normal", "compact"] }
+                  }
+                }
+              }
+            }
+          },
+          "content": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "style": {
+            "type": "object",
+            "required": ["density", "safeArea"],
+            "properties": {
+              "accent": { "type": "string" },
+              "density": { "enum": ["low", "medium", "high"] },
+              "safeArea": { "enum": ["tiktok", "reels", "youtube_shorts"] },
+              "variant": { "type": "string" }
+            }
+          },
+          "motion": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "backgroundEffect": {
+            "enum": [
+              "matrix-rain",
+              "starfield",
+              "bokeh-circles",
+              "noise-grain",
+              "grid-pulse",
+              "gradient-shift"
+            ]
+          },
+          "transitionIn": {
+            "enum": ["cross-dissolve", "slide-wipe", "whip-pan", "zoom-through"]
+          },
+          "transitionOut": {
+            "enum": ["cross-dissolve", "slide-wipe", "whip-pan", "zoom-through"]
+          },
+          "subtitleMode": { "enum": ["bar", "lower-third", "none"] },
+          "reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}
