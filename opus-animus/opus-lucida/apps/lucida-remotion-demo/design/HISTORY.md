@@ -44,3 +44,29 @@ Initial source selection for the Lucida Style and Motion layers.
 - The selected sources are being used to derive original Lucida schemas and presets.
 - Each source has a dedicated research note under `visual-library/research/` or `motion-library/research/`.
 - Production package status remains blocked until provenance, deterministic render tests, accessibility checks, and license review are complete.
+
+## 2026-07-11 — Batch B002
+
+Reference Ingestion Pipeline design and initial source selection.
+
+| ID | Layer | Source | Status | Selected concepts | Target Lucida artifact | License / rights note |
+|---|---|---|---|---|---|---|
+| B002-R01 | Style + Motion | User-defined reference-video workflow | spec-drafted | Source registration, private raw-media storage, shot sampling, observed/inferred separation, taxonomy normalization, rights gate, Remotion validation, human review | `REFERENCE_INGESTION.md` and `reference-lab/` architecture | Workflow is original Lucida documentation. Third-party reference media remains subject to source rights. |
+| B002-T01 | Motion analysis | [PySceneDetect](https://www.scenedetect.com/docs/latest/) | selected-for-research | Shot-boundary detection, scene lists, keyframe export, video splitting | Default MVP segmentation worker | License must be verified before vendoring. Analysis output does not grant redistribution rights for input media. |
+| B002-T02 | Media processing | [FFmpeg](https://ffmpeg.org/) | selected-for-research | Media probing, normalization, sampling, contact sheets, scaling, trimming, frame-rate conversion | Media normalization and evidence extraction worker | Deployment build, codec, LGPL/GPL configuration, and redistribution obligations require implementation review. |
+| B002-T03 | Motion analysis | [OpenCV optical flow](https://docs.opencv.org/4.x/d4/dee/tutorial_optical_flow.html) | selected-for-research | Sparse and dense optical flow, apparent displacement measurement, feature tracking | Supporting evidence for Motion Observer | Preserve applicable license notices. Optical flow is measurement only, not semantic interpretation. |
+| B002-T04 | Motion analysis | [TransNetV2](https://github.com/soCzech/TransNetV2) | selected-for-research | Learned shot-transition detection, difficult cuts, gradual transitions | Optional fallback after PySceneDetect | Repository is MIT. Model weights and runtime dependencies require separate verification. |
+| B002-P01 | Motion research | [Motion Vectorization and Transformation](https://arxiv.org/abs/2309.14642) | selected-for-research | Object-level decomposition of motion graphics into editable SVG motion programs | Future vector-motion decomposition research | Paper selected as a conceptual source only; no paper assets, dataset, or code copied. |
+| B002-P02 | Motion research | [AniMINT](https://arxiv.org/abs/2604.26148) | selected-for-research | Separation of primitive motion, animation purpose, and animation meaning; evaluation design for VLM motion understanding | Future Motion Observer taxonomy and benchmark | Dataset/code release and license must be verified before use. Paper publication is not redistribution permission. |
+| B002-L01 | Style + Motion reference | [Mobbin](https://mobbin.com/) and [Page Flows](https://pageflows.com/) | selected-for-research | Real product UI flows, micro-interactions, transition sequencing, screen-state changes | Human-led UI reference intake adapter | Reference-only. Follow account terms; do not scrape or commit copied media by default. |
+| B002-L02 | Style + Motion reference | [Art of the Title](https://www.artofthetitle.com/), [ShotDeck](https://shotdeck.com/), and [FilmGrab](https://film-grab.com/) | selected-for-research | Cinematic typography, composition, lighting, framing, title-sequence motifs | Human-led cinematic reference intake adapter | Reference-only. Store links and private evidence metadata unless explicit permission allows media retention or redistribution. |
+
+### Batch B002 decision
+
+- Added `design/REFERENCE_INGESTION.md` as the canonical workflow.
+- Added `design/reference-lab/AVAILABLE_SOURCES.md` with implementation tools, research leads, and reference libraries.
+- Added `design/reference-lab/.gitignore` to block raw video, audio, full-resolution frames, optical-flow maps, embeddings, and caches from normal Git commits.
+- Selected PySceneDetect, FFmpeg, and OpenCV for the MVP stack; TransNetV2 is an optional fallback.
+- Selected Motion Vectorization and AniMINT as research leads, not production dependencies.
+- Mobbin, Page Flows, Art of the Title, ShotDeck, and FilmGrab are reference-only sources unless their exact terms permit further use.
+- No third-party reference video, screenshot collection, premium asset, model dataset, or commercial font was imported in this batch.
