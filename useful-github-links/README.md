@@ -24,6 +24,15 @@ Danh mục các GitHub repository hữu dụng đã được đánh giá hoặc 
 - Khuyến nghị: Đưa vào dự án AI Video; dùng cùng Remotion cho timeline, audio và subtitle
 - Trạng thái: Đã đánh giá
 
+### claude-video
+
+- Repository: https://github.com/bradautomates/claude-video
+- Loại: Video-to-context skill / Video QA cho Claude Code
+- Dùng cho: Tách frame, transcript và timestamp để Claude phân tích hoặc review video
+- Giá trị chính: Tạo vòng lặp `Render → Watch → Critique → Fix → Render lại`
+- Khuyến nghị: Đưa vào lớp Review/QA của AI Video Harness, không xếp vào renderer
+- Trạng thái: Đã đánh giá
+
 ## Quy ước cập nhật
 
 Mỗi repository mới nên có các trường:
