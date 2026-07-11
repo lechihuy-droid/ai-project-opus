@@ -1,0 +1,857 @@
+{
+  "version": 1,
+  "sourceRoot": "apps/remotion-templates/templates",
+  "roles": [
+    "scene",
+    "transition",
+    "background_effect",
+    "accent_effect",
+    "subtitle",
+    "cta"
+  ],
+  "templates": [
+    {
+      "id": "animated-list",
+      "sourceFile": "templates/animated-list.tsx",
+      "category": "text",
+      "role": "scene",
+      "bestFor": ["lists", "patterns", "short enumerations"],
+      "requiredContent": ["items"],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "animated-text",
+      "sourceFile": "templates/animated-text.tsx",
+      "category": "text",
+      "role": "scene",
+      "bestFor": ["short emphasis", "concept reveal", "code phrase reveal"],
+      "requiredContent": ["title"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "area-chart",
+      "sourceFile": "templates/area-chart.tsx",
+      "category": "data_progress",
+      "role": "scene",
+      "bestFor": ["trend", "growth curve", "metric history"],
+      "requiredContent": ["series"],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "blinds-transition",
+      "sourceFile": "templates/blinds-transition.tsx",
+      "category": "transition",
+      "role": "transition",
+      "bestFor": ["hard section change", "chapter break"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "bokeh-circles",
+      "sourceFile": "templates/bokeh-circles.tsx",
+      "category": "background_effect",
+      "role": "background_effect",
+      "bestFor": ["soft ambient background", "calm explanation"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "bounce-text",
+      "sourceFile": "templates/bounce-text.tsx",
+      "category": "text",
+      "role": "scene",
+      "bestFor": ["energetic title", "punchline"],
+      "requiredContent": ["title"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "bubble-pop-text",
+      "sourceFile": "templates/bubble-pop-text.tsx",
+      "category": "text",
+      "role": "scene",
+      "bestFor": ["playful keyword reveal", "short label sequence"],
+      "requiredContent": ["title"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "camera-shake",
+      "sourceFile": "templates/camera-shake.tsx",
+      "category": "background_effect",
+      "role": "accent_effect",
+      "bestFor": ["impact moment", "warning emphasis"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "card-flip",
+      "sourceFile": "templates/card-flip.tsx",
+      "category": "text",
+      "role": "scene",
+      "bestFor": ["before after reveal", "front back explanation"],
+      "requiredContent": ["cards"],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "chapter-title",
+      "sourceFile": "templates/chapter-title.tsx",
+      "category": "text",
+      "role": "scene",
+      "bestFor": ["chapter open", "section title"],
+      "requiredContent": ["title"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "chart-animation",
+      "sourceFile": "templates/chart-animation.tsx",
+      "category": "data_progress",
+      "role": "scene",
+      "bestFor": ["bar chart", "category comparison", "ranked metrics"],
+      "requiredContent": ["series"],
+      "density": "high",
+      "supportsAssets": false
+    },
+    {
+      "id": "cinematic-title-intro",
+      "sourceFile": "templates/cinematic-title-intro.tsx",
+      "category": "text",
+      "role": "scene",
+      "bestFor": ["hook", "big claim", "intro title"],
+      "requiredContent": ["title"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "circular-progress",
+      "sourceFile": "templates/circular-progress.tsx",
+      "category": "data_progress",
+      "role": "scene",
+      "bestFor": ["single progress metric", "completion state"],
+      "requiredContent": ["metric"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "clock-wipe",
+      "sourceFile": "templates/clock-wipe.tsx",
+      "category": "transition",
+      "role": "transition",
+      "bestFor": ["time jump", "chapter transition"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "comparison-chart",
+      "sourceFile": "templates/comparison-chart.tsx",
+      "category": "data_progress",
+      "role": "scene",
+      "bestFor": ["before after metric", "two option comparison"],
+      "requiredContent": ["panels"],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "countdown-intro",
+      "sourceFile": "templates/countdown-intro.tsx",
+      "category": "data_progress",
+      "role": "scene",
+      "bestFor": ["countdown open", "launch setup"],
+      "requiredContent": ["countdown"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "countdown-timer",
+      "sourceFile": "templates/countdown-timer.tsx",
+      "category": "data_progress",
+      "role": "scene",
+      "bestFor": ["deadline", "timer", "countdown step"],
+      "requiredContent": ["countdown"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "credits-roll",
+      "sourceFile": "templates/credits-roll.tsx",
+      "category": "social_brand",
+      "role": "cta",
+      "bestFor": ["credits", "source attribution", "closing notes"],
+      "requiredContent": ["items"],
+      "density": "high",
+      "supportsAssets": false
+    },
+    {
+      "id": "cross-dissolve",
+      "sourceFile": "templates/cross-dissolve.tsx",
+      "category": "transition",
+      "role": "transition",
+      "bestFor": ["soft scene change", "idea continuation"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "donut-chart",
+      "sourceFile": "templates/donut-chart.tsx",
+      "category": "data_progress",
+      "role": "scene",
+      "bestFor": ["composition", "share of whole", "central metric"],
+      "requiredContent": ["segments"],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "end-card",
+      "sourceFile": "templates/end-card.tsx",
+      "category": "social_brand",
+      "role": "cta",
+      "bestFor": ["final CTA", "follow prompt", "next episode"],
+      "requiredContent": ["cta"],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "fade-through-black",
+      "sourceFile": "templates/fade-through-black.tsx",
+      "category": "transition",
+      "role": "transition",
+      "bestFor": ["dramatic reset", "new chapter"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "film-burn",
+      "sourceFile": "templates/film-burn.tsx",
+      "category": "background_effect",
+      "role": "accent_effect",
+      "bestFor": ["warm flash", "transition accent", "dramatic reveal"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "floating-bubble-text",
+      "sourceFile": "templates/floating-bubble-text.tsx",
+      "category": "text",
+      "role": "accent_effect",
+      "bestFor": ["keyword chip", "floating label", "soft emphasis"],
+      "requiredContent": ["items"],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "gallery-grid",
+      "sourceFile": "templates/gallery-grid.tsx",
+      "category": "image_media",
+      "role": "scene",
+      "bestFor": ["asset gallery", "many examples", "visual collection"],
+      "requiredContent": ["items"],
+      "density": "high",
+      "supportsAssets": true
+    },
+    {
+      "id": "geometric-patterns",
+      "sourceFile": "templates/geometric-patterns.tsx",
+      "category": "background_effect",
+      "role": "background_effect",
+      "bestFor": ["abstract technical background", "motion texture"],
+      "requiredContent": [],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "glitch-text",
+      "sourceFile": "templates/glitch-text.tsx",
+      "category": "text",
+      "role": "scene",
+      "bestFor": ["leak reveal", "cyber phrase", "high tension hook"],
+      "requiredContent": ["title"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "gradient-shift",
+      "sourceFile": "templates/gradient-shift.tsx",
+      "category": "background_effect",
+      "role": "background_effect",
+      "bestFor": ["ambient color movement", "subtle backdrop"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "grid-pulse",
+      "sourceFile": "templates/grid-pulse.tsx",
+      "category": "background_effect",
+      "role": "background_effect",
+      "bestFor": ["AI grid", "system pulse", "technical mood"],
+      "requiredContent": [],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "image-carousel",
+      "sourceFile": "templates/image-carousel.tsx",
+      "category": "image_media",
+      "role": "scene",
+      "bestFor": ["use cases", "examples", "asset carousel"],
+      "requiredContent": ["items"],
+      "density": "medium",
+      "supportsAssets": true
+    },
+    {
+      "id": "image-comparison-slider",
+      "sourceFile": "templates/image-comparison-slider.tsx",
+      "category": "image_media",
+      "role": "scene",
+      "bestFor": ["before after visual", "two state comparison"],
+      "requiredContent": ["panels"],
+      "density": "medium",
+      "supportsAssets": true
+    },
+    {
+      "id": "image-zoom-reveal",
+      "sourceFile": "templates/image-zoom-reveal.tsx",
+      "category": "image_media",
+      "role": "scene",
+      "bestFor": ["single asset reveal", "focus pull"],
+      "requiredContent": ["asset"],
+      "density": "low",
+      "supportsAssets": true
+    },
+    {
+      "id": "iris-transition",
+      "sourceFile": "templates/iris-transition.tsx",
+      "category": "transition",
+      "role": "transition",
+      "bestFor": ["focus transition", "spotlight shift"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "ken-burns",
+      "sourceFile": "templates/ken-burns.tsx",
+      "category": "image_media",
+      "role": "scene",
+      "bestFor": ["single image narration", "slow pan and zoom"],
+      "requiredContent": ["asset"],
+      "density": "low",
+      "supportsAssets": true
+    },
+    {
+      "id": "letterbox-reveal",
+      "sourceFile": "templates/letterbox-reveal.tsx",
+      "category": "transition",
+      "role": "accent_effect",
+      "bestFor": ["cinematic reveal", "opening emphasis"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "line-chart",
+      "sourceFile": "templates/line-chart.tsx",
+      "category": "data_progress",
+      "role": "scene",
+      "bestFor": ["trend line", "progress over time"],
+      "requiredContent": ["series"],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "liquid-wave",
+      "sourceFile": "templates/liquid-wave.tsx",
+      "category": "background_effect",
+      "role": "background_effect",
+      "bestFor": ["fluid ambient background", "soft transition surface"],
+      "requiredContent": [],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "logo-blur-reveal",
+      "sourceFile": "templates/logo-blur-reveal.tsx",
+      "category": "social_brand",
+      "role": "scene",
+      "bestFor": ["brand reveal", "logo focus pull"],
+      "requiredContent": ["brand"],
+      "density": "low",
+      "supportsAssets": true
+    },
+    {
+      "id": "logo-bounce-drop",
+      "sourceFile": "templates/logo-bounce-drop.tsx",
+      "category": "social_brand",
+      "role": "scene",
+      "bestFor": ["energetic brand intro", "logo drop"],
+      "requiredContent": ["brand"],
+      "density": "low",
+      "supportsAssets": true
+    },
+    {
+      "id": "logo-fade-reveal",
+      "sourceFile": "templates/logo-fade-reveal.tsx",
+      "category": "social_brand",
+      "role": "scene",
+      "bestFor": ["soft brand reveal", "quiet intro"],
+      "requiredContent": ["brand"],
+      "density": "low",
+      "supportsAssets": true
+    },
+    {
+      "id": "logo-glitch-reveal",
+      "sourceFile": "templates/logo-glitch-reveal.tsx",
+      "category": "social_brand",
+      "role": "scene",
+      "bestFor": ["cyber brand reveal", "AI product intro"],
+      "requiredContent": ["brand"],
+      "density": "medium",
+      "supportsAssets": true
+    },
+    {
+      "id": "logo-scale-rotate",
+      "sourceFile": "templates/logo-scale-rotate.tsx",
+      "category": "social_brand",
+      "role": "scene",
+      "bestFor": ["logo spin reveal", "brand opener"],
+      "requiredContent": ["brand"],
+      "density": "low",
+      "supportsAssets": true
+    },
+    {
+      "id": "logo-spin-reveal",
+      "sourceFile": "templates/logo-spin-reveal.tsx",
+      "category": "social_brand",
+      "role": "scene",
+      "bestFor": ["3D logo reveal", "brand opener"],
+      "requiredContent": ["brand"],
+      "density": "low",
+      "supportsAssets": true
+    },
+    {
+      "id": "logo-split-reveal",
+      "sourceFile": "templates/logo-split-reveal.tsx",
+      "category": "social_brand",
+      "role": "scene",
+      "bestFor": ["split logo reveal", "brand assembly"],
+      "requiredContent": ["brand"],
+      "density": "medium",
+      "supportsAssets": true
+    },
+    {
+      "id": "logo-stroke-draw",
+      "sourceFile": "templates/logo-stroke-draw.tsx",
+      "category": "social_brand",
+      "role": "scene",
+      "bestFor": ["line drawn logo", "precision brand reveal"],
+      "requiredContent": ["brand"],
+      "density": "medium",
+      "supportsAssets": true
+    },
+    {
+      "id": "logo-typewriter",
+      "sourceFile": "templates/logo-typewriter.tsx",
+      "category": "social_brand",
+      "role": "scene",
+      "bestFor": ["typed brand name", "developer brand intro"],
+      "requiredContent": ["brand"],
+      "density": "low",
+      "supportsAssets": true
+    },
+    {
+      "id": "lower-third",
+      "sourceFile": "templates/lower-third.tsx",
+      "category": "text",
+      "role": "subtitle",
+      "bestFor": ["speaker label", "source label", "context strip"],
+      "requiredContent": ["title", "subtitle"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "masonry-gallery",
+      "sourceFile": "templates/masonry-gallery.tsx",
+      "category": "image_media",
+      "role": "scene",
+      "bestFor": ["many images", "reference board", "example grid"],
+      "requiredContent": ["items"],
+      "density": "high",
+      "supportsAssets": true
+    },
+    {
+      "id": "matrix-rain",
+      "sourceFile": "templates/matrix-rain.tsx",
+      "category": "background_effect",
+      "role": "background_effect",
+      "bestFor": ["code mood", "repo reveal", "technical background"],
+      "requiredContent": [],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "morph-transition",
+      "sourceFile": "templates/morph-transition.tsx",
+      "category": "transition",
+      "role": "transition",
+      "bestFor": ["idea transformation", "soft progression"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "noise-grain",
+      "sourceFile": "templates/noise-grain.tsx",
+      "category": "background_effect",
+      "role": "background_effect",
+      "bestFor": ["film texture", "subtle motion", "stale frame prevention"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "notification-pop",
+      "sourceFile": "templates/notification-pop.tsx",
+      "category": "social_brand",
+      "role": "scene",
+      "bestFor": ["alerts", "social proof", "stacked events"],
+      "requiredContent": ["items"],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "parallax-pan",
+      "sourceFile": "templates/parallax-pan.tsx",
+      "category": "image_media",
+      "role": "scene",
+      "bestFor": ["layered environment", "pan over asset set"],
+      "requiredContent": ["items"],
+      "density": "medium",
+      "supportsAssets": true
+    },
+    {
+      "id": "particle-explosion",
+      "sourceFile": "templates/particle-explosion.tsx",
+      "category": "background_effect",
+      "role": "accent_effect",
+      "bestFor": ["success burst", "moment of reveal"],
+      "requiredContent": [],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "photo-stack",
+      "sourceFile": "templates/photo-stack.tsx",
+      "category": "image_media",
+      "role": "scene",
+      "bestFor": ["stacked examples", "image notes", "source snapshots"],
+      "requiredContent": ["items"],
+      "density": "medium",
+      "supportsAssets": true
+    },
+    {
+      "id": "picture-in-picture",
+      "sourceFile": "templates/picture-in-picture.tsx",
+      "category": "image_media",
+      "role": "scene",
+      "bestFor": ["main plus inset", "screen plus commentary"],
+      "requiredContent": ["primary", "secondary"],
+      "density": "medium",
+      "supportsAssets": true
+    },
+    {
+      "id": "pie-chart",
+      "sourceFile": "templates/pie-chart.tsx",
+      "category": "data_progress",
+      "role": "scene",
+      "bestFor": ["share breakdown", "composition"],
+      "requiredContent": ["segments"],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "pixel-transition",
+      "sourceFile": "templates/pixel-transition.tsx",
+      "category": "transition",
+      "role": "transition",
+      "bestFor": ["digital transition", "pixelated scene swap"],
+      "requiredContent": [],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "polaroid-frame",
+      "sourceFile": "templates/polaroid-frame.tsx",
+      "category": "image_media",
+      "role": "scene",
+      "bestFor": ["single image with caption", "memory card"],
+      "requiredContent": ["asset", "caption"],
+      "density": "low",
+      "supportsAssets": true
+    },
+    {
+      "id": "popping-text",
+      "sourceFile": "templates/popping-text.tsx",
+      "category": "text",
+      "role": "scene",
+      "bestFor": ["keyword pop", "short emphasis"],
+      "requiredContent": ["title"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "progress-bars",
+      "sourceFile": "templates/progress-bars.tsx",
+      "category": "data_progress",
+      "role": "scene",
+      "bestFor": ["multi metric progress", "capability comparison"],
+      "requiredContent": ["items"],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "progress-steps",
+      "sourceFile": "templates/progress-steps.tsx",
+      "category": "data_progress",
+      "role": "scene",
+      "bestFor": ["ordered process", "workflow steps", "roadmap"],
+      "requiredContent": ["steps"],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "pulsing-text",
+      "sourceFile": "templates/pulsing-text.tsx",
+      "category": "text",
+      "role": "accent_effect",
+      "bestFor": ["repeated emphasis", "attention cue"],
+      "requiredContent": ["title"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "push-transition",
+      "sourceFile": "templates/push-transition.tsx",
+      "category": "transition",
+      "role": "transition",
+      "bestFor": ["next section push", "linear progression"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "quote-card",
+      "sourceFile": "templates/quote-card.tsx",
+      "category": "text",
+      "role": "scene",
+      "bestFor": ["quote", "principle", "short takeaway"],
+      "requiredContent": ["quote"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "rotating-carousel",
+      "sourceFile": "templates/rotating-carousel.tsx",
+      "category": "image_media",
+      "role": "scene",
+      "bestFor": ["use case carousel", "rotating examples"],
+      "requiredContent": ["items"],
+      "density": "medium",
+      "supportsAssets": true
+    },
+    {
+      "id": "slide-text",
+      "sourceFile": "templates/slide-text.tsx",
+      "category": "text",
+      "role": "scene",
+      "bestFor": ["line reveal", "simple title", "short phrase"],
+      "requiredContent": ["title"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "slide-wipe",
+      "sourceFile": "templates/slide-wipe.tsx",
+      "category": "transition",
+      "role": "transition",
+      "bestFor": ["clean scene wipe", "fast vertical short cut"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "sound-wave",
+      "sourceFile": "templates/sound-wave.tsx",
+      "category": "data_progress",
+      "role": "accent_effect",
+      "bestFor": ["voiceover energy", "audio analysis motif"],
+      "requiredContent": [],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "split-screen",
+      "sourceFile": "templates/split-screen.tsx",
+      "category": "image_media",
+      "role": "scene",
+      "bestFor": ["two side comparison", "old vs new", "before after"],
+      "requiredContent": ["panels"],
+      "density": "medium",
+      "supportsAssets": true
+    },
+    {
+      "id": "spotlight-reveal",
+      "sourceFile": "templates/spotlight-reveal.tsx",
+      "category": "background_effect",
+      "role": "accent_effect",
+      "bestFor": ["focus reveal", "single idea spotlight"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "starfield",
+      "sourceFile": "templates/starfield.tsx",
+      "category": "background_effect",
+      "role": "background_effect",
+      "bestFor": ["wide AI space", "hook background", "high energy intro"],
+      "requiredContent": [],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "stat-counter",
+      "sourceFile": "templates/stat-counter.tsx",
+      "category": "data_progress",
+      "role": "scene",
+      "bestFor": ["single metric", "large number", "proof point"],
+      "requiredContent": ["metric"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "subscribe-reminder",
+      "sourceFile": "templates/subscribe-reminder.tsx",
+      "category": "social_brand",
+      "role": "cta",
+      "bestFor": ["soft follow prompt", "mid video subscribe reminder"],
+      "requiredContent": ["cta"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "text-highlight",
+      "sourceFile": "templates/text-highlight.tsx",
+      "category": "text",
+      "role": "scene",
+      "bestFor": ["word highlight", "repo/code phrase emphasis"],
+      "requiredContent": ["text"],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "title-split",
+      "sourceFile": "templates/title-split.tsx",
+      "category": "text",
+      "role": "scene",
+      "bestFor": ["two part title", "split reveal", "contrast hook"],
+      "requiredContent": ["title"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "typewriter-subtitle",
+      "sourceFile": "templates/typewriter-subtitle.tsx",
+      "category": "text",
+      "role": "subtitle",
+      "bestFor": ["code reveal", "typed line", "subtitle typing"],
+      "requiredContent": ["text"],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "vignette-pulse",
+      "sourceFile": "templates/vignette-pulse.tsx",
+      "category": "background_effect",
+      "role": "background_effect",
+      "bestFor": ["subtle focus frame", "dramatic edge pulse"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "whip-pan",
+      "sourceFile": "templates/whip-pan.tsx",
+      "category": "transition",
+      "role": "transition",
+      "bestFor": ["fast jump", "energetic cut", "shorts pacing"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "zoom-pulse",
+      "sourceFile": "templates/zoom-pulse.tsx",
+      "category": "background_effect",
+      "role": "accent_effect",
+      "bestFor": ["rhythmic emphasis", "moment pulse"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    },
+    {
+      "id": "zoom-through",
+      "sourceFile": "templates/zoom-through.tsx",
+      "category": "transition",
+      "role": "transition",
+      "bestFor": ["deep zoom transition", "moving into next idea"],
+      "requiredContent": [],
+      "density": "low",
+      "supportsAssets": false
+    }
+  ],
+  "localAdapters": [
+    {
+      "id": "code-panel",
+      "sourceFile": "../lucida-remotion-demo/src/templateRegistry.tsx",
+      "category": "text",
+      "role": "scene",
+      "bestFor": ["repo reveal", "code snippet", "terminal or file walkthrough"],
+      "requiredContent": ["codeTitle", "lines"],
+      "density": "medium",
+      "supportsAssets": false
+    },
+    {
+      "id": "diagram",
+      "sourceFile": "../lucida-remotion-demo/src/templateRegistry.tsx",
+      "category": "text",
+      "role": "scene",
+      "bestFor": ["entities and relationships", "node graph", "workflow diagram"],
+      "requiredContent": ["nodes", "links"],
+      "density": "high",
+      "supportsAssets": false
+    }
+  ],
+  "mappingRules": {
+    "hook": ["cinematic-title-intro", "chapter-title", "title-split", "glitch-text"],
+    "repo_or_code_reveal": ["code-panel", "typewriter-subtitle", "animated-text", "text-highlight"],
+    "comparison": ["split-screen", "comparison-chart", "image-comparison-slider"],
+    "list_or_pattern": ["animated-list", "progress-steps", "notification-pop"],
+    "use_case": ["rotating-carousel", "gallery-grid", "photo-stack", "image-carousel"],
+    "stats": ["stat-counter", "progress-bars", "chart-animation"],
+    "cta": ["end-card", "subscribe-reminder"],
+    "background": ["matrix-rain", "starfield", "bokeh-circles", "noise-grain", "gradient-shift", "grid-pulse"],
+    "transition": ["cross-dissolve", "slide-wipe", "whip-pan", "zoom-through"]
+  }
+}
