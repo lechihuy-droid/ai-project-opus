@@ -87,3 +87,21 @@ Create Flow architecture refinement.
 - The renderer accepts structured specifications and registered packages, not uncontrolled style prompts.
 - Static preview validation must pass before motion preview validation.
 - Scene dependency hashing enables partial rerender and cache reuse.
+
+## 2026-07-11 — Batch B004
+
+Create Flow v1.02 gate-contract refinement.
+
+| ID | Layer | Source | Status | Selected concepts | Target Lucida artifact | License / rights note |
+|---|---|---|---|---|---|---|
+| B004-C01 | Create orchestration | User-directed workflow refinement with AI architecture and BPR review | spec-drafted | Artifact-centric gate contracts, scoped GPT tasks, Codex implementation boundary, deterministic verification, human approvals, retry/cache/SLA policies, localized invalidation, issue routing | `CREATE_FLOW_v1.02.md` | Original Lucida architecture documentation. No third-party code or assets copied. |
+
+### Batch B004 decision
+
+- Added `design/CREATE_FLOW_v1.02.md` with eleven explicit gates from project intake through publication.
+- Business/need discovery remains outside the Create Workflow; this flow starts from approved topic, script, and project configuration.
+- Each gate now defines owner, inputs, context, worker, GPT/Codex participation, transform, output, entry and exit criteria, validation, retry, cache, human review, failure routing, and metrics.
+- GPT is restricted to creative and semantic reasoning gates and must return schema-bound artifacts.
+- Codex is restricted primarily to component/adapter implementation and engineering repair, with repository scope and automated validation.
+- `VideoSpec` remains the immutable execution contract; GPT and Codex cannot mutate it outside their controlled gates.
+- Human approvals are defined after Story Planning, Creative Resolution, Preview Critique, and Publication by default.
