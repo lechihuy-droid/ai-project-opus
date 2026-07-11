@@ -7,7 +7,7 @@ const videoMap = JSON.parse(fs.readFileSync(path.resolve(appRoot, "video-map.jso
 const runId =
   process.env.LUCIDA_RUN_ID ??
   new Date().toISOString().replace(/[-:]/g, "").replace(/\..+/, "").replace("T", "-");
-const outDir = path.resolve(appRoot, "out/flow-runs", runId);
+const outDir = path.resolve(appRoot, "output/render/flow-runs", runId);
 const npxBin = "npx";
 const useShell = process.platform === "win32";
 

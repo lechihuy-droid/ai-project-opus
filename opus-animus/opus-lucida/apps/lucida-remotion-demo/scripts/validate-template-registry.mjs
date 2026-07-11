@@ -123,7 +123,7 @@ if (distinctSceneTemplates.size < 4) {
   warnings.push(`Expected at least 4 visually distinct scene templates, got ${distinctSceneTemplates.size}`);
 }
 
-const outDir = path.resolve(appRoot, "out");
+const outDir = path.resolve(appRoot, "output/render");
 fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(
   path.resolve(outDir, "render-report.json"),

@@ -20,7 +20,7 @@ pip install git+https://github.com/m-bain/whisperX.git
 .\scripts\run-whisperx.ps1 -InputPath .\voice.mp3
 ```
 
-This writes `out/voice.json` with segment and word timestamps, for example:
+This writes `output/whisperx/voice.json` with segment and word timestamps, for example:
 
 ```json
 {
@@ -55,6 +55,31 @@ npx remotion render
 ```console
 npx remotion upgrade
 ```
+
+## n8n for Remotion
+
+This app includes a local n8n starter under `n8n/` for orchestration around the existing Remotion render script.
+
+Start n8n:
+
+```console
+cd n8n
+docker compose up -d
+```
+
+Open:
+
+```text
+http://127.0.0.1:5678
+```
+
+The starter is set up to trigger the existing app-level render path:
+
+```text
+scripts/render-run.mjs -> remotion render LucidaMotionDemo -> output/render/flow-runs/<runId>/video.mp4
+```
+
+Use this when you want n8n to schedule or webhook-drive renders without changing the Remotion app contract.
 
 ## Docs
 

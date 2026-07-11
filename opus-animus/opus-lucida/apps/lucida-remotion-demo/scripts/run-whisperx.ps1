@@ -6,7 +6,7 @@ param(
 
   [string]$Model = "small",
 
-  [string]$OutputDir = "./out"
+  [string]$OutputDir = "./output/whisperx"
 )
 
 $resolvedInput = Resolve-Path -LiteralPath $InputPath -ErrorAction Stop

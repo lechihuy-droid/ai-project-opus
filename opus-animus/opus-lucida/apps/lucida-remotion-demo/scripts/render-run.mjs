@@ -6,7 +6,7 @@ const appRoot = process.cwd();
 const runId =
   process.env.LUCIDA_RUN_ID ??
   new Date().toISOString().replace(/[-:]/g, "").replace(/\..+/, "").replace("T", "-");
-const outDir = path.resolve(appRoot, "out/flow-runs", runId);
+const outDir = path.resolve(appRoot, "output/render/flow-runs", runId);
 const output = path.join(outDir, "video.mp4");
 const npxBin = "npx";
 const useShell = process.platform === "win32";
