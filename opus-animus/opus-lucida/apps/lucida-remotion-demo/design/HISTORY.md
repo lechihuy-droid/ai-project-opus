@@ -123,3 +123,21 @@ Workflow documentation refactor and caption-sync integration.
 - Added `governance/` specifications for events, state machine, versioning, and artifact lifecycle.
 - Integrated script timing and caption lock as G02, ensuring script, voice, captions, visual beats, and Remotion share one versioned timeline.
 - Existing root-level documents remain historical references until migration is complete.
+
+## 2026-07-11 — Batch B006
+
+n8n and local CLI runtime orchestration decision.
+
+| ID | Layer | Source | Status | Selected concepts | Target Lucida artifact | License / rights note |
+|---|---|---|---|---|---|---|
+| B006-O01 | Runtime orchestration | User-approved n8n + Claude Code + Codex CLI architecture | spec-drafted | n8n parent/sub-workflows, non-interactive CLI workers, file-based artifact exchange, Whisper timing authority, deterministic Remotion rendering, human approval, localized retry and revision routing, no mandatory LLM API dependency | `design/workflow/N8N_CLI_ORCHESTRATION.md` | Original Lucida architecture documentation. No third-party code or assets copied. Runtime tool licenses and account terms must be reviewed before production deployment. |
+
+### Batch B006 decision
+
+- Selected n8n as the workflow controller for state, gates, retries, approvals, artifact movement, and publishing.
+- Selected Claude Code for semantic and creative planning tasks.
+- Selected Codex CLI for repository-scoped Remotion implementation, repair, and automated validation.
+- Kept Whisper, FFmpeg, schema validators, and Remotion as deterministic workers and measurable sources of truth.
+- Defined versioned run directories and schema-bound files as the interface between all workers.
+- Defined local MVP, separated local worker, and production-scale deployment stages.
+- LangGraph remains outside the MVP and is reserved for future autonomous reasoning loops that cannot be maintained as explicit n8n gates.
