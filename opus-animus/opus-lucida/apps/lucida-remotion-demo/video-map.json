@@ -1,27 +1,27 @@
 {
   "video": {
     "title": "System Prompts Leaks",
-    "subtitle": "Doc system prompt cua ChatGPT, Claude, Gemini, Cursor de hoc cach AI product duoc dieu khien.",
+    "subtitle": "Đọc system prompt của ChatGPT, Claude, Gemini, Cursor để học cách AI product được điều khiển.",
     "format": "vertical_9_16",
     "width": 1080,
     "height": 1920,
     "fps": 30,
-    "durationSec": 31,
-    "style": "dark_ai_orange_glow",
+    "durationSec": 29,
+    "style": "graphite_champagne_editorial",
     "language": "vi",
     "sourceBlocks": [
-      "Repo GitHub asgeirtj/system_prompts_leaks document system prompt instructions cho nhieu AI chatbot va AI product.",
-      "Gia tri khong chi nam o prompt mau, ma nam o cach product gan vai tro, gioi han hanh vi, dung tool, memory, guardrail va workflow agent.",
-      "Video nay dung repo nhu content truth, banner nhu style reference, khong embed anh hay logo ben thu ba."
+      "Repo GitHub asgeirtj/system_prompts_leaks document system prompt instructions cho nhiều AI chatbot và AI product.",
+      "Giá trị không chỉ nằm ở prompt mẫu, mà nằm ở cách product gán vai trò, giới hạn hành vi, dùng tool, memory, guardrail và workflow agent.",
+      "Video này dùng repo như content truth, không embed ảnh hay logo bên thứ ba."
     ]
   },
   "theme": {
     "name": "lucida_dark_ai",
-    "accent": "#ff8a3d",
-    "accentSoft": "#ffd08a",
-    "background": "#090807",
-    "foreground": "#f8f3ee",
-    "muted": "rgba(248,243,238,0.66)"
+    "accent": "#D2B47A",
+    "accentSoft": "#F4E2BD",
+    "background": "#0B0C0E",
+    "foreground": "#F4F0E8",
+    "muted": "#A7A39B"
   },
   "assets": [],
   "scenes": [
@@ -31,35 +31,55 @@
       "templateId": "cinematic-title-intro",
       "templateRole": "scene",
       "durationSec": 5,
-      "headline": "Muon hoc prompt engineering nhanh hon?",
+      "headline": "Học prompt engineering từ AI product thật",
       "subtitle": {
-        "text": "Ban muon hoc prompt engineering nhanh hon bang cach nhin thang vao cach ChatGPT, Claude, Gemini va Cursor duoc thiet ke khong?",
-        "segments": [
-          "Ban muon hoc prompt engineering nhanh hon bang cach nhin thang vao cach ChatGPT, Claude, Gemini va Cursor duoc thiet ke khong?"
+        "text": "Bạn muốn học prompt engineering nhanh hơn? Hãy nhìn thẳng vào cách các AI product được thiết kế. ChatGPT, Claude, Gemini và Cursor được điều khiển thế nào?",
+        "groups": [
+          {
+            "text": "Bạn muốn học prompt engineering nhanh hơn?",
+            "lines": [
+              ["Bạn", "muốn", "học", "prompt engineering"],
+              ["nhanh", "hơn?"]
+            ]
+          },
+          {
+            "text": "Hãy nhìn thẳng vào cách các AI product được thiết kế.",
+            "lines": [
+              ["Hãy", "nhìn", "thẳng", "vào", "cách"],
+              ["các", "AI product", "được", "thiết kế."]
+            ]
+          },
+          {
+            "text": "ChatGPT, Claude, Gemini và Cursor được điều khiển thế nào?",
+            "lines": [
+              ["ChatGPT,", "Claude,", "Gemini", "và", "Cursor"],
+              ["được", "điều khiển", "thế nào?"]
+            ]
+          }
         ]
       },
       "content": {
-        "kicker": "Hook",
-        "title": "Muon hoc prompt engineering nhanh hon?",
-        "subtitle": "Dung chi doan prompt nao hay. Hay nhin vao cach AI product that su duoc thiet ke.",
+        "kicker": "01 / HOOK",
+        "title": "Học prompt engineering từ AI product thật",
+        "subtitle": "Nhìn vào control layer, không chỉ prompt mẫu.",
         "items": [
           { "label": "ChatGPT", "note": "product" },
           { "label": "Claude", "note": "product" },
           { "label": "Gemini", "note": "product" },
           { "label": "Cursor", "note": "product" }
         ],
-        "footer": "Hoc tu he dieu khien that."
+        "footer": "Học từ hệ điều khiển thật."
       },
       "style": {
-        "accent": "#ff8a3d",
+        "accent": "#D2B47A",
         "density": "low",
         "safeArea": "tiktok"
       },
-      "motion": ["slow_zoom", "title_reveal", "underline_grow"],
+      "motion": ["slow_zoom", "title_reveal", "underline_grow", "product_card_stagger"],
       "backgroundEffect": "starfield",
       "transitionOut": "cross-dissolve",
       "subtitleMode": "bar",
-      "reason": "Hook needs a large cinematic title, while the product names stay as supporting chips."
+      "reason": "Hook headline states the value, while CC asks the spoken question without duplicating the headline."
     },
     {
       "id": "repo-reveal",
@@ -69,15 +89,28 @@
       "durationSec": 5,
       "headline": "System Prompts Leaks",
       "subtitle": {
-        "text": "Co mot repo GitHub ten la System Prompts Leaks, dang tong hop system prompt cua nhieu san pham AI lon.",
-        "segments": [
-          "Co mot repo GitHub ten la System Prompts Leaks, dang tong hop system prompt cua nhieu san pham AI lon."
+        "text": "Có một repo GitHub tên là System Prompts Leaks. Repo này tổng hợp system prompt của nhiều sản phẩm AI lớn.",
+        "groups": [
+          {
+            "text": "Có một repo GitHub tên là System Prompts Leaks.",
+            "lines": [
+              ["Có", "một", "repo", "GitHub", "tên là"],
+              ["System Prompts Leaks."]
+            ]
+          },
+          {
+            "text": "Repo này tổng hợp system prompt của nhiều sản phẩm AI lớn.",
+            "lines": [
+              ["Repo", "này", "tổng hợp", "system prompt"],
+              ["của", "nhiều", "sản phẩm", "AI lớn."]
+            ]
+          }
         ]
       },
       "content": {
-        "kicker": "Repo",
+        "kicker": "02 / SOURCE",
         "title": "System Prompts Leaks",
-        "subtitle": "Mot catalog system prompt cua nhieu san pham AI lon, chia theo vendor va product.",
+        "subtitle": "Một catalog system prompt của nhiều AI product lớn.",
         "codeTitle": "github.com/asgeirtj/system_prompts_leaks",
         "lines": [
           "system_prompts_leaks/",
@@ -97,11 +130,11 @@
         "footer": "github.com/asgeirtj/system_prompts_leaks"
       },
       "style": {
-        "accent": "#ff9f4a",
+        "accent": "#D2B47A",
         "density": "medium",
         "safeArea": "tiktok"
       },
-      "motion": ["terminal_reveal", "line_typewriter"],
+      "motion": ["terminal_reveal", "line_typewriter", "folder_highlight_zoom"],
       "backgroundEffect": "matrix-rain",
       "transitionIn": "cross-dissolve",
       "transitionOut": "slide-wipe",
@@ -114,78 +147,106 @@
       "templateId": "split-screen",
       "templateRole": "scene",
       "durationSec": 5,
-      "headline": "Khong chi la prompt mau.",
+      "headline": "Prompt mẫu không phải toàn bộ câu chuyện.",
       "subtitle": {
-        "text": "Doc repo nay, ban khong chi hoc prompt mau. Ban se thay cach AI duoc gan vai tro va bi gioi han hanh vi.",
-        "segments": [
-          "Doc repo nay, ban khong chi hoc prompt mau.",
-          "Ban se thay cach AI duoc gan vai tro va bi gioi han hanh vi."
+        "text": "Đọc repo này, bạn không chỉ học prompt mẫu. Bạn thấy cách AI được gán vai trò và giới hạn hành vi.",
+        "groups": [
+          {
+            "text": "Đọc repo này, bạn không chỉ học prompt mẫu.",
+            "lines": [
+              ["Đọc", "repo", "này,", "bạn", "không chỉ"],
+              ["học", "prompt mẫu."]
+            ]
+          },
+          {
+            "text": "Bạn thấy cách AI được gán vai trò và giới hạn hành vi.",
+            "lines": [
+              ["Bạn", "thấy", "cách", "AI", "được"],
+              ["gán", "vai trò", "và", "giới hạn", "hành vi."]
+            ]
+          }
         ]
       },
       "content": {
-        "kicker": "Insight",
-        "title": "Khong chi la prompt mau.",
-        "subtitle": "Gia tri nam o cau truc dieu khien phia sau moi AI product.",
+        "kicker": "03 / INSIGHT",
+        "title": "Prompt mẫu ≠ cách AI vận hành",
+        "subtitle": "Giá trị nằm ở cấu trúc điều khiển phía sau mỗi AI product.",
         "panels": [
           {
-            "title": "Prompt mau",
-            "body": "Surface layer: cau chu hay, format dep, vi du de copy.",
+            "title": "Prompt mẫu",
+            "body": "Surface: câu chữ và format.",
             "tone": "neutral"
           },
           {
             "title": "Hidden rules",
-            "body": "Control layer: vai tro, gioi han hanh vi, tool, memory va guardrail.",
+            "body": "Control: role, limits, tools, memory, guardrail.",
             "tone": "warm"
           }
         ],
-        "footer": "Tu prompt surface sang operating system."
+        "footer": "Từ prompt surface sang operating system."
       },
       "style": {
-        "accent": "#ffb45f",
+        "accent": "#D2B47A",
         "density": "medium",
         "safeArea": "tiktok"
       },
-      "motion": ["left_right_slide", "divider_fade"],
+      "motion": ["left_right_slide", "divider_fade", "keyword_sync"],
       "backgroundEffect": "noise-grain",
       "transitionIn": "slide-wipe",
       "transitionOut": "whip-pan",
       "subtitleMode": "bar",
-      "reason": "The scene is a contrast between shallow prompt examples and deeper product control."
+      "reason": "The scene contrasts shallow prompt examples with deeper product control rules."
     },
     {
       "id": "six-dimensions",
       "intent": "list",
       "templateId": "animated-list",
       "templateRole": "scene",
-      "durationSec": 7,
-      "headline": "6 thu nen soi trong system prompt",
+      "durationSec": 6,
+      "headline": "6 thứ nên soi trong một system prompt",
       "subtitle": {
-        "text": "Ban se thay cach AI duoc gan vai tro, cach no bi gioi han hanh vi, cach no dung tool. Ban cung thay cach xu ly memory, guardrail va workflow cua agent.",
-        "segments": [
-          "Ban se thay cach AI duoc gan vai tro, cach no bi gioi han hanh vi, cach no dung tool.",
-          "Ban cung thay cach xu ly memory, guardrail va workflow cua agent."
+        "text": "Bạn còn thấy cách nó dùng tool, memory, guardrail và workflow. Đây là những pattern đáng copy vào AI agent.",
+        "groups": [
+          {
+            "text": "Role và Limits.",
+            "lines": [
+              ["Role", "và", "Limits."]
+            ]
+          },
+          {
+            "text": "Tools và Memory.",
+            "lines": [
+              ["Tools", "và", "Memory."]
+            ]
+          },
+          {
+            "text": "Guardrail và Workflow.",
+            "lines": [
+              ["Guardrail", "và", "Workflow."]
+            ]
+          }
         ]
       },
       "content": {
-        "kicker": "Pattern map",
-        "title": "6 thu nen soi trong system prompt",
-        "subtitle": "Role, limits, tools, memory, guardrail va workflow la nhung diem dang hoc nhat.",
+        "kicker": "04 / PATTERN",
+        "title": "6 thứ nên soi trong một system prompt",
+        "subtitle": "Role, limits, tools, memory, guardrail và workflow là phần đáng học nhất.",
         "items": [
-          { "number": "01", "title": "Role", "body": "AI la ai", "tone": "warm" },
-          { "number": "02", "title": "Limits", "body": "Khong duoc lam gi", "tone": "danger" },
-          { "number": "03", "title": "Tools", "body": "Goi cong cu", "tone": "cool" },
-          { "number": "04", "title": "Memory", "body": "Giu ngu canh", "tone": "neutral" },
-          { "number": "05", "title": "Guardrail", "body": "Luat an toan", "tone": "danger" },
-          { "number": "06", "title": "Workflow", "body": "Agent chay viec", "tone": "warm" }
+          { "number": "01", "title": "Role", "body": "AI là ai", "tone": "warm" },
+          { "number": "02", "title": "Limits", "body": "Không được làm gì", "tone": "danger" },
+          { "number": "03", "title": "Tools", "body": "Gọi công cụ", "tone": "cool" },
+          { "number": "04", "title": "Memory", "body": "Giữ ngữ cảnh", "tone": "neutral" },
+          { "number": "05", "title": "Guardrail", "body": "Luật an toàn", "tone": "danger" },
+          { "number": "06", "title": "Workflow", "body": "Agent chạy việc", "tone": "warm" }
         ],
-        "footer": "Dung doc prompt nhu van ban. Hay doc nhu ban thiet ke he thong."
+        "footer": "Đọc system prompt như bản thiết kế hệ thống."
       },
       "style": {
-        "accent": "#ffd08a",
+        "accent": "#D2B47A",
         "density": "high",
         "safeArea": "tiktok"
       },
-      "motion": ["staggered_list", "number_pop"],
+      "motion": ["staggered_list", "number_pop", "pair_highlight"],
       "backgroundEffect": "grid-pulse",
       "transitionIn": "whip-pan",
       "transitionOut": "zoom-through",
@@ -197,32 +258,45 @@
       "intent": "process",
       "templateId": "progress-steps",
       "templateRole": "scene",
-      "durationSec": 5,
-      "headline": "Thay vi doan, hoc tu product that.",
+      "durationSec": 4,
+      "headline": "Thay vì đoán, hãy học từ sản phẩm thật.",
       "subtitle": {
-        "text": "Noi don gian: thay vi doan prompt nao hay, ban hoc truc tiep tu cach cac AI product that su duoc dieu khien phia sau.",
-        "segments": [
-          "Noi don gian: thay vi doan prompt nao hay, ban hoc truc tiep tu cach cac AI product that su duoc dieu khien phia sau."
+        "text": "Thay vì đoán, hãy học từ sản phẩm thật. Học trực tiếp cách các AI product được điều khiển phía sau.",
+        "groups": [
+          {
+            "text": "Thay vì đoán, hãy học từ sản phẩm thật.",
+            "lines": [
+              ["Thay vì", "đoán,"],
+              ["hãy", "học", "từ", "sản phẩm thật."]
+            ]
+          },
+          {
+            "text": "Học trực tiếp cách các AI product được điều khiển phía sau.",
+            "lines": [
+              ["Học", "trực tiếp", "cách", "các", "AI product"],
+              ["được", "điều khiển", "phía sau."]
+            ]
+          }
         ]
       },
       "content": {
-        "kicker": "Reframe",
-        "title": "Thay vi doan, hoc tu product that.",
-        "subtitle": "System prompt cho thay cach san pham AI duoc dieu khien phia sau man hinh chat.",
+        "kicker": "05 / REFRAME",
+        "title": "Thay vì đoán, hãy học từ sản phẩm thật.",
+        "subtitle": "System prompt cho thấy control layer phía sau màn hình chat.",
         "steps": [
-          { "label": "AI product", "note": "chat surface" },
-          { "label": "System prompt", "note": "hidden control layer" },
-          { "label": "Patterns", "note": "extract design rules" },
-          { "label": "AI harness", "note": "build your own" }
+          { "label": "AI Product", "note": "chat surface" },
+          { "label": "System Prompt", "note": "hidden control layer" },
+          { "label": "Reusable Patterns", "note": "extract design rules" },
+          { "label": "Agent / AI Harness", "note": "build your own" }
         ],
         "footer": "Prompt engineering -> agent design."
       },
       "style": {
-        "accent": "#ffbf66",
+        "accent": "#D2B47A",
         "density": "medium",
         "safeArea": "tiktok"
       },
-      "motion": ["step_fill", "connector_draw"],
+      "motion": ["step_fill", "connector_draw", "camera_push"],
       "backgroundEffect": "bokeh-circles",
       "transitionIn": "zoom-through",
       "transitionOut": "cross-dissolve",
@@ -235,39 +309,51 @@
       "templateId": "end-card",
       "templateRole": "cta",
       "durationSec": 4,
-      "headline": "Dang xem neu ban build agent.",
+      "headline": "Đáng lưu nếu bạn đang build AI agent.",
       "subtitle": {
-        "text": "Neu ban dang hoc prompt engineering, AI agent, hoac muon build AI harness rieng, repo nay rat dang xem. Follow de xem phan sau: 5 pattern system prompt nen hoc tu repo nay.",
-        "segments": [
-          "Neu ban dang hoc prompt engineering, AI agent, hoac muon build AI harness rieng, repo nay rat dang xem.",
-          "Follow de xem phan sau: 5 pattern system prompt nen hoc tu repo nay."
+        "text": "Đáng lưu nếu bạn đang build AI agent. Follow để xem phần 2: 6 pattern đáng copy.",
+        "groups": [
+          {
+            "text": "Đáng lưu nếu bạn đang build AI agent.",
+            "lines": [
+              ["Đáng lưu", "nếu", "bạn", "đang"],
+              ["build", "AI agent."]
+            ]
+          },
+          {
+            "text": "Follow để xem phần 2: 6 pattern đáng copy.",
+            "lines": [
+              ["Follow", "để", "xem", "phần 2:"],
+              ["6 pattern", "đáng copy."]
+            ]
+          }
         ]
       },
       "content": {
-        "kicker": "Next",
-        "title": "Dang xem neu ban build agent.",
-        "subtitle": "Dung repo de hoc prompt engineering, AI agent va cach thiet ke AI harness rieng.",
+        "kicker": "06 / NEXT",
+        "title": "Đáng lưu nếu bạn đang build AI agent.",
+        "subtitle": "Học trực tiếp từ system prompt của các sản phẩm AI thật.",
         "items": [
-          { "label": "Prompt engineering", "note": "learn faster" },
-          { "label": "AI agent", "note": "workflow mindset" },
-          { "label": "AI harness", "note": "build your own" }
+          { "label": "Role", "note": "identity" },
+          { "label": "Tool", "note": "action" },
+          { "label": "Memory", "note": "context" }
         ],
         "cta": {
-          "label": "Follow de xem phan sau",
-          "detail": "5 pattern system prompt nen hoc"
+          "label": "Follow để xem 6 pattern",
+          "detail": "Role, Tool, Memory, Guardrail, Workflow..."
         },
-        "footer": "Phan sau: 5 pattern system prompt nen hoc."
+        "footer": "Phần 2: Role, Tool, Memory, Guardrail, Workflow..."
       },
       "style": {
-        "accent": "#ff9554",
+        "accent": "#D2B47A",
         "density": "medium",
         "safeArea": "tiktok"
       },
-      "motion": ["cta_scale", "chip_reveal"],
+      "motion": ["cta_scale", "button_reveal"],
       "backgroundEffect": "gradient-shift",
       "transitionIn": "cross-dissolve",
       "subtitleMode": "bar",
-      "reason": "The final scene should behave as a CTA, not another explanatory diagram."
+      "reason": "The final scene should focus on one action: follow for the six reusable patterns."
     }
   ]
 }

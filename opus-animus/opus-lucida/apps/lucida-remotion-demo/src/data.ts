@@ -99,6 +99,13 @@ export type SceneStyle = {
 export type SubtitleSpec = {
   text: string;
   segments?: string[];
+  groups?: CaptionGroup[];
+};
+
+export type CaptionGroup = {
+  text: string;
+  lines: string[][];
+  weight?: "normal" | "compact";
 };
 
 export type VideoMapScene = {
@@ -156,6 +163,7 @@ export type VideoScene = VideoMapScene & {
   kicker: string;
   title: string;
   narration: string[];
+  captionGroups: CaptionGroup[];
   footer: string;
   accent: string;
   bullets: string[];
@@ -176,6 +184,10 @@ export type VideoInput = {
 const rawVideoMap = videoMapJson as VideoMap;
 
 const getNarration = (subtitle: SubtitleSpec): string[] => {
+  if (subtitle.groups && subtitle.groups.length > 0) {
+    return subtitle.groups.map((group) => group.text);
+  }
+
   if (subtitle.segments && subtitle.segments.length > 0) {
     return subtitle.segments;
   }
@@ -208,6 +220,10 @@ const normalizeScene = (scene: VideoMapScene): VideoScene => ({
   kicker: scene.content.kicker ?? scene.intent,
   title: scene.content.title ?? scene.headline,
   narration: getNarration(scene.subtitle),
+  captionGroups: scene.subtitle.groups ?? getNarration(scene.subtitle).map((text) => ({
+    text,
+    lines: [text.split(/\s+/).filter(Boolean)],
+  })),
   footer: scene.content.footer ?? "",
   accent: scene.style.accent ?? rawVideoMap.theme.accent,
   bullets: getBullets(scene.content),

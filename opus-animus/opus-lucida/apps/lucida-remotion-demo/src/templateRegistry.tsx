@@ -28,6 +28,47 @@ export type TemplateAdapterProps = {
 
 type TemplateAdapter = React.FC<TemplateAdapterProps>;
 
+const palette = {
+  background: "#0B0C0E",
+  surface: "#141518",
+  surfaceRaised: "#1A1B1F",
+  textPrimary: "#F4F0E8",
+  textSecondary: "#A7A39B",
+  champagne: "#D2B47A",
+  champagneDeep: "#8F6C3F",
+  border: "rgba(255,255,255,0.08)",
+  glow: "rgba(210,180,122,0.16)",
+  font:
+    '"Be Vietnam Pro", "Manrope", "Inter", "Segoe UI", Arial, sans-serif',
+};
+
+const normalizeText = (text?: string) => (text ?? "").normalize("NFC");
+
+const splitWords = (text: string) => normalizeText(text).split(/\s+/).filter(Boolean);
+
+const lightSubtitleWords = new Set([
+  "và",
+  "là",
+  "của",
+  "được",
+  "bị",
+  "cách",
+  "các",
+  "một",
+  "này",
+  "nó",
+  "bạn",
+  "để",
+  "từ",
+  "vào",
+  "nếu",
+]);
+
+const normalizeForMatch = (word: string) =>
+  normalizeText(word)
+    .toLowerCase()
+    .replace(/[.,:;!?()[\]'"“”]/g, "");
+
 const toneMap: Record<
   Tone,
   {
@@ -38,28 +79,28 @@ const toneMap: Record<
   }
 > = {
   warm: {
-    fill: "rgba(255,154,67,0.17)",
-    stroke: "rgba(255,154,67,0.64)",
-    glow: "rgba(255,154,67,0.36)",
-    text: "#fff0df",
+    fill: "rgba(210,180,122,0.13)",
+    stroke: "rgba(210,180,122,0.56)",
+    glow: "rgba(210,180,122,0.22)",
+    text: palette.textPrimary,
   },
   cool: {
-    fill: "rgba(122,192,255,0.12)",
-    stroke: "rgba(154,211,255,0.42)",
-    glow: "rgba(122,192,255,0.18)",
+    fill: "rgba(120,150,180,0.11)",
+    stroke: "rgba(160,185,210,0.34)",
+    glow: "rgba(120,150,180,0.14)",
     text: "#edf8ff",
   },
   danger: {
-    fill: "rgba(255,92,92,0.13)",
-    stroke: "rgba(255,108,108,0.62)",
-    glow: "rgba(255,108,108,0.25)",
+    fill: "rgba(190,92,74,0.12)",
+    stroke: "rgba(216,126,104,0.42)",
+    glow: "rgba(216,126,104,0.16)",
     text: "#ffe8e3",
   },
   neutral: {
-    fill: "rgba(255,255,255,0.09)",
-    stroke: "rgba(255,255,255,0.16)",
-    glow: "rgba(255,255,255,0.08)",
-    text: "#f8f3ee",
+    fill: "rgba(255,255,255,0.055)",
+    stroke: palette.border,
+    glow: "rgba(255,255,255,0.06)",
+    text: palette.textPrimary,
   },
 };
 
@@ -67,8 +108,9 @@ const stageStyle = {
   position: "absolute",
   left: 68,
   right: 68,
-  top: 480,
-  height: 800,
+  top: 430,
+  height: 890,
+  fontFamily: palette.font,
 } as const;
 
 const clampProgress = (value: number) => Math.max(0, Math.min(1, value));
@@ -313,11 +355,12 @@ const GlowBackground: React.FC<{
   scene: VideoScene;
   localFrame: number;
   theme: Theme;
-}> = ({ scene, localFrame, theme }) => (
+}> = ({ scene, localFrame }) => (
   <AbsoluteFill
     style={{
+      fontFamily: palette.font,
       background:
-        "radial-gradient(circle at 50% 18%, rgba(255,154,67,0.23), transparent 27%), radial-gradient(circle at 12% 12%, rgba(255,226,185,0.07), transparent 20%), linear-gradient(160deg, #090807 0%, #11100d 48%, #1b120d 100%)",
+        "radial-gradient(circle at 50% 20%, rgba(210,180,122,0.14), transparent 25%), radial-gradient(circle at 12% 12%, rgba(244,240,232,0.05), transparent 20%), linear-gradient(160deg, #0B0C0E 0%, #111216 52%, #171717 100%)",
     }}
   >
     <BackgroundEffect
@@ -330,14 +373,14 @@ const GlowBackground: React.FC<{
         position: "absolute",
         inset: 0,
         background:
-          "linear-gradient(180deg, rgba(255,255,255,0.04), transparent 20%, transparent 78%, rgba(255,154,67,0.08))",
+          "linear-gradient(180deg, rgba(255,255,255,0.035), transparent 20%, transparent 76%, rgba(0,0,0,0.46))",
       }}
     />
     <div
       style={{
         position: "absolute",
         inset: 0,
-        boxShadow: `inset 0 0 0 1px rgba(255,255,255,0.04), inset 0 0 120px ${theme.accent}18`,
+        boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.035), inset 0 0 100px rgba(0,0,0,0.40)",
       }}
     />
   </AbsoluteFill>
@@ -350,6 +393,8 @@ const Header: React.FC<{
 }> = ({ scene, localFrame, theme }) => {
   const titleIn = ease(localFrame, 4, 22);
   const subtitleIn = ease(localFrame, 14, 34);
+  const hideTitle = scene.intent === "hook" || scene.templateRole === "cta";
+  const hideSubtitle = scene.intent === "hook" || scene.templateRole === "cta";
 
   return (
     <>
@@ -361,45 +406,50 @@ const Header: React.FC<{
           right: 76,
           fontSize: 22,
           textTransform: "uppercase",
-          color: "rgba(248,243,238,0.48)",
+          color: "rgba(244,240,232,0.52)",
           fontWeight: 800,
+          letterSpacing: 0.8,
         }}
       >
-        {scene.kicker}
+        {normalizeText(scene.kicker)}
       </div>
-      <div
-        style={{
-          position: "absolute",
-          top: 132,
-          left: 76,
-          right: 76,
-          maxWidth: 960,
-          fontSize: scene.title.length > 48 ? 38 : 44,
-          fontWeight: 850,
-          lineHeight: 1.12,
-          color: theme.foreground,
-          opacity: titleIn,
-          transform: `translateY(${interpolate(titleIn, [0, 1], [18, 0])}px)`,
-        }}
-      >
-        {scene.title}
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          top: 292,
-          left: 76,
-          right: 76,
-          maxWidth: 960,
-          fontSize: 22,
-          lineHeight: 1.42,
-          color: theme.muted,
-          opacity: subtitleIn,
-          transform: `translateY(${interpolate(subtitleIn, [0, 1], [14, 0])}px)`,
-        }}
-      >
-        {scene.content.subtitle}
-      </div>
+      {hideTitle ? null : (
+        <div
+          style={{
+            position: "absolute",
+            top: 132,
+            left: 76,
+            right: 76,
+            maxWidth: 960,
+            fontSize: scene.title.length > 48 ? 38 : 46,
+            fontWeight: 850,
+            lineHeight: 1.12,
+            color: theme.foreground,
+            opacity: titleIn,
+            transform: `translateY(${interpolate(titleIn, [0, 1], [18, 0])}px)`,
+          }}
+        >
+          {normalizeText(scene.title)}
+        </div>
+      )}
+      {hideSubtitle ? null : (
+        <div
+          style={{
+            position: "absolute",
+            top: 292,
+            left: 76,
+            right: 76,
+            maxWidth: 960,
+            fontSize: 22,
+            lineHeight: 1.42,
+            color: theme.muted,
+            opacity: subtitleIn,
+            transform: `translateY(${interpolate(subtitleIn, [0, 1], [14, 0])}px)`,
+          }}
+        >
+          {normalizeText(scene.content.subtitle)}
+        </div>
+      )}
     </>
   );
 };
@@ -408,74 +458,122 @@ const SubtitleBar: React.FC<{
   scene: VideoScene;
   localFrame: number;
 }> = ({ scene, localFrame }) => {
-  if (scene.subtitleMode === "none" || scene.narration.length === 0) {
+  const { fps } = useVideoConfig();
+  if (scene.subtitleMode === "none" || scene.captionGroups.length === 0) {
     return null;
   }
 
-  const segmentLength = scene.durationFrames / scene.narration.length;
+  const segmentLength = scene.durationFrames / scene.captionGroups.length;
   const index = Math.min(
-    scene.narration.length - 1,
+    scene.captionGroups.length - 1,
     Math.floor(localFrame / segmentLength),
   );
   const segmentFrame = localFrame - index * segmentLength;
-  const text = scene.narration[index] ?? "";
-  const segmentIn = interpolate(ease(segmentFrame, 0, 10), [0, 1], [0.88, 1]);
-  const progress = (localFrame + 1) / scene.durationFrames;
+  const group = scene.captionGroups[index];
+  const lines = group.lines.length > 0 ? group.lines : [splitWords(group.text)];
+  const words = lines.flat();
+  const activeIndex = Math.min(
+    Math.max(0, words.length - 1),
+    Math.floor((segmentFrame / Math.max(1, segmentLength)) * Math.max(1, words.length)),
+  );
+  const wordFrameLength = segmentLength / Math.max(1, words.length);
+  const groupEnter = interpolate(segmentFrame, [0, 6], [0.72, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const groupExit = interpolate(segmentFrame, [segmentLength - 7, segmentLength - 1], [1, 0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  let runningIndex = 0;
 
   return (
     <div
       style={{
         position: "absolute",
-        left: 74,
-        right: 74,
-        bottom: 88,
-        minHeight: 190,
+        left: 100,
+        width: 880,
+        bottom: 210,
+        minHeight: 132,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "30px 40px 34px",
-        borderRadius: 24,
-        background: "linear-gradient(180deg, rgba(9,8,7,0.80), rgba(9,8,7,0.60))",
-        border: "1px solid rgba(255,255,255,0.10)",
-        boxShadow:
-          "0 18px 48px rgba(0,0,0,0.36), 0 0 30px rgba(255,138,61,0.12)",
+        alignContent: "center",
+        padding: "22px 24px",
+        background:
+          "linear-gradient(180deg, rgba(20,21,24,0.30), rgba(10,11,13,0.18))",
+        borderRadius: 22,
+        opacity: groupEnter * groupExit,
+        transform: `translateY(${interpolate(groupEnter, [0, 1], [8, 0])}px)`,
       }}
     >
       <div
         style={{
-          color: "#fff6ed",
-          fontSize: text.length > 92 ? 28 : 32,
-          lineHeight: 1.25,
-          fontWeight: 750,
+          color: palette.textPrimary,
+          fontSize: group.weight === "compact" ? 44 : 48,
+          lineHeight: 1.18,
+          fontWeight: 760,
           textAlign: "center",
-          maxWidth: 900,
-          opacity: segmentIn,
-          transform: `translateY(${interpolate(segmentIn, [0, 1], [10, 0])}px)`,
+          width: "100%",
+          fontVariantLigatures: "none",
         }}
       >
-        {text}
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          left: 28,
-          right: 28,
-          bottom: 18,
-          height: 5,
-          borderRadius: 999,
-          background: "rgba(255,255,255,0.10)",
-          overflow: "hidden",
-        }}
-      >
-        <div
-          style={{
-            width: `${progress * 100}%`,
-            height: "100%",
-            borderRadius: 999,
-            background: "linear-gradient(90deg, #ff8a3d, #ffe1b8)",
-            boxShadow: "0 0 18px rgba(255,154,67,0.75)",
-          }}
-        />
+        {lines.map((line, lineIndex) => (
+          <div
+            key={`${scene.id}-subtitle-${index}-line-${lineIndex}`}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "baseline",
+              flexWrap: "nowrap",
+              whiteSpace: "nowrap",
+              minHeight: group.weight === "compact" ? 50 : 56,
+            }}
+          >
+            {line.map((word) => {
+              const wordIndex = runningIndex;
+              runningIndex += 1;
+              const isActive = wordIndex === activeIndex;
+              const wordFrame = segmentFrame - wordIndex * wordFrameLength;
+              const activeMotion = spring({
+                frame: Math.max(0, wordFrame),
+                fps,
+                config: {
+                  damping: 18,
+                  stiffness: 190,
+                  mass: 0.55,
+                },
+              });
+              const lightWord = lightSubtitleWords.has(normalizeForMatch(word));
+              const activeLift = isActive
+                ? interpolate(activeMotion, [0, 1], [2, lightWord ? -2 : -5])
+                : 0;
+              const activeScale = isActive
+                ? interpolate(activeMotion, [0, 1], [0.99, lightWord ? 1.025 : 1.07])
+                : 1;
+
+              return (
+                <span
+                  key={`${scene.id}-subtitle-${index}-${wordIndex}-${word}`}
+                  style={{
+                    display: "inline-block",
+                    margin: "0 7px",
+                    color: isActive ? palette.champagne : palette.textPrimary,
+                    opacity: isActive ? 1 : 0.84,
+                    transform: `translateY(${activeLift}px) scale(${activeScale})`,
+                    transformOrigin: "center bottom",
+                    textShadow: isActive
+                      ? "0 0 18px rgba(210,180,122,0.26)"
+                      : "0 2px 12px rgba(0,0,0,0.46)",
+                    willChange: "transform, color",
+                  }}
+                >
+                  {normalizeText(word)}
+                </span>
+              );
+            })}
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -485,7 +583,7 @@ const TransitionOverlay: React.FC<{
   scene: VideoScene;
   localFrame: number;
 }> = ({ scene, localFrame }) => {
-  const transitionFrames = 14;
+  const transitionFrames = 8;
   const start = scene.durationFrames - transitionFrames;
   const progress = ease(localFrame, start, scene.durationFrames - 1);
 
@@ -497,8 +595,10 @@ const TransitionOverlay: React.FC<{
     return (
       <AbsoluteFill
         style={{
-          background: "linear-gradient(90deg, rgba(255,138,61,0.96), rgba(255,224,184,0.72))",
-          transform: `translateX(${interpolate(progress, [0, 1], [-105, 105])}%)`,
+          background:
+            "linear-gradient(90deg, transparent 0%, rgba(210,180,122,0.72) 49%, rgba(244,240,232,0.34) 50%, transparent 58%)",
+          filter: "blur(5px)",
+          transform: `translateX(${interpolate(progress, [0, 1], [-70, 70])}%)`,
         }}
       />
     );
@@ -508,10 +608,11 @@ const TransitionOverlay: React.FC<{
     return (
       <AbsoluteFill
         style={{
-          background: "rgba(255,154,67,0.22)",
-          filter: "blur(18px)",
-          opacity: progress,
-          transform: `translateX(${interpolate(progress, [0, 1], [0, 80])}px) scale(${1 + progress * 0.05})`,
+          background:
+            "linear-gradient(90deg, transparent, rgba(210,180,122,0.20), transparent)",
+          filter: "blur(10px)",
+          opacity: progress * 0.75,
+          transform: `translateX(${interpolate(progress, [0, 1], [0, 60])}px) scale(${1 + progress * 0.025})`,
         }}
       />
     );
@@ -521,8 +622,8 @@ const TransitionOverlay: React.FC<{
     return (
       <AbsoluteFill
         style={{
-          border: `${Math.round(progress * 520)}px solid rgba(255,154,67,0.22)`,
-          opacity: progress,
+          border: `${Math.round(progress * 180)}px solid rgba(210,180,122,0.14)`,
+          opacity: progress * 0.8,
         }}
       />
     );
@@ -531,8 +632,8 @@ const TransitionOverlay: React.FC<{
   return (
     <AbsoluteFill
       style={{
-        background: "#090807",
-        opacity: progress * 0.7,
+        background: palette.background,
+        opacity: progress * 0.28,
       }}
     />
   );
@@ -558,16 +659,6 @@ export const SceneShell: React.FC<{
         <Header scene={scene} localFrame={localFrame} theme={theme} />
         {children}
         <SubtitleBar scene={scene} localFrame={localFrame} />
-        <div
-          style={{
-            position: "absolute",
-            left: 76,
-            bottom: 52,
-            right: 76,
-            height: 2,
-            background: "rgba(255,255,255,0.08)",
-          }}
-        />
       </div>
       <TransitionOverlay scene={scene} localFrame={localFrame} />
     </AbsoluteFill>
@@ -600,6 +691,14 @@ const HeroTitleAdapter: React.FC<TemplateAdapterProps> = ({
     extrapolateRight: "clamp",
   });
   const chips = getItems(scene).slice(0, 4);
+  const payoffIn = ease(localFrame, 30, 48);
+  const activeChip = Math.min(
+    Math.max(0, chips.length - 1),
+    Math.floor(interpolate(localFrame, [56, scene.durationFrames - 28], [0, chips.length], {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    })),
+  );
 
   return (
     <div style={stageStyle}>
@@ -620,19 +719,33 @@ const HeroTitleAdapter: React.FC<TemplateAdapterProps> = ({
             lineHeight: 1.05,
             color: theme.foreground,
             fontWeight: 900,
-            textShadow: `0 0 42px ${scene.accent}55`,
+            textShadow: "0 0 36px rgba(210,180,122,0.22)",
           }}
         >
-          {scene.headline}
+          {normalizeText(scene.headline)}
         </div>
+        {scene.intent === "hook" ? (
+          <div
+            style={{
+              marginTop: 24,
+              color: palette.champagne,
+              fontSize: 34,
+              fontWeight: 780,
+              opacity: payoffIn,
+              transform: `translateY(${interpolate(payoffIn, [0, 1], [12, 0])}px)`,
+            }}
+          >
+            {normalizeText(scene.content.subtitle)}
+          </div>
+        ) : null}
         <div
           style={{
             width: 520 * underlineWidth,
             height: 6,
             margin: "34px auto 0",
             borderRadius: 999,
-            background: "linear-gradient(90deg, #ff8a3d, #ffe1b8)",
-            boxShadow: `0 0 28px ${scene.accent}99`,
+            background: `linear-gradient(90deg, ${palette.champagneDeep}, ${palette.champagne})`,
+            boxShadow: "0 0 24px rgba(210,180,122,0.28)",
           }}
         />
       </div>
@@ -641,7 +754,7 @@ const HeroTitleAdapter: React.FC<TemplateAdapterProps> = ({
           position: "absolute",
           left: 18,
           right: 18,
-          bottom: 120,
+          bottom: 118,
           display: "grid",
           gridTemplateColumns: `repeat(${Math.max(1, chips.length)}, 1fr)`,
           gap: 16,
@@ -649,23 +762,29 @@ const HeroTitleAdapter: React.FC<TemplateAdapterProps> = ({
       >
         {chips.map((item, index) => {
           const progress = ease(localFrame, 42 + index * 5, 64 + index * 5);
+          const isActive = index === activeChip;
 
           return (
             <div
               key={`${scene.id}-chip-${index}`}
               style={{
-                minHeight: 118,
+                minHeight: 132,
                 borderRadius: 18,
-                border: "1px solid rgba(255,255,255,0.12)",
-                background:
-                  "linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04))",
+                border: isActive
+                  ? `2px solid ${palette.champagne}`
+                  : "1px solid rgba(255,255,255,0.12)",
+                background: isActive
+                  ? "linear-gradient(180deg, rgba(210,180,122,0.16), rgba(255,255,255,0.045))"
+                  : "linear-gradient(180deg, rgba(255,255,255,0.090), rgba(255,255,255,0.045))",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                opacity: progress,
-                transform: `translateY(${interpolate(progress, [0, 1], [20, 0])}px)`,
-                boxShadow: `0 0 28px ${scene.accent}1f`,
+                opacity: isActive ? progress : progress * 0.78,
+                transform: `translateY(${interpolate(progress, [0, 1], [20, 0])}px) scale(${isActive ? 1.04 : 1})`,
+                boxShadow: isActive
+                  ? "0 0 28px rgba(210,180,122,0.20)"
+                  : "0 0 20px rgba(210,180,122,0.08)",
               }}
             >
               <div
@@ -676,7 +795,7 @@ const HeroTitleAdapter: React.FC<TemplateAdapterProps> = ({
                   textAlign: "center",
                 }}
               >
-                {labelForItem(item)}
+                {normalizeText(labelForItem(item))}
               </div>
               {item.note ? (
                 <div
@@ -687,7 +806,7 @@ const HeroTitleAdapter: React.FC<TemplateAdapterProps> = ({
                     textAlign: "center",
                   }}
                 >
-                  {item.note}
+                  {normalizeText(item.note)}
                 </div>
               ) : null}
             </div>
@@ -701,7 +820,14 @@ const HeroTitleAdapter: React.FC<TemplateAdapterProps> = ({
 const CodePanelAdapter: React.FC<TemplateAdapterProps> = ({ scene, localFrame }) => {
   const lines = scene.content.lines ?? [];
   const highlighted = new Set(scene.content.highlights ?? []);
-  const lineHeight = lines.length > 6 ? 58 : 68;
+  const lineHeight = lines.length > 6 ? 66 : 78;
+  const activeLine = Math.min(
+    Math.max(1, lines.length - 1),
+    Math.floor(interpolate(localFrame, [18, scene.durationFrames - 34], [1, lines.length - 1], {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    })),
+  );
 
   return (
     <div style={stageStyle}>
@@ -710,13 +836,18 @@ const CodePanelAdapter: React.FC<TemplateAdapterProps> = ({ scene, localFrame })
           position: "absolute",
           left: 0,
           right: 0,
-          top: 42,
-          height: 620,
+          top: -8,
+          height: 720,
           borderRadius: 22,
-          border: "1px solid rgba(255,255,255,0.12)",
-          background: "linear-gradient(180deg, rgba(12,11,10,0.92), rgba(26,18,12,0.86))",
-          boxShadow: "0 28px 70px rgba(0,0,0,0.42), 0 0 38px rgba(255,138,61,0.18)",
+          border: "1px solid rgba(255,255,255,0.13)",
+          background: "linear-gradient(180deg, rgba(25,26,30,0.98), rgba(14,15,17,0.94))",
+          boxShadow: "0 28px 70px rgba(0,0,0,0.42), 0 0 34px rgba(210,180,122,0.10)",
           overflow: "hidden",
+          transform: `scale(${interpolate(localFrame, [12, scene.durationFrames - 24], [1, 1.075], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp",
+          })})`,
+          transformOrigin: "50% 42%",
         }}
       >
         <div
@@ -744,19 +875,20 @@ const CodePanelAdapter: React.FC<TemplateAdapterProps> = ({ scene, localFrame })
           </div>
           <div
             style={{
-              color: "rgba(248,243,238,0.70)",
+              color: "rgba(244,240,232,0.72)",
               fontSize: 19,
               fontFamily: "Consolas, monospace",
               fontWeight: 700,
             }}
           >
-            {scene.content.codeTitle}
+            {normalizeText(scene.content.codeTitle)}
           </div>
         </div>
         <div style={{ padding: "32px 34px" }}>
           {lines.map((line, index) => {
             const lineIn = ease(localFrame, 12 + index * 5, 26 + index * 5);
             const isHighlighted = highlighted.has(index) || highlighted.has(index + 1);
+            const isActive = index === activeLine;
 
             return (
               <div
@@ -765,22 +897,22 @@ const CodePanelAdapter: React.FC<TemplateAdapterProps> = ({ scene, localFrame })
                   height: lineHeight,
                   display: "flex",
                   alignItems: "center",
-                  opacity: lineIn,
-                  transform: `translateX(${interpolate(lineIn, [0, 1], [-24, 0])}px)`,
+                  opacity: isActive ? lineIn : lineIn * 0.45,
+                  transform: `translateX(${interpolate(lineIn, [0, 1], [-24, isActive ? 8 : 0])}px)`,
                   fontFamily: "Consolas, monospace",
-                  fontSize: 30,
-                  color: isHighlighted ? "#fff0dc" : "rgba(248,243,238,0.68)",
-                  background: isHighlighted
-                    ? "linear-gradient(90deg, rgba(255,138,61,0.22), transparent)"
+                  fontSize: 38,
+                  color: isActive ? palette.textPrimary : "rgba(244,240,232,0.60)",
+                  background: isActive || isHighlighted
+                    ? "linear-gradient(90deg, rgba(210,180,122,0.18), transparent)"
                     : "transparent",
-                  borderLeft: isHighlighted ? `4px solid ${scene.accent}` : "4px solid transparent",
+                  borderLeft: isActive ? `4px solid ${palette.champagne}` : "4px solid transparent",
                   paddingLeft: 18,
                 }}
               >
                 <span style={{ color: "rgba(255,255,255,0.28)", width: 46 }}>
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <span>{line}</span>
+                <span>{normalizeText(line)}</span>
               </div>
             );
           })}
@@ -798,9 +930,10 @@ const CodePanelAdapter: React.FC<TemplateAdapterProps> = ({ scene, localFrame })
         }}
       >
         {getItems(scene)
-          .slice(0, 4)
+          .slice(0, 5)
           .map((item, index) => {
             const progress = ease(localFrame, 54 + index * 4, 70 + index * 4);
+            const isActive = index + 1 === activeLine;
 
             return (
               <div
@@ -808,25 +941,29 @@ const CodePanelAdapter: React.FC<TemplateAdapterProps> = ({ scene, localFrame })
                 style={{
                   minHeight: 92,
                   borderRadius: 16,
-                  border: "1px solid rgba(255,255,255,0.10)",
-                  background: "rgba(255,255,255,0.055)",
+                  border: isActive
+                    ? `1px solid ${palette.champagne}`
+                    : "1px solid rgba(255,255,255,0.08)",
+                  background: isActive
+                    ? "rgba(210,180,122,0.10)"
+                    : "rgba(255,255,255,0.045)",
                   padding: 16,
-                  opacity: progress,
-                  transform: `translateY(${interpolate(progress, [0, 1], [16, 0])}px)`,
+                  opacity: isActive ? progress : progress * 0.45,
+                  transform: `translateY(${interpolate(progress, [0, 1], [16, 0])}px) translateX(${isActive ? 8 : 0}px)`,
                 }}
               >
-                <div style={{ color: "#fff3e7", fontSize: 19, fontWeight: 800 }}>
-                  {labelForItem(item)}
+                <div style={{ color: palette.textPrimary, fontSize: 19, fontWeight: 800 }}>
+                  {normalizeText(labelForItem(item))}
                 </div>
                 <div
                   style={{
-                    color: "rgba(248,243,238,0.58)",
+                    color: "rgba(244,240,232,0.58)",
                     fontSize: 13,
                     marginTop: 6,
                     lineHeight: 1.25,
                   }}
                 >
-                  {item.note}
+                  {normalizeText(item.note)}
                 </div>
               </div>
             );
@@ -854,6 +991,7 @@ const SplitScreenAdapter: React.FC<TemplateAdapterProps> = ({
     config: { damping: 15, stiffness: 80 },
   });
   const dividerOpacity = ease(localFrame, 18, 30);
+  const keywords = ["Role", "Limits", "Tools", "Memory", "Guardrail", "Workflow"];
 
   return (
     <div style={stageStyle}>
@@ -864,7 +1002,7 @@ const SplitScreenAdapter: React.FC<TemplateAdapterProps> = ({
           display: "flex",
           borderRadius: 26,
           overflow: "hidden",
-          border: "1px solid rgba(255,255,255,0.10)",
+          border: "1px solid rgba(255,255,255,0.08)",
           boxShadow: "0 28px 62px rgba(0,0,0,0.35)",
         }}
       >
@@ -881,7 +1019,7 @@ const SplitScreenAdapter: React.FC<TemplateAdapterProps> = ({
               style={{
                 width: "50%",
                 height: "100%",
-                transform: `translateX(${translateX}%)`,
+                transform: `translateX(${translateX}%) scale(${index === 1 ? interpolate(ease(localFrame, 28, 42), [0, 1], [1, 1.08]) : 1})`,
                 background: `linear-gradient(155deg, ${tone.fill}, rgba(255,255,255,0.035))`,
                 display: "flex",
                 flexDirection: "column",
@@ -893,32 +1031,32 @@ const SplitScreenAdapter: React.FC<TemplateAdapterProps> = ({
               <div
                 style={{
                   fontSize: 23,
-                  color: tone.stroke,
+                  color: index === 1 ? palette.champagne : tone.stroke,
                   fontWeight: 900,
                   marginBottom: 22,
                 }}
               >
-                {index === 0 ? "BEFORE" : "AFTER"}
+                {index === 0 ? "SURFACE" : "CONTROL"}
               </div>
               <div
                 style={{
                   color: theme.foreground,
-                  fontSize: panel.title.length > 18 ? 36 : 42,
+                  fontSize: panel.title.length > 18 ? 38 : 46,
                   fontWeight: 880,
                   lineHeight: 1.08,
                 }}
               >
-                {panel.title}
+                {normalizeText(panel.title)}
               </div>
               <div
                 style={{
                   color: theme.muted,
-                  fontSize: 21,
+                  fontSize: 22,
                   lineHeight: 1.35,
                   marginTop: 24,
                 }}
               >
-                {panel.body}
+                {normalizeText(panel.body)}
               </div>
             </div>
           );
@@ -936,6 +1074,41 @@ const SplitScreenAdapter: React.FC<TemplateAdapterProps> = ({
           }}
         />
       </div>
+      <div
+        style={{
+          position: "absolute",
+          left: 30,
+          right: 30,
+          bottom: 8,
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          gap: 12,
+        }}
+      >
+        {keywords.map((keyword, index) => {
+          const progress = ease(localFrame, 42 + index * 4, 54 + index * 4);
+
+          return (
+            <div
+              key={`${scene.id}-keyword-${keyword}`}
+              style={{
+                padding: "9px 14px",
+                borderRadius: 999,
+                border: "1px solid rgba(210,180,122,0.22)",
+                background: "rgba(210,180,122,0.08)",
+                color: palette.champagne,
+                fontSize: 18,
+                fontWeight: 780,
+                opacity: progress,
+                transform: `translateY(${interpolate(progress, [0, 1], [12, 0])}px)`,
+              }}
+            >
+              {keyword}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
@@ -947,6 +1120,13 @@ const AnimatedListAdapter: React.FC<TemplateAdapterProps> = ({
 }) => {
   const { fps } = useVideoConfig();
   const items = getItems(scene).slice(0, 6);
+  const activeGroup = Math.min(
+    2,
+    Math.floor(interpolate(localFrame, [16, scene.durationFrames - 30], [0, 2.99], {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    })),
+  );
 
   return (
     <div style={stageStyle}>
@@ -960,8 +1140,35 @@ const AnimatedListAdapter: React.FC<TemplateAdapterProps> = ({
           alignContent: "center",
         }}
       >
+        <svg
+          width="100%"
+          height="100%"
+          viewBox="0 0 944 890"
+          preserveAspectRatio="none"
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            opacity: ease(localFrame, 52, 72) * 0.55,
+          }}
+        >
+          <path
+            d="M244 250 C360 250 360 250 476 250 C594 250 594 250 712 250"
+            fill="none"
+            stroke="rgba(210,180,122,0.34)"
+            strokeWidth="3"
+          />
+          <path
+            d="M476 250 C476 365 476 475 476 590"
+            fill="none"
+            stroke="rgba(210,180,122,0.22)"
+            strokeWidth="3"
+          />
+        </svg>
         {items.map((item, index) => {
           const tone = toneMap[item.tone ?? "neutral"];
+          const group = Math.floor(index / 2);
+          const isActive = group === activeGroup;
           const progress = spring({
             frame: localFrame - index * 5,
             fps,
@@ -977,13 +1184,15 @@ const AnimatedListAdapter: React.FC<TemplateAdapterProps> = ({
               style={{
                 minHeight: 178,
                 borderRadius: 20,
-                border: `1px solid ${tone.stroke}`,
+                border: isActive ? `2px solid ${palette.champagne}` : `1px solid rgba(255,255,255,0.12)`,
                 background:
-                  "linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04))",
-                boxShadow: `0 18px 44px rgba(0,0,0,0.28), 0 0 28px ${tone.glow}`,
+                  "linear-gradient(180deg, rgba(255,255,255,0.095), rgba(255,255,255,0.045))",
+                boxShadow: isActive
+                  ? "0 18px 44px rgba(0,0,0,0.30), 0 0 28px rgba(210,180,122,0.22)"
+                  : `0 18px 44px rgba(0,0,0,0.24), 0 0 18px ${tone.glow}`,
                 padding: 24,
-                opacity,
-                transform: `translateX(${interpolate(opacity, [0, 1], [-42, 0])}px) scale(${interpolate(opacity, [0, 1], [0.92, 1])})`,
+                opacity: isActive ? opacity : opacity * 0.62,
+                transform: `translateX(${interpolate(opacity, [0, 1], [-42, 0])}px) scale(${interpolate(opacity, [0, 1], [0.92, isActive ? 1.04 : 1])})`,
                 overflow: "hidden",
               }}
             >
@@ -1000,8 +1209,8 @@ const AnimatedListAdapter: React.FC<TemplateAdapterProps> = ({
                     width: 48,
                     height: 48,
                     borderRadius: 16,
-                    background: `linear-gradient(135deg, ${scene.accent}, rgba(255,255,255,0.18))`,
-                    color: "#140d08",
+                    background: `linear-gradient(135deg, ${palette.champagne}, rgba(255,255,255,0.18))`,
+                    color: "#101113",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -1014,22 +1223,22 @@ const AnimatedListAdapter: React.FC<TemplateAdapterProps> = ({
                 <div
                   style={{
                     color: theme.foreground,
-                    fontSize: 28,
+                  fontSize: 31,
                     fontWeight: 860,
                     lineHeight: 1.05,
                   }}
                 >
-                  {labelForItem(item)}
+                  {normalizeText(labelForItem(item))}
                 </div>
               </div>
               <div
                 style={{
-                  color: theme.muted,
-                  fontSize: 18,
+                  color: "rgba(244,240,232,0.74)",
+                  fontSize: 20,
                   lineHeight: 1.34,
                 }}
               >
-                {bodyForItem(item)}
+                  {normalizeText(bodyForItem(item))}
               </div>
             </div>
           );
@@ -1047,6 +1256,14 @@ const ProgressStepsAdapter: React.FC<TemplateAdapterProps> = ({
   const { fps } = useVideoConfig();
   const steps = getSteps(scene).slice(0, 5);
   const framesPerStep = Math.max(16, Math.floor(scene.durationFrames / Math.max(1, steps.length)));
+  const activeStep = Math.min(
+    steps.length - 1,
+    Math.max(0, Math.floor(localFrame / Math.max(1, framesPerStep))),
+  );
+  const cameraY = interpolate(activeStep, [0, Math.max(1, steps.length - 1)], [34, -34], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
 
   return (
     <div style={stageStyle}>
@@ -1061,6 +1278,7 @@ const ProgressStepsAdapter: React.FC<TemplateAdapterProps> = ({
           flexDirection: "column",
           justifyContent: "center",
           gap: 26,
+          transform: `translateY(${cameraY}px)`,
         }}
       >
         {steps.map((step, index) => {
@@ -1076,7 +1294,10 @@ const ProgressStepsAdapter: React.FC<TemplateAdapterProps> = ({
             fps,
             config: { damping: 8, stiffness: 150, mass: 0.4 },
           });
-          const activeScale = fillProgress > 0 && fillProgress < 1 ? 0.9 + pulse * 0.18 : 1;
+          const isActive = index === activeStep;
+          const isPast = index < activeStep;
+          const stateOpacity = isActive ? 1 : isPast ? 0.65 : 0.28;
+          const activeScale = isActive ? 1 + pulse * 0.07 : 1;
 
           return (
             <div
@@ -1095,19 +1316,20 @@ const ProgressStepsAdapter: React.FC<TemplateAdapterProps> = ({
                     width: 62,
                     height: 62,
                     borderRadius: "50%",
-                    border: `3px solid ${fillProgress > 0 ? scene.accent : "rgba(255,255,255,0.18)"}`,
+                    border: `3px solid ${isActive ? palette.champagne : isPast ? "rgba(244,240,232,0.40)" : "rgba(255,255,255,0.18)"}`,
                     background:
-                      fillProgress > 0
-                        ? "linear-gradient(135deg, #ff8a3d, #ffe1b8)"
+                      isActive
+                        ? `linear-gradient(135deg, ${palette.champagne}, rgba(255,255,255,0.18))`
                         : "rgba(255,255,255,0.04)",
-                    color: fillProgress > 0 ? "#130d08" : "rgba(255,255,255,0.52)",
+                    color: isActive ? "#101113" : "rgba(255,255,255,0.52)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     fontSize: 24,
                     fontWeight: 900,
                     transform: `scale(${activeScale})`,
-                    boxShadow: fillProgress > 0 ? `0 0 28px ${scene.accent}66` : "none",
+                    opacity: stateOpacity,
+                    boxShadow: isActive ? "0 0 28px rgba(210,180,122,0.28)" : "none",
                   }}
                 >
                   {index + 1}
@@ -1129,7 +1351,7 @@ const ProgressStepsAdapter: React.FC<TemplateAdapterProps> = ({
                         height: `${lineProgress * 100}%`,
                         width: "100%",
                         borderRadius: 999,
-                        background: "linear-gradient(180deg, #ff8a3d, #ffe1b8)",
+                        background: `linear-gradient(180deg, ${palette.champagne}, rgba(244,240,232,0.42))`,
                       }}
                     />
                   </div>
@@ -1138,11 +1360,15 @@ const ProgressStepsAdapter: React.FC<TemplateAdapterProps> = ({
               <div
                 style={{
                   borderRadius: 20,
-                  border: "1px solid rgba(255,255,255,0.10)",
-                  background: "rgba(255,255,255,0.055)",
+                  border: isActive
+                    ? `1px solid ${palette.champagne}`
+                    : "1px solid rgba(255,255,255,0.08)",
+                  background: isActive
+                    ? "rgba(210,180,122,0.09)"
+                    : "rgba(255,255,255,0.045)",
                   padding: "22px 26px",
-                  opacity: fillProgress,
-                  transform: `translateY(${interpolate(fillProgress, [0, 1], [14, 0])}px)`,
+                  opacity: Math.max(fillProgress, stateOpacity),
+                  transform: `translateY(${interpolate(fillProgress, [0, 1], [14, 0])}px) translateX(${isActive ? 8 : 0}px)`,
                 }}
               >
                 <div
@@ -1153,7 +1379,7 @@ const ProgressStepsAdapter: React.FC<TemplateAdapterProps> = ({
                     lineHeight: 1.1,
                   }}
                 >
-                  {labelForItem(step)}
+                  {normalizeText(labelForItem(step))}
                 </div>
                 <div
                   style={{
@@ -1163,7 +1389,7 @@ const ProgressStepsAdapter: React.FC<TemplateAdapterProps> = ({
                     marginTop: 8,
                   }}
                 >
-                  {bodyForItem(step)}
+                  {normalizeText(bodyForItem(step))}
                 </div>
               </div>
             </div>
@@ -1434,7 +1660,6 @@ const EndCardAdapter: React.FC<TemplateAdapterProps> = ({
     to: 1,
     durationInFrames: 25,
   });
-  const chips = getItems(scene).slice(0, 3);
 
   return (
     <div style={stageStyle}>
@@ -1456,13 +1681,13 @@ const EndCardAdapter: React.FC<TemplateAdapterProps> = ({
             width: 136,
             height: 136,
             borderRadius: "50%",
-            border: `2px solid ${scene.accent}`,
-            boxShadow: `0 0 44px ${scene.accent}66`,
+            border: `2px solid ${palette.champagne}`,
+            boxShadow: "0 0 38px rgba(210,180,122,0.24)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: scene.accent,
-            fontSize: 56,
+            color: palette.champagne,
+            fontSize: 62,
             fontWeight: 920,
             marginBottom: 34,
           }}
@@ -1478,63 +1703,50 @@ const EndCardAdapter: React.FC<TemplateAdapterProps> = ({
             maxWidth: 840,
           }}
         >
-          {scene.headline}
+          {normalizeText(scene.headline)}
         </div>
         <div
           style={{
             color: theme.muted,
-            fontSize: 24,
+            fontSize: 26,
             lineHeight: 1.34,
             maxWidth: 760,
             marginTop: 22,
           }}
         >
-          {scene.content.subtitle}
+          {normalizeText(scene.content.subtitle)}
         </div>
         <div
           style={{
             marginTop: 38,
-            padding: "18px 42px",
+            padding: "20px 46px",
             borderRadius: 16,
-            background: "linear-gradient(90deg, #ff8a3d, #ffe1b8)",
-            boxShadow: `0 0 32px ${scene.accent}66`,
+            background: `linear-gradient(90deg, ${palette.champagneDeep}, ${palette.champagne})`,
+            boxShadow: "0 0 28px rgba(210,180,122,0.22)",
             opacity: buttonOpacity,
           }}
         >
           <span
             style={{
-              color: "#160e08",
-              fontSize: 24,
+              color: "#101113",
+              fontSize: 28,
               fontWeight: 900,
             }}
           >
-            {scene.content.cta?.label ?? "Follow for more"}
+            {normalizeText(scene.content.cta?.label ?? "Follow for more")}
           </span>
         </div>
         <div
           style={{
-            display: "flex",
-            gap: 14,
-            marginTop: 34,
+            color: "rgba(244,240,232,0.70)",
+            fontSize: 20,
+            lineHeight: 1.3,
+            maxWidth: 720,
+            marginTop: 30,
             opacity: buttonOpacity,
           }}
         >
-          {chips.map((item, index) => (
-            <div
-              key={`${scene.id}-cta-chip-${index}`}
-              style={{
-                borderRadius: 999,
-                border: "1px solid rgba(255,255,255,0.12)",
-                background: "rgba(255,255,255,0.07)",
-                color: "rgba(255,246,237,0.86)",
-                padding: "12px 18px",
-                fontSize: 16,
-                fontWeight: 760,
-              }}
-            >
-              {labelForItem(item)}
-            </div>
-          ))}
+          {normalizeText(scene.content.cta?.detail ?? scene.footer)}
         </div>
       </div>
     </div>

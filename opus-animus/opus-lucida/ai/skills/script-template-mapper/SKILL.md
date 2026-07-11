@@ -28,6 +28,10 @@ Read these references when needed:
 - `references/llm-prompt.md`: prompt to send to an LLM for mapping.
 - `references/template-taxonomy.md`: template choices and mapping rules.
 - `references/video-map-schema.md`: required JSON structure.
+- `apps/lucida-remotion-demo/design/visual-library/index.json`: reusable visual families.
+- `apps/lucida-remotion-demo/design/motion-library/index.json`: reusable motion presets.
+- `apps/lucida-remotion-demo/design/directors/selection-rules.json`: scoring, continuity, and hard constraints.
+- `apps/lucida-remotion-demo/design/prompts/select-style.md`: style-director prompt for mapping script + clean brief to JSON.
 
 ## Workflow
 
@@ -35,12 +39,14 @@ Read these references when needed:
 2. Segment by meaning, not by paragraph length.
 3. Assign exactly one primary intent per scene.
 4. Read `apps/remotion-templates/template-catalog.json`.
-5. Choose one cataloged `templateId` per scene.
-6. Use `visualReferences` as style guidance and `usableAssets` only as explicit embed candidates.
-7. Extract only visual content needed by that template.
-8. Keep long narration in `subtitle.text`, not in card labels.
-9. Add `reason` to explain why the template fits the scene.
-10. Validate duration, density, and object count.
+5. Read the Lucida design director files in `apps/lucida-remotion-demo/design/`.
+6. Choose one visual family and one cataloged `templateId` per scene.
+7. Prefer `templateId` values supported by `src/templateRegistry.tsx` when a runnable video is required immediately.
+8. Use `visualReferences` as style guidance and `usableAssets` only as explicit embed candidates.
+9. Extract only visual content needed by that template.
+10. Keep long narration in `subtitle.text`, not in card labels.
+11. Add `reason` to explain why the template fits the scene.
+12. Validate duration, density, object count, and continuity.
 
 ## Scene Intent Set
 

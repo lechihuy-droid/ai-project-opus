@@ -1,7 +1,7 @@
 # STATUS - opus-lucida
-**Updated:** 2026-05-17
-**Current owner:** Claude (since 2026-05-14 — TTS bilingual pipeline)
-**Previous owner:** Codex (2026-05-10, Wake schema-first prototype)
+**Updated:** 2026-07-11
+**Current owner:** Codex
+**Previous owner:** Claude (2026-05-14, TTS bilingual pipeline)
 
 ## Active sub-systems
 
@@ -9,6 +9,7 @@
 |---|---|---|
 | Wake Lane (slide-agent) | Active | Full 17-slide agent render/export verified end-to-end |
 | TTS Bilingual Pipeline | Active | VieNeu (VI) terms-only adapter fixed; long JP sentences stay Japanese for VOICEVOX lane |
+| Remotion n8n Starter | Active | Local n8n compose + render orchestration scaffold under `apps/lucida-remotion-demo/n8n/` |
 | Slide Agent Renderer | Active | `apps/slide-agent/`; Mustache templates + JSON schemas + Playwright frame export |
 | Schema-first HTML Prototype | Archived | Moved to `99-archive/schema-html-prototype-pre-mcp/` as rollback reference |
 | Language Generation Backbone | Active | runner pack + rule files are the core path |
@@ -17,7 +18,7 @@
 
 ## Current direction
 
-> Lucida is on the slide-agent static HTML runtime -> PNG frames -> timed video path. Public sample lane: `production/00-active/wake-cluster/`
+> Lucida is on the slide-agent static HTML runtime -> PNG frames -> timed video path, with n8n added as an orchestration layer for `apps/lucida-remotion-demo/`.
 
 ## Current focus
 
@@ -50,6 +51,8 @@ automation/workflows/30-language-generation-runner-pack.md
 
 Decision: NotebookLM = optional support; repo-native rule files + runner pack = core scalable path.
 
+Decision: n8n is an orchestration wrapper for `apps/lucida-remotion-demo/`, not a replacement for the existing Remotion render flow.
+
 ## Slide Agent renderer
 
 ```
@@ -76,7 +79,8 @@ Review notes: apps/slide-agent/lessons/wake-cluster/VISUAL-REVIEW.md and AUDIO-S
 1. Design rules are still only partially compiled into validation beyond the Wake-specific checks
 2. Human review is still needed before audio/video lock
 3. Browser plugin Node REPL was unavailable in the last session; verification used Playwright export + PNG spot-check
-4. Status must remain live resume source instead of ad-hoc context files
+4. Docker is not installed / not on PATH in this environment, so n8n cannot be launched yet
+5. Status must remain live resume source instead of ad-hoc context files
 
 ## Active truth files
 

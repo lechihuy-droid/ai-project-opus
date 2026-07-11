@@ -14,12 +14,15 @@ Tasks:
 1. Split the cleaned script into scenes by meaning and communication intent.
 2. Assign one primary intent to each scene.
 3. Read apps/remotion-templates/template-catalog.json and choose a cataloged templateId for every scene.
-4. Extract only the content needed to render that template.
-5. Preserve the narration meaning in subtitles.
-6. Keep on-screen text short.
-7. Use visualReferences as style guidance only.
-8. Use usableAssets only when the scene benefits from embedding them.
-9. Add a short reason for every template choice.
+4. Read apps/lucida-remotion-demo/design/visual-library/index.json and choose a visual family.
+5. Read apps/lucida-remotion-demo/design/motion-library/index.json and choose a motion preset.
+6. Read apps/lucida-remotion-demo/design/directors/selection-rules.json and apply hard constraints.
+7. Extract only the content needed to render that template.
+8. Preserve the narration meaning in subtitles.
+9. Keep on-screen text short.
+10. Use visualReferences as style guidance only.
+11. Use usableAssets only when the scene benefits from embedding them.
+12. Add a short reason for every template choice.
 
 Allowed intents:
 - hook
@@ -46,6 +49,7 @@ Primary mapping:
 
 Rules:
 - Choose only templateId values from template-catalog.json templates[] or localAdapters[].
+- Prefer templateIds supported by src/templateRegistry.tsx if the video must render now.
 - Use diagram only when the scene has concrete entities and relationships.
 - Do not embed images marked only as style_reference.
 - Keep each scene under 5 visual objects unless the catalog density supports high.

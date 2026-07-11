@@ -4,9 +4,13 @@ Source of truth:
 
 ```text
 apps/remotion-templates/template-catalog.json
+apps/lucida-remotion-demo/design/visual-library/index.json
+apps/lucida-remotion-demo/design/motion-library/index.json
+apps/lucida-remotion-demo/design/directors/selection-rules.json
 ```
 
 Mapper must choose a cataloged `templateId`, not an informal archetype.
+When a runnable Remotion output is required, prefer catalog entries already supported by `apps/lucida-remotion-demo/src/templateRegistry.tsx`.
 
 ## Core TemplateId Mapping
 
