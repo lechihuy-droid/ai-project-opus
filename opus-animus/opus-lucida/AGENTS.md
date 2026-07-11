@@ -42,6 +42,8 @@ Không dùng old ad-hoc context files làm live handoff source.
 ## Project Rules
 
 - Keep responses concise and in Vietnamese unless the user asks otherwise.
+- For Remotion videos from long scripts or raw sources, use `ai/skills/remotion-script-to-video/SKILL.md` first. It orchestrates `source-ingestor-cleaner`, `script-template-mapper`, `remotion-video-builder`, and `remotion-visual-qa`.
+- For pure technical diagram/card/arrow revisions, use `ai/skills/remotion-diagram-video/SKILL.md` before editing `apps/lucida-remotion-demo/`.
 - Do not let LLM / agents generate raw HTML/CSS for Lucida slide production.
 - Current slide architecture direction is:
 

@@ -33,6 +33,8 @@ Monetization workspace cho `Lucida`.
 ## Rules
 
 - Uu tien tai su dung bo input hien co, khong viet lai tu dau neu chua can
+- Khi lam video Remotion tu script dai hoac raw sources, doc `ai/skills/remotion-script-to-video/SKILL.md` truoc. Workflow nay dieu phoi `source-ingestor-cleaner`, `script-template-mapper`, `remotion-video-builder`, va `remotion-visual-qa`.
+- Khi chi sua video Remotion dang technical diagram/card/arrow/subtitle, doc `ai/skills/remotion-diagram-video/SKILL.md` truoc khi sua `apps/lucida-remotion-demo/`
 - File trong `docs/reference/` va `framework/**/reference/` la tham khao, khong phai source-of-truth active
 - Sample-first: khong scale batch lesson neu public sample trung tam chua on
 - Direction hien tai:

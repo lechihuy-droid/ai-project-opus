@@ -1,0 +1,273 @@
+{
+  "video": {
+    "title": "System Prompts Leaks",
+    "subtitle": "Doc system prompt cua ChatGPT, Claude, Gemini, Cursor de hoc cach AI product duoc dieu khien.",
+    "format": "vertical_9_16",
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "durationSec": 31,
+    "style": "dark_ai_orange_glow",
+    "language": "vi",
+    "sourceBlocks": [
+      "Repo GitHub asgeirtj/system_prompts_leaks document system prompt instructions cho nhieu AI chatbot va AI product.",
+      "Gia tri khong chi nam o prompt mau, ma nam o cach product gan vai tro, gioi han hanh vi, dung tool, memory, guardrail va workflow agent.",
+      "Video nay dung repo nhu content truth, banner nhu style reference, khong embed anh hay logo ben thu ba."
+    ]
+  },
+  "theme": {
+    "name": "lucida_dark_ai",
+    "accent": "#ff8a3d",
+    "accentSoft": "#ffd08a",
+    "background": "#090807",
+    "foreground": "#f8f3ee",
+    "muted": "rgba(248,243,238,0.66)"
+  },
+  "assets": [],
+  "scenes": [
+    {
+      "id": "hook",
+      "intent": "hook",
+      "templateId": "cinematic-title-intro",
+      "templateRole": "scene",
+      "durationSec": 5,
+      "headline": "Muon hoc prompt engineering nhanh hon?",
+      "subtitle": {
+        "text": "Ban muon hoc prompt engineering nhanh hon bang cach nhin thang vao cach ChatGPT, Claude, Gemini va Cursor duoc thiet ke khong?",
+        "segments": [
+          "Ban muon hoc prompt engineering nhanh hon bang cach nhin thang vao cach ChatGPT, Claude, Gemini va Cursor duoc thiet ke khong?"
+        ]
+      },
+      "content": {
+        "kicker": "Hook",
+        "title": "Muon hoc prompt engineering nhanh hon?",
+        "subtitle": "Dung chi doan prompt nao hay. Hay nhin vao cach AI product that su duoc thiet ke.",
+        "items": [
+          { "label": "ChatGPT", "note": "product" },
+          { "label": "Claude", "note": "product" },
+          { "label": "Gemini", "note": "product" },
+          { "label": "Cursor", "note": "product" }
+        ],
+        "footer": "Hoc tu he dieu khien that."
+      },
+      "style": {
+        "accent": "#ff8a3d",
+        "density": "low",
+        "safeArea": "tiktok"
+      },
+      "motion": ["slow_zoom", "title_reveal", "underline_grow"],
+      "backgroundEffect": "starfield",
+      "transitionOut": "cross-dissolve",
+      "subtitleMode": "bar",
+      "reason": "Hook needs a large cinematic title, while the product names stay as supporting chips."
+    },
+    {
+      "id": "repo-reveal",
+      "intent": "code_explanation",
+      "templateId": "code-panel",
+      "templateRole": "scene",
+      "durationSec": 5,
+      "headline": "System Prompts Leaks",
+      "subtitle": {
+        "text": "Co mot repo GitHub ten la System Prompts Leaks, dang tong hop system prompt cua nhieu san pham AI lon.",
+        "segments": [
+          "Co mot repo GitHub ten la System Prompts Leaks, dang tong hop system prompt cua nhieu san pham AI lon."
+        ]
+      },
+      "content": {
+        "kicker": "Repo",
+        "title": "System Prompts Leaks",
+        "subtitle": "Mot catalog system prompt cua nhieu san pham AI lon, chia theo vendor va product.",
+        "codeTitle": "github.com/asgeirtj/system_prompts_leaks",
+        "lines": [
+          "system_prompts_leaks/",
+          "  anthropic/",
+          "  openai/",
+          "  google/",
+          "  microsoft/",
+          "  cursor/"
+        ],
+        "highlights": [1, 2, 3, 4, 5],
+        "items": [
+          { "label": "Anthropic", "note": "Claude / Claude Code" },
+          { "label": "OpenAI", "note": "ChatGPT / Codex" },
+          { "label": "Google", "note": "Gemini / Jules" },
+          { "label": "Cursor", "note": "IDE agent" }
+        ],
+        "footer": "github.com/asgeirtj/system_prompts_leaks"
+      },
+      "style": {
+        "accent": "#ff9f4a",
+        "density": "medium",
+        "safeArea": "tiktok"
+      },
+      "motion": ["terminal_reveal", "line_typewriter"],
+      "backgroundEffect": "matrix-rain",
+      "transitionIn": "cross-dissolve",
+      "transitionOut": "slide-wipe",
+      "subtitleMode": "bar",
+      "reason": "A repo reveal is clearer as a code/file panel than as a node diagram."
+    },
+    {
+      "id": "not-just-prompts",
+      "intent": "comparison",
+      "templateId": "split-screen",
+      "templateRole": "scene",
+      "durationSec": 5,
+      "headline": "Khong chi la prompt mau.",
+      "subtitle": {
+        "text": "Doc repo nay, ban khong chi hoc prompt mau. Ban se thay cach AI duoc gan vai tro va bi gioi han hanh vi.",
+        "segments": [
+          "Doc repo nay, ban khong chi hoc prompt mau.",
+          "Ban se thay cach AI duoc gan vai tro va bi gioi han hanh vi."
+        ]
+      },
+      "content": {
+        "kicker": "Insight",
+        "title": "Khong chi la prompt mau.",
+        "subtitle": "Gia tri nam o cau truc dieu khien phia sau moi AI product.",
+        "panels": [
+          {
+            "title": "Prompt mau",
+            "body": "Surface layer: cau chu hay, format dep, vi du de copy.",
+            "tone": "neutral"
+          },
+          {
+            "title": "Hidden rules",
+            "body": "Control layer: vai tro, gioi han hanh vi, tool, memory va guardrail.",
+            "tone": "warm"
+          }
+        ],
+        "footer": "Tu prompt surface sang operating system."
+      },
+      "style": {
+        "accent": "#ffb45f",
+        "density": "medium",
+        "safeArea": "tiktok"
+      },
+      "motion": ["left_right_slide", "divider_fade"],
+      "backgroundEffect": "noise-grain",
+      "transitionIn": "slide-wipe",
+      "transitionOut": "whip-pan",
+      "subtitleMode": "bar",
+      "reason": "The scene is a contrast between shallow prompt examples and deeper product control."
+    },
+    {
+      "id": "six-dimensions",
+      "intent": "list",
+      "templateId": "animated-list",
+      "templateRole": "scene",
+      "durationSec": 7,
+      "headline": "6 thu nen soi trong system prompt",
+      "subtitle": {
+        "text": "Ban se thay cach AI duoc gan vai tro, cach no bi gioi han hanh vi, cach no dung tool. Ban cung thay cach xu ly memory, guardrail va workflow cua agent.",
+        "segments": [
+          "Ban se thay cach AI duoc gan vai tro, cach no bi gioi han hanh vi, cach no dung tool.",
+          "Ban cung thay cach xu ly memory, guardrail va workflow cua agent."
+        ]
+      },
+      "content": {
+        "kicker": "Pattern map",
+        "title": "6 thu nen soi trong system prompt",
+        "subtitle": "Role, limits, tools, memory, guardrail va workflow la nhung diem dang hoc nhat.",
+        "items": [
+          { "number": "01", "title": "Role", "body": "AI la ai", "tone": "warm" },
+          { "number": "02", "title": "Limits", "body": "Khong duoc lam gi", "tone": "danger" },
+          { "number": "03", "title": "Tools", "body": "Goi cong cu", "tone": "cool" },
+          { "number": "04", "title": "Memory", "body": "Giu ngu canh", "tone": "neutral" },
+          { "number": "05", "title": "Guardrail", "body": "Luat an toan", "tone": "danger" },
+          { "number": "06", "title": "Workflow", "body": "Agent chay viec", "tone": "warm" }
+        ],
+        "footer": "Dung doc prompt nhu van ban. Hay doc nhu ban thiet ke he thong."
+      },
+      "style": {
+        "accent": "#ffd08a",
+        "density": "high",
+        "safeArea": "tiktok"
+      },
+      "motion": ["staggered_list", "number_pop"],
+      "backgroundEffect": "grid-pulse",
+      "transitionIn": "whip-pan",
+      "transitionOut": "zoom-through",
+      "subtitleMode": "bar",
+      "reason": "A six-item pattern list needs staggered scan-friendly cards, not relationship arrows."
+    },
+    {
+      "id": "behind-the-scenes",
+      "intent": "process",
+      "templateId": "progress-steps",
+      "templateRole": "scene",
+      "durationSec": 5,
+      "headline": "Thay vi doan, hoc tu product that.",
+      "subtitle": {
+        "text": "Noi don gian: thay vi doan prompt nao hay, ban hoc truc tiep tu cach cac AI product that su duoc dieu khien phia sau.",
+        "segments": [
+          "Noi don gian: thay vi doan prompt nao hay, ban hoc truc tiep tu cach cac AI product that su duoc dieu khien phia sau."
+        ]
+      },
+      "content": {
+        "kicker": "Reframe",
+        "title": "Thay vi doan, hoc tu product that.",
+        "subtitle": "System prompt cho thay cach san pham AI duoc dieu khien phia sau man hinh chat.",
+        "steps": [
+          { "label": "AI product", "note": "chat surface" },
+          { "label": "System prompt", "note": "hidden control layer" },
+          { "label": "Patterns", "note": "extract design rules" },
+          { "label": "AI harness", "note": "build your own" }
+        ],
+        "footer": "Prompt engineering -> agent design."
+      },
+      "style": {
+        "accent": "#ffbf66",
+        "density": "medium",
+        "safeArea": "tiktok"
+      },
+      "motion": ["step_fill", "connector_draw"],
+      "backgroundEffect": "bokeh-circles",
+      "transitionIn": "zoom-through",
+      "transitionOut": "cross-dissolve",
+      "subtitleMode": "bar",
+      "reason": "The narration reframes a learning workflow, so a progress-step pattern fits better than a static card stack."
+    },
+    {
+      "id": "cta",
+      "intent": "takeaway",
+      "templateId": "end-card",
+      "templateRole": "cta",
+      "durationSec": 4,
+      "headline": "Dang xem neu ban build agent.",
+      "subtitle": {
+        "text": "Neu ban dang hoc prompt engineering, AI agent, hoac muon build AI harness rieng, repo nay rat dang xem. Follow de xem phan sau: 5 pattern system prompt nen hoc tu repo nay.",
+        "segments": [
+          "Neu ban dang hoc prompt engineering, AI agent, hoac muon build AI harness rieng, repo nay rat dang xem.",
+          "Follow de xem phan sau: 5 pattern system prompt nen hoc tu repo nay."
+        ]
+      },
+      "content": {
+        "kicker": "Next",
+        "title": "Dang xem neu ban build agent.",
+        "subtitle": "Dung repo de hoc prompt engineering, AI agent va cach thiet ke AI harness rieng.",
+        "items": [
+          { "label": "Prompt engineering", "note": "learn faster" },
+          { "label": "AI agent", "note": "workflow mindset" },
+          { "label": "AI harness", "note": "build your own" }
+        ],
+        "cta": {
+          "label": "Follow de xem phan sau",
+          "detail": "5 pattern system prompt nen hoc"
+        },
+        "footer": "Phan sau: 5 pattern system prompt nen hoc."
+      },
+      "style": {
+        "accent": "#ff9554",
+        "density": "medium",
+        "safeArea": "tiktok"
+      },
+      "motion": ["cta_scale", "chip_reveal"],
+      "backgroundEffect": "gradient-shift",
+      "transitionIn": "cross-dissolve",
+      "subtitleMode": "bar",
+      "reason": "The final scene should behave as a CTA, not another explanatory diagram."
+    }
+  ]
+}

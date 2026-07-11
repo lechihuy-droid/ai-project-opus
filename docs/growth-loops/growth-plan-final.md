@@ -42,7 +42,7 @@ Nguyên tắc bất biến: mọi link mang `pipeline_id` · kill criteria viế
 
 `Signal = DOMAIN × EMOTION × INTENT + strength(1–3) + nguồn + nguyên văn`
 
-- **DOMAIN (16):** JLPT_N2_GRAMMAR, JLPT_MOTIVATION, VISA_RENEWAL, VISA_CHANGE, JOB_SEARCH, JOB_WORKPLACE, LIVING_COST, TAX_NENKIN, HOUSING, LONELINESS, EVENT_TRUST, SIDE_INCOME, FAMILY_SUPPORT, SCHOOL_APPLICATION, RETURN_HOME, SCAM_ALERT
+- **DOMAIN (18):** JLPT_N2_GRAMMAR, JLPT_MOTIVATION, VISA_RENEWAL, VISA_CHANGE, JOB_SEARCH, JOB_WORKPLACE, LIVING_COST, TAX_NENKIN, HOUSING, LONELINESS, EVENT_TRUST, SIDE_INCOME, FAMILY_SUPPORT, SCHOOL_APPLICATION, RETURN_HOME, SCAM_ALERT, **HEALTH_ACCESS** (bổ sung Loop 11 — y tế là nhu cầu phổ quát duy nhất plan bỏ trống, đếm tần suất từ Tuần 0), **ADMIN_PAPERWORK** (bổ sung Loop 11 — trợ cấp/hồ sơ hành chính đang bị "dịch vụ FB không license" thu 5–50k¥/lần)
 - **EMOTION (7):** ANXIETY, CONFUSION, FRUSTRATION, SHAME, FOMO, DISTRUST, PRIDE (bỏ trống khi không rõ — không đoán)
 - **INTENT (8):** HOI_CACH_LAM, HOI_CHI_PHI, HOI_UY_TIN, NHO_LAM_HO (auto strength 3), XA_STRESS, KHOE, TIM_BAN, CANH_BAO
 - **Strength:** 1 lẻ tẻ · 2 = ≥5 lần/tuần hoặc ≥2 loại nguồn · 3 = ≥2 loại nguồn + WTP signal. Chỉ ≥2 lên backlog.
@@ -80,6 +80,13 @@ Scoring chọn pipeline: pain .20 + speed .20 + cost .15 + monetize .15 + audien
 | A7 | Career intent → Profile pool → (P3) partner | Bán lead trước license — CẤM. Cả archetype hoãn Phase 2 |
 
 2 pipeline sống 12 tuần đầu (theo Loop 5): **P-N2** (A1) và **P-EVENT** (A2). P-SCAM chạy nền không tính. Chi tiết route/hypothesis/kill: loop2-pipelines.md.
+
+**Bổ sung Loop 7-8 (2026-07-08):** **P-REMIT** (A3, so sánh phí kiều hối + affiliate) chạy NỀN như P-SCAM — không tính vào 2 pipeline sống, vì MVP là bảng so sánh tĩnh cập nhật tay, không theo mùa, chi phí gần 0. Bắt đầu 1 affiliate partner trước khi mở rộng. KPI: landing→click affiliate ≥8% (n≥150). Chi tiết: loop7-brainstorm-new-ideas.md, loop8-execution-brainstorm.md.
+
+**Bổ sung Loop 11 (2026-07-09) — Idea backlog need-driven (top 10 từ 30 ý, đã chấm need-strength trước, không ưu ái asset có sẵn).** Không ý nào chiếm suất 2 pipeline sống trước Gate 2; vào theo 2 cửa:
+- *Cửa NỀN (content/checklist chạy như P-SCAM, chi phí ~0):* Bộ y tế lần đầu (chọn khoa + thẻ triệu chứng song ngữ + protocol ốm đêm) · So sánh gửi hàng Việt–Nhật có pháp nhân · Checklist chốt quyền lợi trước khi nghỉ việc (有給/退職金) · Sổ tay câu nói an toàn nơi làm việc
+- *Cửa PHASE 2 (candidate pipeline, chuẩn bị/presale cuối kỳ):* **Máy quét trợ cấp theo tình huống** (#1 — bằng chứng WTP kép mạnh nhất) · **Tự chấm điều kiện 永住** (#2 — thay khoản 30–50k¥ đang trả 行政書士) · Luyện đề bằng lái + 外免切替 theo tỉnh · Gói "rời nhà không mất oan một yên" (敷金/chuyển nhà/火災保険) · Bộ tự tạo hồ sơ mời bố mẹ · Luyện thi 特定技能 theo ngành
+- *Insight định hướng:* vùng trống lớn nhất = **self-service hoá thủ tục hành chính** (thay "kinh tế dịch vụ giấy tờ không license" trên FB đang thu 5–50k¥/lần). Điều kiện pháp lý từng ý (行政書士法/弁護士法/保険業法/y tế): loop11/top10-final.md.
 
 ## 6. Conversion mechanism library (tóm tắt vận hành)
 
@@ -130,12 +137,12 @@ Nhịp: T2 review 90' → T3 cluster 60' → T4 hypothesis+script 105' → T5 ba
 ## 10. Must / Should / Later
 
 **MUST (tuần 0–2, chặn mọi thứ khác):**
-1. Pipeline pháp lý (~6–8h): privacy policy + mục đích sử dụng data · trang 特定商取引法 + chính sách hoàn · tài khoản thanh toán business (Stripe/Square — không PayPay cá nhân) · rà 100% câu quiz là tự viết
-2. Tuần 0 listening: 100 dòng Signal DB từ mỏ công khai + dùng thử 3 app đối thủ (Migii/Mochi/…) → viết USP P-N2 trong 1 câu
+1. Pipeline pháp lý (~6–8h): privacy policy + mục đích sử dụng data · trang 特定商取引法 + chính sách hoàn · tài khoản thanh toán business (Stripe/Square — không PayPay cá nhân) · rà 100% câu quiz là tự viết · **(bổ sung Loop 8) nhãn "PR/quảng cáo" rõ trên mọi link affiliate (P-REMIT, SIM) — bắt buộc theo ステマ規制, hiệu lực từ 10/2023**
+2. Tuần 0 listening: 100 dòng Signal DB từ mỏ công khai + dùng thử 3 app đối thủ (Migii/Mochi/…) → viết USP P-N2 trong 1 câu · **(bổ sung Loop 8) list 5-10 group Facebook mục tiêu + đọc rule đăng bài từng group** (kênh song song TikTok, né rủi ro sai geo A3) · **(bổ sung Loop 11) tag thêm 2 domain mới HEALTH_ACCESS + ADMIN_PAPERWORK khi listening — đếm tần suất thật để xác nhận/bác top 10 backlog Loop 11**
 3. Hạ tầng OS: Sheet 6 board + pid convention + analytics + lọc IP bản thân
 4. P-N2 launch: 2 video A/B + quiz + phiếu điểm + M1 waitlist có giá
 
-**SHOULD (tuần 3–8):** event #1 ≤16 người gần vốn → recap → P-EVENT có cọc · LINE OA 3 chạm · share card phiếu điểm (mùa kết quả T8) · M8 khảo sát giá · iterate P-N2 theo data
+**SHOULD (tuần 3–8):** event #1 ≤16 người gần vốn — **(sửa Loop 8) co-host với hội đồng hương/chùa/NPO qua network cá nhân trước (không cold outreach)**, họ góp địa điểm/quảng bá, mình lo nội dung/vận hành → recap → P-EVENT có cọc · LINE OA 3 chạm · share card phiếu điểm (mùa kết quả T8) · M8 khảo sát giá · iterate P-N2 theo data
 
 **LATER (tuần 9+/Phase 2):** P-TAX (content T8, tool T11) · P-CV (T8+ nếu P-N2 ổn) · M6 workshop khi có partner 行政書士 · B2B 3 cuộc gặp (tiền 2027) · P-SALARY/P-RETURN/tour license/recruiter — Phase 2–3
 

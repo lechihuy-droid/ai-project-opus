@@ -36,12 +36,14 @@ Tư thế: tiền của tôi, thời gian của founder — tôi không mua slid
 | 特定商取引法 (bán hàng online) | Cao | Chưa nhắc | Trang 特商法 + chính sách hoàn trước khi thu ¥ đầu tiên |
 | APPI đầy đủ (không chỉ mã hóa) | Cao | Nhắc một phần | Privacy policy tuần 1; luồng xoá data; không email suy đoán nhạy cảm khi chưa opt-in rõ |
 | PayPay cá nhân cho kinh doanh | Trung | Chưa nhắc | Tài khoản business trước M1/M3 |
-| Sai geo TikTok | Trung | Chưa nhắc | KPI = JP-IP click, không phải view |
+| Sai geo TikTok | Trung | Chưa nhắc | KPI = JP-IP click, không phải view; **(bổ sung Loop 8) thêm Facebook Groups làm kênh song song — geo tự lọc qua thành viên group, sửa tận gốc thay vì chỉ đo** |
 | Số liệu tool thuế sai | Trung | Nhắc ("ước tính") | Thêm: công thức + nguồn hiển thị ngay cạnh kết quả, ngày cập nhật |
+| ステマ規制 (chống quảng cáo trá hình, hiệu lực 10/2023) | Cao | **Phát hiện mới, Loop 8 (2026-07-08)** — chưa có ở Loop 1-6 vì affiliate (P-REMIT) chưa tồn tại lúc đó | Nhãn "PR"/"quảng cáo" rõ ràng ngay cạnh MỌI link affiliate (kiều hối, SIM) trước khi bật — gộp vào pipeline pháp lý tuần 1 |
 
 ## 3. Scope cut recommendation
 
-- **CẮT hẳn khỏi 12 tuần đầu:** P-SALARY (A11 — data cold-start không giải được sớm; giá trị pool để Phase 2), M9 sponsor (chưa có gì để bán), M2 ladder giá (chưa đủ n, làm T6+).
+- **CẮT hẳn khỏi 12 tuần đầu:** M9 sponsor (chưa có gì để bán), M2 ladder giá (chưa đủ n, làm T6+).
+- **CẮT khỏi 12 tuần đầu, ĐỊNH DẠNG LẠI cho Phase 2 (sửa 2026-07-08, Loop 8):** P-SALARY — A11 vẫn đúng (percentile tự tính từ n nhỏ là bịa), nhưng đổi khung sản phẩm thành "tra cứu thống kê lương chính thức theo ngành/tuổi" (neo vào 賃金構造基本統計調査 của Bộ Lao động Nhật) thay vì "bạn đứng ở đâu" tự tính từ mẫu nhỏ → loại bỏ rủi ro gốc. Xếp Phase 2, ưu tiên thấp hơn P-N2/P-EVENT/P-REMIT. Chi tiết: loop8-execution-brainstorm.md mục D.
 - **GỘP:** P-RETURN vào P-TAX (một tool, hai landing copy theo mùa).
 - **HOÃN:** M6 workshop visa đến khi ký được 行政書士 partner (điều kiện tiên quyết, không phải milestone thời gian); B2B = quan hệ ở 2026, doanh thu 2027.
 - **GIẢM:** tối đa **2 pipeline sống** trong 8 tuần đầu (không phải 3): P-N2 + P-EVENT. P-SCAM chạy nền như thuế trust (1 content/2 tuần, không tính là pipeline).
