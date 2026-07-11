@@ -105,3 +105,21 @@ Create Flow v1.02 gate-contract refinement.
 - Codex is restricted primarily to component/adapter implementation and engineering repair, with repository scope and automated validation.
 - `VideoSpec` remains the immutable execution contract; GPT and Codex cannot mutate it outside their controlled gates.
 - Human approvals are defined after Story Planning, Creative Resolution, Preview Critique, and Publication by default.
+
+## 2026-07-11 — Batch B005
+
+Workflow documentation refactor and caption-sync integration.
+
+| ID | Layer | Source | Status | Selected concepts | Target Lucida artifact | License / rights note |
+|---|---|---|---|---|---|---|
+| B005-W01 | Workflow architecture | User-approved separation of workflow, contracts, validation, and governance | spec-drafted | Gate-per-file workflow, input/output contracts, shared validation policies, event model, state machine, versioning, artifact lifecycle, locked script/audio/caption timeline | `design/workflow/` | Original Lucida architecture documentation. No third-party code or assets copied. |
+
+### Batch B005 decision
+
+- Created `design/workflow/` as the canonical workflow documentation root.
+- Added `create/` with the canonical flow and gates G00–G12.
+- Added `contracts/` for ApprovedScript, ProjectSpec, TimedScript, CreativeBrief, StoryPlan, SceneRequirements, ResourcePlan, CreativePlan, ImplementationPlan, VideoSpec, and PublicationBundle.
+- Added shared `validation/` policies for global rules, entry/exit criteria, retry, cache, and failure routing.
+- Added `governance/` specifications for events, state machine, versioning, and artifact lifecycle.
+- Integrated script timing and caption lock as G02, ensuring script, voice, captions, visual beats, and Remotion share one versioned timeline.
+- Existing root-level documents remain historical references until migration is complete.
