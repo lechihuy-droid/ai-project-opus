@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "catalog": "../../remotion-templates/template-catalog.json",
+  "supportedRendererRegistry": "../src/templateRegistry.tsx",
+  "scoring": {
+    "semanticFit": 0.3,
+    "contentFit": 0.2,
+    "brandCompatibility": 0.15,
+    "continuity": 0.15,
+    "assetAvailability": 0.1,
+    "renderingCost": 0.1
+  },
+  "hardRules": [
+    "Choose only templateId values from template-catalog.json templates[] or localAdapters[].",
+    "Prefer templateIds supported by src/templateRegistry.tsx for immediate rendering.",
+    "Use diagram only for concrete entities with links or dependencies.",
+    "Use code-panel only when repo, code, command, file tree, or execution is central.",
+    "Use asset-gallery templates only with sources classified as embed_asset.",
+    "Never embed assets classified as style_reference or context_only.",
+    "Do not invent numeric metrics to satisfy chart templates.",
+    "Keep long narration in subtitle.text or subtitle.segments.",
+    "Keep on-screen labels short enough for 1080x1920 mobile safe areas.",
+    "Record a reason for every scene template choice."
+  ],
+  "continuityRules": {
+    "singleBrandPerVideo": true,
+    "dominantFamilyMinimumShare": 0.5,
+    "maxVisualFamiliesForShort": 4,
+    "returnToDominantFamilyForOutro": true,
+    "sharedTokens": ["dark background", "warm orange accent", "rounded cards", "subtitle bar"]
+  },
+  "intentToFamily": {
+    "hook": ["cinematic-hook"],
+    "problem": ["contrast-panel", "pattern-list"],
+    "comparison": ["contrast-panel"],
+    "process": ["workflow-process"],
+    "system_architecture": ["workflow-process", "repo-code"],
+    "list": ["pattern-list"],
+    "use_case": ["pattern-list", "asset-gallery"],
+    "takeaway": ["closing-cta", "pattern-list"],
+    "quote": ["cinematic-hook", "closing-cta"],
+    "code_explanation": ["repo-code"],
+    "cta": ["closing-cta"]
+  },
+  "subtitlePolicy": {
+    "defaultMode": "bar",
+    "maxSegmentsPerScene": 2,
+    "maxWordsPerSegment": 18,
+    "fallback": "Split long narration into subtitle.segments and keep cards short."
+  },
+  "qaChecks": [
+    "No diagram fallback for non-relationship scenes.",
+    "No scene has more visual objects than its density budget.",
+    "No top-heavy layout: main content should stay between y=260 and y=1450.",
+    "Subtitle bar should not overlap main cards.",
+    "Each scene reason matches the narration intent."
+  ]
+}

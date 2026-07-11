@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "presets": [
+    {
+      "id": "cinematic-title-reveal",
+      "bestFor": ["cinematic-hook", "closing-cta"],
+      "tokens": ["slow_zoom", "title_reveal", "underline_grow"],
+      "maxSceneObjects": 3,
+      "notes": "Slow push, staggered title, restrained glow."
+    },
+    {
+      "id": "terminal-reveal",
+      "bestFor": ["repo-code"],
+      "tokens": ["terminal_reveal", "line_typewriter", "cursor_blink"],
+      "maxSceneObjects": 6,
+      "notes": "Use for file tree or command snippets. Keep lines short."
+    },
+    {
+      "id": "contrast-slide",
+      "bestFor": ["contrast-panel"],
+      "tokens": ["left_right_slide", "divider_fade", "panel_emphasis"],
+      "maxSceneObjects": 4,
+      "notes": "Two panels enter from opposite sides; divider resolves the comparison."
+    },
+    {
+      "id": "staggered-card-list",
+      "bestFor": ["pattern-list", "asset-gallery"],
+      "tokens": ["staggered_list", "number_pop", "card_rise"],
+      "maxSceneObjects": 6,
+      "notes": "Cards reveal one by one. Subtitle carries the dense narration."
+    },
+    {
+      "id": "step-connector-draw",
+      "bestFor": ["workflow-process"],
+      "tokens": ["step_fill", "connector_draw", "dot_travel"],
+      "maxSceneObjects": 5,
+      "notes": "Sequential progress with masked connectors, not freehand arrows."
+    },
+    {
+      "id": "metric-count-up",
+      "bestFor": ["data-proof"],
+      "tokens": ["count_up", "bar_fill", "axis_fade"],
+      "maxSceneObjects": 5,
+      "notes": "Only use with explicit values from sources."
+    },
+    {
+      "id": "cta-scale",
+      "bestFor": ["closing-cta"],
+      "tokens": ["cta_scale", "chip_reveal", "final_glow"],
+      "maxSceneObjects": 4,
+      "notes": "One final claim, one CTA, optional three chips."
+    }
+  ],
+  "transitions": [
+    {
+      "id": "cross-dissolve",
+      "bestFor": ["soft continuation", "summary", "hook to context"]
+    },
+    {
+      "id": "slide-wipe",
+      "bestFor": ["repo reveal", "section move", "comparison"]
+    },
+    {
+      "id": "whip-pan",
+      "bestFor": ["fast shorts pacing", "pattern jump"]
+    },
+    {
+      "id": "zoom-through",
+      "bestFor": ["moving deeper into a system", "workflow transition"]
+    }
+  ]
+}

@@ -24,8 +24,9 @@
   "scripts": {
     "dev": "remotion studio",
     "render": "node scripts/render-run.mjs",
-    "preflight": "npm run validate:registry && npx remotion compositions",
+    "preflight": "npm run validate:director && npm run validate:registry && npx remotion compositions",
     "qa:stills": "node scripts/render-scene-stills.mjs",
+    "validate:director": "node scripts/validate-design-director.mjs",
     "validate:registry": "node scripts/validate-template-registry.mjs",
     "build": "remotion bundle",
     "upgrade": "remotion upgrade",

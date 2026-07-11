@@ -419,14 +419,7 @@ const SubtitleBar: React.FC<{
   );
   const segmentFrame = localFrame - index * segmentLength;
   const text = scene.narration[index] ?? "";
-  const typedCharacters = Math.floor(
-    interpolate(segmentFrame, [0, Math.max(26, segmentLength - 12)], [0, text.length], {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    }),
-  );
-  const visibleCharacters = Math.max(Math.min(text.length, 16), typedCharacters);
-  const renderedText = text.slice(0, visibleCharacters);
+  const segmentIn = interpolate(ease(segmentFrame, 0, 10), [0, 1], [0.88, 1]);
   const progress = (localFrame + 1) / scene.durationFrames;
 
   return (
@@ -451,23 +444,16 @@ const SubtitleBar: React.FC<{
       <div
         style={{
           color: "#fff6ed",
-          fontSize: renderedText.length > 92 ? 28 : 32,
+          fontSize: text.length > 92 ? 28 : 32,
           lineHeight: 1.25,
           fontWeight: 750,
           textAlign: "center",
           maxWidth: 900,
+          opacity: segmentIn,
+          transform: `translateY(${interpolate(segmentIn, [0, 1], [10, 0])}px)`,
         }}
       >
-        {renderedText}
-        <span
-          style={{
-            color: scene.accent,
-            opacity: segmentFrame % 18 < 9 ? 1 : 0,
-            marginLeft: 4,
-          }}
-        >
-          |
-        </span>
+        {text}
       </div>
       <div
         style={{
