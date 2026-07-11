@@ -1,0 +1,20 @@
+# Raw and derived media are kept outside public Git by default.
+raw/
+private/
+cache/
+embeddings/
+optical-flow/
+frames/full-resolution/
+*.mp4
+*.mov
+*.mkv
+*.webm
+*.avi
+*.m4v
+*.wav
+*.mp3
+*.aac
+*.flac
+
+# Keep small, explicitly reviewed evidence only when rights allow.
+!contact-sheet.example.jpg
