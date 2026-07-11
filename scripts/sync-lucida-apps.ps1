@@ -8,9 +8,16 @@ $RemotionTemplatesGit = "opus-animus\opus-lucida\apps\remotion-templates\.git"
 $RemotionTemplatesOfflineGit = "opus-animus\opus-lucida\apps\remotion-templates\.git.offline"
 $IgnoreLine = "apps/remotion-templates/.git.offline/"
 
+function Invoke-Git {
+  git @args
+  if ($LASTEXITCODE -ne 0) {
+    throw "git $($args -join ' ') failed with exit code $LASTEXITCODE"
+  }
+}
+
 Set-Location -LiteralPath $ProjectRoot
 
-$root = (git rev-parse --show-toplevel).Trim()
+$root = (Invoke-Git rev-parse --show-toplevel).Trim()
 if ($root -ne $ExpectedRoot) {
   throw "Refusing to run git outside expected repo. Got: $root"
 }
@@ -34,14 +41,14 @@ if (Test-Path -LiteralPath $RemotionTemplatesOfflineGit) {
   }
 }
 
-git add -- $AppsPath $LucidaGitignore
+Invoke-Git add -- $AppsPath $LucidaGitignore
 
-$staged = git diff --cached --name-only
+$staged = Invoke-Git diff --cached --name-only
 if ($staged) {
   $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss zzz"
-  git commit -m "autosync lucida apps: $timestamp"
+  Invoke-Git commit -m "autosync lucida apps: $timestamp"
 }
 
-git fetch origin
-git merge origin/main
-git push origin main
+Invoke-Git fetch origin
+Invoke-Git merge origin/main
+Invoke-Git push origin main
