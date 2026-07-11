@@ -70,3 +70,20 @@ Reference Ingestion Pipeline design and initial source selection.
 - Selected Motion Vectorization and AniMINT as research leads, not production dependencies.
 - Mobbin, Page Flows, Art of the Title, ShotDeck, and FilmGrab are reference-only sources unless their exact terms permit further use.
 - No third-party reference video, screenshot collection, premium asset, model dataset, or commercial font was imported in this batch.
+
+## 2026-07-11 — Batch B003
+
+Create Flow architecture refinement.
+
+| ID | Layer | Source | Status | Selected concepts | Target Lucida artifact | License / rights note |
+|---|---|---|---|---|---|---|
+| B003-C01 | Create orchestration | System architecture review and user-approved refinement | spec-drafted | User Brief, Creative Brief, Narrative Plan, Scene Plan, Style/Motion retrieval, Asset Plan, unified VideoSpec, static and motion validation, incremental rendering, quality evaluation, revision loop | `CREATE_FLOW_v1.01.md` | Original Lucida architecture documentation. No third-party code or assets copied. |
+
+### Batch B003 decision
+
+- Added `design/CREATE_FLOW_v1.01.md` as the canonical create-flow specification for version `1.01`.
+- Refined the former Script -> Scene -> Style -> Render sequence into staged creative planning, resource resolution, validation, incremental rendering, and publish gates.
+- `VideoSpec` is the source of truth; `StyleSpec` becomes a contained sub-document.
+- The renderer accepts structured specifications and registered packages, not uncontrolled style prompts.
+- Static preview validation must pass before motion preview validation.
+- Scene dependency hashing enables partial rerender and cache reuse.
