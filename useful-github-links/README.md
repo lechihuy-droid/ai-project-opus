@@ -13,6 +13,15 @@ Danh mục các GitHub repository hữu dụng đã được đánh giá hoặc 
 - Khuyến nghị: Tham khảo để xây Design Skill Library cho AI Harness
 - Trạng thái: Đã đánh giá
 
+### Hallmark
+
+- Repository: https://github.com/nutlope/hallmark
+- Loại: Anti-AI-slop design skill / UI workflow cho coding agent
+- Dùng cho: Build, audit, redesign và study giao diện với Claude Code, Cursor, Codex và các coding agent
+- Giá trị chính: Kết hợp macrostructure, anti-pattern gates và vòng lặp self-critique để giảm giao diện rập khuôn do AI sinh ra
+- Khuyến nghị: Dùng làm mẫu tham khảo cho kiến trúc `Skill → Verb → Review → Refine` trong AI Harness; có thể chuyển hóa sang Video Skill, Diagram Skill và Presentation Skill
+- Trạng thái: Đã đánh giá
+
 ## AI Video / HTML Motion
 
 ### html-video
