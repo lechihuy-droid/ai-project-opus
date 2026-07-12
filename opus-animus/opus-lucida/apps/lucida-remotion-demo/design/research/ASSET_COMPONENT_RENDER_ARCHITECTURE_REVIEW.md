@@ -1,121 +1,81 @@
-# Đánh giá kiến trúc Asset–Component Input cho Lucida Remotion
+# Đánh giá kiến trúc Asset–Component và Audio-First Input cho Lucida Remotion
 
 > Phạm vi: `opus-animus/opus-lucida/apps/lucida-remotion-demo`
 >
-> Ngày đánh giá: 2026-07-12
+> Ngày cập nhật: 2026-07-12
 >
-> Loại tài liệu: current-state architecture review + target architecture proposal
+> Phiên bản: 2.0
 >
-> Mục tiêu: xác định cách asset, scene contract và React component được xử lý thành input deterministic cho Remotion render; chỉ ra gap hiện tại và đề xuất kiến trúc triển khai tiếp theo.
+> Loại tài liệu: current-state review + architecture decision + implementation research
+>
+> Mục tiêu: xác định cách script, audio, timestamp, asset và React component được compile thành input deterministic cho Remotion render.
 
 ---
 
 ## 1. Executive summary
 
-Lucida hiện đã có ba nền tảng đúng để phát triển thành một hệ thống render video có kiểm soát:
+Lucida đã có ba nền tảng đúng:
 
-1. `video-map.json` đóng vai trò contract giữa tầng planning và renderer.
-2. `templateId` được resolve qua component registry thay vì viết nhánh scene-specific trong Composition.
-3. Raw source được phân loại thành content truth, style reference, embeddable asset hoặc context-only trước khi đi vào mapping.
+1. `video-map.json` là contract reviewable giữa planning và renderer.
+2. `templateId` được resolve qua component registry thay vì viết scene-specific branch trong Composition.
+3. Raw source được phân loại thành content truth, style reference, embeddable asset hoặc context-only trước mapping.
 
-Tuy nhiên, kiến trúc asset hiện mới ở mức **asset-aware**, chưa đạt mức **asset-driven**.
+Tuy nhiên, hệ thống hiện còn hai production blocker:
 
 ```text
-Hiện tại
+A. Asset pipeline mới ở mức asset-aware
 
 video-map.assets[]
-        │
-        ▼
-createVideoInput()
-        │
-        ▼
-assets[] được truyền toàn bộ xuống mỗi adapter
-        │
-        └── phần lớn adapter không consume asset
+→ truyền toàn bộ xuống adapter
+→ scene không bind asset cụ thể
+→ phần lớn adapter không consume media thật
+
+B. Timeline chưa audio-first
+
+script
+→ durationSec ước lượng
+→ caption chia đều theo group/từ
+→ Remotion render không có voice track
 ```
 
-Hệ thống còn thiếu lớp liên kết bắt buộc:
+Kiến trúc đích:
 
 ```text
-Asset Manifest
+ApprovedScript
+→ VoiceTrack
+→ TimedScript
+→ CaptionPlan
+→ narration-based Scene Timeline
 → Scene Asset Binding
-→ Template Slot Validation
-→ Asset Resolver
-→ Media Renderer
-→ Remotion Component
+→ ResolvedVideoInput
+→ Remotion Audio + Components + Captions
+→ Render + Sync QA
 ```
 
-Gap lớn nhất không phải thiếu thêm tên template. Gap lớn nhất là chưa có contract rõ ràng để trả lời bốn câu hỏi:
+### Quyết định ưu tiên cập nhật
 
-1. Asset nào thuộc scene nào?
-2. Asset được đưa vào slot nào của component?
-3. Asset có tương thích với component, aspect ratio và thời lượng không?
-4. Renderer phải xử lý image, video, audio và SVG theo quy tắc nào?
-
-Kết luận kiến trúc:
+Sau khi nghiên cứu audio flow, P0 được tách thành hai vertical slice:
 
 ```text
-usableAssets
-→ asset manifest
-→ scene.assetBindings
-→ template slot schema
-→ resolved component props
-→ <Img> / <Video> / <Audio> / native React visual
+P0-A — Audio Foundation MVP        [thực hiện trước]
+P0-B — Scene Asset Binding MVP     [thực hiện ngay sau]
 ```
 
-Đây nên là hướng triển khai tiếp theo trước khi đầu tư vào semantic retrieval hoặc vector database.
+Lý do thực hiện audio trước:
+
+- video hiện không có narration track;
+- scene duration và caption đều đang sai source of truth;
+- lỗi subtitle không khớp giọng đọc đã xuất hiện trực tiếp trong QA video;
+- wire một file audio có sẵn vào Remotion là vertical slice nhỏ, ít phụ thuộc;
+- sau khi audio timeline ổn định, scene và visual asset mới có timestamp chính xác để bind.
+
+Không bắt đầu bằng TTS provider integration. MVP đầu tiên dùng một voice file đã sinh sẵn để chứng minh toàn bộ đường ống render và timing.
 
 ---
 
-## 2. Phạm vi code đã đánh giá
+## 2. Current-state architecture
 
-Các thành phần chính:
-
-```text
-apps/lucida-remotion-demo/
-├── video-map.json
-├── schemas/
-│   └── video-map.schema.json
-├── src/
-│   ├── data.ts
-│   ├── Composition.tsx
-│   ├── Root.tsx
-│   ├── templateRegistry.tsx
-│   └── template-registry-map.json
-├── pipeline/
-│   ├── collectors/
-│   ├── processors/
-│   ├── mappers/
-│   ├── compilers/
-│   ├── contracts/
-│   └── schemas/
-├── scripts/
-│   ├── collect-visual-inputs.mjs
-│   ├── process-visual-inputs.mjs
-│   ├── map-and-compile-visual-scenes.mjs
-│   ├── render-generated-video.mjs
-│   ├── run-visual-flow.mjs
-│   └── validate-video-map.mjs
-└── design/
-    └── research/
-```
-
-Các orchestration skill liên quan:
-
-```text
-ai/skills/remotion-script-to-video/
-ai/skills/source-ingestor-cleaner/
-ai/skills/script-template-mapper/
-ai/skills/remotion-video-builder/
-```
-
----
-
-## 3. Hai luồng input hiện tại
-
-Lucida hiện có hai luồng tạo input cho Remotion.
-
-## 3.1 Luồng production AI-assisted
+## 2.1 Production flow hiện tại
 
 ```text
 Raw script + optional raw sources
@@ -130,144 +90,57 @@ Raw script + optional raw sources
 → visual QA
 ```
 
-Đặc điểm:
+Điểm đúng:
 
-- AI hoặc người dùng quyết định scene intent và template.
-- `clean-brief.json` tách nội dung, visual reference và usable asset.
-- `video-map.json` là artifact reviewable trước khi React render.
-- QA mapping phải sửa ở JSON trước; QA layout phải sửa ở component.
+- không nhảy thẳng từ raw script sang React;
+- mapping có intermediate artifact;
+- visual mapping sửa ở JSON;
+- layout/render bug sửa ở component;
+- renderer có thể nhận `videoMap` qua render props.
 
-Đây là luồng phù hợp cho video editorial, educational và technical explainer.
-
-## 3.2 Luồng visual-flow tự động
+## 2.2 Visual-flow hiện tại
 
 ```text
 VisualFlowConfig
-→ collect sources
-→ 01-raw-input.json
+→ collect
 → sanitize
-→ 02-sanitized-input.json
 → normalize
-→ 03-normalized-input.json
 → map visual scenes
-→ 04-visual-scenes.json
-→ compile
-→ 05-video-map.json
+→ compile video-map
 → render-props.json
 → Remotion render
 ```
 
-Đặc điểm:
-
-- Pipeline ưu tiên nguồn có cấu trúc như script, command output và asciicast.
-- Event được normalize rồi nhóm thành scene.
-- Visual family được compile sang `templateId`.
-- Provenance được giữ qua `sourceEventIds`.
-
-Giới hạn hiện tại:
+Giới hạn:
 
 ```text
 compileVideoMap()
 → assets: []
 ```
 
-Vì vậy visual-flow hiện tạo **component content input**, chưa tạo **media asset input**.
+Visual-flow mới compile text/event thành component content, chưa compile media asset hoặc audio timeline.
 
 ---
 
-## 4. Kiến trúc source ingestion và asset classification
+## 3. Code findings
 
-`source-ingestor-cleaner` phân loại mỗi nguồn theo usage:
-
-```text
-content_truth
-style_reference
-embed_asset
-context_only
-ignore
-```
-
-Đây là quyết định kiến trúc đúng vì nó ngăn ba loại dữ liệu bị trộn lẫn:
+Các file chính:
 
 ```text
-Content truth
-= dùng để bảo đảm script và claim chính xác
-
-Style reference
-= dùng để học mood, palette, layout, typography và motion
-
-Embeddable asset
-= file được phép xuất hiện trực tiếp trong video
+video-map.json
+schemas/video-map.schema.json
+src/data.ts
+src/Composition.tsx
+src/Root.tsx
+src/templateRegistry.tsx
+src/template-registry-map.json
+scripts/run-whisperx.ps1
+scripts/validate-video-map.mjs
+pipeline/compilers/video-map.mjs
+design/workflow/create/G02_SCRIPT_TIMING.md
 ```
 
-Contract `CleanBrief` đã tách:
-
-```ts
-type CleanBrief = {
-  visualReferences: VisualReference[];
-  usableAssets: UsableAsset[];
-};
-```
-
-Asset được phép sử dụng có dạng:
-
-```ts
-type UsableAsset = {
-  id: string;
-  sourceId: string;
-  type: "image" | "video" | "audio" | "svg";
-  path: string;
-  usage: "embed_in_video";
-  sceneHints: string[];
-  safeToUse: boolean;
-  reason: string;
-};
-```
-
-### Điểm mạnh
-
-- Có `sourceId` để trace nguồn.
-- Có `safeToUse` để kiểm soát quyền sử dụng.
-- Có `sceneHints` để hỗ trợ mapper.
-- Không mặc định biến screenshot hoặc image tham khảo thành asset.
-
-### Gap
-
-`UsableAsset` chưa được compile thành một asset manifest đủ giàu metadata cho renderer.
-
-Thiếu các thuộc tính quan trọng:
-
-```text
-width
-height
-duration
-fps
-mime type
-checksum
-orientation
-crop policy
-loop policy
-audio gain
-license/provenance detail
-quality score
-```
-
----
-
-## 5. `video-map.json` là contract trung tâm
-
-Runtime type hiện tại:
-
-```ts
-type VideoMap = {
-  video: VideoMetadata;
-  theme: Theme;
-  assets: VisualAsset[];
-  scenes: VideoMapScene[];
-};
-```
-
-Asset contract hiện tại:
+### 3.1 Asset contract hiện tại
 
 ```ts
 type VisualAsset = {
@@ -279,185 +152,16 @@ type VisualAsset = {
 };
 ```
 
-Scene contract hiện chứa:
+Gap:
 
-```text
-id
-intent
-templateId
-templateRole
-durationSec
-headline
-subtitle
-content
-style
-motion
-backgroundEffect
-transitionIn
-transitionOut
-subtitleMode
-reason
-```
+- scene không có `assetBindings`;
+- asset metadata quá mỏng;
+- không validate file existence;
+- không validate slot compatibility;
+- không có resolved asset props;
+- image/video/audio chưa được render theo policy dùng chung.
 
-### Điểm mạnh
-
-- Renderer không phụ thuộc trực tiếp vào raw source.
-- Scene content và rendering instruction được review trước render.
-- `templateId` là abstraction ổn định giữa AI mapper và React component.
-- Video metadata có thể override bằng render props.
-
-### Gap chính
-
-Scene không có field liên kết tới asset.
-
-Hiện chưa có:
-
-```ts
-type SceneAssetBindings = {
-  hero?: string;
-  background?: string;
-  items?: string[];
-  voiceover?: string;
-};
-```
-
-Do đó `video-map.assets[]` đang tồn tại như một danh sách global không có ownership rõ ràng.
-
----
-
-## 6. Runtime normalization
-
-`src/data.ts` thực hiện:
-
-```text
-video-map.json
-→ defaultVideoMap
-→ createVideoInput(videoMap)
-→ normalizeScene(scene)
-→ VideoInput
-```
-
-`normalizeScene()` hiện derive:
-
-```text
-kicker
-title
-narration
-captionGroups
-footer
-accent
-bullets
-nodes
-links
-durationFrames
-```
-
-Sau đó `createVideoInput()` giữ nguyên:
-
-```ts
-{
-  theme: videoMap.theme,
-  assets: videoMap.assets,
-  scenes: normalizedScenes
-}
-```
-
-### Đánh giá
-
-Cách normalize này phù hợp với content-derived props nhưng chưa phù hợp với asset-derived props.
-
-Nên bổ sung một bước độc lập:
-
-```text
-createVideoInput()
-→ normalizeSceneContent()
-→ resolveSceneAssets()
-→ validateTemplateSlots()
-→ ResolvedVideoInput
-```
-
-Không nên để mỗi adapter tự search asset trong global array.
-
----
-
-## 7. Component registry
-
-Registry hiện resolve theo luồng:
-
-```text
-scene.templateId
-→ template-registry-map.json
-→ adapterComponents
-→ templateRegistry
-→ resolveTemplateAdapter()
-→ React adapter
-```
-
-Các adapter thực tế:
-
-```text
-AnimatedListAdapter
-HeroTitleAdapter
-CodePanelAdapter
-SplitScreenAdapter
-DiagramAdapter
-EndCardAdapter
-ImageCarouselAdapter
-ProgressStepsAdapter
-QuoteCardAdapter
-StatCounterAdapter
-```
-
-Registry JSON hiện có 28 `templateId` map về 10 adapter.
-
-Ví dụ alias:
-
-```text
-animated-text
-bounce-text
-bubble-pop-text
-chapter-title
-cinematic-title-intro
-glitch-text
-title-split
-→ HeroTitleAdapter
-```
-
-### Điểm mạnh
-
-- Thêm template ID không cần sửa Composition.
-- Unsupported template có adapter explicit, không silently fallback.
-- Adapter dùng chung một props contract.
-- Composition không chứa logic scene-specific.
-
-### Gap
-
-Registry mới chỉ mô tả:
-
-```text
-templateId → adapterName
-```
-
-Nó chưa mô tả:
-
-```text
-adapter capabilities
-asset slots
-accepted asset kinds
-required asset count
-supported intents
-supported aspect ratio
-fallback behavior
-render cost
-```
-
-Do đó validator chỉ biết template có tồn tại, nhưng không biết scene có đủ input để render template đúng nghĩa hay không.
-
----
-
-## 8. Adapter props và luồng render
-
-Mọi adapter nhận:
+### 3.2 Adapter contract hiện tại
 
 ```ts
 type TemplateAdapterProps = {
@@ -469,464 +173,721 @@ type TemplateAdapterProps = {
 };
 ```
 
-Composition thực hiện:
+Mọi adapter nhận toàn bộ global assets. Kiến trúc mục tiêu phải chuyển thành:
 
 ```text
-useCurrentFrame()
-→ createVideoInput(videoMap)
-→ getSceneAtFrame()
-→ resolveTemplateAdapter(scene.templateId)
-→ SceneShell
-→ Adapter
-```
-
-`SceneShell` render các phần dùng chung:
-
-```text
-GlowBackground
-Header
-Adapter children
-SubtitleBar
-TransitionOverlay
-```
-
-### Đánh giá
-
-Separation hiện tại là hợp lý:
-
-```text
-SceneShell
-= shared chrome và timeline behavior
-
-Adapter
-= visual stage implementation
-```
-
-Nhưng `assets` đang được truyền ở dạng quá rộng.
-
-```text
-Hiện tại
 Adapter receives all assets
+→ không nên giữ
 
-Mục tiêu
-Adapter receives only resolved slot assets
+Adapter receives resolved slot assets only
+→ mục tiêu
 ```
 
-Ví dụ mục tiêu:
+### 3.3 Audio hiện tại
+
+- `VisualAsset.kind` có `audio`.
+- `Composition.tsx` không render audio.
+- `package.json` chưa có `@remotion/media` và `@remotion/captions`.
+- `Root.tsx` cộng `scene.durationFrames` để xác định composition duration.
+- `SubtitleBar` chia đều scene duration cho caption groups và words.
+- `run-whisperx.ps1` chạy WhisperX riêng nhưng output chưa được consume.
+- `G02_SCRIPT_TIMING.md` mô tả target flow nhưng đang ở trạng thái roadmap.
+
+Kết luận:
+
+```text
+Audio contract có ý tưởng
+Audio tool có tồn tại
+Audio runtime integration chưa tồn tại
+```
+
+---
+
+## 4. Architecture decision: audio is a global timeline concern
+
+Audio narration không nên được xử lý như card-level asset của một scene.
+
+Cần tách:
+
+```text
+Global tracks
+- voiceover
+- music bed
+
+Scene-local tracks
+- sound effect
+- clip audio
+```
+
+Voiceover là master timeline của toàn video.
+
+```text
+Voice duration
+→ composition duration
+
+Word timestamps
+→ caption active word
+
+Sentence/phrase timestamps
+→ caption page boundaries
+
+Narration beats
+→ scene start/end
+
+Scene timeline
+→ component and asset timing
+```
+
+`durationSec` trong scene có thể được giữ làm derived/debug field, nhưng không còn là source of truth.
+
+---
+
+## 5. Target audio flow
+
+```text
+ApprovedScript
+        │
+        ▼
+Vietnamese Text Normalizer
+        │
+        ▼
+TTS Provider Adapter / Recorded Voice Import
+        │
+        ▼
+Raw Voice Audio
+        │
+        ▼
+Audio Normalize + QA
+        │
+        ├── canonical format
+        ├── loudness
+        ├── clipping
+        ├── silence
+        └── checksum
+        │
+        ▼
+VoiceTrack + audio-metadata.json
+        │
+        ▼
+WhisperX Forced Alignment
+        │
+        ▼
+whisperx.raw.json
+        │
+        ▼
+Script-to-Audio Reconciliation
+        │
+        ▼
+TimedScript
+        │
+        ▼
+Caption Phrase Chunker
+        │
+        ▼
+CaptionPlan
+        │
+        ▼
+Narration Beat / Scene Timeline Resolver
+        │
+        ▼
+video-map.json + render-props.json
+        │
+        ▼
+Remotion <Audio> + timestamp captions + visual scenes
+        │
+        ▼
+Render + Audio/Caption Sync QA
+```
+
+---
+
+## 6. TTS provider strategy
+
+Renderer và timing pipeline phải provider-neutral.
 
 ```ts
-type ImageCarouselResolvedProps = {
-  items: ResolvedImageAsset[];
-  background?: ResolvedVideoAsset;
-};
-```
-
----
-
-## 9. Đánh giá mức độ consume asset hiện tại
-
-## 9.1 Image carousel chưa phải media carousel
-
-`ImageCarouselAdapter` hiện sử dụng:
-
-```ts
-const items = getItems(scene).slice(0, 5);
-```
-
-Sau đó dựng card gradient chứa text.
-
-Nó không:
-
-- đọc `assets`;
-- resolve asset ID;
-- render `<Img>`;
-- crop image;
-- preload asset;
-- xử lý missing image.
-
-Vì vậy tên template hiện mô tả intent nhiều hơn implementation thực tế.
-
-```text
-image-carousel hiện tại
-= animated text-card carousel
-
-không phải
-= image asset carousel
-```
-
-## 9.2 Video asset chưa có renderer
-
-Chưa có component chung chịu trách nhiệm:
-
-```text
-<Video>
-loop
-trim
-startFrom
-endAt
-muted
-playbackRate
-objectFit
-poster frame
-```
-
-## 9.3 Audio asset chưa được consume
-
-`VisualAsset.kind` có giá trị `audio`, nhưng composition không render `<Audio>`.
-
-Hệ quả:
-
-- video output không có narration track;
-- scene timing chưa lấy audio làm source of truth;
-- audio metadata không ảnh hưởng duration;
-- subtitle không thể bám word timestamp thật.
-
-## 9.4 SVG chưa tồn tại trong runtime contract
-
-`CleanBrief.UsableAsset` cho phép `svg`, nhưng `VisualAsset.kind` chỉ cho:
-
-```text
-image
-video
-audio
-```
-
-Đây là contract mismatch giữa ingestion và renderer.
-
-SVG cần được quyết định rõ:
-
-```text
-A. normalize thành image
-B. giữ kind = svg và render qua <Img>
-C. parse thành native React SVG khi cần animate từng phần
-```
-
----
-
-## 10. Visual input pipeline
-
-`VisualFlowConfig` định nghĩa nhiều source type:
-
-```text
-script
-repository
-command
-asciicast
-theme_reference
-web_reference
-image_reference
-```
-
-Nhưng collector hiện mới implement:
-
-```text
-script
-command
-asciicast
-```
-
-Pipeline giữ provenance tốt:
-
-```ts
-type SourceProvenance = {
-  sourceId: string;
-  sourceRef: string;
-  sourceChecksum: string;
-  collectorVersion: string;
-};
-```
-
-Normalized events được map thành `VisualSceneRequirement` với:
-
-```text
-visualFamily
-preset
-themeId
-durationInFrames
-blocks[]
-sourceEventIds[]
-```
-
-Compiler map visual family sang template:
-
-```text
-terminal             → code-panel
-code                 → code-panel
-editorial            → animated-list
-infographic           → animated-list
-dashboard            → progress-steps
-data_visualization    → progress-steps
-product_demo          → split-screen
-cinematic_typography → cinematic-title-intro
-```
-
-### Điểm mạnh
-
-- Pipeline deterministic.
-- Input được sanitize trước mapping.
-- Event timing được normalize theo frame.
-- Provenance không bị mất khi compile scene.
-- Có artifact ở từng stage để debug.
-
-### Gap
-
-- `repository`, `image_reference`, `web_reference` chưa có collector implementation.
-- Pipeline chưa tạo asset manifest.
-- `compileVideoMap()` hard-code `assets: []`.
-- `media` block tồn tại trong contract nhưng chưa được compile thành asset binding.
-- Mapping hiện chủ yếu dựa trên event kind, chưa dựa trên visual intent và asset availability.
-
----
-
-## 11. Validation hiện tại
-
-`video-map.schema.json` kiểm tra asset có:
-
-```text
-id
-src
-kind
-usage
-alt?
-```
-
-Validator hiện chưa kiểm tra:
-
-```text
-file exists
-path is inside approved workspace
-asset ID uniqueness
-asset is actually used
-scene binding exists
-slot compatibility
-MIME type
-dimensions
-duration
-fps
-checksum
-safe-to-use status
-license
-orientation
-```
-
-Template validation hiện cũng chưa kiểm tra:
-
-```text
-image-carousel requires 2–5 images
-video-background accepts video only
-voiceover accepts audio only
-diagram should not require media asset
-```
-
-### Hệ quả
-
-Một `video-map.json` có thể pass schema nhưng vẫn không đủ dữ liệu để render đúng semantic của template.
-
----
-
-## 12. Render entrypoint
-
-Generated flow tạo:
-
-```text
-05-video-map.json
-render-props.json
-```
-
-`render-props.json` có dạng:
-
-```json
-{
-  "videoMap": {}
+interface VoiceProvider {
+  synthesize(input: VoiceSynthesisRequest): Promise<GeneratedVoice>;
 }
 ```
 
-Render script gọi:
+Provider order đề xuất cho Lucida:
 
 ```text
-npx remotion render
-LucidaMotionDemo
-output/video.mp4
---props=<render-props.json>
+1. Pre-generated/local voice file
+   → dùng cho Audio Foundation MVP
+
+2. ElevenLabs adapter
+   → production narration ổn định đầu tiên
+
+3. VieNeu-TTS adapter
+   → local Vietnamese provider, batch lớn và privacy
+
+4. Edge TTS adapter
+   → preview nhanh hoặc fallback, đặc biệt khi cần Japanese voice
 ```
 
-`Root.tsx` sử dụng `calculateMetadata()` để derive:
+Không để provider trả thẳng input cho renderer. Mọi provider phải qua cùng bước normalize, probe, checksum, alignment và QA.
 
 ```text
-durationInFrames
-fps
-width
-height
-```
-
-Đây là kiến trúc tốt vì render có thể nhận video map động mà không sửa source code.
-
-### Gap
-
-Metadata hiện chỉ phụ thuộc vào scene duration, chưa phụ thuộc vào:
-
-```text
-audio duration
-video asset duration
-trim range
-transition overlap
-```
-
-Khi audio-first timeline được triển khai, `calculateMetadata()` cần dùng timeline đã resolved thay vì cộng đơn giản `durationFrames` của scene.
-
----
-
-## 13. Đánh giá tổng thể
-
-| Hạng mục | Trạng thái | Đánh giá |
-|---|---|---|
-| Source classification | Đã có | Tốt |
-| Separation reference/asset | Đã có | Tốt |
-| Reviewable `video-map.json` | Đã có | Tốt |
-| Typed scene normalization | Đã có | Tốt |
-| Template registry | Đã có | Tốt |
-| Unsupported template handling | Đã có | Tốt |
-| Dynamic render props | Đã có | Tốt |
-| Provenance ở visual-flow | Đã có | Tốt |
-| Asset metadata contract | Mỏng | Cần mở rộng |
-| Scene-to-asset binding | Chưa có | Critical gap |
-| Template slot schema | Chưa có | Critical gap |
-| Asset resolver | Chưa có | Critical gap |
-| Image renderer | Chưa hoàn chỉnh | Critical gap |
-| Video renderer | Chưa có | Critical gap |
-| Audio renderer | Chưa có | Critical gap |
-| SVG policy | Chưa thống nhất | Gap |
-| Asset file validation | Chưa có | Gap |
-| Retrieval engine | Chưa có | Chưa cấp thiết |
-| Semantic/vector retrieval | Chưa có | Nên làm sau |
-
----
-
-## 14. Kiến trúc mục tiêu
-
-```text
-Raw sources
-  │
-  ▼
-Source classification
-  ├── content truth
-  ├── style reference
-  ├── usable asset
-  └── ignored source
-          │
-          ▼
-Asset ingestion and normalization
-          │
-          ├── probe metadata
-          ├── checksum
-          ├── provenance
-          ├── safety/license
-          ├── thumbnail
-          └── normalized path
-          │
-          ▼
-Asset Manifest
-          │
-Script / narrative planning
-          │
-          ▼
-Scene intent + template selection
-          │
-          ▼
-Scene Asset Binding
-          │
-          ▼
-video-map.json
-          │
-          ▼
-Schema validation
-          │
-          ▼
-Template Slot Validation
-          │
-          ▼
-Asset Resolver
-          │
-          ▼
-ResolvedVideoInput
-          │
-          ▼
-Component Registry
-          │
-          ▼
-Resolved Adapter Props
-          │
-          ├── native React visual
-          ├── <Img>
-          ├── <Video>
-          ├── <Audio>
-          └── SVG renderer
-          │
-          ▼
-Remotion render
+Provider-specific output
+→ canonical VoiceTrack
+→ provider-independent downstream pipeline
 ```
 
 ---
 
-## 15. Asset manifest đề xuất
+## 7. Canonical audio format
+
+Khuyến nghị internal master:
+
+```text
+WAV PCM
+48 kHz
+mono cho narration
+```
+
+Lý do:
+
+- tránh transcode lặp lại trong các bước alignment và QA;
+- dễ probe và debug;
+- output MP4 có thể encode audio ở render stage;
+- cùng một canonical input tăng tính reproducible.
+
+TTS MP3 vẫn được giữ làm raw artifact, nhưng renderer nên ưu tiên normalized master.
+
+Project loudness default đề xuất:
+
+```text
+Integrated loudness: -14 LUFS
+Maximum true peak:    -1 dBTP
+```
+
+Giá trị này phải configurable theo channel profile. Với file production, ưu tiên loudness normalization hai pass thay vì chỉ tăng volume trong React.
+
+---
+
+## 8. Artifact contracts
+
+## 8.1 VoiceTrack
 
 ```ts
-type AssetKind = "image" | "video" | "audio" | "svg";
-
-type AssetManifestItem = {
+type VoiceTrack = {
   id: string;
+  assetId: string;
+  provider: "imported" | "elevenlabs" | "vieneu" | "edge-tts";
   src: string;
-  kind: AssetKind;
-  usage: "embed_asset";
-
-  safeToUse: boolean;
-  alt?: string;
-
-  metadata: {
-    mimeType?: string;
-    width?: number;
-    height?: number;
-    orientation?: "portrait" | "landscape" | "square";
-    durationSec?: number;
-    fps?: number;
-    sampleRate?: number;
-    channels?: number;
-    bytes?: number;
-  };
-
-  semantics: {
-    tags: string[];
-    sceneHints: string[];
-    representation?: string;
-    mood?: string;
-    visualStyle?: string[];
-    qualityScore?: number;
-  };
-
-  provenance: {
-    sourceId: string;
-    sourceType: string;
-    originalPath?: string;
-    sourceRef?: string;
-    license?: string;
-    checksum: string;
+  durationMs: number;
+  sampleRate: number;
+  channels: number;
+  checksum: string;
+  scriptChecksum: string;
+  normalization: {
+    format: "wav-pcm";
+    targetLufs: number;
+    truePeakDb: number;
   };
 };
 ```
 
-### Nguyên tắc
+## 8.2 TimedScript
 
-- `src` phải là path đã normalize cho Remotion.
-- `id` phải stable trong cùng project.
-- Metadata được probe bằng tool, không do LLM đoán.
-- `safeToUse` phải được validate trước render.
-- Semantic metadata hỗ trợ mapper nhưng không thay thế hard validation.
+```ts
+type TimedWord = {
+  id: string;
+  text: string;
+  normalizedText: string;
+  startMs: number;
+  endMs: number;
+  confidence: number | null;
+  alignment: "exact" | "normalized" | "interpolated" | "unresolved";
+};
+
+type TimedPhrase = {
+  id: string;
+  text: string;
+  startMs: number;
+  endMs: number;
+  wordIds: string[];
+};
+
+type TimedScript = {
+  scriptChecksum: string;
+  voiceChecksum: string;
+  durationMs: number;
+  words: TimedWord[];
+  phrases: TimedPhrase[];
+};
+```
+
+## 8.3 CaptionPlan
+
+```ts
+type CaptionPage = {
+  id: string;
+  text: string;
+  startMs: number;
+  endMs: number;
+  wordIds: string[];
+  lines: string[][];
+  weight: "normal" | "compact";
+};
+
+type CaptionPlan = {
+  timedScriptChecksum: string;
+  pages: CaptionPage[];
+};
+```
+
+## 8.4 AudioPlan trong render contract
+
+```ts
+type AudioTrack = {
+  id: string;
+  assetId: string;
+  role: "voiceover" | "music" | "sound_effect" | "clip_audio";
+  startMs: number;
+  endMs?: number;
+  trimStartMs?: number;
+  trimEndMs?: number;
+  volume: number;
+  loop?: boolean;
+};
+
+type AudioPlan = {
+  masterTrackId: string;
+  durationMs: number;
+  tracks: AudioTrack[];
+};
+```
+
+Top-level `video-map.json` nên dần chuyển thành:
+
+```ts
+type VideoMap = {
+  video: VideoMetadata;
+  theme: Theme;
+  audio: AudioPlan;
+  timing: {
+    timedScriptRef: string;
+    captionPlanRef: string;
+  };
+  assets: AssetManifestItem[];
+  scenes: VideoMapScene[];
+};
+```
 
 ---
 
-## 16. Scene asset binding đề xuất
+## 9. Script lock and alignment policy
 
-Mỗi scene nên khai báo asset theo slot semantic:
+Approved script phải là content truth. WhisperX chỉ là timing evidence.
+
+Không được dùng ASR transcript để âm thầm viết lại script.
+
+```text
+ApprovedScript.text
+= text authority
+
+WhisperX words
+= timing authority candidate
+```
+
+Reconciliation pipeline:
+
+```text
+1. Normalize Unicode NFC.
+2. Normalize whitespace and punctuation variants.
+3. Expand or map known technical tokens.
+4. Align approved-script tokens với WhisperX tokens.
+5. Giữ timestamp cho exact/normalized matches.
+6. Interpolate only inside a trusted phrase boundary.
+7. Mark unresolved token thay vì tự đoán toàn timeline.
+8. Fail QA nếu coverage dưới threshold.
+```
+
+Đặc biệt cần dictionary cho video AI/engineering:
+
+```text
+AI
+API
+CLI
+GitHub
+ChatGPT
+Claude
+Gemini
+Cursor
+Remotion
+WhisperX
+```
+
+WhisperX có thể không cấp timestamp cho một số token ngoài dictionary alignment model, số hoặc punctuation. Vì vậy pipeline phải lưu `alignment` status trên từng word.
+
+---
+
+## 10. Caption behavior requirement
+
+Yêu cầu CC của Lucida:
+
+```text
+Hiện một câu/cụm ngắn
+→ giữ nguyên page cho tới endMs
+→ highlight/jump từng từ theo word timestamp
+→ hết phrase mới chuyển page
+```
+
+Không tiếp tục dùng:
+
+```text
+scene duration / number of groups / number of words
+```
+
+Remotion `Caption` standard có thể được dùng làm token interchange:
+
+```ts
+type Caption = {
+  text: string;
+  startMs: number;
+  endMs: number;
+  timestampMs: number | null;
+  confidence: number | null;
+};
+```
+
+`createTikTokStyleCaptions()` có thể hỗ trợ grouping theo khoảng thời gian, nhưng không nên là rule duy nhất. Lucida cần phrase boundaries đã lock từ ApprovedScript để bảo đảm một câu ngắn xuất hiện đầy đủ rồi mới chuyển câu.
+
+Recommended approach:
+
+```text
+TimedScript words
++ locked phrase boundaries
+→ Lucida CaptionPlan
+→ active word determined by absolute timestamp
+```
+
+---
+
+## 11. Scene timing contract
+
+Scene nên bind vào narration range:
+
+```ts
+type VideoMapScene = {
+  id: string;
+  startMs: number;
+  endMs: number;
+  narrationRange: {
+    fromPhraseId: string;
+    toPhraseId: string;
+  };
+  durationSec?: number; // derived only
+};
+```
+
+Rules:
+
+- `startMs` lấy từ phrase đầu tiên của scene.
+- `endMs` lấy từ phrase cuối cùng, cộng configurable visual tail nếu cần.
+- Scene không được cắt giữa một word.
+- Transition overlap phải được resolve rõ trong timeline compiler.
+- Visual mapping có thể đổi nhưng không được sửa narration timing.
+
+---
+
+## 12. Remotion implementation research
+
+## 12.1 Dependency direction
+
+Với Remotion `4.0.486`, thêm các package cùng version:
+
+```json
+{
+  "@remotion/media": "4.0.486",
+  "@remotion/captions": "4.0.486"
+}
+```
+
+Audio mới nên dùng:
+
+```ts
+import {Audio} from "@remotion/media";
+```
+
+Không ưu tiên API audio cũ từ package `remotion`.
+
+## 12.2 Public asset path
+
+File local dùng trong browser/render bundle nên được normalize vào `public/`:
+
+```text
+public/
+└── runs/
+    └── <run-id>/
+        └── audio/
+            └── voice.wav
+```
+
+Contract lưu:
+
+```json
+{
+  "src": "runs/<run-id>/audio/voice.wav"
+}
+```
+
+Renderer resolve bằng:
+
+```ts
+staticFile(track.src)
+```
+
+Không truyền absolute Windows filesystem path vào React component.
+
+## 12.3 AudioLayer
+
+```tsx
+import {Audio} from "@remotion/media";
+import {staticFile, useVideoConfig} from "remotion";
+
+const msToFrames = (ms: number, fps: number) =>
+  Math.round((ms / 1000) * fps);
+
+export const AudioLayer: React.FC<{plan: ResolvedAudioPlan}> = ({plan}) => {
+  const {fps} = useVideoConfig();
+
+  return (
+    <>
+      {plan.tracks.map((track) => (
+        <Audio
+          key={track.id}
+          name={`${track.role}:${track.id}`}
+          src={staticFile(track.src)}
+          from={msToFrames(track.startMs, fps)}
+          durationInFrames={
+            track.endMs === undefined
+              ? undefined
+              : msToFrames(track.endMs - track.startMs, fps)
+          }
+          trimBefore={msToFrames(track.trimStartMs ?? 0, fps)}
+          trimAfter={
+            track.trimEndMs === undefined
+              ? undefined
+              : msToFrames(track.trimEndMs, fps)
+          }
+          volume={track.volume}
+          loop={track.loop}
+          onError={() => "fail"}
+          disallowFallbackToHtml5Audio
+        />
+      ))}
+    </>
+  );
+};
+```
+
+Global audio layer nên nằm cạnh scene renderer, không nằm trong từng visual adapter:
+
+```tsx
+<AbsoluteFill>
+  <AudioLayer plan={input.audio} />
+  <SceneRenderer input={input} />
+</AbsoluteFill>
+```
+
+## 12.4 Dynamic metadata
+
+`calculateMetadata()` phải dùng resolved audio duration:
+
+```ts
+const calculateMetadata: CalculateMetadataFunction<MyCompositionProps> = async ({props}) => {
+  const resolved = await resolveVideoInput(props.videoMap ?? defaultVideoMap);
+
+  return {
+    durationInFrames: Math.ceil(
+      (resolved.timeline.durationMs / 1000) * resolved.video.fps,
+    ),
+    fps: resolved.video.fps,
+    width: resolved.video.width,
+    height: resolved.video.height,
+    defaultSampleRate: 48000,
+    props: {
+      ...props,
+      resolvedVideo: resolved,
+    },
+  };
+};
+```
+
+`calculateMetadata()` có thể async, nhưng dữ liệu trả về phải JSON-serializable.
+
+## 12.5 Media metadata probing
+
+Không dùng duration do LLM hoặc filename cung cấp.
+
+Probe trước render:
+
+```text
+audio src
+→ media metadata probe
+→ durationMs
+→ sample rate
+→ channels
+→ checksum
+```
+
+Remotion hiện khuyến nghị Mediabunny cho metadata của audio/video. `getAudioDurationInSeconds()` đã deprecated.
+
+---
+
+## 13. Audio QA
+
+## 13.1 File QA
+
+```text
+- file exists
+- readable
+- checksum matches
+- supported format
+- duration > 0
+- sample rate declared
+- no clipping
+- no unexpected long silence
+- normalized output exists
+```
+
+## 13.2 Script/audio QA
+
+```text
+- script checksum matches VoiceTrack.scriptChecksum
+- 100% phrase coverage
+- no phrase reordered
+- no silent script rewrite from ASR output
+- unresolved word count below threshold
+- word times stay inside phrase times
+```
+
+## 13.3 Timeline QA
+
+```text
+- composition duration equals master audio duration ± allowed tail
+- first caption does not appear before speech
+- page changes only at phrase boundary
+- active word follows word timestamp
+- final caption ends before/equal audio end
+- scene start/end covers narration range
+```
+
+## 13.4 Mix QA
+
+```text
+- voiceover remains intelligible
+- music does not mask speech
+- SFX does not clip master bus
+- final true peak stays inside configured limit
+```
+
+---
+
+## 14. Audio Foundation MVP
+
+Mục tiêu duy nhất:
+
+> Render một video Lucida hiện có với một voice file local, composition duration lấy từ audio metadata, và output MP4 thực sự chứa audio.
+
+Scope:
+
+```text
+1. Thêm @remotion/media.
+2. Tạo một audio asset local trong public/.
+3. Thêm top-level audio plan tối thiểu vào video-map.
+4. Probe duration trước render.
+5. Tạo AudioLayer.
+6. Wire AudioLayer vào Composition.
+7. calculateMetadata lấy duration từ master voice track.
+8. Preflight fail khi file audio thiếu hoặc không đọc được.
+9. Render MP4 và verify có audio stream.
+```
+
+Chưa làm trong slice này:
+
+```text
+- tự động gọi ElevenLabs/VieNeu
+- music bed
+- sound effects
+- WhisperX integration
+- timestamp caption
+- semantic scene retiming
+```
+
+### Definition of Done
+
+```text
+1. video-map có một voiceover track.
+2. Voice file được resolve bằng stable asset ID.
+3. Render fail trước Remotion nếu audio file không tồn tại.
+4. Composition duration derive từ audio metadata.
+5. MP4 output có audio stream.
+6. Audio không bị trim ngoài ý muốn.
+7. render-report ghi voice asset ID, duration và checksum.
+8. Cùng input và checksum tạo timeline giống nhau.
+```
+
+---
+
+## 15. TimedScript and Caption Lock MVP
+
+Thực hiện ngay sau Audio Foundation MVP.
+
+```text
+voice.wav
+→ run-whisperx.ps1
+→ whisperx.raw.json
+→ normalize-whisperx.mjs
+→ reconcile-approved-script.mjs
+→ timed-script.json
+→ build-caption-plan.mjs
+→ caption-plan.json
+→ timestamp SubtitleBar
+```
+
+Cần thêm scripts:
+
+```text
+scripts/audio/probe-audio.mjs
+scripts/audio/normalize-audio.mjs
+scripts/audio/normalize-whisperx.mjs
+scripts/audio/reconcile-approved-script.mjs
+scripts/audio/build-caption-plan.mjs
+scripts/audio/validate-timed-script.mjs
+```
+
+`SubtitleBar` chuyển từ local linear timing sang absolute timing:
+
+```text
+currentFrame
+→ absoluteMs
+→ active CaptionPage
+→ active TimedWord
+→ render page
+→ animate active word
+```
+
+### Definition of Done
+
+```text
+1. Caption page đổi theo startMs/endMs thật.
+2. Mỗi page là một câu/cụm ngắn đã lock.
+3. Active word bám timestamp.
+4. Không thêm/xóa/đổi thứ tự script.
+5. Missing timestamp được flag rõ.
+6. Scene có thể bind narrationRange bằng phrase ID.
+```
+
+---
+
+## 16. Scene Asset Binding MVP
+
+Thực hiện sau khi audio timeline đã có source of truth.
 
 ```ts
 type SceneAssetBindings = {
@@ -934,376 +895,70 @@ type SceneAssetBindings = {
   hero?: AssetBinding;
   items?: AssetBinding[];
   overlay?: AssetBinding;
-  voiceover?: AssetBinding;
-  soundEffect?: AssetBinding[];
-};
-
-type AssetBinding = {
-  assetId: string;
-  fit?: "cover" | "contain" | "fill";
-  position?: "center" | "top" | "bottom" | "left" | "right";
-  startSec?: number;
-  endSec?: number;
-  loop?: boolean;
-  muted?: boolean;
-  volume?: number;
+  soundEffects?: AssetBinding[];
 };
 ```
 
-Ví dụ:
+Voiceover không đặt trong từng scene asset binding; nó nằm ở global `AudioPlan`.
 
-```json
-{
-  "id": "scene-03",
-  "intent": "use_case",
-  "templateId": "image-carousel",
-  "assetBindings": {
-    "items": [
-      {
-        "assetId": "asset-image-01",
-        "fit": "cover"
-      },
-      {
-        "assetId": "asset-image-02",
-        "fit": "cover"
-      }
-    ],
-    "background": {
-      "assetId": "asset-video-01",
-      "fit": "cover",
-      "loop": true,
-      "muted": true
-    }
-  }
-}
-```
+Vertical slice đầu tiên:
 
-### Lợi ích
+> Một scene `image-carousel` bind 2–5 local image assets và render đúng asset theo ID.
 
-- Asset ownership rõ ràng.
-- Mapper có thể giải thích asset nào phục vụ scene nào.
-- Validator kiểm tra được slot compatibility.
-- Adapter không phải search global asset list.
-- Unused asset có thể được phát hiện.
-
----
-
-## 17. Template definition và slot schema
-
-Registry nên nâng cấp từ:
+Required work:
 
 ```text
-templateId → adapter
-```
-
-thành:
-
-```ts
-type TemplateDefinition = {
-  adapter: TemplateAdapter;
-  adapterId: string;
-  presetId?: string;
-
-  supportedIntents: SceneIntent[];
-  supportedAspectRatios: Array<"vertical_9_16">;
-
-  slots: Record<string, {
-    acceptedKinds: AssetKind[];
-    required: boolean;
-    min?: number;
-    max?: number;
-  }>;
-
-  capabilities: {
-    supportsNativeVisual: boolean;
-    supportsSubtitle: boolean;
-    supportsAudio: boolean;
-    maxTextObjects?: number;
-  };
-};
-```
-
-Ví dụ:
-
-```ts
-const imageCarouselDefinition: TemplateDefinition = {
-  adapter: ImageCarouselAdapter,
-  adapterId: "image-carousel",
-  supportedIntents: ["list", "use_case"],
-  supportedAspectRatios: ["vertical_9_16"],
-  slots: {
-    items: {
-      acceptedKinds: ["image", "svg"],
-      required: true,
-      min: 2,
-      max: 5
-    },
-    background: {
-      acceptedKinds: ["image", "video"],
-      required: false
-    }
-  },
-  capabilities: {
-    supportsNativeVisual: false,
-    supportsSubtitle: true,
-    supportsAudio: true,
-    maxTextObjects: 5
-  }
-};
+- thêm assetBindings vào VideoMapScene
+- tạo template slot definition
+- tạo resolveSceneAssets()
+- refactor ImageCarouselAdapter để render <Img>
+- validate ID, kind, min/max count và file existence
+- ghi used asset IDs vào render-report
 ```
 
 ---
 
-## 18. Asset resolver đề xuất
-
-```ts
-type ResolvedSceneAssets = {
-  background?: ResolvedAsset;
-  hero?: ResolvedAsset;
-  items: ResolvedAsset[];
-  overlay?: ResolvedAsset;
-  voiceover?: ResolvedAsset;
-  soundEffect: ResolvedAsset[];
-};
-```
-
-Resolver pipeline:
-
-```text
-scene.assetBindings
-+ asset manifest
-+ template slot schema
-        │
-        ▼
-resolveSceneAssets()
-        │
-        ├── asset ID exists?
-        ├── path exists?
-        ├── safeToUse = true?
-        ├── kind accepted by slot?
-        ├── min/max count valid?
-        ├── trim range valid?
-        ├── orientation acceptable?
-        └── duration sufficient?
-        │
-        ▼
-ResolvedSceneAssets
-```
-
-Fail-fast policy:
-
-```text
-Missing required asset
-→ validation error
-
-Wrong kind
-→ validation error
-
-Optional asset missing
-→ explicit fallback
-
-Unsafe asset
-→ validation error
-
-Unused asset
-→ warning
-```
-
----
-
-## 19. Media renderer dùng chung
-
-```tsx
-const AssetRenderer: React.FC<{
-  asset: ResolvedAsset;
-  binding: AssetBinding;
-}> = ({ asset, binding }) => {
-  switch (asset.kind) {
-    case "image":
-    case "svg":
-      return (
-        <Img
-          src={asset.src}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: binding.fit ?? "cover"
-          }}
-        />
-      );
-
-    case "video":
-      return (
-        <Video
-          src={asset.src}
-          muted={binding.muted ?? true}
-          volume={binding.volume ?? 1}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: binding.fit ?? "cover"
-          }}
-        />
-      );
-
-    case "audio":
-      return (
-        <Audio
-          src={asset.src}
-          volume={binding.volume ?? 1}
-        />
-      );
-  }
-};
-```
-
-### Nguyên tắc
-
-- Asset rendering policy nằm trong component dùng chung.
-- Adapter chỉ quyết định layout và animation.
-- Trim, loop, fit và volume lấy từ binding.
-- Không hard-code đường dẫn asset trong adapter.
-
----
-
-## 20. Audio architecture
-
-Audio không nên là một card-level asset thông thường.
-
-Cần tách hai loại:
-
-```text
-Global audio
-= narration, music bed
-
-Scene audio
-= sound effect, scene-local clip
-```
-
-Contract đề xuất:
-
-```ts
-type VideoAudioTrack = {
-  id: string;
-  assetId: string;
-  role: "voiceover" | "music";
-  startMs: number;
-  endMs?: number;
-  volume: number;
-};
-
-type SceneAudioBinding = {
-  assetId: string;
-  role: "sound_effect" | "clip_audio";
-  startMs: number;
-  volume: number;
-};
-```
-
-Timeline mục tiêu:
-
-```text
-Voice/TTS
-→ word timestamps
-→ narration beats
-→ scene start/end
-→ caption groups
-→ active word animation
-→ Remotion timeline
-```
-
-Scene duration không nên tiếp tục là nguồn sự thật duy nhất.
-
----
-
-## 21. Validation layers đề xuất
-
-## 21.1 JSON schema validation
-
-Kiểm tra shape và required fields.
-
-## 21.2 Asset manifest validation
-
-```text
-unique IDs
-valid kind
-valid normalized src
-safeToUse
-checksum exists
-metadata consistent
-```
-
-## 21.3 File-system validation
-
-```text
-file exists
-file is readable
-path stays inside approved root
-MIME matches extension
-```
-
-## 21.4 Template slot validation
-
-```text
-required slot present
-accepted kind
-min/max count
-aspect ratio compatibility
-```
-
-## 21.5 Timeline validation
-
-```text
-trim range valid
-asset duration sufficient
-audio duration covers narration
-scene boundaries do not overlap unexpectedly
-```
-
-## 21.6 Render preflight
-
-```text
-Remotion composition available
-font loaded
-asset preload succeeds
-representative still renders
-```
-
----
-
-## 22. Proposed repository structure
+## 17. Proposed repository structure
 
 ```text
 src/
+├── audio/
+│   ├── types.ts
+│   ├── AudioLayer.tsx
+│   ├── resolveAudioPlan.ts
+│   └── captionTiming.ts
 ├── assets/
 │   ├── types.ts
 │   ├── resolver.ts
 │   ├── validators.ts
-│   ├── AssetRenderer.tsx
-│   └── audio.tsx
+│   └── AssetRenderer.tsx
+├── timeline/
+│   ├── resolveTimeline.ts
+│   ├── resolveSceneRanges.ts
+│   └── frameTime.ts
 ├── registry/
 │   ├── templateDefinitions.ts
 │   ├── templateRegistry.ts
 │   └── slotValidation.ts
 ├── adapters/
-│   ├── HeroTitleAdapter.tsx
-│   ├── ImageCarouselAdapter.tsx
-│   ├── VideoBackgroundAdapter.tsx
-│   └── ...
-├── timeline/
-│   ├── resolveTimeline.ts
-│   ├── captionTiming.ts
-│   └── audioTracks.ts
 ├── data.ts
 ├── Composition.tsx
 └── Root.tsx
 
+scripts/
+├── audio/
+│   ├── probe-audio.mjs
+│   ├── normalize-audio.mjs
+│   ├── normalize-whisperx.mjs
+│   ├── reconcile-approved-script.mjs
+│   ├── build-caption-plan.mjs
+│   └── validate-timed-script.mjs
+├── validate-video-map.mjs
+└── render-run.mjs
+
 pipeline/
+├── audio/
 ├── assets/
-│   ├── ingest.mjs
-│   ├── probe.mjs
-│   ├── normalize.mjs
-│   └── manifest.mjs
 ├── collectors/
 ├── processors/
 ├── mappers/
@@ -1311,176 +966,170 @@ pipeline/
 └── validators/
 ```
 
+Run artifacts:
+
+```text
+pipeline/runs/<run-id>/
+├── approved-script.json
+├── audio/
+│   ├── voice.raw.mp3
+│   ├── voice.wav
+│   └── audio-metadata.json
+├── timing/
+│   ├── whisperx.raw.json
+│   ├── timed-script.json
+│   └── caption-plan.json
+├── video-map.json
+├── render-props.json
+├── output/
+│   └── video.mp4
+└── render-report.json
+```
+
 ---
 
-## 23. Roadmap triển khai
+## 18. Updated roadmap
 
-## P0 — Scene asset binding
-
-Mục tiêu: nối asset manifest với scene.
+## P0-A — Audio Foundation MVP
 
 ```text
-- Thêm `assetBindings` vào VideoMapScene
-- Mở rộng JSON schema
-- Thêm unique asset ID validation
-- Thêm unused asset warning
+- add @remotion/media
+- add AudioPlan contract
+- normalize public asset path
+- probe master audio duration
+- create AudioLayer
+- derive composition duration from audio
+- verify output audio stream
 ```
 
-## P1 — Asset resolver và media renderer
+## P0-B — TimedScript and Caption Lock
 
 ```text
-- Xây `resolveSceneAssets()`
-- Xây `AssetRenderer`
-- Chuẩn hóa Remotion src path
-- Fail-fast khi missing required asset
+- consume WhisperX JSON
+- reconcile with ApprovedScript
+- create word/phrase timestamps
+- build short caption pages
+- replace linear SubtitleBar timing
+- bind scenes to narration ranges
 ```
 
-## P2 — Image-backed adapter đầu tiên
+## P1 — Scene Asset Binding MVP
 
 ```text
-- Refactor ImageCarouselAdapter
-- Render 2–5 image/SVG assets thật
-- Thêm crop/fit/position policy
-- Thêm placeholder explicit cho optional asset
+- assetBindings contract
+- template slot validation
+- resolveSceneAssets()
+- real image carousel
+- asset usage report
 ```
 
-## P3 — Audio-first composition
+## P2 — TTS provider adapters
 
 ```text
-- Wire global voiceover bằng <Audio>
-- Thêm audio metadata
-- Import word timestamps
-- Chuyển caption sang timestamp-based
-- Derive scene timing từ narration range
+- provider-neutral interface
+- ElevenLabs first production adapter
+- VieNeu local adapter
+- Edge TTS preview/fallback adapter
+- all outputs pass canonical audio pipeline
 ```
 
-## P4 — Video asset support
+## P3 — Video and audio mix support
 
 ```text
-- Thêm video slot
-- Hỗ trợ trim, loop, mute, volume
-- Probe duration/fps/resolution
-- Validate scene duration với clip duration
+- video trim/loop/mute
+- music bed
+- SFX tracks
+- volume envelope and ducking
+- mix QA
 ```
 
-## P5 — Template capability registry
+## P4 — Template capability registry
 
 ```text
-- Tách adapter / preset / template
-- Thêm slot schema
-- Thêm supported intents
-- Thêm supported aspect ratio
-- Loại alias không tạo visual difference thực
+- adapter / preset / template separation
+- asset slots
+- supported intents
+- aspect ratio
+- render cost
+- remove aliases without real visual difference
 ```
 
-## P6 — Visual-flow asset compilation
+## P5 — Visual-flow asset compilation
 
 ```text
-- Implement image/local-file/repository collectors
-- Tạo asset manifest trong pipeline
-- Compile media block thành asset binding
-- Bỏ hard-code `assets: []`
+- image/local-file/repository collectors
+- compile media blocks
+- remove hard-coded assets: []
+- preserve provenance through render report
 ```
 
-## P7 — Rule-based retrieval
+## P6 — Rule-based retrieval
 
 ```text
-- Metadata filter
-- Tag matching
-- Scene hint matching
-- Orientation and duration filter
-- Continuity and reuse penalty
+- metadata filter
+- tag and scene-hint match
+- orientation and duration checks
+- continuity and reuse penalty
 ```
 
-## P8 — Semantic retrieval
+## P7 — Semantic retrieval
 
 ```text
-- Multilingual embedding evaluation
+- multilingual embedding evaluation
 - Transformers.js reranking
-- LanceDB chỉ khi asset scale chứng minh cần thiết
+- LanceDB only after benchmark proves need
 ```
 
 ---
 
-## 24. Quyết định kiến trúc đề xuất
+## 19. Engineering rules
 
-### Nên áp dụng ngay
-
-- Giữ `video-map.json` làm contract trung tâm.
-- Giữ component registry thay vì scene-specific branching.
-- Thêm scene-level asset binding.
-- Thêm template slot validation.
-- Tạo asset resolver trước adapter.
-- Refactor `ImageCarouselAdapter` thành media-backed adapter thật.
-
-### Nên thiết kế ngay, triển khai sau P0–P3
-
-- Asset metadata giàu thông tin.
-- Adapter/preset/template separation.
-- Global audio tracks.
-- Visual-flow media collectors.
-
-### Chưa cần build ngay
-
-- LanceDB production index.
-- Semantic search cho toàn bộ thư viện.
-- Complex computer-vision tagging.
-- Tự động chọn stock footage từ external API.
+1. Audio timeline is the source of truth.
+2. ApprovedScript is text truth; ASR must not rewrite it.
+3. Renderer must not call a TTS provider.
+4. TTS, alignment and render are separate deterministic stages.
+5. `video-map.json` remains reviewable before render.
+6. Voiceover is global audio, not scene-local visual asset.
+7. Scene duration is derived from narration range.
+8. Adapter receives resolved assets only.
+9. Missing required media fails before render.
+10. Every generated artifact has checksum and provenance.
+11. LLM may propose chunk boundaries but cannot invent timestamps.
+12. Timing conversion uses one shared ms/frame utility.
 
 ---
 
-## 25. Success criteria
+## 20. Final recommendation
 
-Kiến trúc asset-component được xem là hoàn thành phiên bản đầu khi:
+Next implementation should not be semantic retrieval, more template aliases, or a full TTS integration.
+
+Thứ tự đúng:
 
 ```text
-1. Một asset trong clean-brief được normalize thành asset manifest.
-2. Scene bind asset bằng stable asset ID.
-3. Validator xác nhận asset phù hợp với template slot.
-4. Adapter nhận resolved asset, không nhận toàn bộ global array.
-5. ImageCarouselAdapter render image thật.
-6. Composition render voiceover audio thật.
-7. Missing/unsafe/wrong-kind asset fail trước render.
-8. Render report ghi lại asset IDs đã dùng.
-9. Cùng video-map + cùng asset checksum tạo output tái lập được.
+1. Add one existing voice file to Remotion output.
+2. Make audio duration drive composition metadata.
+3. Compile WhisperX output into TimedScript.
+4. Lock caption phrases and animate words by timestamp.
+5. Bind scene boundaries to narration ranges.
+6. Add deterministic scene asset binding.
+7. Only then automate TTS providers and asset retrieval.
+```
+
+Đây là đường ngắn nhất để giải quyết hai vấn đề production đang thấy rõ nhất:
+
+```text
+- video chưa có audio track
+- subtitle đúng style nhưng sai nhịp
 ```
 
 ---
 
-## 26. Kết luận
+## 21. Primary references
 
-Lucida đã có xương sống phù hợp cho một renderer có kiểm soát:
-
-```text
-source ingestion
-→ reviewable contract
-→ component registry
-→ deterministic Remotion render
-```
-
-Nhưng asset hiện chưa phải first-class input của scene component.
-
-Kiến trúc cần hoàn thiện theo thứ tự:
-
-```text
-Asset metadata
-→ Scene asset binding
-→ Template slot schema
-→ Asset resolver
-→ Image/video/audio renderer
-→ Audio-first timeline
-→ Rule-based retrieval
-→ Semantic retrieval
-```
-
-Ưu tiên đúng không phải thêm nhiều template ID hoặc đưa vector database vào sớm. Ưu tiên đúng là đóng kín chuỗi dữ liệu:
-
-```text
-usableAssets
-→ asset manifest
-→ assetBindings
-→ resolved adapter props
-→ Remotion media primitives
-```
-
-Khi chuỗi này hoàn thiện, asset và component mới thực sự trở thành nguồn input deterministic, traceable và reusable cho Remotion render.
+- Remotion `<Audio>` from `@remotion/media`: https://www.remotion.dev/docs/media/audio
+- Remotion `calculateMetadata()`: https://www.remotion.dev/docs/calculate-metadata
+- Remotion media metadata with Mediabunny: https://www.remotion.dev/docs/mediabunny/metadata
+- Remotion Caption contract: https://www.remotion.dev/docs/captions/caption
+- Remotion TikTok-style caption grouping: https://www.remotion.dev/docs/captions/create-tiktok-style-captions
+- WhisperX repository and alignment limitations: https://github.com/m-bain/whisperX
+- FFmpeg `loudnorm`: https://ffmpeg.org/ffmpeg-filters.html#loudnorm
