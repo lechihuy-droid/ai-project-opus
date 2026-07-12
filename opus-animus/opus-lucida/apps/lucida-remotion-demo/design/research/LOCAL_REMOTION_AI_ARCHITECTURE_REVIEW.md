@@ -1,174 +1,134 @@
-# Nghiên cứu kiến trúc hệ thống tự động hóa video ngắn Local Remotion + AI
+# Đánh giá Local Asset Retrieval và các khoảng trống kiến trúc của Lucida
 
-> Phạm vi tài liệu: chỉ giữ các phần tham khảo từ repository mã nguồn mở và kiến trúc local-first. Các nội dung về stock-video API đã được loại khỏi phần đánh giá kiến trúc.
+> Phạm vi tài liệu: chỉ giữ phần đánh giá `Transformers.js`, `LanceDB`, local asset retrieval và phân tích các gap hiện tại của `lucida-remotion-demo`.
 >
 > Vị trí áp dụng: `opus-animus/opus-lucida/apps/lucida-remotion-demo`
 >
-> Trạng thái: research + architecture review, chưa phải implementation specification.
+> Trạng thái: architecture review, chưa phải implementation specification.
 
 ---
 
-## Phần I — Báo cáo nghiên cứu gốc đã chuẩn hóa
+# 1. Đánh giá Transformers.js, LanceDB và Local Asset Retrieval
 
-## 1. Bối cảnh
+## 1.1 Mục tiêu kiến trúc
 
-Sự phát triển mạnh của YouTube Shorts, Instagram Reels và TikTok thúc đẩy nhu cầu tự động hóa quy trình sản xuất video ngắn. Việc chuyển từ kịch bản văn bản thô sang video hoàn chỉnh đòi hỏi sự phối hợp giữa:
+Mục tiêu của tầng này không phải chỉ là tìm video có từ khóa giống kịch bản. Mục tiêu đúng là xây dựng một **Visual Asset Retrieval Layer** có khả năng chọn tài nguyên phù hợp với chức năng kể chuyện của từng scene.
 
-- phân tích kịch bản;
-- chia scene;
-- đồ họa động;
-- chuyển cảnh;
-- xử lý âm thanh;
-- subtitle;
-- lựa chọn tài nguyên hình ảnh;
-- render và QA.
-
-Remotion chạy trên Node.js và cho phép định nghĩa video bằng React component. Kiến trúc local-first có thể giảm phụ thuộc vào dịch vụ cloud, tăng khả năng kiểm soát source code, bảo mật dữ liệu và tính tái lập của quá trình render.
-
-Mục tiêu nghiên cứu gồm:
-
-1. Tìm các repository cung cấp component, transition và visual effect có thể tích hợp vào Remotion.
-2. Xây cơ chế local asset mapping từ nội dung kịch bản sang tài nguyên hình ảnh.
-3. Đề xuất kiến trúc cho hệ thống sản xuất video ngắn chạy chủ yếu trên máy local.
-
----
-
-## 2. Repository component và visual effect cho Remotion
-
-### 2.1 `kapishdima/remocn`
-
-`remocn` áp dụng mô hình tương tự `shadcn/ui`: component được copy trực tiếp vào source tree của project thay vì trở thành một runtime dependency đóng kín.
-
-Các nhóm component phù hợp với video công nghệ gồm:
-
-- kinetic typography;
-- animated text;
-- code block;
-- terminal simulation;
-- glitch effect;
-- animated background;
-- transition;
-- charts;
-- AI-interface scene;
-- process-flow scene.
-
-Ưu điểm kiến trúc:
-
-- project sở hữu source code sau khi import;
-- dễ tùy biến theme, typography và motion;
-- giảm phụ thuộc runtime;
-- dễ kiểm soát performance và determinism;
-- phù hợp với mô hình component registry nội bộ.
-
-Rủi ro:
-
-- import quá nhiều component có thể làm catalog phình to;
-- component không được chuẩn hóa có thể tạo style không nhất quán;
-- cần kiểm tra license, provenance, safe-area và render performance.
-
-### 2.2 `reactvideoeditor/remotion-templates`
-
-Repository này cung cấp một catalog lớn các template React/Remotion cho nhiều nhóm visual:
-
-- text animation;
-- chart;
-- counter;
-- background effect;
-- cinematic scene;
-- transition;
-- content animation.
-
-Giá trị chính của repository nằm ở:
-
-- reference implementation;
-- visual benchmark;
-- source preset;
-- test fixture;
-- nguồn ý tưởng để xây adapter nội bộ.
-
-Không nên mặc định coi mỗi tên template là một implementation độc lập. Nhiều template có thể dùng chung một visual grammar và chỉ khác preset motion hoặc style.
-
-### 2.3 `Ashad001/remotion-transitions`
-
-Repository tập trung vào custom transition, đặc biệt các pattern dựa trên `TransitionPresentation`, interpolation, stagger và spring physics.
-
-Giá trị kiến trúc:
-
-- tham khảo công thức transition;
-- hiểu cách phối hợp outgoing scene và incoming scene;
-- xây transition registry;
-- tách transition khỏi scene rendering;
-- hỗ trợ scene overlap thay cho overlay giả lập.
-
-Nên ưu tiên triển khai transition nội bộ dựa trên API chuẩn của Remotion, thay vì khóa hệ thống vào một package bên ngoài.
-
----
-
-## 3. Kiến trúc ánh xạ asset cục bộ
-
-Báo cáo gốc đề xuất pipeline lai chạy cục bộ:
+Pipeline đề xuất:
 
 ```text
-Script text
-→ lightweight NLP keyword extraction
-→ local text embedding
-→ vector search
-→ asset candidate ranking
-→ selected local asset
+Script / scene content
+→ Visual Intent Extraction
+→ Metadata and Tag Filtering
+→ Semantic Embedding Search
+→ Narrative and Continuity Reranking
+→ Selected Local Asset
 ```
 
-### 3.1 Trích xuất keyword cục bộ
+Asset retrieval chỉ nên là một tầng hỗ trợ cho visual planner. Nó không nên thay thế việc xác định scene intent, representation và narrative function.
 
-Một bước NLP nhẹ có thể:
+---
 
-- chuẩn hóa Unicode;
-- loại stopword;
-- phát hiện danh từ và thực thể;
-- chuyển từ tiếng Việt sang canonical visual concepts;
-- tạo positive và negative visual keywords.
+## 1.2 Transformers.js
+
+`@huggingface/transformers` phù hợp để chạy embedding cục bộ trong môi trường Node.js hoặc TypeScript mà không cần một inference server riêng.
+
+### Ưu điểm
+
+- Có thể chạy local sau khi model đã được tải.
+- Không cần gọi LLM hoặc embedding API cho mỗi scene.
+- Dễ tích hợp vào pipeline Node.js hiện tại của Lucida.
+- Phù hợp để semantic search trên metadata, tag và mô tả asset.
+- Giảm độ trễ mạng và tăng khả năng tái lập pipeline.
+
+### Vai trò phù hợp
+
+Embedding nên được dùng để:
+
+- mở rộng truy vấn ngữ nghĩa;
+- tìm asset khác từ nhưng gần nghĩa;
+- rerank candidate sau khi đã lọc metadata;
+- tìm kiếm trong thư viện asset lớn hơn khả năng exact keyword matching.
 
 Ví dụ:
-
-```json
-{
-  "sourceText": "AI đọc toàn bộ codebase và phát hiện dependency ẩn",
-  "visualConcepts": [
-    "artificial intelligence",
-    "source code",
-    "dependency graph",
-    "software architecture"
-  ],
-  "negativeConcepts": [
-    "generic robot face",
-    "generic business meeting"
-  ]
-}
-```
-
-### 3.2 Embedding cục bộ bằng Transformers.js
-
-`@huggingface/transformers` có thể chạy model embedding trong môi trường JavaScript/Node.js mà không cần inference server riêng.
-
-Embedding giúp xử lý các trường hợp khác chữ nhưng gần nghĩa, ví dụ:
 
 ```text
 programmer ↔ coding
 server infrastructure ↔ data center
 agent memory ↔ context storage
+software dependency ↔ architecture graph
 ```
 
-Tuy nhiên, model embedding phải được đánh giá với tiếng Việt hoặc pipeline đa ngôn ngữ. Một model tối ưu cho tiếng Anh không nên được mặc định dùng làm lựa chọn production cho script tiếng Việt.
+### Giới hạn
 
-### 3.3 Local vector store bằng LanceDB
+Embedding không nên là tầng quyết định cuối cùng.
 
-LanceDB có thể đóng vai trò local vector index lưu trên disk và hỗ trợ:
+Một asset có semantic similarity cao vẫn có thể sai về:
 
-- vector search;
-- metadata filtering;
-- incremental indexing;
-- embedded/in-process retrieval.
+- scene intent;
+- visual representation;
+- mood;
+- aspect ratio;
+- narrative function;
+- continuity với scene trước và sau.
 
-Asset record có thể gồm:
+Ví dụ, với câu:
+
+> Agent bị mắc kẹt giữa quá nhiều context.
+
+Semantic search có thể trả về:
+
+- programmer nhìn nhiều màn hình;
+- robot AI;
+- server room;
+- code chạy trên terminal.
+
+Trong khi visual phù hợp hơn có thể là:
+
+- context blocks chồng lên nhau;
+- memory window bị đầy;
+- diagram thể hiện bottleneck;
+- nhiều luồng dữ liệu cùng đổ vào một agent.
+
+### Lưu ý về tiếng Việt
+
+Lucida xử lý script tiếng Việt, nên không nên mặc định dùng một embedding model tối ưu chủ yếu cho tiếng Anh làm lựa chọn production.
+
+Nên đánh giá ba hướng:
+
+```text
+A. Multilingual embedding model
+B. Vietnamese → canonical English visual concepts
+C. Hybrid: metadata/tag filter + multilingual embedding rerank
+```
+
+Hướng C phù hợp nhất cho MVP vì dễ kiểm soát, giải thích được kết quả và không phụ thuộc hoàn toàn vào model.
+
+---
+
+## 1.3 LanceDB
+
+LanceDB phù hợp khi thư viện asset local đã đủ lớn và cần semantic retrieval kết hợp metadata filtering.
+
+### Dữ liệu có thể lưu
+
+```text
+embedding
+local path
+asset type
+orientation
+resolution
+duration
+fps
+tags
+visual style
+quality score
+reuse count
+source/provenance
+embedding version
+```
+
+Ví dụ asset record:
 
 ```json
 {
@@ -176,260 +136,109 @@ Asset record có thể gồm:
   "localPath": "assets/normalized/asset-043.mp4",
   "type": "video",
   "orientation": "vertical",
+  "width": 1080,
+  "height": 1920,
   "durationSec": 8.2,
+  "fps": 30,
   "tags": ["source code", "dependency graph"],
   "visualStyle": ["technical", "dark"],
   "qualityScore": 0.91,
+  "reuseCount": 1,
   "embeddingVersion": "multilingual-v1"
 }
 ```
 
-Khi số asset còn nhỏ, JSON hoặc SQLite kết hợp cosine search trong memory có thể đủ. Vector database chỉ nên được đưa vào khi quy mô và nhu cầu filtering thực sự yêu cầu.
+### Khi nào LanceDB có giá trị
 
----
+LanceDB bắt đầu hợp lý khi:
 
-## 4. Kiến trúc local-first tổng quát trong báo cáo gốc
+- số asset tăng đáng kể;
+- cần incremental indexing;
+- cần filter theo metadata trước hoặc sau vector search;
+- cần nhiều embedding version;
+- cần kết hợp nhiều loại asset trong cùng một index;
+- JSON hoặc in-memory search bắt đầu khó bảo trì.
 
-```text
-Raw script
-→ script analysis
-→ local NLP extraction
-→ local semantic retrieval
-→ Remotion scene composition
-→ local render
-→ local QA
-→ final short video
+### Khi nào chưa cần
+
+Ở giai đoạn MVP, LanceDB chưa mang lại nhiều giá trị nếu:
+
+- asset còn ít;
+- metadata chưa chuẩn hóa;
+- chưa có thumbnail index;
+- chưa có quality score;
+- chưa có visual-intent contract;
+- chưa có logic tránh lặp lại asset.
+
+Nếu thư viện dưới vài nghìn asset, JSON hoặc SQLite kết hợp cosine search trong memory có thể đơn giản và dễ bảo trì hơn.
+
+### Kết luận
+
+LanceDB là một implementation option tốt, nhưng không nên trở thành dependency bắt buộc của kiến trúc.
+
+Nên abstract retrieval interface:
+
+```ts
+interface AssetIndex {
+  upsert(asset: IndexedAsset): Promise<void>;
+  search(query: AssetQuery): Promise<AssetCandidate[]>;
+}
 ```
 
-Mục tiêu local-first:
-
-- source code nằm trong repository;
-- asset được cache local;
-- render deterministic;
-- giảm cloud dependency;
-- bảo mật script và media;
-- kiểm soát version component;
-- tái tạo được cùng output từ cùng input.
-
-Tuy nhiên, “local-first” không đồng nghĩa tuyệt đối với “offline”. Một số bước ingest hoặc cập nhật model có thể vẫn cần internet. Sau khi asset và model đã có trong local workspace, pipeline chính mới có thể chạy offline.
-
----
-
-# Phần II — Đánh giá kiến trúc và khuyến nghị cho Lucida
-
-## 5. Kết luận kiến trúc
-
-Báo cáo đúng ở ba hướng:
-
-1. Lucida cần một thư viện component Remotion nội bộ.
-2. Lucida cần transition system thực, thay vì chỉ có overlay cuối scene.
-3. Lucida nên có local asset index để tái sử dụng tài nguyên.
-
-Tuy nhiên, roadmap trong báo cáo chưa ưu tiên đúng bottleneck hiện tại của `lucida-remotion-demo`.
-
-Thứ tự đúng phải là:
+Các implementation có thể gồm:
 
 ```text
-Audio/TTS
-→ word timestamps
-→ caption sync
-→ scene timing
-→ adapter/template architecture
-→ transition system
-→ local asset metadata
-→ semantic retrieval
-→ vector database
+JsonAssetIndex
+SqliteAssetIndex
+LanceDbAssetIndex
 ```
 
-Không nên xây asset vector retrieval trước khi audio timeline và scene contract đã ổn định.
-
 ---
 
-## 6. Đánh giá `remocn`
+## 1.4 Local Asset Retrieval
 
-### Mức phù hợp
-
-Rất cao.
-
-`remocn` phù hợp với Lucida vì source component được copy vào project và có thể được chuẩn hóa theo:
-
-- `Be Vietnam Pro`;
-- palette Lucida;
-- safe-area TikTok/Reels/Shorts;
-- vertical 9:16;
-- deterministic frame rendering;
-- adapter contract hiện có.
-
-### Cách tích hợp đúng
-
-Không import component rồi đưa thẳng vào registry. Cần một pipeline quản trị:
+Tầng retrieval nên hoạt động theo nhiều bước thay vì chỉ chạy vector similarity.
 
 ```text
-Repository component
-→ source and license review
-→ copy into vendor/import area
-→ normalize props
-→ apply Lucida theme
-→ benchmark render
-→ visual QA
-→ wrap with Lucida adapter
-→ register template/preset
+Hard Filter
+→ Tag and Category Match
+→ Semantic Search
+→ Visual Intent Scoring
+→ Continuity Scoring
+→ Reuse Penalty
+→ Final Selection
 ```
 
-Nên import trước các visual family phục vụ AI/computer-science:
+### Hard filter
 
-- kinetic typography;
-- glitch text;
-- glass code block;
-- terminal simulation;
-- code diff;
-- process flow;
-- AI interface;
-- animated chart.
+Hard filter nên loại candidate không đạt các điều kiện bắt buộc:
 
-### Rủi ro
+- aspect ratio không phù hợp;
+- resolution thấp;
+- codec không hỗ trợ;
+- duration quá ngắn hoặc quá dài;
+- asset không tồn tại local;
+- source hoặc license không hợp lệ;
+- asset đã bị đánh dấu quality thấp.
 
-Nếu chỉ tăng số `templateId` mà không tăng visual grammar thực, Lucida sẽ lặp lại vấn đề hiện tại: catalog lớn nhưng output ít đa dạng.
+### Semantic search
 
-**Đánh giá:** 9/10 về giá trị tham khảo, 8/10 về khả năng tích hợp.
+Embedding chỉ nên tìm top candidate gần nghĩa sau khi hard filter.
 
----
+### Visual intent scoring
 
-## 7. Đánh giá `reactvideoeditor/remotion-templates`
-
-### Mức phù hợp
-
-Cao khi dùng làm catalog và reference source; trung bình khi copy trực tiếp.
-
-Lucida hiện đã có các tên/effect gần với catalog này, nhưng nhiều template khác tên đang map về cùng một adapter. Điều đó làm số template không phản ánh số implementation thực.
-
-### Kiến trúc đề xuất
-
-Tách ba khái niệm:
+Mỗi scene cần mô tả rõ:
 
 ```text
-Adapter
-= React rendering implementation
-
-Preset
-= motion/style parameters
-
-Template
-= adapter + preset + supported intents
+subject
+scene intent
+visual representation
+narrative function
+mood
+asset preference
 ```
 
 Ví dụ:
-
-```json
-{
-  "templateId": "cyber-glitch-hook",
-  "adapterId": "glitch-text",
-  "presetId": "rgb-scanline-heavy",
-  "supportedIntents": ["hook", "problem"]
-}
-```
-
-Một adapter có thể có nhiều preset, nhưng preset phải tạo khác biệt motion/style thực sự.
-
-### Adapter families nên có
-
-```text
-KineticTextAdapter
-GlitchTextAdapter
-CodeWalkthroughAdapter
-TerminalSimulationAdapter
-AnimatedListAdapter
-StatStoryAdapter
-DataChartAdapter
-ComparisonAdapter
-ProcessFlowAdapter
-ArchitectureDiagramAdapter
-CinematicAssetAdapter
-EndCardAdapter
-```
-
-**Đánh giá:** 8/10 về catalog, 6.5/10 về code dùng trực tiếp.
-
----
-
-## 8. Đánh giá transition architecture
-
-Lucida hiện chọn một scene duy nhất tại mỗi frame và dùng effect overlay gần cuối scene. Đây chưa phải transition hai scene thực sự.
-
-Nên chuyển sang mô hình:
-
-```text
-Scene A
-↘ overlap window ↙
-Scene B
-```
-
-Transition contract nên độc lập với scene adapter:
-
-```json
-{
-  "transitionOut": {
-    "id": "spatial-push",
-    "durationFrames": 12,
-    "direction": "left",
-    "intensity": 0.75
-  }
-}
-```
-
-Transition registry cần xác định:
-
-- supported outgoing family;
-- supported incoming family;
-- duration range;
-- motion intensity;
-- safe-area behavior;
-- render cost.
-
-Cần phân biệt:
-
-```text
-Transition
-= phối hợp outgoing scene và incoming scene
-
-Overlay
-= flash, grain, light leak hoặc effect tại cut point
-```
-
-**Đánh giá:** mức ưu tiên cao, nên triển khai sau audio/caption.
-
----
-
-## 9. Đánh giá local asset retrieval
-
-### Điểm đúng
-
-- Local metadata index giúp tái sử dụng asset.
-- Embedding hữu ích khi từ khóa không khớp chính xác.
-- Metadata filtering kết hợp semantic search tốt hơn keyword search đơn thuần.
-
-### Điểm chưa đủ
-
-Semantic similarity không đồng nghĩa với visual suitability.
-
-Ví dụ script:
-
-> Agent bị mắc kẹt giữa quá nhiều context.
-
-Asset gần nghĩa có thể là:
-
-- người nhìn nhiều màn hình;
-- server room;
-- robot AI.
-
-Nhưng visual phù hợp với narrative có thể là:
-
-- context block chồng lên nhau;
-- memory window bị đầy;
-- agent bị nhiều luồng dữ liệu bao quanh;
-- diagram bottleneck.
-
-Do đó query contract cần thêm:
 
 ```json
 {
@@ -437,101 +246,110 @@ Do đó query contract cần thêm:
   "sceneIntent": "problem",
   "visualFunction": "explain bottleneck",
   "representation": "diagram",
-  "mood": "overloaded"
+  "mood": "overloaded",
+  "assetPreference": [
+    "native_diagram",
+    "motion_graphic",
+    "local_video"
+  ]
 }
 ```
 
-### Retrieval pipeline đề xuất
+### Continuity scoring
+
+Asset tốt riêng lẻ chưa chắc tốt trong toàn video. Hệ thống cần tính thêm:
+
+- sự liên tục về palette;
+- sự liên tục về visual family;
+- mức độ thay đổi giữa hai scene;
+- asset đã được dùng gần đây hay chưa;
+- scene trước và scene sau sử dụng representation gì.
+
+### Scoring đề xuất
 
 ```text
-Hard filters
-→ tag/category matching
-→ semantic search
-→ scene-intent compatibility
-→ visual continuity rerank
-→ reuse penalty
-→ top candidates
-```
-
-Ví dụ scoring:
-
-```text
-score =
+candidate score =
   0.30 semantic similarity
 + 0.20 visual-intent compatibility
-+ 0.15 aspect-ratio fit
++ 0.15 orientation and crop fit
 + 0.10 duration fit
-+ 0.10 style continuity
-+ 0.05 technical quality
++ 0.10 continuity
++ 0.05 quality
 + 0.05 source reliability
-- 0.05 recent reuse penalty
+- 0.05 reuse penalty
 ```
 
-### Khi nào cần LanceDB
-
-Chưa cần cho MVP nếu:
-
-- asset dưới vài nghìn;
-- metadata đơn giản;
-- retrieval chỉ chạy một user/một máy;
-- chưa có nhiều embedding version.
-
-Bắt đầu bằng:
-
-```text
-JSON/SQLite
-+ manual/generated tags
-+ thumbnails
-+ exact filtering
-```
-
-Chỉ nâng cấp sang LanceDB khi:
-
-- số asset tăng lớn;
-- cần ANN search;
-- có nhiều vector field;
-- cần filtering phức tạp;
-- indexing incremental trở thành bottleneck.
-
-**Đánh giá:** 8/10 về hướng kiến trúc dài hạn, 4/10 về tính cấp thiết hiện tại.
+Các trọng số phải được xem là cấu hình ban đầu, không phải giá trị cố định.
 
 ---
 
-## 10. Thiếu sót lớn nhất của báo cáo: audio-first architecture
+## 1.5 Thứ tự ưu tiên visual
 
-Báo cáo gốc tập trung nhiều vào:
+Đối với nội dung AI, coding và system architecture, local asset retrieval không nên mặc định trả về stock footage.
 
-```text
-script
-→ keyword
-→ asset
-→ Remotion
-```
-
-Nhưng video production cần timeline dựa trên audio:
+Thứ tự phù hợp hơn:
 
 ```text
-script
-→ TTS/voice
-→ word alignment
-→ narration beats
-→ scene timing
-→ visual planning
-→ Remotion
+1. Native Remotion diagram
+2. Native Lucida component
+3. Code / terminal / UI simulation
+4. Product screenshot hoặc technical asset thật
+5. Local video asset
+6. Generic abstract background
 ```
 
-Hiện tại Lucida có hai gap chính:
+Local video phù hợp với:
 
-1. Video output chưa có audio track được wire vào composition.
-2. Caption timing đang chia đều theo caption group và số từ, không bám timestamp thật.
+- establishing shot;
+- office context;
+- human reaction;
+- hardware hoặc server context;
+- cinematic breathing moment;
+- transition texture.
 
-Vì vậy, mọi quyết định scene duration và transition hiện vẫn dựa trên ước lượng thay vì narration timeline.
+Không nên dùng generic footage thay cho:
+
+- architecture explanation;
+- system flow;
+- agent interaction;
+- code dependency;
+- data pipeline;
+- model comparison.
 
 ---
 
-## 11. Contract đề xuất
+# 2. Phân tích Gap hiện tại của Lucida
 
-### 11.1 Audio contract
+Lucida đã có nền tảng render, scene contract và template registry, nhưng vẫn tồn tại các gap kiến trúc ảnh hưởng trực tiếp đến chất lượng video.
+
+## 2.1 Audio chưa phải trung tâm của timeline
+
+Pipeline hiện tại gần với:
+
+```text
+Script
+→ video-map.json
+→ Remotion render
+```
+
+Pipeline mục tiêu nên là:
+
+```text
+Script
+→ Voice / TTS
+→ Word timestamps
+→ Narrative beats
+→ Scene timing
+→ Visual mapping
+→ video-map.json
+→ Remotion render
+```
+
+Scene duration hiện vẫn chủ yếu do planner hoặc AI ước lượng. Điều này làm scene pacing không bám chính xác narration.
+
+### Hướng khắc phục
+
+Bổ sung audio contract:
 
 ```json
 {
@@ -539,15 +357,38 @@ Vì vậy, mọi quyết định scene duration và transition hiện vẫn dự
     "src": "audio/voice.wav",
     "durationSec": 48.72,
     "sampleRate": 48000,
-    "normalization": {
-      "targetLufs": -14,
-      "truePeakDb": -1
-    }
+    "targetLufs": -14,
+    "truePeakDb": -1
   }
 }
 ```
 
-### 11.2 Caption contract
+Scene nên có `startMs` và `endMs`, thay vì chỉ có `durationSec`.
+
+---
+
+## 2.2 Caption chưa đồng bộ theo timestamp
+
+Caption hiện được phân bổ theo:
+
+- số caption group;
+- số từ trong group;
+- thời lượng scene.
+
+Đây là linear timing, không phản ánh lúc từ thực sự được phát âm.
+
+Kết quả là subtitle có thể đúng style nhưng sai nhịp.
+
+### Hướng khắc phục
+
+```text
+Whisper / WhisperX / alignment output
+→ word timestamps
+→ caption groups
+→ active-word animation
+```
+
+Contract đề xuất:
 
 ```json
 {
@@ -567,245 +408,284 @@ Vì vậy, mọi quyết định scene duration và transition hiện vẫn dự
 }
 ```
 
-### 11.3 Scene timing contract
+Caption renderer chỉ nên chuyển câu khi `endMs` của group đã kết thúc.
 
-```json
-{
-  "id": "scene-001",
-  "startMs": 0,
-  "endMs": 4200,
-  "narrationRange": {
-    "fromCaption": "caption-001",
-    "toCaption": "caption-002"
-  }
-}
+---
+
+## 2.3 Template Catalog và Adapter chưa tách rõ
+
+Hiện Lucida có nhiều `templateId`, nhưng một số template khác tên vẫn map về cùng một adapter.
+
+Điều này tạo ra catalog lớn về tên nhưng ít visual grammar thực tế.
+
+Cần tách rõ:
+
+```text
+Adapter
+= React rendering implementation
+
+Preset
+= motion and style parameters
+
+Template
+= adapter + preset + supported intents
 ```
 
-`durationSec` có thể được giữ làm derived field, nhưng không nên là source of truth duy nhất.
-
-### 11.4 Template contract
+Ví dụ:
 
 ```json
 {
   "templateId": "cyber-glitch-hook",
   "adapterId": "glitch-text",
   "presetId": "rgb-scanline-heavy",
-  "capabilities": {
-    "intents": ["hook", "problem"],
-    "density": ["low", "medium"],
-    "safeAreas": ["tiktok", "reels", "youtube_shorts"]
-  }
+  "supportedIntents": ["hook", "problem"]
 }
 ```
 
-### 11.5 Asset selection contract
+Một adapter có thể dùng nhiều preset, nhưng các preset phải tạo khác biệt motion hoặc style thực sự.
+
+---
+
+## 2.4 Asset Retrieval chưa tồn tại như một architecture layer
+
+Lucida hiện có `assets` trong contract, nhưng chưa có một tầng retrieval hoàn chỉnh để:
+
+- hiểu visual intent;
+- truy vấn local asset library;
+- chấm điểm candidate;
+- chọn asset;
+- ghi lại lý do lựa chọn;
+- áp dụng continuity và reuse penalty.
+
+Pipeline mục tiêu:
+
+```text
+Scene content
+→ Visual Intent Contract
+→ Asset Retrieval
+→ Candidate Ranking
+→ Selected Asset
+→ video-map.json
+```
+
+Asset selection nên ưu tiên:
+
+```text
+Native diagram
+→ Native component
+→ Local technical asset
+→ Local video
+```
+
+Embedding chỉ là một bước trong retrieval, không phải toàn bộ retrieval engine.
+
+---
+
+## 2.5 Thiếu asset metadata contract
+
+Nếu chưa có metadata chuẩn, Transformers.js hoặc LanceDB sẽ không tạo ra retrieval tốt.
+
+Metadata tối thiểu cần có:
 
 ```json
 {
-  "assetSelection": {
-    "strategy": "local-first",
-    "visualIntent": "show-system-breakdown",
-    "representation": "diagram",
-    "query": [
-      "AI agent context overload",
-      "context bottleneck",
-      "memory window full"
-    ],
-    "selectedAssetId": "asset-043",
-    "fallback": "architecture-diagram"
+  "id": "asset-043",
+  "localPath": "assets/normalized/asset-043.mp4",
+  "type": "video",
+  "orientation": "vertical",
+  "width": 1080,
+  "height": 1920,
+  "durationSec": 8.2,
+  "fps": 30,
+  "tags": ["dependency graph", "source code"],
+  "representation": "technical_visual",
+  "mood": "focused",
+  "visualStyle": ["dark", "editorial"],
+  "qualityScore": 0.91,
+  "reuseCount": 1,
+  "source": {
+    "type": "local",
+    "provenance": "internal-library"
   }
 }
 ```
 
----
-
-## 12. Kiến trúc mục tiêu cho Lucida
-
-```text
-Raw script
-  ↓
-Source cleanup
-  ↓
-TTS / recorded voice
-  ↓
-Word-level alignment
-  ↓
-Narrative beat segmentation
-  ↓
-Visual intent planning
-  ↓
-Template retrieval
-  ├── Lucida native adapters
-  ├── imported Remocn components
-  ├── adapted template presets
-  └── transition registry
-  ↓
-Local asset retrieval
-  ├── metadata filters
-  ├── tags
-  ├── optional embeddings
-  └── continuity rerank
-  ↓
-video-map.json
-  ↓
-Schema validation
-  ↓
-User approval gate
-  ↓
-Remotion composition / TransitionSeries
-  ↓
-Render
-  ↓
-Visual QA + audio-sync QA
-  ↓
-Patch and re-render
-```
+Metadata contract phải được xây trước vector database.
 
 ---
 
-## 13. Import governance cho repository ngoài
+## 2.6 Thiếu import governance
 
-Mỗi component import cần lưu provenance:
+Khi đưa component hoặc asset từ nguồn ngoài vào Lucida, cần lưu:
+
+- source repository;
+- source commit;
+- license;
+- import date;
+- file đã sửa;
+- adapter tương ứng;
+- benchmark render;
+- visual QA status.
+
+Ví dụ:
 
 ```json
 {
   "componentId": "rgb-glitch-text",
   "source": {
-    "repo": "kapishdima/remocn",
-    "commit": "<source-commit>",
-    "license": "<verified-license>"
+    "repository": "example/remotion-library",
+    "commit": "abc123",
+    "license": "MIT"
   },
   "lucida": {
     "adapter": "GlitchTextAdapter",
-    "importedAt": "YYYY-MM-DD",
-    "modified": true
+    "importedAt": "2026-07-12",
+    "modified": true,
+    "qaStatus": "passed"
   }
 }
 ```
 
-Mỗi component cần qua quality gate:
+Điều này giúp tránh source drift, license ambiguity và component không được kiểm soát.
+
+---
+
+## 2.7 Thiếu retrieval observability
+
+Hệ thống cần giải thích được vì sao asset được chọn.
+
+Mỗi kết quả nên ghi:
+
+```json
+{
+  "selectedAssetId": "asset-043",
+  "query": [
+    "AI code analysis",
+    "dependency graph",
+    "software architecture"
+  ],
+  "score": {
+    "semantic": 0.83,
+    "visualIntent": 0.91,
+    "orientation": 1.0,
+    "continuity": 0.72,
+    "quality": 0.91,
+    "reusePenalty": 0.05
+  },
+  "reason": "Best technical-diagram candidate for a problem scene explaining hidden dependencies."
+}
+```
+
+Không có observability, việc debug asset mapping sẽ rất khó và AI dễ tạo ra lựa chọn không nhất quán.
+
+---
+
+# 3. Kiến trúc mục tiêu
 
 ```text
-license review
-source commit pinning
-TypeScript check
-frame determinism
-render benchmark
-memory usage
-font loading
-vertical 9:16 QA
-safe-area QA
-Vietnamese text overflow QA
-motion-intensity QA
+Script
+→ TTS / voice generation
+→ Word timestamp alignment
+→ Scene and narrative beat planning
+→ Visual Intent Contract
+→ Template selection
+→ Local Asset Retrieval
+   ├── metadata filter
+   ├── tags
+   ├── optional embeddings
+   ├── continuity rerank
+   └── reuse penalty
+→ video-map.json
+→ schema validation
+→ user approval gate
+→ Remotion render
+→ visual QA + audio-sync QA
 ```
 
 ---
 
-## 14. Roadmap đề xuất
+# 4. Thứ tự triển khai đề xuất
 
-### P0 — Production core
-
-- Wire audio vào composition.
-- Chuẩn hóa audio path và metadata.
-- Import word timestamps.
-- Caption theo câu ngắn và highlight theo word timestamp.
-- Scene timing dựa trên narration ranges.
-
-### P1 — Template architecture
-
-- Tách adapter, preset và template.
-- Loại bỏ alias không tạo khác biệt thực.
-- Thêm capability metadata.
-- Thêm adapter/preset validation.
-
-### P2 — Component expansion
-
-- Import có kiểm soát từ `remocn`.
-- Adapt một số visual family từ `reactvideoeditor/remotion-templates`.
-- Ưu tiên code, terminal, diagram, chart và kinetic typography.
-
-### P3 — Transition system
-
-- Chuyển composition sang `TransitionSeries` hoặc kiến trúc scene overlap tương đương.
-- Xây 4–6 transition chuẩn.
-- Tách transition khỏi overlay effect.
-
-### P4 — Local asset library
-
-- Xây cấu trúc asset folder.
-- Tạo metadata schema.
-- Sinh thumbnail.
-- Tạo JSON/SQLite index.
-- Thêm quality score và reuse history.
-
-### P5 — Semantic retrieval
-
-- Thử nghiệm multilingual embedding.
-- Đánh giá latency và accuracy với script tiếng Việt.
-- Thêm semantic rerank.
-- Chỉ đưa LanceDB vào khi benchmark chứng minh cần thiết.
-
----
-
-## 15. Quyết định kiến trúc đề xuất
-
-### Nên áp dụng ngay
-
-- Mô hình copy-source của `remocn`.
-- Component registry nội bộ.
-- Adapter/preset/template separation.
-- Transition architecture thực.
-- Audio-first timeline.
-
-### Nên thiết kế ngay nhưng triển khai sau
-
-- Local asset metadata schema.
-- Retrieval interface abstraction.
-- Import provenance schema.
-
-### Chưa cần build ngay
-
-- LanceDB production index.
-- Semantic search cho toàn bộ asset library.
-- NLP pipeline phức tạp.
-
----
-
-## 16. Đánh giá cuối cùng
-
-Báo cáo có định hướng tốt về repository và local-first architecture, nhưng cần đảo thứ tự roadmap để giải quyết đúng production bottleneck.
-
-Đánh giá tổng thể:
-
-| Hạng mục | Điểm |
-|---|---:|
-| Giá trị repository tham khảo | 8.5/10 |
-| Kiến trúc component | 8/10 |
-| Kiến trúc transition | 7.5/10 |
-| Kiến trúc asset retrieval | 8/10 dài hạn |
-| Tính cấp thiết của vector DB | 4/10 hiện tại |
-| Khả năng áp dụng cho Lucida | 7.5/10 |
-
-Thứ tự ưu tiên cuối cùng:
+## P0 — Audio timeline
 
 ```text
-1. Audio và timestamp
-2. Caption sync
-3. Adapter / preset / template architecture
-4. Import Remocn có kiểm soát
-5. TransitionSeries hoặc scene overlap
-6. Asset metadata index
-7. Embedding và LanceDB
+- Render audio trong Composition
+- Chuẩn hóa audio metadata
+- Sinh scene range từ narration thật
 ```
 
-Kết luận: các repository được nghiên cứu phù hợp để mở rộng visual capability của Lucida, nhưng kiến trúc production phải lấy audio timeline làm source of truth, visual intent làm cơ sở chọn hình và component registry làm lớp kiểm soát giữa source ngoài với renderer nội bộ.
+## P1 — Timestamp caption
+
+```text
+- Import word timestamps
+- Caption group có start/end time
+- Active word bám timestamp
+```
+
+## P2 — Template architecture
+
+```text
+- Tách Adapter / Preset / Template
+- Giảm alias không có khác biệt thực
+- Bổ sung capability metadata
+```
+
+## P3 — Asset metadata
+
+```text
+- Xây local asset manifest
+- Sinh thumbnail
+- Chuẩn hóa resolution, duration, tags và quality score
+```
+
+## P4 — Rule-based retrieval MVP
+
+```text
+- Hard filter
+- Tag matching
+- Visual-intent scoring
+- Continuity và reuse penalty
+- JSON hoặc SQLite index
+```
+
+## P5 — Semantic retrieval
+
+```text
+- Transformers.js embeddings
+- Multilingual model evaluation
+- Semantic reranking
+```
+
+## P6 — Vector database
+
+```text
+- Đánh giá nhu cầu LanceDB
+- Migrate index khi asset library đủ lớn
+- Giữ AssetIndex abstraction để tránh khóa implementation
+```
 
 ---
 
-## 17. Repository tham khảo
+# 5. Kết luận
 
-- `https://github.com/kapishdima/remocn`
-- `https://github.com/reactvideoeditor/remotion-templates`
-- `https://github.com/Ashad001/remotion-transitions`
-- `https://github.com/huggingface/transformers.js`
-- `https://github.com/lancedb/lancedb`
+Transformers.js và LanceDB là hướng phù hợp cho local semantic retrieval, nhưng chưa phải điểm cần triển khai đầu tiên.
+
+Thứ tự đúng cho Lucida là:
+
+```text
+Audio timeline
+→ Timestamp caption
+→ Template architecture
+→ Asset metadata
+→ Rule-based retrieval
+→ Transformers.js
+→ LanceDB
+```
+
+Điểm cần giữ vững:
+
+- **audio-first**: timeline phải xuất phát từ narration thật;
+- **contract-first**: scene, caption, asset và retrieval result đều phải có contract rõ ràng;
+- **local-first**: model, asset index và render ưu tiên chạy local;
+- **visual-intent-first**: semantic similarity chỉ là tín hiệu hỗ trợ, không phải quyết định cuối cùng;
+- **observable retrieval**: mọi asset selection phải giải thích và kiểm tra được.
