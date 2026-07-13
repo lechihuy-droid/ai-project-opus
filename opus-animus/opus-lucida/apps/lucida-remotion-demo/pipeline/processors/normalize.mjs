@@ -5,6 +5,8 @@ const kindFor = (sourceType, recordKind) => {
     return "narrative";
   if (sourceType === "command" && recordKind === "stdout") return "output";
   if (sourceType === "command" && recordKind === "stderr") return "log";
+  if (recordKind === "repository_summary") return "layout_reference";
+  if (recordKind === "media") return "layout_reference";
   return recordKind;
 };
 
@@ -59,6 +61,9 @@ export const normalizeSanitizedInput = (
       if (parsed.text)
         event.text = parsed.text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
       if (parsed.styleRuns.length) event.styleRuns = parsed.styleRuns;
+      if (record.data && typeof record.data === "object") {
+        event.data = { ...(event.data ?? {}), ...record.data };
+      }
       if (kind === "log") event.level = "error";
       if (kind === "resize") {
         const match = /^(\d+)x(\d+)$/.exec(record.data);

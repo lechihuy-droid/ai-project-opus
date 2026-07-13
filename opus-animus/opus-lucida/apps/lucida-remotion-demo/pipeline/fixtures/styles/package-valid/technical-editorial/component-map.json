@@ -1,0 +1,12 @@
+{
+  "components": [
+    {
+      "id": "annotation-rail",
+      "role": "support"
+    },
+    {
+      "id": "diagram-panel",
+      "role": "content"
+    }
+  ]
+}

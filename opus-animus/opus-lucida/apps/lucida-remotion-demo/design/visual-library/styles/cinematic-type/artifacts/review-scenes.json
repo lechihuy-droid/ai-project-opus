@@ -1,0 +1,20 @@
+{
+  "packageId": "cinematic-type",
+  "reviewScenes": [
+    {
+      "sceneKey": "hook",
+      "label": "Hook",
+      "purpose": "Baseline opener with huge headline, wide negative space, and one tall texture placeholder."
+    },
+    {
+      "sceneKey": "quote",
+      "label": "Quote",
+      "purpose": "Claim-driven quote frame with attribution rail and side photographic field."
+    },
+    {
+      "sceneKey": "transition",
+      "label": "Transition",
+      "purpose": "Long-headline edge case that resets the narrative with a wide texture strip."
+    }
+  ]
+}

@@ -1,8 +1,0 @@
-__pycache__/
-*.pyc
-output/
-output-*/
-*.log
-.codex/
-.pytest_cache/
-output_*/

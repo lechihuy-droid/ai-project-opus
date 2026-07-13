@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "lucida-visual-package/v1",
+  "id": "editorial-collage",
+  "label": "Editorial Collage",
+  "status": "experimental",
+  "visualFamily": "editorial-collage",
+  "summary": "Layered culture and evidence scenes using modular crops, source captions, and deliberate placeholders.",
+  "description": "A portrait-first editorial collage grammar with layered media crops, source-role captions, recap rails, and deterministic crop handling for embed-only assets.",
+  "tags": ["editorial", "collage", "culture", "evidence", "recap"],
+  "recommendedIntents": ["summarize", "takeaway", "evidence"],
+  "avoidFor": ["proprietary screenshots", "logo-led product reveals", "metric dashboards"],
+  "supportedSceneTypes": ["montage", "evidence", "recap"],
+  "supportedTemplateRoles": ["scene"],
+  "aspectRatios": ["9:16", "16:9"],
+  "density": "balanced",
+  "renderCost": "medium",
+  "contentCapacity": { "headlineChars": 108, "bodyChars": 620, "maxItems": 4, "maxAnnotations": 4, "maxMediaAssets": 3 },
+  "preferredLayouts": ["layered-crops", "captioned-evidence", "recap-rail"],
+  "preferredTemplates": ["culture-montage", "evidence-stack", "asset-policy-recap"],
+  "backgroundEffects": ["editorial-grid", "print-texture"],
+  "motionPreset": "collage-layer-reveal",
+  "layoutGrammar": [
+    "Render only assets classified as embed_asset; all other classifications produce a deliberate placeholder.",
+    "Use typed crop focus and zoom values for every media slot and clamp them deterministically at render time.",
+    "Attach captions directly to crops so source role, evidence value, and provenance remain visible.",
+    "Keep recap and callout rails outside the highest-overlap media zone for readable composition.",
+    "Use original local fixtures only; do not include proprietary imagery, logos, screenshots, or brand identities."
+  ],
+  "sourcePolicy": {
+    "copyStatus": "original",
+    "registeredMedia": "embed_asset only",
+    "notes": "Review assets are local original SVG fixtures. Edge cases intentionally exercise rejected context_only material and missing embeddable media."
+  },
+  "notes": ["The dedicated family composition avoids shared registry edits.", "The edge fixture validates placeholder behavior for missing and rejected assets."]
+}

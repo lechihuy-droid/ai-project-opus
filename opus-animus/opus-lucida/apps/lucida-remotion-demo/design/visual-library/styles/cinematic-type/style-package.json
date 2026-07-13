@@ -1,0 +1,191 @@
+{
+  "schemaVersion": "lucida-style-package/v1",
+  "id": "cinematic-type",
+  "label": "Cinematic Type",
+  "version": "1.0.0",
+  "status": "experimental",
+  "visualFamily": "cinematic-type",
+  "description": "Production package for a low-density cinematic type family with oversized typography, restrained texture-field placeholders, deterministic Remotion review frames, and audit-ready artifacts.",
+  "tags": [
+    "cinematic",
+    "type",
+    "hook",
+    "quote",
+    "transition"
+  ],
+  "supportedIntents": [
+    "hook",
+    "quote",
+    "transition",
+    "chapter-reset",
+    "takeaway"
+  ],
+  "recommendedIntents": [
+    "hook",
+    "quote",
+    "chapter-reset"
+  ],
+  "avoidFor": [
+    "dense dashboard scenes with multiple concurrent metrics",
+    "product walkthrough scenes that require real UI inspection",
+    "decorative brand replicas or orb-led abstract mood boards"
+  ],
+  "aspectRatios": [
+    "9:16",
+    "16:9"
+  ],
+  "contentCapacity": {
+    "headlineChars": 170,
+    "bodyChars": 180,
+    "bulletsMaxItems": 0,
+    "maxDataSeries": 0,
+    "maxCodeLines": 0
+  },
+  "renderCost": {
+    "tier": "low",
+    "estimatedSceneComplexity": 4,
+    "notes": "The family relies on frame-driven typography, quiet texture layers, and one placeholder field instead of dense multi-panel logic."
+  },
+  "reducedMotion": {
+    "strategy": "fade",
+    "notes": "Quote and transition fixtures use static entrance styles as the reduced-motion review behavior."
+  },
+  "accessibility": {
+    "contrast": "AA",
+    "notes": "Large type, restrained accent use, and fixed portrait safe areas keep the frames readable despite dark cinematic surfaces."
+  },
+  "directorCompatibility": {
+    "selectionReason": "Choose when the narration needs a hook, quote, or chapter-reset beat that lands through scale and pause rather than structured modules.",
+    "preferredNeighborFamilies": [
+      "technical-editorial",
+      "minimal-education",
+      "timeline-documentary"
+    ],
+    "bridgeFamilies": [
+      "technical-editorial",
+      "editorial-collage"
+    ],
+    "hardBlocks": [
+      "data-heavy operational reporting",
+      "asset-led product comparison without real embeddable media"
+    ]
+  },
+  "files": {
+    "visual": "./visual.json",
+    "tokens": "./tokens.json",
+    "componentMap": "./component-map.json",
+    "provenance": "./provenance.md",
+    "artifactManifest": "./artifact-manifest.json"
+  },
+  "sourcePolicy": {
+    "copyStatus": "principles-only",
+    "registeredMedia": "none",
+    "notes": "The family is original Lucida work built from general layout and motion principles. No third-party logos, screenshots, photography, fonts, or copied brand identities are registered."
+  },
+  "tokens": {
+    "palette": "charcoal canvas, warm copper accent, cool steel placeholder values, and bone text",
+    "typography": "oversized sans display with compact supporting copy",
+    "surface": "quiet texture plates with restrained borders and no orb decoration"
+  },
+  "layoutGrammar": [
+    "Lead with one oversized sentence and leave visible negative space around it.",
+    "Support each frame with only one secondary text block or attribution line.",
+    "Use one restrained texture or photographic placeholder field, never multiple competing panels.",
+    "Keep accent color limited to labels and narrow rules rather than broad decorative gradients.",
+    "Avoid copied branding, noisy collage behavior, or dashboard-like density."
+  ],
+  "componentPrimitives": [
+    {
+      "id": "oversized-headline-block",
+      "role": "content",
+      "notes": "Primary statement surface for the dominant sentence."
+    },
+    {
+      "id": "texture-field-placeholder",
+      "role": "surface",
+      "notes": "Restrained photographic or texture field with deliberate placeholder treatment."
+    },
+    {
+      "id": "chapter-eyebrow-rail",
+      "role": "process",
+      "notes": "Small chapter, opener, or attribution rail that frames the scene without competing with the headline."
+    }
+  ],
+  "templateBindings": {
+    "preferredTemplates": [
+      "title-card",
+      "quote-card",
+      "chapter-reset"
+    ],
+    "layouts": [
+      "center-stage",
+      "bottom-statement",
+      "full-bleed-visual"
+    ],
+    "backgroundEffects": [
+      "film-rule",
+      "texture-band"
+    ],
+    "motionPreset": "cinematic-rise"
+  },
+  "sourceArtifacts": {
+    "normalizedInput": "./artifacts/review-scenes.json",
+    "mappedScenes": "./artifacts/review-scenes.json",
+    "compiledVideoMap": "./artifacts/demo-video-map.json",
+    "sourceReviewReport": "./artifacts/source-review-report.json"
+  },
+  "validationArtifacts": {
+    "demoVideoMap": "./artifacts/demo-video-map.json",
+    "renderProps": "./artifacts/render-props.json",
+    "previewFrames": [
+      "./artifacts/frames/scene-01.png",
+      "./artifacts/frames/scene-02.png",
+      "./artifacts/frames/scene-03.png"
+    ],
+    "renderReport": "./artifacts/render-report.json",
+    "videoBinaryRegistered": false
+  },
+  "sourceReferences": [
+    {
+      "id": "awesome-design-md",
+      "url": "https://github.com/VoltAgent/awesome-design-md",
+      "selectedConcepts": [
+        "explicit do-dont rules",
+        "agent-readable documentation shape",
+        "package-level provenance"
+      ]
+    },
+    {
+      "id": "remotion-animating-properties",
+      "url": "https://www.remotion.dev/docs/animating-properties",
+      "selectedConcepts": [
+        "frame-driven motion",
+        "deterministic timing",
+        "reduced-motion adaptation"
+      ]
+    },
+    {
+      "id": "remotion-cli-still",
+      "url": "https://www.remotion.dev/docs/cli/still",
+      "selectedConcepts": [
+        "review-frame rendering",
+        "input-props driven composition selection",
+        "artifact-based visual QA"
+      ]
+    }
+  ],
+  "qualityGate": {
+    "validated": true,
+    "checks": [
+      "visual package validator",
+      "artifact manifest coverage",
+      "review frame render",
+      "1080x1920 dimension verification",
+      "TypeScript noEmit"
+    ],
+    "knownLimitations": [
+      "Shared registry and visual-library index wiring remain outside this ownership slice, so the family is still a placeholder in shared integration files.",
+      "Only 9:16 review frames were rendered in this task; 16:9 remains metadata-ready but unrendered."
+    ]
+  }
+}

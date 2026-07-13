@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "lucida-visual-package/v1",
+  "id": "technical-editorial",
+  "label": "Technical Editorial",
+  "status": "experimental",
+  "visualFamily": "technical-editorial",
+  "summary": "Grid-led explanatory style for architecture, research, and code-aware narrative scenes.",
+  "description": "A portrait-first technical family that uses strict columns, visible rules, diagram panels, annotations, and code/data evidence callouts instead of decorative illustration.",
+  "tags": [
+    "technical",
+    "editorial",
+    "diagram",
+    "education",
+    "code"
+  ],
+  "recommendedIntents": [
+    "explain",
+    "code_explanation",
+    "system_architecture",
+    "comparison"
+  ],
+  "avoidFor": [
+    "asset-led gallery scenes",
+    "testimonial-first quote scenes",
+    "unstructured cinematic montage"
+  ],
+  "supportedSceneTypes": [
+    "explainer",
+    "diagram",
+    "summary"
+  ],
+  "supportedTemplateRoles": [
+    "scene"
+  ],
+  "aspectRatios": [
+    "9:16",
+    "16:9"
+  ],
+  "density": "medium",
+  "renderCost": "medium",
+  "contentCapacity": {
+    "headlineChars": 84,
+    "bodyChars": 460,
+    "maxItems": 4,
+    "maxPanels": 5,
+    "maxCodeLines": 5,
+    "maxMetrics": 2
+  },
+  "preferredLayouts": [
+    "top-title",
+    "center-stage",
+    "side-rail"
+  ],
+  "preferredTemplates": [
+    "diagram-build",
+    "annotated-summary",
+    "code-evidence"
+  ],
+  "backgroundEffects": [
+    "rule-matrix",
+    "gradient-depth"
+  ],
+  "motionPreset": "diagram-build",
+  "layoutGrammar": [
+    "Keep the central mechanism in one dominant panel.",
+    "Use the left rail for annotations and guardrails, not extra narrative paragraphs.",
+    "Use code or structured data only in the right rail.",
+    "Reveal density through segmentation, not tiny text.",
+    "Keep rules, dividers, and markers explicit so the scene reads like reviewed technical material."
+  ],
+  "sourcePolicy": {
+    "copyStatus": "principles-only",
+    "registeredMedia": "none",
+    "notes": "The package documents conceptual references only. No branded screenshots, logos, fonts, or copied UI assets are included."
+  },
+  "notes": [
+    "Wave 1 family package rendered through a dedicated local Remotion root.",
+    "Preview artifacts are 9:16 stills generated from the owned family renderer."
+  ]
+}

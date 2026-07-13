@@ -59,6 +59,59 @@
           "path": {
             "type": "string"
           },
+          "url": {
+            "type": "string"
+          },
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "family": {
+            "enum": [
+              "terminal",
+              "dashboard",
+              "editorial",
+              "infographic",
+              "code",
+              "data_visualization",
+              "product_demo",
+              "cinematic_typography"
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "maxFiles": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "maxBytes": {
+            "type": "integer",
+            "minimum": 1
+          },
           "command": {
             "type": "string"
           },

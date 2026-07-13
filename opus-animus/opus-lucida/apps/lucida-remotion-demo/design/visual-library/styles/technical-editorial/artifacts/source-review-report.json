@@ -1,0 +1,27 @@
+{
+  "status": "ok",
+  "packageId": "technical-editorial",
+  "method": "local research synthesis",
+  "referencesReviewed": [
+    "github-primer",
+    "primer-react",
+    "awesome-design-md",
+    "remotion-animating-properties"
+  ],
+  "selectedConcepts": [
+    "semantic technical hierarchy",
+    "explicit rules and annotations",
+    "deterministic motion primitives",
+    "brand-neutral original styling"
+  ],
+  "excludedAssets": [
+    "third-party logos",
+    "screenshots",
+    "font binaries",
+    "copied product chrome"
+  ],
+  "notes": [
+    "The renderer uses only original text, shapes, rules, and local metadata.",
+    "No asset ingestion step was required because the family grammar is fully abstract and text-led."
+  ]
+}

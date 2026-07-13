@@ -1,0 +1,198 @@
+{
+  "schemaVersion": "lucida-style-package/v1",
+  "id": "technical-editorial",
+  "label": "Technical Editorial",
+  "version": "1.0.0",
+  "status": "experimental",
+  "visualFamily": "technical-editorial",
+  "description": "Production package for a strict-grid technical explanatory family with original rules, annotation rails, code/data callouts, review fixtures, and deterministic Remotion artifacts.",
+  "tags": [
+    "technical",
+    "editorial",
+    "diagram",
+    "code",
+    "research"
+  ],
+  "supportedIntents": [
+    "explain",
+    "compare",
+    "summarize",
+    "code-explanation",
+    "system-architecture"
+  ],
+  "recommendedIntents": [
+    "explain",
+    "code-explanation",
+    "system-architecture"
+  ],
+  "avoidFor": [
+    "emotional testimonial scenes",
+    "asset-led product hero reveals",
+    "lifestyle montage without structured evidence"
+  ],
+  "aspectRatios": [
+    "9:16",
+    "16:9"
+  ],
+  "contentCapacity": {
+    "headlineChars": 84,
+    "bodyChars": 460,
+    "bulletsMaxItems": 4,
+    "maxDataSeries": 3,
+    "maxCodeLines": 5
+  },
+  "renderCost": {
+    "tier": "medium",
+    "estimatedSceneComplexity": 6,
+    "notes": "Grid rules, diagram cards, and code rails are deterministic but denser than the shared core fixture."
+  },
+  "reducedMotion": {
+    "strategy": "simplified-motion",
+    "notes": "Dense and edge fixtures switch to reduced or static entrance behavior while preserving the full visual grammar."
+  },
+  "accessibility": {
+    "contrast": "AA",
+    "notes": "High-contrast type, restrained accent usage, and fixed safe-area margins keep review frames readable."
+  },
+  "directorCompatibility": {
+    "selectionReason": "Choose when narration depends on labeled structure, explicit evidence, and inspectable technical terminology.",
+    "preferredNeighborFamilies": [
+      "minimal-education",
+      "dashboard-data"
+    ],
+    "bridgeFamilies": [
+      "cinematic-type"
+    ],
+    "hardBlocks": [
+      "asset-heavy walkthrough without embeddable visuals",
+      "emotion-led quote opener"
+    ]
+  },
+  "files": {
+    "visual": "./visual.json",
+    "tokens": "./tokens.json",
+    "componentMap": "./component-map.json",
+    "provenance": "./provenance.md",
+    "artifactManifest": "./artifact-manifest.json"
+  },
+  "sourcePolicy": {
+    "copyStatus": "principles-only",
+    "registeredMedia": "none",
+    "notes": "The family uses original Lucida layout grammar and text-only primitives. No third-party logos, screenshots, fonts, or copied brand assets are registered."
+  },
+  "tokens": {
+    "palette": "deep-neutral canvas with cool blue annotation accents and warm warning markers",
+    "typography": "UI sans for headings and body, monospace only for code/data evidence",
+    "surface": "sharp card edges, low-radius panels, and explicit rule lines"
+  },
+  "layoutGrammar": [
+    "Use a strict 12-column portrait grid with visible rule structure.",
+    "Reserve narrow annotation rails for caveats, evidence, and metadata.",
+    "Keep the central panel for the main diagram or mechanism flow.",
+    "Use code and metric callouts only when they substantively support the main claim.",
+    "Avoid decorative illustration, copied product UI, or floating text without a surface."
+  ],
+  "componentPrimitives": [
+    {
+      "id": "annotation-rail",
+      "role": "support",
+      "notes": "Narrow evidence lane for objective, guardrail, and QA notes."
+    },
+    {
+      "id": "diagram-panel",
+      "role": "content",
+      "notes": "Primary mechanism surface with fixed node cards and labeled connectors."
+    },
+    {
+      "id": "code-data-callout",
+      "role": "content",
+      "notes": "Monospace evidence surface for render instructions, reports, or structured snippets."
+    }
+  ],
+  "templateBindings": {
+    "preferredTemplates": [
+      "diagram-build",
+      "annotated-summary",
+      "code-evidence"
+    ],
+    "layouts": [
+      "top-title",
+      "center-stage",
+      "side-rail"
+    ],
+    "backgroundEffects": [
+      "rule-matrix",
+      "gradient-depth"
+    ],
+    "motionPreset": "diagram-build"
+  },
+  "sourceArtifacts": {
+    "normalizedInput": "./artifacts/review-scenes.json",
+    "mappedScenes": "./artifacts/review-scenes.json",
+    "compiledVideoMap": "./artifacts/demo-video-map.json",
+    "sourceReviewReport": "./artifacts/source-review-report.json"
+  },
+  "validationArtifacts": {
+    "demoVideoMap": "./artifacts/demo-video-map.json",
+    "renderProps": "./artifacts/render-props.json",
+    "previewFrames": [
+      "./artifacts/frames/scene-01.png",
+      "./artifacts/frames/scene-02.png",
+      "./artifacts/frames/scene-03.png"
+    ],
+    "renderReport": "./artifacts/render-report.json",
+    "videoBinaryRegistered": false
+  },
+  "sourceReferences": [
+    {
+      "id": "github-primer",
+      "url": "https://primer.style/",
+      "selectedConcepts": [
+        "semantic primitives",
+        "technical density hierarchy",
+        "accessibility-first contrast discipline"
+      ]
+    },
+    {
+      "id": "primer-react",
+      "url": "https://github.com/primer/react",
+      "selectedConcepts": [
+        "product-ui component structure",
+        "compact states",
+        "systematic spacing"
+      ]
+    },
+    {
+      "id": "awesome-design-md",
+      "url": "https://github.com/VoltAgent/awesome-design-md",
+      "selectedConcepts": [
+        "agent-readable package taxonomy",
+        "explicit do-dont rules",
+        "human-plus-machine documentation shape"
+      ]
+    },
+    {
+      "id": "remotion-animating-properties",
+      "url": "https://www.remotion.dev/docs/animating-properties",
+      "selectedConcepts": [
+        "frame-driven animation",
+        "deterministic still review",
+        "reduced-motion fallback thinking"
+      ]
+    }
+  ],
+  "qualityGate": {
+    "validated": true,
+    "checks": [
+      "visual package validator",
+      "artifact manifest coverage",
+      "review frame render",
+      "1080x1920 dimension verification",
+      "TypeScript noEmit"
+    ],
+    "knownLimitations": [
+      "Shared registry availability wiring remains outside this ownership slice, so the family package is not switched from placeholder in shared registry files.",
+      "Only 9:16 review frames were rendered in this task; 16:9 remains metadata-ready but unrendered."
+    ]
+  }
+}

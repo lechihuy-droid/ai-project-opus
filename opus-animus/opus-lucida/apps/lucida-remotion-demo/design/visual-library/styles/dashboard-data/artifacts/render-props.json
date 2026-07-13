@@ -1,0 +1,11 @@
+{
+  "packageId": "dashboard-data",
+  "compositionId": "DashboardDataFamilyReview",
+  "entryPoint": "src/styles/families/dashboard-data/render-entry.tsx",
+  "imageFormat": "png",
+  "qualityChecks": [
+    "sha256",
+    "dimensions",
+    "signalstats-nonblank"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "lucida-dashboard-data-demo/v1",
+  "packageId": "dashboard-data",
+  "compositionId": "DashboardDataFamilyReview",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "scenes": [
+    {
+      "id": "scene-01",
+      "label": "KPI review frame",
+      "sceneKey": "normal",
+      "frame": 58,
+      "output": "frames/scene-01.png"
+    },
+    {
+      "id": "scene-02",
+      "label": "Dense chart review frame",
+      "sceneKey": "dense",
+      "frame": 84,
+      "output": "frames/scene-02.png"
+    },
+    {
+      "id": "scene-03",
+      "label": "Operations recovery review frame",
+      "sceneKey": "edge",
+      "frame": 40,
+      "output": "frames/scene-03.png"
+    }
+  ]
+}

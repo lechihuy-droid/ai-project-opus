@@ -1,0 +1,153 @@
+{
+  "version": 1,
+  "sourceCatalog": "apps/remotion-templates/template-catalog.json",
+  "notes": "Mined from macro-layout only (title placement, content zone, framed vs full-bleed, symmetry, negative space). Code is NOT ported; this maps template ids to layout archetypes for the mapping stage to draw on. Transition and pure background/accent-effect templates (role: transition | background_effect | accent_effect with no persistent content zone) are listed under backgroundOnly instead of forced into an archetype.",
+  "layouts": [
+    {
+      "id": "top-title",
+      "description": "Title or heading pinned to the top edge of the frame; the content zone (chart, list, steps) fills the space below as a separate visual block.",
+      "bestFor": ["stats", "process", "comparison", "list"],
+      "implementedInDemo": true,
+      "exampleTemplates": [
+        "area-chart",
+        "chart-animation",
+        "line-chart",
+        "pie-chart",
+        "donut-chart",
+        "comparison-chart",
+        "progress-bars",
+        "progress-steps"
+      ],
+      "notes": "Chart templates (area/line/pie/donut/comparison/progress-bars) share one skeleton: a framed dark card, title absolute-positioned at the card's top edge, SVG or bar content clipped/revealed left-to-right or bottom-up below it. progress-steps additionally staggers a connector line between step circles with a fill-then-pulse timing worth reusing for workflow scenes."
+    },
+    {
+      "id": "center-stage",
+      "description": "A single content block (text, card, icon+label stack) centered both axes; title is integrated into the same block rather than a separate zone.",
+      "bestFor": ["hook", "quote", "takeaway", "code_explanation"],
+      "implementedInDemo": true,
+      "exampleTemplates": [
+        "animated-list",
+        "animated-text",
+        "bounce-text",
+        "bubble-pop-text",
+        "card-flip",
+        "cinematic-title-intro",
+        "quote-card",
+        "end-card",
+        "circular-progress",
+        "credits-roll",
+        "countdown-intro",
+        "pulsing-text",
+        "floating-bubble-text",
+        "logo-typewriter",
+        "slide-text",
+        "typewriter-subtitle"
+      ],
+      "notes": "cinematic-title-intro's title->underline-grow->subtitle sequencing (underline width animates before subtitle fades in) is a clean 3-beat reveal worth reusing for hook scenes. card-flip's rotateY(360) with backface-hidden front/back faces is a good before/after micro-pattern for a single centered object. credits-roll's continuous vertical scroll with top/bottom gradient masks is a reusable 'infinite list' technique. This archetype is naturally the largest bucket (16 of 81) since most single-message text/logo/badge templates in the source pack default to a centered composition."
+    },
+    {
+      "id": "oversized-type",
+      "description": "Huge type (5rem-10rem+) dominates the frame, sometimes with stroke-only or outlined characters that break visual boundaries; minimal supporting chrome.",
+      "bestFor": ["hook", "takeaway"],
+      "implementedInDemo": true,
+      "exampleTemplates": [
+        "popping-text",
+        "glitch-text",
+        "title-split",
+        "chapter-title",
+        "stat-counter",
+        "text-highlight",
+        "countdown-timer"
+      ],
+      "notes": "title-split's two-word stack (outlined WebkitTextStroke word on top, filled word below) that only glows once both spring-settle ('meetProgress===1') is a strong 'two ideas colliding' trick. text-highlight's word-by-word gradient background-wipe (a colored bar grows behind each word before the next starts) reads well for narrated emphasis. glitch-text's RGB channel offset via mix-blend-mode:screen is cheap and punchy for a leak/hook moment."
+    },
+    {
+      "id": "bottom-statement",
+      "description": "A visual/icon block occupies the upper portion of the frame; a short statement (name, tagline, caption) sits below it as a distinct second zone.",
+      "bestFor": ["takeaway", "use_case"],
+      "implementedInDemo": true,
+      "exampleTemplates": [
+        "logo-fade-reveal",
+        "logo-bounce-drop",
+        "logo-blur-reveal",
+        "logo-scale-rotate",
+        "logo-spin-reveal",
+        "logo-stroke-draw",
+        "logo-glitch-reveal",
+        "polaroid-frame"
+      ],
+      "notes": "logo-bounce-drop's squash-and-stretch landing (scaleX/scaleY overshoot then settle on impact, decoupled from the drop spring) is a reusable 'landing weight' technique for any icon-drops-in moment. logo-stroke-draw's strokeDashoffset perimeter draw (hexagon then inner triangle, fill fading in only after both outlines finish) is a good 'built before your eyes' pattern for diagrams/badges. polaroid-frame's drop-in with rotation overshoot (8deg -> -3deg) plus white polaroid border gives a physical, tactile caption card."
+    },
+    {
+      "id": "full-bleed-visual",
+      "description": "A single visual fills the entire frame edge-to-edge; text or a secondary element floats as a small overlay/inset rather than sharing a bounded zone.",
+      "bestFor": ["use_case", "system_architecture"],
+      "implementedInDemo": true,
+      "exampleTemplates": [
+        "picture-in-picture",
+        "subscribe-reminder",
+        "image-zoom-reveal",
+        "ken-burns",
+        "parallax-pan"
+      ],
+      "notes": "picture-in-picture's fixed-position inset panel (bottom-right, springs in 15 frames after the main scene) is a clean pattern for 'primary + commentary' framing. subscribe-reminder's floating pill CTA (blurred glass background, bell icon pulsing independently of the slide-in) is a reusable corner-badge shape. ken-burns/parallax-pan are pure CSS @keyframes pan+scale on a full-bleed image -- worth borrowing the easing curve (ease-out, no bounce) for any full-bleed asset scene."
+    },
+    {
+      "id": "side-rail",
+      "description": "Asymmetric composition: a title/label rail or content column sits off-center (edge- or corner-anchored) rather than centered, or two zones meet at a dividing line instead of one dominant center block.",
+      "bestFor": ["comparison", "quote"],
+      "implementedInDemo": false,
+      "exampleTemplates": [
+        "lower-third",
+        "split-screen",
+        "image-comparison-slider",
+        "notification-pop",
+        "logo-split-reveal"
+      ],
+      "notes": "lower-third's two-stage slide (thin accent line slides in first, then the name/title bar slides in 5 frames later from a different start offset) sells a broadcast-graphic feel cheaply. split-screen's divider-fades-in-after-panels-meet sequencing (opacity keyed to when the slide springs finish, not a fixed frame) avoids the seam showing early. notification-pop stacks cards top-down at a fixed right edge while the section title stays pinned top-left -- a genuinely asymmetric two-anchor layout worth adopting for stacked-alert scenes. logo-split-reveal's two halves assembling from opposite edges into a center seam is a good 'coming together' beat for any two-part concept."
+    },
+    {
+      "id": "stacked-cards",
+      "description": "Multiple card/tile elements layered or grouped in a cluster (grid, masonry, physical stack, or depth-scaled carousel) rather than one single focal object.",
+      "bestFor": ["list", "use_case", "comparison"],
+      "implementedInDemo": false,
+      "exampleTemplates": [
+        "photo-stack",
+        "gallery-grid",
+        "masonry-gallery",
+        "image-carousel",
+        "rotating-carousel"
+      ],
+      "notes": "photo-stack's alternating rotation (-5/0/5deg) plus small x/y offset per card gives a convincing physical pile with only 3 numbers per card. rotating-carousel's z-depth via cos(angle) driving both scale and opacity (cards facing away shrink and fade, zIndex recalculated every frame) is the right way to fake 3D card rotation in CSS. masonry-gallery/gallery-grid both stagger per-cell spring delay (index * ~5 frames) for a 'cascading reveal' -- a cheap, reusable stagger for any grid of N items."
+    }
+  ],
+  "backgroundOnly": [
+    "blinds-transition",
+    "bokeh-circles",
+    "camera-shake",
+    "clock-wipe",
+    "cross-dissolve",
+    "fade-through-black",
+    "film-burn",
+    "geometric-patterns",
+    "gradient-shift",
+    "grid-pulse",
+    "iris-transition",
+    "letterbox-reveal",
+    "liquid-wave",
+    "matrix-rain",
+    "morph-transition",
+    "noise-grain",
+    "particle-explosion",
+    "pixel-transition",
+    "push-transition",
+    "slide-wipe",
+    "sound-wave",
+    "spotlight-reveal",
+    "starfield",
+    "vignette-pulse",
+    "whip-pan",
+    "zoom-pulse",
+    "zoom-through"
+  ]
+}

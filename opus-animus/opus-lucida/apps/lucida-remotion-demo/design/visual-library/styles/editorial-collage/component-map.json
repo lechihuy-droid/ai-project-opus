@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "lucida-component-map/v1",
+  "id": "editorial-collage",
+  "primitives": [
+    { "id": "modular-crop-frame", "role": "media", "notes": "Layered crop frame that renders only embed_asset sources and applies deterministic object-position plus zoom." },
+    { "id": "source-caption", "role": "caption", "notes": "Crop-attached label, evidence text, and source classification summary." },
+    { "id": "editorial-deck", "role": "narrative", "notes": "Compact overlay that states the reading order for the collage." },
+    { "id": "evidence-callout", "role": "annotation", "notes": "Audit rail for crop, caption, policy, and motion rules." },
+    { "id": "recap-thread", "role": "summary", "notes": "Numbered recap rail that keeps the scene readable after layered media overlap." }
+  ],
+  "templates": [
+    { "templateId": "culture-montage", "supportedLayouts": ["layered-crops", "captioned-evidence"], "backgroundEffects": ["editorial-grid", "print-texture"], "motionPreset": "collage-layer-reveal", "primitives": ["modular-crop-frame", "source-caption", "editorial-deck"], "notes": "Use for multi-source cultural openings and narrative montage." },
+    { "templateId": "evidence-stack", "supportedLayouts": ["layered-crops", "recap-rail"], "backgroundEffects": ["editorial-grid"], "motionPreset": "reduced-motion-fade", "primitives": ["modular-crop-frame", "source-caption", "evidence-callout"], "notes": "Use when dense evidence needs source-role hierarchy." },
+    { "templateId": "asset-policy-recap", "supportedLayouts": ["captioned-evidence", "recap-rail"], "backgroundEffects": ["print-texture"], "motionPreset": "static", "primitives": ["modular-crop-frame", "source-caption", "recap-thread"], "notes": "Use when missing or rejected media must remain visible and truthful." }
+  ]
+}

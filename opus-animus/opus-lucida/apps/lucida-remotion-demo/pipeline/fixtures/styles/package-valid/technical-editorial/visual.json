@@ -1,0 +1,13 @@
+{
+  "packageId": "technical-editorial",
+  "grammar": [
+    "strict grid",
+    "annotation rails",
+    "diagram callouts"
+  ],
+  "sceneTypes": [
+    "explainer",
+    "diagram",
+    "summary"
+  ]
+}

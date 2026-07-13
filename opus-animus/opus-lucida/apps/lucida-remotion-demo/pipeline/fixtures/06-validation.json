@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "generatedAt": "2026-07-12T12:39:21.329Z",
+  "input": "pipeline\\fixtures\\terminal-video-20s-map.json",
+  "sceneCount": 4,
+  "durationSec": 20,
+  "templateIds": [
+    "code-panel",
+    "code-panel",
+    "progress-steps",
+    "code-panel"
+  ]
+}

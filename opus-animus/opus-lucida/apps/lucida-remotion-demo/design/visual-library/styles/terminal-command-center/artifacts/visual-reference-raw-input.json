@@ -1,0 +1,1329 @@
+{
+  "schemaVersion": "raw-visual-input/v1",
+  "projectId": "visual-reference-ingest",
+  "generatedAt": "2026-07-12T12:03:34.288Z",
+  "configPath": "pipeline/fixtures/visual-reference-flow.json",
+  "sources": [
+    {
+      "sourceId": "repo-quarto-terminal",
+      "sourceType": "repository",
+      "collectorVersion": "repository-collector/1",
+      "checksum": "sha256:af63b9a84648f05e8b75c9e9be1d5ba989b6839771c64e25896bcd4aab92f109",
+      "metadata": {
+        "owner": "rpodcast",
+        "repo": "quarto-revealjs-terminal",
+        "url": "https://github.com/rpodcast/quarto-revealjs-terminal",
+        "fileCount": 3
+      },
+      "records": [
+        {
+          "kind": "repository_summary",
+          "index": 0,
+          "text": "rpodcast/quarto-revealjs-terminal: Quarto revealjs theme with retro terminal style | topics: quarto, reveal-js, theme",
+          "data": {
+            "url": "https://github.com/rpodcast/quarto-revealjs-terminal",
+            "stars": 6,
+            "forks": 1,
+            "language": "SCSS",
+            "topics": [
+              "quarto",
+              "reveal-js",
+              "theme"
+            ],
+            "visualFamily": "terminal",
+            "tags": [
+              "terminal",
+              "revealjs",
+              "slides"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-quarto-terminal",
+            "sourceRef": "https://github.com/rpodcast/quarto-revealjs-terminal",
+            "sourceChecksum": "sha256:af63b9a84648f05e8b75c9e9be1d5ba989b6839771c64e25896bcd4aab92f109",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 1,
+          "text": "Terminal — a Quarto reveal.js slide theme A retro **computer-terminal** theme for [Quarto Revealjs](https://quarto.org/docs/presentations/revealjs/) presentations. [![Screenshot of a slide from the Quarto RevealJS Terminal theme using the cyan-navy palette](.github/terminal-theme-screenshot.png)](https://rpodcast.github.io/quarto-revealjs-terminal/template.html) All colors, fonts, and effects are **fully customizable** via SCSS variables — including ready-made color schemes (e.g. `solarized-dark`, `dracula`, `nord`) selectable with a single `$terminal-palette` setting. Additional details on the theme settings can be found in [guide.md](guide.md) Usage Depending on your use case, the Terminal theme can be installed using the following procedures: * To add the Terminal theme to an existing directory with your Quarto Revealjs presentation: ``` quarto add rpodcast/quarto-revealjs-terminal...",
+          "data": {
+            "path": "README.md",
+            "url": "https://github.com/rpodcast/quarto-revealjs-terminal/blob/main/README.md",
+            "visualFamily": "terminal",
+            "tags": [
+              "terminal",
+              "revealjs",
+              "slides"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-quarto-terminal",
+            "sourceRef": "https://github.com/rpodcast/quarto-revealjs-terminal/blob/main/README.md",
+            "sourceChecksum": "sha256:0823a195e34320290934f8538661a653f37f83b5532d8deaae350c7c07aa071d",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 2,
+          "text": "Slide layouts See `template.qmd` for working examples of each layout: | Layout | How | | --- | --- | | Content title slide | `## TITLE.` + `[// KICKER]{.kicker}` + `[lede]{.lede}` | | Section-break / divider | `## TITLE. {.section-break}` + `.kicker` / `.lede` / `.desc` (vertically centered, oversized title) | | Bullets as callout boxes | wrap a list in `::: callouts` | | Numbered step boxes (`01 02 …`) | wrap an ordered list in `::: steps` | | Two bordered cards | `::: cards` containing `::: card` divs (title via `[Title]{.card-title}`) | | Code / file-tree block | a fenced ```` ```text ```` code block | Helper spans: `[…]{.kicker}` (uppercase label), `[…]{.lede}` (subtitle), `[…]{.desc}` (muted supporting line), `[…]{.neg}` / `[…]{.ok}` (red / green emphasis). Per-slide status bar / footer Set attributes on the slide's `##` header: ```markdown SKILLS. {terminal-path=\"masterclass/mod...",
+          "data": {
+            "path": "guide.md",
+            "url": "https://github.com/rpodcast/quarto-revealjs-terminal/blob/main/guide.md",
+            "visualFamily": "terminal",
+            "tags": [
+              "terminal",
+              "revealjs",
+              "slides"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-quarto-terminal",
+            "sourceRef": "https://github.com/rpodcast/quarto-revealjs-terminal/blob/main/guide.md",
+            "sourceChecksum": "sha256:eee3cb56585f575a6f94fcf5abefa3e364d615c1645003e933bf9b6f37074e94",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 3,
+          "text": "/*-- scss:functions --*/ // ============================================================================ // TERMINAL THEME — color-scheme (palette) registry // --------------------------------------------------------------------------- // This region defines the named palettes that power `$terminal-palette`. // It lives in `scss:functions` (not `defaults`) on purpose: Quarto always // layers the theme's `functions` BEFORE any user theme file, so this map is // guaranteed to exist by the time the `defaults` below run — even when the // user only sets `$terminal-palette: \"solarized-dark\";` in their own file. // // Each palette is a map with these keys: // mode : \"dark\" | \"light\" (controls auto-toned CRT effects) // bg : slide background // fg : default body text // muted : de-emphasized / secondary text // accent : primary accent (headings, prompts, links) // accent-bright : brighter ac...",
+          "data": {
+            "path": "_extensions/terminal/terminal.scss",
+            "url": "https://github.com/rpodcast/quarto-revealjs-terminal/blob/main/_extensions/terminal/terminal.scss",
+            "visualFamily": "terminal",
+            "tags": [
+              "terminal",
+              "revealjs",
+              "slides"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-quarto-terminal",
+            "sourceRef": "https://github.com/rpodcast/quarto-revealjs-terminal/blob/main/_extensions/terminal/terminal.scss",
+            "sourceChecksum": "sha256:23f7c8170eb2400db41c4cb891c6d7c400403aee345c75aa93b195a45761bef2",
+            "collectorVersion": "repository-collector/1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "repo-letieu-terminal",
+      "sourceType": "repository",
+      "collectorVersion": "repository-collector/1",
+      "checksum": "sha256:6cbbb7b6890f7f215cff245078cdede37ad359b3a438285b732debdcc2df5d4b",
+      "metadata": {
+        "owner": "letieu",
+        "repo": "terminal.css",
+        "url": "https://github.com/letieu/terminal.css",
+        "fileCount": 1
+      },
+      "records": [
+        {
+          "kind": "repository_summary",
+          "index": 0,
+          "text": "letieu/terminal.css: Terminal-style css components | topics: css, css-framework, terminal, tui",
+          "data": {
+            "url": "https://github.com/letieu/terminal.css",
+            "stars": 20,
+            "forks": 0,
+            "language": "HTML",
+            "topics": [
+              "css",
+              "css-framework",
+              "terminal",
+              "tui"
+            ],
+            "visualFamily": "dashboard",
+            "tags": [
+              "terminal",
+              "components",
+              "dashboard"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-letieu-terminal",
+            "sourceRef": "https://github.com/letieu/terminal.css",
+            "sourceChecksum": "sha256:6cbbb7b6890f7f215cff245078cdede37ad359b3a438285b732debdcc2df5d4b",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 1,
+          "text": "terminal.css <img width=\"3842\" height=\"2276\" alt=\"image\" src=\"https://github.com/user-attachments/assets/32f5ec68-cc2c-4760-b1f1-8cbca5363a0d\" /> <img width=\"3842\" height=\"2302\" alt=\"image\" src=\"https://github.com/user-attachments/assets/c050f694-fc2a-46d9-8100-dc2be8747092\" /> <img width=\"3826\" height=\"2294\" alt=\"image\" src=\"https://github.com/user-attachments/assets/53868306-30ac-4098-9f1d-430c6e3956be\" /> <img width=\"3838\" height=\"2298\" alt=\"image\" src=\"https://github.com/user-attachments/assets/8697ca76-cd98-494e-afe7-abf4af449ac6\" /> A modern CSS framework for terminal-style websites. Installation CDN Installation Add these links to your HTML file: ```html <!-- In your <head> section --> <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/gh/letieu/terminal.css@v0.0.4/index.css\" /> <!-- Before closing </body> tag --> <!-- [Optional: Only for toast, FAQ component] --> <script sr...",
+          "data": {
+            "path": "README.md",
+            "url": "https://github.com/letieu/terminal.css/blob/main/README.md",
+            "visualFamily": "dashboard",
+            "tags": [
+              "terminal",
+              "components",
+              "dashboard"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-letieu-terminal",
+            "sourceRef": "https://github.com/letieu/terminal.css/blob/main/README.md",
+            "sourceChecksum": "sha256:8cb7dc2897c4b29c624cd1350b44193e41467aa8b92d5bdb1b26458da4b28a1c",
+            "collectorVersion": "repository-collector/1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "repo-gioni-terminal",
+      "sourceType": "repository",
+      "collectorVersion": "repository-collector/1",
+      "checksum": "sha256:e1de42c7475c0dd3d380fbeccd618d24f263f66cb9210cac8090a452b232da65",
+      "metadata": {
+        "owner": "Gioni06",
+        "repo": "terminal.css",
+        "url": "https://github.com/Gioni06/terminal.css",
+        "fileCount": 2
+      },
+      "records": [
+        {
+          "kind": "repository_summary",
+          "index": 0,
+          "text": "Gioni06/terminal.css: Modern and minimalistic CSS framework for terminal enthusiasts",
+          "data": {
+            "url": "https://github.com/Gioni06/terminal.css",
+            "stars": 1432,
+            "forks": 69,
+            "language": "HTML",
+            "topics": [],
+            "visualFamily": "terminal",
+            "tags": [
+              "terminal",
+              "css-framework",
+              "minimal"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-gioni-terminal",
+            "sourceRef": "https://github.com/Gioni06/terminal.css",
+            "sourceChecksum": "sha256:e1de42c7475c0dd3d380fbeccd618d24f263f66cb9210cac8090a452b232da65",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 1,
+          "text": "Terminal CSS Modern and minimal CSS framework for terminal lovers. Visit the website [terminalcss.xyz](https://terminalcss.xyz/) Project Goals Terminal CSS has no overhead and is lightweight **(~3k gzip)**. The source is written in **pure css** to be accessible for everybody and easy to contribute. Markdown ❤️ Terminal CSS It's perfect for your *personal website*, *blog*, or *side project*. How to use When using something like Webpack just install with `npm i terminal.css`. ```js import 'terminal.css' ``` Terminal CSS is also available via [CDN](https://unpkg.com/terminal.css) ```html <link rel=\"stylesheet\" href=\"https://unpkg.com/terminal.css\" /> ``` To apply all the styles, add the `terminal` class to your page's `<body>` tag. Themes To create your own theme just open the dev-tools and edit the CSS Variables. Copy and paste it to your website. Done! Development - `npm install` - `np...",
+          "data": {
+            "path": "README.md",
+            "url": "https://github.com/Gioni06/terminal.css/blob/master/README.md",
+            "visualFamily": "terminal",
+            "tags": [
+              "terminal",
+              "css-framework",
+              "minimal"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-gioni-terminal",
+            "sourceRef": "https://github.com/Gioni06/terminal.css/blob/master/README.md",
+            "sourceChecksum": "sha256:c92ec186458d010d4245fca2b79206833c7f70ea55af8c3c3a499a26fb828515",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 2,
+          "text": "terminal.css: A modern and minimal CSS framework for terminal lovers. | deps: stylelint, stylelint-config-standard",
+          "data": {
+            "path": "package.json",
+            "url": "https://github.com/Gioni06/terminal.css/blob/master/package.json",
+            "visualFamily": "terminal",
+            "tags": [
+              "terminal",
+              "css-framework",
+              "minimal"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-gioni-terminal",
+            "sourceRef": "https://github.com/Gioni06/terminal.css/blob/master/package.json",
+            "sourceChecksum": "sha256:fc4b47468d3241c85e5a267136c51e52f13b52121fde6616e018bd7bd79c128c",
+            "collectorVersion": "repository-collector/1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "repo-panr-terminal",
+      "sourceType": "repository",
+      "collectorVersion": "repository-collector/1",
+      "checksum": "sha256:c756e4eae31eee40400f6e3eb2e27c5618f5dfb19bbb6486f7f503c1e4fe60d7",
+      "metadata": {
+        "owner": "panr",
+        "repo": "terminal-css",
+        "url": "https://github.com/panr/terminal-css",
+        "fileCount": 2
+      },
+      "records": [
+        {
+          "kind": "repository_summary",
+          "index": 0,
+          "text": "panr/terminal-css: A simple, classless set of semantic styles derived from Hugo Terminal Theme",
+          "data": {
+            "url": "https://github.com/panr/terminal-css",
+            "stars": 130,
+            "forks": 5,
+            "language": "HTML",
+            "topics": [],
+            "visualFamily": "editorial",
+            "tags": [
+              "terminal",
+              "classless",
+              "editorial"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-panr-terminal",
+            "sourceRef": "https://github.com/panr/terminal-css",
+            "sourceChecksum": "sha256:c756e4eae31eee40400f6e3eb2e27c5618f5dfb19bbb6486f7f503c1e4fe60d7",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 1,
+          "text": "![Terminal.css Preview](./terminal-css.png) ➡️ [Check Terminal.css website](https://panr.github.io/terminal-css/) [Terminal](https://github.com/panr/hugo-theme-terminal) theme turned out to be an unexpected success. But not everyone wanted to switch to Hugo to be able to use it. That's why I created **Terminal.css**. A stupid simple, custom set of semantic styles derived from the theme, that you always wanted. Presets Terminal.css comes with a collection of [presets](./presets.json). I've kickstarted the project with only a few of them, but that's not enough. If you want to contribute to the project and already have an idea for a beautiful set of colors, you are in the right place. 1. Go to the [Terminal.css website](https://panr.github.io/terminal-css/) and set your color scheme 2. Copy it as JSON 3. [Add it](./presets.json) to the collection via Pull Request",
+          "data": {
+            "path": "README.md",
+            "url": "https://github.com/panr/terminal-css/blob/master/README.md",
+            "visualFamily": "editorial",
+            "tags": [
+              "terminal",
+              "classless",
+              "editorial"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-panr-terminal",
+            "sourceRef": "https://github.com/panr/terminal-css/blob/master/README.md",
+            "sourceChecksum": "sha256:baf608b2aa913e47a750e806598561c15884a175b1cfb42f1346a53a8da4346c",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 2,
+          "text": "terminal-css: A stupid simple, custom set of semantic styles derived from Terminal theme that you always wanted.) | deps: eslint, prettier, stylelint",
+          "data": {
+            "path": "package.json",
+            "url": "https://github.com/panr/terminal-css/blob/master/package.json",
+            "visualFamily": "editorial",
+            "tags": [
+              "terminal",
+              "classless",
+              "editorial"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-panr-terminal",
+            "sourceRef": "https://github.com/panr/terminal-css/blob/master/package.json",
+            "sourceChecksum": "sha256:92beba361daa8f9c3302f25025d9c080fdcc009c8c25799d45838f26c7115226",
+            "collectorVersion": "repository-collector/1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "repo-tabler-dashboard",
+      "sourceType": "repository",
+      "collectorVersion": "repository-collector/1",
+      "checksum": "sha256:412a68de534a080d8fcc4e79f4b8449ce99dec493cc6526f3693126636243261",
+      "metadata": {
+        "owner": "tabler",
+        "repo": "tabler",
+        "url": "https://github.com/tabler/tabler",
+        "fileCount": 4
+      },
+      "records": [
+        {
+          "kind": "repository_summary",
+          "index": 0,
+          "text": "tabler/tabler: Tabler is free and open-source HTML Dashboard UI Kit built on Bootstrap | topics: admin-dashboard, adminpanel, boilerplate-template, bootstrap, bootstrap4-theme, bootstrap5, css, dashboard, dashboard-templates, dashboards, html, html5, jekyll, modular, sass, scss, sponsors, themes, ui-kit, uikit",
+          "data": {
+            "url": "https://github.com/tabler/tabler",
+            "stars": 41291,
+            "forks": 4383,
+            "language": "HTML",
+            "topics": [
+              "admin-dashboard",
+              "adminpanel",
+              "boilerplate-template",
+              "bootstrap",
+              "bootstrap4-theme",
+              "bootstrap5",
+              "css",
+              "dashboard",
+              "dashboard-templates",
+              "dashboards",
+              "html",
+              "html5",
+              "jekyll",
+              "modular",
+              "sass",
+              "scss",
+              "sponsors",
+              "themes",
+              "ui-kit",
+              "uikit"
+            ],
+            "visualFamily": "dashboard",
+            "tags": [
+              "dashboard",
+              "ui-kit",
+              "admin"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-tabler-dashboard",
+            "sourceRef": "https://github.com/tabler/tabler",
+            "sourceChecksum": "sha256:412a68de534a080d8fcc4e79f4b8449ce99dec493cc6526f3693126636243261",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 1,
+          "text": "<p align=\"center\"> <a href=\"https://github.com/tabler/tabler\"><img src=\"https://raw.githubusercontent.com/tabler/tabler/refs/heads/dev/shared/static/logo.svg\" alt=\"A premium and open source dashboard template with a responsive and high-quality UI.\" width=\"300\"></a><br><br> A premium and open source dashboard template with a responsive and high-quality UI. </p> <p align=\"center\"> <a href=\"https://www.npmjs.com/package/@tabler/core\" target=\"__blank\"><img src=\"https://img.shields.io/npm/v/@tabler/core?color=1864ab&label=Latest+version\" alt=\"NPM version\"></a> <a href=\"https://www.npmjs.com/package/@tabler/core\" target=\"__blank\"><img alt=\"NPM Downloads\" src=\"https://img.shields.io/npm/dm/@tabler/core?color=1971c2&label=Downloads\"></a> <a href=\"https://preview.tabler.io\" target=\"__blank\"><img src=\"https://img.shields.io/static/v1?label=Demo&message=preview&color=228be6\" alt=\"Tabler preview\"...",
+          "data": {
+            "path": "README.md",
+            "url": "https://github.com/tabler/tabler/blob/dev/README.md",
+            "visualFamily": "dashboard",
+            "tags": [
+              "dashboard",
+              "ui-kit",
+              "admin"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-tabler-dashboard",
+            "sourceRef": "https://github.com/tabler/tabler/blob/dev/README.md",
+            "sourceChecksum": "sha256:fd3d76ed420a492f0002f93a0fed0edcefee2a1f45011ce6394e47527478f57a",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 2,
+          "text": "package.json: Premium and Open Source dashboard template with responsive and high quality UI. | deps: picomatch, shx, @changesets/changelog-github, @changesets/cli, adm-zip, autoprefixer, bundlewatch, clean-css-cli, concurrently, cross-env, fs-extra, glob",
+          "data": {
+            "path": "package.json",
+            "url": "https://github.com/tabler/tabler/blob/dev/package.json",
+            "visualFamily": "dashboard",
+            "tags": [
+              "dashboard",
+              "ui-kit",
+              "admin"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-tabler-dashboard",
+            "sourceRef": "https://github.com/tabler/tabler/blob/dev/package.json",
+            "sourceChecksum": "sha256:9ada6f91b1373b54eea83226e67391d5cd06ca9ee54e46bb0f9653b6b55ac13d",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 3,
+          "text": "@use 'sass:string'; @use 'sass:math'; @use 'sass:map'; @use 'sass:color'; // Prefixes $prefix: 'tblr-' !default; $variable-prefix: bs- !default; // Deprecated in v5.2.0 for the shorter `$prefix` // Assets Base $assets-base: '..' !default; // Base Config $enable-social-colors: true !default; $enable-extra-colors: true !default; $enable-gradients: false !default; $enable-shadows: true !default; $enable-navbar-vertical: true !default; $enable-dark-mode: true !default; $enable-negative-margins: true !default; $enable-rfs: false !default; $enable-cssgrid: true !default; $enable-caret: true !default; $enable-rounded: true !default; $enable-transitions: true !default; $enable-reduced-motion: true !default; $enable-smooth-scroll: true !default; $enable-grid-classes: true !default; $enable-container-classes: true !default; $enable-button-pointers: true !default; $enable-validation-icons: true ...",
+          "data": {
+            "path": "core/scss/_variables.scss",
+            "url": "https://github.com/tabler/tabler/blob/dev/core/scss/_variables.scss",
+            "visualFamily": "dashboard",
+            "tags": [
+              "dashboard",
+              "ui-kit",
+              "admin"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-tabler-dashboard",
+            "sourceRef": "https://github.com/tabler/tabler/blob/dev/core/scss/_variables.scss",
+            "sourceChecksum": "sha256:06b3e0ccac8c4461e6c86d01dfd7310899e48f24c156880236e1e1dece867912",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 4,
+          "text": "@import 'core';",
+          "data": {
+            "path": "core/scss/tabler.scss",
+            "url": "https://github.com/tabler/tabler/blob/dev/core/scss/tabler.scss",
+            "visualFamily": "dashboard",
+            "tags": [
+              "dashboard",
+              "ui-kit",
+              "admin"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-tabler-dashboard",
+            "sourceRef": "https://github.com/tabler/tabler/blob/dev/core/scss/tabler.scss",
+            "sourceChecksum": "sha256:bee9b43dbebd7081c6a1e73884313275679aa3e135d43ded788eaac91bbb3cf7",
+            "collectorVersion": "repository-collector/1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "repo-shadcn-admin",
+      "sourceType": "repository",
+      "collectorVersion": "repository-collector/1",
+      "checksum": "sha256:859844d8533c7f13fd47b8f430b07bf54be4060d60c181068df8bd5a4c8b0691",
+      "metadata": {
+        "owner": "satnaing",
+        "repo": "shadcn-admin",
+        "url": "https://github.com/satnaing/shadcn-admin",
+        "fileCount": 2
+      },
+      "records": [
+        {
+          "kind": "repository_summary",
+          "index": 0,
+          "text": "satnaing/shadcn-admin: Admin Dashboard UI built with Shadcn and Vite. | topics: admin-dashboard, admin-panel, dashboard, shadcn-admin, shadcn-ui",
+          "data": {
+            "url": "https://github.com/satnaing/shadcn-admin",
+            "stars": 12591,
+            "forks": 2003,
+            "language": "TypeScript",
+            "topics": [
+              "admin-dashboard",
+              "admin-panel",
+              "dashboard",
+              "shadcn-admin",
+              "shadcn-ui"
+            ],
+            "visualFamily": "dashboard",
+            "tags": [
+              "dashboard",
+              "shadcn",
+              "admin"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-shadcn-admin",
+            "sourceRef": "https://github.com/satnaing/shadcn-admin",
+            "sourceChecksum": "sha256:859844d8533c7f13fd47b8f430b07bf54be4060d60c181068df8bd5a4c8b0691",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 1,
+          "text": "Shadcn Admin Dashboard Admin Dashboard UI crafted with Shadcn and Vite. Built with responsiveness and accessibility in mind. ![alt text](public/images/shadcn-admin.png) [![Sponsored by Clerk](https://img.shields.io/badge/Sponsored%20by-Clerk-5b6ee1?logo=clerk)](https://go.clerk.com/GttUAaK) I've been creating dashboard UIs at work and for my personal projects. I always wanted to make a reusable collection of dashboard UI for future projects; and here it is now. While I've created a few custom components, some of the code is directly adapted from ShadcnUI examples. > This is not a starter project (template) though. I'll probably make one in the future. Features - Light/dark mode - Responsive - Accessible - With built-in Sidebar component - Global search command - 10+ pages - Extra custom components - RTL support <details> <summary>Customized Components (click to expand)</summary> This ...",
+          "data": {
+            "path": "README.md",
+            "url": "https://github.com/satnaing/shadcn-admin/blob/main/README.md",
+            "visualFamily": "dashboard",
+            "tags": [
+              "dashboard",
+              "shadcn",
+              "admin"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-shadcn-admin",
+            "sourceRef": "https://github.com/satnaing/shadcn-admin/blob/main/README.md",
+            "sourceChecksum": "sha256:4013216b6f6f55bbe59a884fac10c6f0dc08567731319852b7d625f1247ce6b8",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 2,
+          "text": "shadcn-admin: package manifest | deps: @clerk/react, @hookform/resolvers, @radix-ui/react-alert-dialog, @radix-ui/react-avatar, @radix-ui/react-checkbox, @radix-ui/react-collapsible, @radix-ui/react-dialog, @radix-ui/react-direction, @radix-ui/react-dropdown-menu, @radix-ui/react-icons, @radix-ui/react-label, @radix-ui/react-popover",
+          "data": {
+            "path": "package.json",
+            "url": "https://github.com/satnaing/shadcn-admin/blob/main/package.json",
+            "visualFamily": "dashboard",
+            "tags": [
+              "dashboard",
+              "shadcn",
+              "admin"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-shadcn-admin",
+            "sourceRef": "https://github.com/satnaing/shadcn-admin/blob/main/package.json",
+            "sourceChecksum": "sha256:aab3e408f4388b658f1a716d50cc849d7b3fe6383e9469141b6197e25ca69519",
+            "collectorVersion": "repository-collector/1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "repo-revealjs",
+      "sourceType": "repository",
+      "collectorVersion": "repository-collector/1",
+      "checksum": "sha256:796769ff03c2cbe5b990698e977507585ae6a01413a79495b09c1d4979aaff4d",
+      "metadata": {
+        "owner": "hakimel",
+        "repo": "reveal.js",
+        "url": "https://github.com/hakimel/reveal.js",
+        "fileCount": 5
+      },
+      "records": [
+        {
+          "kind": "repository_summary",
+          "index": 0,
+          "text": "hakimel/reveal.js: The HTML Presentation Framework | topics: presentations, slides, slideshow",
+          "data": {
+            "url": "https://github.com/hakimel/reveal.js",
+            "stars": 71912,
+            "forks": 16805,
+            "language": "JavaScript",
+            "topics": [
+              "presentations",
+              "slides",
+              "slideshow"
+            ],
+            "visualFamily": "editorial",
+            "tags": [
+              "slides",
+              "presentation",
+              "editorial"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-revealjs",
+            "sourceRef": "https://github.com/hakimel/reveal.js",
+            "sourceChecksum": "sha256:796769ff03c2cbe5b990698e977507585ae6a01413a79495b09c1d4979aaff4d",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 1,
+          "text": "<p align=\"center\"> <a href=\"https://revealjs.com\"> <img src=\"https://hakim-static.s3.amazonaws.com/reveal-js/logo/v1/reveal-black-text-sticker.png\" alt=\"reveal.js\" width=\"500\"> </a> <br><br> <a href=\"https://github.com/hakimel/reveal.js/actions\"><img src=\"https://github.com/hakimel/reveal.js/workflows/tests/badge.svg\"></a> <a href=\"https://slides.com/\"><img src=\"https://static.slid.es/images/slides-github-banner-320x40.png?1\" alt=\"Slides\" width=\"160\" height=\"20\"></a> </p> reveal.js is an open source HTML presentation framework. It enables anyone with a web browser to create beautiful presentations for free. Check out the live demo at [revealjs.com](https://revealjs.com/). The framework comes with a powerful feature set including [nested slides](https://revealjs.com/vertical-slides/), [Markdown support](https://revealjs.com/markdown/), [Auto-Animate](https://revealjs.com/auto-animate/)...",
+          "data": {
+            "path": "README.md",
+            "url": "https://github.com/hakimel/reveal.js/blob/master/README.md",
+            "visualFamily": "editorial",
+            "tags": [
+              "slides",
+              "presentation",
+              "editorial"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-revealjs",
+            "sourceRef": "https://github.com/hakimel/reveal.js/blob/master/README.md",
+            "sourceChecksum": "sha256:b89c20b14a44274e93a99051e909e33671ce8b4b7c55a130242420b0ee30305b",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 2,
+          "text": "reveal.js: The HTML Presentation Framework | deps: esbuild, fitty, glob, highlight.js, jszip, marked, marked-smartypants, node-qunit-puppeteer, qunit, sass, typescript, vite",
+          "data": {
+            "path": "package.json",
+            "url": "https://github.com/hakimel/reveal.js/blob/master/package.json",
+            "visualFamily": "editorial",
+            "tags": [
+              "slides",
+              "presentation",
+              "editorial"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-revealjs",
+            "sourceRef": "https://github.com/hakimel/reveal.js/blob/master/package.json",
+            "sourceChecksum": "sha256:12da311f4134f7b89b49bb64031c6d3108a290923158522f6b64df1ff7107fc8",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "design_token",
+          "index": 3,
+          "text": "dist/theme/black.css tokens: --r-background:#2b2b2b; --r-background-color:#191919; --r-main-font:\"Source Sans Pro\", Helvetica, sans-serif; --r-main-font-size:42px; --r-main-color:#fff; --r-block-margin:20px; --r-heading-margin:0 0 20px 0; --r-heading-font:\"Source Sans Pro\", Helvetica, sans-serif; --r-heading-color:#fff; --r-heading-line-height:1.2; --r-heading-letter-spacing:normal; --r-heading-text-transform:uppercase; --r-heading-text-shadow:none; --r-heading-font-weight:600; --r-heading1-text-shadow:none; --r-heading1-size:2.5em; --r-heading2-size:1.6em; --r-heading3-size:1.3em",
+          "data": {
+            "path": "dist/theme/black.css",
+            "url": "https://github.com/hakimel/reveal.js/blob/master/dist/theme/black.css",
+            "visualFamily": "editorial",
+            "tags": [
+              "slides",
+              "presentation",
+              "editorial"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-revealjs",
+            "sourceRef": "https://github.com/hakimel/reveal.js/blob/master/dist/theme/black.css",
+            "sourceChecksum": "sha256:c29c9689e8f3b277aa66edc01ed2ef97981a6768b05ad750582eac068d9705c3",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "design_token",
+          "index": 4,
+          "text": "dist/theme/moon.css tokens: --r-background:#2b2b2b; --r-background-color:#002b36; --r-main-font:Lato, sans-serif; --r-main-font-size:40px; --r-main-color:#93a1a1; --r-block-margin:20px; --r-heading-margin:0 0 20px 0; --r-heading-font:League Gothic, Impact, sans-serif; --r-heading-color:#eee8d5; --r-heading-line-height:1.2; --r-heading-letter-spacing:normal; --r-heading-text-transform:uppercase; --r-heading-text-shadow:none; --r-heading-font-weight:normal; --r-heading1-text-shadow:none; --r-heading1-size:3.77em; --r-heading2-size:2.11em; --r-heading3-size:1.55em",
+          "data": {
+            "path": "dist/theme/moon.css",
+            "url": "https://github.com/hakimel/reveal.js/blob/master/dist/theme/moon.css",
+            "visualFamily": "editorial",
+            "tags": [
+              "slides",
+              "presentation",
+              "editorial"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-revealjs",
+            "sourceRef": "https://github.com/hakimel/reveal.js/blob/master/dist/theme/moon.css",
+            "sourceChecksum": "sha256:e5adaff1083f18014b09452aaec51fa539feabfb5542ffcae15e893e83e166ca",
+            "collectorVersion": "repository-collector/1"
+          }
+        },
+        {
+          "kind": "design_token",
+          "index": 5,
+          "text": "dist/theme/white.css tokens: --r-background:#2b2b2b; --r-background-color:#fff; --r-main-font:\"Source Sans Pro\", Helvetica, sans-serif; --r-main-font-size:42px; --r-main-color:#222; --r-block-margin:20px; --r-heading-margin:0 0 20px 0; --r-heading-font:\"Source Sans Pro\", Helvetica, sans-serif; --r-heading-color:#222; --r-heading-line-height:1.2; --r-heading-letter-spacing:normal; --r-heading-text-transform:uppercase; --r-heading-text-shadow:none; --r-heading-font-weight:600; --r-heading1-text-shadow:none; --r-heading1-size:2.5em; --r-heading2-size:1.6em; --r-heading3-size:1.3em",
+          "data": {
+            "path": "dist/theme/white.css",
+            "url": "https://github.com/hakimel/reveal.js/blob/master/dist/theme/white.css",
+            "visualFamily": "editorial",
+            "tags": [
+              "slides",
+              "presentation",
+              "editorial"
+            ]
+          },
+          "provenance": {
+            "sourceId": "repo-revealjs",
+            "sourceRef": "https://github.com/hakimel/reveal.js/blob/master/dist/theme/white.css",
+            "sourceChecksum": "sha256:41e9507d97eb13ce6804645a9ce9f16220ddc3bfd6e7888aa3a0b5f61777d8f3",
+            "collectorVersion": "repository-collector/1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "web-terminalcss",
+      "sourceType": "web_reference",
+      "collectorVersion": "web-reference-collector/1",
+      "checksum": "sha256:8d6be21edafdf2e4c5970ba5cba28122b57da8d6ab8d3e8213e070d32c175eea",
+      "metadata": {
+        "pages": [
+          {
+            "url": "https://terminalcss.xyz/",
+            "title": "Terminal CSS",
+            "checksum": "sha256:841db6213fee50156a0c9482e8175982197f32c58a48501dc3ee3b93d2628247"
+          }
+        ]
+      },
+      "records": [
+        {
+          "kind": "layout_reference",
+          "index": 0,
+          "text": "Terminal CSS - A modern and minimal CSS framework for terminal lovers. - Headings: Project Goals | AI Assisted Documentation | Markdown ❤️ Terminal CSS | How to use | Themes | Contributors | Components | Documentation",
+          "data": {
+            "url": "https://terminalcss.xyz/",
+            "title": "Terminal CSS",
+            "description": "A modern and minimal CSS framework for terminal lovers.",
+            "headings": [
+              "Project Goals",
+              "AI Assisted Documentation",
+              "Markdown ❤️ Terminal CSS",
+              "How to use",
+              "Themes",
+              "Contributors",
+              "Components",
+              "Documentation"
+            ],
+            "family": "terminal",
+            "tags": [
+              "terminal",
+              "web-reference"
+            ]
+          },
+          "provenance": {
+            "sourceId": "web-terminalcss",
+            "sourceRef": "https://terminalcss.xyz/",
+            "sourceChecksum": "sha256:841db6213fee50156a0c9482e8175982197f32c58a48501dc3ee3b93d2628247",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 1,
+          "text": "npm i terminal.css",
+          "data": {
+            "url": "https://terminalcss.xyz/",
+            "snippetIndex": 0,
+            "family": "terminal"
+          },
+          "provenance": {
+            "sourceId": "web-terminalcss",
+            "sourceRef": "https://terminalcss.xyz/#code-1",
+            "sourceChecksum": "sha256:841db6213fee50156a0c9482e8175982197f32c58a48501dc3ee3b93d2628247",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 2,
+          "text": "import 'terminal.css'",
+          "data": {
+            "url": "https://terminalcss.xyz/",
+            "snippetIndex": 1,
+            "family": "terminal"
+          },
+          "provenance": {
+            "sourceId": "web-terminalcss",
+            "sourceRef": "https://terminalcss.xyz/#code-2",
+            "sourceChecksum": "sha256:841db6213fee50156a0c9482e8175982197f32c58a48501dc3ee3b93d2628247",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 3,
+          "text": "<link rel=\"stylesheet\" href=\"https://unpkg.com/terminal.css@0.7.4/dist/terminal.min.css\" />",
+          "data": {
+            "url": "https://terminalcss.xyz/",
+            "snippetIndex": 2,
+            "family": "terminal"
+          },
+          "provenance": {
+            "sourceId": "web-terminalcss",
+            "sourceRef": "https://terminalcss.xyz/#code-3",
+            "sourceChecksum": "sha256:841db6213fee50156a0c9482e8175982197f32c58a48501dc3ee3b93d2628247",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 4,
+          "text": "the code tag",
+          "data": {
+            "url": "https://terminalcss.xyz/",
+            "snippetIndex": 3,
+            "family": "terminal"
+          },
+          "provenance": {
+            "sourceId": "web-terminalcss",
+            "sourceRef": "https://terminalcss.xyz/#code-4",
+            "sourceChecksum": "sha256:841db6213fee50156a0c9482e8175982197f32c58a48501dc3ee3b93d2628247",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 5,
+          "text": ".hljs { display: block; overflow-x: auto; padding: 0.5em; background: var(--block-background-color); color: var(--font-color); } .hljs-comment, .hljs-quote { color: var(--secondary-color); } .hljs-variable { color: var(--font-color); } .hljs-keyword, .hljs-selector-tag, .hljs-built_in, .hljs-name, .hljs-tag { color: var(--primary-color); } .hljs-string, .hljs-title, .hljs-section, .hljs-attribute, .hljs-literal, .hljs-template-tag, .hljs-template-variable, .hljs-type, .hljs-addition { color: var(--secondary-color); } .hljs-string { color: var(--secondary-color); } .hljs-deletion, .hljs-selector-attr, .hljs-selector-pseudo, .hljs-meta { color: var(--primary-color); } .hljs-doctag { color: var(--secondary-color); } .hljs-attr { color: var(--primary-color); } .hljs-symbol, .hljs-bullet, .hljs-link { color: var(--primary-color); } .hljs-emphasis { font-style: italic; } .hljs-strong { font...",
+          "data": {
+            "url": "https://terminalcss.xyz/",
+            "snippetIndex": 4,
+            "family": "terminal"
+          },
+          "provenance": {
+            "sourceId": "web-terminalcss",
+            "sourceRef": "https://terminalcss.xyz/#code-5",
+            "sourceChecksum": "sha256:841db6213fee50156a0c9482e8175982197f32c58a48501dc3ee3b93d2628247",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 6,
+          "text": "@font-face",
+          "data": {
+            "url": "https://terminalcss.xyz/",
+            "snippetIndex": 5,
+            "family": "terminal"
+          },
+          "provenance": {
+            "sourceId": "web-terminalcss",
+            "sourceRef": "https://terminalcss.xyz/#code-6",
+            "sourceChecksum": "sha256:841db6213fee50156a0c9482e8175982197f32c58a48501dc3ee3b93d2628247",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "web-panr-terminal",
+      "sourceType": "web_reference",
+      "collectorVersion": "web-reference-collector/1",
+      "checksum": "sha256:3bba758b5f50f6b8fb27a972ed61fb0cd9318598498d7866c9231dc9ee2a17d5",
+      "metadata": {
+        "pages": [
+          {
+            "url": "https://panr.github.io/terminal-css/",
+            "title": "Terminal.css | Semantic styles for the simple web",
+            "checksum": "sha256:08cd6cab4e58f00ee046758f0a1d6d08a1d21750e14704f96977ab81b0c62d59"
+          }
+        ]
+      },
+      "records": [
+        {
+          "kind": "layout_reference",
+          "index": 0,
+          "text": "Terminal.css | Semantic styles for the simple web - A custom set of semantic styles derived from Terminal Theme for Hugo you always wanted. - Headings: Font Family | Terminal.css | Headings # | Heading 1 | Heading 2 | Heading 3 | Paragraphs # | Images #",
+          "data": {
+            "url": "https://panr.github.io/terminal-css/",
+            "title": "Terminal.css | Semantic styles for the simple web",
+            "description": "A custom set of semantic styles derived from Terminal Theme for Hugo you always wanted.",
+            "headings": [
+              "Font Family",
+              "Terminal.css",
+              "Headings #",
+              "Heading 1",
+              "Heading 2",
+              "Heading 3",
+              "Paragraphs #",
+              "Images #"
+            ],
+            "family": "editorial",
+            "tags": [
+              "terminal",
+              "classless",
+              "web-reference"
+            ]
+          },
+          "provenance": {
+            "sourceId": "web-panr-terminal",
+            "sourceRef": "https://panr.github.io/terminal-css/",
+            "sourceChecksum": "sha256:08cd6cab4e58f00ee046758f0a1d6d08a1d21750e14704f96977ab81b0c62d59",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 1,
+          "text": "/static/terminal.css",
+          "data": {
+            "url": "https://panr.github.io/terminal-css/",
+            "snippetIndex": 0,
+            "family": "editorial"
+          },
+          "provenance": {
+            "sourceId": "web-panr-terminal",
+            "sourceRef": "https://panr.github.io/terminal-css/#code-1",
+            "sourceChecksum": "sha256:08cd6cab4e58f00ee046758f0a1d6d08a1d21750e14704f96977ab81b0c62d59",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 2,
+          "text": "/static/favicon.png",
+          "data": {
+            "url": "https://panr.github.io/terminal-css/",
+            "snippetIndex": 1,
+            "family": "editorial"
+          },
+          "provenance": {
+            "sourceId": "web-panr-terminal",
+            "sourceRef": "https://panr.github.io/terminal-css/#code-2",
+            "sourceChecksum": "sha256:08cd6cab4e58f00ee046758f0a1d6d08a1d21750e14704f96977ab81b0c62d59",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 3,
+          "text": "/static/og-image.png",
+          "data": {
+            "url": "https://panr.github.io/terminal-css/",
+            "snippetIndex": 2,
+            "family": "editorial"
+          },
+          "provenance": {
+            "sourceId": "web-panr-terminal",
+            "sourceRef": "https://panr.github.io/terminal-css/#code-3",
+            "sourceChecksum": "sha256:08cd6cab4e58f00ee046758f0a1d6d08a1d21750e14704f96977ab81b0c62d59",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 4,
+          "text": "pre { display: block; font-family: monospace; white-space: pre; margin: 1em 0; }",
+          "data": {
+            "url": "https://panr.github.io/terminal-css/",
+            "snippetIndex": 3,
+            "family": "editorial"
+          },
+          "provenance": {
+            "sourceId": "web-panr-terminal",
+            "sourceRef": "https://panr.github.io/terminal-css/#code-4",
+            "sourceChecksum": "sha256:08cd6cab4e58f00ee046758f0a1d6d08a1d21750e14704f96977ab81b0c62d59",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "web-tabler",
+      "sourceType": "web_reference",
+      "collectorVersion": "web-reference-collector/1",
+      "checksum": "sha256:abdfe79e21e27dba67dc8137468d6cb5c1b8024a4812439723db9b4058206e1b",
+      "metadata": {
+        "pages": [
+          {
+            "url": "https://tabler.io/",
+            "title": "Tabler Admin Template: Responsive HTML Dashboard with Clean UI",
+            "checksum": "sha256:e4cc4625ab3938d663490e8a83b2512272e46be4bea5ff49bbac6dfbc489f772"
+          }
+        ]
+      },
+      "records": [
+        {
+          "kind": "layout_reference",
+          "index": 0,
+          "text": "Tabler Admin Template: Responsive HTML Dashboard with Clean UI - Tabler is a free HTML admin template packed with well-designed components and features. Start your adventure with Tabler and make your dashboard great again! - Headings: Modern design | Based on Bootstrap 5 | Open source | Choose Your Plan for Tabler Admin Template | Open Source | Pro | All Package | Benefit from Tabler’s top-notch features",
+          "data": {
+            "url": "https://tabler.io/",
+            "title": "Tabler Admin Template: Responsive HTML Dashboard with Clean UI",
+            "description": "Tabler is a free HTML admin template packed with well-designed components and features. Start your adventure with Tabler and make your dashboard great again!",
+            "headings": [
+              "Modern design",
+              "Based on Bootstrap 5",
+              "Open source",
+              "Choose Your Plan for Tabler Admin Template",
+              "Open Source",
+              "Pro",
+              "All Package",
+              "Benefit from Tabler’s top-notch features"
+            ],
+            "family": "dashboard",
+            "tags": [
+              "dashboard",
+              "web-reference"
+            ]
+          },
+          "provenance": {
+            "sourceId": "web-tabler",
+            "sourceRef": "https://tabler.io/",
+            "sourceChecksum": "sha256:e4cc4625ab3938d663490e8a83b2512272e46be4bea5ff49bbac6dfbc489f772",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "web-revealjs",
+      "sourceType": "web_reference",
+      "collectorVersion": "web-reference-collector/1",
+      "checksum": "sha256:365f2fd53a172a75257f282fcb1aea5d8ad89844295922ef007f7a02f0926b00",
+      "metadata": {
+        "pages": [
+          {
+            "url": "https://revealjs.com/",
+            "title": "The HTML presentation framework | reveal.js",
+            "checksum": "sha256:8082c15bfd212d142a17416be3d2ab0bc438f2b2756aa6526eaa4fd4276e3c3a"
+          }
+        ]
+      },
+      "records": [
+        {
+          "kind": "layout_reference",
+          "index": 0,
+          "text": "The HTML presentation framework | reveal.js - Documentation and demos for the open source reveal.js HTML presentation framework. - Headings: The HTML Presentation Framework | Hello There | Vertical Slides | Basement Level 1 | Basement Level 2 | Slides | Pretty Code | Even Prettier Animations",
+          "data": {
+            "url": "https://revealjs.com/",
+            "title": "The HTML presentation framework | reveal.js",
+            "description": "Documentation and demos for the open source reveal.js HTML presentation framework.",
+            "headings": [
+              "The HTML Presentation Framework",
+              "Hello There",
+              "Vertical Slides",
+              "Basement Level 1",
+              "Basement Level 2",
+              "Slides",
+              "Pretty Code",
+              "Even Prettier Animations"
+            ],
+            "family": "editorial",
+            "tags": [
+              "slides",
+              "web-reference"
+            ]
+          },
+          "provenance": {
+            "sourceId": "web-revealjs",
+            "sourceRef": "https://revealjs.com/",
+            "sourceChecksum": "sha256:8082c15bfd212d142a17416be3d2ab0bc438f2b2756aa6526eaa4fd4276e3c3a",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 1,
+          "text": "import React, { useState } from 'react'; function Example() { const [count, setCount] = useState(0); return ( ... ); }",
+          "data": {
+            "url": "https://revealjs.com/",
+            "snippetIndex": 0,
+            "family": "editorial"
+          },
+          "provenance": {
+            "sourceId": "web-revealjs",
+            "sourceRef": "https://revealjs.com/#code-1",
+            "sourceChecksum": "sha256:8082c15bfd212d142a17416be3d2ab0bc438f2b2756aa6526eaa4fd4276e3c3a",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 2,
+          "text": "import React, { useState } from 'react'; function Example() { const [count, setCount] = useState(0); return ( <div> <p>You clicked {count} times</p> <button onClick={() => setCount(count + 1)}> Click me </button> </div> ); } function SecondExample() { const [count, setCount] = useState(0); return ( <div> <p>You clicked {count} times</p> <button onClick={() => setCount(count + 1)}> Click me </button> </div> ); }",
+          "data": {
+            "url": "https://revealjs.com/",
+            "snippetIndex": 1,
+            "family": "editorial"
+          },
+          "provenance": {
+            "sourceId": "web-revealjs",
+            "sourceRef": "https://revealjs.com/#code-2",
+            "sourceChecksum": "sha256:8082c15bfd212d142a17416be3d2ab0bc438f2b2756aa6526eaa4fd4276e3c3a",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 3,
+          "text": "r-fit-text",
+          "data": {
+            "url": "https://revealjs.com/",
+            "snippetIndex": 2,
+            "family": "editorial"
+          },
+          "provenance": {
+            "sourceId": "web-revealjs",
+            "sourceRef": "https://revealjs.com/#code-3",
+            "sourceChecksum": "sha256:8082c15bfd212d142a17416be3d2ab0bc438f2b2756aa6526eaa4fd4276e3c3a",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 4,
+          "text": "data-background=\"#dddddd\"",
+          "data": {
+            "url": "https://revealjs.com/",
+            "snippetIndex": 3,
+            "family": "editorial"
+          },
+          "provenance": {
+            "sourceId": "web-revealjs",
+            "sourceRef": "https://revealjs.com/#code-4",
+            "sourceChecksum": "sha256:8082c15bfd212d142a17416be3d2ab0bc438f2b2756aa6526eaa4fd4276e3c3a",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 5,
+          "text": "<section data-background=\"image.png\">",
+          "data": {
+            "url": "https://revealjs.com/",
+            "snippetIndex": 4,
+            "family": "editorial"
+          },
+          "provenance": {
+            "sourceId": "web-revealjs",
+            "sourceRef": "https://revealjs.com/#code-5",
+            "sourceChecksum": "sha256:8082c15bfd212d142a17416be3d2ab0bc438f2b2756aa6526eaa4fd4276e3c3a",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        },
+        {
+          "kind": "code",
+          "index": 6,
+          "text": "<section data-background=\"image.png\" data-background-repeat=\"repeat\" data-background-size=\"100px\">",
+          "data": {
+            "url": "https://revealjs.com/",
+            "snippetIndex": 5,
+            "family": "editorial"
+          },
+          "provenance": {
+            "sourceId": "web-revealjs",
+            "sourceRef": "https://revealjs.com/#code-6",
+            "sourceChecksum": "sha256:8082c15bfd212d142a17416be3d2ab0bc438f2b2756aa6526eaa4fd4276e3c3a",
+            "collectorVersion": "web-reference-collector/1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "theme-local-lucida-reference",
+      "sourceType": "theme_reference",
+      "collectorVersion": "theme-reference-collector/1",
+      "checksum": "sha256:6e27b99e2ffa42c3581fe9dbd86c1974d05970d14a5c932488f6d754aa5ca3db",
+      "metadata": {
+        "ref": "pipeline/fixtures/reference-theme.css",
+        "tokenCount": 4,
+        "colorCount": 4
+      },
+      "records": [
+        {
+          "kind": "design_token",
+          "index": 0,
+          "text": "theme-local-lucida-reference | tokens: --lucida-bg=#0b0c0e; --lucida-fg=#f4f0e8; --lucida-cyan=#65d8e8; --lucida-gold=#d2b47a | colors: #0b0c0e, #f4f0e8, #65d8e8, #d2b47a",
+          "data": {
+            "ref": "pipeline/fixtures/reference-theme.css",
+            "tokens": [
+              {
+                "name": "--lucida-bg",
+                "value": "#0b0c0e"
+              },
+              {
+                "name": "--lucida-fg",
+                "value": "#f4f0e8"
+              },
+              {
+                "name": "--lucida-cyan",
+                "value": "#65d8e8"
+              },
+              {
+                "name": "--lucida-gold",
+                "value": "#d2b47a"
+              }
+            ],
+            "colors": [
+              "#0b0c0e",
+              "#f4f0e8",
+              "#65d8e8",
+              "#d2b47a"
+            ],
+            "family": "terminal",
+            "tags": [
+              "theme",
+              "local"
+            ]
+          },
+          "provenance": {
+            "sourceId": "theme-local-lucida-reference",
+            "sourceRef": "pipeline/fixtures/reference-theme.css",
+            "sourceChecksum": "sha256:6e27b99e2ffa42c3581fe9dbd86c1974d05970d14a5c932488f6d754aa5ca3db",
+            "collectorVersion": "theme-reference-collector/1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "theme-reveal-black",
+      "sourceType": "theme_reference",
+      "collectorVersion": "theme-reference-collector/1",
+      "checksum": "sha256:f26c01643d671667a3aeee0ac00b316a294c727a27758d7cf6953c7b796a59d7",
+      "metadata": {
+        "ref": "https://raw.githubusercontent.com/hakimel/reveal.js/master/dist/theme/black.css",
+        "tokenCount": 0,
+        "colorCount": 0
+      },
+      "records": [
+        {
+          "kind": "design_token",
+          "index": 0,
+          "text": "theme-reveal-black",
+          "data": {
+            "ref": "https://raw.githubusercontent.com/hakimel/reveal.js/master/dist/theme/black.css",
+            "tokens": [],
+            "colors": [],
+            "family": "editorial",
+            "tags": [
+              "theme",
+              "revealjs"
+            ]
+          },
+          "provenance": {
+            "sourceId": "theme-reveal-black",
+            "sourceRef": "https://raw.githubusercontent.com/hakimel/reveal.js/master/dist/theme/black.css",
+            "sourceChecksum": "sha256:f26c01643d671667a3aeee0ac00b316a294c727a27758d7cf6953c7b796a59d7",
+            "collectorVersion": "theme-reference-collector/1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "image-repo-og-terminal",
+      "sourceType": "image_reference",
+      "collectorVersion": "image-reference-collector/1",
+      "checksum": "sha256:070129462337adcdf2b45c31a3e7a138373965b62b5acfe8726421864cb2e454",
+      "metadata": [
+        {
+          "ref": "https://opengraph.githubassets.com/lucida/rpodcast/quarto-revealjs-terminal",
+          "checksum": "sha256:04cbe9551d21bc2687271e58ad3c4400bd111e28ff1ab61e83cb6a17646bb331",
+          "contentType": "image/png",
+          "contentLength": "87609",
+          "lastModified": ""
+        }
+      ],
+      "records": [
+        {
+          "kind": "media",
+          "index": 0,
+          "text": "GitHub OpenGraph preview for terminal slide theme",
+          "data": {
+            "url": "https://opengraph.githubassets.com/lucida/rpodcast/quarto-revealjs-terminal",
+            "contentType": "image/png",
+            "contentLength": "87609",
+            "family": "terminal",
+            "tags": [
+              "image",
+              "github-og"
+            ]
+          },
+          "provenance": {
+            "sourceId": "image-repo-og-terminal",
+            "sourceRef": "https://opengraph.githubassets.com/lucida/rpodcast/quarto-revealjs-terminal",
+            "sourceChecksum": "sha256:04cbe9551d21bc2687271e58ad3c4400bd111e28ff1ab61e83cb6a17646bb331",
+            "collectorVersion": "image-reference-collector/1"
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "image-repo-og-dashboard",
+      "sourceType": "image_reference",
+      "collectorVersion": "image-reference-collector/1",
+      "checksum": "sha256:dc2b0e65567a97c0d05eb25bae239c39d78eecc58461c03545694a8f94e9b698",
+      "metadata": [
+        {
+          "ref": "https://opengraph.githubassets.com/lucida/tabler/tabler",
+          "checksum": "sha256:f37532590f32d4e3e4216e025afb3057e346314e458ec80d268aee30bfe6bbfe",
+          "contentType": "image/png",
+          "contentLength": "43694",
+          "lastModified": ""
+        }
+      ],
+      "records": [
+        {
+          "kind": "media",
+          "index": 0,
+          "text": "GitHub OpenGraph preview for dashboard UI kit",
+          "data": {
+            "url": "https://opengraph.githubassets.com/lucida/tabler/tabler",
+            "contentType": "image/png",
+            "contentLength": "43694",
+            "family": "dashboard",
+            "tags": [
+              "image",
+              "github-og"
+            ]
+          },
+          "provenance": {
+            "sourceId": "image-repo-og-dashboard",
+            "sourceRef": "https://opengraph.githubassets.com/lucida/tabler/tabler",
+            "sourceChecksum": "sha256:f37532590f32d4e3e4216e025afb3057e346314e458ec80d268aee30bfe6bbfe",
+            "collectorVersion": "image-reference-collector/1"
+          }
+        }
+      ]
+    }
+  ],
+  "warnings": []
+}

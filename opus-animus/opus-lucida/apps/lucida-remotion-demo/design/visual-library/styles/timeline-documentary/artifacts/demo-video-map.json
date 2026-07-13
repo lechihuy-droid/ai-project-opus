@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "lucida-timeline-documentary-demo/v1",
+  "packageId": "timeline-documentary",
+  "compositionId": "TimelineDocumentaryFamilyReview",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "scenes": [
+    { "id": "scene-01", "label": "Milestone chronology review", "sceneKey": "milestone", "frame": 72, "output": "frames/scene-01.png" },
+    { "id": "scene-02", "label": "Dense era-change review", "sceneKey": "era-change", "frame": 96, "output": "frames/scene-02.png" },
+    { "id": "scene-03", "label": "Documentary conclusion review", "sceneKey": "conclusion", "frame": 45, "output": "frames/scene-03.png" }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "lucida-visual-package/v1",
+  "id": "cinematic-type",
+  "label": "Cinematic Type",
+  "status": "experimental",
+  "visualFamily": "cinematic-type",
+  "summary": "Oversized type-led package for hooks, quotes, and chapter resets with one restrained texture field.",
+  "description": "Original Lucida family for title-card beats, quote scenes, and chapter transitions that need scale, pause, and a controlled photographic placeholder rather than dense structured modules.",
+  "tags": [
+    "cinematic",
+    "type",
+    "hook",
+    "quote",
+    "transition"
+  ],
+  "recommendedIntents": [
+    "hook",
+    "quote",
+    "takeaway"
+  ],
+  "avoidFor": [
+    "dashboard or metric-heavy scenes",
+    "real product inspection",
+    "copied branded texture treatments"
+  ],
+  "supportedSceneTypes": [
+    "hook",
+    "quote",
+    "transition"
+  ],
+  "supportedTemplateRoles": [
+    "scene"
+  ],
+  "aspectRatios": [
+    "9:16",
+    "16:9"
+  ],
+  "density": "sparse",
+  "renderCost": "low",
+  "contentCapacity": {
+    "headlineChars": 170,
+    "bodyChars": 180
+  },
+  "preferredLayouts": [
+    "center-stage",
+    "bottom-statement",
+    "full-bleed-visual"
+  ],
+  "preferredTemplates": [
+    "title-card",
+    "quote-card",
+    "chapter-reset"
+  ],
+  "backgroundEffects": [
+    "film-rule",
+    "texture-band"
+  ],
+  "motionPreset": "cinematic-rise",
+  "layoutGrammar": [
+    "One sentence dominates the frame.",
+    "Keep large negative space around the headline.",
+    "Use one restrained texture field only.",
+    "Accent color stays narrow and structural."
+  ],
+  "sourcePolicy": {
+    "copyStatus": "principles-only",
+    "registeredMedia": "none",
+    "notes": "No logos, screenshots, branded photography, or copied visual identities are packaged."
+  },
+  "notes": [
+    "Built to stay visually original even when no embeddable imagery is available.",
+    "Long-headline edge coverage is carried by the transition fixture rather than extra panels."
+  ]
+}

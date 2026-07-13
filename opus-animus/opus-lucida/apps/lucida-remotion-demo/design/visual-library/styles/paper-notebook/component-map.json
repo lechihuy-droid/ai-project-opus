@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "lucida-component-map/v1",
+  "id": "paper-notebook",
+  "primitives": [
+    { "id": "ruled-paper-field", "role": "surface", "notes": "Continuous warm paper with CSS grain, blue rules, red margin rail, and binding holes." },
+    { "id": "ink-note-row", "role": "content", "notes": "Numbered blue-ink claim, graphite explanation, and optional red emphasis." },
+    { "id": "derivation-step", "role": "process", "notes": "Explicit numbered expression with a plain-language audit note." },
+    { "id": "notebook-check", "role": "process", "notes": "DOM-drawn checkbox preserving checked and open states without icon assets." },
+    { "id": "margin-annotation", "role": "annotation", "notes": "Fixed rail note using blue, red, or graphite semantic ink." }
+  ],
+  "templates": [
+    { "templateId": "study-notes", "supportedLayouts": ["top-title", "margin-rail"], "backgroundEffects": ["paper-grain", "ruled-lines"], "motionPreset": "ink-reveal", "primitives": ["ruled-paper-field", "ink-note-row", "margin-annotation"], "notes": "Use for definitions, principles, and compact reasoning notes." },
+    { "templateId": "worked-derivation", "supportedLayouts": ["top-title", "ruled-page"], "backgroundEffects": ["paper-grain", "ruled-lines"], "motionPreset": "reduced-motion-fade", "primitives": ["ruled-paper-field", "derivation-step", "margin-annotation"], "notes": "Use when every transformation must remain explicit and auditable." },
+    { "templateId": "review-checklist", "supportedLayouts": ["top-title", "margin-rail"], "backgroundEffects": ["paper-grain", "ruled-lines"], "motionPreset": "static", "primitives": ["ruled-paper-field", "notebook-check", "margin-annotation"], "notes": "Use for promotion gates and process reviews where open states must remain truthful." }
+  ]
+}

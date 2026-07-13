@@ -1,0 +1,26 @@
+{
+  "status": "ok",
+  "packageId": "editorial-collage",
+  "generatedAt": "2026-07-13T00:00:00.000Z",
+  "internalReferences": [
+    "design/planning/ALL_STYLE_IMPLEMENTATION_PLAN.md",
+    "design/schemas/visual-package.schema.json",
+    "src/styles/core/index.ts",
+    "src/styles/families/paper-notebook/render-review.mjs"
+  ],
+  "externalReferences": ["https://www.remotion.dev/docs/animating-properties"],
+  "selectedConcepts": [
+    "modular crop system",
+    "captioned evidence",
+    "layered but readable composition",
+    "embed_asset-only render policy",
+    "missing-asset placeholder"
+  ],
+  "exclusions": [
+    "No proprietary imagery",
+    "No logos or copied brand identity",
+    "No third-party screenshots",
+    "No font binaries",
+    "No shared registry edits"
+  ]
+}

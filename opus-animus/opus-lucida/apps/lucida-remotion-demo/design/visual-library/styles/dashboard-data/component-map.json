@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "lucida-component-map/v1",
+  "id": "dashboard-data",
+  "primitives": [
+    {
+      "id": "kpi-strip",
+      "role": "content",
+      "notes": "Single top panel with four KPI cells separated by rules instead of nested cards."
+    },
+    {
+      "id": "trend-panel",
+      "role": "content",
+      "notes": "Dominant chart surface for one fixture-bound trend plot and its legend."
+    },
+    {
+      "id": "watchlist-rail",
+      "role": "surface",
+      "notes": "Supporting right-side rail for state notes, review context, and operational guidance."
+    },
+    {
+      "id": "operations-table",
+      "role": "process",
+      "notes": "Bottom table or failure report surface for owner, window, and status lines."
+    }
+  ],
+  "templates": [
+    {
+      "templateId": "kpi-snapshot",
+      "supportedLayouts": [
+        "top-title",
+        "center-stage"
+      ],
+      "backgroundEffects": [
+        "quiet-grid",
+        "status-wash"
+      ],
+      "motionPreset": "counter-reveal",
+      "primitives": [
+        "kpi-strip",
+        "trend-panel",
+        "watchlist-rail",
+        "operations-table"
+      ],
+      "notes": "Use when the scene leads with topline counters but still needs trend and status context."
+    },
+    {
+      "templateId": "trend-review",
+      "supportedLayouts": [
+        "center-stage",
+        "side-rail"
+      ],
+      "backgroundEffects": [
+        "quiet-grid"
+      ],
+      "motionPreset": "counter-reveal",
+      "primitives": [
+        "kpi-strip",
+        "trend-panel",
+        "watchlist-rail"
+      ],
+      "notes": "Use when the chart is the primary evidence surface and the right rail explains context."
+    },
+    {
+      "templateId": "operations-report",
+      "supportedLayouts": [
+        "top-title",
+        "side-rail"
+      ],
+      "backgroundEffects": [
+        "status-wash"
+      ],
+      "motionPreset": "reduced-motion-fade",
+      "primitives": [
+        "kpi-strip",
+        "watchlist-rail",
+        "operations-table"
+      ],
+      "notes": "Use for recovery, degraded service, or explicit operational state reporting."
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "lucida-visual-package/v1",
+  "id": "paper-notebook",
+  "label": "Paper Notebook",
+  "status": "experimental",
+  "visualFamily": "paper-notebook",
+  "summary": "Warm ruled-paper scenes for visible reasoning, derivations, and review checklists.",
+  "description": "A portrait-first notebook grammar using a paper field, blue and graphite ink hierarchy, sparse red corrections, margin annotations, and deterministic marks without raster assets.",
+  "tags": ["paper", "notebook", "reasoning", "study", "annotation"],
+  "recommendedIntents": ["process", "summarize", "takeaway"],
+  "avoidFor": ["full-bleed media", "dense metric dashboards", "brand-faithful product screenshots"],
+  "supportedSceneTypes": ["notes", "derivation", "checklist"],
+  "supportedTemplateRoles": ["scene"],
+  "aspectRatios": ["9:16", "16:9"],
+  "density": "balanced",
+  "renderCost": "low",
+  "contentCapacity": { "headlineChars": 96, "bodyChars": 520, "maxItems": 5, "maxAnnotations": 3, "maxEquations": 5 },
+  "preferredLayouts": ["top-title", "margin-rail", "ruled-page"],
+  "preferredTemplates": ["study-notes", "worked-derivation", "review-checklist"],
+  "backgroundEffects": ["paper-grain", "ruled-lines"],
+  "motionPreset": "ink-reveal",
+  "layoutGrammar": [
+    "Treat the paper as a continuous field rather than a stack of cards.",
+    "Reserve red ink for correction, warnings, and intentionally open review gates.",
+    "Keep annotation notes in a fixed margin rail and preserve the ruled baseline.",
+    "Render every equation, note, and checklist state from typed fixture input.",
+    "Use CSS and DOM marks only; do not require raster paper or sticker assets."
+  ],
+  "sourcePolicy": { "copyStatus": "original", "registeredMedia": "none", "notes": "All copy, geometry, marks, and paper effects are original and local to the package." },
+  "notes": ["The dedicated family composition avoids shared integration edits.", "The checklist edge fixture keeps one human approval gate intentionally open."]
+}

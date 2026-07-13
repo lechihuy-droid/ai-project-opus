@@ -41,6 +41,7 @@ export type ScenePanel = {
   title: string;
   body?: string;
   tone?: Tone;
+  kicker?: string;
 };
 
 export type SceneMetric = {
@@ -77,6 +78,7 @@ export type SceneContent = {
   panels?: ScenePanel[];
   metrics?: SceneMetric[];
   codeTitle?: string;
+  keywords?: string[];
   lines?: string[];
   highlights?: number[];
   quote?: string;
@@ -88,6 +90,13 @@ export type SceneContent = {
   nodes?: DiagramNode[];
   links?: DiagramLink[];
 };
+
+export type SceneLayout =
+  | "top-title"
+  | "center-stage"
+  | "oversized-type"
+  | "bottom-statement"
+  | "full-bleed-visual";
 
 export type SceneStyle = {
   accent?: string;
@@ -123,6 +132,8 @@ export type VideoMapScene = {
   transitionIn?: string;
   transitionOut?: string;
   subtitleMode?: "bar" | "lower-third" | "none";
+  /** Macro scene layout. Absent means "top-title" (legacy header + stage). */
+  layout?: SceneLayout;
   reason: string;
 };
 
@@ -146,6 +157,7 @@ export type VideoMap = {
     background: string;
     foreground: string;
     muted: string;
+    skin?: "premium-gold" | "modern-terminal";
   };
   assets: VisualAsset[];
   scenes: VideoMapScene[];
@@ -240,6 +252,8 @@ const normalizeScene = (
   bullets: getBullets(scene.content),
   nodes: scene.content.nodes ?? [],
   links: scene.content.links ?? [],
+  // Explicit passthrough: SceneShell resolves `layout ?? "top-title"`.
+  layout: scene.layout,
   durationFrames: Math.round(scene.durationSec * videoMap.video.fps),
 });
 

@@ -1,0 +1,25 @@
+{
+  "title": "technical-editorial-review",
+  "packageId": "technical-editorial",
+  "compositionId": "TechnicalEditorialFamilyReview",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "scenes": [
+    {
+      "sceneKey": "normal",
+      "frame": 18,
+      "output": "./artifacts/frames/scene-01.png"
+    },
+    {
+      "sceneKey": "dense",
+      "frame": 20,
+      "output": "./artifacts/frames/scene-02.png"
+    },
+    {
+      "sceneKey": "edge",
+      "frame": 24,
+      "output": "./artifacts/frames/scene-03.png"
+    }
+  ]
+}

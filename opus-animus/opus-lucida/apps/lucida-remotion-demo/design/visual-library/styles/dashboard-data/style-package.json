@@ -1,0 +1,143 @@
+{
+  "schemaVersion": "lucida-style-package/v1",
+  "id": "dashboard-data",
+  "label": "Dashboard Data",
+  "version": "1.0.0",
+  "status": "experimental",
+  "visualFamily": "dashboard-data",
+  "description": "Production package for a quiet operational dashboard family with deterministic KPI, chart, and operations-table states driven strictly by fixture data.",
+  "tags": [
+    "dashboard",
+    "data",
+    "operations",
+    "monitoring",
+    "metrics"
+  ],
+  "supportedIntents": [
+    "comparison",
+    "summarize",
+    "system-architecture",
+    "takeaway"
+  ],
+  "recommendedIntents": [
+    "comparison",
+    "summarize",
+    "takeaway"
+  ],
+  "avoidFor": [
+    "story-led cinematic hooks without structured data",
+    "product-first showcase scenes where media is the subject",
+    "freeform collage scenes without explicit metric ownership"
+  ],
+  "aspectRatios": [
+    "9:16",
+    "16:9"
+  ],
+  "contentCapacity": {
+    "headlineChars": 92,
+    "bodyChars": 420,
+    "bulletsMaxItems": 4,
+    "maxDataSeries": 2,
+    "maxCodeLines": 0
+  },
+  "renderCost": {
+    "tier": "medium",
+    "estimatedSceneComplexity": 6,
+    "notes": "The family renders four synchronized data panels, state-specific empty/loading/error handling, and chart normalization without external assets."
+  },
+  "reducedMotion": {
+    "strategy": "reduced-motion-fade",
+    "notes": "Dense scenes reduce travel distance, and the edge fixture renders in static mode while preserving the full information hierarchy."
+  },
+  "accessibility": {
+    "contrast": "AA",
+    "notes": "High-contrast typography, restrained semantic colors, and fixed column alignment keep dense operational panels readable."
+  },
+  "directorCompatibility": {
+    "selectionReason": "Choose when the narration depends on real structured metrics, explicit trend context, and operational status reporting.",
+    "preferredNeighborFamilies": [
+      "technical-editorial",
+      "minimal-education"
+    ],
+    "bridgeFamilies": [
+      "technical-editorial"
+    ],
+    "hardBlocks": [
+      "no real structured data available",
+      "requires asset-led hero media",
+      "requires loose collage composition"
+    ]
+  },
+  "files": {
+    "visual": "./visual.json",
+    "tokens": "./tokens.json",
+    "componentMap": "./component-map.json",
+    "provenance": "./provenance.md",
+    "artifactManifest": "./artifact-manifest.json"
+  },
+  "sourcePolicy": {
+    "copyStatus": "principles-only",
+    "registeredMedia": "none",
+    "notes": "The family uses original Lucida dashboard layout grammar, semantic tokens, and fixture-driven data only. No product screenshot, logo, icon pack, or font binary is registered."
+  },
+  "sourceArtifacts": {
+    "normalizedInput": "./artifacts/review-scenes.json",
+    "mappedScenes": "./artifacts/review-scenes.json",
+    "compiledVideoMap": "./artifacts/demo-video-map.json",
+    "sourceReviewReport": "./artifacts/source-review-report.json"
+  },
+  "validationArtifacts": {
+    "demoVideoMap": "./artifacts/demo-video-map.json",
+    "renderProps": "./artifacts/render-props.json",
+    "previewFrames": [
+      "./artifacts/frames/scene-01.png",
+      "./artifacts/frames/scene-02.png",
+      "./artifacts/frames/scene-03.png"
+    ],
+    "renderReport": "./artifacts/render-report.json",
+    "videoBinaryRegistered": false
+  },
+  "sourceReferences": [
+    {
+      "id": "primer-style",
+      "url": "https://primer.style/",
+      "selectedConcepts": [
+        "semantic status colors",
+        "compact operational hierarchy",
+        "quiet product-UI density"
+      ]
+    },
+    {
+      "id": "primer-react",
+      "url": "https://github.com/primer/react",
+      "selectedConcepts": [
+        "stateful data surfaces",
+        "predictable spacing",
+        "accessibility-first dashboard primitives"
+      ]
+    },
+    {
+      "id": "remotion-animating-properties",
+      "url": "https://www.remotion.dev/docs/animating-properties",
+      "selectedConcepts": [
+        "frame-driven motion",
+        "deterministic still review",
+        "reduced-motion fallback"
+      ]
+    }
+  ],
+  "qualityGate": {
+    "validated": true,
+    "checks": [
+      "visual package validator --strict",
+      "TypeScript noEmit",
+      "Remotion still renders",
+      "portrait preview frames",
+      "signalstats nonblank check"
+    ],
+    "knownLimitations": [
+      "Shared registry and app-root availability remain untouched because they are outside this ownership slice.",
+      "16:9 support is metadata-ready only; this task renders portrait review frames only."
+    ]
+  }
+}

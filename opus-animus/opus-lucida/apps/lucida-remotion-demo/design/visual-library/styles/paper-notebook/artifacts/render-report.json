@@ -1,0 +1,110 @@
+{
+  "status": "ok",
+  "packageId": "paper-notebook",
+  "compositionId": "PaperNotebookFamilyReview",
+  "generatedAt": "2026-07-13T00:40:22.881Z",
+  "renderer": {
+    "entryPoint": "src/styles/families/paper-notebook/render-entry.tsx",
+    "browserExecutable": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+    "imageFormat": "png",
+    "rasterDependencies": false
+  },
+  "checks": [
+    "sha256",
+    "dimensions",
+    "signalstats-nonblank",
+    "no-raster-dependency"
+  ],
+  "frames": [
+    {
+      "id": "scene-01",
+      "label": "Notes review frame",
+      "sceneKey": "notes",
+      "frame": 58,
+      "output": "design/visual-library/styles/paper-notebook/artifacts/frames/scene-01.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 180,
+      "sha256": "2835ad6c319fa2aac08daf4019c01b0cf9e8f82db4a18de93851c75b303427c3",
+      "fileBytes": 306595,
+      "signalStats": {
+        "yAverage": 230.036,
+        "yLow": 203,
+        "yHigh": 246,
+        "saturationAverage": 8.37662
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 43
+      }
+    },
+    {
+      "id": "scene-02",
+      "label": "Derivation review frame",
+      "sceneKey": "derivation",
+      "frame": 76,
+      "output": "design/visual-library/styles/paper-notebook/artifacts/frames/scene-02.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 210,
+      "sha256": "75be5657f764fd174d90404ccda59a93e79e6c31d7f04c0e113a0705e25267d2",
+      "fileBytes": 329800,
+      "signalStats": {
+        "yAverage": 228.847,
+        "yLow": 201,
+        "yHigh": 246,
+        "saturationAverage": 8.38603
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 45
+      }
+    },
+    {
+      "id": "scene-03",
+      "label": "Checklist review frame",
+      "sceneKey": "checklist",
+      "frame": 40,
+      "output": "design/visual-library/styles/paper-notebook/artifacts/frames/scene-03.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 180,
+      "sha256": "06441b6754098db0e0e6723158fe3067a861e0ef8791e48fa7b27ef5bcfc0fe2",
+      "fileBytes": 347799,
+      "signalStats": {
+        "yAverage": 229.009,
+        "yLow": 201,
+        "yHigh": 246,
+        "saturationAverage": 8.46428
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 45
+      }
+    }
+  ],
+  "summary": {
+    "renderedFrameCount": 3,
+    "nonBlankFrames": 3,
+    "dimensionsValid": true
+  },
+  "validation": {
+    "visualPackageValidatorStrict": "passed",
+    "typescriptNoEmit": "passed",
+    "deterministicChecksums": "passed"
+  },
+  "limitations": [
+    "Shared registry and app-root availability remain untouched because they are outside this ownership slice.",
+    "16:9 support is metadata-ready only; this task renders portrait review frames only.",
+    "Stable promotion still requires human visual approval."
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "status": "ok",
+  "packageId": "technical-editorial",
+  "compositionId": "TechnicalEditorialFamilyReview",
+  "generatedAt": "2026-07-13T14:19:24.217Z",
+  "renderer": {
+    "tool": "@remotion/bundler + @remotion/renderer",
+    "entryPoint": "src/styles/families/technical-editorial/renderRoot.tsx",
+    "browserExecutable": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe"
+  },
+  "checks": [
+    "sha256",
+    "dimensions",
+    "repeat-render-sha256",
+    "signalstats-nonblank"
+  ],
+  "frames": [
+    {
+      "id": "scene-01",
+      "sceneKey": "normal",
+      "frame": 18,
+      "output": "design/visual-library/styles/technical-editorial/artifacts/frames/scene-01.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 90,
+      "sha256": "3a47e2d295fd1e0f8a9cc6adf2a27f5274d84d1ac3ce47d7df0643a7d1b4bfac",
+      "fileBytes": 1325659,
+      "signalStats": {
+        "yAverage": 39.5767,
+        "yLow": 19,
+        "yHigh": 79,
+        "saturationAverage": 9.99296
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 60
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "3a47e2d295fd1e0f8a9cc6adf2a27f5274d84d1ac3ce47d7df0643a7d1b4bfac"
+      }
+    },
+    {
+      "id": "scene-02",
+      "sceneKey": "dense",
+      "frame": 20,
+      "output": "design/visual-library/styles/technical-editorial/artifacts/frames/scene-02.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 90,
+      "sha256": "4eac5995b2266795364cf3920df9f3c390209f75c2d9125ac8fdb11e6b610984",
+      "fileBytes": 1321873,
+      "signalStats": {
+        "yAverage": 40.5929,
+        "yLow": 19,
+        "yHigh": 81,
+        "saturationAverage": 9.772
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 62
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "4eac5995b2266795364cf3920df9f3c390209f75c2d9125ac8fdb11e6b610984"
+      }
+    },
+    {
+      "id": "scene-03",
+      "sceneKey": "edge",
+      "frame": 24,
+      "output": "design/visual-library/styles/technical-editorial/artifacts/frames/scene-03.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 90,
+      "sha256": "e7e76453a0e883493d7d474723f216ec83f2724b74b8a12e732501549193a99e",
+      "fileBytes": 1306844,
+      "signalStats": {
+        "yAverage": 42.8364,
+        "yLow": 19,
+        "yHigh": 108,
+        "saturationAverage": 10.3292
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 89
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "e7e76453a0e883493d7d474723f216ec83f2724b74b8a12e732501549193a99e"
+      }
+    }
+  ],
+  "summary": {
+    "renderedFrameCount": 3,
+    "nonBlankFrames": 3,
+    "deterministicFrames": 3,
+    "dimensionsValid": true
+  },
+  "validation": {
+    "visualPackageValidatorStrict": "pending",
+    "typescriptNoEmit": "pending"
+  },
+  "limitations": [
+    "Shared registry availability placeholder remains unchanged because src/styles/registry.ts is outside the allowed ownership scope.",
+    "16:9 metadata is prepared in the package contract but this task rendered only 9:16 review frames."
+  ]
+}

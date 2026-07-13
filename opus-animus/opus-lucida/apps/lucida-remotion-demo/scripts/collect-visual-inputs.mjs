@@ -3,7 +3,11 @@ import path from "node:path";
 import {
   collectAsciicast,
   collectCommand,
+  collectImageReference,
+  collectRepository,
   collectScript,
+  collectThemeReference,
+  collectWebReference,
 } from "../pipeline/collectors/index.mjs";
 
 const args = process.argv.slice(2);
@@ -44,6 +48,14 @@ for (const source of config.sources) {
       collected.push(
         await collectCommand({ source, projectRoot, allowedCommands }),
       );
+    else if (source.type === "repository")
+      collected.push(await collectRepository({ source, projectRoot }));
+    else if (source.type === "web_reference")
+      collected.push(await collectWebReference({ source, projectRoot }));
+    else if (source.type === "image_reference")
+      collected.push(await collectImageReference({ source, projectRoot }));
+    else if (source.type === "theme_reference")
+      collected.push(await collectThemeReference({ source, projectRoot }));
     else
       warnings.push(
         `Collector not implemented for optional source type: ${source.type}`,

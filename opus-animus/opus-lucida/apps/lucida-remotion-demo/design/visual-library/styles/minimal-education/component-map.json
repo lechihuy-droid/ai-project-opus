@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "lucida-component-map/v1",
+  "id": "minimal-education",
+  "primitives": [
+    {
+      "id": "headline-stack",
+      "role": "content",
+      "notes": "Dominant title, summary, and eyebrow stack with large whitespace margins."
+    },
+    {
+      "id": "semantic-callout",
+      "role": "surface",
+      "notes": "Small contextual panel used for cue, rule, or summary notes."
+    },
+    {
+      "id": "teaching-rail",
+      "role": "process",
+      "notes": "Step rows or comparison rows aligned to a simple educational grid."
+    }
+  ],
+  "templates": [
+    {
+      "templateId": "definition-stage",
+      "supportedLayouts": ["top-title", "center-stage"],
+      "backgroundEffects": ["semantic-wash", "quiet-grid"],
+      "motionPreset": "soft-educational-reveal",
+      "primitives": ["headline-stack", "semantic-callout", "teaching-rail"],
+      "notes": "Use for first principles, definitions, and concept framing."
+    },
+    {
+      "templateId": "process-rail",
+      "supportedLayouts": ["top-title", "bottom-statement"],
+      "backgroundEffects": ["semantic-wash"],
+      "motionPreset": "soft-educational-reveal",
+      "primitives": ["headline-stack", "semantic-callout", "teaching-rail"],
+      "notes": "Use for compact step-by-step family routines or procedure explainers."
+    },
+    {
+      "templateId": "comparison-grid",
+      "supportedLayouts": ["center-stage", "bottom-statement"],
+      "backgroundEffects": ["quiet-grid"],
+      "motionPreset": "soft-educational-reveal",
+      "primitives": ["headline-stack", "semantic-callout", "teaching-rail"],
+      "notes": "Use when both sides answer the same teaching criteria."
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "compositionId": "ProductShowcaseFamilyReview",
+  "entryPoint": "src/styles/families/product-showcase/render-entry.tsx",
+  "imageFormat": "png",
+  "qualityChecks": [
+    "asset usage binding: only embed_asset receives src",
+    "style_reference/context_only placeholder",
+    "missing embed_asset placeholder",
+    "deterministic focal crop",
+    "1080x1920 dimensions",
+    "signalstats nonblank"
+  ]
+}

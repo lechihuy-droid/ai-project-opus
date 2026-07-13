@@ -4,6 +4,12 @@ const makeBlock = (event, at = 0) => ({
   kind:
     event.kind === "narrative"
       ? "text"
+      : event.kind === "layout_reference" || event.kind === "motion_reference"
+        ? event.data?.url || event.data?.path
+          ? "media"
+          : "text"
+      : event.kind === "design_token"
+        ? "metric"
       : ["output", "marker", "resize"].includes(event.kind)
         ? event.kind === "marker"
           ? "text"
@@ -16,6 +22,39 @@ const makeBlock = (event, at = 0) => ({
   data: event.data,
   sourceEventIds: [event.id],
 });
+
+const familyFor = (event, config) => {
+  const requested = event.data?.family ?? event.data?.visualFamily;
+  if (config.mapping.allowedFamilies.includes(requested)) return requested;
+  if (event.kind === "code" && config.mapping.allowedFamilies.includes("code"))
+    return "code";
+  if (
+    event.kind === "design_token" &&
+    config.mapping.allowedFamilies.includes("dashboard")
+  )
+    return "dashboard";
+  if (
+    event.kind === "layout_reference" &&
+    config.mapping.allowedFamilies.includes("editorial")
+  )
+    return "editorial";
+  return config.mapping.defaultFamily;
+};
+
+const presetFor = (family, config) => {
+  const preferred = {
+    terminal: "command",
+    code: "command",
+    editorial: "headline-stat-grid",
+    dashboard: "progress-steps",
+    infographic: "headline-stat-grid",
+    data_visualization: "progress-steps",
+    product_demo: "split-screen",
+    cinematic_typography: "cinematic-title-intro",
+  }[family];
+  if (config.mapping.allowedPresets.includes(preferred)) return preferred;
+  return config.mapping.defaultPreset;
+};
 
 export const mapVisualScenes = (normalized, config) => {
   if (normalized.schemaVersion !== "normalized-visual-input/v1") {
@@ -32,7 +71,19 @@ export const mapVisualScenes = (normalized, config) => {
     (event) => event.kind === "narrative",
   );
   const operational = normalized.events.filter(
-    (event) => event.kind !== "narrative" && event.kind !== "resize",
+    (event) =>
+      ![
+        "narrative",
+        "resize",
+        "layout_reference",
+        "design_token",
+        "motion_reference",
+      ].includes(event.kind),
+  );
+  const references = normalized.events.filter((event) =>
+    ["layout_reference", "design_token", "motion_reference"].includes(
+      event.kind,
+    ),
   );
   const scenes = [];
 
@@ -88,6 +139,34 @@ export const mapVisualScenes = (normalized, config) => {
           ),
         ),
     });
+  }
+
+  const referencesByFamily = new Map();
+  for (const event of references) {
+    const family = familyFor(event, config);
+    referencesByFamily.set(family, [
+      ...(referencesByFamily.get(family) ?? []),
+      event,
+    ]);
+  }
+  for (const [family, familyReferences] of referencesByFamily.entries()) {
+    for (let index = 0; index < familyReferences.length; index += maxItems) {
+      const group = familyReferences.slice(index, index + maxItems);
+      scenes.push({
+        sceneId: `reference-${String(scenes.length + 1).padStart(2, "0")}`,
+        visualFamily: family,
+        preset: presetFor(family, config),
+        themeId: config.themeId,
+        durationInFrames: Math.max(
+          minFrames,
+          Math.min(maxFrames, fps * (3 + group.length * 0.6)),
+        ),
+        title: clean(group[0]?.text) || "Visual references",
+        blocks: group.map((event, blockIndex) =>
+          makeBlock(event, blockIndex * Math.round(fps * 0.45)),
+        ),
+      });
+    }
   }
 
   if (scenes.length === 0) throw new Error("No visual scenes could be mapped");

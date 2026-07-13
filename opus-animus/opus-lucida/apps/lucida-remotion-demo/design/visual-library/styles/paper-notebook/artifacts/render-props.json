@@ -1,0 +1,7 @@
+{
+  "packageId": "paper-notebook",
+  "compositionId": "PaperNotebookFamilyReview",
+  "entryPoint": "src/styles/families/paper-notebook/render-entry.tsx",
+  "imageFormat": "png",
+  "qualityChecks": ["sha256", "dimensions", "signalstats-nonblank", "no-raster-dependency"]
+}

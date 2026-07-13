@@ -43,6 +43,7 @@
     "validate:generated-map": "node scripts/validate-generated-video-map.mjs",
     "preview:generated": "node scripts/preview-generated-video.mjs",
     "render:generated": "node scripts/render-generated-video.mjs",
+    "review:references": "node scripts/render-reference-review.mjs",
     "visual-flow": "node scripts/run-visual-flow.mjs"
   },
   "sideEffects": [

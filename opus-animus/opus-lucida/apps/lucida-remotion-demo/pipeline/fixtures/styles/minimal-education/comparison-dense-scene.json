@@ -1,0 +1,58 @@
+{
+  "sceneId": "comparison-format-choice",
+  "sceneType": "comparison",
+  "durationInFrames": 210,
+  "motionPolicy": "reduce",
+  "density": "dense",
+  "accentTone": "gold",
+  "eyebrow": "Dense Edge Review",
+  "title": "Use a comparison only when the viewer must weigh the same criteria on both sides.",
+  "summary": "This edge fixture pushes text density with six criteria rows, longer labels, and asymmetrical column copy while staying within the portrait safe area.",
+  "footer": "Reduced-motion mode swaps directional movement for short opacity reveals.",
+  "callout": {
+    "label": "Selection rule",
+    "value": "If the answer is obvious without the second column, a simple list is usually faster."
+  },
+  "comparison": {
+    "leftTitle": "Quick list",
+    "rightTitle": "Comparison board",
+    "criteria": [
+      {
+        "label": "Viewer needs only one recommended action",
+        "leftValue": "Lead with a headline and three supporting bullets.",
+        "rightValue": "Too much structure for a single recommendation.",
+        "emphasis": "left"
+      },
+      {
+        "label": "Viewer must inspect tradeoffs across the exact same decision points",
+        "leftValue": "Bullets hide which criterion each option answers.",
+        "rightValue": "Aligned rows let the tradeoff stay explicit.",
+        "emphasis": "right"
+      },
+      {
+        "label": "Narration is short and should land in under five seconds",
+        "leftValue": "The simpler layout keeps reading friction low.",
+        "rightValue": "Only use if comparison is the whole point of the scene.",
+        "emphasis": "left"
+      },
+      {
+        "label": "One side includes caveats, exceptions, or longer explanatory phrasing",
+        "leftValue": "Extra nuance can make the list feel uneven and harder to scan.",
+        "rightValue": "Row alignment contains longer copy without losing structure.",
+        "emphasis": "right"
+      },
+      {
+        "label": "The director needs a dense edge-case surface for teaching or review content",
+        "leftValue": "Possible, but more likely to feel like stacked notes.",
+        "rightValue": "This family keeps density organized with rules and restrained accents.",
+        "emphasis": "right"
+      },
+      {
+        "label": "The team expects to reuse the frame across multiple family topics",
+        "leftValue": "Easy for one-off explainers and short reminders.",
+        "rightValue": "Best when the comparison grammar itself is part of the lesson.",
+        "emphasis": "both"
+      }
+    ]
+  }
+}

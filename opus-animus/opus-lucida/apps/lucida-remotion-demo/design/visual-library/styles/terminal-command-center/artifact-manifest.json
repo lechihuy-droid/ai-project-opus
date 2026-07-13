@@ -1,0 +1,116 @@
+{
+  "schemaVersion": "lucida-artifact-manifest/v1",
+  "packageId": "terminal-command-center",
+  "generatedAt": "2026-07-12T00:00:00.000Z",
+  "artifacts": [
+    {
+      "id": "style-package",
+      "kind": "style_spec",
+      "path": "design/visual-library/styles/terminal-command-center/style-package.json",
+      "usage": "library_record"
+    },
+    {
+      "id": "visual-spec",
+      "kind": "visual_spec",
+      "path": "design/visual-library/styles/terminal-command-center/visual.json",
+      "usage": "library_record"
+    },
+    {
+      "id": "style-tokens",
+      "kind": "token_spec",
+      "path": "design/visual-library/styles/terminal-command-center/tokens.json",
+      "usage": "library_record"
+    },
+    {
+      "id": "component-map",
+      "kind": "component_map",
+      "path": "design/visual-library/styles/terminal-command-center/component-map.json",
+      "usage": "library_record"
+    },
+    {
+      "id": "provenance",
+      "kind": "provenance",
+      "path": "design/visual-library/styles/terminal-command-center/provenance.md",
+      "usage": "audit"
+    },
+    {
+      "id": "artifact-manifest",
+      "kind": "artifact_manifest",
+      "path": "design/visual-library/styles/terminal-command-center/artifact-manifest.json",
+      "usage": "audit_index"
+    },
+    {
+      "id": "visual-reference-flow",
+      "kind": "ingest_config",
+      "path": "pipeline/fixtures/visual-reference-flow.json",
+      "usage": "reproducible_input"
+    },
+    {
+      "id": "visual-reference-normalized",
+      "kind": "normalized_events",
+      "path": "design/visual-library/styles/terminal-command-center/artifacts/visual-reference-normalized-input.json",
+      "usage": "source_evidence"
+    },
+    {
+      "id": "visual-reference-sanitized",
+      "kind": "sanitized_source_artifact",
+      "path": "design/visual-library/styles/terminal-command-center/artifacts/visual-reference-sanitized-input.json",
+      "usage": "source_evidence"
+    },
+    {
+      "id": "visual-reference-raw",
+      "kind": "raw_source_artifact",
+      "path": "design/visual-library/styles/terminal-command-center/artifacts/visual-reference-raw-input.json",
+      "usage": "source_evidence"
+    },
+    {
+      "id": "visual-reference-scenes",
+      "kind": "visual_scenes",
+      "path": "design/visual-library/styles/terminal-command-center/artifacts/visual-reference-scenes.json",
+      "usage": "mapping_evidence"
+    },
+    {
+      "id": "visual-reference-video-map",
+      "kind": "video_map",
+      "path": "design/visual-library/styles/terminal-command-center/artifacts/visual-reference-video-map.json",
+      "usage": "compiled_reference_map"
+    },
+    {
+      "id": "source-review-report",
+      "kind": "review_report",
+      "path": "design/visual-library/styles/terminal-command-center/artifacts/source-review-report.json",
+      "usage": "source_review"
+    },
+    {
+      "id": "terminal-demo-map",
+      "kind": "video_map",
+      "path": "pipeline/fixtures/terminal-video-20s-map.json",
+      "usage": "validation_spec"
+    },
+    {
+      "id": "terminal-demo-frames",
+      "kind": "preview_frames",
+      "path": "design/visual-library/styles/terminal-command-center/artifacts/frames/",
+      "usage": "visual_validation"
+    },
+    {
+      "id": "terminal-render-report",
+      "kind": "render_report",
+      "path": "design/visual-library/styles/terminal-command-center/artifacts/validation-render-report.json",
+      "usage": "validation_report",
+      "registersVideoBinary": false
+    },
+    {
+      "id": "terminal-demo-render-props",
+      "kind": "render_props",
+      "path": "design/visual-library/styles/terminal-command-center/artifacts/terminal-demo-render-props.json",
+      "usage": "validation_spec"
+    },
+    {
+      "id": "terminal-demo-video-map-persisted",
+      "kind": "video_map",
+      "path": "design/visual-library/styles/terminal-command-center/artifacts/terminal-demo-video-map.json",
+      "usage": "validation_spec"
+    }
+  ]
+}

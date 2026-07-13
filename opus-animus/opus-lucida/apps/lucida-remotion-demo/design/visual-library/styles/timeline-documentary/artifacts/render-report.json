@@ -1,0 +1,109 @@
+{
+  "status": "ok",
+  "packageId": "timeline-documentary",
+  "compositionId": "TimelineDocumentaryFamilyReview",
+  "generatedAt": "2026-07-13T00:41:03.814Z",
+  "renderer": {
+    "entryPoint": "src/styles/families/timeline-documentary/render-entry.tsx",
+    "browserExecutable": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+    "imageFormat": "png"
+  },
+  "checks": [
+    "sha256",
+    "dimensions",
+    "signalstats-nonblank",
+    "repeat-render-sha256"
+  ],
+  "frames": [
+    {
+      "id": "scene-01",
+      "label": "Milestone chronology review",
+      "sceneKey": "milestone",
+      "frame": 72,
+      "output": "design/visual-library/styles/timeline-documentary/artifacts/frames/scene-01.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 210,
+      "sha256": "48b9e884c4c0905d8ef3265b6748bb42991016a09d9ab4f0dd7064d045017fdc",
+      "fileBytes": 927068,
+      "signalStats": {
+        "yAverage": 32.5707,
+        "yLow": 20,
+        "yHigh": 31,
+        "saturationAverage": 2.5871
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 11
+      }
+    },
+    {
+      "id": "scene-02",
+      "label": "Dense era-change review",
+      "sceneKey": "era-change",
+      "frame": 96,
+      "output": "design/visual-library/styles/timeline-documentary/artifacts/frames/scene-02.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 240,
+      "sha256": "e8a4e01bdd9d647527776daa0dd7f7e19e191b06127e505529bf0a0730e6e3ad",
+      "fileBytes": 946299,
+      "signalStats": {
+        "yAverage": 33.1941,
+        "yLow": 20,
+        "yHigh": 32,
+        "saturationAverage": 2.60463
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 12
+      }
+    },
+    {
+      "id": "scene-03",
+      "label": "Documentary conclusion review",
+      "sceneKey": "conclusion",
+      "frame": 45,
+      "output": "design/visual-library/styles/timeline-documentary/artifacts/frames/scene-03.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 195,
+      "sha256": "d31e25e25434015df4d157de2e845b37f9aec3fb52a05a9497507014f0abf70a",
+      "fileBytes": 897703,
+      "signalStats": {
+        "yAverage": 30.7053,
+        "yLow": 20,
+        "yHigh": 30,
+        "saturationAverage": 2.43018
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 10
+      }
+    }
+  ],
+  "summary": {
+    "renderedFrameCount": 3,
+    "nonBlankFrames": 3,
+    "dimensionsValid": true
+  },
+  "validation": {
+    "visualPackageValidatorStrict": "passed",
+    "typescriptNoEmit": "passed",
+    "determinismRepeatRender": "passed"
+  },
+  "limitations": [
+    "Shared registry and app-root availability remain untouched because they are outside this ownership slice.",
+    "16:9 support is metadata-ready only; review rendering covers 9:16.",
+    "Archival visuals are original CSS treatments or explicit missing-image placeholders, not historical photographs."
+  ]
+}

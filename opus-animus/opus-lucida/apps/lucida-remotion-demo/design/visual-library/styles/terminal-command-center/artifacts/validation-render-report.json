@@ -1,0 +1,139 @@
+{
+  "ok": true,
+  "renderer": "chrome-screenshots-plus-ffmpeg",
+  "durationSec": 20,
+  "generatedAt": "2026-07-13T14:10:49.596Z",
+  "packageId": "terminal-command-center",
+  "frames": [
+    {
+      "id": "terminal-hook",
+      "label": "Terminal style atlas",
+      "frameIndex": 0,
+      "output": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-01.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "4614c711bb85ab167a0bbbfdc4f295eba08bcb32dc59ebeda95da9559ff2fe6e",
+      "fileBytes": 456113,
+      "signalStats": {
+        "yAverage": 19.2614,
+        "yLow": 9,
+        "yHigh": 26,
+        "saturationAverage": 4.75016
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 17
+      },
+      "deterministic": {
+        "passed": false,
+        "repeatedSha256": null,
+        "limitation": "No terminal deterministic rerender script was found in the existing project slice; evidence is limited to persisted PNG checksum inspection."
+      }
+    },
+    {
+      "id": "terminal-tokens",
+      "label": "Palette locked",
+      "frameIndex": 1,
+      "output": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-02.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "26d623a8d9d419a8e161d29069aae6c6d7550e08f969120df23ea9034111bb3d",
+      "fileBytes": 444634,
+      "signalStats": {
+        "yAverage": 18.3305,
+        "yLow": 9,
+        "yHigh": 25,
+        "saturationAverage": 4.62449
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 16
+      },
+      "deterministic": {
+        "passed": false,
+        "repeatedSha256": null,
+        "limitation": "No terminal deterministic rerender script was found in the existing project slice; evidence is limited to persisted PNG checksum inspection."
+      }
+    },
+    {
+      "id": "terminal-components",
+      "label": "Components to reuse",
+      "frameIndex": 2,
+      "output": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-03.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "542b184710a635561d1f88d6d296d0434cf7c931999323d26c4ab28d363f959d",
+      "fileBytes": 448132,
+      "signalStats": {
+        "yAverage": 19.2251,
+        "yLow": 9,
+        "yHigh": 25,
+        "saturationAverage": 4.69253
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 16
+      },
+      "deterministic": {
+        "passed": false,
+        "repeatedSha256": null,
+        "limitation": "No terminal deterministic rerender script was found in the existing project slice; evidence is limited to persisted PNG checksum inspection."
+      }
+    },
+    {
+      "id": "terminal-close",
+      "label": "Ready for next families",
+      "frameIndex": 3,
+      "output": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-04.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "a2cd7a7705fb072776b6a18c517daa905cdd5dbc184c39b978509efe9c360d3a",
+      "fileBytes": 444602,
+      "signalStats": {
+        "yAverage": 18.8849,
+        "yLow": 9,
+        "yHigh": 25,
+        "saturationAverage": 4.60299
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 16
+      },
+      "deterministic": {
+        "passed": false,
+        "repeatedSha256": null,
+        "limitation": "No terminal deterministic rerender script was found in the existing project slice; evidence is limited to persisted PNG checksum inspection."
+      }
+    }
+  ],
+  "videoBinaryRegistered": false,
+  "checks": [
+    "persisted-png-sha256",
+    "1080x1920-dimensions",
+    "signalstats-nonblank",
+    "determinism-limitation-no-repeat-render-script-found"
+  ],
+  "summary": {
+    "persistedFrameCount": 4,
+    "nonBlankFrames": 4,
+    "dimensionsValid": true,
+    "repeatedRenderEvidence": false,
+    "deterministicLimitation": "Persisted PNGs were inspected in place; no repeat render was run because no existing terminal deterministic rerender script was found."
+  },
+  "limitations": [
+    "Persisted library report intentionally omits MP4 path and checksum; video binary remains runtime-only.",
+    "Determinism evidence is limited to stable persisted PNG checksums because no existing terminal deterministic rerender script was found in this ownership slice."
+  ]
+}

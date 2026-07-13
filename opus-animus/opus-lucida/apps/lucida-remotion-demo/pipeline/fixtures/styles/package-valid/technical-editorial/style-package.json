@@ -1,0 +1,108 @@
+{
+  "schemaVersion": "lucida-style-package/v1",
+  "id": "technical-editorial",
+  "label": "Technical Editorial",
+  "version": "1.0.0",
+  "status": "experimental",
+  "visualFamily": "technical-editorial",
+  "description": "Production fixture package for a grid-first technical explanatory style with provenance and render artifacts.",
+  "tags": [
+    "technical",
+    "editorial",
+    "diagram"
+  ],
+  "supportedIntents": [
+    "explain",
+    "compare",
+    "summarize"
+  ],
+  "recommendedIntents": [
+    "explain",
+    "compare"
+  ],
+  "avoidFor": [
+    "emotional-testimonial",
+    "lifestyle-broll"
+  ],
+  "aspectRatios": [
+    "9:16",
+    "16:9"
+  ],
+  "contentCapacity": {
+    "headlineChars": 64,
+    "bodyChars": 420,
+    "bulletsMaxItems": 5,
+    "maxDataSeries": 4,
+    "maxCodeLines": 10
+  },
+  "renderCost": {
+    "tier": "medium",
+    "estimatedSceneComplexity": 5,
+    "notes": "Balanced grids and callouts stay within the shared Remotion primitives budget."
+  },
+  "reducedMotion": {
+    "strategy": "simplified-motion",
+    "notes": "Replace directional wipes with opacity reveals and static callout placement."
+  },
+  "accessibility": {
+    "contrast": "AA",
+    "notes": "Use high-contrast annotation rails and keep dense labels inside safe areas."
+  },
+  "directorCompatibility": {
+    "selectionReason": "Use when narration is explanatory, structured, and benefits from labeled evidence.",
+    "preferredNeighborFamilies": [
+      "minimal-education",
+      "dashboard-data"
+    ],
+    "bridgeFamilies": [
+      "cinematic-type"
+    ],
+    "hardBlocks": [
+      "asset-heavy-product-tour"
+    ]
+  },
+  "files": {
+    "visual": "./visual.json",
+    "tokens": "./tokens.json",
+    "componentMap": "./component-map.json",
+    "provenance": "./provenance.md",
+    "artifactManifest": "./artifact-manifest.json"
+  },
+  "sourceArtifacts": {
+    "sourceReviewReport": "./artifacts/source-review-report.json"
+  },
+  "validationArtifacts": {
+    "previewFrames": [
+      "./artifacts/frames/scene-01.png",
+      "./artifacts/frames/scene-02.png",
+      "./artifacts/frames/scene-03.png"
+    ],
+    "renderReport": "./artifacts/render-report.json",
+    "demoVideoMap": "./artifacts/demo-video-map.json",
+    "renderProps": "./artifacts/render-props.json",
+    "videoBinaryRegistered": false
+  },
+  "sourceReferences": [
+    {
+      "id": "lucida-technical-editorial-notes",
+      "url": "https://example.com/lucida-technical-editorial-notes",
+      "selectedConcepts": [
+        "strict grid",
+        "annotation rails",
+        "code and data callouts"
+      ]
+    }
+  ],
+  "qualityGate": {
+    "validated": true,
+    "checks": [
+      "schema",
+      "artifact paths",
+      "preview frames",
+      "provenance"
+    ],
+    "knownLimitations": [
+      "Fixture uses placeholder preview frames for validator coverage."
+    ]
+  }
+}

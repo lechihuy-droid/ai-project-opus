@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Terminal</title>
+    <style>
+      html, body {
+        margin: 0;
+        width: 1280px;
+        height: 720px;
+        overflow: hidden;
+        background: linear-gradient(180deg, #071018 0%, #05070b 100%);
+        font-family: "JetBrains Mono", Consolas, monospace;
+      }
+      #stage {
+        position: relative;
+        width: 1280px;
+        height: 720px;
+        color: #d8f3dc;
+      }
+      .terminal {
+        position: absolute;
+        left: 109px;
+        right: 109px;
+        top: 79px;
+        bottom: 79px;
+        border-radius: 12px;
+        border: 1px solid rgba(120, 255, 170, 0.18);
+        background: rgba(8, 15, 12, 0.92);
+        box-shadow: 0 28px 100px rgba(0, 0, 0, 0.55);
+      }
+      .bar {
+        height: 37px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        display: flex;
+        align-items: center;
+        padding: 0 15px;
+        color: rgba(216,243,220,0.65);
+        font-size: 12px;
+      }
+      .dots {
+        display: flex;
+        gap: 7px;
+        margin-right: 12px;
+      }
+      .dots span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.22);
+      }
+      .body {
+        position: absolute;
+        left: 19px;
+        right: 19px;
+        top: 64px;
+        bottom: 19px;
+        font-size: 18px;
+        line-height: 1.55;
+      }
+      .line {
+        opacity: 0;
+        transform: translateY(18px);
+        animation: line-in 4.8s ease both;
+      }
+      .line.one { animation-delay: 0.2s; }
+      .line.two { animation-delay: 1.0s; }
+      .line.three { animation-delay: 1.8s; }
+      .line.four { animation-delay: 2.6s; }
+      .cursor {
+        display: inline-block;
+        width: 8px;
+        height: 18px;
+        margin-left: 6px;
+        background: #b6ffbf;
+        vertical-align: -3px;
+        animation: blink 0.8s step-end infinite;
+      }
+      .accent {
+        color: #9fffd0;
+      }
+      @keyframes line-in {
+        0% { opacity: 0; transform: translateY(18px); }
+        14% { opacity: 1; transform: translateY(0); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes blink {
+        0%, 49% { opacity: 1; }
+        50%, 100% { opacity: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="stage"
+      data-composition-id="terminal"
+      data-start="0"
+      data-duration="4.8"
+      data-width="1280"
+      data-height="720"
+      data-no-timeline
+    >
+      <div class="terminal">
+        <div class="bar clip" id="terminal-bar" data-start="0" data-duration="4.8">
+          <div class="dots"><span></span><span></span><span></span></div>
+          dev@hyperframes:~/workspace
+        </div>
+        <div class="body">
+          <div class="line one clip" id="terminal-line-one" data-start="0" data-duration="4.8">$ <span class="accent">hyperframes preview</span></div>
+          <div class="line two clip" id="terminal-line-two" data-start="0" data-duration="4.8">build scene / resolve timing / open browser</div>
+          <div class="line three clip" id="terminal-line-three" data-start="0" data-duration="4.8">render queue: <span class="accent">ready</span></div>
+          <div class="line four clip" id="terminal-line-four" data-start="0" data-duration="4.8">status: <span class="accent">seeking frames</span><span class="cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

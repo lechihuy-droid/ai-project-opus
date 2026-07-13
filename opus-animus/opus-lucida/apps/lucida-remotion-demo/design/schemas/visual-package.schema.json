@@ -1,0 +1,458 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lucida.local/schemas/visual-package.schema.json",
+  "title": "Lucida Visual Package v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "label",
+    "status",
+    "description",
+    "supportedIntents",
+    "avoidFor",
+    "aspectRatios",
+    "contentCapacity",
+    "renderCost",
+    "reducedMotion",
+    "accessibility",
+    "directorCompatibility",
+    "files",
+    "sourceArtifacts",
+    "validationArtifacts",
+    "sourceReferences",
+    "qualityGate"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "tag": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pathRef": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(\\./|\\.\\./)?[A-Za-z0-9._/-]+/?$"
+    },
+    "stringList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "properties": {
+    "schemaVersion": {
+      "const": "lucida-style-package/v1"
+    },
+    "id": {
+      "$ref": "#/definitions/slug"
+    },
+    "label": {
+      "type": "string",
+      "minLength": 3
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "experimental",
+        "stable",
+        "deprecated",
+        "prototype-created"
+      ]
+    },
+    "visualFamily": {
+      "$ref": "#/definitions/slug"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 20
+    },
+    "tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/tag"
+      }
+    },
+    "supportedIntents": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/slug"
+      }
+    },
+    "recommendedIntents": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/slug"
+      }
+    },
+    "avoidFor": {
+      "$ref": "#/definitions/stringList"
+    },
+    "aspectRatios": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9]+:[0-9]+$"
+      }
+    },
+    "contentCapacity": {
+      "type": "object",
+      "required": [
+        "headlineChars",
+        "bodyChars"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "headlineChars": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "bodyChars": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "bulletsMaxItems": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxDataSeries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxCodeLines": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "renderCost": {
+      "type": "object",
+      "required": [
+        "tier",
+        "notes"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "tier": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "estimatedSceneComplexity": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 12
+        }
+      }
+    },
+    "reducedMotion": {
+      "type": "object",
+      "required": [
+        "strategy",
+        "notes"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "strategy": {
+          "enum": [
+            "static",
+            "fade",
+            "simplified-motion",
+            "reduced-motion-fade"
+          ]
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 12
+        }
+      }
+    },
+    "accessibility": {
+      "type": "object",
+      "required": [
+        "contrast",
+        "notes"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "contrast": {
+          "enum": [
+            "AA",
+            "AAA",
+            "review-required"
+          ]
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 12
+        }
+      }
+    },
+    "directorCompatibility": {
+      "type": "object",
+      "required": [
+        "selectionReason"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "selectionReason": {
+          "type": "string",
+          "minLength": 12
+        },
+        "preferredNeighborFamilies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/slug"
+          }
+        },
+        "bridgeFamilies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/slug"
+          }
+        },
+        "hardBlocks": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "files": {
+      "type": "object",
+      "required": [
+        "visual",
+        "tokens",
+        "componentMap",
+        "provenance",
+        "artifactManifest"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "visual": {
+          "$ref": "#/definitions/pathRef"
+        },
+        "tokens": {
+          "$ref": "#/definitions/pathRef"
+        },
+        "componentMap": {
+          "$ref": "#/definitions/pathRef"
+        },
+        "provenance": {
+          "$ref": "#/definitions/pathRef"
+        },
+        "artifactManifest": {
+          "$ref": "#/definitions/pathRef"
+        }
+      }
+    },
+    "sourcePolicy": {
+      "type": "object",
+      "required": [
+        "copyStatus"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "copyStatus": {
+          "type": "string",
+          "minLength": 1
+        },
+        "registeredMedia": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "tokens": {
+      "type": "object"
+    },
+    "layoutGrammar": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "componentPrimitives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "role"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "$ref": "#/definitions/slug"
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "templateBindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "preferredTemplates": {
+          "$ref": "#/definitions/stringList"
+        },
+        "layouts": {
+          "$ref": "#/definitions/stringList"
+        },
+        "backgroundEffects": {
+          "$ref": "#/definitions/stringList"
+        },
+        "motionPreset": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "sourceArtifacts": {
+      "type": "object",
+      "required": [
+        "sourceReviewReport"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "ingestConfig": {
+          "$ref": "#/definitions/pathRef"
+        },
+        "rawInput": {
+          "$ref": "#/definitions/pathRef"
+        },
+        "sanitizedInput": {
+          "$ref": "#/definitions/pathRef"
+        },
+        "normalizedInput": {
+          "$ref": "#/definitions/pathRef"
+        },
+        "mappedScenes": {
+          "$ref": "#/definitions/pathRef"
+        },
+        "compiledVideoMap": {
+          "$ref": "#/definitions/pathRef"
+        },
+        "sourceReviewReport": {
+          "$ref": "#/definitions/pathRef"
+        }
+      }
+    },
+    "validationArtifacts": {
+      "type": "object",
+      "required": [
+        "previewFrames",
+        "renderReport"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "demoVideoMap": {
+          "$ref": "#/definitions/pathRef"
+        },
+        "renderProps": {
+          "$ref": "#/definitions/pathRef"
+        },
+        "previewFrames": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "$ref": "#/definitions/pathRef"
+          }
+        },
+        "renderReport": {
+          "$ref": "#/definitions/pathRef"
+        },
+        "videoBinaryRegistered": {
+          "type": "boolean"
+        }
+      }
+    },
+    "sourceReferences": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "url",
+          "selectedConcepts"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "#/definitions/slug"
+          },
+          "url": {
+            "type": "string",
+            "pattern": "^https?://"
+          },
+          "selectedConcepts": {
+            "$ref": "#/definitions/stringList"
+          }
+        }
+      }
+    },
+    "qualityGate": {
+      "type": "object",
+      "required": [
+        "validated",
+        "checks"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "validated": {
+          "type": "boolean"
+        },
+        "checks": {
+          "$ref": "#/definitions/stringList"
+        },
+        "knownLimitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

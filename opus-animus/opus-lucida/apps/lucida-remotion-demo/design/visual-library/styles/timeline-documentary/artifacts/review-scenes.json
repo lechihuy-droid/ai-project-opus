@@ -1,0 +1,9 @@
+{
+  "packageId": "timeline-documentary",
+  "scenes": [
+    { "sceneKey": "milestone", "sceneType": "milestone", "fixture": "pipeline/fixtures/styles/timeline-documentary/milestone.fixture.ts", "eventCount": 4, "missingImageCount": 1, "motionPolicy": "full" },
+    { "sceneKey": "era-change", "sceneType": "era-change", "fixture": "pipeline/fixtures/styles/timeline-documentary/era-change.fixture.ts", "eventCount": 7, "missingImageCount": 3, "motionPolicy": "reduce" },
+    { "sceneKey": "conclusion", "sceneType": "conclusion", "fixture": "pipeline/fixtures/styles/timeline-documentary/conclusion.fixture.ts", "eventCount": 3, "missingImageCount": 2, "motionPolicy": "static" }
+  ],
+  "constraints": { "minimumEvents": 3, "maximumEvents": 8, "sourceLabelRequired": true, "missingImagerySupported": true }
+}

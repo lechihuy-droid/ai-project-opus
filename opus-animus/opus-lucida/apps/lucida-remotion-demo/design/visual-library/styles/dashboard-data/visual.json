@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "lucida-visual-package/v1",
+  "id": "dashboard-data",
+  "label": "Dashboard Data",
+  "status": "experimental",
+  "visualFamily": "dashboard-data",
+  "summary": "Quiet operational frames for KPI snapshots, trend reviews, and status-heavy monitoring scenes.",
+  "description": "Original Lucida dashboard family for real structured metrics with dense but orderly panels, chart hierarchy, semantic states, and explicit empty/loading/error behavior.",
+  "tags": [
+    "dashboard",
+    "data",
+    "operations",
+    "monitoring",
+    "metrics"
+  ],
+  "recommendedIntents": [
+    "comparison",
+    "summarize",
+    "takeaway"
+  ],
+  "avoidFor": [
+    "story-led cinematic hooks without structured data",
+    "product-first showcase scenes where media is the subject",
+    "freeform collage scenes without explicit metric ownership"
+  ],
+  "supportedSceneTypes": [
+    "kpi",
+    "chart",
+    "operations"
+  ],
+  "supportedTemplateRoles": [
+    "scene"
+  ],
+  "aspectRatios": [
+    "9:16",
+    "16:9"
+  ],
+  "density": "dense",
+  "renderCost": "medium",
+  "contentCapacity": {
+    "headlineChars": 92,
+    "bodyChars": 420,
+    "maxItems": 4,
+    "maxPanels": 4,
+    "maxMetrics": 4
+  },
+  "preferredLayouts": [
+    "top-title",
+    "center-stage",
+    "side-rail"
+  ],
+  "preferredTemplates": [
+    "kpi-snapshot",
+    "trend-review",
+    "operations-report"
+  ],
+  "backgroundEffects": [
+    "quiet-grid",
+    "status-wash"
+  ],
+  "motionPreset": "counter-reveal",
+  "layoutGrammar": [
+    "Keep panel count fixed and use one sibling panel per responsibility.",
+    "Use semantic state colors only to clarify meaning, never as decorative fills.",
+    "Render KPI, chart, and operations surfaces from explicit fixture fields only.",
+    "When data is missing, keep the panel structure and show loading, empty, or error state copy instead of inventing values.",
+    "Do not nest cards inside panels; use rules, columns, and row separators for density."
+  ],
+  "sourcePolicy": {
+    "copyStatus": "principles-only",
+    "registeredMedia": "none",
+    "notes": "The package uses original Lucida layout decisions, fixture copy, and shared core primitives only. No third-party logos, screenshots, or copied UI assets are registered."
+  },
+  "notes": [
+    "Rendered through a standalone family composition because shared registry and app root integrations are outside this ownership scope.",
+    "Edge fixtures explicitly validate loading, empty, and error handling without phantom data."
+  ]
+}

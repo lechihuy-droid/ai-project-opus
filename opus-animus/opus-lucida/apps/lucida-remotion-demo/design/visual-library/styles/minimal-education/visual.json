@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "lucida-visual-package/v1",
+  "id": "minimal-education",
+  "label": "Minimal Education",
+  "status": "experimental",
+  "visualFamily": "minimal-education",
+  "summary": "Airy educational frames for definitions, step-by-step instruction, and structured comparison scenes.",
+  "description": "Original Lucida family for concise teaching content with generous whitespace, crisp typography, and restrained semantic accents.",
+  "tags": ["education", "teaching", "definition", "process", "comparison"],
+  "recommendedIntents": ["list", "process", "comparison", "takeaway"],
+  "avoidFor": [
+    "asset-led showcase scenes where media is the main subject",
+    "high-drama hook scenes that depend on oversized cinematic type",
+    "dense dashboards with real-time metrics or operational status panels"
+  ],
+  "supportedSceneTypes": ["definition", "steps", "comparison"],
+  "supportedTemplateRoles": ["scene"],
+  "aspectRatios": ["9:16", "16:9"],
+  "density": "medium",
+  "renderCost": "medium",
+  "contentCapacity": {
+    "headlineChars": 88,
+    "bodyChars": 360,
+    "maxItems": 6,
+    "maxPanels": 2
+  },
+  "preferredLayouts": ["top-title", "center-stage", "bottom-statement"],
+  "preferredTemplates": [
+    "definition-stage",
+    "process-rail",
+    "comparison-grid"
+  ],
+  "backgroundEffects": ["semantic-wash", "quiet-grid"],
+  "motionPreset": "soft-educational-reveal",
+  "layoutGrammar": [
+    "Keep one headline dominant and leave visible breathing room around each teaching block.",
+    "Use surfaces sparingly; default to rules, spacing, and small accent marks before adding panels.",
+    "Apply multiple accent hues only as semantic guidance, never as competing decorative fields.",
+    "When density rises, preserve alignment first and reduce type scale second.",
+    "Reduced motion swaps travel-heavy movement for opacity-first reveals."
+  ],
+  "sourcePolicy": {
+    "copyStatus": "principles-only",
+    "registeredMedia": "none",
+    "notes": "The package uses original Lucida layouts, original fixture copy, and shared core tokens only. No third-party logos, screenshots, or copied brand systems are registered."
+  },
+  "notes": [
+    "Rendered through a standalone family composition because shared registry and root integrations are outside this ownership scope.",
+    "Metadata includes 16:9 compatibility for later QA, but this wave only renders portrait review frames."
+  ]
+}

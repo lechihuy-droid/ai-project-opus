@@ -1,0 +1,14 @@
+{
+  "status": "ok",
+  "packageId": "paper-notebook",
+  "generatedAt": "2026-07-13T00:00:00.000Z",
+  "internalReferences": [
+    "design/planning/ALL_STYLE_IMPLEMENTATION_PLAN.md",
+    "design/schemas/visual-package.schema.json",
+    "src/styles/core/index.ts",
+    "src/styles/families/dashboard-data/render-review.mjs"
+  ],
+  "externalReferences": ["https://www.remotion.dev/docs/animating-properties"],
+  "selectedConcepts": ["paper field", "ink hierarchy", "marks and annotations", "deterministic frame-driven motion", "truthful open checklist state"],
+  "exclusions": ["No raster paper texture", "No screenshots or logos", "No font binaries", "No copied notebook brand identity", "No shared registry edits"]
+}

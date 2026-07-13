@@ -1,0 +1,113 @@
+{
+  "status": "ok",
+  "packageId": "product-showcase",
+  "compositionId": "ProductShowcaseFamilyReview",
+  "generatedAt": "2026-07-13T14:13:01.293Z",
+  "renderer": {
+    "entryPoint": "src/styles/families/product-showcase/render-entry.tsx",
+    "browserExecutable": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+    "imageFormat": "png",
+    "rasterDependencies": false
+  },
+  "checks": [
+    "asset usage binding: only embed_asset receives src",
+    "style_reference/context_only placeholder",
+    "missing embed_asset placeholder",
+    "deterministic focal crop",
+    "1080x1920 dimensions",
+    "signalstats nonblank"
+  ],
+  "frames": [
+    {
+      "id": "scene-01",
+      "label": "Normal product reveal",
+      "sceneKey": "normal",
+      "frame": 48,
+      "output": "design/visual-library/styles/product-showcase/artifacts/frames/scene-01.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 180,
+      "sha256": "bb0e89152b857a9d9c4d1e472926c6ff5f9d745ca0940d6c38014c24c236c121",
+      "fileBytes": 376414,
+      "signalStats": {
+        "yAverage": 227.099,
+        "yLow": 118,
+        "yHigh": 255,
+        "saturationAverage": 2.98507
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 137
+      }
+    },
+    {
+      "id": "scene-02",
+      "label": "Dense feature focus",
+      "sceneKey": "dense",
+      "frame": 60,
+      "output": "design/visual-library/styles/product-showcase/artifacts/frames/scene-02.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 210,
+      "sha256": "486926ef8e7fa7adce0c1638134cbd0c98fe4c9baec73b229224bd2201878bcb",
+      "fileBytes": 321838,
+      "signalStats": {
+        "yAverage": 237.403,
+        "yLow": 230,
+        "yHigh": 255,
+        "saturationAverage": 1.99374
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 25
+      }
+    },
+    {
+      "id": "scene-03",
+      "label": "Edge before-after",
+      "sceneKey": "edge",
+      "frame": 42,
+      "output": "design/visual-library/styles/product-showcase/artifacts/frames/scene-03.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 180,
+      "sha256": "eed4dbf7f16cebbec8c858c1a357e28da8eda6a4ff2a7408ca44066a17e7e081",
+      "fileBytes": 560123,
+      "signalStats": {
+        "yAverage": 236.312,
+        "yLow": 230,
+        "yHigh": 255,
+        "saturationAverage": 2.07791
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 25
+      }
+    }
+  ],
+  "summary": {
+    "renderedFrameCount": 3,
+    "nonBlankFrames": 3,
+    "dimensionsValid": true,
+    "deterministicCropPolicy": "Fixture orientation and focalPoint are converted to object-position; only embed_asset receives a src."
+  },
+  "validation": {
+    "visualPackageValidatorStrict": "pending",
+    "typescriptNoEmit": "pending"
+  },
+  "limitations": [
+    "Shared registry and app-root availability remain untouched because they are outside this ownership slice.",
+    "16:9 support is metadata-ready only; this task renders portrait review frames only.",
+    "Review assets are original SVG data-URI UI mockups, not third-party product screenshots.",
+    "Stable promotion still requires human visual approval."
+  ]
+}

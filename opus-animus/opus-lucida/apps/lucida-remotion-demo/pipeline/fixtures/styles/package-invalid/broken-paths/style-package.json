@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "lucida-style-package/v1",
+  "id": "broken-paths",
+  "label": "Broken Paths",
+  "version": "1.0.0",
+  "status": "experimental",
+  "visualFamily": "broken-paths",
+  "description": "Invalid fixture that is schema-valid but contains stale artifact references and manifest drift.",
+  "supportedIntents": [
+    "explain",
+    "compare"
+  ],
+  "recommendedIntents": [
+    "explain"
+  ],
+  "avoidFor": [
+    "asset-heavy-product-tour"
+  ],
+  "aspectRatios": [
+    "9:16"
+  ],
+  "contentCapacity": {
+    "headlineChars": 48,
+    "bodyChars": 220
+  },
+  "renderCost": {
+    "tier": "low",
+    "notes": "This fixture keeps the structure small but intentionally breaks paths."
+  },
+  "reducedMotion": {
+    "strategy": "fade",
+    "notes": "Use cross-fades only in reduced motion mode."
+  },
+  "accessibility": {
+    "contrast": "AA",
+    "notes": "Contrast is fine; the test focuses on path validation."
+  },
+  "directorCompatibility": {
+    "selectionReason": "Choose when you need a small fixture that still exercises path validation."
+  },
+  "files": {
+    "visual": "./visual.json",
+    "tokens": "./tokens.json",
+    "componentMap": "./component-map.json",
+    "provenance": "./provenance.md",
+    "artifactManifest": "./artifact-manifest.json"
+  },
+  "sourceArtifacts": {
+    "sourceReviewReport": "./artifacts/missing-source-review-report.json"
+  },
+  "validationArtifacts": {
+    "previewFrames": [
+      "./artifacts/frames/scene-01.png",
+      "./artifacts/frames/scene-02.png",
+      "./artifacts/frames/missing-scene-03.png"
+    ],
+    "renderReport": "./artifacts/render-report.json"
+  },
+  "sourceReferences": [
+    {
+      "id": "fixture-source",
+      "url": "https://example.com/fixture-source",
+      "selectedConcepts": [
+        "path validation"
+      ]
+    }
+  ],
+  "qualityGate": {
+    "validated": false,
+    "checks": [
+      "schema"
+    ],
+    "knownLimitations": [
+      "Broken by design."
+    ]
+  }
+}

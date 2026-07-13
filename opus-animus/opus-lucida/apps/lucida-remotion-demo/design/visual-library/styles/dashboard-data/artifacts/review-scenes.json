@@ -1,0 +1,38 @@
+{
+  "packageId": "dashboard-data",
+  "scenes": [
+    {
+      "sceneKey": "normal",
+      "sceneLabel": "Normal",
+      "sceneType": "kpi",
+      "fixture": "pipeline/fixtures/styles/dashboard-data/normal.fixture.ts",
+      "states": {
+        "kpis": "ready",
+        "chart": "ready",
+        "operations": "ready"
+      }
+    },
+    {
+      "sceneKey": "dense",
+      "sceneLabel": "Dense",
+      "sceneType": "chart",
+      "fixture": "pipeline/fixtures/styles/dashboard-data/dense.fixture.ts",
+      "states": {
+        "kpis": "ready",
+        "chart": "ready",
+        "operations": "ready"
+      }
+    },
+    {
+      "sceneKey": "edge",
+      "sceneLabel": "Edge",
+      "sceneType": "operations",
+      "fixture": "pipeline/fixtures/styles/dashboard-data/edge.fixture.ts",
+      "states": {
+        "kpis": "loading",
+        "chart": "empty",
+        "operations": "error"
+      }
+    }
+  ]
+}

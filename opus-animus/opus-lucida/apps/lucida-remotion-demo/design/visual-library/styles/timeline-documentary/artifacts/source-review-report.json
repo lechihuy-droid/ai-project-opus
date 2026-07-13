@@ -1,0 +1,9 @@
+{
+  "status": "ok",
+  "packageId": "timeline-documentary",
+  "generatedAt": "2026-07-13T00:00:00.000Z",
+  "internalReferences": ["design/planning/ALL_STYLE_IMPLEMENTATION_PLAN.md", "design/schemas/visual-package.schema.json", "src/styles/core/index.ts", "design/visual-library/styles/dashboard-data/"],
+  "externalReferences": ["https://www.loc.gov/pictures/", "https://catalog.archives.gov/", "https://www.remotion.dev/docs/animating-properties"],
+  "selectedConcepts": ["date-forward cataloging", "visible source context", "record identifiers", "missing-record transparency", "deterministic frame-driven motion"],
+  "exclusions": ["No third-party photographs or screenshots", "No logos or bundled font binaries", "No copied archive interface", "No invented source labels or replacement images", "No shared registry edits"]
+}

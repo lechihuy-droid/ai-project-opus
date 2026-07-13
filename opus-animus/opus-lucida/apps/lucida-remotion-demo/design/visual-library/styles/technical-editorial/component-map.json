@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "lucida-component-map/v1",
+  "id": "technical-editorial",
+  "primitives": [
+    {
+      "id": "annotation-rail",
+      "role": "surface",
+      "notes": "Fixed-width evidence lane for constraints, QA notes, and interpretation cues."
+    },
+    {
+      "id": "diagram-panel",
+      "role": "content",
+      "notes": "Main explanatory surface with node stack and labeled connectors."
+    },
+    {
+      "id": "code-data-callout",
+      "role": "content",
+      "notes": "Monospace evidence surface for render instructions, reports, or structured snippets."
+    },
+    {
+      "id": "summary-rail",
+      "role": "process",
+      "notes": "Bottom-right recap lane for sequenced takeaways."
+    }
+  ],
+  "templates": [
+    {
+      "templateId": "diagram-build",
+      "supportedLayouts": [
+        "top-title",
+        "center-stage"
+      ],
+      "backgroundEffects": [
+        "rule-matrix",
+        "gradient-depth"
+      ],
+      "motionPreset": "diagram-build",
+      "primitives": [
+        "annotation-rail",
+        "diagram-panel",
+        "code-data-callout"
+      ],
+      "notes": "Default explainer composition for architecture and mechanism scenes."
+    },
+    {
+      "templateId": "annotated-summary",
+      "supportedLayouts": [
+        "top-title",
+        "side-rail"
+      ],
+      "backgroundEffects": [
+        "rule-matrix"
+      ],
+      "motionPreset": "diagram-build",
+      "primitives": [
+        "annotation-rail",
+        "summary-rail"
+      ],
+      "notes": "Dense recap or conclusion scene that emphasizes evidence over illustration."
+    },
+    {
+      "templateId": "code-evidence",
+      "supportedLayouts": [
+        "side-rail",
+        "center-stage"
+      ],
+      "backgroundEffects": [
+        "gradient-depth"
+      ],
+      "motionPreset": "diagram-build",
+      "primitives": [
+        "diagram-panel",
+        "code-data-callout"
+      ],
+      "notes": "Mechanism scene where structured snippets and system flow need equal emphasis."
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "lucida-style-package/v1",
+  "id": "missing-contract-fields",
+  "label": "Missing Contract Fields",
+  "status": "experimental",
+  "description": "Invalid fixture that intentionally omits several production-only contract fields.",
+  "supportedIntents": [
+    "explain"
+  ],
+  "avoidFor": [
+    "emotional-testimonial"
+  ],
+  "aspectRatios": [
+    "9:16"
+  ],
+  "sourceArtifacts": {
+    "sourceReviewReport": "./artifacts/source-review-report.json"
+  },
+  "validationArtifacts": {
+    "previewFrames": [
+      "./artifacts/frames/scene-01.png",
+      "./artifacts/frames/scene-02.png",
+      "./artifacts/frames/scene-03.png"
+    ],
+    "renderReport": "./artifacts/render-report.json"
+  },
+  "sourceReferences": [
+    {
+      "id": "fixture-source",
+      "url": "https://example.com/fixture-source",
+      "selectedConcepts": [
+        "missing required fields"
+      ]
+    }
+  ],
+  "qualityGate": {
+    "validated": false,
+    "checks": [
+      "schema"
+    ]
+  }
+}

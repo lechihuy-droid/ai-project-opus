@@ -1,0 +1,26 @@
+{
+  "packageId": "cinematic-type",
+  "compositionId": "CinematicTypeFamilyReview",
+  "format": "9:16",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "durationInFrames": 90,
+  "scenes": [
+    {
+      "sceneKey": "hook",
+      "frame": 24,
+      "output": "./frames/scene-01.png"
+    },
+    {
+      "sceneKey": "quote",
+      "frame": 24,
+      "output": "./frames/scene-02.png"
+    },
+    {
+      "sceneKey": "transition",
+      "frame": 24,
+      "output": "./frames/scene-03.png"
+    }
+  ]
+}

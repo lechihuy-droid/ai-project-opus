@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "lucida-style-package/v1",
+  "id": "product-showcase",
+  "label": "Product Showcase",
+  "version": "1.0.0",
+  "status": "experimental",
+  "visualFamily": "product-showcase",
+  "description": "Production package for asset-led product walkthrough scenes where embeddable UI media is the first-viewport signal and non-embeddable assets are represented truthfully.",
+  "tags": ["product", "showcase", "ui", "walkthrough", "assets"],
+  "supportedIntents": ["use-case", "comparison", "process", "takeaway"],
+  "recommendedIntents": ["use-case", "comparison", "takeaway"],
+  "avoidFor": [
+    "scenes without embeddable product or UI assets",
+    "pure brand marketing pages where copy is the subject",
+    "metric-heavy dashboards that need dense tables rather than product media"
+  ],
+  "aspectRatios": ["9:16", "16:9"],
+  "contentCapacity": {
+    "headlineChars": 88,
+    "bodyChars": 360,
+    "bulletsMaxItems": 4,
+    "maxDataSeries": 0,
+    "maxCodeLines": 0
+  },
+  "renderCost": {
+    "tier": "medium",
+    "estimatedSceneComplexity": 6,
+    "notes": "The renderer composes product media, asset binding guards, deterministic crops, feature labels, and before-after states without network fetches."
+  },
+  "reducedMotion": {
+    "strategy": "reduced-motion-fade",
+    "notes": "Reduced mode shortens travel and the edge fixture uses static mode while keeping product and placeholder state visible."
+  },
+  "accessibility": {
+    "contrast": "AA",
+    "notes": "High-contrast text, visible asset status labels, bounded feature cards, and clear placeholder copy preserve review readability."
+  },
+  "directorCompatibility": {
+    "selectionReason": "Choose when narration depends on showing an actual embeddable product/UI asset, a focused feature callout, or a truthful before-after comparison.",
+    "preferredNeighborFamilies": ["minimal-education", "technical-editorial", "dashboard-data"],
+    "bridgeFamilies": ["minimal-education", "technical-editorial"],
+    "hardBlocks": [
+      "no embed_asset product media available",
+      "requested asset is style_reference only",
+      "requires third-party logo or screenshot reuse without clearance"
+    ]
+  },
+  "files": {
+    "visual": "./visual.json",
+    "tokens": "./tokens.json",
+    "componentMap": "./component-map.json",
+    "provenance": "./provenance.md",
+    "artifactManifest": "./artifact-manifest.json"
+  },
+  "sourcePolicy": {
+    "copyStatus": "original",
+    "registeredMedia": "fixture-only-original-svg-data-uri",
+    "notes": "Review media is generated from original SVG fixture mockups. No third-party product screenshot, logo, copied brand identity, font binary, or external image is registered."
+  },
+  "sourceArtifacts": {
+    "normalizedInput": "./artifacts/review-scenes.json",
+    "mappedScenes": "./artifacts/review-scenes.json",
+    "compiledVideoMap": "./artifacts/demo-video-map.json",
+    "sourceReviewReport": "./artifacts/source-review-report.json"
+  },
+  "validationArtifacts": {
+    "demoVideoMap": "./artifacts/demo-video-map.json",
+    "renderProps": "./artifacts/render-props.json",
+    "previewFrames": [
+      "./artifacts/frames/scene-01.png",
+      "./artifacts/frames/scene-02.png",
+      "./artifacts/frames/scene-03.png"
+    ],
+    "renderReport": "./artifacts/render-report.json",
+    "videoBinaryRegistered": false
+  },
+  "sourceReferences": [
+    {
+      "id": "material-design",
+      "url": "https://m3.material.io/",
+      "selectedConcepts": ["product surface clarity", "stateful components", "accessible hierarchy"]
+    },
+    {
+      "id": "apple-human-interface",
+      "url": "https://developer.apple.com/design/human-interface-guidelines",
+      "selectedConcepts": ["product-first presentation", "focused screenshots", "clear feature affordances"]
+    },
+    {
+      "id": "remotion-still-rendering",
+      "url": "https://www.remotion.dev/docs/renderer/render-still",
+      "selectedConcepts": ["deterministic still output", "frame-specific review", "local render artifacts"]
+    }
+  ],
+  "qualityGate": {
+    "validated": true,
+    "checks": [
+      "visual package validator --strict",
+      "TypeScript noEmit",
+      "Remotion still renders",
+      "three portrait preview frames",
+      "signalstats nonblank check",
+      "asset classification binding check"
+    ],
+    "knownLimitations": [
+      "Shared registry and app-root availability remain untouched because they are outside this ownership slice.",
+      "16:9 support is metadata-ready only; this task renders portrait review frames only.",
+      "Review media uses original SVG data URI mockups instead of third-party product screenshots.",
+      "Stable promotion requires human visual approval."
+    ]
+  }
+}

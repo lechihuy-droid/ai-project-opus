@@ -1,24 +1,26 @@
 {
   "video": {
-    "title": "System Prompts Leaks",
-    "subtitle": "Đọc system prompt của ChatGPT, Claude, Gemini, Cursor để học cách AI product được điều khiển.",
+    "title": "GPT-5.6 và ChatGPT Work",
+    "subtitle": "GPT-5.6 là bộ não. ChatGPT Work là AI worker dùng bộ não đó để nhận mục tiêu và bàn giao deliverable hoàn chỉnh.",
     "format": "vertical_9_16",
     "width": 1080,
     "height": 1920,
     "fps": 30,
-    "durationSec": 29,
-    "style": "graphite_champagne_editorial",
+    "durationSec": 78,
+    "style": "premium_tech_editorial_gold_electric_blue",
     "language": "vi",
     "sourceBlocks": [
-      "Repo GitHub asgeirtj/system_prompts_leaks document system prompt instructions cho nhiều AI chatbot và AI product.",
-      "Giá trị không chỉ nằm ở prompt mẫu, mà nằm ở cách product gán vai trò, giới hạn hành vi, dùng tool, memory, guardrail và workflow agent.",
-      "Video này dùng repo như content truth, không embed ảnh hay logo bên thứ ba."
+      "OpenAI công bố GPT-5.6 và ChatGPT Work ngày 2026-07-09.",
+      "GPT-5.6 là model AI (bộ não). ChatGPT Work là agent dùng model đó để nhận mục tiêu, tự tổ chức công việc, và bàn giao deliverable hoàn chỉnh.",
+      "ChatGPT chuyển từ chatbot xử lý prompt sang AI worker xử lý outcome.",
+      "Không đề cập tier, giá, rollout, hay claim thay thế con người."
     ]
   },
   "theme": {
-    "name": "lucida_dark_ai",
+    "name": "lucida_dark_gold_electric_blue",
+    "skin": "modern-terminal",
     "accent": "#D2B47A",
-    "accentSoft": "#F4E2BD",
+    "accentSoft": "#4CC2FF",
     "background": "#0B0C0E",
     "foreground": "#F4F0E8",
     "muted": "#A7A39B"
@@ -30,216 +32,150 @@
       "intent": "hook",
       "templateId": "cinematic-title-intro",
       "templateRole": "scene",
-      "durationSec": 5,
-      "headline": "Học prompt engineering từ AI product thật",
+      "durationSec": 6,
+      "headline": "GPT-5.6 không phải điều đáng chú ý nhất OpenAI vừa công bố",
       "subtitle": {
-        "text": "Bạn muốn học prompt engineering nhanh hơn? Hãy nhìn thẳng vào cách các AI product được thiết kế. ChatGPT, Claude, Gemini và Cursor được điều khiển thế nào?",
+        "text": "GPT-5.6 chưa phải thứ đáng chú ý nhất OpenAI vừa công bố. Thứ có thể thay đổi cách bạn làm việc là ChatGPT Work.",
         "groups": [
           {
-            "text": "Bạn muốn học prompt engineering nhanh hơn?",
-            "lines": [
-              ["Bạn", "muốn", "học", "prompt engineering"],
-              ["nhanh", "hơn?"]
-            ]
+            "text": "GPT-5.6 chưa phải thứ đáng chú ý",
+            "lines": [["GPT-5.6", "chưa", "phải", "thứ"], ["đáng", "chú", "ý"]]
           },
           {
-            "text": "Hãy nhìn thẳng vào cách các AI product được thiết kế.",
-            "lines": [
-              ["Hãy", "nhìn", "thẳng", "vào", "cách"],
-              ["các", "AI product", "được", "thiết kế."]
-            ]
+            "text": "nhất OpenAI vừa công bố.",
+            "lines": [["nhất", "OpenAI", "vừa", "công", "bố."]]
           },
           {
-            "text": "ChatGPT, Claude, Gemini và Cursor được điều khiển thế nào?",
-            "lines": [
-              ["ChatGPT,", "Claude,", "Gemini", "và", "Cursor"],
-              ["được", "điều khiển", "thế nào?"]
-            ]
+            "text": "Thứ có thể thay đổi cách bạn",
+            "lines": [["Thứ", "có thể", "thay đổi"], ["cách", "bạn"]]
+          },
+          {
+            "text": "làm việc là ChatGPT Work.",
+            "lines": [["làm", "việc", "là", "ChatGPT Work."]]
           }
         ]
       },
       "content": {
         "kicker": "01 / HOOK",
-        "title": "Học prompt engineering từ AI product thật",
-        "subtitle": "Nhìn vào control layer, không chỉ prompt mẫu.",
+        "title": "GPT-5.6 không phải điều đáng chú ý nhất",
+        "subtitle": "Thứ thay đổi cách bạn làm việc là ChatGPT Work.",
         "items": [
-          { "label": "ChatGPT", "note": "product" },
-          { "label": "Claude", "note": "product" },
-          { "label": "Gemini", "note": "product" },
-          { "label": "Cursor", "note": "product" }
+          { "label": "GPT-5.6", "note": "bộ não" },
+          { "label": "ChatGPT Work", "note": "AI worker" },
+          { "label": "Outcome", "note": "không chỉ prompt" },
+          { "label": "Deliverable", "note": "bàn giao" }
         ],
-        "footer": "Học từ hệ điều khiển thật."
+        "footer": "GPT-5.6 và ChatGPT Work."
       },
       "style": {
         "accent": "#D2B47A",
         "density": "low",
         "safeArea": "tiktok"
       },
-      "motion": ["slow_zoom", "title_reveal", "underline_grow", "product_card_stagger"],
+      "motion": ["slow_zoom", "title_reveal", "underline_grow", "chip_stagger"],
       "backgroundEffect": "starfield",
+      "transitionOut": "zoom-through",
+      "subtitleMode": "bar",
+      "layout": "oversized-type",
+      "reason": "HeroTitleAdapter delivers a punchy kinetic-type hook with the payoff line surfaced under the headline, matching the intent:hook pattern."
+    },
+    {
+      "id": "brain-vs-worker",
+      "intent": "system_architecture",
+      "templateId": "diagram",
+      "templateRole": "scene",
+      "durationSec": 12,
+      "headline": "GPT-5.6 là bộ não. ChatGPT Work là người dùng nó.",
+      "subtitle": {
+        "text": "GPT-5.6 là một model AI — giống như bộ não. ChatGPT Work là một agent, dùng chính bộ não đó để hoàn thành công việc.",
+        "groups": [
+          {
+            "text": "GPT-5.6 là một model AI",
+            "lines": [["GPT-5.6", "là", "một", "model", "AI"]]
+          },
+          {
+            "text": "giống như bộ não.",
+            "lines": [["giống", "như", "bộ", "não."]]
+          },
+          {
+            "text": "ChatGPT Work là một agent,",
+            "lines": [["ChatGPT Work", "là", "một", "agent,"]]
+          },
+          {
+            "text": "dùng chính bộ não đó",
+            "lines": [["dùng", "chính", "bộ", "não", "đó"]]
+          },
+          {
+            "text": "để hoàn thành công việc.",
+            "lines": [["để", "hoàn thành", "công việc."]]
+          }
+        ]
+      },
+      "content": {
+        "kicker": "02 / MÔ HÌNH",
+        "title": "GPT-5.6 là bộ não. ChatGPT Work là người dùng nó.",
+        "subtitle": "Model AI so với AI agent hoàn thành công việc.",
+        "nodes": [
+          { "id": "brain", "label": "GPT-5.6", "note": "Bộ não — model AI", "tone": "warm", "x": 332, "y": 10, "w": 280, "h": 140 },
+          { "id": "worker", "label": "ChatGPT Work", "note": "Agent dùng bộ não đó", "tone": "cool", "x": 332, "y": 190, "w": 280, "h": 140 },
+          { "id": "tools", "label": "Tools", "note": "Thu thập, viết, tạo file", "tone": "neutral", "x": 332, "y": 370, "w": 280, "h": 140 },
+          { "id": "deliverable", "label": "Deliverable", "note": "Sản phẩm hoàn chỉnh bàn giao", "tone": "warm", "x": 332, "y": 550, "w": 280, "h": 140 }
+        ],
+        "links": [
+          { "from": 0, "to": 1 },
+          { "from": 1, "to": 2 },
+          { "from": 2, "to": 3 }
+        ],
+        "footer": "Bộ não -> Agent -> Tools -> Deliverable."
+      },
+      "style": {
+        "accent": "#4CC2FF",
+        "density": "medium",
+        "safeArea": "tiktok"
+      },
+      "motion": ["node_stagger", "connector_draw", "camera_settle"],
+      "backgroundEffect": "grid-pulse",
+      "transitionIn": "zoom-through",
       "transitionOut": "cross-dissolve",
       "subtitleMode": "bar",
-      "reason": "Hook headline states the value, while CC asks the spoken question without duplicating the headline."
+      "layout": "full-bleed-visual",
+      "reason": "A genuine entity/relationship chain (model -> agent -> tools -> deliverable) fits DiagramAdapter with explicit node coordinates, per the diagram-only-for-entities rule."
     },
     {
-      "id": "repo-reveal",
-      "intent": "code_explanation",
-      "templateId": "code-panel",
-      "templateRole": "scene",
-      "durationSec": 5,
-      "headline": "System Prompts Leaks",
-      "subtitle": {
-        "text": "Có một repo GitHub tên là System Prompts Leaks. Repo này tổng hợp system prompt của nhiều sản phẩm AI lớn.",
-        "groups": [
-          {
-            "text": "Có một repo GitHub tên là System Prompts Leaks.",
-            "lines": [
-              ["Có", "một", "repo", "GitHub", "tên là"],
-              ["System Prompts Leaks."]
-            ]
-          },
-          {
-            "text": "Repo này tổng hợp system prompt của nhiều sản phẩm AI lớn.",
-            "lines": [
-              ["Repo", "này", "tổng hợp", "system prompt"],
-              ["của", "nhiều", "sản phẩm", "AI lớn."]
-            ]
-          }
-        ]
-      },
-      "content": {
-        "kicker": "02 / SOURCE",
-        "title": "System Prompts Leaks",
-        "subtitle": "Một catalog system prompt của nhiều AI product lớn.",
-        "codeTitle": "github.com/asgeirtj/system_prompts_leaks",
-        "lines": [
-          "system_prompts_leaks/",
-          "  anthropic/",
-          "  openai/",
-          "  google/",
-          "  microsoft/",
-          "  cursor/"
-        ],
-        "highlights": [1, 2, 3, 4, 5],
-        "items": [
-          { "label": "Anthropic", "note": "Claude / Claude Code" },
-          { "label": "OpenAI", "note": "ChatGPT / Codex" },
-          { "label": "Google", "note": "Gemini / Jules" },
-          { "label": "Cursor", "note": "IDE agent" }
-        ],
-        "footer": "github.com/asgeirtj/system_prompts_leaks"
-      },
-      "style": {
-        "accent": "#D2B47A",
-        "density": "medium",
-        "safeArea": "tiktok"
-      },
-      "motion": ["terminal_reveal", "line_typewriter", "folder_highlight_zoom"],
-      "backgroundEffect": "matrix-rain",
-      "transitionIn": "cross-dissolve",
-      "transitionOut": "slide-wipe",
-      "subtitleMode": "bar",
-      "reason": "A repo reveal is clearer as a code/file panel than as a node diagram."
-    },
-    {
-      "id": "not-just-prompts",
-      "intent": "comparison",
-      "templateId": "split-screen",
-      "templateRole": "scene",
-      "durationSec": 5,
-      "headline": "Prompt mẫu không phải toàn bộ câu chuyện.",
-      "subtitle": {
-        "text": "Đọc repo này, bạn không chỉ học prompt mẫu. Bạn thấy cách AI được gán vai trò và giới hạn hành vi.",
-        "groups": [
-          {
-            "text": "Đọc repo này, bạn không chỉ học prompt mẫu.",
-            "lines": [
-              ["Đọc", "repo", "này,", "bạn", "không chỉ"],
-              ["học", "prompt mẫu."]
-            ]
-          },
-          {
-            "text": "Bạn thấy cách AI được gán vai trò và giới hạn hành vi.",
-            "lines": [
-              ["Bạn", "thấy", "cách", "AI", "được"],
-              ["gán", "vai trò", "và", "giới hạn", "hành vi."]
-            ]
-          }
-        ]
-      },
-      "content": {
-        "kicker": "03 / INSIGHT",
-        "title": "Prompt mẫu ≠ cách AI vận hành",
-        "subtitle": "Giá trị nằm ở cấu trúc điều khiển phía sau mỗi AI product.",
-        "panels": [
-          {
-            "title": "Prompt mẫu",
-            "body": "Surface: câu chữ và format.",
-            "tone": "neutral"
-          },
-          {
-            "title": "Hidden rules",
-            "body": "Control: role, limits, tools, memory, guardrail.",
-            "tone": "warm"
-          }
-        ],
-        "footer": "Từ prompt surface sang operating system."
-      },
-      "style": {
-        "accent": "#D2B47A",
-        "density": "medium",
-        "safeArea": "tiktok"
-      },
-      "motion": ["left_right_slide", "divider_fade", "keyword_sync"],
-      "backgroundEffect": "noise-grain",
-      "transitionIn": "slide-wipe",
-      "transitionOut": "whip-pan",
-      "subtitleMode": "bar",
-      "reason": "The scene contrasts shallow prompt examples with deeper product control rules."
-    },
-    {
-      "id": "six-dimensions",
-      "intent": "list",
+      "id": "old-workflow",
+      "intent": "problem",
       "templateId": "animated-list",
       "templateRole": "scene",
-      "durationSec": 6,
-      "headline": "6 thứ nên soi trong một system prompt",
+      "durationSec": 12,
+      "headline": "Cách dùng ChatGPT hiện tại còn nhiều bước thủ công",
       "subtitle": {
-        "text": "Bạn còn thấy cách nó dùng tool, memory, guardrail và workflow. Đây là những pattern đáng copy vào AI agent.",
+        "text": "ChatGPT thường: tự tìm tài liệu, viết prompt từng bước, chỉnh sửa, rồi chuyển kết quả sang công cụ khác.",
         "groups": [
           {
-            "text": "Role và Limits.",
-            "lines": [
-              ["Role", "và", "Limits."]
-            ]
+            "text": "ChatGPT thường tự tìm tài liệu,",
+            "lines": [["ChatGPT", "thường", "tự", "tìm"], ["tài liệu,"]]
           },
           {
-            "text": "Tools và Memory.",
-            "lines": [
-              ["Tools", "và", "Memory."]
-            ]
+            "text": "viết prompt từng bước, chỉnh sửa,",
+            "lines": [["viết", "prompt", "từng", "bước,"], ["chỉnh", "sửa,"]]
           },
           {
-            "text": "Guardrail và Workflow.",
-            "lines": [
-              ["Guardrail", "và", "Workflow."]
-            ]
+            "text": "rồi chuyển kết quả sang công cụ khác.",
+            "lines": [["rồi", "chuyển", "kết quả"], ["sang", "công cụ", "khác."]]
           }
         ]
       },
       "content": {
-        "kicker": "04 / PATTERN",
-        "title": "6 thứ nên soi trong một system prompt",
-        "subtitle": "Role, limits, tools, memory, guardrail và workflow là phần đáng học nhất.",
+        "kicker": "03 / VẤN ĐỀ",
+        "title": "Cách dùng ChatGPT hiện tại còn nhiều bước thủ công",
+        "subtitle": "Bạn tự tìm tài liệu, viết prompt, chỉnh sửa, chuyển tool.",
         "items": [
-          { "number": "01", "title": "Role", "body": "AI là ai", "tone": "warm" },
-          { "number": "02", "title": "Limits", "body": "Không được làm gì", "tone": "danger" },
-          { "number": "03", "title": "Tools", "body": "Gọi công cụ", "tone": "cool" },
-          { "number": "04", "title": "Memory", "body": "Giữ ngữ cảnh", "tone": "neutral" },
-          { "number": "05", "title": "Guardrail", "body": "Luật an toàn", "tone": "danger" },
-          { "number": "06", "title": "Workflow", "body": "Agent chạy việc", "tone": "warm" }
+          { "number": "01", "title": "Tự tìm tài liệu", "body": "Thu thập context thủ công", "tone": "neutral" },
+          { "number": "02", "title": "Viết prompt từng bước", "body": "Chia nhỏ yêu cầu ra lệnh", "tone": "cool" },
+          { "number": "03", "title": "Chỉnh sửa kết quả", "body": "Sửa tay nhiều lần", "tone": "danger" },
+          { "number": "04", "title": "Chuyển sang công cụ khác", "body": "Copy-paste sang app khác", "tone": "warm" }
         ],
-        "footer": "Đọc system prompt như bản thiết kế hệ thống."
+        "footer": "Nhiều bước thủ công, nhiều lần chuyển tool."
       },
       "style": {
         "accent": "#D2B47A",
@@ -247,61 +183,243 @@
         "safeArea": "tiktok"
       },
       "motion": ["staggered_list", "number_pop", "pair_highlight"],
-      "backgroundEffect": "grid-pulse",
-      "transitionIn": "whip-pan",
-      "transitionOut": "zoom-through",
+      "backgroundEffect": "noise-grain",
+      "transitionIn": "cross-dissolve",
+      "transitionOut": "slide-wipe",
       "subtitleMode": "bar",
-      "reason": "A six-item pattern list needs staggered scan-friendly cards, not relationship arrows."
+      "layout": "top-title",
+      "reason": "Four sequential friction points read best as scan-friendly staggered cards rather than a diagram or split panel."
     },
     {
-      "id": "behind-the-scenes",
+      "id": "new-workflow",
       "intent": "process",
       "templateId": "progress-steps",
       "templateRole": "scene",
-      "durationSec": 4,
-      "headline": "Thay vì đoán, hãy học từ sản phẩm thật.",
+      "durationSec": 18,
+      "headline": "ChatGPT Work: giao mục tiêu, agent tự làm hết",
       "subtitle": {
-        "text": "Thay vì đoán, hãy học từ sản phẩm thật. Học trực tiếp cách các AI product được điều khiển phía sau.",
+        "text": "Work: bạn giao một outcome, agent tự thu thập context, lập kế hoạch, thực hiện nhiều bước, kiểm tra, rồi tạo deliverable — document, spreadsheet, presentation, dashboard, hoặc một website đơn giản.",
         "groups": [
           {
-            "text": "Thay vì đoán, hãy học từ sản phẩm thật.",
-            "lines": [
-              ["Thay vì", "đoán,"],
-              ["hãy", "học", "từ", "sản phẩm thật."]
-            ]
+            "text": "Work: bạn giao một outcome,",
+            "lines": [["Work:", "bạn", "giao", "một", "outcome,"]]
           },
           {
-            "text": "Học trực tiếp cách các AI product được điều khiển phía sau.",
-            "lines": [
-              ["Học", "trực tiếp", "cách", "các", "AI product"],
-              ["được", "điều khiển", "phía sau."]
-            ]
+            "text": "agent tự thu thập context,",
+            "lines": [["agent", "tự", "thu thập", "context,"]]
+          },
+          {
+            "text": "lập kế hoạch, thực hiện",
+            "lines": [["lập", "kế hoạch,", "thực hiện"]]
+          },
+          {
+            "text": "nhiều bước, rồi kiểm tra.",
+            "lines": [["nhiều", "bước,", "rồi", "kiểm tra."]]
+          },
+          {
+            "text": "Deliverable có thể là document,",
+            "lines": [["Deliverable", "có thể", "là", "document,"]]
+          },
+          {
+            "text": "spreadsheet, presentation, dashboard,",
+            "lines": [["spreadsheet,", "presentation,", "dashboard,"]]
+          },
+          {
+            "text": "hoặc một website đơn giản.",
+            "lines": [["hoặc", "một", "website", "đơn giản."]]
           }
         ]
       },
       "content": {
-        "kicker": "05 / REFRAME",
-        "title": "Thay vì đoán, hãy học từ sản phẩm thật.",
-        "subtitle": "System prompt cho thấy control layer phía sau màn hình chat.",
+        "kicker": "04 / QUY TRÌNH MỚI",
+        "title": "ChatGPT Work: giao mục tiêu, agent tự làm hết",
+        "subtitle": "Agent tự thu thập, lập kế hoạch, thực hiện, kiểm tra.",
         "steps": [
-          { "label": "AI Product", "note": "chat surface" },
-          { "label": "System Prompt", "note": "hidden control layer" },
-          { "label": "Reusable Patterns", "note": "extract design rules" },
-          { "label": "Agent / AI Harness", "note": "build your own" }
+          { "label": "Nhận Outcome", "note": "Bạn giao mục tiêu cuối cùng" },
+          { "label": "Thu thập Context", "note": "Tự tìm dữ liệu cần thiết" },
+          { "label": "Lập kế hoạch", "note": "Tự chia nhỏ công việc" },
+          { "label": "Thực hiện nhiều bước", "note": "Research, viết, tạo file" },
+          { "label": "Kiểm tra & Bàn giao", "note": "Document, spreadsheet, dashboard, web" }
         ],
-        "footer": "Prompt engineering -> agent design."
+        "footer": "Từ outcome đến deliverable hoàn chỉnh."
       },
       "style": {
         "accent": "#D2B47A",
-        "density": "medium",
+        "density": "high",
         "safeArea": "tiktok"
       },
       "motion": ["step_fill", "connector_draw", "camera_push"],
       "backgroundEffect": "bokeh-circles",
+      "transitionIn": "slide-wipe",
+      "transitionOut": "zoom-through",
+      "subtitleMode": "bar",
+      "layout": "bottom-statement",
+      "reason": "A five-stage execution process (goal to deliverable) is exactly what ProgressStepsAdapter is built for — sequential, numbered, connector-linked steps."
+    },
+    {
+      "id": "example",
+      "intent": "use_case",
+      "templateId": "quote-card",
+      "templateRole": "scene",
+      "durationSec": 15,
+      "headline": "Một yêu cầu, Work tự tổ chức toàn bộ",
+      "subtitle": {
+        "text": "Ví dụ: 'Nghiên cứu thị trường AI Agent, phân tích đối thủ, và tạo presentation cho cuộc họp.' Work tự tổ chức toàn bộ — từ thu thập dữ liệu đến bản trình bày cuối cùng.",
+        "groups": [
+          {
+            "text": "Ví dụ: nghiên cứu thị trường",
+            "lines": [["Ví dụ:", "nghiên cứu", "thị trường"]]
+          },
+          {
+            "text": "AI Agent, phân tích đối thủ,",
+            "lines": [["AI Agent,", "phân tích", "đối thủ,"]]
+          },
+          {
+            "text": "và tạo presentation cho cuộc họp.",
+            "lines": [["và", "tạo", "presentation"], ["cho", "cuộc", "họp."]]
+          },
+          {
+            "text": "Work tự tổ chức toàn bộ,",
+            "lines": [["Work", "tự", "tổ chức", "toàn bộ,"]]
+          },
+          {
+            "text": "từ thu thập dữ liệu đến",
+            "lines": [["từ", "thu thập", "dữ liệu", "đến"]]
+          },
+          {
+            "text": "bản trình bày cuối cùng.",
+            "lines": [["bản", "trình bày", "cuối cùng."]]
+          }
+        ]
+      },
+      "content": {
+        "kicker": "05 / VÍ DỤ",
+        "title": "Một yêu cầu, Work tự tổ chức toàn bộ",
+        "subtitle": "Bạn chỉ giao outcome, agent tự làm phần còn lại.",
+        "quote": "Nghiên cứu thị trường AI Agent, phân tích đối thủ, tạo presentation.",
+        "attribution": "Work tự tổ chức toàn bộ workflow.",
+        "footer": "Từ một yêu cầu đến một bộ deliverable."
+      },
+      "style": {
+        "accent": "#D2B47A",
+        "density": "low",
+        "safeArea": "tiktok"
+      },
+      "motion": ["quote_mark_reveal", "text_fade_up", "attribution_slide"],
+      "backgroundEffect": "gradient-shift",
       "transitionIn": "zoom-through",
+      "transitionOut": "whip-pan",
+      "subtitleMode": "bar",
+      "layout": "center-stage",
+      "reason": "The scene centers on one verbatim user instruction, so a quote-card gives it weight instead of another list of bullet fragments."
+    },
+    {
+      "id": "ecosystem",
+      "intent": "comparison",
+      "templateId": "split-screen",
+      "templateRole": "scene",
+      "durationSec": 8,
+      "headline": "Work không thay thế mọi công cụ tự động hoá",
+      "subtitle": {
+        "text": "Work giỏi research và tạo deliverable kinh doanh. Codex giỏi code và production. Còn n8n lo integration, webhook, retry, logging — Work CHƯA thay thế n8n cho workflow deterministic.",
+        "groups": [
+          {
+            "text": "Work giỏi research và deliverable",
+            "lines": [["Work", "giỏi", "research", "và", "deliverable"]]
+          },
+          {
+            "text": "kinh doanh. Codex giỏi code,",
+            "lines": [["kinh doanh.", "Codex", "giỏi", "code,"]]
+          },
+          {
+            "text": "production. n8n lo integration,",
+            "lines": [["production.", "n8n", "lo", "integration,"]]
+          },
+          {
+            "text": "webhook, retry, logging.",
+            "lines": [["webhook,", "retry,", "logging."]]
+          },
+          {
+            "text": "Work CHƯA thay thế n8n",
+            "lines": [["Work", "CHƯA", "thay thế", "n8n"]]
+          },
+          {
+            "text": "cho workflow deterministic.",
+            "lines": [["cho", "workflow", "deterministic."]]
+          }
+        ]
+      },
+      "content": {
+        "kicker": "06 / HỆ SINH THÁI",
+        "title": "Work không thay thế mọi công cụ tự động hoá",
+        "subtitle": "Work làm research và deliverable, n8n lo workflow cố định.",
+        "panels": [
+          { "title": "Work & Codex", "body": "Research, business deliverable, code, production.", "tone": "warm" },
+          { "title": "n8n", "body": "Integration, webhook, retry, logging, Work CHƯA thay thế.", "tone": "cool" }
+        ],
+        "footer": "AI worker khác automation deterministic."
+      },
+      "style": {
+        "accent": "#4CC2FF",
+        "density": "medium",
+        "safeArea": "tiktok"
+      },
+      "motion": ["left_right_slide", "divider_fade", "keyword_sync"],
+      "backgroundEffect": "grid-pulse",
+      "transitionIn": "whip-pan",
       "transitionOut": "cross-dissolve",
       "subtitleMode": "bar",
-      "reason": "The narration reframes a learning workflow, so a progress-step pattern fits better than a static card stack."
+      "layout": "full-bleed-visual",
+      "reason": "A two-side contrast (AI worker scope vs. deterministic automation scope) maps directly to SplitScreenAdapter's surface-vs-control layout."
+    },
+    {
+      "id": "conclusion",
+      "intent": "takeaway",
+      "templateId": "chapter-title",
+      "templateRole": "scene",
+      "durationSec": 3,
+      "headline": "ChatGPT chuyển từ chatbot sang AI worker",
+      "subtitle": {
+        "text": "ChatGPT đang chuyển từ chatbot xử lý prompt thành AI worker nhận mục tiêu và bàn giao sản phẩm.",
+        "groups": [
+          {
+            "text": "ChatGPT đang chuyển từ chatbot",
+            "lines": [["ChatGPT", "đang", "chuyển", "từ", "chatbot"]]
+          },
+          {
+            "text": "xử lý prompt thành AI worker",
+            "lines": [["xử lý", "prompt", "thành", "AI worker"]]
+          },
+          {
+            "text": "nhận mục tiêu, bàn giao sản phẩm.",
+            "lines": [["nhận", "mục tiêu,"], ["bàn giao", "sản phẩm."]]
+          }
+        ]
+      },
+      "content": {
+        "kicker": "07 / KẾT LUẬN",
+        "title": "ChatGPT chuyển từ chatbot sang AI worker",
+        "subtitle": "Từ xử lý prompt sang nhận mục tiêu và bàn giao.",
+        "items": [
+          { "label": "Chatbot" },
+          { "label": "Assistant" },
+          { "label": "Agent" },
+          { "label": "AI Worker" }
+        ],
+        "footer": "Chatbot -> Assistant -> Agent -> AI Worker."
+      },
+      "style": {
+        "accent": "#D2B47A",
+        "density": "low",
+        "safeArea": "tiktok"
+      },
+      "motion": ["slow_zoom", "title_reveal", "chip_stagger"],
+      "backgroundEffect": "starfield",
+      "transitionIn": "cross-dissolve",
+      "transitionOut": "zoom-through",
+      "subtitleMode": "bar",
+      "layout": "oversized-type",
+      "reason": "HeroTitleAdapter's chip row doubles as the chatbot->assistant->agent->AI worker progression, reusing the kinetic-type template for a punchy takeaway."
     },
     {
       "id": "cta",
@@ -309,40 +427,37 @@
       "templateId": "end-card",
       "templateRole": "cta",
       "durationSec": 4,
-      "headline": "Đáng lưu nếu bạn đang build AI agent.",
+      "headline": "Theo bạn, Work thay đổi công việc nào trước?",
       "subtitle": {
-        "text": "Đáng lưu nếu bạn đang build AI agent. Follow để xem phần 2: 6 pattern đáng copy.",
+        "text": "Theo bạn, ChatGPT Work sẽ thay đổi công việc nào đầu tiên? Follow kênh AI News và AI Workflow để cập nhật.",
         "groups": [
           {
-            "text": "Đáng lưu nếu bạn đang build AI agent.",
-            "lines": [
-              ["Đáng lưu", "nếu", "bạn", "đang"],
-              ["build", "AI agent."]
-            ]
+            "text": "Theo bạn, Work sẽ thay đổi",
+            "lines": [["Theo", "bạn,", "Work", "sẽ", "thay đổi"]]
           },
           {
-            "text": "Follow để xem phần 2: 6 pattern đáng copy.",
-            "lines": [
-              ["Follow", "để", "xem", "phần 2:"],
-              ["6 pattern", "đáng copy."]
-            ]
+            "text": "công việc nào đầu tiên?",
+            "lines": [["công việc", "nào", "đầu tiên?"]]
+          },
+          {
+            "text": "Follow kênh AI News",
+            "lines": [["Follow", "kênh", "AI News"]]
+          },
+          {
+            "text": "và AI Workflow để cập nhật.",
+            "lines": [["và", "AI Workflow"], ["để", "cập nhật."]]
           }
         ]
       },
       "content": {
-        "kicker": "06 / NEXT",
-        "title": "Đáng lưu nếu bạn đang build AI agent.",
-        "subtitle": "Học trực tiếp từ system prompt của các sản phẩm AI thật.",
-        "items": [
-          { "label": "Role", "note": "identity" },
-          { "label": "Tool", "note": "action" },
-          { "label": "Memory", "note": "context" }
-        ],
+        "kicker": "08 / CTA",
+        "title": "Theo bạn, Work thay đổi công việc nào trước?",
+        "subtitle": "Follow AI News & AI Workflow để cập nhật.",
         "cta": {
-          "label": "Follow để xem 6 pattern",
-          "detail": "Role, Tool, Memory, Guardrail, Workflow..."
+          "label": "Follow AI News & AI Workflow",
+          "detail": "Theo dõi để không bỏ lỡ AI update mới."
         },
-        "footer": "Phần 2: Role, Tool, Memory, Guardrail, Workflow..."
+        "footer": "AI News & AI Workflow."
       },
       "style": {
         "accent": "#D2B47A",
@@ -351,9 +466,10 @@
       },
       "motion": ["cta_scale", "button_reveal"],
       "backgroundEffect": "gradient-shift",
-      "transitionIn": "cross-dissolve",
+      "transitionIn": "zoom-through",
       "subtitleMode": "bar",
-      "reason": "The final scene should focus on one action: follow for the six reusable patterns."
+      "layout": "center-stage",
+      "reason": "The closing beat needs one clear question plus a follow action, which is exactly EndCardAdapter's single-focus CTA layout."
     }
   ]
 }

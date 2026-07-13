@@ -1,0 +1,39 @@
+{
+  "sceneId": "steps-homework-reset",
+  "sceneType": "steps",
+  "durationInFrames": 180,
+  "motionPolicy": "full",
+  "density": "balanced",
+  "accentTone": "teal",
+  "eyebrow": "Teach The Routine",
+  "title": "Turn homework setup into a three-step reset another adult can run the same way.",
+  "summary": "The sequence stays calm by anchoring each step to one observable action, one short explanation, and one completion state.",
+  "footer": "Spacing does most of the work. The accent only marks order and progress.",
+  "callout": {
+    "label": "Why it works",
+    "value": "Children can predict what happens next without re-reading the whole list."
+  },
+  "steps": {
+    "headline": "Three actions before the first worksheet",
+    "items": [
+      {
+        "index": "01",
+        "title": "Reset the desk",
+        "detail": "Clear old papers, open the notebook, and place the pencil where the hand lands first.",
+        "state": "ready"
+      },
+      {
+        "index": "02",
+        "title": "Read the first instruction out loud",
+        "detail": "Adults read once, then point to the exact line the child starts from.",
+        "state": "active"
+      },
+      {
+        "index": "03",
+        "title": "Complete only the first visible chunk",
+        "detail": "Fold or cover the page so the child sees one task instead of the whole sheet.",
+        "state": "ready"
+      }
+    ]
+  }
+}

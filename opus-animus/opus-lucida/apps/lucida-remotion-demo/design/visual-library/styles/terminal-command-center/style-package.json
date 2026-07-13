@@ -1,0 +1,233 @@
+{
+  "schemaVersion": "lucida-style-package/v1",
+  "id": "terminal-command-center",
+  "label": "Terminal Command Center",
+  "version": "0.1.0",
+  "status": "experimental",
+  "visualFamily": "repo-code",
+  "description": "Reusable terminal-style package for repo walkthroughs, AI workflow explainers, command captures, and compact technical dashboards.",
+  "tags": [
+    "terminal",
+    "repo",
+    "code",
+    "workflow",
+    "dashboard"
+  ],
+  "supportedIntents": [
+    "hook",
+    "code-explanation",
+    "process",
+    "list",
+    "system-architecture",
+    "takeaway"
+  ],
+  "recommendedIntents": [
+    "code-explanation",
+    "process",
+    "system-architecture",
+    "list"
+  ],
+  "avoidFor": [
+    "asset-led gallery scenes where imagery is the main subject",
+    "emotion-first testimonial or quote scenes",
+    "chronology-first documentary sequences without an operational interface"
+  ],
+  "aspectRatios": [
+    "9:16"
+  ],
+  "contentCapacity": {
+    "headlineChars": 72,
+    "bodyChars": 240,
+    "bulletsMaxItems": 5,
+    "maxDataSeries": 4,
+    "maxCodeLines": 12
+  },
+  "renderCost": {
+    "tier": "medium",
+    "estimatedSceneComplexity": 6,
+    "notes": "One dominant terminal frame plus restrained grid or noise effects keeps the package in the mid-tier render bucket."
+  },
+  "reducedMotion": {
+    "strategy": "simplified-motion",
+    "notes": "Typing, cursor blink, and staggered rows can collapse into fades or static reveals without breaking hierarchy."
+  },
+  "accessibility": {
+    "contrast": "review-required",
+    "notes": "Dark surfaces and off-white text are strong, but accent-on-accent compositions still need scene-level review."
+  },
+  "directorCompatibility": {
+    "selectionReason": "Best when a scene needs an operational interface, command narrative, or deterministic process breakdown.",
+    "preferredNeighborFamilies": [
+      "technical-editorial",
+      "dashboard-data"
+    ],
+    "bridgeFamilies": [
+      "minimal-education"
+    ],
+    "hardBlocks": [
+      "Avoid pairing with imagery-led hero scenes that depend on photography.",
+      "Do not use when the message relies on emotional portraiture or organic textures."
+    ]
+  },
+  "files": {
+    "visual": "./visual.json",
+    "tokens": "./tokens.json",
+    "componentMap": "./component-map.json",
+    "provenance": "./provenance.md",
+    "artifactManifest": "./artifact-manifest.json"
+  },
+  "sourcePolicy": {
+    "copyStatus": "principles-only",
+    "registeredMedia": "none",
+    "notes": "No third-party screenshots, logos, font files, or source CSS are registered as reusable production assets. The package stores observations, source metadata, original Lucida tokens, and persisted validation artifacts. Generated MP4 output remains runtime-only and unregistered."
+  },
+  "tokens": {
+    "color": {
+      "background": "#080B10",
+      "panel": "#10151D",
+      "panelElevated": "#151B24",
+      "border": "#2A3442",
+      "text": "#F4F0E8",
+      "muted": "#8B98A8",
+      "accent": "#65D8E8",
+      "warning": "#D2B47A",
+      "success": "#72C991",
+      "danger": "#EC7A7A"
+    },
+    "typography": {
+      "display": "monospace display, 56-68px, 850-900 weight",
+      "body": "monospace body, 24-36px, 400-700 weight",
+      "metadata": "monospace uppercase, 20-25px, 700-800 weight",
+      "letterSpacing": 0
+    },
+    "surface": {
+      "radius": 8,
+      "border": "1px solid token.border",
+      "shadow": "large dark drop shadow plus restrained accent glow",
+      "scanlineOpacity": "0.018-0.035"
+    }
+  },
+  "layoutGrammar": [
+    "Use one dominant terminal frame per scene.",
+    "Keep command/output lines short enough for 9:16 safe area.",
+    "Use cyan for prompts and active state; gold for warnings or next action; green for success.",
+    "Use dashboard/process rows only when the content is operational or sequential.",
+    "Avoid full-screen neon green hacker styling; keep glow restrained."
+  ],
+  "componentPrimitives": [
+    {
+      "id": "terminal-window-chrome",
+      "role": "surface",
+      "notes": "Title bar, three status dots, prompt path, status indicator."
+    },
+    {
+      "id": "typed-code-panel",
+      "role": "content",
+      "notes": "Typed line reveal, cursor blink, highlighted output rows."
+    },
+    {
+      "id": "terminal-dashboard-rows",
+      "role": "process",
+      "notes": "Numbered or prompt-led rows for metrics, steps, source provenance, and task state."
+    }
+  ],
+  "templateBindings": {
+    "preferredTemplates": [
+      "code-panel",
+      "progress-steps",
+      "typewriter-subtitle"
+    ],
+    "layouts": [
+      "center-stage",
+      "top-title",
+      "bottom-statement"
+    ],
+    "backgroundEffects": [
+      "matrix-rain",
+      "grid-pulse",
+      "noise-grain"
+    ],
+    "motionPreset": "terminal-reveal"
+  },
+  "sourceArtifacts": {
+    "ingestConfig": "pipeline/fixtures/visual-reference-flow.json",
+    "rawInput": "./artifacts/visual-reference-raw-input.json",
+    "sanitizedInput": "./artifacts/visual-reference-sanitized-input.json",
+    "normalizedInput": "./artifacts/visual-reference-normalized-input.json",
+    "mappedScenes": "./artifacts/visual-reference-scenes.json",
+    "compiledVideoMap": "./artifacts/visual-reference-video-map.json",
+    "sourceReviewReport": "./artifacts/source-review-report.json"
+  },
+  "validationArtifacts": {
+    "demoVideoMap": "./artifacts/terminal-demo-video-map.json",
+    "renderProps": "./artifacts/terminal-demo-render-props.json",
+    "previewFrames": [
+      "./artifacts/frames/scene-01.png",
+      "./artifacts/frames/scene-02.png",
+      "./artifacts/frames/scene-03.png",
+      "./artifacts/frames/scene-04.png"
+    ],
+    "renderReport": "./artifacts/validation-render-report.json",
+    "videoBinaryRegistered": false
+  },
+  "sourceReferences": [
+    {
+      "id": "quarto-revealjs-terminal",
+      "url": "https://github.com/rpodcast/quarto-revealjs-terminal",
+      "selectedConcepts": [
+        "terminal slide chrome",
+        "status bar",
+        "palette registry",
+        "scanline treatment"
+      ]
+    },
+    {
+      "id": "letieu-terminal-css",
+      "url": "https://github.com/letieu/terminal.css",
+      "selectedConcepts": [
+        "terminal UI components",
+        "dashboard rows",
+        "status surfaces"
+      ]
+    },
+    {
+      "id": "gioni-terminal-css",
+      "url": "https://github.com/Gioni06/terminal.css",
+      "selectedConcepts": [
+        "minimal terminal typography",
+        "CSS variable theme structure"
+      ]
+    },
+    {
+      "id": "panr-terminal-css",
+      "url": "https://github.com/panr/terminal-css",
+      "selectedConcepts": [
+        "classless terminal editorial treatment",
+        "preset color thinking"
+      ]
+    },
+    {
+      "id": "terminalcss-web",
+      "url": "https://terminalcss.xyz/",
+      "selectedConcepts": [
+        "live component documentation",
+        "terminal documentation layout"
+      ]
+    }
+  ],
+  "qualityGate": {
+    "validated": true,
+    "checks": [
+      "source ingest artifacts are persisted inside the package",
+      "split visual, token, and component companion files are present",
+      "20 second demo VideoMap, render props, and preview frames are persisted",
+      "render report confirms runtime-only video handling with no registered MP4",
+      "visual package validator passes in strict mode"
+    ],
+    "knownLimitations": [
+      "Remotion rendering in the current local environment falls back to chrome-screenshots-plus-ffmpeg instead of a persisted Remotion MP4.",
+      "Current validation output persists four preview frames and a report, but the generated MP4 remains runtime-only and unregistered.",
+      "Source review JSON preserves references to pipeline-run PNG captures that are not re-registered inside this package."
+    ]
+  }
+}

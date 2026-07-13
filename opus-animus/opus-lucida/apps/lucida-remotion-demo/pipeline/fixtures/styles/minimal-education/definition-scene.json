@@ -1,0 +1,35 @@
+{
+  "sceneId": "definition-family-loop",
+  "sceneType": "definition",
+  "durationInFrames": 150,
+  "motionPolicy": "full",
+  "density": "balanced",
+  "accentTone": "blue",
+  "eyebrow": "Family Minimal Education",
+  "title": "A family learning loop is a cue, action, and payoff adults can repeat together.",
+  "summary": "The frame teaches one idea at a time, keeps the headline dominant, and uses small semantic accents to make the explanation easy to scan in motion.",
+  "footer": "Use this layout for definitions, first principles, and short teaching resets.",
+  "callout": {
+    "label": "Teaching cue",
+    "value": "Show the signal before the rule."
+  },
+  "definition": {
+    "term": "Learning loop",
+    "phonetic": "cue -> action -> payoff",
+    "meaning": "A repeatable cycle that tells a child what to notice, what to do next, and what good completion feels like.",
+    "keyPoints": [
+      {
+        "label": "Cue",
+        "detail": "Keep the starting signal visible and consistent across adults."
+      },
+      {
+        "label": "Action",
+        "detail": "Name the smallest successful move, not the whole habit."
+      },
+      {
+        "label": "Payoff",
+        "detail": "Close with a calm confirmation that the routine is complete."
+      }
+    ]
+  }
+}

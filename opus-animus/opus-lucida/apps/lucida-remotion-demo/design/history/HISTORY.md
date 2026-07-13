@@ -123,3 +123,19 @@ Workflow documentation refactor and caption-sync integration.
 - Added `governance/` specifications for events, state machine, versioning, and artifact lifecycle.
 - Integrated script timing and caption lock as G02, ensuring script, voice, captions, visual beats, and Remotion share one versioned timeline.
 - Existing root-level documents remain historical references until migration is complete.
+
+## 2026-07-12 - Batch B006
+
+Terminal style MVP reference ingestion and library registration.
+
+| ID | Layer | Source | Status | Selected concepts | Target Lucida artifact | License / rights note |
+|---|---|---|---|---|---|---|
+| B006-S01 | Style + component grammar | `quarto-revealjs-terminal`, `terminal.css`, `terminalcss.xyz`, `panr/terminal-css`, `reveal.js`, `tabler`, `shadcn-admin` | prototype-created | Terminal window chrome, prompt path, scanline treatment, cyan/gold command palette, typed command lines, compact dashboard rows | `design/visual-library/styles/terminal-command-center/` and `design/visual-library/index.json#terminal-command-center` | Principles-only. No third-party screenshots, logos, font files, or source CSS are registered as production assets. Generated MP4 is not registered in the project library. |
+
+### Batch B006 decision
+
+- Registered `terminal-command-center` in `design/visual-library/index.json`.
+- Added style package, provenance, and artifact manifest under `design/visual-library/styles/terminal-command-center/`.
+- Stored source and validation references to JSON artifacts and preview frames only.
+- The MP4 render remains a runtime output under `pipeline/runs/terminal-video-20s/output/` and is not treated as a reusable library asset.
+- Package status is `prototype-created`; it is not yet `stable` because the local Remotion renderer still hangs and the validation render used the Chrome screenshot plus FFmpeg fallback.

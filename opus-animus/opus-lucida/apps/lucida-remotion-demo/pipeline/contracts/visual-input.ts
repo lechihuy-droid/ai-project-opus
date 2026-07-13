@@ -22,6 +22,13 @@ export type VisualFlowSource = {
   required?: boolean;
   artifactId?: string;
   path?: string;
+  url?: string;
+  urls?: string[];
+  name?: string;
+  note?: string;
+  notes?: string[];
+  family?: VisualFamily;
+  tags?: string[];
   include?: string[];
   exclude?: string[];
   maxFiles?: number;

@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "lucida-style-package/v1",
+  "id": "editorial-collage",
+  "label": "Editorial Collage",
+  "version": "1.0.0",
+  "status": "experimental",
+  "visualFamily": "editorial-collage",
+  "description": "Original deterministic editorial collage family for culture, multi-source narrative, evidence montage, and recap scenes with embed-only asset rendering and explicit source captions.",
+  "tags": ["editorial", "collage", "culture", "evidence", "asset-led"],
+  "supportedIntents": ["summarize", "takeaway", "compare", "narrative", "evidence"],
+  "recommendedIntents": ["summarize", "takeaway", "evidence"],
+  "avoidFor": [
+    "scenes requiring proprietary screenshots, logos, or brand-faithful imagery",
+    "asset-free lessons where media placeholders would dominate the frame",
+    "metric dashboards requiring precise tables or time-series comparison"
+  ],
+  "aspectRatios": ["9:16", "16:9"],
+  "contentCapacity": { "headlineChars": 108, "bodyChars": 620, "bulletsMaxItems": 4, "maxDataSeries": 0, "maxCodeLines": 0 },
+  "renderCost": { "tier": "medium", "estimatedSceneComplexity": 6, "notes": "Layered DOM frames, caption surfaces, and embedded SVG assets add moderate browser rendering cost without network or video decode." },
+  "reducedMotion": { "strategy": "reduced-motion-fade", "notes": "Reduced mode shortens layer travel, while static mode preserves final crop positions and source captions without randomized drift." },
+  "accessibility": { "contrast": "AA", "notes": "High-contrast cream and ink palette, bounded captions, fixed recap rail, and explicit placeholders preserve readable source status." },
+  "directorCompatibility": {
+    "selectionReason": "Choose when narration needs a culture-facing montage, multiple visible evidence sources, or a recap that compares source roles.",
+    "preferredNeighborFamilies": ["cinematic-type", "timeline-documentary", "paper-notebook"],
+    "bridgeFamilies": ["timeline-documentary", "technical-editorial"],
+    "hardBlocks": ["no embeddable assets", "requires proprietary imagery", "requires more than four simultaneous source captions"]
+  },
+  "files": { "visual": "./visual.json", "tokens": "./tokens.json", "componentMap": "./component-map.json", "provenance": "./provenance.md", "artifactManifest": "./artifact-manifest.json" },
+  "sourcePolicy": {
+    "copyStatus": "original",
+    "registeredMedia": "embed_asset only",
+    "notes": "All review media is original local SVG data embedded in typed fixtures. style_reference and context_only inputs are deliberately rejected by the renderer."
+  },
+  "sourceArtifacts": {
+    "normalizedInput": "./artifacts/review-scenes.json",
+    "mappedScenes": "./artifacts/review-scenes.json",
+    "compiledVideoMap": "./artifacts/demo-video-map.json",
+    "sourceReviewReport": "./artifacts/source-review-report.json"
+  },
+  "validationArtifacts": {
+    "demoVideoMap": "./artifacts/demo-video-map.json",
+    "renderProps": "./artifacts/render-props.json",
+    "previewFrames": ["./artifacts/frames/scene-01.png", "./artifacts/frames/scene-02.png", "./artifacts/frames/scene-03.png"],
+    "renderReport": "./artifacts/render-report.json",
+    "videoBinaryRegistered": false
+  },
+  "sourceReferences": [
+    { "id": "remotion-animating-properties", "url": "https://www.remotion.dev/docs/animating-properties", "selectedConcepts": ["deterministic frame input", "still rendering", "frame-driven animation"] }
+  ],
+  "qualityGate": {
+    "validated": true,
+    "checks": ["visual package validator --strict", "TypeScript noEmit", "Remotion still renders", "three portrait preview frames", "signalstats nonblank check", "embed_asset enforcement", "missing-asset placeholder"],
+    "knownLimitations": [
+      "Shared registry and Director routing remain untouched because they are outside this ownership slice.",
+      "16:9 support is metadata-ready only; this task renders portrait review frames only.",
+      "Stable promotion requires human visual approval."
+    ]
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "packageId": "minimal-education",
+  "compositionId": "MinimalEducationFamily",
+  "generatedAt": "2026-07-13T14:07:44.245Z",
+  "renderer": {
+    "entryPoint": "src/styles/families/minimal-education/render-entry.tsx",
+    "browserExecutable": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+    "imageFormat": "png"
+  },
+  "checks": [
+    "sha256",
+    "dimensions",
+    "signalstats-nonblank"
+  ],
+  "frames": [
+    {
+      "id": "scene-01",
+      "label": "Definition review frame",
+      "fixture": "pipeline/fixtures/styles/minimal-education/definition-scene.json",
+      "frame": 52,
+      "output": "design/visual-library/styles/minimal-education/artifacts/frames/scene-01.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 150,
+      "sha256": "c34af0b1668b58713a378c4565f7c87534f5df1f59c3cc9bb137e3e0c8dc7713",
+      "fileBytes": 710657,
+      "signalStats": {
+        "yAverage": 237.157,
+        "yLow": 237,
+        "yHigh": 247,
+        "saturationAverage": 4.02898
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 10
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "c34af0b1668b58713a378c4565f7c87534f5df1f59c3cc9bb137e3e0c8dc7713"
+      }
+    },
+    {
+      "id": "scene-02",
+      "label": "Steps review frame",
+      "fixture": "pipeline/fixtures/styles/minimal-education/steps-scene.json",
+      "frame": 74,
+      "output": "design/visual-library/styles/minimal-education/artifacts/frames/scene-02.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 180,
+      "sha256": "30200ec0a9a63afef09ee36cdc1765a8c1584c378ba9a16e3bcebc960a48eb2c",
+      "fileBytes": 754676,
+      "signalStats": {
+        "yAverage": 238.277,
+        "yLow": 238,
+        "yHigh": 253,
+        "saturationAverage": 4.78715
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 15
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "30200ec0a9a63afef09ee36cdc1765a8c1584c378ba9a16e3bcebc960a48eb2c"
+      }
+    },
+    {
+      "id": "scene-03",
+      "label": "Comparison dense review frame",
+      "fixture": "pipeline/fixtures/styles/minimal-education/comparison-dense-scene.json",
+      "frame": 96,
+      "output": "design/visual-library/styles/minimal-education/artifacts/frames/scene-03.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 210,
+      "sha256": "39a1d7464de451777033832b9d2fef2b4f43fd394a44b48b63ef2472a01b61a1",
+      "fileBytes": 846656,
+      "signalStats": {
+        "yAverage": 234.444,
+        "yLow": 223,
+        "yHigh": 247,
+        "saturationAverage": 6.38524
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 24
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "39a1d7464de451777033832b9d2fef2b4f43fd394a44b48b63ef2472a01b61a1"
+      }
+    }
+  ],
+  "summary": {
+    "renderedFrameCount": 3,
+    "nonBlankFrames": 3,
+    "deterministicFrames": 3,
+    "dimensionsValid": true
+  }
+}

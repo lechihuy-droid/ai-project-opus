@@ -1,0 +1,10 @@
+:root {
+  --terminal-bg: #080b10;
+  --terminal-surface: #111827;
+  --terminal-accent: #65d8e8;
+  --terminal-warning: #d6ad60;
+}
+
+.panel {
+  border: 1px solid var(--terminal-accent);
+}

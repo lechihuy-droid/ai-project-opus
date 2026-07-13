@@ -1,0 +1,230 @@
+{
+  "videoMap": {
+    "video": {
+      "title": "Terminal Style Atlas",
+      "subtitle": "A 20 second Remotion demo from collected terminal references",
+      "format": "vertical_9_16",
+      "width": 1080,
+      "height": 1920,
+      "fps": 30,
+      "durationSec": 20,
+      "style": "lucida_terminal_mvp",
+      "language": "en",
+      "sourceBlocks": [
+        "repo-quarto-terminal",
+        "repo-gioni-terminal",
+        "repo-letieu-terminal",
+        "theme-local-lucida-reference"
+      ]
+    },
+    "theme": {
+      "name": "lucida-terminal-mvp/v1",
+      "accent": "#65D8E8",
+      "accentSoft": "#D2B47A",
+      "background": "#080B10",
+      "foreground": "#F4F0E8",
+      "muted": "#8B98A8",
+      "skin": "modern-terminal"
+    },
+    "assets": [],
+    "scenes": [
+      {
+        "id": "terminal-hook",
+        "intent": "hook",
+        "templateId": "code-panel",
+        "templateRole": "scene",
+        "durationSec": 5,
+        "headline": "Terminal style atlas",
+        "subtitle": {
+          "text": "Collected terminal references become a reusable video style.",
+          "segments": [
+            "Collected terminal references become a reusable video style."
+          ]
+        },
+        "content": {
+          "kicker": "LUCIDA / STYLE_SCAN",
+          "title": "Terminal style atlas",
+          "subtitle": "Collected terminal references become a reusable video style.",
+          "footer": "source: quarto terminal + terminal.css",
+          "codeTitle": "~/lucida/style-scan",
+          "lines": [
+            "$ collect --family terminal --mode visual",
+            "> found: reveal terminal chrome",
+            "> found: css component systems",
+            "> found: cyan/gold command palette"
+          ],
+          "highlights": [
+            0,
+            1,
+            3
+          ]
+        },
+        "style": {
+          "density": "medium",
+          "safeArea": "tiktok",
+          "accent": "#65D8E8"
+        },
+        "motion": [
+          "terminal_reveal",
+          "line_typewriter"
+        ],
+        "backgroundEffect": "matrix-rain",
+        "transitionIn": "cross-dissolve",
+        "transitionOut": "cross-dissolve",
+        "subtitleMode": "bar",
+        "layout": "center-stage",
+        "reason": "Intro scene using the terminal chrome and typing behavior collected from terminal references."
+      },
+      {
+        "id": "terminal-tokens",
+        "intent": "code_explanation",
+        "templateId": "code-panel",
+        "templateRole": "scene",
+        "durationSec": 5,
+        "headline": "Palette locked",
+        "subtitle": {
+          "text": "The MVP keeps glow restrained and uses cyan with champagne accents.",
+          "segments": [
+            "The MVP keeps glow restrained and uses cyan with champagne accents."
+          ]
+        },
+        "content": {
+          "kicker": "THEME / TOKENS",
+          "title": "Palette locked",
+          "subtitle": "Cyan for command focus, gold for status, dark navy for depth.",
+          "footer": "scanline opacity: low",
+          "codeTitle": "terminal.tokens.css",
+          "lines": [
+            "--term-bg: #080B10;",
+            "--term-panel: #10151D;",
+            "--term-accent: #65D8E8;",
+            "--term-warn: #D2B47A;",
+            "--term-text: #F4F0E8;"
+          ],
+          "highlights": [
+            2,
+            3
+          ]
+        },
+        "style": {
+          "density": "medium",
+          "safeArea": "tiktok",
+          "accent": "#D2B47A"
+        },
+        "motion": [
+          "terminal_reveal",
+          "line_typewriter"
+        ],
+        "backgroundEffect": "grid-pulse",
+        "transitionIn": "cross-dissolve",
+        "transitionOut": "cross-dissolve",
+        "subtitleMode": "bar",
+        "layout": "center-stage",
+        "reason": "Theme-token scene distilled from collected terminal CSS variables and palettes."
+      },
+      {
+        "id": "terminal-components",
+        "intent": "process",
+        "templateId": "progress-steps",
+        "templateRole": "scene",
+        "durationSec": 5,
+        "headline": "Components to reuse",
+        "subtitle": {
+          "text": "Terminal is the first reusable style kit for the visual input flow.",
+          "segments": [
+            "Terminal is the first reusable style kit for the visual input flow."
+          ]
+        },
+        "content": {
+          "kicker": "UI / COMPONENTS",
+          "title": "Components to reuse",
+          "subtitle": "From references to deterministic Remotion primitives.",
+          "footer": "terminal MVP",
+          "steps": [
+            {
+              "number": "01",
+              "title": "Window chrome",
+              "body": "Title bar, prompt path, status indicator"
+            },
+            {
+              "number": "02",
+              "title": "Code panel",
+              "body": "Typed lines, highlighted output, cursor"
+            },
+            {
+              "number": "03",
+              "title": "Dashboard rows",
+              "body": "Metrics, progress, tags, source provenance"
+            },
+            {
+              "number": "04",
+              "title": "Scene router",
+              "body": "Map reference events into video templates"
+            }
+          ]
+        },
+        "style": {
+          "density": "medium",
+          "safeArea": "tiktok",
+          "accent": "#65D8E8"
+        },
+        "motion": [
+          "staggered_list",
+          "title_reveal"
+        ],
+        "backgroundEffect": "matrix-rain",
+        "transitionIn": "cross-dissolve",
+        "transitionOut": "cross-dissolve",
+        "subtitleMode": "bar",
+        "layout": "top-title",
+        "reason": "Dashboard-like process scene showing the reusable terminal primitives."
+      },
+      {
+        "id": "terminal-close",
+        "intent": "takeaway",
+        "templateId": "code-panel",
+        "templateRole": "scene",
+        "durationSec": 5,
+        "headline": "Ready for next families",
+        "subtitle": {
+          "text": "The same flow can now expand into editorial, dashboard, product, and infographic styles.",
+          "segments": [
+            "The same flow can now expand into editorial, dashboard, product, and infographic styles."
+          ]
+        },
+        "content": {
+          "kicker": "NEXT / ATLAS",
+          "title": "Ready for next families",
+          "subtitle": "Terminal proved the pipeline. Now we scale the atlas.",
+          "footer": "exit 0",
+          "codeTitle": "~/lucida/visual-atlas",
+          "lines": [
+            "$ npm run visual-flow",
+            "> terminal MVP rendered",
+            "> next: editorial + dashboard + product",
+            "> status: ready"
+          ],
+          "highlights": [
+            1,
+            3
+          ]
+        },
+        "style": {
+          "density": "medium",
+          "safeArea": "tiktok",
+          "accent": "#D2B47A"
+        },
+        "motion": [
+          "terminal_reveal",
+          "line_typewriter"
+        ],
+        "backgroundEffect": "grid-pulse",
+        "transitionIn": "cross-dissolve",
+        "transitionOut": "cross-dissolve",
+        "subtitleMode": "bar",
+        "layout": "bottom-statement",
+        "reason": "Closing command scene positioning terminal as the MVP for the wider style atlas."
+      }
+    ]
+  }
+}

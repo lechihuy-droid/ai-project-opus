@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hello World</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      html, body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background:
+          linear-gradient(180deg, #08111f 0%, #0f1726 48%, #070b12 100%);
+        font-family: Inter, Segoe UI, Arial, sans-serif;
+      }
+      #stage {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        color: #f4f7fb;
+      }
+      .grid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        background-size: 96px 96px;
+        mask-image: radial-gradient(circle at center, black 36%, transparent 100%);
+        opacity: 0.6;
+      }
+      .panel {
+        position: absolute;
+        left: 160px;
+        right: 160px;
+        top: 190px;
+        bottom: 190px;
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 12px;
+        background: rgba(8, 13, 22, 0.66);
+        backdrop-filter: blur(16px);
+        box-shadow: 0 28px 80px rgba(0, 0, 0, 0.35);
+      }
+      .eyebrow {
+        position: absolute;
+        top: 56px;
+        left: 64px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 22px;
+        color: rgba(189, 218, 255, 0.75);
+      }
+      .title {
+        position: absolute;
+        left: 64px;
+        top: 150px;
+        margin: 0;
+        font-size: 122px;
+        line-height: 0.95;
+        letter-spacing: 0;
+        font-weight: 800;
+        transform: translateY(36px);
+        opacity: 0;
+        animation: title-in 5.5s ease both;
+      }
+      .subtitle {
+        position: absolute;
+        left: 68px;
+        top: 350px;
+        margin: 0;
+        max-width: 920px;
+        font-size: 36px;
+        line-height: 1.35;
+        color: rgba(233, 240, 255, 0.82);
+        transform: translateY(26px);
+        opacity: 0;
+        animation: subtitle-in 5.5s 0.4s ease both;
+      }
+      .accent {
+        position: absolute;
+        left: 64px;
+        right: 64px;
+        bottom: 72px;
+        height: 6px;
+        background: linear-gradient(90deg, #58a6ff 0%, #7c5cff 50%, #3ddc97 100%);
+        border-radius: 999px;
+        transform-origin: left center;
+        transform: scaleX(0);
+        animation: line-grow 5.5s 0.9s ease both;
+      }
+      .tag {
+        position: absolute;
+        right: 64px;
+        top: 64px;
+        padding: 12px 18px;
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 999px;
+        color: rgba(255,255,255,0.78);
+        font-size: 18px;
+        letter-spacing: 0.04em;
+      }
+      @keyframes title-in {
+        0% { opacity: 0; transform: translateY(36px) scale(0.98); }
+        18% { opacity: 1; transform: translateY(0) scale(1); }
+        86% { opacity: 1; transform: translateY(0) scale(1); }
+        100% { opacity: 0.94; transform: translateY(0) scale(1); }
+      }
+      @keyframes subtitle-in {
+        0% { opacity: 0; transform: translateY(26px); }
+        22% { opacity: 0; transform: translateY(26px); }
+        40% { opacity: 1; transform: translateY(0); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes line-grow {
+        0% { transform: scaleX(0); }
+        28% { transform: scaleX(0); }
+        68% { transform: scaleX(1); }
+        100% { transform: scaleX(1); }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="stage"
+      data-composition-id="hello-world"
+      data-start="0"
+      data-duration="6"
+      data-width="1920"
+      data-height="1080"
+      data-no-timeline
+    >
+      <div class="grid"></div>
+      <div class="panel">
+        <div class="tag clip" data-start="0" data-duration="6">sample / hello world</div>
+        <div class="eyebrow clip" data-start="0" data-duration="6">HyperFrames / local smoke test</div>
+        <h1 class="title clip" data-start="0" data-duration="6">Hello, HyperFrames</h1>
+        <p class="subtitle clip" data-start="0" data-duration="6">
+          HTML composition, seekable timing, and a deterministic render path.
+        </p>
+        <div class="accent clip" data-start="0" data-duration="6"></div>
+      </div>
+    </div>
+  </body>
+</html>

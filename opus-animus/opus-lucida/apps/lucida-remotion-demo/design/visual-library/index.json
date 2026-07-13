@@ -5,74 +5,228 @@
     {
       "id": "cinematic-hook",
       "label": "Cinematic Hook",
-      "bestFor": ["hook", "big claim", "chapter opening", "surprising question"],
-      "preferredTemplates": ["cinematic-title-intro", "chapter-title", "title-split", "glitch-text", "animated-text"],
-      "backgroundEffects": ["starfield", "gradient-shift", "vignette-pulse"],
+      "bestFor": [
+        "hook",
+        "big claim",
+        "chapter opening",
+        "surprising question"
+      ],
+      "preferredTemplates": [
+        "cinematic-title-intro",
+        "chapter-title",
+        "title-split",
+        "glitch-text",
+        "animated-text"
+      ],
+      "backgroundEffects": [
+        "starfield",
+        "gradient-shift",
+        "vignette-pulse"
+      ],
       "density": "low",
       "notes": "Use for the first or reset scene. One strong headline, one short supporting line."
     },
     {
       "id": "repo-code",
       "label": "Repo / Code Surface",
-      "bestFor": ["github repo reveal", "file tree", "terminal", "implementation detail", "tool execution"],
-      "preferredTemplates": ["code-panel", "typewriter-subtitle", "text-highlight", "glitch-text"],
-      "backgroundEffects": ["matrix-rain", "grid-pulse", "noise-grain"],
+      "bestFor": [
+        "github repo reveal",
+        "file tree",
+        "terminal",
+        "implementation detail",
+        "tool execution"
+      ],
+      "preferredTemplates": [
+        "code-panel",
+        "typewriter-subtitle",
+        "text-highlight",
+        "glitch-text"
+      ],
+      "backgroundEffects": [
+        "matrix-rain",
+        "grid-pulse",
+        "noise-grain"
+      ],
       "density": "medium",
       "notes": "Use only when code, repo structure, or execution is central to narration."
     },
     {
       "id": "contrast-panel",
       "label": "Contrast Panel",
-      "bestFor": ["old vs new", "myth vs reality", "before after", "two product behaviors"],
-      "preferredTemplates": ["split-screen", "comparison-chart", "image-comparison-slider", "card-flip"],
-      "backgroundEffects": ["noise-grain", "gradient-shift"],
+      "bestFor": [
+        "old vs new",
+        "myth vs reality",
+        "before after",
+        "two product behaviors"
+      ],
+      "preferredTemplates": [
+        "split-screen",
+        "comparison-chart",
+        "image-comparison-slider",
+        "card-flip"
+      ],
+      "backgroundEffects": [
+        "noise-grain",
+        "gradient-shift"
+      ],
       "density": "medium",
       "notes": "Use for exactly two sides. Do not force three-plus concepts into this family."
     },
     {
       "id": "pattern-list",
       "label": "Pattern List",
-      "bestFor": ["enumeration", "framework", "pattern extraction", "checklist", "principles"],
-      "preferredTemplates": ["animated-list", "notification-pop", "floating-bubble-text", "text-highlight"],
-      "backgroundEffects": ["grid-pulse", "bokeh-circles", "noise-grain"],
+      "bestFor": [
+        "enumeration",
+        "framework",
+        "pattern extraction",
+        "checklist",
+        "principles"
+      ],
+      "preferredTemplates": [
+        "animated-list",
+        "notification-pop",
+        "floating-bubble-text",
+        "text-highlight"
+      ],
+      "backgroundEffects": [
+        "grid-pulse",
+        "bokeh-circles",
+        "noise-grain"
+      ],
       "density": "high",
       "notes": "Use for 3 to 6 short items. Long explanations stay in subtitle, not cards."
     },
     {
       "id": "workflow-process",
       "label": "Workflow Process",
-      "bestFor": ["step sequence", "pipeline", "operating flow", "agent workflow", "conversion process"],
-      "preferredTemplates": ["progress-steps", "progress-bars", "diagram", "animated-list"],
-      "backgroundEffects": ["bokeh-circles", "grid-pulse", "starfield"],
+      "bestFor": [
+        "step sequence",
+        "pipeline",
+        "operating flow",
+        "agent workflow",
+        "conversion process"
+      ],
+      "preferredTemplates": [
+        "progress-steps",
+        "progress-bars",
+        "diagram",
+        "animated-list"
+      ],
+      "backgroundEffects": [
+        "bokeh-circles",
+        "grid-pulse",
+        "starfield"
+      ],
       "density": "medium",
       "notes": "Use progress steps for sequential flow. Use diagram only when links between entities matter."
     },
     {
       "id": "data-proof",
       "label": "Data Proof",
-      "bestFor": ["metric", "count", "growth", "rank", "performance proof"],
-      "preferredTemplates": ["stat-counter", "progress-bars", "chart-animation", "area-chart", "donut-chart"],
-      "backgroundEffects": ["grid-pulse", "noise-grain"],
+      "bestFor": [
+        "metric",
+        "count",
+        "growth",
+        "rank",
+        "performance proof"
+      ],
+      "preferredTemplates": [
+        "stat-counter",
+        "progress-bars",
+        "chart-animation",
+        "area-chart",
+        "donut-chart"
+      ],
+      "backgroundEffects": [
+        "grid-pulse",
+        "noise-grain"
+      ],
       "density": "medium",
       "notes": "Use only when script has real numeric content. Do not invent metrics."
     },
     {
       "id": "asset-gallery",
       "label": "Asset Gallery",
-      "bestFor": ["screenshots", "visual examples", "repo images", "product gallery", "reference collection"],
-      "preferredTemplates": ["image-carousel", "gallery-grid", "photo-stack", "masonry-gallery", "rotating-carousel"],
-      "backgroundEffects": ["bokeh-circles", "gradient-shift", "noise-grain"],
+      "bestFor": [
+        "screenshots",
+        "visual examples",
+        "repo images",
+        "product gallery",
+        "reference collection"
+      ],
+      "preferredTemplates": [
+        "image-carousel",
+        "gallery-grid",
+        "photo-stack",
+        "masonry-gallery",
+        "rotating-carousel"
+      ],
+      "backgroundEffects": [
+        "bokeh-circles",
+        "gradient-shift",
+        "noise-grain"
+      ],
       "density": "high",
       "notes": "Use only with usable assets marked embed_asset. Style references are not embeddable."
     },
     {
       "id": "closing-cta",
       "label": "Closing CTA",
-      "bestFor": ["takeaway", "follow prompt", "next episode", "summary"],
-      "preferredTemplates": ["end-card", "subscribe-reminder", "credits-roll", "quote-card"],
-      "backgroundEffects": ["gradient-shift", "starfield"],
+      "bestFor": [
+        "takeaway",
+        "follow prompt",
+        "next episode",
+        "summary"
+      ],
+      "preferredTemplates": [
+        "end-card",
+        "subscribe-reminder",
+        "credits-roll",
+        "quote-card"
+      ],
+      "backgroundEffects": [
+        "gradient-shift",
+        "starfield"
+      ],
       "density": "medium",
       "notes": "Return to the dominant visual language and avoid introducing new concepts."
+    },
+    {
+      "id": "terminal-command-center",
+      "label": "Terminal Command Center",
+      "bestFor": [
+        "terminal MVP",
+        "repo walkthrough",
+        "agent workflow",
+        "style scan",
+        "developer explainer"
+      ],
+      "preferredTemplates": [
+        "code-panel",
+        "progress-steps",
+        "typewriter-subtitle"
+      ],
+      "backgroundEffects": [
+        "matrix-rain",
+        "grid-pulse",
+        "noise-grain"
+      ],
+      "density": "medium",
+      "status": "prototype-created",
+      "packageRef": "design/visual-library/styles/terminal-command-center/style-package.json",
+      "validationArtifacts": {
+        "videoMap": "design/visual-library/styles/terminal-command-center/artifacts/terminal-demo-video-map.json",
+        "renderReport": "design/visual-library/styles/terminal-command-center/artifacts/validation-render-report.json",
+        "previewFrames": "design/visual-library/styles/terminal-command-center/artifacts/frames/",
+        "videoBinaryRegistered": false
+      },
+      "sourceArtifacts": {
+        "ingestConfig": "pipeline/fixtures/visual-reference-flow.json",
+        "rawInput": "design/visual-library/styles/terminal-command-center/artifacts/visual-reference-raw-input.json",
+        "normalizedInput": "design/visual-library/styles/terminal-command-center/artifacts/visual-reference-normalized-input.json",
+        "sourceReview": "design/visual-library/styles/terminal-command-center/artifacts/source-review-report.json"
+      },
+      "notes": "Terminal MVP package derived from terminal/reveal/dashboard references. Store source metadata, tokens, map, and preview frames in the library; do not register the generated MP4 as a reusable asset."
     }
   ]
 }

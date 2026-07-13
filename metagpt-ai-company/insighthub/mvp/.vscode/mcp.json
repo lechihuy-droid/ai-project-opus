@@ -1,9 +1,0 @@
-{
-  "servers": {
-    "insighthub-mcp": {
-      "type": "stdio",
-      "command": "C:\\Users\\HUY\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
-      "args": ["-m", "insighthub_mcp.server"]
-    }
-  }
-}

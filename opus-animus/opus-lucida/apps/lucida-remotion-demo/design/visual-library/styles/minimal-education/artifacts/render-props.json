@@ -1,0 +1,11 @@
+{
+  "packageId": "minimal-education",
+  "compositionId": "MinimalEducationFamily",
+  "entryPoint": "src/styles/families/minimal-education/render-entry.tsx",
+  "imageFormat": "png",
+  "qualityChecks": [
+    "sha256",
+    "dimensions",
+    "signalstats-nonblank"
+  ]
+}

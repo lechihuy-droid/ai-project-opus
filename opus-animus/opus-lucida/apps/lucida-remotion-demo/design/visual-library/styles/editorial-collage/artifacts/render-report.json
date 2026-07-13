@@ -1,0 +1,133 @@
+{
+  "status": "ok",
+  "packageId": "editorial-collage",
+  "compositionId": "EditorialCollageFamilyReview",
+  "generatedAt": "2026-07-13T14:22:52.919Z",
+  "renderer": {
+    "entryPoint": "src/styles/families/editorial-collage/render-entry.tsx",
+    "browserExecutable": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+    "imageFormat": "png",
+    "rasterDependencies": false
+  },
+  "checks": [
+    "sha256",
+    "dimensions",
+    "signalstats-nonblank",
+    "embed-asset-only",
+    "missing-asset-placeholder",
+    "deterministic-crop"
+  ],
+  "assetPolicy": {
+    "renderableClassification": "embed_asset",
+    "rejectedClassifications": [
+      "style_reference",
+      "context_only"
+    ],
+    "missingAssetBehavior": "shared deliberate placeholder",
+    "deterministicCrop": "fixture xPercent/yPercent/zoom clamped in renderer"
+  },
+  "frames": [
+    {
+      "id": "scene-01",
+      "label": "Montage review frame",
+      "sceneKey": "normal",
+      "frame": 58,
+      "output": "design/visual-library/styles/editorial-collage/artifacts/frames/scene-01.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 180,
+      "sha256": "951d474f4b1d2331bf2d4b315359534354692b936465becb896c16fc6ad93e82",
+      "fileBytes": 1484120,
+      "signalStats": {
+        "yAverage": 60.4983,
+        "yLow": 19,
+        "yHigh": 165,
+        "saturationAverage": 8.30571
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 146
+      },
+      "deterministicRepeat": {
+        "passed": true,
+        "repeatSha256": "951d474f4b1d2331bf2d4b315359534354692b936465becb896c16fc6ad93e82"
+      }
+    },
+    {
+      "id": "scene-02",
+      "label": "Evidence review frame",
+      "sceneKey": "dense",
+      "frame": 68,
+      "output": "design/visual-library/styles/editorial-collage/artifacts/frames/scene-02.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 180,
+      "sha256": "c25540c1ceed90125b8536dab2c7c8fe7d42b6430632766fb7cbb84eed09c057",
+      "fileBytes": 1491246,
+      "signalStats": {
+        "yAverage": 54.711,
+        "yLow": 13,
+        "yHigh": 186,
+        "saturationAverage": 6.67407
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 173
+      },
+      "deterministicRepeat": {
+        "passed": true,
+        "repeatSha256": "c25540c1ceed90125b8536dab2c7c8fe7d42b6430632766fb7cbb84eed09c057"
+      }
+    },
+    {
+      "id": "scene-03",
+      "label": "Recap edge review frame",
+      "sceneKey": "edge",
+      "frame": 36,
+      "output": "design/visual-library/styles/editorial-collage/artifacts/frames/scene-03.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 180,
+      "sha256": "2ed755fda7516de01a7c25b57a52e1bf07e01bafd8d368cd7171935812b0a7d8",
+      "fileBytes": 1650098,
+      "signalStats": {
+        "yAverage": 61.606,
+        "yLow": 20,
+        "yHigh": 183,
+        "saturationAverage": 7.71489
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 163
+      },
+      "deterministicRepeat": {
+        "passed": true,
+        "repeatSha256": "2ed755fda7516de01a7c25b57a52e1bf07e01bafd8d368cd7171935812b0a7d8"
+      }
+    }
+  ],
+  "summary": {
+    "renderedFrameCount": 3,
+    "nonBlankFrames": 3,
+    "deterministicFrames": 3,
+    "dimensionsValid": true
+  },
+  "validation": {
+    "visualPackageValidatorStrict": "pending",
+    "typescriptNoEmit": "pending"
+  },
+  "limitations": [
+    "Shared registry and Director routing remain untouched because they are outside this ownership slice.",
+    "16:9 support is metadata-ready only; this task renders portrait review frames only.",
+    "Stable promotion requires human visual approval."
+  ]
+}

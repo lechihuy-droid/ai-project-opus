@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "lucida-artifact-manifest/v1",
+  "packageId": "broken-paths-wrong",
+  "generatedAt": "2026-07-12T00:00:00.000Z",
+  "artifacts": [
+    {
+      "id": "style-package",
+      "kind": "style_spec",
+      "path": "./style-package.json",
+      "usage": "library_record"
+    },
+    {
+      "id": "visual",
+      "kind": "visual_spec",
+      "path": "./visual.json",
+      "usage": "package_contract"
+    },
+    {
+      "id": "tokens",
+      "kind": "tokens",
+      "path": "./tokens.json",
+      "usage": "package_contract"
+    },
+    {
+      "id": "component-map",
+      "kind": "component_map",
+      "path": "./component-map.json",
+      "usage": "package_contract"
+    },
+    {
+      "id": "provenance",
+      "kind": "provenance",
+      "path": "./provenance.md",
+      "usage": "audit"
+    },
+    {
+      "id": "render-report",
+      "kind": "render_report",
+      "path": "./artifacts/render-report.json",
+      "usage": "validation_report"
+    }
+  ]
+}

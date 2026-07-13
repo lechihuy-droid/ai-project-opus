@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "lucida-component-map/v1",
+  "id": "cinematic-type",
+  "primitives": [
+    {
+      "id": "oversized-headline-block",
+      "role": "content",
+      "notes": "Dominant type surface that carries the scene."
+    },
+    {
+      "id": "texture-field-placeholder",
+      "role": "surface",
+      "notes": "Single restrained placeholder field for photographic or textural mood."
+    },
+    {
+      "id": "chapter-eyebrow-rail",
+      "role": "process",
+      "notes": "Small structural marker for opener, quote, or chapter reset context."
+    }
+  ],
+  "templates": [
+    {
+      "templateId": "title-card",
+      "supportedLayouts": [
+        "center-stage",
+        "bottom-statement"
+      ],
+      "backgroundEffects": [
+        "film-rule",
+        "texture-band"
+      ],
+      "motionPreset": "cinematic-rise",
+      "primitives": [
+        "oversized-headline-block",
+        "texture-field-placeholder",
+        "chapter-eyebrow-rail"
+      ],
+      "notes": "Hook scenes where one sentence needs full dominance."
+    },
+    {
+      "templateId": "quote-card",
+      "supportedLayouts": [
+        "center-stage",
+        "full-bleed-visual"
+      ],
+      "backgroundEffects": [
+        "film-rule"
+      ],
+      "motionPreset": "cinematic-rise",
+      "primitives": [
+        "oversized-headline-block",
+        "texture-field-placeholder",
+        "chapter-eyebrow-rail"
+      ],
+      "notes": "Quote-led scenes with attribution and side field."
+    },
+    {
+      "templateId": "chapter-reset",
+      "supportedLayouts": [
+        "bottom-statement",
+        "full-bleed-visual"
+      ],
+      "backgroundEffects": [
+        "texture-band"
+      ],
+      "motionPreset": "cinematic-rise",
+      "primitives": [
+        "oversized-headline-block",
+        "texture-field-placeholder",
+        "chapter-eyebrow-rail"
+      ],
+      "notes": "Long-form transition and chapter boundary scenes."
+    }
+  ]
+}

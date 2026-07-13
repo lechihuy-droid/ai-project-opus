@@ -1,0 +1,8 @@
+{
+  "packageId": "editorial-collage",
+  "scenes": [
+    { "sceneKey": "normal", "sceneLabel": "Normal montage", "sceneType": "montage", "fixture": "pipeline/fixtures/styles/editorial-collage/normal.fixture.ts", "density": "balanced", "motionPolicy": "full", "embedAssets": 3, "placeholderAssets": 0 },
+    { "sceneKey": "dense", "sceneLabel": "Dense evidence", "sceneType": "evidence", "fixture": "pipeline/fixtures/styles/editorial-collage/dense.fixture.ts", "density": "dense", "motionPolicy": "reduce", "embedAssets": 3, "placeholderAssets": 0 },
+    { "sceneKey": "edge", "sceneLabel": "Edge recap", "sceneType": "recap", "fixture": "pipeline/fixtures/styles/editorial-collage/edge.fixture.ts", "density": "balanced", "motionPolicy": "static", "embedAssets": 2, "placeholderAssets": 2 }
+  ]
+}

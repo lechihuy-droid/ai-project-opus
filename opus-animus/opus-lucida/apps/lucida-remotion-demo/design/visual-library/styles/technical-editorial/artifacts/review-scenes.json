@@ -1,0 +1,20 @@
+{
+  "packageId": "technical-editorial",
+  "reviewScenes": [
+    {
+      "sceneKey": "normal",
+      "label": "Normal",
+      "purpose": "Baseline explainer with balanced title, rail, diagram, and code evidence."
+    },
+    {
+      "sceneKey": "dense",
+      "label": "Dense",
+      "purpose": "High-density recap that stresses copy segmentation and reduced-motion behavior."
+    },
+    {
+      "sceneKey": "edge",
+      "label": "Edge",
+      "purpose": "Edge-case review for longer labels, ownership caveats, and static review rendering."
+    }
+  ]
+}

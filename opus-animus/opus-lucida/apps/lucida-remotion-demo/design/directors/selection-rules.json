@@ -42,6 +42,15 @@
     "code_explanation": ["repo-code"],
     "cta": ["closing-cta"]
   },
+  "layoutRules": {
+    "archetypeLibrary": "Layout archetype definitions live in design/layout-library/index.json.",
+    "effectiveDefault": "top-title",
+    "rules": [
+      "No two consecutive scenes may use the same effective layout (a missing layout field counts as top-title).",
+      "A video with 5 or more scenes must use at least 3 distinct layouts.",
+      "Scenes with intent hook or takeaway should not use top-title; prefer center-stage, oversized-type, or bottom-statement."
+    ]
+  },
   "subtitlePolicy": {
     "defaultMode": "bar",
     "maxSegmentsPerScene": 2,

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Typography</title>
+    <style>
+      html, body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #f5f2eb;
+        font-family: Inter, Segoe UI, Arial, sans-serif;
+      }
+      #stage {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        color: #0d1016;
+      }
+      .rail {
+        position: absolute;
+        inset: 104px 118px 104px 118px;
+        border: 1px solid rgba(13,16,22,0.12);
+        border-radius: 14px;
+        background: rgba(255,255,255,0.62);
+      }
+      .word {
+        position: absolute;
+        left: 140px;
+        margin: 0;
+        font-size: 132px;
+        line-height: 0.92;
+        letter-spacing: 0;
+        font-weight: 900;
+        opacity: 0;
+        transform: translateY(40px) scale(0.98);
+      }
+      .word.one { top: 150px; animation: word-in 7s ease both; }
+      .word.two { top: 360px; animation: word-in 7s 1.0s ease both; }
+      .word.three { top: 570px; animation: word-in 7s 2.0s ease both; }
+      .meta {
+        position: absolute;
+        left: 144px;
+        bottom: 156px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 20px;
+        color: rgba(13,16,22,0.68);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .swatch {
+        position: absolute;
+        right: 160px;
+        top: 170px;
+        width: 320px;
+        height: 650px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, #111827 0%, #1f2937 38%, #c084fc 38%, #f472b6 69%, #60a5fa 69%, #22c55e 100%);
+        box-shadow: 0 24px 50px rgba(0,0,0,0.18);
+        transform: scaleY(0.92);
+        opacity: 0;
+        animation: card-in 7s 0.3s ease both;
+      }
+      .swatch:before {
+        content: "";
+        position: absolute;
+        inset: 20px;
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,0.2);
+      }
+      @keyframes word-in {
+        0% { opacity: 0; transform: translateY(40px) scale(0.98); }
+        12% { opacity: 1; transform: translateY(0) scale(1); }
+        75% { opacity: 1; transform: translateY(0) scale(1); }
+        100% { opacity: 1; transform: translateY(-8px) scale(1); }
+      }
+      @keyframes card-in {
+        0% { opacity: 0; transform: translateY(36px) scaleY(0.92); }
+        20% { opacity: 1; transform: translateY(0) scaleY(1); }
+        100% { opacity: 1; transform: translateY(0) scaleY(1); }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="stage"
+      data-composition-id="typography"
+      data-start="0"
+      data-duration="7"
+      data-width="1920"
+      data-height="1080"
+      data-no-timeline
+    >
+      <div class="rail"></div>
+      <div class="swatch clip" data-start="0" data-duration="7"></div>
+      <h1 class="word one clip" data-start="0" data-duration="7">Design</h1>
+      <h1 class="word two clip" data-start="0" data-duration="7">Type</h1>
+      <h1 class="word three clip" data-start="0" data-duration="7">Motion</h1>
+      <div class="meta clip" data-start="0" data-duration="7">Typography sample / local render</div>
+    </div>
+  </body>
+</html>

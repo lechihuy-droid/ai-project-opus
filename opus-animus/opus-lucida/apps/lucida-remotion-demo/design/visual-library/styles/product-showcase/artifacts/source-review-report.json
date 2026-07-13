@@ -1,0 +1,38 @@
+{
+  "packageId": "product-showcase",
+  "reviewedAt": "2026-07-13T00:00:00.000Z",
+  "status": "ok",
+  "internalReferences": [
+    "design/planning/ALL_STYLE_IMPLEMENTATION_PLAN.md",
+    "design/schemas/visual-package.schema.json",
+    "schemas/video-map.schema.json",
+    "src/styles/core/index.ts",
+    "src/styles/core/media.tsx",
+    "design/visual-library/styles/dashboard-data/"
+  ],
+  "ownership": {
+    "allowedPaths": [
+      "src/styles/families/product-showcase/",
+      "design/visual-library/styles/product-showcase/",
+      "pipeline/fixtures/styles/product-showcase/"
+    ],
+    "sharedFilesEdited": false
+  },
+  "assetPolicy": {
+    "embedAssetRenders": true,
+    "styleReferencePlaceholder": true,
+    "contextOnlyPlaceholder": true,
+    "missingAssetPlaceholder": true,
+    "thirdPartyMediaRegistered": false
+  },
+  "determinism": {
+    "cropInputs": ["orientation", "focalPoint.x", "focalPoint.y"],
+    "networkRequired": false,
+    "reviewAssets": "original fixture SVG data URI strings"
+  },
+  "notes": [
+    "Product/UI is the first-viewport signal in all three scenes.",
+    "No marketing split hero is used.",
+    "Registry integration is outside this ownership slice."
+  ]
+}

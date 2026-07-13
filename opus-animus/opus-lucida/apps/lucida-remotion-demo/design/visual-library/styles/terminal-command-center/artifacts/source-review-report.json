@@ -1,0 +1,65 @@
+{
+  "generatedAt": "2026-07-12T12:06:51.062Z",
+  "results": [
+    {
+      "sourceId": "repo-quarto-terminal",
+      "png": "pipeline\\runs\\visual-reference-ingest-1\\source-review\\repo-quarto-terminal.png"
+    },
+    {
+      "sourceId": "repo-letieu-terminal",
+      "png": "pipeline\\runs\\visual-reference-ingest-1\\source-review\\repo-letieu-terminal.png"
+    },
+    {
+      "sourceId": "repo-gioni-terminal",
+      "png": "pipeline\\runs\\visual-reference-ingest-1\\source-review\\repo-gioni-terminal.png"
+    },
+    {
+      "sourceId": "repo-panr-terminal",
+      "png": "pipeline\\runs\\visual-reference-ingest-1\\source-review\\repo-panr-terminal.png"
+    },
+    {
+      "sourceId": "repo-tabler-dashboard",
+      "png": "pipeline\\runs\\visual-reference-ingest-1\\source-review\\repo-tabler-dashboard.png"
+    },
+    {
+      "sourceId": "repo-shadcn-admin",
+      "png": "pipeline\\runs\\visual-reference-ingest-1\\source-review\\repo-shadcn-admin.png"
+    },
+    {
+      "sourceId": "repo-revealjs",
+      "png": "pipeline\\runs\\visual-reference-ingest-1\\source-review\\repo-revealjs.png"
+    },
+    {
+      "sourceId": "web-terminalcss",
+      "png": "pipeline\\runs\\visual-reference-ingest-1\\source-review\\web-terminalcss.png"
+    },
+    {
+      "sourceId": "web-panr-terminal",
+      "png": "pipeline\\runs\\visual-reference-ingest-1\\source-review\\web-panr-terminal.png"
+    },
+    {
+      "sourceId": "web-tabler",
+      "png": "pipeline\\runs\\visual-reference-ingest-1\\source-review\\web-tabler.png"
+    },
+    {
+      "sourceId": "web-revealjs",
+      "png": "pipeline\\runs\\visual-reference-ingest-1\\source-review\\web-revealjs.png"
+    },
+    {
+      "sourceId": "theme-local-lucida-reference",
+      "png": "pipeline\\runs\\visual-reference-ingest-1\\source-review\\theme-local-lucida-reference.png"
+    },
+    {
+      "sourceId": "theme-reveal-black",
+      "png": "pipeline\\runs\\visual-reference-ingest-1\\source-review\\theme-reveal-black.png"
+    },
+    {
+      "sourceId": "image-repo-og-terminal",
+      "png": "pipeline\\runs\\visual-reference-ingest-1\\source-review\\image-repo-og-terminal.png"
+    },
+    {
+      "sourceId": "image-repo-og-dashboard",
+      "png": "pipeline\\runs\\visual-reference-ingest-1\\source-review\\image-repo-og-dashboard.png"
+    }
+  ]
+}

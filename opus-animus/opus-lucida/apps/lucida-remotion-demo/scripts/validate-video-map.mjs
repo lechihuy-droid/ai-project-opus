@@ -114,6 +114,42 @@ for (const scene of videoMap.scenes ?? []) {
   });
 }
 
+// Layout rhythm warnings (batch 1). Effective layout defaults to "top-title"
+// when the field is absent. Warnings only — never errors.
+const scenes = videoMap.scenes ?? [];
+const effectiveLayouts = scenes.map((scene) => scene.layout ?? "top-title");
+
+// (a) Two consecutive scenes with the same effective layout.
+for (let i = 1; i < scenes.length; i += 1) {
+  if (effectiveLayouts[i] === effectiveLayouts[i - 1]) {
+    warnings.push(
+      `Scenes "${scenes[i - 1].id}" and "${scenes[i].id}" use the same effective layout "${effectiveLayouts[i]}" back to back; vary layouts to avoid scene monotony.`,
+    );
+  }
+}
+
+// (b) Fewer than 3 distinct layouts when the video has 5+ scenes.
+if (scenes.length >= 5) {
+  const distinct = new Set(effectiveLayouts);
+  if (distinct.size < 3) {
+    warnings.push(
+      `Video has ${scenes.length} scenes but only ${distinct.size} distinct layout(s) (${[...distinct].join(", ")}); use at least 3 layouts for macro variety.`,
+    );
+  }
+}
+
+// (c) hook / takeaway scenes should not fall back to the default top-title.
+scenes.forEach((scene, index) => {
+  if (
+    (scene.intent === "hook" || scene.intent === "takeaway") &&
+    effectiveLayouts[index] === "top-title"
+  ) {
+    warnings.push(
+      `Scene "${scene.id}" (intent ${scene.intent}) uses top-title; hook/takeaway beats land harder with center-stage, oversized-type, or bottom-statement.`,
+    );
+  }
+});
+
 for (const warning of warnings) {
   console.warn(`WARNING: ${warning}`);
 }

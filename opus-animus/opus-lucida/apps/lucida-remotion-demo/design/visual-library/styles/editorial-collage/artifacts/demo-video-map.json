@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "lucida-editorial-collage-demo/v1",
+  "packageId": "editorial-collage",
+  "compositionId": "EditorialCollageFamilyReview",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "scenes": [
+    { "id": "scene-01", "label": "Montage review frame", "sceneKey": "normal", "frame": 58, "output": "frames/scene-01.png" },
+    { "id": "scene-02", "label": "Evidence review frame", "sceneKey": "dense", "frame": 68, "output": "frames/scene-02.png" },
+    { "id": "scene-03", "label": "Recap edge review frame", "sceneKey": "edge", "frame": 36, "output": "frames/scene-03.png" }
+  ]
+}

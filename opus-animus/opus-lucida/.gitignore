@@ -1,3 +1,4 @@
 references/design-repos/
 apps/lucida-remotion-demo/.venv-whisperx/
 apps/remotion-templates/.git.offline/
+apps/*.zip

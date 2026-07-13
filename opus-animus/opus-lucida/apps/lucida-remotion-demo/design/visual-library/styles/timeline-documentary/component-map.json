@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "lucida-component-map/v1",
+  "id": "timeline-documentary",
+  "primitives": [
+    { "id": "dated-spine", "role": "process", "notes": "Central chronology line with one fixed marker per fixture event." },
+    { "id": "archival-frame", "role": "media", "notes": "Original paper, blueprint, newsprint, or contact-sheet treatment; no copied photograph." },
+    { "id": "source-label", "role": "evidence", "notes": "Persistent source type and source label attached to every event." },
+    { "id": "missing-image-record", "role": "fallback", "notes": "Intentional shared-core placeholder that states why no image is shown." },
+    { "id": "documentary-thesis", "role": "conclusion", "notes": "Footer finding that distinguishes interpretation from dated evidence." }
+  ],
+  "templates": [
+    { "templateId": "milestone-sequence", "supportedLayouts": ["dated-spine", "alternating-archive"], "backgroundEffects": ["archive-grain"], "motionPreset": "chronology-reveal", "primitives": ["dated-spine", "archival-frame", "source-label", "missing-image-record"], "notes": "Four-to-six milestone records with full detail copy." },
+    { "templateId": "era-change-record", "supportedLayouts": ["dated-spine", "alternating-archive"], "backgroundEffects": ["archive-grain", "edge-vignette"], "motionPreset": "reduced-motion-fade", "primitives": ["dated-spine", "archival-frame", "source-label"], "notes": "Dense six-to-eight event chronology with compact labels." },
+    { "templateId": "documentary-conclusion", "supportedLayouts": ["dated-spine", "thesis-footer"], "backgroundEffects": ["edge-vignette"], "motionPreset": "static", "primitives": ["dated-spine", "source-label", "missing-image-record", "documentary-thesis"], "notes": "Three-to-five records ending in a sourced synthesis." }
+  ]
+}

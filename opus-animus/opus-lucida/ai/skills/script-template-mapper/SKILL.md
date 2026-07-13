@@ -48,6 +48,11 @@ Read these references when needed:
 11. Add `reason` to explain why the template fits the scene.
 12. Validate duration, density, object count, and continuity.
 
+## Theme Skin
+
+- `theme.skin` (optional) chọn UI skin cho toàn video: `"premium-gold"` (default, editorial vàng champagne) hoặc `"modern-terminal"` (khung cửa sổ terminal, mono font, phosphor green/ANSI, typing + cursor).
+- Chọn `"modern-terminal"` khi content là ai_news / dev / code-heavy / tool-focused; giữ default cho content editorial/premium.
+
 ## Scene Intent Set
 
 Use only these intents unless the user explicitly extends the schema:

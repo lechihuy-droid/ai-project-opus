@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "lucida-component-map/v1",
+  "id": "terminal-command-center",
+  "primitives": [
+    {
+      "id": "terminal-window-chrome",
+      "role": "surface",
+      "notes": "Title bar, three status dots, prompt path, status indicator."
+    },
+    {
+      "id": "typed-code-panel",
+      "role": "content",
+      "notes": "Typed line reveal, cursor blink, highlighted output rows."
+    },
+    {
+      "id": "terminal-dashboard-rows",
+      "role": "process",
+      "notes": "Numbered or prompt-led rows for metrics, steps, source provenance, and task state."
+    }
+  ],
+  "templates": [
+    {
+      "templateId": "code-panel",
+      "supportedLayouts": [
+        "top-title",
+        "center-stage",
+        "full-bleed-visual"
+      ],
+      "backgroundEffects": [
+        "matrix-rain",
+        "grid-pulse",
+        "noise-grain"
+      ],
+      "motionPreset": "terminal-reveal",
+      "primitives": [
+        "terminal-window-chrome",
+        "typed-code-panel"
+      ],
+      "notes": "Primary terminal walkthrough surface for command, code, and output scenes."
+    },
+    {
+      "templateId": "progress-steps",
+      "supportedLayouts": [
+        "top-title",
+        "bottom-statement"
+      ],
+      "backgroundEffects": [
+        "grid-pulse",
+        "noise-grain"
+      ],
+      "motionPreset": "terminal-reveal",
+      "primitives": [
+        "terminal-window-chrome",
+        "terminal-dashboard-rows"
+      ],
+      "notes": "Operational sequences, task state, and step-by-step agent workflows."
+    },
+    {
+      "templateId": "typewriter-subtitle",
+      "supportedLayouts": [
+        "top-title",
+        "center-stage"
+      ],
+      "backgroundEffects": [
+        "matrix-rain",
+        "noise-grain"
+      ],
+      "motionPreset": "terminal-reveal",
+      "primitives": [
+        "terminal-window-chrome",
+        "typed-code-panel"
+      ],
+      "notes": "Short command-led statements or secondary callouts that inherit terminal chrome."
+    }
+  ]
+}

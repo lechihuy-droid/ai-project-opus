@@ -1,0 +1,22 @@
+{
+  "entryPoint": "src/styles/families/cinematic-type/renderRoot.tsx",
+  "compositionId": "CinematicTypeFamilyReview",
+  "imageFormat": "png",
+  "renderFrame": 24,
+  "qualityChecks": [
+    "sha256-repeat-determinism",
+    "1080x1920-dimensions",
+    "signalstats-nonblank"
+  ],
+  "propsByScene": {
+    "hook": {
+      "sceneKey": "hook"
+    },
+    "quote": {
+      "sceneKey": "quote"
+    },
+    "transition": {
+      "sceneKey": "transition"
+    }
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "lucida-artifact-manifest/v1",
+  "packageId": "technical-editorial",
+  "generatedAt": "2026-07-12T00:00:00.000Z",
+  "artifacts": [
+    {
+      "id": "style-package",
+      "kind": "style_spec",
+      "path": "./style-package.json",
+      "usage": "library_record"
+    },
+    {
+      "id": "artifact-manifest",
+      "kind": "artifact_manifest",
+      "path": "./artifact-manifest.json",
+      "usage": "audit"
+    },
+    {
+      "id": "visual",
+      "kind": "visual_spec",
+      "path": "./visual.json",
+      "usage": "package_contract"
+    },
+    {
+      "id": "tokens",
+      "kind": "tokens",
+      "path": "./tokens.json",
+      "usage": "package_contract"
+    },
+    {
+      "id": "component-map",
+      "kind": "component_map",
+      "path": "./component-map.json",
+      "usage": "package_contract"
+    },
+    {
+      "id": "provenance",
+      "kind": "provenance",
+      "path": "./provenance.md",
+      "usage": "audit"
+    },
+    {
+      "id": "source-review",
+      "kind": "review_report",
+      "path": "./artifacts/source-review-report.json",
+      "usage": "source_review"
+    },
+    {
+      "id": "preview-frames",
+      "kind": "preview_frames",
+      "path": "./artifacts/frames/",
+      "usage": "visual_validation"
+    },
+    {
+      "id": "render-report",
+      "kind": "render_report",
+      "path": "./artifacts/render-report.json",
+      "usage": "validation_report"
+    },
+    {
+      "id": "demo-video-map",
+      "kind": "video_map",
+      "path": "./artifacts/demo-video-map.json",
+      "usage": "validation_spec"
+    },
+    {
+      "id": "render-props",
+      "kind": "render_props",
+      "path": "./artifacts/render-props.json",
+      "usage": "validation_spec"
+    }
+  ]
+}

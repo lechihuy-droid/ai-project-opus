@@ -1,0 +1,7 @@
+{
+  "packageId": "editorial-collage",
+  "compositionId": "EditorialCollageFamilyReview",
+  "entryPoint": "src/styles/families/editorial-collage/render-entry.tsx",
+  "imageFormat": "png",
+  "qualityChecks": ["sha256", "dimensions", "signalstats-nonblank", "embed-asset-only", "missing-asset-placeholder", "deterministic-crop"]
+}

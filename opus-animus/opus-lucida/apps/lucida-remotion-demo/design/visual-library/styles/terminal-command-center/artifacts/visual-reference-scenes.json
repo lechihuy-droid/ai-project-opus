@@ -1,0 +1,641 @@
+{
+  "schemaVersion": "visual-scenes/v1",
+  "projectId": "visual-reference-ingest",
+  "generatedAt": "2026-07-12T12:08:36.077Z",
+  "fps": 30,
+  "themeId": "lucida-reference-atlas/v1",
+  "scenes": [
+    {
+      "sceneId": "terminal-01",
+      "visualFamily": "terminal",
+      "preset": "command",
+      "themeId": "lucida-reference-atlas/v1",
+      "durationInFrames": 90,
+      "title": "Runtime output",
+      "blocks": [
+        {
+          "kind": "code",
+          "at": 0,
+          "text": "Terminal — a Quarto reveal.js slide theme A retro **computer-terminal** theme for [Quarto Revealjs](https://quarto.org/docs/presentations/revealjs/) presentations. [![Screenshot of a slide from the Quarto RevealJS Terminal theme using the cyan-navy palette](.github/terminal-theme-screenshot.png)](https://rpodcast.github.io/quarto-revealjs-terminal/template.html) All colors, fonts, and effects are **fully customizable** via SCSS variables — including ready-made color schemes (e.g. `solarized-dark`, `dracula`, `nord`) selectable with a single `$terminal-palette` setting. Additional details on the theme settings can be found in [guide.md](guide.md) Usage Depending on your use case, the Terminal theme can be installed using the following procedures: * To add the Terminal theme to an existing directory with your Quarto Revealjs presentation: ``` quarto add rpodcast/quarto-revealjs-terminal...",
+          "data": {
+            "path": "README.md",
+            "url": "https://github.com/rpodcast/quarto-revealjs-terminal/blob/main/README.md",
+            "visualFamily": "terminal",
+            "tags": [
+              "terminal",
+              "revealjs",
+              "slides"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0002"
+          ]
+        },
+        {
+          "kind": "code",
+          "at": 0,
+          "text": "Slide layouts See `template.qmd` for working examples of each layout: | Layout | How | | --- | --- | | Content title slide | `## TITLE.` + `[// KICKER]{.kicker}` + `[lede]{.lede}` | | Section-break / divider | `## TITLE. {.section-break}` + `.kicker` / `.lede` / `.desc` (vertically centered, oversized title) | | Bullets as callout boxes | wrap a list in `::: callouts` | | Numbered step boxes (`01 02 …`) | wrap an ordered list in `::: steps` | | Two bordered cards | `::: cards` containing `::: card` divs (title via `[Title]{.card-title}`) | | Code / file-tree block | a fenced ```` ```text ```` code block | Helper spans: `[…]{.kicker}` (uppercase label), `[…]{.lede}` (subtitle), `[…]{.desc}` (muted supporting line), `[…]{.neg}` / `[…]{.ok}` (red / green emphasis). Per-slide status bar / footer Set attributes on the slide's `##` header: ```markdown SKILLS. {terminal-path=\"masterclass/mod...",
+          "data": {
+            "path": "guide.md",
+            "url": "https://github.com/rpodcast/quarto-revealjs-terminal/blob/main/guide.md",
+            "visualFamily": "terminal",
+            "tags": [
+              "terminal",
+              "revealjs",
+              "slides"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0003"
+          ]
+        },
+        {
+          "kind": "code",
+          "at": 0,
+          "text": "/*-- scss:functions --*/ // ============================================================================ // TERMINAL THEME — color-scheme (palette) registry // --------------------------------------------------------------------------- // This region defines the named palettes that power `$terminal-palette`. // It lives in `scss:functions` (not `defaults`) on purpose: Quarto always // layers the theme's `functions` BEFORE any user theme file, so this map is // guaranteed to exist by the time the `defaults` below run — even when the // user only sets `$terminal-palette: \"solarized-dark\";` in their own file. // // Each palette is a map with these keys: // mode : \"dark\" | \"light\" (controls auto-toned CRT effects) // bg : slide background // fg : default body text // muted : de-emphasized / secondary text // accent : primary accent (headings, prompts, links) // accent-bright : brighter ac...",
+          "data": {
+            "path": "_extensions/terminal/terminal.scss",
+            "url": "https://github.com/rpodcast/quarto-revealjs-terminal/blob/main/_extensions/terminal/terminal.scss",
+            "visualFamily": "terminal",
+            "tags": [
+              "terminal",
+              "revealjs",
+              "slides"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0004"
+          ]
+        },
+        {
+          "kind": "code",
+          "at": 0,
+          "text": "terminal.css <img width=\"3842\" height=\"2276\" alt=\"image\" src=\"https://github.com/user-attachments/assets/32f5ec68-cc2c-4760-b1f1-8cbca5363a0d\" /> <img width=\"3842\" height=\"2302\" alt=\"image\" src=\"https://github.com/user-attachments/assets/c050f694-fc2a-46d9-8100-dc2be8747092\" /> <img width=\"3826\" height=\"2294\" alt=\"image\" src=\"https://github.com/user-attachments/assets/53868306-30ac-4098-9f1d-430c6e3956be\" /> <img width=\"3838\" height=\"2298\" alt=\"image\" src=\"https://github.com/user-attachments/assets/8697ca76-cd98-494e-afe7-abf4af449ac6\" /> A modern CSS framework for terminal-style websites. Installation CDN Installation Add these links to your HTML file: ```html <!-- In your <head> section --> <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/gh/letieu/terminal.css@v0.0.4/index.css\" /> <!-- Before closing </body> tag --> <!-- [Optional: Only for toast, FAQ component] --> <script sr...",
+          "data": {
+            "path": "README.md",
+            "url": "https://github.com/letieu/terminal.css/blob/main/README.md",
+            "visualFamily": "dashboard",
+            "tags": [
+              "terminal",
+              "components",
+              "dashboard"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0006"
+          ]
+        },
+        {
+          "kind": "code",
+          "at": 0,
+          "text": "Terminal CSS Modern and minimal CSS framework for terminal lovers. Visit the website [terminalcss.xyz](https://terminalcss.xyz/) Project Goals Terminal CSS has no overhead and is lightweight **(~3k gzip)**. The source is written in **pure css** to be accessible for everybody and easy to contribute. Markdown ❤️ Terminal CSS It's perfect for your *personal website*, *blog*, or *side project*. How to use When using something like Webpack just install with `npm i terminal.css`. ```js import 'terminal.css' ``` Terminal CSS is also available via [CDN](https://unpkg.com/terminal.css) ```html <link rel=\"stylesheet\" href=\"https://unpkg.com/terminal.css\" /> ``` To apply all the styles, add the `terminal` class to your page's `<body>` tag. Themes To create your own theme just open the dev-tools and edit the CSS Variables. Copy and paste it to your website. Done! Development - `npm install` - `np...",
+          "data": {
+            "path": "README.md",
+            "url": "https://github.com/Gioni06/terminal.css/blob/master/README.md",
+            "visualFamily": "terminal",
+            "tags": [
+              "terminal",
+              "css-framework",
+              "minimal"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0008"
+          ]
+        },
+        {
+          "kind": "code",
+          "at": 0,
+          "text": "terminal.css: A modern and minimal CSS framework for terminal lovers. | deps: stylelint, stylelint-config-standard",
+          "data": {
+            "path": "package.json",
+            "url": "https://github.com/Gioni06/terminal.css/blob/master/package.json",
+            "visualFamily": "terminal",
+            "tags": [
+              "terminal",
+              "css-framework",
+              "minimal"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0009"
+          ]
+        },
+        {
+          "kind": "code",
+          "at": 0,
+          "text": "![Terminal.css Preview](./terminal-css.png) ➡️ [Check Terminal.css website](https://panr.github.io/terminal-css/) [Terminal](https://github.com/panr/hugo-theme-terminal) theme turned out to be an unexpected success. But not everyone wanted to switch to Hugo to be able to use it. That's why I created **Terminal.css**. A stupid simple, custom set of semantic styles derived from the theme, that you always wanted. Presets Terminal.css comes with a collection of [presets](./presets.json). I've kickstarted the project with only a few of them, but that's not enough. If you want to contribute to the project and already have an idea for a beautiful set of colors, you are in the right place. 1. Go to the [Terminal.css website](https://panr.github.io/terminal-css/) and set your color scheme 2. Copy it as JSON 3. [Add it](./presets.json) to the collection via Pull Request",
+          "data": {
+            "path": "README.md",
+            "url": "https://github.com/panr/terminal-css/blob/master/README.md",
+            "visualFamily": "editorial",
+            "tags": [
+              "terminal",
+              "classless",
+              "editorial"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0011"
+          ]
+        },
+        {
+          "kind": "code",
+          "at": 0,
+          "text": "terminal-css: A stupid simple, custom set of semantic styles derived from Terminal theme that you always wanted.) | deps: eslint, prettier, stylelint",
+          "data": {
+            "path": "package.json",
+            "url": "https://github.com/panr/terminal-css/blob/master/package.json",
+            "visualFamily": "editorial",
+            "tags": [
+              "terminal",
+              "classless",
+              "editorial"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0012"
+          ]
+        }
+      ]
+    },
+    {
+      "sceneId": "reference-02",
+      "visualFamily": "terminal",
+      "preset": "command",
+      "themeId": "lucida-reference-atlas/v1",
+      "durationInFrames": 180,
+      "title": "rpodcast/quarto-revealjs-terminal: Quarto revealjs theme with retro terminal style | topics: quarto, reveal-js, theme",
+      "blocks": [
+        {
+          "kind": "media",
+          "at": 0,
+          "text": "rpodcast/quarto-revealjs-terminal: Quarto revealjs theme with retro terminal style | topics: quarto, reveal-js, theme",
+          "data": {
+            "url": "https://github.com/rpodcast/quarto-revealjs-terminal",
+            "stars": 6,
+            "forks": 1,
+            "language": "SCSS",
+            "topics": [
+              "quarto",
+              "reveal-js",
+              "theme"
+            ],
+            "visualFamily": "terminal",
+            "tags": [
+              "terminal",
+              "revealjs",
+              "slides"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0001"
+          ]
+        },
+        {
+          "kind": "media",
+          "at": 14,
+          "text": "Gioni06/terminal.css: Modern and minimalistic CSS framework for terminal enthusiasts",
+          "data": {
+            "url": "https://github.com/Gioni06/terminal.css",
+            "stars": 1432,
+            "forks": 69,
+            "language": "HTML",
+            "topics": [],
+            "visualFamily": "terminal",
+            "tags": [
+              "terminal",
+              "css-framework",
+              "minimal"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0007"
+          ]
+        },
+        {
+          "kind": "media",
+          "at": 28,
+          "text": "Terminal CSS - A modern and minimal CSS framework for terminal lovers. - Headings: Project Goals | AI Assisted Documentation | Markdown ❤️ Terminal CSS | How to use | Themes | Contributors | Components | Documentation",
+          "data": {
+            "url": "https://terminalcss.xyz/",
+            "title": "Terminal CSS",
+            "description": "A modern and minimal CSS framework for terminal lovers.",
+            "headings": [
+              "Project Goals",
+              "AI Assisted Documentation",
+              "Markdown ❤️ Terminal CSS",
+              "How to use",
+              "Themes",
+              "Contributors",
+              "Components",
+              "Documentation"
+            ],
+            "family": "terminal",
+            "tags": [
+              "terminal",
+              "web-reference"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0027"
+          ]
+        },
+        {
+          "kind": "metric",
+          "at": 42,
+          "text": "theme-local-lucida-reference | tokens: --lucida-bg=#0b0c0e; --lucida-fg=#f4f0e8; --lucida-cyan=#65d8e8; --lucida-gold=#d2b47a | colors: #0b0c0e, #f4f0e8, #65d8e8, #d2b47a",
+          "data": {
+            "ref": "pipeline/fixtures/reference-theme.css",
+            "tokens": [
+              {
+                "name": "--lucida-bg",
+                "value": "#0b0c0e"
+              },
+              {
+                "name": "--lucida-fg",
+                "value": "#f4f0e8"
+              },
+              {
+                "name": "--lucida-cyan",
+                "value": "#65d8e8"
+              },
+              {
+                "name": "--lucida-gold",
+                "value": "#d2b47a"
+              }
+            ],
+            "colors": [
+              "#0b0c0e",
+              "#f4f0e8",
+              "#65d8e8",
+              "#d2b47a"
+            ],
+            "family": "terminal",
+            "tags": [
+              "theme",
+              "local"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0047"
+          ]
+        },
+        {
+          "kind": "media",
+          "at": 56,
+          "text": "GitHub OpenGraph preview for terminal slide theme",
+          "data": {
+            "url": "https://opengraph.githubassets.com/lucida/rpodcast/quarto-revealjs-terminal",
+            "contentType": "image/png",
+            "contentLength": "87609",
+            "family": "terminal",
+            "tags": [
+              "image",
+              "github-og"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0049"
+          ]
+        }
+      ]
+    },
+    {
+      "sceneId": "reference-03",
+      "visualFamily": "dashboard",
+      "preset": "progress-steps",
+      "themeId": "lucida-reference-atlas/v1",
+      "durationInFrames": 180,
+      "title": "letieu/terminal.css: Terminal-style css components | topics: css, css-framework, terminal, tui",
+      "blocks": [
+        {
+          "kind": "media",
+          "at": 0,
+          "text": "letieu/terminal.css: Terminal-style css components | topics: css, css-framework, terminal, tui",
+          "data": {
+            "url": "https://github.com/letieu/terminal.css",
+            "stars": 20,
+            "forks": 0,
+            "language": "HTML",
+            "topics": [
+              "css",
+              "css-framework",
+              "terminal",
+              "tui"
+            ],
+            "visualFamily": "dashboard",
+            "tags": [
+              "terminal",
+              "components",
+              "dashboard"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0005"
+          ]
+        },
+        {
+          "kind": "media",
+          "at": 14,
+          "text": "tabler/tabler: Tabler is free and open-source HTML Dashboard UI Kit built on Bootstrap | topics: admin-dashboard, adminpanel, boilerplate-template, bootstrap, bootstrap4-theme, bootstrap5, css, dashboard, dashboard-templates, dashboards, html, html5, jekyll, modular, sass, scss, sponsors, themes, ui-kit, uikit",
+          "data": {
+            "url": "https://github.com/tabler/tabler",
+            "stars": 41291,
+            "forks": 4383,
+            "language": "HTML",
+            "topics": [
+              "admin-dashboard",
+              "adminpanel",
+              "boilerplate-template",
+              "bootstrap",
+              "bootstrap4-theme",
+              "bootstrap5",
+              "css",
+              "dashboard",
+              "dashboard-templates",
+              "dashboards",
+              "html",
+              "html5",
+              "jekyll",
+              "modular",
+              "sass",
+              "scss",
+              "sponsors",
+              "themes",
+              "ui-kit",
+              "uikit"
+            ],
+            "visualFamily": "dashboard",
+            "tags": [
+              "dashboard",
+              "ui-kit",
+              "admin"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0013"
+          ]
+        },
+        {
+          "kind": "media",
+          "at": 28,
+          "text": "satnaing/shadcn-admin: Admin Dashboard UI built with Shadcn and Vite. | topics: admin-dashboard, admin-panel, dashboard, shadcn-admin, shadcn-ui",
+          "data": {
+            "url": "https://github.com/satnaing/shadcn-admin",
+            "stars": 12591,
+            "forks": 2003,
+            "language": "TypeScript",
+            "topics": [
+              "admin-dashboard",
+              "admin-panel",
+              "dashboard",
+              "shadcn-admin",
+              "shadcn-ui"
+            ],
+            "visualFamily": "dashboard",
+            "tags": [
+              "dashboard",
+              "shadcn",
+              "admin"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0018"
+          ]
+        },
+        {
+          "kind": "media",
+          "at": 42,
+          "text": "Tabler Admin Template: Responsive HTML Dashboard with Clean UI - Tabler is a free HTML admin template packed with well-designed components and features. Start your adventure with Tabler and make your dashboard great again! - Headings: Modern design | Based on Bootstrap 5 | Open source | Choose Your Plan for Tabler Admin Template | Open Source | Pro | All Package | Benefit from Tabler’s top-notch features",
+          "data": {
+            "url": "https://tabler.io/",
+            "title": "Tabler Admin Template: Responsive HTML Dashboard with Clean UI",
+            "description": "Tabler is a free HTML admin template packed with well-designed components and features. Start your adventure with Tabler and make your dashboard great again!",
+            "headings": [
+              "Modern design",
+              "Based on Bootstrap 5",
+              "Open source",
+              "Choose Your Plan for Tabler Admin Template",
+              "Open Source",
+              "Pro",
+              "All Package",
+              "Benefit from Tabler’s top-notch features"
+            ],
+            "family": "dashboard",
+            "tags": [
+              "dashboard",
+              "web-reference"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0039"
+          ]
+        },
+        {
+          "kind": "media",
+          "at": 56,
+          "text": "GitHub OpenGraph preview for dashboard UI kit",
+          "data": {
+            "url": "https://opengraph.githubassets.com/lucida/tabler/tabler",
+            "contentType": "image/png",
+            "contentLength": "43694",
+            "family": "dashboard",
+            "tags": [
+              "image",
+              "github-og"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0050"
+          ]
+        }
+      ]
+    },
+    {
+      "sceneId": "reference-04",
+      "visualFamily": "editorial",
+      "preset": "headline-stat-grid",
+      "themeId": "lucida-reference-atlas/v1",
+      "durationInFrames": 234,
+      "title": "panr/terminal-css: A simple, classless set of semantic styles derived from Hugo Terminal Theme",
+      "blocks": [
+        {
+          "kind": "media",
+          "at": 0,
+          "text": "panr/terminal-css: A simple, classless set of semantic styles derived from Hugo Terminal Theme",
+          "data": {
+            "url": "https://github.com/panr/terminal-css",
+            "stars": 130,
+            "forks": 5,
+            "language": "HTML",
+            "topics": [],
+            "visualFamily": "editorial",
+            "tags": [
+              "terminal",
+              "classless",
+              "editorial"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0010"
+          ]
+        },
+        {
+          "kind": "media",
+          "at": 14,
+          "text": "hakimel/reveal.js: The HTML Presentation Framework | topics: presentations, slides, slideshow",
+          "data": {
+            "url": "https://github.com/hakimel/reveal.js",
+            "stars": 71912,
+            "forks": 16805,
+            "language": "JavaScript",
+            "topics": [
+              "presentations",
+              "slides",
+              "slideshow"
+            ],
+            "visualFamily": "editorial",
+            "tags": [
+              "slides",
+              "presentation",
+              "editorial"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0021"
+          ]
+        },
+        {
+          "kind": "metric",
+          "at": 28,
+          "text": "dist/theme/black.css tokens: --r-background:#2b2b2b; --r-background-color:#191919; --r-main-font:\"Source Sans Pro\", Helvetica, sans-serif; --r-main-font-size:42px; --r-main-color:#fff; --r-block-margin:20px; --r-heading-margin:0 0 20px 0; --r-heading-font:\"Source Sans Pro\", Helvetica, sans-serif; --r-heading-color:#fff; --r-heading-line-height:1.2; --r-heading-letter-spacing:normal; --r-heading-text-transform:uppercase; --r-heading-text-shadow:none; --r-heading-font-weight:600; --r-heading1-text-shadow:none; --r-heading1-size:2.5em; --r-heading2-size:1.6em; --r-heading3-size:1.3em",
+          "data": {
+            "path": "dist/theme/black.css",
+            "url": "https://github.com/hakimel/reveal.js/blob/master/dist/theme/black.css",
+            "visualFamily": "editorial",
+            "tags": [
+              "slides",
+              "presentation",
+              "editorial"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0024"
+          ]
+        },
+        {
+          "kind": "metric",
+          "at": 42,
+          "text": "dist/theme/moon.css tokens: --r-background:#2b2b2b; --r-background-color:#002b36; --r-main-font:Lato, sans-serif; --r-main-font-size:40px; --r-main-color:#93a1a1; --r-block-margin:20px; --r-heading-margin:0 0 20px 0; --r-heading-font:League Gothic, Impact, sans-serif; --r-heading-color:#eee8d5; --r-heading-line-height:1.2; --r-heading-letter-spacing:normal; --r-heading-text-transform:uppercase; --r-heading-text-shadow:none; --r-heading-font-weight:normal; --r-heading1-text-shadow:none; --r-heading1-size:3.77em; --r-heading2-size:2.11em; --r-heading3-size:1.55em",
+          "data": {
+            "path": "dist/theme/moon.css",
+            "url": "https://github.com/hakimel/reveal.js/blob/master/dist/theme/moon.css",
+            "visualFamily": "editorial",
+            "tags": [
+              "slides",
+              "presentation",
+              "editorial"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0025"
+          ]
+        },
+        {
+          "kind": "metric",
+          "at": 56,
+          "text": "dist/theme/white.css tokens: --r-background:#2b2b2b; --r-background-color:#fff; --r-main-font:\"Source Sans Pro\", Helvetica, sans-serif; --r-main-font-size:42px; --r-main-color:#222; --r-block-margin:20px; --r-heading-margin:0 0 20px 0; --r-heading-font:\"Source Sans Pro\", Helvetica, sans-serif; --r-heading-color:#222; --r-heading-line-height:1.2; --r-heading-letter-spacing:normal; --r-heading-text-transform:uppercase; --r-heading-text-shadow:none; --r-heading-font-weight:600; --r-heading1-text-shadow:none; --r-heading1-size:2.5em; --r-heading2-size:1.6em; --r-heading3-size:1.3em",
+          "data": {
+            "path": "dist/theme/white.css",
+            "url": "https://github.com/hakimel/reveal.js/blob/master/dist/theme/white.css",
+            "visualFamily": "editorial",
+            "tags": [
+              "slides",
+              "presentation",
+              "editorial"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0026"
+          ]
+        },
+        {
+          "kind": "media",
+          "at": 70,
+          "text": "Terminal.css | Semantic styles for the simple web - A custom set of semantic styles derived from Terminal Theme for Hugo you always wanted. - Headings: Font Family | Terminal.css | Headings # | Heading 1 | Heading 2 | Heading 3 | Paragraphs # | Images #",
+          "data": {
+            "url": "https://panr.github.io/terminal-css/",
+            "title": "Terminal.css | Semantic styles for the simple web",
+            "description": "A custom set of semantic styles derived from Terminal Theme for Hugo you always wanted.",
+            "headings": [
+              "Font Family",
+              "Terminal.css",
+              "Headings #",
+              "Heading 1",
+              "Heading 2",
+              "Heading 3",
+              "Paragraphs #",
+              "Images #"
+            ],
+            "family": "editorial",
+            "tags": [
+              "terminal",
+              "classless",
+              "web-reference"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0034"
+          ]
+        },
+        {
+          "kind": "media",
+          "at": 84,
+          "text": "The HTML presentation framework | reveal.js - Documentation and demos for the open source reveal.js HTML presentation framework. - Headings: The HTML Presentation Framework | Hello There | Vertical Slides | Basement Level 1 | Basement Level 2 | Slides | Pretty Code | Even Prettier Animations",
+          "data": {
+            "url": "https://revealjs.com/",
+            "title": "The HTML presentation framework | reveal.js",
+            "description": "Documentation and demos for the open source reveal.js HTML presentation framework.",
+            "headings": [
+              "The HTML Presentation Framework",
+              "Hello There",
+              "Vertical Slides",
+              "Basement Level 1",
+              "Basement Level 2",
+              "Slides",
+              "Pretty Code",
+              "Even Prettier Animations"
+            ],
+            "family": "editorial",
+            "tags": [
+              "slides",
+              "web-reference"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0040"
+          ]
+        },
+        {
+          "kind": "metric",
+          "at": 98,
+          "text": "theme-reveal-black",
+          "data": {
+            "ref": "https://raw.githubusercontent.com/hakimel/reveal.js/master/dist/theme/black.css",
+            "tokens": [],
+            "colors": [],
+            "family": "editorial",
+            "tags": [
+              "theme",
+              "revealjs"
+            ]
+          },
+          "sourceEventIds": [
+            "event-0048"
+          ]
+        }
+      ]
+    }
+  ]
+}

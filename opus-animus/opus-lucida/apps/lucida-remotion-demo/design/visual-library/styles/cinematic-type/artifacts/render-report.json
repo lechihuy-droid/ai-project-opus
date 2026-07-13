@@ -1,0 +1,111 @@
+{
+  "status": "ok",
+  "packageId": "cinematic-type",
+  "compositionId": "CinematicTypeFamilyReview",
+  "generatedAt": "2026-07-13T00:43:25.301Z",
+  "renderer": {
+    "tool": "@remotion/bundler + @remotion/renderer",
+    "entryPoint": "src/styles/families/cinematic-type/renderRoot.tsx",
+    "browserExecutable": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+    "imageFormat": "png"
+  },
+  "checks": [
+    "sha256-repeat-determinism",
+    "1080x1920-dimensions",
+    "signalstats-nonblank"
+  ],
+  "frames": [
+    {
+      "id": "scene-01",
+      "sceneKey": "hook",
+      "frame": 24,
+      "output": "design/visual-library/styles/cinematic-type/artifacts/frames/scene-01.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "d5b89e03f0f27ff9c9c05497dade5f8487af3359ec9f3c0921bc292872352f30",
+      "fileBytes": 1851043,
+      "signalStats": {
+        "yAverage": 44.3012,
+        "yLow": 25,
+        "yHigh": 53,
+        "saturationAverage": 3.63107
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 28
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "d5b89e03f0f27ff9c9c05497dade5f8487af3359ec9f3c0921bc292872352f30"
+      }
+    },
+    {
+      "id": "scene-02",
+      "sceneKey": "quote",
+      "frame": 24,
+      "output": "design/visual-library/styles/cinematic-type/artifacts/frames/scene-02.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "a29a23c8d8744eb26ba879c5caa2019d7a586b2e9680ef034351923281a42046",
+      "fileBytes": 1828379,
+      "signalStats": {
+        "yAverage": 39.9533,
+        "yLow": 25,
+        "yHigh": 49,
+        "saturationAverage": 3.59579
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 24
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "a29a23c8d8744eb26ba879c5caa2019d7a586b2e9680ef034351923281a42046"
+      }
+    },
+    {
+      "id": "scene-03",
+      "sceneKey": "transition",
+      "frame": 24,
+      "output": "design/visual-library/styles/cinematic-type/artifacts/frames/scene-03.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "f5fea755b929326846973dceb481ea9f380c969a907d332ae3d0f13613f1f7f9",
+      "fileBytes": 1670141,
+      "signalStats": {
+        "yAverage": 46.3914,
+        "yLow": 25,
+        "yHigh": 58,
+        "saturationAverage": 3.49372
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 33
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "f5fea755b929326846973dceb481ea9f380c969a907d332ae3d0f13613f1f7f9"
+      }
+    }
+  ],
+  "summary": {
+    "renderedFrameCount": 3,
+    "nonBlankFrames": 3,
+    "deterministicFrames": 3,
+    "dimensionsValid": true
+  },
+  "limitations": [
+    "Shared registry and visual-library index wiring are outside this family ownership scope.",
+    "Only 9:16 review frames are rendered; 16:9 remains metadata-ready but unreviewed.",
+    "Texture fields are deterministic CSS placeholders because no embeddable media is registered."
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "status": "ok",
+  "packageId": "dashboard-data",
+  "generatedAt": "2026-07-12T15:18:00.000Z",
+  "internalReferences": [
+    "design/planning/ALL_STYLE_IMPLEMENTATION_PLAN.md",
+    "design/schemas/visual-package.schema.json",
+    "src/styles/core/index.ts",
+    "src/styles/families/technical-editorial/TechnicalEditorialScene.tsx",
+    "design/visual-library/research/github-primer.md"
+  ],
+  "externalReferences": [
+    "https://primer.style/",
+    "https://github.com/primer/react",
+    "https://www.remotion.dev/docs/animating-properties"
+  ],
+  "selectedConcepts": [
+    "semantic status colors",
+    "compact monitoring hierarchy",
+    "deterministic frame-driven motion",
+    "truthful loading, empty, and error states",
+    "original dashboard layout without copied product chrome"
+  ],
+  "exclusions": [
+    "No third-party brand identity or screenshots",
+    "No nested cards inside data panels",
+    "No derived metrics beyond fixture values",
+    "No shared registry edits"
+  ]
+}

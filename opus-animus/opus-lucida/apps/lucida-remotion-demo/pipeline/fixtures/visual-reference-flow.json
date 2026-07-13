@@ -1,0 +1,166 @@
+{
+  "schemaVersion": "visual-flow/v1",
+  "projectId": "visual-reference-ingest",
+  "fps": 30,
+  "themeId": "lucida-reference-atlas/v1",
+  "sources": [
+    {
+      "id": "repo-quarto-terminal",
+      "type": "repository",
+      "required": true,
+      "url": "https://github.com/rpodcast/quarto-revealjs-terminal",
+      "family": "terminal",
+      "tags": ["terminal", "revealjs", "slides"],
+      "include": ["README.md", "guide.md", "_extensions/terminal/terminal.scss", "terminal.scss"],
+      "maxFiles": 6
+    },
+    {
+      "id": "repo-letieu-terminal",
+      "type": "repository",
+      "required": true,
+      "url": "https://github.com/letieu/terminal.css",
+      "family": "dashboard",
+      "tags": ["terminal", "components", "dashboard"],
+      "include": ["README.md", "package.json", "src/index.css", "src/terminal.css", "dist/terminal.css"],
+      "maxFiles": 6
+    },
+    {
+      "id": "repo-gioni-terminal",
+      "type": "repository",
+      "required": true,
+      "url": "https://github.com/Gioni06/terminal.css",
+      "family": "terminal",
+      "tags": ["terminal", "css-framework", "minimal"],
+      "include": ["README.md", "package.json", "dist/terminal.css", "terminal.css", "src/terminal.css"],
+      "maxFiles": 6
+    },
+    {
+      "id": "repo-panr-terminal",
+      "type": "repository",
+      "required": true,
+      "url": "https://github.com/panr/terminal-css",
+      "family": "editorial",
+      "tags": ["terminal", "classless", "editorial"],
+      "include": ["README.md", "package.json", "terminal.css", "src/terminal.css", "dist/terminal.css"],
+      "maxFiles": 6
+    },
+    {
+      "id": "repo-tabler-dashboard",
+      "type": "repository",
+      "required": true,
+      "url": "https://github.com/tabler/tabler",
+      "family": "dashboard",
+      "tags": ["dashboard", "ui-kit", "admin"],
+      "include": ["README.md", "package.json", "core/scss/_variables.scss", "core/scss/tabler.scss"],
+      "maxFiles": 5
+    },
+    {
+      "id": "repo-shadcn-admin",
+      "type": "repository",
+      "required": true,
+      "url": "https://github.com/satnaing/shadcn-admin",
+      "family": "dashboard",
+      "tags": ["dashboard", "shadcn", "admin"],
+      "include": ["README.md", "package.json", "src/index.css", "src/styles/globals.css", "app/globals.css"],
+      "maxFiles": 6
+    },
+    {
+      "id": "repo-revealjs",
+      "type": "repository",
+      "required": true,
+      "url": "https://github.com/hakimel/reveal.js",
+      "family": "editorial",
+      "tags": ["slides", "presentation", "editorial"],
+      "include": ["README.md", "package.json", "dist/theme/black.css", "dist/theme/moon.css", "dist/theme/white.css"],
+      "maxFiles": 6
+    },
+    {
+      "id": "web-terminalcss",
+      "type": "web_reference",
+      "required": false,
+      "url": "https://terminalcss.xyz/",
+      "family": "terminal",
+      "tags": ["terminal", "web-reference"]
+    },
+    {
+      "id": "web-panr-terminal",
+      "type": "web_reference",
+      "required": false,
+      "url": "https://panr.github.io/terminal-css/",
+      "family": "editorial",
+      "tags": ["terminal", "classless", "web-reference"]
+    },
+    {
+      "id": "web-tabler",
+      "type": "web_reference",
+      "required": false,
+      "url": "https://tabler.io/",
+      "family": "dashboard",
+      "tags": ["dashboard", "web-reference"]
+    },
+    {
+      "id": "web-revealjs",
+      "type": "web_reference",
+      "required": false,
+      "url": "https://revealjs.com/",
+      "family": "editorial",
+      "tags": ["slides", "web-reference"]
+    },
+    {
+      "id": "theme-local-lucida-reference",
+      "type": "theme_reference",
+      "required": true,
+      "path": "pipeline/fixtures/reference-theme.css",
+      "family": "terminal",
+      "tags": ["theme", "local"]
+    },
+    {
+      "id": "theme-reveal-black",
+      "type": "theme_reference",
+      "required": false,
+      "url": "https://raw.githubusercontent.com/hakimel/reveal.js/master/dist/theme/black.css",
+      "family": "editorial",
+      "tags": ["theme", "revealjs"]
+    },
+    {
+      "id": "image-repo-og-terminal",
+      "type": "image_reference",
+      "required": false,
+      "url": "https://opengraph.githubassets.com/lucida/rpodcast/quarto-revealjs-terminal",
+      "family": "terminal",
+      "tags": ["image", "github-og"],
+      "note": "GitHub OpenGraph preview for terminal slide theme"
+    },
+    {
+      "id": "image-repo-og-dashboard",
+      "type": "image_reference",
+      "required": false,
+      "url": "https://opengraph.githubassets.com/lucida/tabler/tabler",
+      "family": "dashboard",
+      "tags": ["image", "github-og"],
+      "note": "GitHub OpenGraph preview for dashboard UI kit"
+    }
+  ],
+  "mapping": {
+    "allowedFamilies": [
+      "terminal",
+      "dashboard",
+      "editorial",
+      "infographic",
+      "code",
+      "product_demo"
+    ],
+    "allowedPresets": [
+      "command",
+      "headline-stat-grid",
+      "progress-steps",
+      "split-screen",
+      "cinematic-title-intro"
+    ],
+    "defaultFamily": "editorial",
+    "defaultPreset": "headline-stat-grid",
+    "minSceneSeconds": 3,
+    "maxSceneSeconds": 9,
+    "maxItemsPerScene": 8
+  }
+}

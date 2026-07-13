@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "lucida-visual-package/v1",
+  "id": "product-showcase",
+  "label": "Product Showcase",
+  "status": "experimental",
+  "visualFamily": "product-showcase",
+  "summary": "Product-first UI and asset walkthrough scenes with strict embed-only rendering.",
+  "description": "A clean staged product family for reveal, feature focus, and before-after scenes. The product or UI asset occupies the first viewport, while feature labels and asset policy badges explain what is shown without becoming a split marketing hero.",
+  "tags": ["product", "showcase", "ui", "asset-led"],
+  "recommendedIntents": ["use_case", "comparison", "process", "takeaway"],
+  "avoidFor": [
+    "no product media",
+    "unlicensed screenshots",
+    "long narrative essays",
+    "dense operational dashboards"
+  ],
+  "supportedSceneTypes": ["product-reveal", "feature-focus", "before-after"],
+  "supportedTemplateRoles": ["scene"],
+  "aspectRatios": ["9:16", "16:9"],
+  "density": "medium",
+  "renderCost": "medium",
+  "contentCapacity": {
+    "headlineChars": 88,
+    "bodyChars": 360,
+    "maxItems": 4,
+    "maxPanels": 3,
+    "maxCodeLines": 0,
+    "maxMetrics": 0,
+    "maxEvents": 0
+  },
+  "preferredLayouts": ["center-stage", "full-bleed-visual"],
+  "preferredTemplates": ["product-showcase-reveal", "product-showcase-feature", "product-showcase-before-after"],
+  "backgroundEffects": ["noise-grain"],
+  "motionPreset": "product-stage-reveal",
+  "layoutGrammar": [
+    "Product or UI media must be the first-viewport signal.",
+    "Do not use a split text-media marketing hero.",
+    "Render only embed_asset sources; all other usage classes become placeholders.",
+    "Use fixture orientation and focalPoint for deterministic crop behavior.",
+    "Keep feature copy compact and subordinate to the product stage."
+  ],
+  "sourcePolicy": {
+    "copyStatus": "original",
+    "registeredMedia": "fixture-only-original-svg-data-uri",
+    "notes": "Review assets are original SVG UI mockups embedded as fixture data URI strings."
+  },
+  "notes": [
+    "Wave 3 asset-led package.",
+    "Registry integration is intentionally not included in this ownership slice."
+  ]
+}

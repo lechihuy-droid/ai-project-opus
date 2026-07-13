@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "lucida-component-map/v1",
+  "id": "product-showcase",
+  "primitives": [
+    {
+      "id": "product-stage",
+      "role": "surface",
+      "notes": "Large first-viewport product frame that holds the product/UI asset before supporting copy."
+    },
+    {
+      "id": "asset-policy-badge",
+      "role": "content",
+      "notes": "Visible label showing embed_asset, style_reference, context_only, missing, and deterministic crop metadata."
+    },
+    {
+      "id": "feature-marker",
+      "role": "content",
+      "notes": "Compact repeated callout for feature focus and reveal scenes."
+    },
+    {
+      "id": "before-after-stage",
+      "role": "process",
+      "notes": "Two-panel comparison where each side independently enforces asset usage policy."
+    }
+  ],
+  "templates": [
+    {
+      "templateId": "product-showcase-reveal",
+      "supportedLayouts": ["center-stage", "full-bleed-visual"],
+      "backgroundEffects": ["noise-grain"],
+      "motionPreset": "product-stage-reveal",
+      "primitives": ["product-stage", "asset-policy-badge", "feature-marker"],
+      "notes": "Use for product reveal when one embeddable asset is available."
+    },
+    {
+      "templateId": "product-showcase-feature",
+      "supportedLayouts": ["center-stage"],
+      "backgroundEffects": ["noise-grain"],
+      "motionPreset": "product-stage-reveal",
+      "primitives": ["product-stage", "asset-policy-badge", "feature-marker"],
+      "notes": "Use for focused walkthroughs with three to four compact feature labels."
+    },
+    {
+      "templateId": "product-showcase-before-after",
+      "supportedLayouts": ["center-stage"],
+      "backgroundEffects": ["noise-grain"],
+      "motionPreset": "reduced-motion-fade",
+      "primitives": ["before-after-stage", "asset-policy-badge"],
+      "notes": "Use for comparison scenes; each asset slot is bound independently."
+    }
+  ]
+}

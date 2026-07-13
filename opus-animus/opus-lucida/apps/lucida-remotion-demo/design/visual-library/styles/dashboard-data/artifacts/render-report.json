@@ -1,0 +1,110 @@
+{
+  "packageId": "dashboard-data",
+  "compositionId": "DashboardDataFamilyReview",
+  "generatedAt": "2026-07-13T14:10:05.316Z",
+  "renderer": {
+    "entryPoint": "src/styles/families/dashboard-data/render-entry.tsx",
+    "browserExecutable": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+    "imageFormat": "png"
+  },
+  "checks": [
+    "sha256",
+    "dimensions",
+    "signalstats-nonblank"
+  ],
+  "frames": [
+    {
+      "id": "scene-01",
+      "label": "KPI review frame",
+      "sceneKey": "normal",
+      "frame": 58,
+      "output": "design/visual-library/styles/dashboard-data/artifacts/frames/scene-01.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 180,
+      "sha256": "8d5dbdb43bbb8dd199df0f34e6085e40b6d3f009b9e1a88fe1567cd1e6a62db3",
+      "fileBytes": 548642,
+      "signalStats": {
+        "yAverage": 34.5796,
+        "yLow": 18,
+        "yHigh": 32,
+        "saturationAverage": 9.15903
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 14
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "8d5dbdb43bbb8dd199df0f34e6085e40b6d3f009b9e1a88fe1567cd1e6a62db3"
+      }
+    },
+    {
+      "id": "scene-02",
+      "label": "Dense chart review frame",
+      "sceneKey": "dense",
+      "frame": 84,
+      "output": "design/visual-library/styles/dashboard-data/artifacts/frames/scene-02.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 210,
+      "sha256": "90a2e30d53ed42596672926c4f547f3f8d73aa2a8906b5a5bc98d3a7df4662a3",
+      "fileBytes": 585802,
+      "signalStats": {
+        "yAverage": 35.3575,
+        "yLow": 18,
+        "yHigh": 32,
+        "saturationAverage": 9.13836
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 14
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "90a2e30d53ed42596672926c4f547f3f8d73aa2a8906b5a5bc98d3a7df4662a3"
+      }
+    },
+    {
+      "id": "scene-03",
+      "label": "Operations recovery review frame",
+      "sceneKey": "edge",
+      "frame": 40,
+      "output": "design/visual-library/styles/dashboard-data/artifacts/frames/scene-03.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 210,
+      "sha256": "312f1fbf2839c1a1a70791fc1a7314a6f0f257c2c38a8b7d11d12d93013bb002",
+      "fileBytes": 560137,
+      "signalStats": {
+        "yAverage": 35.3428,
+        "yLow": 18,
+        "yHigh": 32,
+        "saturationAverage": 8.8114
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 14
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "312f1fbf2839c1a1a70791fc1a7314a6f0f257c2c38a8b7d11d12d93013bb002"
+      }
+    }
+  ],
+  "summary": {
+    "renderedFrameCount": 3,
+    "nonBlankFrames": 3,
+    "deterministicFrames": 3,
+    "dimensionsValid": true
+  }
+}

@@ -5,6 +5,7 @@ import {
   type VideoInput,
   type VideoMap,
 } from "./data";
+import { resolveSkin, SkinContext } from "./skins";
 import { resolveTemplateAdapter, SceneShell } from "./templateRegistry";
 
 export type MyCompositionProps = {
@@ -39,6 +40,7 @@ export const MyComposition: React.FC<MyCompositionProps> = ({
 }) => {
   const frame = useCurrentFrame();
   const input = createVideoInput(videoMap);
+  const skin = resolveSkin(input.theme);
   const { scene, localFrame, totalFrames } = getSceneAtFrame(input, frame);
   const Adapter = resolveTemplateAdapter(scene.templateId);
   const zoom = interpolate(frame, [0, totalFrames], [1, 1.025], {
@@ -46,22 +48,24 @@ export const MyComposition: React.FC<MyCompositionProps> = ({
   });
 
   return (
-    <AbsoluteFill
-      style={{
-        overflow: "hidden",
-        transform: `scale(${zoom})`,
-        transformOrigin: "center center",
-      }}
-    >
-      <SceneShell scene={scene} localFrame={localFrame} theme={input.theme}>
-        <Adapter
-          scene={scene}
-          localFrame={localFrame}
-          durationFrames={scene.durationFrames}
-          theme={input.theme}
-          assets={input.assets}
-        />
-      </SceneShell>
-    </AbsoluteFill>
+    <SkinContext.Provider value={skin}>
+      <AbsoluteFill
+        style={{
+          overflow: "hidden",
+          transform: `scale(${zoom})`,
+          transformOrigin: "center center",
+        }}
+      >
+        <SceneShell scene={scene} localFrame={localFrame} theme={input.theme}>
+          <Adapter
+            scene={scene}
+            localFrame={localFrame}
+            durationFrames={scene.durationFrames}
+            theme={input.theme}
+            assets={input.assets}
+          />
+        </SceneShell>
+      </AbsoluteFill>
+    </SkinContext.Provider>
   );
 };

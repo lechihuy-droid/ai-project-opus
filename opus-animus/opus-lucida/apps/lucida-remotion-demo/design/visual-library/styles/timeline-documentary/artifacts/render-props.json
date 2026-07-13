@@ -1,0 +1,7 @@
+{
+  "packageId": "timeline-documentary",
+  "compositionId": "TimelineDocumentaryFamilyReview",
+  "entryPoint": "src/styles/families/timeline-documentary/render-entry.tsx",
+  "imageFormat": "png",
+  "qualityChecks": ["sha256", "dimensions", "signalstats-nonblank", "repeat-render-sha256"]
+}

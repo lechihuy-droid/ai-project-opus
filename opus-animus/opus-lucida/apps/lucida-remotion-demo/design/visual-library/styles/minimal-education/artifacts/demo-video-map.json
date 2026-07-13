@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "lucida-minimal-education-demo/v1",
+  "packageId": "minimal-education",
+  "compositionId": "MinimalEducationFamily",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "scenes": [
+    {
+      "id": "scene-01",
+      "label": "Definition review frame",
+      "fixture": "pipeline/fixtures/styles/minimal-education/definition-scene.json",
+      "frame": 52,
+      "output": "frames/scene-01.png"
+    },
+    {
+      "id": "scene-02",
+      "label": "Steps review frame",
+      "fixture": "pipeline/fixtures/styles/minimal-education/steps-scene.json",
+      "frame": 74,
+      "output": "frames/scene-02.png"
+    },
+    {
+      "id": "scene-03",
+      "label": "Comparison dense review frame",
+      "fixture": "pipeline/fixtures/styles/minimal-education/comparison-dense-scene.json",
+      "frame": 96,
+      "output": "frames/scene-03.png"
+    }
+  ]
+}

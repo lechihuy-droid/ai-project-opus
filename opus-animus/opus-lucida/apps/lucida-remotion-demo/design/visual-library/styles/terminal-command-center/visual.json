@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "lucida-visual-package/v1",
+  "id": "terminal-command-center",
+  "label": "Terminal Command Center",
+  "status": "experimental",
+  "visualFamily": "repo-code",
+  "summary": "Terminal-led package for repo walkthroughs, agent workflows, and compact technical dashboards.",
+  "description": "Reusable terminal-style package for repo walkthroughs, AI workflow explainers, command captures, and compact technical dashboards.",
+  "tags": ["terminal", "repo", "code", "workflow", "dashboard"],
+  "recommendedIntents": [
+    "code_explanation",
+    "process",
+    "system_architecture",
+    "list"
+  ],
+  "avoidFor": [
+    "asset-led gallery scenes where imagery is the main subject",
+    "emotion-first testimonial or quote scenes",
+    "chronology-first documentary sequences without an operational interface"
+  ],
+  "supportedSceneTypes": [
+    "repo walkthrough",
+    "agent workflow",
+    "technical explainer",
+    "operational dashboard"
+  ],
+  "supportedTemplateRoles": ["scene"],
+  "aspectRatios": ["9:16"],
+  "density": "medium",
+  "renderCost": "medium",
+  "contentCapacity": {
+    "headlineChars": 72,
+    "bodyChars": 240,
+    "maxItems": 5,
+    "maxPanels": 2,
+    "maxCodeLines": 12,
+    "maxMetrics": 4
+  },
+  "preferredLayouts": [
+    "top-title",
+    "center-stage",
+    "bottom-statement",
+    "full-bleed-visual"
+  ],
+  "preferredTemplates": [
+    "code-panel",
+    "progress-steps",
+    "typewriter-subtitle"
+  ],
+  "backgroundEffects": [
+    "matrix-rain",
+    "grid-pulse",
+    "noise-grain"
+  ],
+  "motionPreset": "terminal-reveal",
+  "layoutGrammar": [
+    "Use one dominant terminal frame per scene.",
+    "Keep command/output lines short enough for 9:16 safe area.",
+    "Use cyan for prompts and active state; gold for warnings or next action; green for success.",
+    "Use dashboard/process rows only when the content is operational or sequential.",
+    "Avoid full-screen neon green hacker styling; keep glow restrained."
+  ],
+  "sourcePolicy": {
+    "copyStatus": "principles-only",
+    "registeredMedia": "none",
+    "notes": "No third-party screenshots, logos, font files, or source CSS are registered as reusable production assets. The package stores observations, source metadata, original Lucida tokens, and persisted validation artifacts. Generated MP4 output remains runtime-only and unregistered."
+  },
+  "notes": [
+    "Split visual, token, component, provenance, and artifact manifest companions now back the production style-package contract.",
+    "style-package.json uses validator-safe hyphenated intent slugs while this visual spec keeps runtime SceneIntent names with underscores."
+  ]
+}

@@ -1,7 +1,0 @@
-# MetaGPT software-company prompts
-
-Create a 2048 game with keyboard controls, score tracking, and a clean browser UI.
-
-Build a personal knowledge dashboard that can ingest markdown notes, tag topics, and show weekly review tasks.
-
-Create a small expense tracker with CSV import, monthly summaries, and category charts.

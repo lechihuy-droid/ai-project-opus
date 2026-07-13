@@ -1,0 +1,45 @@
+{
+  "packageId": "product-showcase",
+  "scenes": [
+    {
+      "key": "normal",
+      "sceneType": "product-reveal",
+      "requiredBehavior": [
+        "product/UI visible before supporting copy",
+        "portrait embed_asset renders",
+        "style_reference does not render as media"
+      ],
+      "assetCases": [
+        { "id": "console-portrait", "usage": "embed_asset", "expected": "rendered" },
+        { "id": "mood-reference", "usage": "style_reference", "expected": "placeholder-if-selected" }
+      ]
+    },
+    {
+      "key": "dense",
+      "sceneType": "feature-focus",
+      "requiredBehavior": [
+        "landscape crop remains deterministic in portrait frame",
+        "feature labels stay subordinate to product media",
+        "context_only does not render as media"
+      ],
+      "assetCases": [
+        { "id": "inspector-landscape", "usage": "embed_asset", "expected": "rendered" },
+        { "id": "research-context", "usage": "context_only", "expected": "placeholder-if-selected" }
+      ]
+    },
+    {
+      "key": "edge",
+      "sceneType": "before-after",
+      "requiredBehavior": [
+        "before context_only side renders placeholder",
+        "after embed_asset side renders product UI",
+        "missing embed_asset source has explicit placeholder reason"
+      ],
+      "assetCases": [
+        { "id": "before-context", "usage": "context_only", "expected": "placeholder" },
+        { "id": "after-portrait", "usage": "embed_asset", "expected": "rendered" },
+        { "id": "missing-after-variant", "usage": "embed_asset", "expected": "placeholder-if-selected" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "schemaVersion": "lucida-style-package/v1",
+  "id": "minimal-education",
+  "label": "Minimal Education",
+  "version": "1.0.0",
+  "status": "experimental",
+  "visualFamily": "minimal-education",
+  "description": "Production package for an airy educational family covering definitions, instructional steps, and structured comparisons.",
+  "tags": ["education", "teaching", "definition", "process", "comparison"],
+  "supportedIntents": ["list", "process", "comparison", "takeaway"],
+  "recommendedIntents": ["list", "process", "comparison"],
+  "avoidFor": [
+    "asset-led showcase scenes where media is the main subject",
+    "high-drama hook scenes that depend on oversized cinematic type",
+    "dense dashboards with real-time metrics or operational status panels"
+  ],
+  "aspectRatios": ["9:16", "16:9"],
+  "contentCapacity": {
+    "headlineChars": 88,
+    "bodyChars": 360,
+    "bulletsMaxItems": 6,
+    "maxDataSeries": 2,
+    "maxCodeLines": 0
+  },
+  "renderCost": {
+    "tier": "medium",
+    "estimatedSceneComplexity": 4,
+    "notes": "The family uses simple grids, text fitting, and restrained motion without asset-heavy rendering."
+  },
+  "reducedMotion": {
+    "strategy": "reduced-motion-fade",
+    "notes": "Reduce travel distance and keep comparison scenes on opacity-first reveals with static alignment."
+  },
+  "accessibility": {
+    "contrast": "AA",
+    "notes": "High contrast text, low-noise backgrounds, and consistent row alignment keep dense educational scenes readable."
+  },
+  "directorCompatibility": {
+    "selectionReason": "Use when narration teaches one concept clearly, walks through a small routine, or compares aligned criteria.",
+    "preferredNeighborFamilies": ["technical-editorial", "cinematic-type"],
+    "bridgeFamilies": ["technical-editorial"],
+    "hardBlocks": [
+      "requires product-first media stage",
+      "requires live dashboard metrics",
+      "requires chronology-first documentary storytelling"
+    ]
+  },
+  "files": {
+    "visual": "./visual.json",
+    "tokens": "./tokens.json",
+    "componentMap": "./component-map.json",
+    "provenance": "./provenance.md",
+    "artifactManifest": "./artifact-manifest.json"
+  },
+  "sourcePolicy": {
+    "copyStatus": "principles-only",
+    "registeredMedia": "none",
+    "notes": "The family is original to Lucida and uses no third-party brand visuals, screenshots, or font binaries."
+  },
+  "sourceArtifacts": {
+    "mappedScenes": "pipeline/fixtures/styles/minimal-education/definition-scene.json",
+    "compiledVideoMap": "./artifacts/demo-video-map.json",
+    "sourceReviewReport": "./artifacts/source-review-report.json"
+  },
+  "validationArtifacts": {
+    "demoVideoMap": "./artifacts/demo-video-map.json",
+    "renderProps": "./artifacts/render-props.json",
+    "previewFrames": [
+      "./artifacts/frames/scene-01.png",
+      "./artifacts/frames/scene-02.png",
+      "./artifacts/frames/scene-03.png"
+    ],
+    "renderReport": "./artifacts/render-report.json",
+    "videoBinaryRegistered": false
+  },
+  "sourceReferences": [
+    {
+      "id": "nng-visual-hierarchy",
+      "url": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/",
+      "selectedConcepts": [
+        "grouping through spacing",
+        "clear hierarchy",
+        "proximity as structure"
+      ]
+    },
+    {
+      "id": "nng-aesthetic-minimalist",
+      "url": "https://www.nngroup.com/articles/aesthetic-minimalist-design/",
+      "selectedConcepts": [
+        "reduce interface noise",
+        "emphasize necessary information"
+      ]
+    },
+    {
+      "id": "material-color-roles",
+      "url": "https://m3.material.io/styles/color/roles",
+      "selectedConcepts": [
+        "semantic color roles",
+        "accessible color pairings"
+      ]
+    }
+  ],
+  "qualityGate": {
+    "validated": true,
+    "checks": [
+      "visual package validator",
+      "Remotion still renders",
+      "portrait preview frames",
+      "TypeScript noEmit"
+    ],
+    "knownLimitations": [
+      "Shared registry and app root integration are intentionally left untouched because they are outside this ownership scope.",
+      "Only 9:16 preview frames are rendered in Wave 1; 16:9 metadata is present for later QA."
+    ]
+  }
+}

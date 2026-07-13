@@ -1,0 +1,43 @@
+{
+  "packageId": "product-showcase",
+  "compositionId": "ProductShowcaseFamilyReview",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "scenes": [
+    {
+      "id": "scene-01",
+      "label": "Normal product reveal",
+      "sceneKey": "normal",
+      "frame": 48,
+      "output": "./frames/scene-01.png",
+      "assetAssertions": [
+        "console-portrait renders because usage is embed_asset and src is present",
+        "mood-reference is not selected for rendering"
+      ]
+    },
+    {
+      "id": "scene-02",
+      "label": "Dense feature focus",
+      "sceneKey": "dense",
+      "frame": 60,
+      "output": "./frames/scene-02.png",
+      "assetAssertions": [
+        "inspector-landscape renders with landscape focal crop 54/45",
+        "research-context remains context_only metadata"
+      ]
+    },
+    {
+      "id": "scene-03",
+      "label": "Edge before-after",
+      "sceneKey": "edge",
+      "frame": 42,
+      "output": "./frames/scene-03.png",
+      "assetAssertions": [
+        "before-context is context_only and renders as a placeholder",
+        "after-portrait renders because usage is embed_asset and src is present",
+        "missing-after-variant would render as a placeholder if selected"
+      ]
+    }
+  ]
+}
