@@ -1,0 +1,239 @@
+{
+  "schemaVersion": "lucida-style-preview-boards/v1",
+  "generatedAt": "2026-07-13T15:32:53.764Z",
+  "status": "pass",
+  "expectedBoardCount": 9,
+  "boardCount": 9,
+  "videoBinaryRegistered": false,
+  "boards": [
+    {
+      "id": "cinematic-type",
+      "status": "experimental",
+      "output": "design/visual-library/reports/preview-boards/cinematic-type.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 640
+      },
+      "sha256": "261f724db99e9c05c778cfed564495c3a4309e2ce91b7d2c7b7b1baccb4a853b",
+      "fileBytes": 351176,
+      "sourceFrames": [
+        {
+          "path": "design/visual-library/styles/cinematic-type/artifacts/frames/scene-01.png",
+          "sha256": "d5b89e03f0f27ff9c9c05497dade5f8487af3359ec9f3c0921bc292872352f30"
+        },
+        {
+          "path": "design/visual-library/styles/cinematic-type/artifacts/frames/scene-02.png",
+          "sha256": "a29a23c8d8744eb26ba879c5caa2019d7a586b2e9680ef034351923281a42046"
+        },
+        {
+          "path": "design/visual-library/styles/cinematic-type/artifacts/frames/scene-03.png",
+          "sha256": "f5fea755b929326846973dceb481ea9f380c969a907d332ae3d0f13613f1f7f9"
+        }
+      ]
+    },
+    {
+      "id": "dashboard-data",
+      "status": "experimental",
+      "output": "design/visual-library/reports/preview-boards/dashboard-data.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 640
+      },
+      "sha256": "4d8483cfe60062d8342d5463d5ebdf3b79d93e7e4cb713433d23770977a236e1",
+      "fileBytes": 373068,
+      "sourceFrames": [
+        {
+          "path": "design/visual-library/styles/dashboard-data/artifacts/frames/scene-01.png",
+          "sha256": "f469134e1b73a66a6563f2fcf16bd57b4ac317f72fe98bd06a461841a7a24b22"
+        },
+        {
+          "path": "design/visual-library/styles/dashboard-data/artifacts/frames/scene-02.png",
+          "sha256": "f87813614791ed0a3d2a5345ef496048a26e4780b7d1738cef1b2a35c68004db"
+        },
+        {
+          "path": "design/visual-library/styles/dashboard-data/artifacts/frames/scene-03.png",
+          "sha256": "ba6b6ac663a17c57c20499863bfac4e7f6376d2728fc085bd3448c590d8a057e"
+        }
+      ]
+    },
+    {
+      "id": "editorial-collage",
+      "status": "experimental",
+      "output": "design/visual-library/reports/preview-boards/editorial-collage.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 640
+      },
+      "sha256": "6e0599bcd4675f50723d62137b5517b175b0aaa45c8e7f2b2ca864ea8ba94371",
+      "fileBytes": 415692,
+      "sourceFrames": [
+        {
+          "path": "design/visual-library/styles/editorial-collage/artifacts/frames/scene-01.png",
+          "sha256": "951d474f4b1d2331bf2d4b315359534354692b936465becb896c16fc6ad93e82"
+        },
+        {
+          "path": "design/visual-library/styles/editorial-collage/artifacts/frames/scene-02.png",
+          "sha256": "c25540c1ceed90125b8536dab2c7c8fe7d42b6430632766fb7cbb84eed09c057"
+        },
+        {
+          "path": "design/visual-library/styles/editorial-collage/artifacts/frames/scene-03.png",
+          "sha256": "2ed755fda7516de01a7c25b57a52e1bf07e01bafd8d368cd7171935812b0a7d8"
+        }
+      ]
+    },
+    {
+      "id": "minimal-education",
+      "status": "experimental",
+      "output": "design/visual-library/reports/preview-boards/minimal-education.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 640
+      },
+      "sha256": "7960efefde1e05687e5088f973e2f526712c6e710455888aa25101ca2b56770e",
+      "fileBytes": 321816,
+      "sourceFrames": [
+        {
+          "path": "design/visual-library/styles/minimal-education/artifacts/frames/scene-01.png",
+          "sha256": "c34af0b1668b58713a378c4565f7c87534f5df1f59c3cc9bb137e3e0c8dc7713"
+        },
+        {
+          "path": "design/visual-library/styles/minimal-education/artifacts/frames/scene-02.png",
+          "sha256": "30200ec0a9a63afef09ee36cdc1765a8c1584c378ba9a16e3bcebc960a48eb2c"
+        },
+        {
+          "path": "design/visual-library/styles/minimal-education/artifacts/frames/scene-03.png",
+          "sha256": "39a1d7464de451777033832b9d2fef2b4f43fd394a44b48b63ef2472a01b61a1"
+        }
+      ]
+    },
+    {
+      "id": "paper-notebook",
+      "status": "experimental",
+      "output": "design/visual-library/reports/preview-boards/paper-notebook.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 640
+      },
+      "sha256": "77a4f6475592aed71fe898c92190950aa3c3d69b2f6c228ad3a05389b5004b57",
+      "fileBytes": 255788,
+      "sourceFrames": [
+        {
+          "path": "design/visual-library/styles/paper-notebook/artifacts/frames/scene-01.png",
+          "sha256": "2835ad6c319fa2aac08daf4019c01b0cf9e8f82db4a18de93851c75b303427c3"
+        },
+        {
+          "path": "design/visual-library/styles/paper-notebook/artifacts/frames/scene-02.png",
+          "sha256": "75be5657f764fd174d90404ccda59a93e79e6c31d7f04c0e113a0705e25267d2"
+        },
+        {
+          "path": "design/visual-library/styles/paper-notebook/artifacts/frames/scene-03.png",
+          "sha256": "06441b6754098db0e0e6723158fe3067a861e0ef8791e48fa7b27ef5bcfc0fe2"
+        }
+      ]
+    },
+    {
+      "id": "product-showcase",
+      "status": "experimental",
+      "output": "design/visual-library/reports/preview-boards/product-showcase.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 640
+      },
+      "sha256": "ce4c84d278becabd3ee1d33a139af6aee9282c38322f102c3b772c6b2979a095",
+      "fileBytes": 231469,
+      "sourceFrames": [
+        {
+          "path": "design/visual-library/styles/product-showcase/artifacts/frames/scene-01.png",
+          "sha256": "bb0e89152b857a9d9c4d1e472926c6ff5f9d745ca0940d6c38014c24c236c121"
+        },
+        {
+          "path": "design/visual-library/styles/product-showcase/artifacts/frames/scene-02.png",
+          "sha256": "486926ef8e7fa7adce0c1638134cbd0c98fe4c9baec73b229224bd2201878bcb"
+        },
+        {
+          "path": "design/visual-library/styles/product-showcase/artifacts/frames/scene-03.png",
+          "sha256": "eed4dbf7f16cebbec8c858c1a357e28da8eda6a4ff2a7408ca44066a17e7e081"
+        }
+      ]
+    },
+    {
+      "id": "technical-editorial",
+      "status": "experimental",
+      "output": "design/visual-library/reports/preview-boards/technical-editorial.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 640
+      },
+      "sha256": "5d2014f816dba75609359e2ba06d8d174abd2fdf6696b1a0ae99aef4c1769877",
+      "fileBytes": 393147,
+      "sourceFrames": [
+        {
+          "path": "design/visual-library/styles/technical-editorial/artifacts/frames/scene-01.png",
+          "sha256": "8b88e2e3c6495a6d952b51d1929831278e40db6a51e77a4cf76f8004f2957586"
+        },
+        {
+          "path": "design/visual-library/styles/technical-editorial/artifacts/frames/scene-02.png",
+          "sha256": "82716feb006909f0e2844126c9b2ea65d261d182af8ae4a982e51a628dc7d65a"
+        },
+        {
+          "path": "design/visual-library/styles/technical-editorial/artifacts/frames/scene-03.png",
+          "sha256": "83a80e5dd2a564ddf2d57e98fd24db01d8348743c7b61ca09186be58382400af"
+        }
+      ]
+    },
+    {
+      "id": "terminal-command-center",
+      "status": "experimental",
+      "output": "design/visual-library/reports/preview-boards/terminal-command-center.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "384fcbff43116407103abfbbf83e0b5699af9773fbe3ae7ee47744614c843f45",
+      "fileBytes": 508998,
+      "sourceFrames": [
+        {
+          "path": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-01.png",
+          "sha256": "4614c711bb85ab167a0bbbfdc4f295eba08bcb32dc59ebeda95da9559ff2fe6e"
+        },
+        {
+          "path": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-02.png",
+          "sha256": "26d623a8d9d419a8e161d29069aae6c6d7550e08f969120df23ea9034111bb3d"
+        },
+        {
+          "path": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-03.png",
+          "sha256": "542b184710a635561d1f88d6d296d0434cf7c931999323d26c4ab28d363f959d"
+        },
+        {
+          "path": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-04.png",
+          "sha256": "a2cd7a7705fb072776b6a18c517daa905cdd5dbc184c39b978509efe9c360d3a"
+        }
+      ]
+    },
+    {
+      "id": "timeline-documentary",
+      "status": "experimental",
+      "output": "design/visual-library/reports/preview-boards/timeline-documentary.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 640
+      },
+      "sha256": "a0f080c08266f6d360dc7e420c0522baa8a233fa5bf9ee344e3710d80493dbf5",
+      "fileBytes": 261625,
+      "sourceFrames": [
+        {
+          "path": "design/visual-library/styles/timeline-documentary/artifacts/frames/scene-01.png",
+          "sha256": "48b9e884c4c0905d8ef3265b6748bb42991016a09d9ab4f0dd7064d045017fdc"
+        },
+        {
+          "path": "design/visual-library/styles/timeline-documentary/artifacts/frames/scene-02.png",
+          "sha256": "e8a4e01bdd9d647527776daa0dd7f7e19e191b06127e505529bf0a0730e6e3ad"
+        },
+        {
+          "path": "design/visual-library/styles/timeline-documentary/artifacts/frames/scene-03.png",
+          "sha256": "d31e25e25434015df4d157de2e845b37f9aec3fb52a05a9497507014f0abf70a"
+        }
+      ]
+    }
+  ]
+}

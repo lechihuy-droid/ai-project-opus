@@ -26,6 +26,17 @@ export type Density = "low" | "medium" | "high";
 
 export type SafeArea = "tiktok" | "reels" | "youtube_shorts";
 
+export type ProductionVisualFamily =
+  | "terminal-command-center"
+  | "technical-editorial"
+  | "minimal-education"
+  | "cinematic-type"
+  | "dashboard-data"
+  | "paper-notebook"
+  | "product-showcase"
+  | "editorial-collage"
+  | "timeline-documentary";
+
 export type SceneContentItem = {
   label?: string;
   title?: string;
@@ -117,12 +128,42 @@ export type CaptionGroup = {
   weight?: "normal" | "compact";
 };
 
+export type TimedCaptionWord = {
+  text: string;
+  startMs: number | null;
+  endMs: number | null;
+};
+
+export type TimedCaptionPhrase = {
+  phraseId: string;
+  sentenceId: string;
+  text: string;
+  startMs: number;
+  endMs: number;
+  words: TimedCaptionWord[];
+};
+
+export type AudioTrack = {
+  src: string;
+  durationMs: number;
+  checksum: string;
+};
+
+export type TimedCaptions = {
+  voiceChecksum: string;
+  phrases: TimedCaptionPhrase[];
+};
+
 export type VideoMapScene = {
   id: string;
   intent: SceneIntent;
   templateId: string;
+  /** Optional package-backed production renderer family. Absent preserves legacy templateId dispatch. */
+  visualFamily?: ProductionVisualFamily | (string & {});
   templateRole: TemplateRole;
   durationSec: number;
+  startMs?: number;
+  endMs?: number;
   headline: string;
   subtitle: SubtitleSpec;
   content: SceneContent;

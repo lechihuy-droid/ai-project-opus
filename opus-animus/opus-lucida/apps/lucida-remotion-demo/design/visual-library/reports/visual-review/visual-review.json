@@ -1,0 +1,378 @@
+{
+  "schema": "lucida.visual-library.visual-review.final-remediation.v1",
+  "reviewed_at_local": "2026-07-14T00:43:43+09:00",
+  "workdir": "C:/Users/HUY/workspace/ai-project-opus/opus-animus/opus-lucida/apps/lucida-remotion-demo",
+  "scope": {
+    "owned_output_root": "design/visual-library/reports/visual-review",
+    "source_frame_root": "design/visual-library/styles/*/artifacts/frames",
+    "preview_board_root": "design/visual-library/reports/preview-boards",
+    "family_count": 9,
+    "original_frame_count": 28,
+    "preview_board_count": 9,
+    "note": "All discovered original PNG frames were inspected. terminal-command-center has 4 source frames, so the inspected source-frame total is 28."
+  },
+  "inspection_method": {
+    "not_checksum_only": true,
+    "pixel_inspection": [
+      "Opened and visually inspected the latest original PNG frames for all 9 families.",
+      "Opened and visually inspected the latest preview boards for all 9 families.",
+      "Focused review on prior failure surfaces: dashboard-data scenes 01-03, technical-editorial scenes 01-03, and terminal-command-center preview-board completeness.",
+      "Spot-checked the six previously passing families for visible regressions in source frames and preview boards."
+    ],
+    "machine_decode_checks": {
+      "all_source_frames_decoded": true,
+      "all_preview_boards_decoded": true,
+      "source_frame_dimensions": "All 28 source frames are 1080x1920.",
+      "preview_board_dimensions": "Eight preview boards are 1080x640; terminal-command-center is 1080x1920 because it contains four source frames in a 2x2 board."
+    },
+    "new_contact_sheets_created": false
+  },
+  "summary": {
+    "families_reviewed": 9,
+    "pass": 9,
+    "fail": 0,
+    "failed_families": [],
+    "overall_status": "pass",
+    "global_findings": [
+      {
+        "severity": "info",
+        "type": "prior_failures_resolved",
+        "message": "dashboard-data clipping, technical-editorial wrapping/clipping, and terminal-command-center board completeness issues were re-inspected in the latest PNGs and now pass."
+      },
+      {
+        "severity": "info",
+        "type": "no_regression_seen",
+        "message": "No visual regressions were observed in cinematic-type, editorial-collage, minimal-education, paper-notebook, product-showcase, or timeline-documentary."
+      },
+      {
+        "severity": "info",
+        "type": "no_corrupt_pngs",
+        "message": "No blank, corrupt, or decode-failed PNGs were found among inspected source frames or preview boards."
+      }
+    ]
+  },
+  "families": [
+    {
+      "name": "cinematic-type",
+      "status": "pass",
+      "frame_count": 3,
+      "frames": [
+        {
+          "path": "design/visual-library/styles/cinematic-type/artifacts/frames/scene-01.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T09:42:42+09:00",
+          "status": "pass",
+          "evidence": "Large title, bottom explanatory copy, footer labels, and right texture placeholder remain inside the portrait safe area with no visible crop."
+        },
+        {
+          "path": "design/visual-library/styles/cinematic-type/artifacts/frames/scene-02.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T09:43:00+09:00",
+          "status": "pass",
+          "evidence": "Quote block, side field placeholder, and caption stay readable; no overlap or edge clipping."
+        },
+        {
+          "path": "design/visual-library/styles/cinematic-type/artifacts/frames/scene-03.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T09:43:18+09:00",
+          "status": "pass",
+          "evidence": "Long headline fits the left column, the wide texture strip stays in frame, and footer labels are visible."
+        }
+      ],
+      "preview_board": {
+        "path": "design/visual-library/reports/preview-boards/cinematic-type.png",
+        "dimensions": "1080x640",
+        "last_write_time_local": "2026-07-14T00:32:46+09:00",
+        "status": "pass",
+        "evidence": "Board shows all three source frames in order with no missing panel or board-level crop."
+      }
+    },
+    {
+      "name": "dashboard-data",
+      "status": "pass",
+      "frame_count": 3,
+      "frames": [
+        {
+          "path": "design/visual-library/styles/dashboard-data/artifacts/frames/scene-01.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-14T00:28:38+09:00",
+          "status": "pass",
+          "evidence": "Header copy is clear above the first panel; right metadata cards fit; KPI counters and spark bars are inside the KPI panel; watchlist and operations queue final row are fully visible."
+        },
+        {
+          "path": "design/visual-library/styles/dashboard-data/artifacts/frames/scene-02.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-14T00:28:54+09:00",
+          "status": "pass",
+          "evidence": "Dense header, KPI row, trend chart, watchlist, and four-row operations table all fit without the previous bottom clipping."
+        },
+        {
+          "path": "design/visual-library/styles/dashboard-data/artifacts/frames/scene-03.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-14T00:29:10+09:00",
+          "status": "pass",
+          "evidence": "Loading placeholders, empty trend state, recovery notes, and operational failure report remain readable; no panel boundary cuts the text."
+        }
+      ],
+      "preview_board": {
+        "path": "design/visual-library/reports/preview-boards/dashboard-data.png",
+        "dimensions": "1080x640",
+        "last_write_time_local": "2026-07-14T00:32:47+09:00",
+        "status": "pass",
+        "evidence": "Board shows scenes 01-03 after remediation; the previously failing header, KPI, metadata, watchlist, and operations surfaces remain visibly intact at board scale."
+      }
+    },
+    {
+      "name": "editorial-collage",
+      "status": "pass",
+      "frame_count": 3,
+      "frames": [
+        {
+          "path": "design/visual-library/styles/editorial-collage/artifacts/frames/scene-01.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T23:20:40+09:00",
+          "status": "pass",
+          "evidence": "Intentional collage overlap is present, but headline, recap cards, rule cards, footer, and primary media labels remain usable and inside frame."
+        },
+        {
+          "path": "design/visual-library/styles/editorial-collage/artifacts/frames/scene-02.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T23:21:37+09:00",
+          "status": "pass",
+          "evidence": "Dense evidence layout keeps the source cards, bottom rule cards, recap thread, and footer visible; no new regression seen."
+        },
+        {
+          "path": "design/visual-library/styles/editorial-collage/artifacts/frames/scene-03.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T23:22:27+09:00",
+          "status": "pass",
+          "evidence": "Missing-asset placeholder treatment is deliberate; bottom truth/policy/recap cards and the recap thread remain readable."
+        }
+      ],
+      "preview_board": {
+        "path": "design/visual-library/reports/preview-boards/editorial-collage.png",
+        "dimensions": "1080x640",
+        "last_write_time_local": "2026-07-14T00:32:48+09:00",
+        "status": "pass",
+        "evidence": "Board contains all three collage scenes and preserves the intended layering without board-level crop."
+      }
+    },
+    {
+      "name": "minimal-education",
+      "status": "pass",
+      "frame_count": 3,
+      "frames": [
+        {
+          "path": "design/visual-library/styles/minimal-education/artifacts/frames/scene-01.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T23:06:35+09:00",
+          "status": "pass",
+          "evidence": "Learning loop, cue/action/payoff table, teaching cue card, and footer all have clear spacing."
+        },
+        {
+          "path": "design/visual-library/styles/minimal-education/artifacts/frames/scene-02.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T23:06:57+09:00",
+          "status": "pass",
+          "evidence": "Three-step routine cards align on the timeline and stay readable; the right cue card wraps normally without clipping."
+        },
+        {
+          "path": "design/visual-library/styles/minimal-education/artifacts/frames/scene-03.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T23:07:31+09:00",
+          "status": "pass",
+          "evidence": "Dense comparison board keeps all six rows, both comparison columns, selection rule, and footer visible."
+        }
+      ],
+      "preview_board": {
+        "path": "design/visual-library/reports/preview-boards/minimal-education.png",
+        "dimensions": "1080x640",
+        "last_write_time_local": "2026-07-14T00:32:49+09:00",
+        "status": "pass",
+        "evidence": "Board shows all three education scenes with no missing frame, crop, or visible regression."
+      }
+    },
+    {
+      "name": "paper-notebook",
+      "status": "pass",
+      "frame_count": 3,
+      "frames": [
+        {
+          "path": "design/visual-library/styles/paper-notebook/artifacts/frames/scene-01.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T09:39:54+09:00",
+          "status": "pass",
+          "evidence": "Notebook sheet, margin notes, handwritten annotations, and footer stay within the paper area."
+        },
+        {
+          "path": "design/visual-library/styles/paper-notebook/artifacts/frames/scene-02.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T09:40:08+09:00",
+          "status": "pass",
+          "evidence": "Formula rows and right-side notes are aligned to ruled baselines; no formula or margin note is cut."
+        },
+        {
+          "path": "design/visual-library/styles/paper-notebook/artifacts/frames/scene-03.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T09:40:22+09:00",
+          "status": "pass",
+          "evidence": "Checklist items, open gate, right margin notes, and footer are visible and not clipped at page edges."
+        }
+      ],
+      "preview_board": {
+        "path": "design/visual-library/reports/preview-boards/paper-notebook.png",
+        "dimensions": "1080x640",
+        "last_write_time_local": "2026-07-14T00:32:49+09:00",
+        "status": "pass",
+        "evidence": "Board includes all three notebook frames; sheet margins and holes remain intact."
+      }
+    },
+    {
+      "name": "product-showcase",
+      "status": "pass",
+      "frame_count": 3,
+      "frames": [
+        {
+          "path": "design/visual-library/styles/product-showcase/artifacts/frames/scene-01.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T23:12:29+09:00",
+          "status": "pass",
+          "evidence": "Product mockup stays first-viewport dominant; overlay callouts and bottom feature cards remain readable."
+        },
+        {
+          "path": "design/visual-library/styles/product-showcase/artifacts/frames/scene-02.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T23:12:45+09:00",
+          "status": "pass",
+          "evidence": "Dense feature walkthrough keeps inspector, feature, asset, guard cards, headline, and caption visible."
+        },
+        {
+          "path": "design/visual-library/styles/product-showcase/artifacts/frames/scene-03.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T23:13:00+09:00",
+          "status": "pass",
+          "evidence": "Before/after composition shows a deliberate context-only placeholder on the left and embed asset on the right; bottom status cards remain readable."
+        }
+      ],
+      "preview_board": {
+        "path": "design/visual-library/reports/preview-boards/product-showcase.png",
+        "dimensions": "1080x640",
+        "last_write_time_local": "2026-07-14T00:32:50+09:00",
+        "status": "pass",
+        "evidence": "Board includes all three product scenes and preserves the intended placeholder behavior."
+      }
+    },
+    {
+      "name": "technical-editorial",
+      "status": "pass",
+      "frame_count": 3,
+      "frames": [
+        {
+          "path": "design/visual-library/styles/technical-editorial/artifacts/frames/scene-01.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-14T00:26:57+09:00",
+          "status": "pass",
+          "evidence": "Metric/stat cards no longer split words such as Deterministic, external, or dependency; annotation rail and diagram remain within their columns."
+        },
+        {
+          "path": "design/visual-library/styles/technical-editorial/artifacts/frames/scene-02.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-14T00:27:14+09:00",
+          "status": "pass",
+          "evidence": "Dense annotation rail keeps Audience, Density, Fallback, Panels, and Copy sections visible; no bottom rail clipping remains."
+        },
+        {
+          "path": "design/visual-library/styles/technical-editorial/artifacts/frames/scene-03.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-14T00:27:31+09:00",
+          "status": "pass",
+          "evidence": "Code/data callout header fits: family-entry.tsx and the tsx chip do not collide; footer path and scene labels are visible without mid-token path break."
+        }
+      ],
+      "preview_board": {
+        "path": "design/visual-library/reports/preview-boards/technical-editorial.png",
+        "dimensions": "1080x640",
+        "last_write_time_local": "2026-07-14T00:32:51+09:00",
+        "status": "pass",
+        "evidence": "Board shows scenes 01-03 after remediation; metric wrapping, dense rail clipping, and code header/path wrapping issues are no longer visible at board scale."
+      }
+    },
+    {
+      "name": "terminal-command-center",
+      "status": "pass",
+      "frame_count": 4,
+      "frames": [
+        {
+          "path": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-01.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-12T21:37:50+09:00",
+          "status": "pass",
+          "evidence": "Terminal title, command panel, status, source line, and scene label 01/04 are visible."
+        },
+        {
+          "path": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-02.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-12T21:37:59+09:00",
+          "status": "pass",
+          "evidence": "Palette entries, status, scanline note, and scene label 02/04 are visible."
+        },
+        {
+          "path": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-03.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-12T21:38:12+09:00",
+          "status": "pass",
+          "evidence": "Reusable primitives list, terminal MVP note, status, and scene label 03/04 are visible."
+        },
+        {
+          "path": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-04.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-12T21:38:21+09:00",
+          "status": "pass",
+          "evidence": "Next-step lines, exit 0 note, status, and scene label 04/04 are visible."
+        }
+      ],
+      "preview_board": {
+        "path": "design/visual-library/reports/preview-boards/terminal-command-center.png",
+        "dimensions": "1080x1920",
+        "last_write_time_local": "2026-07-14T00:32:52+09:00",
+        "status": "pass",
+        "evidence": "Board now contains all four source frames in a 2x2 layout and visibly includes scene 01/04, 02/04, 03/04, and 04/04."
+      }
+    },
+    {
+      "name": "timeline-documentary",
+      "status": "pass",
+      "frame_count": 3,
+      "frames": [
+        {
+          "path": "design/visual-library/styles/timeline-documentary/artifacts/frames/scene-01.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T09:40:37+09:00",
+          "status": "pass",
+          "evidence": "Milestones, dates, image placeholders, title, documentary finding, and footer labels remain inside frame."
+        },
+        {
+          "path": "design/visual-library/styles/timeline-documentary/artifacts/frames/scene-02.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T09:40:49+09:00",
+          "status": "pass",
+          "evidence": "Dense seven-record timeline keeps left/right events, archive-gap cards, title, and footer readable."
+        },
+        {
+          "path": "design/visual-library/styles/timeline-documentary/artifacts/frames/scene-03.png",
+          "dimensions": "1080x1920",
+          "last_write_time_local": "2026-07-13T09:41:02+09:00",
+          "status": "pass",
+          "evidence": "Conclusion timeline, three records, archive-gap cards, title, documentary finding, and footer labels are visible."
+        }
+      ],
+      "preview_board": {
+        "path": "design/visual-library/reports/preview-boards/timeline-documentary.png",
+        "dimensions": "1080x640",
+        "last_write_time_local": "2026-07-14T00:32:53+09:00",
+        "status": "pass",
+        "evidence": "Board shows all three timeline scenes with no board-level crop or missing frame."
+      }
+    }
+  ]
+}

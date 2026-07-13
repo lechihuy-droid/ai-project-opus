@@ -47,7 +47,8 @@ Read when needed:
 - If the user provides URLs, repos, PDFs, screenshots, or images, run `source-ingestor-cleaner` first.
 - Do not let one agent decide mapping, implementation, and QA without intermediate artifacts.
 - Let `source-ingestor-cleaner` automatically decide whether each source is content truth, style reference, embeddable asset, context-only, or ignored.
-- Keep `video-map.json` as the reviewable contract.
+- Keep `video-map.json` as the reviewable contract. Contract này nay carry thêm per-scene `layout` (bố cục vĩ mô, orthogonal với `templateId`) — xem `script-template-mapper/SKILL.md` cho archetype list và anti-monotony rules.
+- `remotion-visual-qa` stage phải check layout variety bằng mắt (still frames) ngoài việc check đúng nội dung — flag nếu nhiều scene liên tiếp trông cùng một bố cục (title-top-content-mid-caption-bottom lặp lại).
 - **Approval gate (bắt buộc):** sau khi `script-template-mapper` sinh `video-map.json`, DỪNG LẠI — chạy `npm run validate:videomap`, rồi trình user tóm tắt scene/template mapping và chờ user approve trước khi chạy `remotion-video-builder`. Chỉ bỏ qua gate này khi user nói rõ "chạy thẳng" / "không cần review".
 - If QA finds wrong visual mapping, fix `video-map.json` first.
 - If QA finds layout/render bugs, fix Remotion components.

@@ -11,6 +11,7 @@ import type {
   SceneContentItem,
   SceneLayout,
   ScenePanel,
+  TimedCaptionPhrase,
   VideoInput,
   VideoScene,
   VisualAsset,
@@ -742,10 +743,135 @@ const FloatingLabelChip: React.FC<LayoutTitleProps> = ({
 const SubtitleBar: React.FC<{
   scene: VideoScene;
   localFrame: number;
-}> = ({ scene, localFrame }) => {
+  timedPhrases?: TimedCaptionPhrase[];
+}> = ({ scene, localFrame, timedPhrases }) => {
   const skin = useSkin();
   const { fps } = useVideoConfig();
-  if (scene.subtitleMode === "none" || scene.captionGroups.length === 0) {
+  if (scene.subtitleMode === "none") {
+    return null;
+  }
+
+  if (timedPhrases) {
+    const currentMs = (localFrame / fps) * 1000;
+    const phrase = timedPhrases.find(
+      (item) => currentMs >= item.startMs && currentMs < item.endMs,
+    );
+    if (!phrase) {
+      return null;
+    }
+
+    const phraseWords = phrase.words.length > 0
+      ? phrase.words
+      : splitWords(phrase.text).map((text) => ({
+          text,
+          startMs: null,
+          endMs: null,
+        }));
+    const lineBreak = phraseWords.length > 6
+      ? Math.ceil(phraseWords.length / 2)
+      : phraseWords.length;
+    const lines = [
+      phraseWords.slice(0, lineBreak),
+      phraseWords.slice(lineBreak),
+    ].filter((line) => line.length > 0);
+    const phraseFrame = ((currentMs - phrase.startMs) / 1000) * fps;
+    const phraseLength = Math.max(
+      1,
+      ((phrase.endMs - phrase.startMs) / 1000) * fps,
+    );
+    const groupEnter = interpolate(phraseFrame, [0, 6], [0.72, 1], {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    });
+    const groupExit = interpolate(
+      phraseFrame,
+      [phraseLength - 7, phraseLength - 1],
+      [1, 0],
+      { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+    );
+
+    return (
+      <div
+        style={{
+          position: "absolute",
+          left: 100,
+          width: 880,
+          bottom: 210,
+          minHeight: 132,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          alignContent: "center",
+          padding: "22px 24px",
+          background:
+            "linear-gradient(180deg, rgba(20,21,24,0.30), rgba(10,11,13,0.18))",
+          borderRadius: skin.chrome.terminalFrame ? 10 : 22,
+          opacity: groupEnter * groupExit,
+          transform: `translateY(${interpolate(groupEnter, [0, 1], [8, 0])}px)`,
+        }}
+      >
+        <div
+          style={{
+            color: skin.palette.textPrimary,
+            fontSize: 48,
+            lineHeight: 1.18,
+            fontWeight: 760,
+            textAlign: "center",
+            width: "100%",
+            fontVariantLigatures: "none",
+            fontFamily: skin.chrome.terminalFrame
+              ? skin.palette.fontMono
+              : undefined,
+          }}
+        >
+          {lines.map((line, lineIndex) => (
+            <div
+              key={`${scene.id}-timed-subtitle-${phrase.phraseId}-line-${lineIndex}`}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "baseline",
+                flexWrap: "nowrap",
+                whiteSpace: "nowrap",
+                minHeight: 56,
+              }}
+            >
+              {line.map((word, wordIndex) => {
+                const isActive =
+                  word.startMs !== null &&
+                  word.endMs !== null &&
+                  word.startMs <= currentMs &&
+                  currentMs < word.endMs;
+                return (
+                  <span
+                    key={`${phrase.phraseId}-${lineIndex}-${wordIndex}-${word.text}`}
+                    style={{
+                      display: "inline-block",
+                      margin: "0 7px",
+                      color: isActive
+                        ? skin.palette.accent
+                        : skin.palette.textPrimary,
+                      opacity: isActive ? 1 : 0.84,
+                      transform: `scale(${isActive ? 1.04 : 1})`,
+                      transformOrigin: "center bottom",
+                      textShadow: isActive
+                        ? `0 0 18px ${withAlpha(skin.palette.accentRgb, 0.26)}`
+                        : "0 2px 12px rgba(0,0,0,0.46)",
+                      willChange: "transform, color",
+                    }}
+                  >
+                    {normalizeText(word.text)}
+                  </span>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (scene.captionGroups.length === 0) {
     return null;
   }
 
@@ -931,8 +1057,9 @@ export const SceneShell: React.FC<{
   scene: VideoScene;
   localFrame: number;
   theme: Theme;
+  timedPhrases?: TimedCaptionPhrase[];
   children: ReactNode;
-}> = ({ scene, localFrame, theme, children }) => {
+}> = ({ scene, localFrame, theme, timedPhrases, children }) => {
   const skin = useSkin();
   const layout: SceneLayout = scene.layout ?? "top-title";
   const sceneFade =
@@ -990,7 +1117,11 @@ export const SceneShell: React.FC<{
         {layout === "bottom-statement" ? (
           <BottomStatementBand scene={scene} localFrame={localFrame} theme={theme} />
         ) : null}
-        <SubtitleBar scene={scene} localFrame={localFrame} />
+        <SubtitleBar
+          scene={scene}
+          localFrame={localFrame}
+          timedPhrases={timedPhrases}
+        />
       </div>
       {skin.chrome.scanlines ? <ScanlineOverlay /> : null}
       <TransitionOverlay scene={scene} localFrame={localFrame} />

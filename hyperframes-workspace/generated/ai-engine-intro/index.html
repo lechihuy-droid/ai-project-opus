@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Video Engine Intro</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      html, body {
+        margin: 0;
+        width: 1280px;
+        height: 720px;
+        overflow: hidden;
+        background: linear-gradient(180deg, #08111f 0%, #101820 54%, #06080c 100%);
+        font-family: Inter, Segoe UI, Arial, sans-serif;
+      }
+      #stage {
+        position: relative;
+        width: 1280px;
+        height: 720px;
+        color: #f5f7fb;
+        background: linear-gradient(180deg, #08111f 0%, #101820 54%, #06080c 100%);
+      }
+      .scene {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+      .layer {
+        position: absolute;
+        box-sizing: border-box;
+      }
+      .text-layer {
+        color: var(--layer-color, #f5f7fb);
+        font-weight: var(--layer-font-weight, 700);
+        font-size: var(--layer-font-size, 64px);
+        line-height: var(--layer-line-height, 1.08);
+        white-space: pre-wrap;
+      }
+      .shape-layer {
+        background: var(--layer-fill, #58a6ff);
+        border: var(--layer-border, 0 solid transparent);
+        border-radius: var(--layer-radius, 0);
+      }
+      .media-layer {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .panel-layer {
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 12px;
+        background: rgba(14,20,28,0.86);
+        box-shadow: 0 28px 90px rgba(0, 0, 0, 0.34);
+      }
+      .terminal-layer, .code-layer {
+        padding: 28px;
+        font-family: "JetBrains Mono", Consolas, monospace;
+        font-size: var(--layer-font-size, 26px);
+        line-height: 1.5;
+        white-space: pre-wrap;
+      }
+      .browser-layer {
+        background: #f7f9fc;
+        color: #17202a;
+      }
+      .browser-bar {
+        height: 44px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 16px;
+        border-bottom: 1px solid rgba(0,0,0,0.08);
+        font-size: 14px;
+        color: rgba(23,32,42,0.68);
+      }
+      .browser-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #d0d7de;
+      }
+      .browser-content {
+        padding: 32px;
+        font-size: var(--layer-font-size, 34px);
+        line-height: 1.22;
+      }
+      .timeline-track {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        height: 4px;
+        transform: translateY(-50%);
+        background: rgba(255,255,255,0.18);
+      }
+      .timeline-node {
+        position: absolute;
+        top: 50%;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        background: #3ddc97;
+        box-shadow: 0 0 0 8px rgba(61,220,151,0.12);
+      }
+      #intro-title { animation: anim-intro-title-opacity 0.8s ease-out 0.2s both; }
+      @keyframes anim-intro-title-opacity {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #intro-subtitle { animation: anim-intro-subtitle-opacity 0.8s ease-out 0.8s both; }
+      @keyframes anim-intro-subtitle-opacity {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #pipeline-title { animation: anim-pipeline-title-opacity 0.6s ease-out 3.4s both; }
+      @keyframes anim-pipeline-title-opacity {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="stage"
+      data-composition-id="ai-engine-intro"
+      data-start="0"
+      data-duration="7.2"
+      data-width="1280"
+      data-height="720"
+      data-no-timeline
+    >
+      <section class="scene" id="intro" data-start="0" data-duration="3.2">
+        
+        <div class="layer shape-layer clip" id="intro-panel" data-start="0" data-duration="3.2" style="left: 92px; top: 92px; width: 1096px; height: 536px; --layer-fill: rgba(10, 18, 28, 0.78); --layer-border: 1px solid rgba(255,255,255,0.14); --layer-radius: 14px"></div>
+        <div class="layer text-layer clip" id="intro-kicker" data-start="0" data-duration="3.2" style="left: 140px; top: 150px; width: 740px; height: 34px; --layer-color: rgba(196, 221, 255, 0.78); --layer-font-size: 22px; --layer-font-weight: 700">SCENE JSON / HYPERFRAMES</div>
+        <div class="layer text-layer clip" id="intro-title" data-start="0" data-duration="3.2" style="left: 136px; top: 218px; width: 840px; height: 94px; --layer-color: #f7fbff; --layer-font-size: 82px; --layer-font-weight: 800">AI Video Engine</div>
+        <div class="layer text-layer clip" id="intro-subtitle" data-start="0" data-duration="3.2" style="left: 140px; top: 342px; width: 760px; height: 92px; --layer-color: rgba(236, 243, 255, 0.78); --layer-font-size: 30px; --layer-font-weight: 500; --layer-line-height: 1.28">LLM writes declarative scenes. The renderer compiles them into deterministic HTML video compositions.</div>
+        <div class="layer shape-layer clip" id="intro-line" data-start="0" data-duration="3.2" style="left: 140px; top: 500px; width: 620px; height: 6px; --layer-fill: linear-gradient(90deg, #58a6ff 0%, #3ddc97 100%); --layer-radius: 8px"></div>
+      </section>
+      <section class="scene" id="pipeline" data-start="3.2" data-duration="4">
+        
+        <div class="layer text-layer clip" id="pipeline-title" data-start="3.2" data-duration="4" style="left: 108px; top: 92px; width: 680px; height: 70px; --layer-color: #f7fbff; --layer-font-size: 56px; --layer-font-weight: 800">Render pipeline</div>
+        <div class="layer terminal-layer clip panel-layer" id="pipeline-terminal" data-start="3.2" data-duration="4" style="left: 108px; top: 192px; width: 560px; height: 338px; --layer-font-size: 22px"><div>$ scene-json compile</div><div>validate schema</div><div>write index.html + meta.json</div><div>render with HyperFrames producer</div></div>
+        <div class="layer timeline-layer clip" id="pipeline-track" data-start="3.2" data-duration="4" style="left: 742px; top: 250px; width: 380px; height: 180px">
+          <div class="timeline-track"></div>
+          <span class="timeline-node" style="left: 0%" title="JSON"></span><span class="timeline-node" style="left: 33.3333%" title="HTML"></span><span class="timeline-node" style="left: 66.6667%" title="Frames"></span><span class="timeline-node" style="left: 100%" title="MP4"></span>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

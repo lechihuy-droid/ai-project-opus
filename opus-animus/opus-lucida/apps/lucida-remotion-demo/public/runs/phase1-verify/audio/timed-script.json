@@ -1,0 +1,185 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "audio-pipeline-fixture",
+  "scriptRevision": 1,
+  "scriptChecksum": "sha256:6ee0bf7352d3f7e3bd85cd440bc39277138f70cee67c4e6ca9bc32af2ac361e3",
+  "voiceChecksum": "sha256:3b97fa7977055ac17604c93d23bc36ddfa612abb1a7db6001b3e778130ec99bb",
+  "durationMs": 6900,
+  "sentences": [
+    {
+      "sentenceId": "sent-001",
+      "segmentId": "seg-001",
+      "startMs": 31,
+      "endMs": 513
+    },
+    {
+      "sentenceId": "sent-002",
+      "segmentId": "seg-002",
+      "startMs": 533,
+      "endMs": 1175
+    },
+    {
+      "sentenceId": "sent-003",
+      "segmentId": "seg-003",
+      "startMs": 1195,
+      "endMs": 2018
+    }
+  ],
+  "phrases": [
+    {
+      "phraseId": "phrase-001",
+      "sentenceId": "sent-001",
+      "text": "Xin chào, đây là Lucida. Xin chào, đây là Lucida.,",
+      "startMs": 31,
+      "endMs": 212,
+      "words": [
+        {
+          "text": "Xin chào, đây là Lucida.",
+          "startMs": 31,
+          "endMs": 91
+        },
+        {
+          "text": "Xin chào, đây là Lucida.",
+          "startMs": 111,
+          "endMs": 212
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-002",
+      "sentenceId": "sent-001",
+      "text": "Xin chào, đây là Lucida. Xin chào, đây là Lucida. Xin chào, đây là Lucida..",
+      "startMs": 232,
+      "endMs": 513,
+      "words": [
+        {
+          "text": "Xin chào, đây là Lucida.",
+          "startMs": 232,
+          "endMs": 292
+        },
+        {
+          "text": "Xin chào, đây là Lucida.",
+          "startMs": 312,
+          "endMs": 352
+        },
+        {
+          "text": "Xin chào, đây là Lucida.",
+          "startMs": 372,
+          "endMs": 513
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-003",
+      "sentenceId": "sent-002",
+      "text": "Âm thanh dẫn nhịp cho từng cảnh. Âm thanh dẫn nhịp cho từng cảnh. Âm thanh dẫn nhịp cho từng cảnh. Âm thanh dẫn nhịp cho từng cảnh. Âm thanh dẫn nhịp cho từng cảnh. Âm thanh dẫn nhịp cho từng cảnh. Âm thanh dẫn nhịp cho từng cảnh..",
+      "startMs": 533,
+      "endMs": 1175,
+      "words": [
+        {
+          "text": "Âm thanh dẫn nhịp cho từng cảnh.",
+          "startMs": 533,
+          "endMs": 573
+        },
+        {
+          "text": "Âm thanh dẫn nhịp cho từng cảnh.",
+          "startMs": 593,
+          "endMs": 693
+        },
+        {
+          "text": "Âm thanh dẫn nhịp cho từng cảnh.",
+          "startMs": 713,
+          "endMs": 774
+        },
+        {
+          "text": "Âm thanh dẫn nhịp cho từng cảnh.",
+          "startMs": 794,
+          "endMs": 874
+        },
+        {
+          "text": "Âm thanh dẫn nhịp cho từng cảnh.",
+          "startMs": 894,
+          "endMs": 954
+        },
+        {
+          "text": "Âm thanh dẫn nhịp cho từng cảnh.",
+          "startMs": 974,
+          "endMs": 1055
+        },
+        {
+          "text": "Âm thanh dẫn nhịp cho từng cảnh.",
+          "startMs": 1075,
+          "endMs": 1175
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-004",
+      "sentenceId": "sent-003",
+      "text": "Mỗi câu được khóa để giữ nguyên nội dung. Mỗi câu được khóa để giữ nguyên nội dung. Mỗi câu được khóa để giữ nguyên nội dung. Mỗi câu được khóa để giữ nguyên nội dung. Mỗi câu được khóa để giữ nguyên nội dung. Mỗi câu được khóa để giữ nguyên nội dung. Mỗi câu được khóa để giữ nguyên nội dung. Mỗi câu được khóa để giữ nguyên nội dung. Mỗi câu được khóa để giữ nguyên nội dung..",
+      "startMs": 1195,
+      "endMs": 2018,
+      "words": [
+        {
+          "text": "Mỗi câu được khóa để giữ nguyên nội dung.",
+          "startMs": 1195,
+          "endMs": 1255
+        },
+        {
+          "text": "Mỗi câu được khóa để giữ nguyên nội dung.",
+          "startMs": 1276,
+          "endMs": 1336
+        },
+        {
+          "text": "Mỗi câu được khóa để giữ nguyên nội dung.",
+          "startMs": 1356,
+          "endMs": 1436
+        },
+        {
+          "text": "Mỗi câu được khóa để giữ nguyên nội dung.",
+          "startMs": 1456,
+          "endMs": 1536
+        },
+        {
+          "text": "Mỗi câu được khóa để giữ nguyên nội dung.",
+          "startMs": 1557,
+          "endMs": 1597
+        },
+        {
+          "text": "Mỗi câu được khóa để giữ nguyên nội dung.",
+          "startMs": 1617,
+          "endMs": 1677
+        },
+        {
+          "text": "Mỗi câu được khóa để giữ nguyên nội dung.",
+          "startMs": 1697,
+          "endMs": 1817
+        },
+        {
+          "text": "Mỗi câu được khóa để giữ nguyên nội dung.",
+          "startMs": 1838,
+          "endMs": 1898
+        },
+        {
+          "text": "Mỗi câu được khóa để giữ nguyên nội dung.",
+          "startMs": 1918,
+          "endMs": 2018
+        }
+      ]
+    }
+  ],
+  "pauses": [
+    {
+      "afterSentenceId": "sent-001",
+      "durationMs": 20
+    },
+    {
+      "afterSentenceId": "sent-002",
+      "durationMs": 20
+    }
+  ],
+  "alignment": {
+    "matchedWordRatio": 1,
+    "missingTimestamps": 0
+  }
+}

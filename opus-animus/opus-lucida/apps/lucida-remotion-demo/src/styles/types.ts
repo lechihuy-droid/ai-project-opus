@@ -1,7 +1,5 @@
 import type {
   Density,
-  SceneIntent,
-  SceneLayout,
   TemplateRole,
 } from "../data";
 
@@ -30,15 +28,19 @@ export type StylePackageStatus = (typeof stylePackageStatuses)[number];
 
 export type StyleRegistryAvailability = "available" | "unavailable";
 
-export type StyleRegistrySupport = "migrated" | "planned";
+export type StyleRegistrySupport = "package-backed" | "migrated" | "planned";
 
 export type StyleAspectRatio = "9:16" | "16:9" | "1:1";
 
 export type StyleRenderCost = "low" | "medium" | "high";
 
+export type StylePackageDensity = Density | "sparse" | "balanced" | "dense";
+
 export type StyleContentCapacity = {
   headlineChars?: number;
   bodyChars?: number;
+  bulletsMaxItems?: number;
+  maxDataSeries?: number;
   maxItems?: number;
   maxPanels?: number;
   maxCodeLines?: number;
@@ -82,6 +84,37 @@ export type StyleQualityGate = {
   knownLimitations: string[];
 };
 
+export type StylePackageRenderCostSpec = {
+  tier: StyleRenderCost;
+  estimatedSceneComplexity?: number;
+  notes: string;
+};
+
+export type StylePackageReducedMotionSpec = {
+  strategy: "static" | "fade" | "simplified-motion" | "reduced-motion-fade";
+  notes: string;
+};
+
+export type StylePackageAccessibilitySpec = {
+  contrast: "AA" | "AAA" | "review-required";
+  notes: string;
+};
+
+export type StyleDirectorCompatibilitySpec = {
+  selectionReason: string;
+  preferredNeighborFamilies?: string[];
+  bridgeFamilies?: string[];
+  hardBlocks?: string[];
+};
+
+export type StylePackageFileRefs = {
+  visual: string;
+  tokens: string;
+  componentMap: string;
+  provenance: string;
+  artifactManifest: string;
+};
+
 export type StylePackageVisualSpec = {
   schemaVersion: "lucida-visual-package/v1";
   id: StyleFamilyId;
@@ -91,15 +124,15 @@ export type StylePackageVisualSpec = {
   summary: string;
   description: string;
   tags: string[];
-  recommendedIntents: SceneIntent[];
+  recommendedIntents: string[];
   avoidFor: string[];
   supportedSceneTypes: string[];
   supportedTemplateRoles: TemplateRole[];
   aspectRatios: StyleAspectRatio[];
-  density: Density;
+  density: StylePackageDensity;
   renderCost: StyleRenderCost;
   contentCapacity: StyleContentCapacity;
-  preferredLayouts: SceneLayout[];
+  preferredLayouts: string[];
   preferredTemplates: string[];
   backgroundEffects: string[];
   motionPreset?: string;
@@ -139,13 +172,13 @@ export type StylePackageTokensSpec = {
 
 export type StyleComponentPrimitive = {
   id: string;
-  role: "surface" | "content" | "process";
+  role: string;
   notes: string;
 };
 
 export type StyleTemplateBinding = {
   templateId: string;
-  supportedLayouts: SceneLayout[];
+  supportedLayouts: string[];
   backgroundEffects: string[];
   motionPreset?: string;
   primitives: string[];
@@ -159,43 +192,60 @@ export type StylePackageComponentMapSpec = {
   templates: StyleTemplateBinding[];
 };
 
-export type LegacyStylePackageManifest = {
+export type StylePackageManifest = {
   schemaVersion: "lucida-style-package/v1";
   id: StyleFamilyId;
   label: string;
+  version: string;
   status: StylePackageStatus;
   visualFamily: string;
   description: string;
+  tags?: string[];
+  supportedIntents: string[];
+  recommendedIntents?: string[];
+  avoidFor: string[];
+  aspectRatios: StyleAspectRatio[];
+  contentCapacity: StyleContentCapacity;
+  renderCost: StylePackageRenderCostSpec;
+  reducedMotion: StylePackageReducedMotionSpec;
+  accessibility: StylePackageAccessibilitySpec;
+  directorCompatibility: StyleDirectorCompatibilitySpec;
+  files: StylePackageFileRefs;
   sourcePolicy: StyleSourcePolicy;
-  tokens?: Omit<StylePackageTokensSpec, "schemaVersion" | "id">;
+  tokens?: unknown;
   layoutGrammar?: string[];
   componentPrimitives?: StyleComponentPrimitive[];
   templateBindings?: {
     preferredTemplates?: string[];
-    layouts?: SceneLayout[];
+    layouts?: string[];
     backgroundEffects?: string[];
     motionPreset?: string;
   };
-  sourceArtifacts?: StyleSourceArtifacts;
-  validationArtifacts?: StyleValidationArtifacts;
-  sourceReferences?: StyleSourceReference[];
-  qualityGate?: StyleQualityGate;
+  sourceArtifacts: StyleSourceArtifacts;
+  validationArtifacts: StyleValidationArtifacts;
+  sourceReferences: StyleSourceReference[];
+  qualityGate: StyleQualityGate;
 };
+
+export type LegacyStylePackageManifest = StylePackageManifest;
 
 export type StylePackageDefinition = {
   id: StyleFamilyId;
   label: string;
   status: StylePackageStatus;
   visualFamily: string;
+  manifest: StylePackageManifest;
   visual: StylePackageVisualSpec;
   tokens: StylePackageTokensSpec;
   componentMap: StylePackageComponentMapSpec;
   sourcePolicy: StyleSourcePolicy;
-  sourceArtifacts?: StyleSourceArtifacts;
-  validationArtifacts?: StyleValidationArtifacts;
-  sourceReferences?: StyleSourceReference[];
-  qualityGate?: StyleQualityGate;
+  sourceArtifacts: StyleSourceArtifacts;
+  validationArtifacts: StyleValidationArtifacts;
+  sourceReferences: StyleSourceReference[];
+  qualityGate: StyleQualityGate;
+  packagePath: string;
   provenancePath: string;
+  artifactManifestPath: string;
   legacyPackagePath?: string;
 };
 
@@ -203,7 +253,10 @@ export type StyleAvailableFamilyDescriptor = {
   id: StyleFamilyId;
   label: string;
   availability: "available";
-  support: "migrated";
+  support: "package-backed" | "migrated";
+  status: StylePackageStatus;
+  packageRef: string;
+  artifactManifestRef: string;
   package: StylePackageDefinition;
 };
 
@@ -216,7 +269,7 @@ export type StyleUnavailableFamilyDescriptor = {
   primaryUse: string;
   visualGrammar: string;
   requiredSceneTypes: string[];
-  recommendedIntents: SceneIntent[];
+  recommendedIntents: string[];
   reason: string;
 };
 

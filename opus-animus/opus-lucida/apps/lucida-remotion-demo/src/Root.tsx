@@ -7,12 +7,24 @@ const calculateMetadata: CalculateMetadataFunction<MyCompositionProps> = ({
   props,
 }) => {
   const input = createVideoInput(props.videoMap ?? defaultVideoMap);
+  const fps = props.videoMap?.video.fps ?? defaultVideoMap.video.fps;
+  const sceneDurationMs =
+    (input.scenes.reduce((sum, scene) => sum + scene.durationFrames, 0) /
+      fps) *
+    1000;
+  if (props.audio && Math.abs(props.audio.durationMs - sceneDurationMs) > 1000) {
+    console.warn(
+      `Audio duration differs from the scene timeline by ${Math.round(props.audio.durationMs - sceneDurationMs)}ms.`,
+    );
+  }
   return {
-    durationInFrames: input.scenes.reduce(
-      (sum, scene) => sum + scene.durationFrames,
-      0,
-    ),
-    fps: props.videoMap?.video.fps ?? defaultVideoMap.video.fps,
+    durationInFrames: props.audio
+      ? Math.ceil((props.audio.durationMs / 1000) * fps)
+      : input.scenes.reduce(
+          (sum, scene) => sum + scene.durationFrames,
+          0,
+        ),
+    fps,
     width: props.videoMap?.video.width ?? defaultVideoMap.video.width,
     height: props.videoMap?.video.height ?? defaultVideoMap.video.height,
   };

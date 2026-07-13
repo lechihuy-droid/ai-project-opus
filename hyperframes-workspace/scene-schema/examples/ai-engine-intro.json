@@ -1,0 +1,179 @@
+{
+  "metadata": {
+    "id": "ai-engine-intro",
+    "title": "AI Video Engine Intro",
+    "description": "Scene JSON compiled into a HyperFrames project.",
+    "author": "local",
+    "version": "0.1.0",
+    "width": 1280,
+    "height": 720,
+    "fps": 30,
+    "background": "linear-gradient(180deg, #08111f 0%, #101820 54%, #06080c 100%)"
+  },
+  "duration": 7.2,
+  "assets": [],
+  "scenes": [
+    {
+      "id": "intro",
+      "title": "Intro",
+      "start": 0,
+      "duration": 3.2,
+      "composition": {
+        "type": "html",
+        "html": ""
+      },
+      "layers": [
+        {
+          "id": "intro-panel",
+          "kind": "shape",
+          "x": 92,
+          "y": 92,
+          "width": 1096,
+          "height": 536,
+          "fill": "rgba(10, 18, 28, 0.78)",
+          "border": "1px solid rgba(255,255,255,0.14)",
+          "radius": 14
+        },
+        {
+          "id": "intro-kicker",
+          "kind": "text",
+          "text": "SCENE JSON / HYPERFRAMES",
+          "x": 140,
+          "y": 150,
+          "width": 740,
+          "height": 34,
+          "fontSize": 22,
+          "fontWeight": 700,
+          "color": "rgba(196, 221, 255, 0.78)"
+        },
+        {
+          "id": "intro-title",
+          "kind": "text",
+          "text": "AI Video Engine",
+          "x": 136,
+          "y": 218,
+          "width": 840,
+          "height": 94,
+          "fontSize": 82,
+          "fontWeight": 800,
+          "color": "#f7fbff"
+        },
+        {
+          "id": "intro-subtitle",
+          "kind": "text",
+          "text": "LLM writes declarative scenes. The renderer compiles them into deterministic HTML video compositions.",
+          "x": 140,
+          "y": 342,
+          "width": 760,
+          "height": 92,
+          "fontSize": 30,
+          "fontWeight": 500,
+          "lineHeight": 1.28,
+          "color": "rgba(236, 243, 255, 0.78)"
+        },
+        {
+          "id": "intro-line",
+          "kind": "shape",
+          "x": 140,
+          "y": 500,
+          "width": 620,
+          "height": 6,
+          "fill": "linear-gradient(90deg, #58a6ff 0%, #3ddc97 100%)",
+          "radius": 8
+        }
+      ],
+      "animation": [
+        {
+          "target": "intro-title",
+          "property": "opacity",
+          "from": 0,
+          "to": 1,
+          "start": 0.2,
+          "duration": 0.8,
+          "ease": "ease-out"
+        },
+        {
+          "target": "intro-subtitle",
+          "property": "opacity",
+          "from": 0,
+          "to": 1,
+          "start": 0.8,
+          "duration": 0.8,
+          "ease": "ease-out"
+        }
+      ]
+    },
+    {
+      "id": "pipeline",
+      "title": "Pipeline",
+      "start": 3.2,
+      "duration": 4,
+      "composition": {
+        "type": "html",
+        "html": ""
+      },
+      "layers": [
+        {
+          "id": "pipeline-title",
+          "kind": "text",
+          "text": "Render pipeline",
+          "x": 108,
+          "y": 92,
+          "width": 680,
+          "height": 70,
+          "fontSize": 56,
+          "fontWeight": 800,
+          "color": "#f7fbff"
+        },
+        {
+          "id": "pipeline-terminal",
+          "kind": "terminal",
+          "x": 108,
+          "y": 192,
+          "width": 560,
+          "height": 338,
+          "fontSize": 22,
+          "lines": [
+            "$ scene-json compile",
+            "validate schema",
+            "write index.html + meta.json",
+            "render with HyperFrames producer"
+          ]
+        },
+        {
+          "id": "pipeline-track",
+          "kind": "timeline",
+          "x": 742,
+          "y": 250,
+          "width": 380,
+          "height": 180,
+          "items": [
+            { "label": "JSON" },
+            { "label": "HTML" },
+            { "label": "Frames" },
+            { "label": "MP4" }
+          ]
+        }
+      ],
+      "animation": [
+        {
+          "target": "pipeline-title",
+          "property": "opacity",
+          "from": 0,
+          "to": 1,
+          "start": 3.4,
+          "duration": 0.6,
+          "ease": "ease-out"
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "from": "intro",
+      "to": "pipeline",
+      "type": "fade",
+      "duration": 0.3
+    }
+  ]
+}

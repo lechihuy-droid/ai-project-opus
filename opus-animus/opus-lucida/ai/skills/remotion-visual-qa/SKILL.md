@@ -42,6 +42,17 @@ Read when needed:
 - No visual object enters subtitle safe zone.
 - Render completed without warnings that affect output.
 
+## Brand QA (khi video-map có `brand` block)
+
+Trước khi review bằng mắt, đọc `brand-check.json` (output của `npm run validate:brand`) — các vi phạm máy đã bắt được thì không cần soi lại, tập trung vào phần cần mắt người. Checklist theo `docs/market-research/12-quality-gates.md`:
+
+- **Gate 3 — Recognition:** 3–5 giây đầu có ≥2 tín hiệu nhận diện (series label, core palette, typography, evidence badge language). Video vẫn nhận ra là Lucida nếu che logo.
+- **Gate 4 — Visual consistency:** dark editorial base giữ nguyên; accent < ~10% frame; một dominant idea mỗi frame; icon/node/card cùng visual family; không neon rainbow / particle noise / progress bar.
+- **Gate 5 — Motion meaning:** mỗi animation có chức năng (reveal/trace/focus); không zoom liên tục; metric có đủ hold time để đọc.
+- **Non-negotiable (fail bất kể điểm):** claim vượt quá bằng chứng; subtitle sai timing rõ rệt; visual mất nhận diện Lucida; CTA gây sợ hãi không kèm agency; asset không rõ nguồn/bản quyền.
+
+Ghi kết quả theo scorecard 8 gate của doc 12 (điểm /100); < 80 = phải sửa trước khi user duyệt.
+
 ## Completion Criteria
 
 - Representative still frames inspected.

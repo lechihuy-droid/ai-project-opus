@@ -1,52 +1,367 @@
 {
-  "version": 1,
+  "version": 2,
+  "directorMode": "package-backed-family-selection",
   "catalog": "../../remotion-templates/template-catalog.json",
   "supportedRendererRegistry": "../src/templateRegistry.tsx",
+  "packageRoot": "design/visual-library/styles",
+  "productionStyleIds": [
+    "terminal-command-center",
+    "technical-editorial",
+    "minimal-education",
+    "cinematic-type",
+    "dashboard-data",
+    "paper-notebook",
+    "product-showcase",
+    "editorial-collage",
+    "timeline-documentary"
+  ],
   "scoring": {
     "semanticFit": 0.3,
-    "contentFit": 0.2,
-    "brandCompatibility": 0.15,
-    "continuity": 0.15,
+    "contentFit": 0.25,
+    "continuity": 0.2,
     "assetAvailability": 0.1,
-    "renderingCost": 0.1
+    "renderingCost": 0.1,
+    "bridgePenalty": 0.05
   },
   "hardRules": [
-    "Choose only templateId values from template-catalog.json templates[] or localAdapters[].",
-    "Prefer templateIds supported by src/templateRegistry.tsx for immediate rendering.",
-    "Use diagram only for concrete entities with links or dependencies.",
-    "Use code-panel only when repo, code, command, file tree, or execution is central.",
-    "Use asset-gallery templates only with sources classified as embed_asset.",
+    "Choose only productionStyleIds backed by design/visual-library/styles/<id>/style-package.json.",
+    "Record selectedReasons and rejectedReasons for every evaluated candidate.",
+    "Reject asset-led families unless at least one source is classified as embed_asset.",
+    "Reject dashboard-data unless the scene contains real structured numeric data.",
     "Never embed assets classified as style_reference or context_only.",
-    "Do not invent numeric metrics to satisfy chart templates.",
+    "Do not invent numeric metrics to satisfy dashboard or chart-capable packages.",
+    "Reject candidates whose code lines, data series, bullets, headline, or body exceed package contentCapacity.",
+    "Use timeline-documentary only for sourced chronology with 3 to 8 dated events.",
     "Keep long narration in subtitle.text or subtitle.segments.",
-    "Keep on-screen labels short enough for 1080x1920 mobile safe areas.",
-    "Record a reason for every scene template choice."
+    "Return the outro to the dominant family unless the dominant family is blocked by content fit."
+  ],
+  "productionCandidates": [
+    {
+      "id": "terminal-command-center",
+      "packageRef": "design/visual-library/styles/terminal-command-center/style-package.json",
+      "traits": ["code-capable", "operational", "process", "interface"],
+      "selectedReason": "Operational terminal or agent workflow content fits the package-backed terminal interface.",
+      "rejectedReasons": [
+        "Reject when imagery is the main subject.",
+        "Reject when the scene is emotion-led rather than operational.",
+        "Reject when code, command, process, or system structure is absent."
+      ]
+    },
+    {
+      "id": "technical-editorial",
+      "packageRef": "design/visual-library/styles/technical-editorial/style-package.json",
+      "traits": ["code-capable", "structured-evidence", "architecture", "bridge"],
+      "selectedReason": "Technical structure, inspectable labels, code, or evidence can be explained with the package grid.",
+      "rejectedReasons": [
+        "Reject asset-led product hero reveals.",
+        "Reject emotion-first quote openers.",
+        "Reject lifestyle montage scenes without structured evidence."
+      ]
+    },
+    {
+      "id": "minimal-education",
+      "packageRef": "design/visual-library/styles/minimal-education/style-package.json",
+      "traits": ["teaching", "list", "process", "comparison"],
+      "selectedReason": "The scene teaches one concept, short routine, list, or comparison within the package density limits.",
+      "rejectedReasons": [
+        "Reject product-first media stages.",
+        "Reject live dashboard metrics.",
+        "Reject chronology-first documentary storytelling."
+      ]
+    },
+    {
+      "id": "cinematic-type",
+      "packageRef": "design/visual-library/styles/cinematic-type/style-package.json",
+      "traits": ["hook", "quote", "chapter-reset", "low-density"],
+      "selectedReason": "The scene is a hook, quote, chapter reset, or takeaway that should land through type scale and pause.",
+      "rejectedReasons": [
+        "Reject dense dashboards.",
+        "Reject code explanations.",
+        "Reject asset-led product walkthroughs that require real UI inspection."
+      ]
+    },
+    {
+      "id": "dashboard-data",
+      "packageRef": "design/visual-library/styles/dashboard-data/style-package.json",
+      "traits": ["structured-numeric-data", "metrics", "status", "comparison"],
+      "selectedReason": "Real structured numeric data and operational status are available for a dashboard-backed scene.",
+      "rejectedReasons": [
+        "Reject when no real structured numeric data is available.",
+        "Reject product-first media scenes.",
+        "Reject freeform collage scenes without explicit metric ownership."
+      ]
+    },
+    {
+      "id": "paper-notebook",
+      "packageRef": "design/visual-library/styles/paper-notebook/style-package.json",
+      "traits": ["notes", "derivation", "checklist", "code-capable"],
+      "selectedReason": "Working notes, derivation, checklist, or compact code reasoning fit the package annotation grammar.",
+      "rejectedReasons": [
+        "Reject asset-led product reveals.",
+        "Reject metric-heavy monitoring scenes.",
+        "Reject full-bleed cinematic hooks."
+      ]
+    },
+    {
+      "id": "product-showcase",
+      "packageRef": "design/visual-library/styles/product-showcase/style-package.json",
+      "traits": ["asset-led", "product", "ui", "before-after"],
+      "selectedReason": "An embeddable product or UI asset is available and is central to the scene.",
+      "rejectedReasons": [
+        "Reject when no embed_asset product media is available.",
+        "Reject when the requested asset is style_reference only.",
+        "Reject third-party logo or screenshot reuse without clearance."
+      ]
+    },
+    {
+      "id": "editorial-collage",
+      "packageRef": "design/visual-library/styles/editorial-collage/style-package.json",
+      "traits": ["asset-led", "evidence", "montage", "recap"],
+      "selectedReason": "Embeddable evidence assets can be arranged as a culture-facing montage or recap.",
+      "rejectedReasons": [
+        "Reject when no embeddable assets are available.",
+        "Reject proprietary imagery.",
+        "Reject more than four simultaneous source captions."
+      ]
+    },
+    {
+      "id": "timeline-documentary",
+      "packageRef": "design/visual-library/styles/timeline-documentary/style-package.json",
+      "traits": ["chronology", "dated-events", "case-study", "source-labels"],
+      "selectedReason": "The scene depends on sourced chronological evidence with enough dated events.",
+      "rejectedReasons": [
+        "Reject fewer than three dated events.",
+        "Reject more than eight events without editorial reduction.",
+        "Reject unsourced chronology."
+      ]
+    }
+  ],
+  "intentToFamily": {
+    "hook": ["cinematic-type", "terminal-command-center"],
+    "quote": ["cinematic-type", "paper-notebook"],
+    "chapter-reset": ["cinematic-type", "timeline-documentary"],
+    "problem": ["technical-editorial", "minimal-education", "cinematic-type"],
+    "explain": ["technical-editorial", "minimal-education", "paper-notebook"],
+    "comparison": ["dashboard-data", "minimal-education", "technical-editorial", "product-showcase"],
+    "compare": ["technical-editorial", "minimal-education", "dashboard-data", "editorial-collage"],
+    "process": ["minimal-education", "terminal-command-center", "paper-notebook", "timeline-documentary", "product-showcase"],
+    "system-architecture": ["technical-editorial", "terminal-command-center", "dashboard-data"],
+    "system_architecture": ["technical-editorial", "terminal-command-center", "dashboard-data"],
+    "list": ["minimal-education", "paper-notebook", "terminal-command-center"],
+    "use-case": ["product-showcase", "minimal-education", "technical-editorial"],
+    "use_case": ["product-showcase", "minimal-education", "technical-editorial"],
+    "takeaway": ["cinematic-type", "minimal-education", "technical-editorial", "paper-notebook", "timeline-documentary", "terminal-command-center"],
+    "summarize": ["dashboard-data", "timeline-documentary", "technical-editorial", "paper-notebook", "editorial-collage"],
+    "evidence": ["editorial-collage", "timeline-documentary", "technical-editorial"],
+    "narrative": ["editorial-collage", "timeline-documentary", "cinematic-type"],
+    "code-explanation": ["technical-editorial", "paper-notebook", "terminal-command-center"],
+    "code_explanation": ["technical-editorial", "paper-notebook", "terminal-command-center"],
+    "case-study": ["timeline-documentary", "technical-editorial", "paper-notebook"],
+    "cta": ["cinematic-type", "minimal-education", "terminal-command-center"]
+  },
+  "intentReasonTemplate": {
+    "selected": "Intent {intent} maps to package-backed family {familyId}.",
+    "rejected": "Intent {intent} did not map to package-backed family {familyId}."
+  },
+  "contentFitFilters": [
+    {
+      "id": "text-density-capacity",
+      "families": "all",
+      "checks": [
+        {"metric": "headlineChars", "capacity": "headlineChars"},
+        {"metric": "bodyChars", "capacity": "bodyChars"},
+        {"metric": "bulletItems", "capacity": "bulletsMaxItems"}
+      ],
+      "selectedReason": "Text density fits the package contentCapacity limits.",
+      "rejectedReason": "Text density exceeds package contentCapacity limits."
+    },
+    {
+      "id": "code-line-capacity",
+      "families": "all",
+      "checks": [
+        {"metric": "codeLines", "capacity": "maxCodeLines"}
+      ],
+      "selectedReason": "Requested code lines fit the package code capacity.",
+      "rejectedReason": "Requested code lines exceed the package code capacity."
+    },
+    {
+      "id": "data-series-capacity",
+      "families": "all",
+      "checks": [
+        {"metric": "dataSeries", "capacity": "maxDataSeries"}
+      ],
+      "selectedReason": "Requested data series fit the package data capacity.",
+      "rejectedReason": "Requested data series exceed the package data capacity."
+    },
+    {
+      "id": "dashboard-requires-structured-numeric-data",
+      "families": ["dashboard-data"],
+      "requires": {"hasStructuredNumericData": true},
+      "selectedReason": "Dashboard candidate has real structured numeric data.",
+      "rejectedReason": "dashboard-data requires real structured numeric data."
+    },
+    {
+      "id": "asset-led-requires-embed-asset",
+      "families": ["product-showcase", "editorial-collage"],
+      "requiresAnyAssetClassification": ["embed_asset"],
+      "selectedReason": "Asset-led candidate has at least one embed_asset source.",
+      "rejectedReason": "Asset-led packages require an embed_asset source."
+    },
+    {
+      "id": "timeline-dated-events",
+      "families": ["timeline-documentary"],
+      "range": {"metric": "datedEvents", "min": 3, "max": 8},
+      "requires": {"hasSourcedChronology": true},
+      "selectedReason": "Timeline candidate has sourced chronology with 3 to 8 dated events.",
+      "rejectedReason": "timeline-documentary requires sourced chronology with 3 to 8 dated events."
+    }
   ],
   "continuityRules": {
     "singleBrandPerVideo": true,
     "dominantFamilyMinimumShare": 0.5,
     "maxVisualFamiliesForShort": 4,
     "returnToDominantFamilyForOutro": true,
-    "sharedTokens": ["dark background", "warm orange accent", "rounded cards", "subtitle bar"]
-  },
-  "intentToFamily": {
-    "hook": ["cinematic-hook"],
-    "problem": ["contrast-panel", "pattern-list"],
-    "comparison": ["contrast-panel"],
-    "process": ["workflow-process"],
-    "system_architecture": ["workflow-process", "repo-code"],
-    "list": ["pattern-list"],
-    "use_case": ["pattern-list", "asset-gallery"],
-    "takeaway": ["closing-cta", "pattern-list"],
-    "quote": ["cinematic-hook", "closing-cta"],
-    "code_explanation": ["repo-code"],
-    "cta": ["closing-cta"]
+    "outroIntents": ["takeaway", "cta"],
+    "sharedTokens": ["dark background", "warm orange accent", "high-contrast type", "caption-safe composition"],
+    "compatibilityMatrix": {
+      "terminal-command-center": {
+        "terminal-command-center": "native",
+        "technical-editorial": "compatible",
+        "minimal-education": "bridge",
+        "cinematic-type": "bridge",
+        "dashboard-data": "compatible",
+        "paper-notebook": "bridge",
+        "product-showcase": "avoid",
+        "editorial-collage": "avoid",
+        "timeline-documentary": "bridge"
+      },
+      "technical-editorial": {
+        "terminal-command-center": "compatible",
+        "technical-editorial": "native",
+        "minimal-education": "compatible",
+        "cinematic-type": "bridge",
+        "dashboard-data": "compatible",
+        "paper-notebook": "compatible",
+        "product-showcase": "bridge",
+        "editorial-collage": "bridge",
+        "timeline-documentary": "compatible"
+      },
+      "minimal-education": {
+        "terminal-command-center": "bridge",
+        "technical-editorial": "compatible",
+        "minimal-education": "native",
+        "cinematic-type": "compatible",
+        "dashboard-data": "compatible",
+        "paper-notebook": "compatible",
+        "product-showcase": "compatible",
+        "editorial-collage": "bridge",
+        "timeline-documentary": "bridge"
+      },
+      "cinematic-type": {
+        "terminal-command-center": "bridge",
+        "technical-editorial": "bridge",
+        "minimal-education": "compatible",
+        "cinematic-type": "native",
+        "dashboard-data": "bridge",
+        "paper-notebook": "compatible",
+        "product-showcase": "bridge",
+        "editorial-collage": "compatible",
+        "timeline-documentary": "compatible"
+      },
+      "dashboard-data": {
+        "terminal-command-center": "compatible",
+        "technical-editorial": "compatible",
+        "minimal-education": "compatible",
+        "cinematic-type": "bridge",
+        "dashboard-data": "native",
+        "paper-notebook": "bridge",
+        "product-showcase": "bridge",
+        "editorial-collage": "avoid",
+        "timeline-documentary": "bridge"
+      },
+      "paper-notebook": {
+        "terminal-command-center": "bridge",
+        "technical-editorial": "compatible",
+        "minimal-education": "compatible",
+        "cinematic-type": "compatible",
+        "dashboard-data": "bridge",
+        "paper-notebook": "native",
+        "product-showcase": "avoid",
+        "editorial-collage": "compatible",
+        "timeline-documentary": "compatible"
+      },
+      "product-showcase": {
+        "terminal-command-center": "avoid",
+        "technical-editorial": "bridge",
+        "minimal-education": "compatible",
+        "cinematic-type": "bridge",
+        "dashboard-data": "bridge",
+        "paper-notebook": "avoid",
+        "product-showcase": "native",
+        "editorial-collage": "compatible",
+        "timeline-documentary": "avoid"
+      },
+      "editorial-collage": {
+        "terminal-command-center": "avoid",
+        "technical-editorial": "bridge",
+        "minimal-education": "bridge",
+        "cinematic-type": "compatible",
+        "dashboard-data": "avoid",
+        "paper-notebook": "compatible",
+        "product-showcase": "compatible",
+        "editorial-collage": "native",
+        "timeline-documentary": "compatible"
+      },
+      "timeline-documentary": {
+        "terminal-command-center": "bridge",
+        "technical-editorial": "compatible",
+        "minimal-education": "bridge",
+        "cinematic-type": "compatible",
+        "dashboard-data": "bridge",
+        "paper-notebook": "compatible",
+        "product-showcase": "avoid",
+        "editorial-collage": "compatible",
+        "timeline-documentary": "native"
+      }
+    },
+    "bridgeTransitions": [
+      {
+        "from": "cinematic-type",
+        "to": "dashboard-data",
+        "via": "technical-editorial",
+        "reason": "A technical bridge preserves topic context before switching from large type to dense metrics."
+      },
+      {
+        "from": "terminal-command-center",
+        "to": "product-showcase",
+        "via": "minimal-education",
+        "reason": "A teaching bridge reframes operational output before showing product media."
+      },
+      {
+        "from": "dashboard-data",
+        "to": "editorial-collage",
+        "via": "technical-editorial",
+        "reason": "A labeled evidence bridge prevents a hard jump from metrics to source montage."
+      },
+      {
+        "from": "paper-notebook",
+        "to": "product-showcase",
+        "via": "minimal-education",
+        "reason": "A clean explanatory bridge turns notes into product-facing takeaways."
+      },
+      {
+        "from": "product-showcase",
+        "to": "timeline-documentary",
+        "via": "technical-editorial",
+        "reason": "A structured bridge adds context before moving from media-first product to chronology."
+      }
+    ]
   },
   "layoutRules": {
     "archetypeLibrary": "Layout archetype definitions live in design/layout-library/index.json.",
     "effectiveDefault": "top-title",
     "rules": [
-      "No two consecutive scenes may use the same effective layout (a missing layout field counts as top-title).",
+      "No two consecutive scenes may use the same effective layout unless continuity requires the dominant family outro.",
       "A video with 5 or more scenes must use at least 3 distinct layouts.",
       "Scenes with intent hook or takeaway should not use top-title; prefer center-stage, oversized-type, or bottom-statement."
     ]
@@ -58,10 +373,10 @@
     "fallback": "Split long narration into subtitle.segments and keep cards short."
   },
   "qaChecks": [
-    "No diagram fallback for non-relationship scenes.",
-    "No scene has more visual objects than its density budget.",
-    "No top-heavy layout: main content should stay between y=260 and y=1450.",
-    "Subtitle bar should not overlap main cards.",
-    "Each scene reason matches the narration intent."
+    "Director choices use package-backed productionStyleIds only.",
+    "Every evaluated candidate records selected or rejected reasons.",
+    "Asset-led packages are rejected without embed_asset.",
+    "dashboard-data is rejected without real structured numeric data.",
+    "Dominant family share is at least 0.5, no more than 4 families are used, and outro returns to dominant family."
   ]
 }

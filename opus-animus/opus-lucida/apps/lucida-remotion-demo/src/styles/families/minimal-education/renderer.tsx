@@ -169,11 +169,12 @@ const CalloutPanel = ({
   scene: MinimalEducationScene;
   box: ReturnType<typeof makeBox>;
 }) => {
+  const frame = useCurrentFrame();
+
   if (!scene.callout) {
     return null;
   }
 
-  const frame = useCurrentFrame();
   const tokens = createMinimalEducationTokens(scene);
   const accent = resolveAccentPalette(scene.accentTone);
 

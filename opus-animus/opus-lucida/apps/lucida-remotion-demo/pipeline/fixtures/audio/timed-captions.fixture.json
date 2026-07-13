@@ -1,0 +1,53 @@
+{
+  "voiceChecksum": "sha256:fixture-voice-checksum",
+  "phrases": [
+    {
+      "phraseId": "ph-001",
+      "sentenceId": "sent-001",
+      "text": "Xin chào, đây là Lucida.",
+      "startMs": 0,
+      "endMs": 2200,
+      "words": [
+        { "text": "Xin", "startMs": 0, "endMs": 350 },
+        { "text": "chào,", "startMs": 350, "endMs": 800 },
+        { "text": "đây", "startMs": 950, "endMs": 1250 },
+        { "text": "là", "startMs": 1250, "endMs": 1450 },
+        { "text": "Lucida.", "startMs": 1450, "endMs": 2200 }
+      ]
+    },
+    {
+      "phraseId": "ph-002",
+      "sentenceId": "sent-002",
+      "text": "Âm thanh dẫn nhịp cho từng cảnh.",
+      "startMs": 2500,
+      "endMs": 5200,
+      "words": [
+        { "text": "Âm", "startMs": 2500, "endMs": 2850 },
+        { "text": "thanh", "startMs": 2850, "endMs": 3300 },
+        { "text": "dẫn", "startMs": 3450, "endMs": 3800 },
+        { "text": "nhịp", "startMs": 3800, "endMs": 4200 },
+        { "text": "cho", "startMs": 4200, "endMs": 4450 },
+        { "text": "từng", "startMs": 4450, "endMs": 4800 },
+        { "text": "cảnh.", "startMs": 4800, "endMs": 5200 }
+      ]
+    },
+    {
+      "phraseId": "ph-003",
+      "sentenceId": "sent-003",
+      "text": "Mỗi câu được khóa để giữ nguyên nội dung.",
+      "startMs": 5500,
+      "endMs": 9000,
+      "words": [
+        { "text": "Mỗi", "startMs": 5500, "endMs": 5850 },
+        { "text": "câu", "startMs": 5850, "endMs": 6200 },
+        { "text": "được", "startMs": 6350, "endMs": 6750 },
+        { "text": "khóa", "startMs": 6750, "endMs": 7150 },
+        { "text": "để", "startMs": null, "endMs": null },
+        { "text": "giữ", "startMs": 7500, "endMs": 7850 },
+        { "text": "nguyên", "startMs": 7850, "endMs": 8300 },
+        { "text": "nội", "startMs": 8300, "endMs": 8600 },
+        { "text": "dung.", "startMs": 8600, "endMs": 9000 }
+      ]
+    }
+  ]
+}

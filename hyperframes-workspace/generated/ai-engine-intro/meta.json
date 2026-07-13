@@ -1,0 +1,10 @@
+{
+  "id": "ai-engine-intro",
+  "title": "AI Video Engine Intro",
+  "duration": 7.2,
+  "fps": 30,
+  "width": 1280,
+  "height": 720,
+  "assets": [],
+  "source": "scene-json-to-hyperframes"
+}

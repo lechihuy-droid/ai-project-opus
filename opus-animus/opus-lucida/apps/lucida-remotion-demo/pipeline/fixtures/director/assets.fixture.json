@@ -1,0 +1,73 @@
+{
+  "fixtureId": "assets",
+  "cases": [
+    {
+      "id": "product-showcase-rejected-with-style-reference-only",
+      "scene": {
+        "intent": "use-case",
+        "content": {
+          "headlineChars": 62,
+          "bodyChars": 190,
+          "bulletItems": 3,
+          "codeLines": 0,
+          "dataSeries": 0,
+          "assetClassifications": ["style_reference"],
+          "hasStructuredNumericData": false,
+          "datedEvents": 0,
+          "hasSourcedChronology": false
+        }
+      },
+      "expect": {
+        "selected": "minimal-education",
+        "rejected": [
+          {"familyId": "product-showcase", "filterId": "asset-led-requires-embed-asset"}
+        ]
+      }
+    },
+    {
+      "id": "product-showcase-selected-with-embed-asset",
+      "scene": {
+        "intent": "use-case",
+        "content": {
+          "headlineChars": 62,
+          "bodyChars": 190,
+          "bulletItems": 3,
+          "codeLines": 0,
+          "dataSeries": 0,
+          "assetClassifications": ["embed_asset"],
+          "hasStructuredNumericData": false,
+          "datedEvents": 0,
+          "hasSourcedChronology": false
+        }
+      },
+      "expect": {
+        "selected": "product-showcase",
+        "rejected": []
+      }
+    },
+    {
+      "id": "editorial-collage-rejected-without-embed-asset",
+      "scene": {
+        "intent": "evidence",
+        "content": {
+          "headlineChars": 78,
+          "bodyChars": 280,
+          "bulletItems": 3,
+          "codeLines": 0,
+          "dataSeries": 0,
+          "assetClassifications": ["context_only"],
+          "hasStructuredNumericData": false,
+          "datedEvents": 0,
+          "hasSourcedChronology": false
+        }
+      },
+      "expect": {
+        "selected": "technical-editorial",
+        "rejected": [
+          {"familyId": "editorial-collage", "filterId": "asset-led-requires-embed-asset"},
+          {"familyId": "timeline-documentary", "filterId": "timeline-dated-events"}
+        ]
+      }
+    }
+  ]
+}

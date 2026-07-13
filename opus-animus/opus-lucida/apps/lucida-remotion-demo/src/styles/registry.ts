@@ -1,7 +1,39 @@
-import terminalComponentMapJson from "../../design/visual-library/styles/terminal-command-center/component-map.json";
-import terminalVisualJson from "../../design/visual-library/styles/terminal-command-center/visual.json";
-import terminalStylePackageJson from "../../design/visual-library/styles/terminal-command-center/style-package.json";
-import terminalTokensJson from "../../design/visual-library/styles/terminal-command-center/tokens.json";
+import cinematicTypeComponentMapJson from "../../design/visual-library/styles/cinematic-type/component-map.json";
+import cinematicTypeStylePackageJson from "../../design/visual-library/styles/cinematic-type/style-package.json";
+import cinematicTypeTokensJson from "../../design/visual-library/styles/cinematic-type/tokens.json";
+import cinematicTypeVisualJson from "../../design/visual-library/styles/cinematic-type/visual.json";
+import dashboardDataComponentMapJson from "../../design/visual-library/styles/dashboard-data/component-map.json";
+import dashboardDataStylePackageJson from "../../design/visual-library/styles/dashboard-data/style-package.json";
+import dashboardDataTokensJson from "../../design/visual-library/styles/dashboard-data/tokens.json";
+import dashboardDataVisualJson from "../../design/visual-library/styles/dashboard-data/visual.json";
+import editorialCollageComponentMapJson from "../../design/visual-library/styles/editorial-collage/component-map.json";
+import editorialCollageStylePackageJson from "../../design/visual-library/styles/editorial-collage/style-package.json";
+import editorialCollageTokensJson from "../../design/visual-library/styles/editorial-collage/tokens.json";
+import editorialCollageVisualJson from "../../design/visual-library/styles/editorial-collage/visual.json";
+import minimalEducationComponentMapJson from "../../design/visual-library/styles/minimal-education/component-map.json";
+import minimalEducationStylePackageJson from "../../design/visual-library/styles/minimal-education/style-package.json";
+import minimalEducationTokensJson from "../../design/visual-library/styles/minimal-education/tokens.json";
+import minimalEducationVisualJson from "../../design/visual-library/styles/minimal-education/visual.json";
+import paperNotebookComponentMapJson from "../../design/visual-library/styles/paper-notebook/component-map.json";
+import paperNotebookStylePackageJson from "../../design/visual-library/styles/paper-notebook/style-package.json";
+import paperNotebookTokensJson from "../../design/visual-library/styles/paper-notebook/tokens.json";
+import paperNotebookVisualJson from "../../design/visual-library/styles/paper-notebook/visual.json";
+import productShowcaseComponentMapJson from "../../design/visual-library/styles/product-showcase/component-map.json";
+import productShowcaseStylePackageJson from "../../design/visual-library/styles/product-showcase/style-package.json";
+import productShowcaseTokensJson from "../../design/visual-library/styles/product-showcase/tokens.json";
+import productShowcaseVisualJson from "../../design/visual-library/styles/product-showcase/visual.json";
+import technicalEditorialComponentMapJson from "../../design/visual-library/styles/technical-editorial/component-map.json";
+import technicalEditorialStylePackageJson from "../../design/visual-library/styles/technical-editorial/style-package.json";
+import technicalEditorialTokensJson from "../../design/visual-library/styles/technical-editorial/tokens.json";
+import technicalEditorialVisualJson from "../../design/visual-library/styles/technical-editorial/visual.json";
+import terminalCommandCenterComponentMapJson from "../../design/visual-library/styles/terminal-command-center/component-map.json";
+import terminalCommandCenterStylePackageJson from "../../design/visual-library/styles/terminal-command-center/style-package.json";
+import terminalCommandCenterTokensJson from "../../design/visual-library/styles/terminal-command-center/tokens.json";
+import terminalCommandCenterVisualJson from "../../design/visual-library/styles/terminal-command-center/visual.json";
+import timelineDocumentaryComponentMapJson from "../../design/visual-library/styles/timeline-documentary/component-map.json";
+import timelineDocumentaryStylePackageJson from "../../design/visual-library/styles/timeline-documentary/style-package.json";
+import timelineDocumentaryTokensJson from "../../design/visual-library/styles/timeline-documentary/tokens.json";
+import timelineDocumentaryVisualJson from "../../design/visual-library/styles/timeline-documentary/visual.json";
 import type {
   LegacyStylePackageManifest,
   StyleAvailableFamilyDescriptor,
@@ -9,6 +41,7 @@ import type {
   StyleFamilyId,
   StylePackageComponentMapSpec,
   StylePackageDefinition,
+  StylePackageManifest,
   StylePackageTokensSpec,
   StylePackageVisualSpec,
   StyleRegistryRecord,
@@ -16,32 +49,63 @@ import type {
 } from "./types";
 import { plannedStyleFamilyIds } from "./types";
 
-const TERMINAL_PROVENANCE_PATH =
-  "design/visual-library/styles/terminal-command-center/provenance.md";
-
-const TERMINAL_LEGACY_PACKAGE_PATH =
-  "design/visual-library/styles/terminal-command-center/style-package.json";
-
-const terminalVisual =
-  terminalVisualJson as StylePackageVisualSpec;
-
-const terminalTokens =
-  terminalTokensJson as StylePackageTokensSpec;
-
-const terminalComponentMap =
-  terminalComponentMapJson as StylePackageComponentMapSpec;
-
-const terminalLegacyManifest =
-  terminalStylePackageJson as LegacyStylePackageManifest;
-
-type LegacyAdapterInput = {
-  legacyManifest: LegacyStylePackageManifest;
+type StylePackageAdapterInput = {
+  manifest: StylePackageManifest;
   visual: StylePackageVisualSpec;
   tokens: StylePackageTokensSpec;
   componentMap: StylePackageComponentMapSpec;
+  packagePath: string;
   provenancePath: string;
+  artifactManifestPath: string;
   legacyPackagePath?: string;
 };
+
+type LegacyAdapterInput = Omit<
+  StylePackageAdapterInput,
+  "manifest" | "packagePath" | "artifactManifestPath"
+> & {
+  legacyManifest: LegacyStylePackageManifest;
+  legacyPackagePath?: string;
+  artifactManifestPath?: string;
+};
+
+const packagePathFor = (familyId: StyleFamilyId): string =>
+  `design/visual-library/styles/${familyId}/style-package.json`;
+
+const provenancePathFor = (familyId: StyleFamilyId): string =>
+  `design/visual-library/styles/${familyId}/provenance.md`;
+
+const artifactManifestPathFor = (familyId: StyleFamilyId): string =>
+  `design/visual-library/styles/${familyId}/artifact-manifest.json`;
+
+export const adaptStylePackage = ({
+  manifest,
+  visual,
+  tokens,
+  componentMap,
+  packagePath,
+  provenancePath,
+  artifactManifestPath,
+  legacyPackagePath,
+}: StylePackageAdapterInput): StylePackageDefinition => ({
+  id: manifest.id,
+  label: manifest.label,
+  status: manifest.status,
+  visualFamily: manifest.visualFamily,
+  manifest,
+  visual,
+  tokens,
+  componentMap,
+  sourcePolicy: manifest.sourcePolicy ?? visual.sourcePolicy,
+  sourceArtifacts: manifest.sourceArtifacts,
+  validationArtifacts: manifest.validationArtifacts,
+  sourceReferences: manifest.sourceReferences,
+  qualityGate: manifest.qualityGate,
+  packagePath,
+  provenancePath,
+  artifactManifestPath,
+  legacyPackagePath,
+});
 
 export const adaptLegacyStylePackage = ({
   legacyManifest,
@@ -50,121 +114,138 @@ export const adaptLegacyStylePackage = ({
   componentMap,
   provenancePath,
   legacyPackagePath,
-}: LegacyAdapterInput): StylePackageDefinition => ({
-  id: visual.id,
-  label: visual.label,
-  status: visual.status,
-  visualFamily: visual.visualFamily,
-  visual,
-  tokens,
-  componentMap,
-  sourcePolicy: visual.sourcePolicy ?? legacyManifest.sourcePolicy,
-  sourceArtifacts: legacyManifest.sourceArtifacts,
-  validationArtifacts: legacyManifest.validationArtifacts,
-  sourceReferences: legacyManifest.sourceReferences,
-  qualityGate: legacyManifest.qualityGate,
-  provenancePath,
-  legacyPackagePath,
-});
+  artifactManifestPath,
+}: LegacyAdapterInput): StylePackageDefinition =>
+  adaptStylePackage({
+    manifest: legacyManifest,
+    visual,
+    tokens,
+    componentMap,
+    packagePath: legacyPackagePath ?? packagePathFor(legacyManifest.id),
+    provenancePath,
+    artifactManifestPath:
+      artifactManifestPath ?? artifactManifestPathFor(legacyManifest.id),
+    legacyPackagePath,
+  });
 
-const createUnavailableFamily = (
-  descriptor: Omit<StyleUnavailableFamilyDescriptor, "availability" | "support" | "status">,
-): StyleUnavailableFamilyDescriptor => ({
-  ...descriptor,
-  availability: "unavailable",
-  support: "planned",
-  status: "draft",
-});
+const createStylePackage = (
+  familyId: StyleFamilyId,
+  manifestJson: unknown,
+  visualJson: unknown,
+  tokensJson: unknown,
+  componentMapJson: unknown,
+): StylePackageDefinition =>
+  adaptStylePackage({
+    manifest: manifestJson as StylePackageManifest,
+    visual: visualJson as StylePackageVisualSpec,
+    tokens: tokensJson as StylePackageTokensSpec,
+    componentMap: componentMapJson as StylePackageComponentMapSpec,
+    packagePath: packagePathFor(familyId),
+    provenancePath: provenancePathFor(familyId),
+    artifactManifestPath: artifactManifestPathFor(familyId),
+  });
 
-const terminalStylePackage = adaptLegacyStylePackage({
-  legacyManifest: terminalLegacyManifest,
-  visual: terminalVisual,
-  tokens: terminalTokens,
-  componentMap: terminalComponentMap,
-  provenancePath: TERMINAL_PROVENANCE_PATH,
-  legacyPackagePath: TERMINAL_LEGACY_PACKAGE_PATH,
+export const stylePackageRegistry = {
+  "terminal-command-center": createStylePackage(
+    "terminal-command-center",
+    terminalCommandCenterStylePackageJson,
+    terminalCommandCenterVisualJson,
+    terminalCommandCenterTokensJson,
+    terminalCommandCenterComponentMapJson,
+  ),
+  "technical-editorial": createStylePackage(
+    "technical-editorial",
+    technicalEditorialStylePackageJson,
+    technicalEditorialVisualJson,
+    technicalEditorialTokensJson,
+    technicalEditorialComponentMapJson,
+  ),
+  "minimal-education": createStylePackage(
+    "minimal-education",
+    minimalEducationStylePackageJson,
+    minimalEducationVisualJson,
+    minimalEducationTokensJson,
+    minimalEducationComponentMapJson,
+  ),
+  "cinematic-type": createStylePackage(
+    "cinematic-type",
+    cinematicTypeStylePackageJson,
+    cinematicTypeVisualJson,
+    cinematicTypeTokensJson,
+    cinematicTypeComponentMapJson,
+  ),
+  "dashboard-data": createStylePackage(
+    "dashboard-data",
+    dashboardDataStylePackageJson,
+    dashboardDataVisualJson,
+    dashboardDataTokensJson,
+    dashboardDataComponentMapJson,
+  ),
+  "paper-notebook": createStylePackage(
+    "paper-notebook",
+    paperNotebookStylePackageJson,
+    paperNotebookVisualJson,
+    paperNotebookTokensJson,
+    paperNotebookComponentMapJson,
+  ),
+  "product-showcase": createStylePackage(
+    "product-showcase",
+    productShowcaseStylePackageJson,
+    productShowcaseVisualJson,
+    productShowcaseTokensJson,
+    productShowcaseComponentMapJson,
+  ),
+  "editorial-collage": createStylePackage(
+    "editorial-collage",
+    editorialCollageStylePackageJson,
+    editorialCollageVisualJson,
+    editorialCollageTokensJson,
+    editorialCollageComponentMapJson,
+  ),
+  "timeline-documentary": createStylePackage(
+    "timeline-documentary",
+    timelineDocumentaryStylePackageJson,
+    timelineDocumentaryVisualJson,
+    timelineDocumentaryTokensJson,
+    timelineDocumentaryComponentMapJson,
+  ),
+} satisfies Record<StyleFamilyId, StylePackageDefinition>;
+
+const createAvailableFamily = (
+  stylePackage: StylePackageDefinition,
+): StyleAvailableFamilyDescriptor => ({
+  id: stylePackage.id,
+  label: stylePackage.label,
+  availability: "available",
+  support: "package-backed",
+  status: stylePackage.status,
+  packageRef: stylePackage.packagePath,
+  artifactManifestRef: stylePackage.artifactManifestPath,
+  package: stylePackage,
 });
 
 export const styleFamilyRegistry: StyleRegistryRecord = {
-  "terminal-command-center": {
-    id: "terminal-command-center",
-    label: terminalStylePackage.label,
-    availability: "available",
-    support: "migrated",
-    package: terminalStylePackage,
-  },
-  "technical-editorial": createUnavailableFamily({
-    id: "technical-editorial",
-    label: "Technical Editorial",
-    primaryUse: "architecture, concepts, and research explainers",
-    visualGrammar: "strict grid, rules, annotations, and code/data callouts",
-    requiredSceneTypes: ["explainer", "diagram", "summary"],
-    recommendedIntents: ["system_architecture", "code_explanation", "comparison", "takeaway"],
-    reason: "Wave 0 registry placeholder only. Package metadata and renderer are not implemented yet.",
-  }),
-  "minimal-education": createUnavailableFamily({
-    id: "minimal-education",
-    label: "Minimal Education",
-    primaryUse: "teaching, definitions, and concise step-by-step scenes",
-    visualGrammar: "generous whitespace, clear hierarchy, and restrained accent",
-    requiredSceneTypes: ["definition", "steps", "comparison"],
-    recommendedIntents: ["list", "process", "comparison", "takeaway"],
-    reason: "Wave 0 registry placeholder only. Package metadata and renderer are not implemented yet.",
-  }),
-  "cinematic-type": createUnavailableFamily({
-    id: "cinematic-type",
-    label: "Cinematic Type",
-    primaryUse: "hooks, chapter resets, and claim-driven scenes",
-    visualGrammar: "large type, image or texture field, and low density composition",
-    requiredSceneTypes: ["hook", "quote", "transition"],
-    recommendedIntents: ["hook", "quote", "takeaway"],
-    reason: "Wave 0 registry placeholder only. Package metadata and renderer are not implemented yet.",
-  }),
-  "dashboard-data": createUnavailableFamily({
-    id: "dashboard-data",
-    label: "Dashboard Data",
-    primaryUse: "metrics, status, monitoring, and operational reporting",
-    visualGrammar: "dense panels, chart or table hierarchy, and semantic state colors",
-    requiredSceneTypes: ["KPI", "chart", "operations"],
-    recommendedIntents: ["comparison", "list", "system_architecture", "takeaway"],
-    reason: "Wave 0 registry placeholder only. Package metadata and renderer are not implemented yet.",
-  }),
-  "paper-notebook": createUnavailableFamily({
-    id: "paper-notebook",
-    label: "Paper Notebook",
-    primaryUse: "reasoning, study notes, and process walkthroughs",
-    visualGrammar: "paper field, ink hierarchy, marks, and annotations",
-    requiredSceneTypes: ["notes", "derivation", "checklist"],
-    recommendedIntents: ["process", "list", "takeaway"],
-    reason: "Wave 0 registry placeholder only. Package metadata and renderer are not implemented yet.",
-  }),
-  "product-showcase": createUnavailableFamily({
-    id: "product-showcase",
-    label: "Product Showcase",
-    primaryUse: "UI and product walkthrough scenes",
-    visualGrammar: "product-first media, feature focus, and clean staged layouts",
-    requiredSceneTypes: ["reveal", "feature", "before/after"],
-    recommendedIntents: ["use_case", "comparison", "process", "takeaway"],
-    reason: "Wave 0 registry placeholder only. Package metadata and renderer are not implemented yet.",
-  }),
-  "editorial-collage": createUnavailableFamily({
-    id: "editorial-collage",
-    label: "Editorial Collage",
-    primaryUse: "culture, multi-source narrative, and evidence-driven montage",
-    visualGrammar: "modular crops, captions, and layered composition",
-    requiredSceneTypes: ["montage", "evidence", "recap"],
-    recommendedIntents: ["hook", "use_case", "quote", "takeaway"],
-    reason: "Wave 0 registry placeholder only. Package metadata and renderer are not implemented yet.",
-  }),
-  "timeline-documentary": createUnavailableFamily({
-    id: "timeline-documentary",
-    label: "Timeline Documentary",
-    primaryUse: "history, chronology, and case-study storytelling",
-    visualGrammar: "dated spine, archival framing, and source labels",
-    requiredSceneTypes: ["milestone", "era change", "conclusion"],
-    recommendedIntents: ["process", "use_case", "quote", "takeaway"],
-    reason: "Wave 0 registry placeholder only. Package metadata and renderer are not implemented yet.",
-  }),
+  "terminal-command-center": createAvailableFamily(
+    stylePackageRegistry["terminal-command-center"],
+  ),
+  "technical-editorial": createAvailableFamily(
+    stylePackageRegistry["technical-editorial"],
+  ),
+  "minimal-education": createAvailableFamily(
+    stylePackageRegistry["minimal-education"],
+  ),
+  "cinematic-type": createAvailableFamily(stylePackageRegistry["cinematic-type"]),
+  "dashboard-data": createAvailableFamily(stylePackageRegistry["dashboard-data"]),
+  "paper-notebook": createAvailableFamily(stylePackageRegistry["paper-notebook"]),
+  "product-showcase": createAvailableFamily(
+    stylePackageRegistry["product-showcase"],
+  ),
+  "editorial-collage": createAvailableFamily(
+    stylePackageRegistry["editorial-collage"],
+  ),
+  "timeline-documentary": createAvailableFamily(
+    stylePackageRegistry["timeline-documentary"],
+  ),
 };
 
 const plannedStyleFamilyIdSet = new Set<string>(plannedStyleFamilyIds);

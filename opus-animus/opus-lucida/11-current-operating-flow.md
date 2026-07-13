@@ -227,6 +227,8 @@ once ai/ folder exists.
 
 ## 5b. Remotion Script-To-Video Lane (hiện trạng — 2026-07-12)
 
+> **Update 2026-07-14:** flow mục tiêu đầy đủ (market research → render → publish, S0–S6 + milestones M1–M5) đã được thiết kế và approve — owner file: `apps/lucida-remotion-demo/design/workflow/FLOW_V1.md`. Mục 5b này mô tả hiện trạng đang chạy (= S1/S3/S4/S5 của Flow v1).
+
 Lane này (`apps/lucida-remotion-demo/`) chạy theo flow skill-orchestrated:
 
 ```text
@@ -239,6 +241,12 @@ raw script + raw sources
 ```
 
 Owner của flow: `ai/skills/remotion-script-to-video/SKILL.md`.
+
+`video-map.json` mang thêm dimension `layout` (bố cục vĩ mô per scene, orthogonal với `templateId`) — 7 archetype
+(`top-title`, `center-stage`, `oversized-type`, `bottom-statement`, `full-bleed-visual` ✅ implemented;
+`side-rail`, `stacked-cards` planned), gán bởi `script-template-mapper` để chống đơn điệu (không 2 scene liên
+tiếp cùng layout, ≥3 layout khác nhau nếu video ≥5 scene, hook/takeaway ưu tiên layout premium). Chi tiết:
+`ai/skills/script-template-mapper/SKILL.md`.
 
 Hiện trạng cần biết (không phải bug, là gap đã ghi nhận):
 

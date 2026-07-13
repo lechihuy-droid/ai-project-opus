@@ -139,3 +139,28 @@ Terminal style MVP reference ingestion and library registration.
 - Stored source and validation references to JSON artifacts and preview frames only.
 - The MP4 render remains a runtime output under `pipeline/runs/terminal-video-20s/output/` and is not treated as a reusable library asset.
 - Package status is `prototype-created`; it is not yet `stable` because the local Remotion renderer still hangs and the validation render used the Chrome screenshot plus FFmpeg fallback.
+
+## 2026-07-14 - Batch B007
+
+All-style package implementation, Director integration, and deterministic QA.
+
+| ID | Layer | Source | Status | Selected concepts | Target Lucida artifact | License / rights note |
+|---|---|---|---|---|---|---|
+| B007-S01 | Production style library | Original Lucida implementation informed by registered reference metadata | experimental | Nine package-backed style families, shared primitives, deterministic family renderers, Director content-fit filters, continuity bridges, runtime dispatch, preview boards, multi-style reference composition | `design/visual-library/styles/`, `src/styles/`, `design/directors/`, and `design/visual-library/reports/` | Principles-only implementation. No third-party screenshots, logos, font binaries, or copied brand identity are registered. No MP4 is registered. |
+
+### Batch B007 decision
+
+- Promoted Terminal plus eight additional production style families to
+  `experimental`; `stable` still requires future product-level approval.
+- Registered all nine packages one-to-one and retained generic legacy families
+  only as non-production routing aliases.
+- Added Director guards for structured numeric data, embeddable assets, code,
+  chronology, density, dominant-family share, maximum family count, and outro
+  return.
+- Added runtime `visualFamily` dispatch while preserving legacy
+  `templateId` fallback without a silent diagram fallback.
+- Stored deterministic 1080x1920 PNGs, checksums, preview boards, reports, and
+  provenance in the project visual library.
+- Final automated QA and independent pixel review both pass 9/9 families.
+- The 54-second reference composition uses four families, keeps
+  `technical-editorial` dominant at 57.41%, and returns to it for the outro.

@@ -52,8 +52,17 @@ Rendered outputs in `output/`:
 - `typography.mp4`
 - `timeline.mp4`
 - `terminal.mp4`
+- `ai-engine-intro.mp4`
+
+Additional validation:
+
+- `scene-schema/examples/ai-engine-intro.json` compiled into `generated/ai-engine-intro/`
+- Generated project produced `index.html` and `meta.json`
+- Rendered JSON-generated video duration verified with FFprobe: `7.200000`
+- Visual frame smoke check extracted to `output/ai-engine-intro-frame.png`
 
 ## Notes
 
 - Full monorepo install was constrained by local disk space, so the setup used filtered installs and staged builds.
-- HyperFrames CLI keeps a conservative disk-space preflight. For local smoke-test rendering on this machine, the workspace uses `renderer/render-samples.mjs`, which calls `@hyperframes/producer` directly without modifying the built CLI bundle.
+- HyperFrames CLI keeps a conservative disk-space preflight. For local smoke-test rendering on this machine, the workspace uses `renderer/render-samples.mjs` and `renderer/render-project.mjs`, which call `@hyperframes/producer` directly without modifying the built CLI bundle.
+- Node render commands need permission to spawn Chrome Headless Shell and FFmpeg on this machine.

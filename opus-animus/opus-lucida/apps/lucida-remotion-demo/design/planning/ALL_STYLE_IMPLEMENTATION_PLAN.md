@@ -188,8 +188,10 @@ Exit criteria:
 
 ## 6. Subagent Coding Strategy
 
-Use `gpt-5.4` workers. The main agent owns architecture, shared files,
-integration, and final QA. Workers receive disjoint write scopes.
+Use `gpt-5.5` for newly spawned workers. Interrupted family work may continue
+with `gpt-5.6-sol` when preserving in-flight context is more important than
+rerouting. The main agent owns architecture, shared files, integration, and
+final QA. Workers receive disjoint write scopes.
 
 Concurrency policy:
 
@@ -236,7 +238,7 @@ Every family must pass:
 ## 8. Recommended Run Order
 
 1. Complete Wave 0 locally and freeze shared APIs.
-2. Spawn Wave 1 workers (`gpt-5.4`) and integrate one family at a time.
+2. Spawn Wave 1 workers (`gpt-5.5`) and integrate one family at a time.
 3. Run shared validation before starting Wave 2.
 4. Spawn Wave 2 workers and resolve data/chronology edge cases.
 5. Spawn Wave 3 workers after asset binding is stable.
@@ -257,9 +259,24 @@ Every family must pass:
 - **Remotion hang:** keep still-render fallback for QA, but do not count fallback
   video as proof that the Remotion renderer is healthy.
 
-## 10. Immediate Next Step
+## 10. Execution Result
 
-Start Wave 0 with one `gpt-5.4` coding worker responsible for the package schema
-and validator only. In parallel, the main agent prepares the typed registry and
-shared renderer adapter. Do not spawn family workers until the package contract
-passes validation and the Terminal package is migrated through it.
+Completed on 2026-07-14:
+
+- all nine production style packages are registered as `experimental`;
+- strict package validation and aggregate QA pass 9/9;
+- Director, continuity matrix, runtime dispatch, and legacy fallback tests pass;
+- nine preview boards and a 54-second four-family reference composition have
+  deterministic PNG evidence;
+- the reference composition uses exactly four families, keeps
+  `technical-editorial` dominant at 57.41%, and returns to it for the outro;
+- final pixel-based visual review passes 9/9 after dashboard and technical
+  editorial remediation;
+- no MP4 is generated or registered as a reusable visual-library artifact.
+
+Canonical reports:
+
+- `design/visual-library/reports/qa-all-style-packages.json`
+- `design/visual-library/reports/preview-boards/preview-boards.json`
+- `design/visual-library/reports/reference-composition/render-report.json`
+- `design/visual-library/reports/visual-review/visual-review.json`

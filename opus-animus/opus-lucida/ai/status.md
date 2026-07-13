@@ -1,7 +1,14 @@
 # STATUS - opus-lucida
-**Updated:** 2026-07-11
-**Current owner:** Codex
-**Previous owner:** Claude (2026-05-14, TTS bilingual pipeline)
+**Updated:** 2026-07-14
+**Current owner:** Claude (Remotion Flow v1 design)
+**Previous owner:** Codex (2026-07-11)
+
+## Latest (2026-07-14) — Remotion Flow v1 approved
+
+- User đã duyệt thiết kế flow production hoàn chỉnh cho `apps/lucida-remotion-demo`: **S0 Topic&Script → S1 Ingest → S2 Audio&Timing → S3 Mapping → S4 Render → S5 QA → S6 Publish**, 3 điểm user duyệt (script / video-map / video final).
+- Owner file: `apps/lucida-remotion-demo/design/workflow/FLOW_V1.md`. G00–G12 giữ làm north star, không implement full.
+- Milestones: M1 thiết kế ✅ → M2 skill `topic-script-writer` ✅ (`ai/skills/topic-script-writer/`) → M3 RD xong (`apps/lucida-remotion-demo/docs/RD-audio-pipeline.md`, TTS = VieNeu-TTS CPU) → M4 brand gate → M5 n8n + publish.
+- RD approved 2026-07-14 → BD viết xong (`docs/BD-audio-pipeline.md`, 6 phase) → Codex đang build Phase 1 (VieNeu adapter + voice:generate). User còn nợ: nghe thử preset voice VieNeu để chốt giọng mặc định (`uv run python scripts\test_cpu_tts.py` trong `apps/VieNeu-TTS`, nghe `outputs/cpu_test.wav`).
 
 ## Active sub-systems
 

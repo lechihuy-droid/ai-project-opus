@@ -1,0 +1,352 @@
+{
+  "schemaVersion": "lucida-all-style-reference-render-report/v1",
+  "status": "ok",
+  "generatedAt": "2026-07-13T15:36:17.131Z",
+  "compositionId": "AllStyleReferenceComposition",
+  "renderer": {
+    "tool": "@remotion/bundler + @remotion/renderer renderStill",
+    "entryPoint": "src/styles/reference/render-entry.tsx",
+    "browserExecutable": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+    "imageFormat": "png",
+    "renderMediaCalled": false,
+    "mp4Generated": false,
+    "registeredInAppRoot": false,
+    "networkAssets": false
+  },
+  "duration": {
+    "frames": 1620,
+    "fps": 30,
+    "seconds": 54,
+    "valid45To60Seconds": true
+  },
+  "dimensions": {
+    "width": 1080,
+    "height": 1920,
+    "valid1080x1920": true
+  },
+  "artifacts": {
+    "sourceFixture": "design/visual-library/reports/reference-composition/source-fixture.json",
+    "renderProps": "design/visual-library/reports/reference-composition/render-props.json",
+    "jsonReport": "design/visual-library/reports/reference-composition/render-report.json",
+    "htmlReport": "design/visual-library/reports/reference-composition/reference-composition-report.html",
+    "framesDir": "design/visual-library/reports/reference-composition/frames"
+  },
+  "checks": [
+    "duration-45-to-60-seconds",
+    "dimensions-1080x1920",
+    "exactly-four-production-families",
+    "dominant-family-share-at-least-0.5",
+    "dominant-family-open-and-outro-return",
+    "repeat-render-sha256",
+    "signalstats-nonblank",
+    "png-stills-only"
+  ],
+  "continuityRationale": {
+    "globalNarrative": "A single reference story moves from architecture to claim, synthesis, metrics, product proof, and back to architecture.",
+    "dominantFamilyChoice": "technical-editorial is the dominant family because the composition is a reference-composition QA artifact and the opening and outro both need explicit system evidence.",
+    "styleSwitchPolicy": "Each switch changes density and visual grammar only after the previous beat has established its evidence role.",
+    "outroReturn": "The final sequence uses TechnicalEditorialScene with sceneKey edge, returning to the same family that opened the composition."
+  },
+  "sequencePlan": [
+    {
+      "id": "opening-system-map",
+      "order": 1,
+      "family": "technical-editorial",
+      "component": "TechnicalEditorialScene",
+      "sceneKey": "normal",
+      "startFrame": 0,
+      "durationInFrames": 360,
+      "startSeconds": 0,
+      "durationSeconds": 12,
+      "role": "dominant-open",
+      "narrativeBeat": "Open with the system architecture so every later style has a shared evidence frame.",
+      "continuityBridge": "Grid and rule structure establish the reference spine."
+    },
+    {
+      "id": "chapter-reset",
+      "order": 2,
+      "family": "cinematic-type",
+      "component": "CinematicTypeScene",
+      "sceneKey": "hook",
+      "startFrame": 360,
+      "durationInFrames": 210,
+      "startSeconds": 12,
+      "durationSeconds": 7,
+      "role": "tension-reset",
+      "narrativeBeat": "Reframe the architecture as a viewer-facing claim before moving into proof.",
+      "continuityBridge": "Large type carries the same claim with lower density."
+    },
+    {
+      "id": "dominant-synthesis",
+      "order": 3,
+      "family": "technical-editorial",
+      "component": "TechnicalEditorialScene",
+      "sceneKey": "dense",
+      "startFrame": 570,
+      "durationInFrames": 270,
+      "startSeconds": 19,
+      "durationSeconds": 9,
+      "role": "dominant-midpoint",
+      "narrativeBeat": "Return to the technical frame before evidence styles branch so the dominant family stays above the continuity threshold.",
+      "continuityBridge": "The same grid converts the cinematic claim into an inspection-ready synthesis."
+    },
+    {
+      "id": "metric-proof",
+      "order": 4,
+      "family": "dashboard-data",
+      "component": "DashboardDataScene",
+      "sceneKey": "normal",
+      "startFrame": 840,
+      "durationInFrames": 240,
+      "startSeconds": 28,
+      "durationSeconds": 8,
+      "role": "structured-proof",
+      "narrativeBeat": "Quantify the state of the system using the production dashboard family.",
+      "continuityBridge": "Architecture evidence becomes operational status."
+    },
+    {
+      "id": "product-surface",
+      "order": 5,
+      "family": "product-showcase",
+      "component": "ProductShowcaseScene",
+      "sceneKey": "normal",
+      "startFrame": 1080,
+      "durationInFrames": 240,
+      "startSeconds": 36,
+      "durationSeconds": 8,
+      "role": "interface-proof",
+      "narrativeBeat": "Show the product surface after the metrics so the UI appears as evidence, not decoration.",
+      "continuityBridge": "Structured proof resolves into a product-first screen."
+    },
+    {
+      "id": "outro-decision-return",
+      "order": 6,
+      "family": "technical-editorial",
+      "component": "TechnicalEditorialScene",
+      "sceneKey": "edge",
+      "startFrame": 1320,
+      "durationInFrames": 300,
+      "startSeconds": 44,
+      "durationSeconds": 10,
+      "role": "dominant-outro-return",
+      "narrativeBeat": "Return to the dominant technical family to close on a decision-ready architecture frame.",
+      "continuityBridge": "The closing grid proves that the multi-style route returns to its original visual contract."
+    }
+  ],
+  "planEvidence": {
+    "durationSeconds": 54,
+    "durationValid": true,
+    "dimensionsValid": true,
+    "familyCount": 4,
+    "exactFamilyLimit": 4,
+    "familyCountValid": true,
+    "declaredFamiliesMatchPlan": true,
+    "componentCount": 4,
+    "componentCountValid": true,
+    "declaredComponentsMatchPlan": true,
+    "sequenceCoverageValid": true,
+    "dominantFamily": "technical-editorial",
+    "dominantFrames": 930,
+    "dominantSeconds": 31,
+    "dominantShare": 0.5741,
+    "minimumDominantShare": 0.5,
+    "dominantShareValid": true,
+    "dominantIsLargest": true,
+    "dominantOpensComposition": true,
+    "dominantAppearsInOutro": true,
+    "dominantSequenceIds": [
+      "opening-system-map",
+      "dominant-synthesis",
+      "outro-decision-return"
+    ],
+    "finalSequenceId": "outro-decision-return"
+  },
+  "declaredDominantFamilyEvidence": {
+    "family": "technical-editorial",
+    "sequenceIds": [
+      "opening-system-map",
+      "dominant-synthesis",
+      "outro-decision-return"
+    ],
+    "totalFrames": 930,
+    "totalSeconds": 31,
+    "shareOfComposition": 0.5741,
+    "isLargestFamilyShare": true,
+    "appearsInOutro": true,
+    "outroSequenceId": "outro-decision-return"
+  },
+  "frames": [
+    {
+      "id": "01-opening-system-map",
+      "sequenceId": "opening-system-map",
+      "frame": 180,
+      "output": "design/visual-library/reports/reference-composition/frames/01-opening-system-map.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "b2f301ef82c0ed298073f44f1deab0c348b347b560fa03252cfa8f63b124e453",
+      "fileBytes": 1316902,
+      "signalStats": {
+        "yAverage": 39.6255,
+        "yLow": 18,
+        "yHigh": 71,
+        "saturationAverage": 9.8301
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 53
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "b2f301ef82c0ed298073f44f1deab0c348b347b560fa03252cfa8f63b124e453"
+      }
+    },
+    {
+      "id": "02-chapter-reset",
+      "sequenceId": "chapter-reset",
+      "frame": 465,
+      "output": "design/visual-library/reports/reference-composition/frames/02-chapter-reset.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "5462f0fc8aa474c3845accb57b41ca0ae5bfe2fca3de3a7de079632072e4eb1a",
+      "fileBytes": 1835249,
+      "signalStats": {
+        "yAverage": 44.4524,
+        "yLow": 24,
+        "yHigh": 54,
+        "saturationAverage": 3.56356
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 30
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "5462f0fc8aa474c3845accb57b41ca0ae5bfe2fca3de3a7de079632072e4eb1a"
+      }
+    },
+    {
+      "id": "03-dominant-synthesis",
+      "sequenceId": "dominant-synthesis",
+      "frame": 705,
+      "output": "design/visual-library/reports/reference-composition/frames/03-dominant-synthesis.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "d691cf4b250234b7a394e845900b11c4251862b0f45b16a33339f08741b71a5b",
+      "fileBytes": 1310815,
+      "signalStats": {
+        "yAverage": 40.5837,
+        "yLow": 18,
+        "yHigh": 78,
+        "saturationAverage": 9.59466
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 60
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "d691cf4b250234b7a394e845900b11c4251862b0f45b16a33339f08741b71a5b"
+      }
+    },
+    {
+      "id": "04-metric-proof",
+      "sequenceId": "metric-proof",
+      "frame": 960,
+      "output": "design/visual-library/reports/reference-composition/frames/04-metric-proof.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "77eb4c4ff3d4a0192f0481cb0577f4bd3bb8cb606ee0f09bd9dbddc1ea9e1620",
+      "fileBytes": 571782,
+      "signalStats": {
+        "yAverage": 34.326,
+        "yLow": 18,
+        "yHigh": 32,
+        "saturationAverage": 9.11583
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 14
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "77eb4c4ff3d4a0192f0481cb0577f4bd3bb8cb606ee0f09bd9dbddc1ea9e1620"
+      }
+    },
+    {
+      "id": "05-product-surface",
+      "sequenceId": "product-surface",
+      "frame": 1200,
+      "output": "design/visual-library/reports/reference-composition/frames/05-product-surface.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "a29ef5577f168585c1f6fbe5979632f91d43791e6d67c4e418682ea86e4b03d7",
+      "fileBytes": 393806,
+      "signalStats": {
+        "yAverage": 224.114,
+        "yLow": 118,
+        "yHigh": 255,
+        "saturationAverage": 3.0557
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 137
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "a29ef5577f168585c1f6fbe5979632f91d43791e6d67c4e418682ea86e4b03d7"
+      }
+    },
+    {
+      "id": "06-outro-decision-return",
+      "sequenceId": "outro-decision-return",
+      "frame": 1470,
+      "output": "design/visual-library/reports/reference-composition/frames/06-outro-decision-return.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "7f68aced655f718b8065bd55a4e328b0ac2494651c5cf06337ba08e5a56b9114",
+      "fileBytes": 1309062,
+      "signalStats": {
+        "yAverage": 42.2823,
+        "yLow": 18,
+        "yHigh": 104,
+        "saturationAverage": 10.0507
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 86
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "7f68aced655f718b8065bd55a4e328b0ac2494651c5cf06337ba08e5a56b9114"
+      }
+    }
+  ],
+  "summary": {
+    "renderedFrameCount": 6,
+    "nonBlankFrames": 6,
+    "deterministicFrames": 6,
+    "dimensionsValid": true,
+    "pngOnly": true,
+    "mp4Generated": false,
+    "appRootRegistered": false,
+    "networkAssets": false
+  }
+}

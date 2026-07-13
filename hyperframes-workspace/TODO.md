@@ -2,10 +2,10 @@
 
 ## Next engineering steps
 
-- Add a JSON-to-HTML scene compiler in `renderer/`
-- Validate `scene-schema/hyperframes.scene.schema.json` before preview and render
+- Expand `renderer/scene-json-to-hyperframes.mjs` into a reusable package
+- Add full JSON Schema validation before preview and render
 - Add a manifest for fonts, music, sfx, and icons
-- Add a one-command batch render wrapper with reporting
+- Merge `render-project.mjs` and `render-samples.mjs` into one stable CLI with reporting
 
 ## Next template steps
 

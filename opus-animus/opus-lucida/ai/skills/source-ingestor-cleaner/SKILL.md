@@ -36,6 +36,10 @@ ignore
 6. Remove noise, duplicates, badges, boilerplate, install logs, and irrelevant repo files.
 7. Produce `clean-brief.json` for `script-template-mapper`.
 
+## Visual Evidence Input (pipeline collectors)
+
+Nếu user cung cấp output của pipeline collectors (`visual-evidence.json` từ `npm run evidence:export`, hoặc run dir `pipeline/runs/<id>/`), coi mỗi block trong đó là một source đã được sanitize sẵn: classify như bình thường (thường là `content_truth` cho command output/repo excerpt, `embed_asset` cho asciicast/theme đã duyệt) và giữ nguyên `source` reference của block để trace ngược về run.
+
 ## Auto-Use Policy
 
 Use source as `content_truth` when it supports factual claims or script accuracy.

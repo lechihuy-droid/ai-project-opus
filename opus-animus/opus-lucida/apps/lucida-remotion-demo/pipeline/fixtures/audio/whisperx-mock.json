@@ -1,0 +1,28 @@
+{
+  "segments": [
+    {
+      "words": [
+        {"word": "Xin", "start": 0.10, "end": 0.28},
+        {"word": "chào", "start": 0.30, "end": 0.55},
+        {"word": "đây", "start": 0.58, "end": 0.80},
+        {"word": "là", "start": 0.82, "end": 0.94},
+        {"word": "Lucida", "start": 0.96, "end": 1.20},
+        {"word": "Âm", "start": 1.60, "end": 1.78},
+        {"word": "thanh", "start": 1.80, "end": 2.02},
+        {"word": "dẫn", "start": 2.04, "end": 2.22},
+        {"word": "cho", "start": 2.42, "end": 2.56},
+        {"word": "từng", "start": 2.58, "end": 2.78},
+        {"word": "cảnh", "start": 2.80, "end": 3.05},
+        {"word": "Mỗi", "start": 3.50, "end": 3.70},
+        {"word": "câu", "start": 3.72, "end": 3.88},
+        {"word": "được", "start": 3.90, "end": 4.08},
+        {"word": "khóa", "start": 4.10, "end": 4.30},
+        {"word": "để", "start": 4.32, "end": 4.46},
+        {"word": "giữ", "start": 4.48, "end": 4.66},
+        {"word": "nguyên", "start": 4.68, "end": 4.90},
+        {"word": "nội", "start": 4.92, "end": 5.08},
+        {"word": "dung", "start": 5.10, "end": 5.32}
+      ]
+    }
+  ]
+}

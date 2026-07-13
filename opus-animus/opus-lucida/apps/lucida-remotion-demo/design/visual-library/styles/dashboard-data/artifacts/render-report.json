@@ -1,7 +1,7 @@
 {
   "packageId": "dashboard-data",
   "compositionId": "DashboardDataFamilyReview",
-  "generatedAt": "2026-07-13T14:10:05.316Z",
+  "generatedAt": "2026-07-13T15:29:17.093Z",
   "renderer": {
     "entryPoint": "src/styles/families/dashboard-data/render-entry.tsx",
     "browserExecutable": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
@@ -24,13 +24,13 @@
         "height": 1920
       },
       "durationInFrames": 180,
-      "sha256": "8d5dbdb43bbb8dd199df0f34e6085e40b6d3f009b9e1a88fe1567cd1e6a62db3",
-      "fileBytes": 548642,
+      "sha256": "f469134e1b73a66a6563f2fcf16bd57b4ac317f72fe98bd06a461841a7a24b22",
+      "fileBytes": 559117,
       "signalStats": {
-        "yAverage": 34.5796,
+        "yAverage": 33.9459,
         "yLow": 18,
         "yHigh": 32,
-        "saturationAverage": 9.15903
+        "saturationAverage": 9.171
       },
       "nonBlank": {
         "passed": true,
@@ -39,7 +39,7 @@
       },
       "deterministic": {
         "passed": true,
-        "repeatedSha256": "8d5dbdb43bbb8dd199df0f34e6085e40b6d3f009b9e1a88fe1567cd1e6a62db3"
+        "repeatedSha256": "f469134e1b73a66a6563f2fcf16bd57b4ac317f72fe98bd06a461841a7a24b22"
       }
     },
     {
@@ -53,13 +53,13 @@
         "height": 1920
       },
       "durationInFrames": 210,
-      "sha256": "90a2e30d53ed42596672926c4f547f3f8d73aa2a8906b5a5bc98d3a7df4662a3",
-      "fileBytes": 585802,
+      "sha256": "f87813614791ed0a3d2a5345ef496048a26e4780b7d1738cef1b2a35c68004db",
+      "fileBytes": 607348,
       "signalStats": {
-        "yAverage": 35.3575,
+        "yAverage": 35.1931,
         "yLow": 18,
         "yHigh": 32,
-        "saturationAverage": 9.13836
+        "saturationAverage": 9.16981
       },
       "nonBlank": {
         "passed": true,
@@ -68,7 +68,7 @@
       },
       "deterministic": {
         "passed": true,
-        "repeatedSha256": "90a2e30d53ed42596672926c4f547f3f8d73aa2a8906b5a5bc98d3a7df4662a3"
+        "repeatedSha256": "f87813614791ed0a3d2a5345ef496048a26e4780b7d1738cef1b2a35c68004db"
       }
     },
     {
@@ -82,13 +82,13 @@
         "height": 1920
       },
       "durationInFrames": 210,
-      "sha256": "312f1fbf2839c1a1a70791fc1a7314a6f0f257c2c38a8b7d11d12d93013bb002",
-      "fileBytes": 560137,
+      "sha256": "ba6b6ac663a17c57c20499863bfac4e7f6376d2728fc085bd3448c590d8a057e",
+      "fileBytes": 546455,
       "signalStats": {
-        "yAverage": 35.3428,
+        "yAverage": 36.3941,
         "yLow": 18,
         "yHigh": 32,
-        "saturationAverage": 8.8114
+        "saturationAverage": 9.71551
       },
       "nonBlank": {
         "passed": true,
@@ -97,7 +97,7 @@
       },
       "deterministic": {
         "passed": true,
-        "repeatedSha256": "312f1fbf2839c1a1a70791fc1a7314a6f0f257c2c38a8b7d11d12d93013bb002"
+        "repeatedSha256": "ba6b6ac663a17c57c20499863bfac4e7f6376d2728fc085bd3448c590d8a057e"
       }
     }
   ],

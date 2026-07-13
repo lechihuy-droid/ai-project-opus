@@ -1,0 +1,1267 @@
+{
+  "schemaVersion": "lucida-style-package-qa/v1",
+  "generatedAt": "2026-07-13T15:50:25.825Z",
+  "command": {
+    "cwd": ".",
+    "roots": [
+      "design/visual-library/styles"
+    ],
+    "expectedPackageIds": [
+      "terminal-command-center",
+      "technical-editorial",
+      "minimal-education",
+      "cinematic-type",
+      "dashboard-data",
+      "paper-notebook",
+      "product-showcase",
+      "editorial-collage",
+      "timeline-documentary"
+    ],
+    "requiredFrameDimensions": {
+      "width": 1080,
+      "height": 1920
+    }
+  },
+  "summary": {
+    "scannedPackageCount": 9,
+    "passedPackageCount": 9,
+    "failedPackageCount": 0,
+    "missingExpectedPackageCount": 0,
+    "unplannedPackageCount": 0,
+    "strictPackageValidationPassed": true,
+    "status": "pass"
+  },
+  "plannedPackages": [
+    {
+      "id": "terminal-command-center",
+      "present": true,
+      "status": "pass",
+      "issueCount": 0,
+      "packageFile": "design/visual-library/styles/terminal-command-center/style-package.json"
+    },
+    {
+      "id": "technical-editorial",
+      "present": true,
+      "status": "pass",
+      "issueCount": 0,
+      "packageFile": "design/visual-library/styles/technical-editorial/style-package.json"
+    },
+    {
+      "id": "minimal-education",
+      "present": true,
+      "status": "pass",
+      "issueCount": 0,
+      "packageFile": "design/visual-library/styles/minimal-education/style-package.json"
+    },
+    {
+      "id": "cinematic-type",
+      "present": true,
+      "status": "pass",
+      "issueCount": 0,
+      "packageFile": "design/visual-library/styles/cinematic-type/style-package.json"
+    },
+    {
+      "id": "dashboard-data",
+      "present": true,
+      "status": "pass",
+      "issueCount": 0,
+      "packageFile": "design/visual-library/styles/dashboard-data/style-package.json"
+    },
+    {
+      "id": "paper-notebook",
+      "present": true,
+      "status": "pass",
+      "issueCount": 0,
+      "packageFile": "design/visual-library/styles/paper-notebook/style-package.json"
+    },
+    {
+      "id": "product-showcase",
+      "present": true,
+      "status": "pass",
+      "issueCount": 0,
+      "packageFile": "design/visual-library/styles/product-showcase/style-package.json"
+    },
+    {
+      "id": "editorial-collage",
+      "present": true,
+      "status": "pass",
+      "issueCount": 0,
+      "packageFile": "design/visual-library/styles/editorial-collage/style-package.json"
+    },
+    {
+      "id": "timeline-documentary",
+      "present": true,
+      "status": "pass",
+      "issueCount": 0,
+      "packageFile": "design/visual-library/styles/timeline-documentary/style-package.json"
+    }
+  ],
+  "missingExpectedPackageIds": [],
+  "unplannedPackageIds": [],
+  "strictPackageValidation": {
+    "exitCode": 0,
+    "passed": true,
+    "parseError": null,
+    "summary": {
+      "validCount": 9,
+      "migrationGapCount": 0,
+      "errorCount": 0,
+      "rootErrorCount": 0
+    }
+  },
+  "families": [
+    {
+      "id": "cinematic-type",
+      "status": "pass",
+      "packageStatus": "experimental",
+      "packageFile": "design/visual-library/styles/cinematic-type/style-package.json",
+      "packageDir": "design/visual-library/styles/cinematic-type",
+      "issueCount": 0,
+      "issues": [],
+      "missingEvidence": [],
+      "evidence": {
+        "strictPackageValidation": {
+          "state": "valid",
+          "errors": [],
+          "migrationGaps": []
+        },
+        "previewFrames": [
+          {
+            "index": 0,
+            "ref": "./artifacts/frames/scene-01.png",
+            "path": "design/visual-library/styles/cinematic-type/artifacts/frames/scene-01.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "d5b89e03f0f27ff9c9c05497dade5f8487af3359ec9f3c0921bc292872352f30",
+            "fileBytes": 1851043
+          },
+          {
+            "index": 1,
+            "ref": "./artifacts/frames/scene-02.png",
+            "path": "design/visual-library/styles/cinematic-type/artifacts/frames/scene-02.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "a29a23c8d8744eb26ba879c5caa2019d7a586b2e9680ef034351923281a42046",
+            "fileBytes": 1828379
+          },
+          {
+            "index": 2,
+            "ref": "./artifacts/frames/scene-03.png",
+            "path": "design/visual-library/styles/cinematic-type/artifacts/frames/scene-03.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "f5fea755b929326846973dceb481ea9f380c969a907d332ae3d0f13613f1f7f9",
+            "fileBytes": 1670141
+          }
+        ],
+        "renderReport": {
+          "path": "design/visual-library/styles/cinematic-type/artifacts/render-report.json",
+          "exists": true,
+          "frameEvidenceCount": 3,
+          "checks": [
+            "sha256-repeat-determinism",
+            "1080x1920-dimensions",
+            "signalstats-nonblank"
+          ]
+        },
+        "artifactManifestCoverage": [
+          {
+            "label": "style-package",
+            "path": "design/visual-library/styles/cinematic-type/style-package.json",
+            "covered": true
+          },
+          {
+            "label": "visual",
+            "path": "design/visual-library/styles/cinematic-type/visual.json",
+            "covered": true
+          },
+          {
+            "label": "tokens",
+            "path": "design/visual-library/styles/cinematic-type/tokens.json",
+            "covered": true
+          },
+          {
+            "label": "componentMap",
+            "path": "design/visual-library/styles/cinematic-type/component-map.json",
+            "covered": true
+          },
+          {
+            "label": "provenance",
+            "path": "design/visual-library/styles/cinematic-type/provenance.md",
+            "covered": true
+          },
+          {
+            "label": "artifactManifest",
+            "path": "design/visual-library/styles/cinematic-type/artifact-manifest.json",
+            "covered": true
+          },
+          {
+            "label": "renderReport",
+            "path": "design/visual-library/styles/cinematic-type/artifacts/render-report.json",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[0]",
+            "path": "design/visual-library/styles/cinematic-type/artifacts/frames/scene-01.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[1]",
+            "path": "design/visual-library/styles/cinematic-type/artifacts/frames/scene-02.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[2]",
+            "path": "design/visual-library/styles/cinematic-type/artifacts/frames/scene-03.png",
+            "covered": true
+          }
+        ],
+        "provenance": {
+          "path": "design/visual-library/styles/cinematic-type/provenance.md",
+          "exists": true,
+          "bytes": 1849
+        }
+      }
+    },
+    {
+      "id": "dashboard-data",
+      "status": "pass",
+      "packageStatus": "experimental",
+      "packageFile": "design/visual-library/styles/dashboard-data/style-package.json",
+      "packageDir": "design/visual-library/styles/dashboard-data",
+      "issueCount": 0,
+      "issues": [],
+      "missingEvidence": [],
+      "evidence": {
+        "strictPackageValidation": {
+          "state": "valid",
+          "errors": [],
+          "migrationGaps": []
+        },
+        "previewFrames": [
+          {
+            "index": 0,
+            "ref": "./artifacts/frames/scene-01.png",
+            "path": "design/visual-library/styles/dashboard-data/artifacts/frames/scene-01.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "f469134e1b73a66a6563f2fcf16bd57b4ac317f72fe98bd06a461841a7a24b22",
+            "fileBytes": 559117
+          },
+          {
+            "index": 1,
+            "ref": "./artifacts/frames/scene-02.png",
+            "path": "design/visual-library/styles/dashboard-data/artifacts/frames/scene-02.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "f87813614791ed0a3d2a5345ef496048a26e4780b7d1738cef1b2a35c68004db",
+            "fileBytes": 607348
+          },
+          {
+            "index": 2,
+            "ref": "./artifacts/frames/scene-03.png",
+            "path": "design/visual-library/styles/dashboard-data/artifacts/frames/scene-03.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "ba6b6ac663a17c57c20499863bfac4e7f6376d2728fc085bd3448c590d8a057e",
+            "fileBytes": 546455
+          }
+        ],
+        "renderReport": {
+          "path": "design/visual-library/styles/dashboard-data/artifacts/render-report.json",
+          "exists": true,
+          "frameEvidenceCount": 3,
+          "checks": [
+            "sha256",
+            "dimensions",
+            "signalstats-nonblank"
+          ]
+        },
+        "artifactManifestCoverage": [
+          {
+            "label": "style-package",
+            "path": "design/visual-library/styles/dashboard-data/style-package.json",
+            "covered": true
+          },
+          {
+            "label": "visual",
+            "path": "design/visual-library/styles/dashboard-data/visual.json",
+            "covered": true
+          },
+          {
+            "label": "tokens",
+            "path": "design/visual-library/styles/dashboard-data/tokens.json",
+            "covered": true
+          },
+          {
+            "label": "componentMap",
+            "path": "design/visual-library/styles/dashboard-data/component-map.json",
+            "covered": true
+          },
+          {
+            "label": "provenance",
+            "path": "design/visual-library/styles/dashboard-data/provenance.md",
+            "covered": true
+          },
+          {
+            "label": "artifactManifest",
+            "path": "design/visual-library/styles/dashboard-data/artifact-manifest.json",
+            "covered": true
+          },
+          {
+            "label": "renderReport",
+            "path": "design/visual-library/styles/dashboard-data/artifacts/render-report.json",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[0]",
+            "path": "design/visual-library/styles/dashboard-data/artifacts/frames/scene-01.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[1]",
+            "path": "design/visual-library/styles/dashboard-data/artifacts/frames/scene-02.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[2]",
+            "path": "design/visual-library/styles/dashboard-data/artifacts/frames/scene-03.png",
+            "covered": true
+          }
+        ],
+        "provenance": {
+          "path": "design/visual-library/styles/dashboard-data/provenance.md",
+          "exists": true,
+          "bytes": 3496
+        }
+      }
+    },
+    {
+      "id": "editorial-collage",
+      "status": "pass",
+      "packageStatus": "experimental",
+      "packageFile": "design/visual-library/styles/editorial-collage/style-package.json",
+      "packageDir": "design/visual-library/styles/editorial-collage",
+      "issueCount": 0,
+      "issues": [],
+      "missingEvidence": [],
+      "evidence": {
+        "strictPackageValidation": {
+          "state": "valid",
+          "errors": [],
+          "migrationGaps": []
+        },
+        "previewFrames": [
+          {
+            "index": 0,
+            "ref": "./artifacts/frames/scene-01.png",
+            "path": "design/visual-library/styles/editorial-collage/artifacts/frames/scene-01.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "951d474f4b1d2331bf2d4b315359534354692b936465becb896c16fc6ad93e82",
+            "fileBytes": 1484120
+          },
+          {
+            "index": 1,
+            "ref": "./artifacts/frames/scene-02.png",
+            "path": "design/visual-library/styles/editorial-collage/artifacts/frames/scene-02.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "c25540c1ceed90125b8536dab2c7c8fe7d42b6430632766fb7cbb84eed09c057",
+            "fileBytes": 1491246
+          },
+          {
+            "index": 2,
+            "ref": "./artifacts/frames/scene-03.png",
+            "path": "design/visual-library/styles/editorial-collage/artifacts/frames/scene-03.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "2ed755fda7516de01a7c25b57a52e1bf07e01bafd8d368cd7171935812b0a7d8",
+            "fileBytes": 1650098
+          }
+        ],
+        "renderReport": {
+          "path": "design/visual-library/styles/editorial-collage/artifacts/render-report.json",
+          "exists": true,
+          "frameEvidenceCount": 3,
+          "checks": [
+            "sha256",
+            "dimensions",
+            "signalstats-nonblank",
+            "embed-asset-only",
+            "missing-asset-placeholder",
+            "deterministic-crop"
+          ]
+        },
+        "artifactManifestCoverage": [
+          {
+            "label": "style-package",
+            "path": "design/visual-library/styles/editorial-collage/style-package.json",
+            "covered": true
+          },
+          {
+            "label": "visual",
+            "path": "design/visual-library/styles/editorial-collage/visual.json",
+            "covered": true
+          },
+          {
+            "label": "tokens",
+            "path": "design/visual-library/styles/editorial-collage/tokens.json",
+            "covered": true
+          },
+          {
+            "label": "componentMap",
+            "path": "design/visual-library/styles/editorial-collage/component-map.json",
+            "covered": true
+          },
+          {
+            "label": "provenance",
+            "path": "design/visual-library/styles/editorial-collage/provenance.md",
+            "covered": true
+          },
+          {
+            "label": "artifactManifest",
+            "path": "design/visual-library/styles/editorial-collage/artifact-manifest.json",
+            "covered": true
+          },
+          {
+            "label": "renderReport",
+            "path": "design/visual-library/styles/editorial-collage/artifacts/render-report.json",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[0]",
+            "path": "design/visual-library/styles/editorial-collage/artifacts/frames/scene-01.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[1]",
+            "path": "design/visual-library/styles/editorial-collage/artifacts/frames/scene-02.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[2]",
+            "path": "design/visual-library/styles/editorial-collage/artifacts/frames/scene-03.png",
+            "covered": true
+          }
+        ],
+        "provenance": {
+          "path": "design/visual-library/styles/editorial-collage/provenance.md",
+          "exists": true,
+          "bytes": 1397
+        }
+      }
+    },
+    {
+      "id": "minimal-education",
+      "status": "pass",
+      "packageStatus": "experimental",
+      "packageFile": "design/visual-library/styles/minimal-education/style-package.json",
+      "packageDir": "design/visual-library/styles/minimal-education",
+      "issueCount": 0,
+      "issues": [],
+      "missingEvidence": [],
+      "evidence": {
+        "strictPackageValidation": {
+          "state": "valid",
+          "errors": [],
+          "migrationGaps": []
+        },
+        "previewFrames": [
+          {
+            "index": 0,
+            "ref": "./artifacts/frames/scene-01.png",
+            "path": "design/visual-library/styles/minimal-education/artifacts/frames/scene-01.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "c34af0b1668b58713a378c4565f7c87534f5df1f59c3cc9bb137e3e0c8dc7713",
+            "fileBytes": 710657
+          },
+          {
+            "index": 1,
+            "ref": "./artifacts/frames/scene-02.png",
+            "path": "design/visual-library/styles/minimal-education/artifacts/frames/scene-02.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "30200ec0a9a63afef09ee36cdc1765a8c1584c378ba9a16e3bcebc960a48eb2c",
+            "fileBytes": 754676
+          },
+          {
+            "index": 2,
+            "ref": "./artifacts/frames/scene-03.png",
+            "path": "design/visual-library/styles/minimal-education/artifacts/frames/scene-03.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "39a1d7464de451777033832b9d2fef2b4f43fd394a44b48b63ef2472a01b61a1",
+            "fileBytes": 846656
+          }
+        ],
+        "renderReport": {
+          "path": "design/visual-library/styles/minimal-education/artifacts/render-report.json",
+          "exists": true,
+          "frameEvidenceCount": 3,
+          "checks": [
+            "sha256",
+            "dimensions",
+            "signalstats-nonblank"
+          ]
+        },
+        "artifactManifestCoverage": [
+          {
+            "label": "style-package",
+            "path": "design/visual-library/styles/minimal-education/style-package.json",
+            "covered": true
+          },
+          {
+            "label": "visual",
+            "path": "design/visual-library/styles/minimal-education/visual.json",
+            "covered": true
+          },
+          {
+            "label": "tokens",
+            "path": "design/visual-library/styles/minimal-education/tokens.json",
+            "covered": true
+          },
+          {
+            "label": "componentMap",
+            "path": "design/visual-library/styles/minimal-education/component-map.json",
+            "covered": true
+          },
+          {
+            "label": "provenance",
+            "path": "design/visual-library/styles/minimal-education/provenance.md",
+            "covered": true
+          },
+          {
+            "label": "artifactManifest",
+            "path": "design/visual-library/styles/minimal-education/artifact-manifest.json",
+            "covered": true
+          },
+          {
+            "label": "renderReport",
+            "path": "design/visual-library/styles/minimal-education/artifacts/render-report.json",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[0]",
+            "path": "design/visual-library/styles/minimal-education/artifacts/frames/scene-01.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[1]",
+            "path": "design/visual-library/styles/minimal-education/artifacts/frames/scene-02.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[2]",
+            "path": "design/visual-library/styles/minimal-education/artifacts/frames/scene-03.png",
+            "covered": true
+          }
+        ],
+        "provenance": {
+          "path": "design/visual-library/styles/minimal-education/provenance.md",
+          "exists": true,
+          "bytes": 3096
+        }
+      }
+    },
+    {
+      "id": "paper-notebook",
+      "status": "pass",
+      "packageStatus": "experimental",
+      "packageFile": "design/visual-library/styles/paper-notebook/style-package.json",
+      "packageDir": "design/visual-library/styles/paper-notebook",
+      "issueCount": 0,
+      "issues": [],
+      "missingEvidence": [],
+      "evidence": {
+        "strictPackageValidation": {
+          "state": "valid",
+          "errors": [],
+          "migrationGaps": []
+        },
+        "previewFrames": [
+          {
+            "index": 0,
+            "ref": "./artifacts/frames/scene-01.png",
+            "path": "design/visual-library/styles/paper-notebook/artifacts/frames/scene-01.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "2835ad6c319fa2aac08daf4019c01b0cf9e8f82db4a18de93851c75b303427c3",
+            "fileBytes": 306595
+          },
+          {
+            "index": 1,
+            "ref": "./artifacts/frames/scene-02.png",
+            "path": "design/visual-library/styles/paper-notebook/artifacts/frames/scene-02.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "75be5657f764fd174d90404ccda59a93e79e6c31d7f04c0e113a0705e25267d2",
+            "fileBytes": 329800
+          },
+          {
+            "index": 2,
+            "ref": "./artifacts/frames/scene-03.png",
+            "path": "design/visual-library/styles/paper-notebook/artifacts/frames/scene-03.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "06441b6754098db0e0e6723158fe3067a861e0ef8791e48fa7b27ef5bcfc0fe2",
+            "fileBytes": 347799
+          }
+        ],
+        "renderReport": {
+          "path": "design/visual-library/styles/paper-notebook/artifacts/render-report.json",
+          "exists": true,
+          "frameEvidenceCount": 3,
+          "checks": [
+            "sha256",
+            "dimensions",
+            "signalstats-nonblank",
+            "no-raster-dependency"
+          ]
+        },
+        "artifactManifestCoverage": [
+          {
+            "label": "style-package",
+            "path": "design/visual-library/styles/paper-notebook/style-package.json",
+            "covered": true
+          },
+          {
+            "label": "visual",
+            "path": "design/visual-library/styles/paper-notebook/visual.json",
+            "covered": true
+          },
+          {
+            "label": "tokens",
+            "path": "design/visual-library/styles/paper-notebook/tokens.json",
+            "covered": true
+          },
+          {
+            "label": "componentMap",
+            "path": "design/visual-library/styles/paper-notebook/component-map.json",
+            "covered": true
+          },
+          {
+            "label": "provenance",
+            "path": "design/visual-library/styles/paper-notebook/provenance.md",
+            "covered": true
+          },
+          {
+            "label": "artifactManifest",
+            "path": "design/visual-library/styles/paper-notebook/artifact-manifest.json",
+            "covered": true
+          },
+          {
+            "label": "renderReport",
+            "path": "design/visual-library/styles/paper-notebook/artifacts/render-report.json",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[0]",
+            "path": "design/visual-library/styles/paper-notebook/artifacts/frames/scene-01.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[1]",
+            "path": "design/visual-library/styles/paper-notebook/artifacts/frames/scene-02.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[2]",
+            "path": "design/visual-library/styles/paper-notebook/artifacts/frames/scene-03.png",
+            "covered": true
+          }
+        ],
+        "provenance": {
+          "path": "design/visual-library/styles/paper-notebook/provenance.md",
+          "exists": true,
+          "bytes": 3636
+        }
+      }
+    },
+    {
+      "id": "product-showcase",
+      "status": "pass",
+      "packageStatus": "experimental",
+      "packageFile": "design/visual-library/styles/product-showcase/style-package.json",
+      "packageDir": "design/visual-library/styles/product-showcase",
+      "issueCount": 0,
+      "issues": [],
+      "missingEvidence": [],
+      "evidence": {
+        "strictPackageValidation": {
+          "state": "valid",
+          "errors": [],
+          "migrationGaps": []
+        },
+        "previewFrames": [
+          {
+            "index": 0,
+            "ref": "./artifacts/frames/scene-01.png",
+            "path": "design/visual-library/styles/product-showcase/artifacts/frames/scene-01.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "bb0e89152b857a9d9c4d1e472926c6ff5f9d745ca0940d6c38014c24c236c121",
+            "fileBytes": 376414
+          },
+          {
+            "index": 1,
+            "ref": "./artifacts/frames/scene-02.png",
+            "path": "design/visual-library/styles/product-showcase/artifacts/frames/scene-02.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "486926ef8e7fa7adce0c1638134cbd0c98fe4c9baec73b229224bd2201878bcb",
+            "fileBytes": 321838
+          },
+          {
+            "index": 2,
+            "ref": "./artifacts/frames/scene-03.png",
+            "path": "design/visual-library/styles/product-showcase/artifacts/frames/scene-03.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "eed4dbf7f16cebbec8c858c1a357e28da8eda6a4ff2a7408ca44066a17e7e081",
+            "fileBytes": 560123
+          }
+        ],
+        "renderReport": {
+          "path": "design/visual-library/styles/product-showcase/artifacts/render-report.json",
+          "exists": true,
+          "frameEvidenceCount": 3,
+          "checks": [
+            "asset usage binding: only embed_asset receives src",
+            "style_reference/context_only placeholder",
+            "missing embed_asset placeholder",
+            "deterministic focal crop",
+            "1080x1920 dimensions",
+            "signalstats nonblank"
+          ]
+        },
+        "artifactManifestCoverage": [
+          {
+            "label": "style-package",
+            "path": "design/visual-library/styles/product-showcase/style-package.json",
+            "covered": true
+          },
+          {
+            "label": "visual",
+            "path": "design/visual-library/styles/product-showcase/visual.json",
+            "covered": true
+          },
+          {
+            "label": "tokens",
+            "path": "design/visual-library/styles/product-showcase/tokens.json",
+            "covered": true
+          },
+          {
+            "label": "componentMap",
+            "path": "design/visual-library/styles/product-showcase/component-map.json",
+            "covered": true
+          },
+          {
+            "label": "provenance",
+            "path": "design/visual-library/styles/product-showcase/provenance.md",
+            "covered": true
+          },
+          {
+            "label": "artifactManifest",
+            "path": "design/visual-library/styles/product-showcase/artifact-manifest.json",
+            "covered": true
+          },
+          {
+            "label": "renderReport",
+            "path": "design/visual-library/styles/product-showcase/artifacts/render-report.json",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[0]",
+            "path": "design/visual-library/styles/product-showcase/artifacts/frames/scene-01.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[1]",
+            "path": "design/visual-library/styles/product-showcase/artifacts/frames/scene-02.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[2]",
+            "path": "design/visual-library/styles/product-showcase/artifacts/frames/scene-03.png",
+            "covered": true
+          }
+        ],
+        "provenance": {
+          "path": "design/visual-library/styles/product-showcase/provenance.md",
+          "exists": true,
+          "bytes": 1671
+        }
+      }
+    },
+    {
+      "id": "technical-editorial",
+      "status": "pass",
+      "packageStatus": "experimental",
+      "packageFile": "design/visual-library/styles/technical-editorial/style-package.json",
+      "packageDir": "design/visual-library/styles/technical-editorial",
+      "issueCount": 0,
+      "issues": [],
+      "missingEvidence": [],
+      "evidence": {
+        "strictPackageValidation": {
+          "state": "valid",
+          "errors": [],
+          "migrationGaps": []
+        },
+        "previewFrames": [
+          {
+            "index": 0,
+            "ref": "./artifacts/frames/scene-01.png",
+            "path": "design/visual-library/styles/technical-editorial/artifacts/frames/scene-01.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "8b88e2e3c6495a6d952b51d1929831278e40db6a51e77a4cf76f8004f2957586",
+            "fileBytes": 1342474
+          },
+          {
+            "index": 1,
+            "ref": "./artifacts/frames/scene-02.png",
+            "path": "design/visual-library/styles/technical-editorial/artifacts/frames/scene-02.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "82716feb006909f0e2844126c9b2ea65d261d182af8ae4a982e51a628dc7d65a",
+            "fileBytes": 1320441
+          },
+          {
+            "index": 2,
+            "ref": "./artifacts/frames/scene-03.png",
+            "path": "design/visual-library/styles/technical-editorial/artifacts/frames/scene-03.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "83a80e5dd2a564ddf2d57e98fd24db01d8348743c7b61ca09186be58382400af",
+            "fileBytes": 1315525
+          }
+        ],
+        "renderReport": {
+          "path": "design/visual-library/styles/technical-editorial/artifacts/render-report.json",
+          "exists": true,
+          "frameEvidenceCount": 3,
+          "checks": [
+            "sha256",
+            "dimensions",
+            "repeat-render-sha256",
+            "signalstats-nonblank"
+          ]
+        },
+        "artifactManifestCoverage": [
+          {
+            "label": "style-package",
+            "path": "design/visual-library/styles/technical-editorial/style-package.json",
+            "covered": true
+          },
+          {
+            "label": "visual",
+            "path": "design/visual-library/styles/technical-editorial/visual.json",
+            "covered": true
+          },
+          {
+            "label": "tokens",
+            "path": "design/visual-library/styles/technical-editorial/tokens.json",
+            "covered": true
+          },
+          {
+            "label": "componentMap",
+            "path": "design/visual-library/styles/technical-editorial/component-map.json",
+            "covered": true
+          },
+          {
+            "label": "provenance",
+            "path": "design/visual-library/styles/technical-editorial/provenance.md",
+            "covered": true
+          },
+          {
+            "label": "artifactManifest",
+            "path": "design/visual-library/styles/technical-editorial/artifact-manifest.json",
+            "covered": true
+          },
+          {
+            "label": "renderReport",
+            "path": "design/visual-library/styles/technical-editorial/artifacts/render-report.json",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[0]",
+            "path": "design/visual-library/styles/technical-editorial/artifacts/frames/scene-01.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[1]",
+            "path": "design/visual-library/styles/technical-editorial/artifacts/frames/scene-02.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[2]",
+            "path": "design/visual-library/styles/technical-editorial/artifacts/frames/scene-03.png",
+            "covered": true
+          }
+        ],
+        "provenance": {
+          "path": "design/visual-library/styles/technical-editorial/provenance.md",
+          "exists": true,
+          "bytes": 2401
+        }
+      }
+    },
+    {
+      "id": "terminal-command-center",
+      "status": "pass",
+      "packageStatus": "experimental",
+      "packageFile": "design/visual-library/styles/terminal-command-center/style-package.json",
+      "packageDir": "design/visual-library/styles/terminal-command-center",
+      "issueCount": 0,
+      "issues": [],
+      "missingEvidence": [],
+      "evidence": {
+        "strictPackageValidation": {
+          "state": "valid",
+          "errors": [],
+          "migrationGaps": []
+        },
+        "previewFrames": [
+          {
+            "index": 0,
+            "ref": "./artifacts/frames/scene-01.png",
+            "path": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-01.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "4614c711bb85ab167a0bbbfdc4f295eba08bcb32dc59ebeda95da9559ff2fe6e",
+            "fileBytes": 456113
+          },
+          {
+            "index": 1,
+            "ref": "./artifacts/frames/scene-02.png",
+            "path": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-02.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "26d623a8d9d419a8e161d29069aae6c6d7550e08f969120df23ea9034111bb3d",
+            "fileBytes": 444634
+          },
+          {
+            "index": 2,
+            "ref": "./artifacts/frames/scene-03.png",
+            "path": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-03.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "542b184710a635561d1f88d6d296d0434cf7c931999323d26c4ab28d363f959d",
+            "fileBytes": 448132
+          },
+          {
+            "index": 3,
+            "ref": "./artifacts/frames/scene-04.png",
+            "path": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-04.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "a2cd7a7705fb072776b6a18c517daa905cdd5dbc184c39b978509efe9c360d3a",
+            "fileBytes": 444602
+          }
+        ],
+        "renderReport": {
+          "path": "design/visual-library/styles/terminal-command-center/artifacts/validation-render-report.json",
+          "exists": true,
+          "frameEvidenceCount": 4,
+          "checks": [
+            "persisted-png-sha256",
+            "1080x1920-dimensions",
+            "signalstats-nonblank",
+            "determinism-limitation-no-repeat-render-script-found"
+          ]
+        },
+        "artifactManifestCoverage": [
+          {
+            "label": "style-package",
+            "path": "design/visual-library/styles/terminal-command-center/style-package.json",
+            "covered": true
+          },
+          {
+            "label": "visual",
+            "path": "design/visual-library/styles/terminal-command-center/visual.json",
+            "covered": true
+          },
+          {
+            "label": "tokens",
+            "path": "design/visual-library/styles/terminal-command-center/tokens.json",
+            "covered": true
+          },
+          {
+            "label": "componentMap",
+            "path": "design/visual-library/styles/terminal-command-center/component-map.json",
+            "covered": true
+          },
+          {
+            "label": "provenance",
+            "path": "design/visual-library/styles/terminal-command-center/provenance.md",
+            "covered": true
+          },
+          {
+            "label": "artifactManifest",
+            "path": "design/visual-library/styles/terminal-command-center/artifact-manifest.json",
+            "covered": true
+          },
+          {
+            "label": "renderReport",
+            "path": "design/visual-library/styles/terminal-command-center/artifacts/validation-render-report.json",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[0]",
+            "path": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-01.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[1]",
+            "path": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-02.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[2]",
+            "path": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-03.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[3]",
+            "path": "design/visual-library/styles/terminal-command-center/artifacts/frames/scene-04.png",
+            "covered": true
+          }
+        ],
+        "provenance": {
+          "path": "design/visual-library/styles/terminal-command-center/provenance.md",
+          "exists": true,
+          "bytes": 2197
+        }
+      }
+    },
+    {
+      "id": "timeline-documentary",
+      "status": "pass",
+      "packageStatus": "experimental",
+      "packageFile": "design/visual-library/styles/timeline-documentary/style-package.json",
+      "packageDir": "design/visual-library/styles/timeline-documentary",
+      "issueCount": 0,
+      "issues": [],
+      "missingEvidence": [],
+      "evidence": {
+        "strictPackageValidation": {
+          "state": "valid",
+          "errors": [],
+          "migrationGaps": []
+        },
+        "previewFrames": [
+          {
+            "index": 0,
+            "ref": "./artifacts/frames/scene-01.png",
+            "path": "design/visual-library/styles/timeline-documentary/artifacts/frames/scene-01.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "48b9e884c4c0905d8ef3265b6748bb42991016a09d9ab4f0dd7064d045017fdc",
+            "fileBytes": 927068
+          },
+          {
+            "index": 1,
+            "ref": "./artifacts/frames/scene-02.png",
+            "path": "design/visual-library/styles/timeline-documentary/artifacts/frames/scene-02.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "e8a4e01bdd9d647527776daa0dd7f7e19e191b06127e505529bf0a0730e6e3ad",
+            "fileBytes": 946299
+          },
+          {
+            "index": 2,
+            "ref": "./artifacts/frames/scene-03.png",
+            "path": "design/visual-library/styles/timeline-documentary/artifacts/frames/scene-03.png",
+            "exists": true,
+            "isPng": true,
+            "dimensions": {
+              "width": 1080,
+              "height": 1920
+            },
+            "sha256": "d31e25e25434015df4d157de2e845b37f9aec3fb52a05a9497507014f0abf70a",
+            "fileBytes": 897703
+          }
+        ],
+        "renderReport": {
+          "path": "design/visual-library/styles/timeline-documentary/artifacts/render-report.json",
+          "exists": true,
+          "frameEvidenceCount": 3,
+          "checks": [
+            "sha256",
+            "dimensions",
+            "signalstats-nonblank",
+            "repeat-render-sha256"
+          ]
+        },
+        "artifactManifestCoverage": [
+          {
+            "label": "style-package",
+            "path": "design/visual-library/styles/timeline-documentary/style-package.json",
+            "covered": true
+          },
+          {
+            "label": "visual",
+            "path": "design/visual-library/styles/timeline-documentary/visual.json",
+            "covered": true
+          },
+          {
+            "label": "tokens",
+            "path": "design/visual-library/styles/timeline-documentary/tokens.json",
+            "covered": true
+          },
+          {
+            "label": "componentMap",
+            "path": "design/visual-library/styles/timeline-documentary/component-map.json",
+            "covered": true
+          },
+          {
+            "label": "provenance",
+            "path": "design/visual-library/styles/timeline-documentary/provenance.md",
+            "covered": true
+          },
+          {
+            "label": "artifactManifest",
+            "path": "design/visual-library/styles/timeline-documentary/artifact-manifest.json",
+            "covered": true
+          },
+          {
+            "label": "renderReport",
+            "path": "design/visual-library/styles/timeline-documentary/artifacts/render-report.json",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[0]",
+            "path": "design/visual-library/styles/timeline-documentary/artifacts/frames/scene-01.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[1]",
+            "path": "design/visual-library/styles/timeline-documentary/artifacts/frames/scene-02.png",
+            "covered": true
+          },
+          {
+            "label": "previewFrames[2]",
+            "path": "design/visual-library/styles/timeline-documentary/artifacts/frames/scene-03.png",
+            "covered": true
+          }
+        ],
+        "provenance": {
+          "path": "design/visual-library/styles/timeline-documentary/provenance.md",
+          "exists": true,
+          "bytes": 2244
+        }
+      }
+    }
+  ]
+}

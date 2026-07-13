@@ -33,10 +33,16 @@ for (const name of targets) {
   const startedAt = Date.now();
 
   await executeRenderJob(job, projectDir, outputPath, (state, message) => {
-    const progress = Number.isFinite(state.progress) ? `${Math.round(state.progress * 100)}%` : "n/a";
+    const progress = formatProgress(state.progress);
     console.log(`[render] ${name} ${state.status} ${progress} ${message}`);
   });
 
   const elapsedMs = Date.now() - startedAt;
   console.log(`[render] done ${name} -> ${outputPath} (${elapsedMs}ms)`);
+}
+
+function formatProgress(value) {
+  if (!Number.isFinite(value)) return "n/a";
+  const percent = value <= 1 ? value * 100 : value;
+  return `${Math.round(percent)}%`;
 }

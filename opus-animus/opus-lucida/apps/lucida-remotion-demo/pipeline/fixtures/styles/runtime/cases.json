@@ -1,0 +1,403 @@
+{
+  "video": {
+    "title": "Runtime style dispatch fixtures",
+    "subtitle": "Wave 4 runtime integration",
+    "format": "vertical_9_16",
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "durationSec": 4,
+    "style": "runtime-fixture",
+    "language": "en",
+    "sourceBlocks": ["runtime-fixture"]
+  },
+  "theme": {
+    "name": "runtime-test",
+    "accent": "#65D8E8",
+    "accentSoft": "#D2B47A",
+    "background": "#0B0C0E",
+    "foreground": "#F4F0E8",
+    "muted": "#A7A39B",
+    "skin": "modern-terminal"
+  },
+  "cases": [
+    {
+      "name": "terminal_package_template_adapter",
+      "assets": [],
+      "scene": {
+        "id": "runtime-terminal",
+        "intent": "code_explanation",
+        "templateId": "code-panel",
+        "visualFamily": "terminal-command-center",
+        "templateRole": "scene",
+        "durationSec": 4,
+        "headline": "Trace the runtime command",
+        "subtitle": {
+          "text": "A package-backed terminal scene keeps template compatibility."
+        },
+        "content": {
+          "kicker": "Runtime",
+          "title": "Trace the runtime command",
+          "subtitle": "The terminal package remains template-backed for the MVP adapter.",
+          "codeTitle": "runtime",
+          "lines": ["npm run validate", "runtime selection passed"],
+          "highlights": [1],
+          "footer": "terminal-command-center"
+        },
+        "style": {
+          "density": "medium",
+          "safeArea": "tiktok"
+        },
+        "motion": ["terminal_reveal"],
+        "backgroundEffect": "matrix-rain",
+        "transitionIn": "cross-dissolve",
+        "transitionOut": "cross-dissolve",
+        "subtitleMode": "bar",
+        "reason": "Runtime terminal fixture."
+      },
+      "expected": {
+        "selectedFamily": "terminal-command-center",
+        "rendererKind": "template-adapter",
+        "templateId": "code-panel"
+      }
+    },
+    {
+      "name": "narrative_minimal_family_renderer",
+      "assets": [],
+      "scene": {
+        "id": "runtime-narrative",
+        "intent": "process",
+        "templateId": "animated-list",
+        "visualFamily": "minimal-education",
+        "templateRole": "scene",
+        "durationSec": 4,
+        "headline": "Teach the runtime path in three steps",
+        "subtitle": {
+          "text": "Narrative scenes can opt into a production family."
+        },
+        "content": {
+          "kicker": "Narrative",
+          "title": "Teach the runtime path in three steps",
+          "subtitle": "A concise teaching scene maps to the Minimal Education family.",
+          "steps": [
+            {
+              "number": "01",
+              "title": "Read the scene contract",
+              "body": "Keep legacy template data intact."
+            },
+            {
+              "number": "02",
+              "title": "Select the package",
+              "body": "Use visualFamily only when it is explicit."
+            },
+            {
+              "number": "03",
+              "title": "Render deterministically",
+              "body": "Expose the choice for QA."
+            }
+          ],
+          "footer": "minimal-education"
+        },
+        "style": {
+          "density": "medium",
+          "safeArea": "tiktok"
+        },
+        "motion": ["soft-educational-reveal"],
+        "backgroundEffect": "noise-grain",
+        "transitionIn": "cross-dissolve",
+        "transitionOut": "cross-dissolve",
+        "subtitleMode": "bar",
+        "reason": "Runtime narrative fixture."
+      },
+      "expected": {
+        "selectedFamily": "minimal-education",
+        "rendererKind": "family-renderer",
+        "familySceneKey": "steps",
+        "templateId": "animated-list"
+      }
+    },
+    {
+      "name": "dashboard_requires_numeric_data",
+      "assets": [],
+      "scene": {
+        "id": "runtime-dashboard",
+        "intent": "comparison",
+        "templateId": "progress-steps",
+        "visualFamily": "dashboard-data",
+        "templateRole": "scene",
+        "durationSec": 4,
+        "headline": "Runtime checks have explicit metrics",
+        "subtitle": {
+          "text": "Dashboard dispatch is allowed only with numeric data."
+        },
+        "content": {
+          "kicker": "Dashboard",
+          "title": "Runtime checks have explicit metrics",
+          "subtitle": "The dashboard family requires real structured numbers.",
+          "metrics": [
+            {
+              "label": "Cases",
+              "value": 7,
+              "unit": "",
+              "delta": "deterministic"
+            },
+            {
+              "label": "Rejected guards",
+              "value": 2,
+              "unit": "",
+              "delta": "expected"
+            }
+          ],
+          "footer": "dashboard-data"
+        },
+        "style": {
+          "density": "medium",
+          "safeArea": "tiktok"
+        },
+        "motion": ["counter-reveal"],
+        "backgroundEffect": "grid-pulse",
+        "transitionIn": "cross-dissolve",
+        "transitionOut": "cross-dissolve",
+        "subtitleMode": "bar",
+        "reason": "Runtime dashboard fixture."
+      },
+      "expected": {
+        "selectedFamily": "dashboard-data",
+        "rendererKind": "family-renderer",
+        "familySceneKey": "normal",
+        "templateId": "progress-steps",
+        "guard": {
+          "hasNumericData": true
+        }
+      }
+    },
+    {
+      "name": "asset_led_requires_embed_asset",
+      "assets": [
+        {
+          "id": "local-product-ui",
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='960'%3E%3Crect width='640' height='960' fill='%230B0C0E'/%3E%3Crect x='80' y='120' width='480' height='720' rx='28' fill='%23F4F0E8'/%3E%3C/svg%3E",
+          "kind": "image",
+          "usage": "embed_asset",
+          "alt": "Original local UI mockup"
+        }
+      ],
+      "scene": {
+        "id": "runtime-asset-led",
+        "intent": "use_case",
+        "templateId": "split-screen",
+        "visualFamily": "product-showcase",
+        "templateRole": "scene",
+        "durationSec": 4,
+        "headline": "Show the product asset first",
+        "subtitle": {
+          "text": "Asset-led dispatch requires an embeddable local asset."
+        },
+        "content": {
+          "kicker": "Asset-led",
+          "title": "Show the product asset first",
+          "subtitle": "The product family is selected because a local embed_asset is present.",
+          "items": [
+            {
+              "label": "Primary asset",
+              "title": "Original UI mockup",
+              "body": "Data URI fixture, no network request."
+            }
+          ],
+          "footer": "product-showcase"
+        },
+        "style": {
+          "density": "medium",
+          "safeArea": "tiktok"
+        },
+        "motion": ["product-stage-reveal"],
+        "backgroundEffect": "noise-grain",
+        "transitionIn": "cross-dissolve",
+        "transitionOut": "cross-dissolve",
+        "subtitleMode": "bar",
+        "reason": "Runtime asset-led fixture."
+      },
+      "expected": {
+        "selectedFamily": "product-showcase",
+        "rendererKind": "family-renderer",
+        "familySceneKey": "normal",
+        "templateId": "split-screen",
+        "guard": {
+          "hasEmbeddableAsset": true
+        }
+      }
+    },
+    {
+      "name": "legacy_template_fallback_without_visual_family",
+      "assets": [],
+      "scene": {
+        "id": "runtime-legacy",
+        "intent": "list",
+        "templateId": "split-screen",
+        "templateRole": "scene",
+        "durationSec": 4,
+        "headline": "Legacy maps keep template dispatch",
+        "subtitle": {
+          "text": "No visualFamily means no package renderer is selected."
+        },
+        "content": {
+          "kicker": "Legacy",
+          "title": "Legacy maps keep template dispatch",
+          "subtitle": "Existing templateId-only scenes remain compatible.",
+          "items": [
+            {
+              "label": "Compatibility",
+              "title": "Use split-screen"
+            }
+          ],
+          "footer": "legacy-templateId"
+        },
+        "style": {
+          "density": "low",
+          "safeArea": "tiktok"
+        },
+        "motion": ["staggered_list"],
+        "backgroundEffect": "noise-grain",
+        "transitionIn": "cross-dissolve",
+        "transitionOut": "cross-dissolve",
+        "subtitleMode": "bar",
+        "reason": "Runtime legacy fallback fixture."
+      },
+      "expected": {
+        "selectedFamily": null,
+        "rendererKind": "template-adapter",
+        "templateId": "split-screen"
+      }
+    },
+    {
+      "name": "dashboard_rejects_text_only_scene",
+      "assets": [],
+      "scene": {
+        "id": "runtime-dashboard-rejected",
+        "intent": "comparison",
+        "templateId": "progress-steps",
+        "visualFamily": "dashboard-data",
+        "templateRole": "scene",
+        "durationSec": 4,
+        "headline": "Text-only dashboard request falls back",
+        "subtitle": {
+          "text": "Dashboard package must not invent metrics."
+        },
+        "content": {
+          "kicker": "Dashboard guard",
+          "title": "Text-only dashboard request falls back",
+          "subtitle": "There are labels but no numeric metric values.",
+          "items": [
+            {
+              "label": "Status",
+              "title": "No numbers provided"
+            }
+          ],
+          "footer": "guard"
+        },
+        "style": {
+          "density": "medium",
+          "safeArea": "tiktok"
+        },
+        "motion": ["counter-reveal"],
+        "backgroundEffect": "grid-pulse",
+        "transitionIn": "cross-dissolve",
+        "transitionOut": "cross-dissolve",
+        "subtitleMode": "bar",
+        "reason": "Runtime dashboard rejection fixture."
+      },
+      "expected": {
+        "selectedFamily": null,
+        "rendererKind": "template-adapter",
+        "templateId": "progress-steps",
+        "rejectionCode": "requires-numeric-data"
+      }
+    },
+    {
+      "name": "asset_led_rejects_non_embed_asset",
+      "assets": [
+        {
+          "id": "style-reference-only",
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E",
+          "kind": "image",
+          "usage": "style_reference",
+          "alt": "Reference only"
+        }
+      ],
+      "scene": {
+        "id": "runtime-asset-rejected",
+        "intent": "use_case",
+        "templateId": "split-screen",
+        "visualFamily": "product-showcase",
+        "templateRole": "scene",
+        "durationSec": 4,
+        "headline": "Style reference cannot drive asset-led render",
+        "subtitle": {
+          "text": "Only embed_asset may unlock asset-led packages."
+        },
+        "content": {
+          "kicker": "Asset guard",
+          "title": "Style reference cannot drive asset-led render",
+          "subtitle": "The runtime falls back to the legacy template.",
+          "footer": "guard"
+        },
+        "style": {
+          "density": "medium",
+          "safeArea": "tiktok"
+        },
+        "motion": ["product-stage-reveal"],
+        "backgroundEffect": "noise-grain",
+        "transitionIn": "cross-dissolve",
+        "transitionOut": "cross-dissolve",
+        "subtitleMode": "bar",
+        "reason": "Runtime asset-led rejection fixture."
+      },
+      "expected": {
+        "selectedFamily": null,
+        "rendererKind": "template-adapter",
+        "templateId": "split-screen",
+        "rejectionCode": "requires-embeddable-asset"
+      }
+    },
+    {
+      "name": "unknown_visual_family_keeps_template_id",
+      "assets": [],
+      "scene": {
+        "id": "runtime-unknown-family",
+        "intent": "quote",
+        "templateId": "quote-card",
+        "visualFamily": "generic-diagram",
+        "templateRole": "scene",
+        "durationSec": 4,
+        "headline": "Unknown family does not become a diagram",
+        "subtitle": {
+          "text": "Fallback keeps the requested legacy templateId."
+        },
+        "content": {
+          "kicker": "No silent fallback",
+          "title": "Unknown family does not become a diagram",
+          "quote": "Keep the contract visible.",
+          "attribution": "Runtime test",
+          "footer": "quote-card"
+        },
+        "style": {
+          "density": "low",
+          "safeArea": "tiktok"
+        },
+        "motion": ["title_reveal"],
+        "backgroundEffect": "noise-grain",
+        "transitionIn": "cross-dissolve",
+        "transitionOut": "cross-dissolve",
+        "subtitleMode": "bar",
+        "reason": "Runtime unknown family fixture."
+      },
+      "expected": {
+        "selectedFamily": null,
+        "rendererKind": "template-adapter",
+        "templateId": "quote-card",
+        "rejectionCode": "unknown-visual-family",
+        "notTemplateId": "diagram"
+      }
+    }
+  ]
+}
