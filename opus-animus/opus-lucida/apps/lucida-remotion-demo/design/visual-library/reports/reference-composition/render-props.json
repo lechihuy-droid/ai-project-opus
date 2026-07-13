@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "lucida-all-style-reference-render/v1",
+  "entryPoint": "src/styles/reference/render-entry.tsx",
+  "compositionId": "AllStyleReferenceComposition",
+  "sourceFixture": "pipeline/fixtures/styles/all-style-reference/reference-composition.fixture.json",
+  "outputDir": "design/visual-library/reports/reference-composition",
+  "framesDir": "design/visual-library/reports/reference-composition/frames",
+  "reportPath": "design/visual-library/reports/reference-composition/render-report.json",
+  "htmlReportPath": "design/visual-library/reports/reference-composition/reference-composition-report.html",
+  "imageFormat": "png",
+  "renderMedia": false,
+  "networkAssets": false,
+  "registeredInAppRoot": false,
+  "qualityChecks": [
+    "duration-45-to-60-seconds",
+    "dimensions-1080x1920",
+    "exactly-four-production-families",
+    "dominant-family-share-at-least-0.5",
+    "dominant-family-open-and-outro-return",
+    "repeat-render-sha256",
+    "signalstats-nonblank",
+    "png-stills-only"
+  ],
+  "stillFrames": [
+    {
+      "id": "01-opening-system-map",
+      "sequenceId": "opening-system-map",
+      "frame": 180,
+      "output": "frames/01-opening-system-map.png"
+    },
+    {
+      "id": "02-chapter-reset",
+      "sequenceId": "chapter-reset",
+      "frame": 465,
+      "output": "frames/02-chapter-reset.png"
+    },
+    {
+      "id": "03-dominant-synthesis",
+      "sequenceId": "dominant-synthesis",
+      "frame": 705,
+      "output": "frames/03-dominant-synthesis.png"
+    },
+    {
+      "id": "04-metric-proof",
+      "sequenceId": "metric-proof",
+      "frame": 960,
+      "output": "frames/04-metric-proof.png"
+    },
+    {
+      "id": "05-product-surface",
+      "sequenceId": "product-surface",
+      "frame": 1200,
+      "output": "frames/05-product-surface.png"
+    },
+    {
+      "id": "06-outro-decision-return",
+      "sequenceId": "outro-decision-return",
+      "frame": 1470,
+      "output": "frames/06-outro-decision-return.png"
+    }
+  ]
+}

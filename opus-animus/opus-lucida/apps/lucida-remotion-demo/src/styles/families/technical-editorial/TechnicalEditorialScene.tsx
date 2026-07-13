@@ -40,6 +40,13 @@ const drawText = (style: CSSProperties): CSSProperties => ({
   ...style,
 });
 
+const drawCodeText = (style: CSSProperties): CSSProperties => ({
+  whiteSpace: "pre-wrap",
+  overflowWrap: "break-word",
+  wordBreak: "normal",
+  ...style,
+});
+
 const RuleMatrix = () => {
   const gridColor = withAlpha(technicalEditorialTokens.color.textStrong, 0.045);
   const ruleColor = withAlpha(technicalEditorialTokens.color.accent, 0.09);
@@ -118,16 +125,23 @@ const AnnotationCard = ({
   index,
   frame,
   motionPolicy,
+  compact = false,
 }: {
   annotation: TechnicalEditorialAnnotation;
   index: number;
   frame: number;
   motionPolicy: TechnicalEditorialFixture["motionPolicy"];
+  compact?: boolean;
 }) => {
   const palette = resolveTonePalette(
     technicalEditorialTokens,
     annotation.tone ?? "neutral",
   );
+  const labelSize = compact
+    ? 15
+    : technicalEditorialTokens.typography.label.fontSize;
+  const valueSize = compact ? 18 : 22;
+  const noteSize = compact ? 13 : 15;
 
   return (
     <div
@@ -143,7 +157,7 @@ const AnnotationCard = ({
           },
           3,
         ),
-        paddingBottom: 16,
+        paddingBottom: compact ? 8 : 12,
         borderBottom: `1px solid ${withAlpha(palette.border, 0.72)}`,
       }}
     >
@@ -151,7 +165,7 @@ const AnnotationCard = ({
         style={{
           color: palette.accent,
           fontFamily: technicalEditorialTokens.typography.label.fontFamily,
-          fontSize: technicalEditorialTokens.typography.label.fontSize,
+          fontSize: labelSize,
           lineHeight: technicalEditorialTokens.typography.label.lineHeight,
           fontWeight: technicalEditorialTokens.typography.label.fontWeight,
         }}
@@ -160,11 +174,11 @@ const AnnotationCard = ({
       </div>
       <div
         style={drawText({
-          marginTop: 10,
+          marginTop: compact ? 7 : 10,
           color: palette.text,
           fontFamily: technicalEditorialTokens.typography.title.fontFamily,
-          fontSize: 26,
-          lineHeight: 1.18,
+          fontSize: valueSize,
+          lineHeight: compact ? 1.14 : 1.18,
           fontWeight: 760,
         })}
       >
@@ -173,11 +187,11 @@ const AnnotationCard = ({
       {annotation.note ? (
         <div
           style={drawText({
-            marginTop: 8,
+            marginTop: compact ? 6 : 8,
             color: palette.mutedText,
             fontFamily: technicalEditorialTokens.typography.caption.fontFamily,
-            fontSize: technicalEditorialTokens.typography.caption.fontSize,
-            lineHeight: technicalEditorialTokens.typography.caption.lineHeight,
+            fontSize: noteSize,
+            lineHeight: compact ? 1.16 : 1.2,
             fontWeight: technicalEditorialTokens.typography.caption.fontWeight,
           })}
         >
@@ -220,16 +234,16 @@ const MetricCard = ({
           },
           4,
         ),
-        padding: technicalEditorialTokens.spacing.md,
+        padding: 16,
         borderRadius: technicalEditorialTokens.radius.md,
-        minHeight: 144,
+        minHeight: 132,
       }}
     >
       <div
         style={{
           color: palette.mutedText,
           fontFamily: technicalEditorialTokens.typography.label.fontFamily,
-          fontSize: 16,
+          fontSize: 15,
           lineHeight: 1.16,
           fontWeight: 760,
         }}
@@ -241,7 +255,7 @@ const MetricCard = ({
           marginTop: 14,
           color: palette.text,
           fontFamily: technicalEditorialTokens.typography.headline.fontFamily,
-          fontSize: 34,
+          fontSize: 30,
           lineHeight: 1.08,
           fontWeight: 820,
         }}
@@ -253,8 +267,8 @@ const MetricCard = ({
           marginTop: 10,
           color: palette.mutedText,
           fontFamily: technicalEditorialTokens.typography.caption.fontFamily,
-          fontSize: technicalEditorialTokens.typography.caption.fontSize,
-          lineHeight: technicalEditorialTokens.typography.caption.lineHeight,
+          fontSize: 15,
+          lineHeight: 1.18,
           fontWeight: technicalEditorialTokens.typography.caption.fontWeight,
         })}
       >
@@ -284,6 +298,7 @@ const DiagramPanel = ({
     ].join(", "),
     backgroundSize: "auto, 88px 88px, 88px 88px",
     border: `1px solid ${technicalEditorialTokens.color.rule}`,
+    overflow: "hidden",
   };
 
   return (
@@ -294,7 +309,10 @@ const DiagramPanel = ({
           marginTop: 16,
           color: technicalEditorialTokens.color.textStrong,
           fontFamily: technicalEditorialTokens.typography.title.fontFamily,
-          fontSize: technicalEditorialTokens.typography.title.fontSize,
+          fontSize:
+            fixture.density === "dense"
+              ? 30
+              : technicalEditorialTokens.typography.title.fontSize,
           lineHeight: technicalEditorialTokens.typography.title.lineHeight,
           fontWeight: technicalEditorialTokens.typography.title.fontWeight,
           maxWidth: 440,
@@ -318,85 +336,50 @@ const DiagramPanel = ({
       <div
         style={{
           position: "absolute",
-          left: 54,
-          right: 54,
-          top: 170,
-          bottom: 52,
+          left: 32,
+          right: 32,
+          top: 272,
+          bottom: 28,
+          display: "grid",
+          gridTemplateRows: `repeat(${fixture.diagram.nodes.length}, minmax(0, 1fr))`,
+          gap: 14,
         }}
       >
         {fixture.diagram.nodes.map((node, index) => {
           const tone = node.tone ?? "neutral";
           const palette = resolveTonePalette(technicalEditorialTokens, tone);
-          const top = 38 + index * 150;
-          const left = index % 2 === 0 ? 24 : 124;
 
           return (
-            <div key={node.label}>
-              {index < fixture.diagram.connectors.length ? (
-                <div
-                  style={{
-                    ...buildStaggeredEntrance(
-                      index,
-                      {
-                        frame,
-                        durationInFrames:
-                          technicalEditorialTokens.motion.normalFrames + 4,
-                        preset: "clip-up",
-                        policy: fixture.motionPolicy,
-                      },
-                      4,
-                    ),
-                    position: "absolute",
-                    left: left + 144,
-                    top: top + 92,
-                    width: 140,
-                    height: 64,
-                    borderLeft: `2px solid ${withAlpha(
-                      technicalEditorialTokens.color.accent,
-                      0.55,
-                    )}`,
-                    borderBottom: `2px solid ${withAlpha(
-                      technicalEditorialTokens.color.accent,
-                      0.55,
-                    )}`,
-                  }}
-                >
-                  <div
-                    style={{
-                      position: "absolute",
-                      right: -112,
-                      bottom: -12,
-                      width: 108,
-                      color: technicalEditorialTokens.color.textSoft,
-                      fontFamily: technicalEditorialTokens.typography.caption.fontFamily,
-                      fontSize: 15,
-                      lineHeight: 1.2,
-                      fontWeight: 620,
-                    }}
-                  >
-                    {fixture.diagram.connectors[index]}
-                  </div>
-                </div>
-              ) : null}
+            <div
+              key={node.label}
+              style={{
+                display: "grid",
+                gridTemplateColumns:
+                  index < fixture.diagram.connectors.length
+                    ? "minmax(0, 1fr) 92px"
+                    : "minmax(0, 1fr)",
+                gap: 12,
+                alignItems: "center",
+              }}
+            >
               <div
                 style={{
                   ...buildStaggeredEntrance(
                     index,
                     {
                       frame,
-                      durationInFrames: technicalEditorialTokens.motion.normalFrames,
+                      durationInFrames:
+                        technicalEditorialTokens.motion.normalFrames,
                       preset: "fade-up",
                       distance: technicalEditorialTokens.motion.distanceMd,
                       policy: fixture.motionPolicy,
                     },
                     5,
                   ),
-                  position: "absolute",
-                  left,
-                  top,
-                  width: 308,
-                  minHeight: 118,
-                  padding: 20,
+                  position: "relative",
+                  minWidth: 0,
+                  height: "100%",
+                  padding: 12,
                   borderRadius: technicalEditorialTokens.radius.md,
                   border: `1px solid ${withAlpha(palette.border, 0.84)}`,
                   background: [
@@ -404,12 +387,14 @@ const DiagramPanel = ({
                     `linear-gradient(90deg, ${withAlpha(palette.accent, 0.18)} 0, transparent 70%)`,
                   ].join(", "),
                   boxShadow: technicalEditorialTokens.surface.shadowBase,
+                  overflow: "hidden",
                 }}
               >
                 <div
                   style={{
                     color: palette.accent,
-                    fontFamily: technicalEditorialTokens.typography.label.fontFamily,
+                    fontFamily:
+                      technicalEditorialTokens.typography.label.fontFamily,
                     fontSize: 15,
                     lineHeight: 1.16,
                     fontWeight: 760,
@@ -421,8 +406,9 @@ const DiagramPanel = ({
                   style={drawText({
                     marginTop: 10,
                     color: palette.text,
-                    fontFamily: technicalEditorialTokens.typography.title.fontFamily,
-                    fontSize: 24,
+                    fontFamily:
+                      technicalEditorialTokens.typography.title.fontFamily,
+                    fontSize: 19,
                     lineHeight: 1.16,
                     fontWeight: 780,
                   })}
@@ -433,15 +419,36 @@ const DiagramPanel = ({
                   style={drawText({
                     marginTop: 8,
                     color: palette.mutedText,
-                    fontFamily: technicalEditorialTokens.typography.caption.fontFamily,
-                    fontSize: technicalEditorialTokens.typography.caption.fontSize,
-                    lineHeight: 1.28,
-                    fontWeight: technicalEditorialTokens.typography.caption.fontWeight,
+                    fontFamily:
+                      technicalEditorialTokens.typography.caption.fontFamily,
+                    fontSize: 14,
+                    lineHeight: 1.18,
+                    fontWeight:
+                      technicalEditorialTokens.typography.caption.fontWeight,
                   })}
                 >
                   {node.detail}
                 </div>
               </div>
+              {index < fixture.diagram.connectors.length ? (
+                <div
+                  style={drawText({
+                    color: technicalEditorialTokens.color.textSoft,
+                    fontFamily:
+                      technicalEditorialTokens.typography.caption.fontFamily,
+                    fontSize: 13,
+                    lineHeight: 1.18,
+                    fontWeight: 620,
+                    borderTop: `2px solid ${withAlpha(
+                      technicalEditorialTokens.color.accent,
+                      0.55,
+                    )}`,
+                    paddingTop: 8,
+                  })}
+                >
+                  {fixture.diagram.connectors[index]}
+                </div>
+              ) : null}
             </div>
           );
         })}
@@ -478,9 +485,10 @@ const CodePanel = ({
     >
       <div
         style={{
-          display: "flex",
+          display: "grid",
+          gridTemplateColumns: "minmax(0, 1fr) auto",
           alignItems: "center",
-          justifyContent: "space-between",
+          columnGap: 12,
           padding: "16px 20px",
           borderBottom: `1px solid ${technicalEditorialTokens.color.rule}`,
         }}
@@ -489,9 +497,12 @@ const CodePanel = ({
           style={{
             color: technicalEditorialTokens.color.textStrong,
             fontFamily: technicalEditorialTokens.typography.label.fontFamily,
-            fontSize: technicalEditorialTokens.typography.label.fontSize,
-            lineHeight: technicalEditorialTokens.typography.label.lineHeight,
+            fontSize: 16,
+            lineHeight: 1.14,
             fontWeight: technicalEditorialTokens.typography.label.fontWeight,
+            minWidth: 0,
+            overflowWrap: "break-word",
+            wordBreak: "normal",
           }}
         >
           {fixture.code.filename}
@@ -503,6 +514,7 @@ const CodePanel = ({
             fontSize: 15,
             lineHeight: 1.2,
             fontWeight: 620,
+            justifySelf: "end",
           }}
         >
           {fixture.code.language}
@@ -542,7 +554,8 @@ const CodePanel = ({
               <div
                 style={{
                   color: technicalEditorialTokens.color.textSoft,
-                  fontFamily: technicalEditorialTokens.typography.mono.fontFamily,
+                  fontFamily:
+                    technicalEditorialTokens.typography.mono.fontFamily,
                   fontSize: 15,
                   lineHeight: 1.4,
                   fontWeight: 600,
@@ -552,15 +565,18 @@ const CodePanel = ({
                 {String(index + 1).padStart(2, "0")}
               </div>
               <div
-                style={drawText({
+                style={drawCodeText({
                   color:
                     index === fixture.code.lines.length - 1
                       ? technicalEditorialTokens.color.accent
                       : technicalEditorialTokens.color.textMuted,
-                  fontFamily: technicalEditorialTokens.typography.mono.fontFamily,
-                  fontSize: technicalEditorialTokens.typography.mono.fontSize,
-                  lineHeight: technicalEditorialTokens.typography.mono.lineHeight,
-                  fontWeight: technicalEditorialTokens.typography.mono.fontWeight,
+                  fontFamily:
+                    technicalEditorialTokens.typography.mono.fontFamily,
+                  fontSize: 14,
+                  lineHeight:
+                    technicalEditorialTokens.typography.mono.lineHeight,
+                  fontWeight:
+                    technicalEditorialTokens.typography.mono.fontWeight,
                 })}
               >
                 {line}
@@ -615,7 +631,8 @@ const StepsPanel = ({
               index,
               {
                 frame,
-                durationInFrames: technicalEditorialTokens.motion.fastFrames + 8,
+                durationInFrames:
+                  technicalEditorialTokens.motion.fastFrames + 8,
                 preset: "fade-up",
                 distance: technicalEditorialTokens.motion.distanceSm,
                 policy: motionPolicy,
@@ -623,8 +640,8 @@ const StepsPanel = ({
               3,
             ),
             display: "grid",
-            gridTemplateColumns: "76px minmax(0, 1fr)",
-            gap: 14,
+            gridTemplateColumns: "32px minmax(0, 1fr)",
+            gap: 10,
             alignItems: "start",
             paddingTop: index === 0 ? 0 : 14,
             borderTop:
@@ -648,8 +665,9 @@ const StepsPanel = ({
             <div
               style={drawText({
                 color: technicalEditorialTokens.color.textStrong,
-                fontFamily: technicalEditorialTokens.typography.title.fontFamily,
-                fontSize: 22,
+                fontFamily:
+                  technicalEditorialTokens.typography.title.fontFamily,
+                fontSize: 19,
                 lineHeight: 1.16,
                 fontWeight: 760,
               })}
@@ -660,10 +678,12 @@ const StepsPanel = ({
               style={drawText({
                 marginTop: 6,
                 color: technicalEditorialTokens.color.textMuted,
-                fontFamily: technicalEditorialTokens.typography.caption.fontFamily,
+                fontFamily:
+                  technicalEditorialTokens.typography.caption.fontFamily,
                 fontSize: technicalEditorialTokens.typography.caption.fontSize,
                 lineHeight: 1.24,
-                fontWeight: technicalEditorialTokens.typography.caption.fontWeight,
+                fontWeight:
+                  technicalEditorialTokens.typography.caption.fontWeight,
               })}
             >
               {step.detail}
@@ -716,15 +736,15 @@ export const TechnicalEditorialScene = ({
     mainHeight,
   );
   const centerBox = makeBox(
-    spanColumns(columns, 3, 6).x,
+    spanColumns(columns, 3, 5).x,
     mainTop,
-    spanColumns(columns, 3, 6).width,
+    spanColumns(columns, 3, 5).width,
     mainHeight,
   );
   const rightBox = makeBox(
-    spanColumns(columns, 9, 3).x,
+    spanColumns(columns, 8, 4).x,
     mainTop,
-    spanColumns(columns, 9, 3).width,
+    spanColumns(columns, 8, 4).width,
     mainHeight,
   );
   const titleFit = fitTypographyToBox({
@@ -757,6 +777,7 @@ export const TechnicalEditorialScene = ({
       mass: 0.8,
     },
   });
+  const compactAnnotationRail = fixture.annotations.length > 3;
 
   return (
     <AbsoluteFill
@@ -798,10 +819,13 @@ export const TechnicalEditorialScene = ({
             <div
               style={{
                 color: technicalEditorialTokens.color.accent,
-                fontFamily: technicalEditorialTokens.typography.label.fontFamily,
+                fontFamily:
+                  technicalEditorialTokens.typography.label.fontFamily,
                 fontSize: technicalEditorialTokens.typography.label.fontSize,
-                lineHeight: technicalEditorialTokens.typography.label.lineHeight,
-                fontWeight: technicalEditorialTokens.typography.label.fontWeight,
+                lineHeight:
+                  technicalEditorialTokens.typography.label.lineHeight,
+                fontWeight:
+                  technicalEditorialTokens.typography.label.fontWeight,
               }}
             >
               {fixture.eyebrow}
@@ -832,7 +856,8 @@ export const TechnicalEditorialScene = ({
             <div
               style={{
                 color: technicalEditorialTokens.color.canvasRaised,
-                fontFamily: technicalEditorialTokens.typography.label.fontFamily,
+                fontFamily:
+                  technicalEditorialTokens.typography.label.fontFamily,
                 fontSize: 15,
                 lineHeight: 1.16,
                 fontWeight: 760,
@@ -844,7 +869,8 @@ export const TechnicalEditorialScene = ({
               style={{
                 marginTop: 8,
                 color: technicalEditorialTokens.color.canvas,
-                fontFamily: technicalEditorialTokens.typography.title.fontFamily,
+                fontFamily:
+                  technicalEditorialTokens.typography.title.fontFamily,
                 fontSize: 26,
                 lineHeight: 1.12,
                 fontWeight: 780,
@@ -888,10 +914,12 @@ export const TechnicalEditorialScene = ({
               style={drawText({
                 marginTop: 14,
                 color: technicalEditorialTokens.color.textMuted,
-                fontFamily: technicalEditorialTokens.typography.caption.fontFamily,
+                fontFamily:
+                  technicalEditorialTokens.typography.caption.fontFamily,
                 fontSize: technicalEditorialTokens.typography.caption.fontSize,
                 lineHeight: 1.3,
-                fontWeight: technicalEditorialTokens.typography.caption.fontWeight,
+                fontWeight:
+                  technicalEditorialTokens.typography.caption.fontWeight,
               })}
             >
               Grid, rules, annotations, and evidence surfaces stay explicit even
@@ -925,16 +953,16 @@ export const TechnicalEditorialScene = ({
             tokens={technicalEditorialTokens}
             elevation="raised"
             style={{
-              padding: technicalEditorialTokens.spacing.md,
+              padding: compactAnnotationRail ? 14 : 16,
               borderRadius: technicalEditorialTokens.radius.lg,
             }}
           >
             <SectionLabel>Annotation Rail</SectionLabel>
             <div
               style={{
-                marginTop: 18,
+                marginTop: compactAnnotationRail ? 14 : 18,
                 display: "grid",
-                gap: 16,
+                gap: compactAnnotationRail ? 8 : 12,
               }}
             >
               {fixture.annotations.map((annotation, index) => (
@@ -944,6 +972,7 @@ export const TechnicalEditorialScene = ({
                   index={index}
                   frame={frame}
                   motionPolicy={fixture.motionPolicy}
+                  compact={compactAnnotationRail}
                 />
               ))}
             </div>
@@ -951,7 +980,7 @@ export const TechnicalEditorialScene = ({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr",
+              gridTemplateColumns: "1fr",
               gap: 16,
             }}
           >
@@ -974,7 +1003,7 @@ export const TechnicalEditorialScene = ({
         <div
           style={{
             display: "grid",
-            gridTemplateRows: "1fr auto",
+            gridTemplateRows: "minmax(0, 0.48fr) minmax(0, 0.52fr)",
             gap: technicalEditorialTokens.spacing.lg,
             height: "100%",
           }}

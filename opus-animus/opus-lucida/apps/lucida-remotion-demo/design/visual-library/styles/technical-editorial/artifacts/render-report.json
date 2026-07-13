@@ -2,7 +2,7 @@
   "status": "ok",
   "packageId": "technical-editorial",
   "compositionId": "TechnicalEditorialFamilyReview",
-  "generatedAt": "2026-07-13T14:19:24.217Z",
+  "generatedAt": "2026-07-13T15:27:38.982Z",
   "renderer": {
     "tool": "@remotion/bundler + @remotion/renderer",
     "entryPoint": "src/styles/families/technical-editorial/renderRoot.tsx",
@@ -25,22 +25,22 @@
         "height": 1920
       },
       "durationInFrames": 90,
-      "sha256": "3a47e2d295fd1e0f8a9cc6adf2a27f5274d84d1ac3ce47d7df0643a7d1b4bfac",
-      "fileBytes": 1325659,
+      "sha256": "8b88e2e3c6495a6d952b51d1929831278e40db6a51e77a4cf76f8004f2957586",
+      "fileBytes": 1342474,
       "signalStats": {
-        "yAverage": 39.5767,
+        "yAverage": 39.1467,
         "yLow": 19,
-        "yHigh": 79,
-        "saturationAverage": 9.99296
+        "yHigh": 65,
+        "saturationAverage": 9.8539
       },
       "nonBlank": {
         "passed": true,
         "heuristic": "signalstats dynamic range or saturation threshold",
-        "dynamicRange": 60
+        "dynamicRange": 46
       },
       "deterministic": {
         "passed": true,
-        "repeatedSha256": "3a47e2d295fd1e0f8a9cc6adf2a27f5274d84d1ac3ce47d7df0643a7d1b4bfac"
+        "repeatedSha256": "8b88e2e3c6495a6d952b51d1929831278e40db6a51e77a4cf76f8004f2957586"
       }
     },
     {
@@ -53,22 +53,22 @@
         "height": 1920
       },
       "durationInFrames": 90,
-      "sha256": "4eac5995b2266795364cf3920df9f3c390209f75c2d9125ac8fdb11e6b610984",
-      "fileBytes": 1321873,
+      "sha256": "82716feb006909f0e2844126c9b2ea65d261d182af8ae4a982e51a628dc7d65a",
+      "fileBytes": 1320441,
       "signalStats": {
-        "yAverage": 40.5929,
+        "yAverage": 40.2896,
         "yLow": 19,
-        "yHigh": 81,
-        "saturationAverage": 9.772
+        "yHigh": 73,
+        "saturationAverage": 9.67683
       },
       "nonBlank": {
         "passed": true,
         "heuristic": "signalstats dynamic range or saturation threshold",
-        "dynamicRange": 62
+        "dynamicRange": 54
       },
       "deterministic": {
         "passed": true,
-        "repeatedSha256": "4eac5995b2266795364cf3920df9f3c390209f75c2d9125ac8fdb11e6b610984"
+        "repeatedSha256": "82716feb006909f0e2844126c9b2ea65d261d182af8ae4a982e51a628dc7d65a"
       }
     },
     {
@@ -81,22 +81,22 @@
         "height": 1920
       },
       "durationInFrames": 90,
-      "sha256": "e7e76453a0e883493d7d474723f216ec83f2724b74b8a12e732501549193a99e",
-      "fileBytes": 1306844,
+      "sha256": "83a80e5dd2a564ddf2d57e98fd24db01d8348743c7b61ca09186be58382400af",
+      "fileBytes": 1315525,
       "signalStats": {
-        "yAverage": 42.8364,
+        "yAverage": 41.8593,
         "yLow": 19,
-        "yHigh": 108,
-        "saturationAverage": 10.3292
+        "yHigh": 99,
+        "saturationAverage": 10.1107
       },
       "nonBlank": {
         "passed": true,
         "heuristic": "signalstats dynamic range or saturation threshold",
-        "dynamicRange": 89
+        "dynamicRange": 80
       },
       "deterministic": {
         "passed": true,
-        "repeatedSha256": "e7e76453a0e883493d7d474723f216ec83f2724b74b8a12e732501549193a99e"
+        "repeatedSha256": "83a80e5dd2a564ddf2d57e98fd24db01d8348743c7b61ca09186be58382400af"
       }
     }
   ],
@@ -107,8 +107,8 @@
     "dimensionsValid": true
   },
   "validation": {
-    "visualPackageValidatorStrict": "pending",
-    "typescriptNoEmit": "pending"
+    "visualPackageValidatorStrict": "passed",
+    "typescriptNoEmit": "passed"
   },
   "limitations": [
     "Shared registry availability placeholder remains unchanged because src/styles/registry.ts is outside the allowed ownership scope.",

@@ -84,6 +84,12 @@ node .\renderer\render-samples.mjs timeline terminal
 
 The launcher calls `@hyperframes/producer` directly and writes outputs into `output/`.
 
+### Render permissions
+
+Rendering launches Chrome Headless Shell and FFmpeg. In Codex sandboxed sessions this can fail with `spawn EPERM`; approve the render command escalation or run the command from a normal terminal.
+
+See `docs/RENDER_PERMISSIONS.md`.
+
 ## Add a new scene
 
 1. Copy one of the folders under `examples/` or `templates/`.
@@ -107,11 +113,36 @@ Scene JSON schema lives at:
 
 - `scene-schema/hyperframes.scene.schema.json`
 
+The first compiler lives at:
+
+- `renderer/scene-json-to-hyperframes.mjs`
+
+Compile the sample Scene JSON:
+
+```powershell
+cd C:\Users\HUY\workspace\ai-project-opus\hyperframes-workspace
+node .\renderer\scene-json-to-hyperframes.mjs `
+  --input .\scene-schema\examples\ai-engine-intro.json `
+  --output .\generated\ai-engine-intro
+```
+
+Render the generated composition:
+
+```powershell
+cd C:\Users\HUY\workspace\ai-project-opus\hyperframes-workspace
+node .\renderer\render-project.mjs `
+  --project .\generated\ai-engine-intro `
+  --output .\output\ai-engine-intro.mp4 `
+  --quality draft `
+  --workers 1
+```
+
 Target workflow:
 
 1. LLM generates scene JSON.
-2. A future converter in `renderer/` maps JSON to HyperFrames HTML composition files.
-3. Preview and render run on the generated composition.
+2. Validate it against `scene-schema/hyperframes.scene.schema.json`.
+3. Compile it with `renderer/scene-json-to-hyperframes.mjs`.
+4. Preview and render run on the generated composition.
 
 ## Development workflow
 

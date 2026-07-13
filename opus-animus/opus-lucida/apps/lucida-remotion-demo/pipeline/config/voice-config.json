@@ -1,0 +1,6 @@
+{
+  "voice": "default",
+  "style": "tu_nhien",
+  "chunkStrategy": "per-sentence",
+  "gapMs": 250
+}

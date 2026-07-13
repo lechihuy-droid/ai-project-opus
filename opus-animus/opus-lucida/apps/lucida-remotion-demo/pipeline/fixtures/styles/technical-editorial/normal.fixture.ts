@@ -4,7 +4,8 @@ export const technicalEditorialNormalFixture: TechnicalEditorialFixture = {
   key: "normal",
   sceneLabel: "Normal",
   eyebrow: "System Architecture / Explainer",
-  title: "Map a retrieval pipeline into visible stages, contracts, and review gates",
+  title:
+    "Map a retrieval pipeline into visible stages, contracts, and review gates",
   summary:
     "The frame uses one dominant grid, a central diagram, and narrow evidence rails so viewers can inspect both the overall flow and the exact operational notes without losing hierarchy.",
   density: "balanced",
@@ -39,7 +40,7 @@ export const technicalEditorialNormalFixture: TechnicalEditorialFixture = {
     {
       label: "Risk",
       value: "Low",
-      detail: "Deterministic copy and no external media dependency",
+      detail: "Deterministic copy; no external media dependency",
       tone: "success",
     },
   ],
@@ -51,26 +52,26 @@ export const technicalEditorialNormalFixture: TechnicalEditorialFixture = {
       {
         kicker: "01 / Input",
         label: "Collect reference evidence",
-        detail: "Research notes, schema rules, and fixture content are reduced to the concepts that actually matter on-screen.",
+        detail:
+          "Research notes, schema rules, and fixture content are reduced to the concepts that actually matter on-screen.",
         tone: "accent",
       },
       {
         kicker: "02 / Transform",
         label: "Resolve grid and annotation contract",
-        detail: "Shared layout, typography, and motion primitives shape the frame before any family-specific decoration appears.",
+        detail:
+          "Shared layout, typography, and motion primitives shape the frame before any family-specific decoration appears.",
         tone: "neutral",
       },
       {
         kicker: "03 / Output",
         label: "Render still review artifacts",
-        detail: "Preview PNGs and a machine-readable report prove that the family can be reviewed without a bespoke playback tool.",
+        detail:
+          "Preview PNGs and a machine-readable report prove that the family can be reviewed without a bespoke playback tool.",
         tone: "success",
       },
     ],
-    connectors: [
-      "normalize source",
-      "render + verify",
-    ],
+    connectors: ["normalize source", "render + verify"],
   },
   code: {
     filename: "technical-editorial.render.tsx",
@@ -86,17 +87,20 @@ export const technicalEditorialNormalFixture: TechnicalEditorialFixture = {
     {
       index: "A1",
       label: "Frame the claim",
-      detail: "Lead with one sentence that tells the viewer what system they are inspecting.",
+      detail:
+        "Lead with one sentence that tells the viewer what system they are inspecting.",
     },
     {
       index: "A2",
       label: "Show the structure",
-      detail: "Place the flow in the center and keep commentary in the side rails.",
+      detail:
+        "Place the flow in the center and keep commentary in the side rails.",
     },
     {
       index: "A3",
       label: "Attach evidence",
-      detail: "Use code and metric surfaces only for details that reinforce the main diagram.",
+      detail:
+        "Use code and metric surfaces only for details that reinforce the main diagram.",
     },
   ],
   footer: {

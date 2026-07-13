@@ -1,0 +1,29 @@
+{
+  "fixtureId": "density",
+  "cases": [
+    {
+      "id": "dense-list-falls-back-to-notebook",
+      "scene": {
+        "intent": "list",
+        "content": {
+          "headlineChars": 90,
+          "bodyChars": 500,
+          "bulletItems": 5,
+          "codeLines": 0,
+          "dataSeries": 0,
+          "assetClassifications": [],
+          "hasStructuredNumericData": false,
+          "datedEvents": 0,
+          "hasSourcedChronology": false
+        }
+      },
+      "expect": {
+        "selected": "paper-notebook",
+        "rejected": [
+          {"familyId": "minimal-education", "filterId": "text-density-capacity"},
+          {"familyId": "terminal-command-center", "filterId": "text-density-capacity"}
+        ]
+      }
+    }
+  ]
+}

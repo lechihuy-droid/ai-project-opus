@@ -1,0 +1,14 @@
+{
+  "provider": "vieneu",
+  "voice": "Minh Đức",
+  "style": "tu_nhien",
+  "durationMs": 6900,
+  "sampleRate": 48000,
+  "channels": 1,
+  "checksum": "sha256:3b97fa7977055ac17604c93d23bc36ddfa612abb1a7db6001b3e778130ec99bb",
+  "scriptId": "audio-pipeline-fixture",
+  "scriptRevision": 1,
+  "scriptChecksum": "sha256:6ee0bf7352d3f7e3bd85cd440bc39277138f70cee67c4e6ca9bc32af2ac361e3",
+  "chunkStrategy": "per-sentence",
+  "generatedAt": "2026-07-13T22:42:25.812Z"
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "audio-pipeline-fixture",
+  "revision": 1,
+  "status": "approved",
+  "language": "vi",
+  "content": {
+    "voiceoverText": "Xin chào, đây là Lucida. Âm thanh dẫn nhịp cho từng cảnh. Mỗi câu được khóa để giữ nguyên nội dung."
+  },
+  "sentences": [
+    {
+      "sentenceId": "sent-001",
+      "segmentId": "seg-001",
+      "order": 1,
+      "text": "Xin chào, đây là Lucida.",
+      "locked": true
+    },
+    {
+      "sentenceId": "sent-002",
+      "segmentId": "seg-002",
+      "order": 2,
+      "text": "Âm thanh dẫn nhịp cho từng cảnh.",
+      "locked": true
+    },
+    {
+      "sentenceId": "sent-003",
+      "segmentId": "seg-003",
+      "order": 3,
+      "text": "Mỗi câu được khóa để giữ nguyên nội dung.",
+      "locked": true
+    }
+  ]
+}

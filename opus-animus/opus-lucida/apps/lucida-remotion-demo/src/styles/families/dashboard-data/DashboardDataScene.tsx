@@ -27,10 +27,29 @@ import type {
   DashboardDataWatchItem,
 } from "./types";
 
-const headerHeight = 242;
-const kpiHeight = 230;
-const midHeight = 534;
-const panelGap = 24;
+const headerHeight = 238;
+const panelGap = 16;
+
+const layoutProfiles: Record<
+  DashboardDataFixtureKey,
+  {
+    kpiHeight: number;
+    midHeight: number;
+  }
+> = {
+  normal: {
+    kpiHeight: 350,
+    midHeight: 456,
+  },
+  dense: {
+    kpiHeight: 350,
+    midHeight: 420,
+  },
+  edge: {
+    kpiHeight: 326,
+    midHeight: 538,
+  },
+};
 
 const drawText = (style: CSSProperties): CSSProperties => ({
   whiteSpace: "pre-wrap",
@@ -38,7 +57,10 @@ const drawText = (style: CSSProperties): CSSProperties => ({
   ...style,
 });
 
-const panelStyle = (tone: "neutral" | "accent" = "neutral"): CSSProperties => {
+const panelStyle = (
+  tone: "neutral" | "accent" = "neutral",
+  padding = 20,
+): CSSProperties => {
   const accent =
     tone === "accent"
       ? withAlpha(dashboardDataTokens.color.accent, 0.1)
@@ -48,7 +70,7 @@ const panelStyle = (tone: "neutral" | "accent" = "neutral"): CSSProperties => {
     position: "relative",
     width: "100%",
     height: "100%",
-    padding: 24,
+    padding,
     borderRadius: dashboardDataTokens.radius.lg,
     border: `1px solid ${dashboardDataTokens.color.rule}`,
     background: [
@@ -119,7 +141,8 @@ const StatusChip = ({
   return (
     <div
       style={{
-        padding: "14px 16px",
+        minHeight: 70,
+        padding: "10px 12px",
         borderRadius: dashboardDataTokens.radius.md,
         border: `1px solid ${withAlpha(palette.border, 0.9)}`,
         background: withAlpha(palette.background, 0.96),
@@ -129,8 +152,8 @@ const StatusChip = ({
         style={{
           color: palette.mutedText,
           fontFamily: dashboardDataTokens.typography.label.fontFamily,
-          fontSize: 14,
-          lineHeight: 1.16,
+          fontSize: 11,
+          lineHeight: 1.12,
           fontWeight: 760,
         }}
       >
@@ -138,11 +161,11 @@ const StatusChip = ({
       </div>
       <div
         style={drawText({
-          marginTop: 8,
+          marginTop: 5,
           color: palette.text,
           fontFamily: dashboardDataTokens.typography.title.fontFamily,
-          fontSize: 21,
-          lineHeight: 1.18,
+          fontSize: 17,
+          lineHeight: 1.12,
           fontWeight: 760,
         })}
       >
@@ -176,14 +199,14 @@ const Sparkline = ({
         gridTemplateColumns: `repeat(${values.length}, minmax(0, 1fr))`,
         gap: 4,
         alignItems: "end",
-        height: 34,
+        height: 22,
       }}
     >
       {values.map((value, index) => (
         <div
           key={`${index}-${value}`}
           style={{
-            height: `${Math.max(6, (value / maxValue) * 34)}px`,
+            height: `${Math.max(4, (value / maxValue) * 22)}px`,
             borderRadius: 999,
             background: `linear-gradient(180deg, ${withAlpha(color, 0.92)}, ${withAlpha(color, 0.24)})`,
           }}
@@ -198,11 +221,13 @@ const PanelStateView = ({
   message,
   frame,
   policy,
+  mode = "stacked",
 }: {
   state: DashboardDataPanelState;
   message: DashboardDataStateMessage;
   frame: number;
   policy: DashboardDataFixture["motionPolicy"];
+  mode?: "stacked" | "kpi" | "compact";
 }) => {
   const tone =
     state === "error"
@@ -226,7 +251,7 @@ const PanelStateView = ({
           policy,
         }),
         display: "grid",
-        gap: 14,
+        gap: mode === "stacked" ? 14 : 10,
         height: "100%",
         alignContent: "start",
       }}
@@ -257,10 +282,10 @@ const PanelStateView = ({
         style={drawText({
           color: palette.text,
           fontFamily: dashboardDataTokens.typography.title.fontFamily,
-          fontSize: 26,
-          lineHeight: 1.18,
+          fontSize: mode === "stacked" ? 24 : 22,
+          lineHeight: 1.16,
           fontWeight: 760,
-          maxWidth: 520,
+          maxWidth: mode === "kpi" ? "100%" : 520,
         })}
       >
         {message.detail}
@@ -269,8 +294,10 @@ const PanelStateView = ({
         <div
           style={{
             display: "grid",
-            gap: 10,
-            marginTop: 6,
+            gridTemplateColumns:
+              mode === "kpi" ? "repeat(4, minmax(0, 1fr))" : undefined,
+            gap: mode === "kpi" ? 8 : 10,
+            marginTop: mode === "kpi" ? 4 : 6,
           }}
         >
           {placeholderLabels.map((label, index) => (
@@ -289,8 +316,8 @@ const PanelStateView = ({
                   2,
                 ),
                 display: "grid",
-                gap: 8,
-                padding: "12px 14px",
+                gap: mode === "kpi" ? 7 : 8,
+                padding: mode === "kpi" ? "10px 12px" : "12px 14px",
                 borderRadius: dashboardDataTokens.radius.md,
                 border: `1px solid ${withAlpha(palette.border, 0.7)}`,
                 background: withAlpha(palette.background, 0.76),
@@ -300,8 +327,14 @@ const PanelStateView = ({
                 style={{
                   color: palette.mutedText,
                   fontFamily: dashboardDataTokens.typography.caption.fontFamily,
-                  fontSize: dashboardDataTokens.typography.caption.fontSize,
-                  lineHeight: dashboardDataTokens.typography.caption.lineHeight,
+                  fontSize:
+                    mode === "kpi"
+                      ? 13
+                      : dashboardDataTokens.typography.caption.fontSize,
+                  lineHeight:
+                    mode === "kpi"
+                      ? 1.14
+                      : dashboardDataTokens.typography.caption.lineHeight,
                   fontWeight: dashboardDataTokens.typography.caption.fontWeight,
                 }}
               >
@@ -309,7 +342,7 @@ const PanelStateView = ({
               </div>
               <div
                 style={{
-                  height: 10,
+                  height: mode === "kpi" ? 8 : 10,
                   borderRadius: 999,
                   background: `linear-gradient(90deg, ${withAlpha(palette.accent, 0.3)} 0%, ${withAlpha(palette.accent, 0.08)} 100%)`,
                 }}
@@ -322,8 +355,8 @@ const PanelStateView = ({
         <div
           style={{
             display: "grid",
-            gap: 10,
-            marginTop: 4,
+            gap: mode === "stacked" ? 10 : 8,
+            marginTop: mode === "stacked" ? 4 : 2,
           }}
         >
           {message.lines.map((line, index) => (
@@ -343,10 +376,13 @@ const PanelStateView = ({
                 ),
                 color: palette.mutedText,
                 fontFamily: dashboardDataTokens.typography.caption.fontFamily,
-                fontSize: dashboardDataTokens.typography.caption.fontSize,
-                lineHeight: 1.34,
+                fontSize:
+                  mode === "stacked"
+                    ? dashboardDataTokens.typography.caption.fontSize
+                    : 14,
+                lineHeight: mode === "stacked" ? 1.32 : 1.24,
                 fontWeight: dashboardDataTokens.typography.caption.fontWeight,
-                paddingLeft: 14,
+                paddingLeft: mode === "stacked" ? 14 : 12,
                 borderLeft: `2px solid ${withAlpha(palette.accent, 0.52)}`,
               }}
             >
@@ -390,56 +426,66 @@ const KpiMetric = ({
           2,
         ),
         display: "grid",
-        gap: 10,
-        padding: "0 16px",
+        gridTemplateColumns: "64px minmax(0, 1fr) 62px",
+        gap: 8,
+        alignItems: "start",
+        minHeight: 82,
+        padding: "8px 12px",
+        borderTop:
+          index > 1 ? `1px solid ${dashboardDataTokens.color.rule}` : "none",
         borderLeft:
-          index === 0 ? "none" : `1px solid ${dashboardDataTokens.color.rule}`,
+          index % 2 === 0
+            ? "none"
+            : `1px solid ${dashboardDataTokens.color.rule}`,
       }}
     >
       <div
         style={{
-          color: palette.mutedText,
-          fontFamily: dashboardDataTokens.typography.label.fontFamily,
-          fontSize: 14,
-          lineHeight: 1.16,
-          fontWeight: 760,
-        }}
-      >
-        {metric.label}
-      </div>
-      <div
-        style={{
           color: palette.text,
           fontFamily: dashboardDataTokens.typography.headline.fontFamily,
-          fontSize: 34,
-          lineHeight: 1.06,
+          fontSize: 28,
+          lineHeight: 1,
           fontWeight: 820,
         }}
       >
         {metric.value}
       </div>
-      <div
-        style={drawText({
-          color: palette.accent,
-          fontFamily: dashboardDataTokens.typography.caption.fontFamily,
-          fontSize: dashboardDataTokens.typography.caption.fontSize,
-          lineHeight: 1.2,
-          fontWeight: 700,
-        })}
-      >
-        {metric.change}
-      </div>
-      <div
-        style={drawText({
-          color: palette.mutedText,
-          fontFamily: dashboardDataTokens.typography.caption.fontFamily,
-          fontSize: dashboardDataTokens.typography.caption.fontSize,
-          lineHeight: 1.28,
-          fontWeight: dashboardDataTokens.typography.caption.fontWeight,
-          minHeight: 58,
-        })}
-      >
-        {metric.detail}
+      <div>
+        <div
+          style={{
+            color: palette.mutedText,
+            fontFamily: dashboardDataTokens.typography.label.fontFamily,
+            fontSize: 12,
+            lineHeight: 1.08,
+            fontWeight: 760,
+          }}
+        >
+          {metric.label}
+        </div>
+        <div
+          style={drawText({
+            marginTop: 4,
+            color: palette.accent,
+            fontFamily: dashboardDataTokens.typography.caption.fontFamily,
+            fontSize: 12,
+            lineHeight: 1.12,
+            fontWeight: 700,
+          })}
+        >
+          {metric.change}
+        </div>
+        <div
+          style={drawText({
+            marginTop: 4,
+            color: palette.mutedText,
+            fontFamily: dashboardDataTokens.typography.caption.fontFamily,
+            fontSize: 12,
+            lineHeight: 1.12,
+            fontWeight: dashboardDataTokens.typography.caption.fontWeight,
+          })}
+        >
+          {metric.detail}
+        </div>
       </div>
       {metric.sparkline && metric.sparkline.length > 1 ? (
         <Sparkline values={metric.sparkline} tone={metric.tone} />
@@ -468,7 +514,13 @@ const KpiPanel = ({
       policy: fixture.motionPolicy,
     })}
   >
-    <div style={panelStyle("accent")}>
+    <div
+      style={{
+        ...panelStyle("accent"),
+        display: "grid",
+        gridTemplateRows: "auto minmax(0, 1fr)",
+      }}
+    >
       <div
         style={{
           display: "flex",
@@ -481,11 +533,11 @@ const KpiPanel = ({
           <SectionEyebrow>Topline KPIs</SectionEyebrow>
           <div
             style={drawText({
-              marginTop: 14,
+              marginTop: 10,
               color: dashboardDataTokens.color.textStrong,
               fontFamily: dashboardDataTokens.typography.title.fontFamily,
-              fontSize: dashboardDataTokens.typography.title.fontSize,
-              lineHeight: dashboardDataTokens.typography.title.lineHeight,
+              fontSize: 26,
+              lineHeight: 1.12,
               fontWeight: dashboardDataTokens.typography.title.fontWeight,
             })}
           >
@@ -493,13 +545,13 @@ const KpiPanel = ({
           </div>
           <div
             style={drawText({
-              marginTop: 8,
+              marginTop: 6,
               color: dashboardDataTokens.color.textMuted,
               fontFamily: dashboardDataTokens.typography.caption.fontFamily,
-              fontSize: dashboardDataTokens.typography.caption.fontSize,
-              lineHeight: 1.3,
+              fontSize: 14,
+              lineHeight: 1.22,
               fontWeight: dashboardDataTokens.typography.caption.fontWeight,
-              maxWidth: 560,
+              maxWidth: 680,
             })}
           >
             {fixture.kpis.subtitle}
@@ -509,10 +561,11 @@ const KpiPanel = ({
           style={{
             color: dashboardDataTokens.color.textSoft,
             fontFamily: dashboardDataTokens.typography.caption.fontFamily,
-            fontSize: dashboardDataTokens.typography.caption.fontSize,
-            lineHeight: dashboardDataTokens.typography.caption.lineHeight,
+            fontSize: 13,
+            lineHeight: 1.18,
             fontWeight: dashboardDataTokens.typography.caption.fontWeight,
             textAlign: "right",
+            maxWidth: 210,
           }}
         >
           {fixture.timestampLabel}
@@ -520,17 +573,17 @@ const KpiPanel = ({
       </div>
       <div
         style={{
-          marginTop: 20,
-          paddingTop: 18,
+          marginTop: 14,
+          paddingTop: 12,
           borderTop: `1px solid ${dashboardDataTokens.color.rule}`,
-          height: 122,
+          minHeight: 0,
         }}
       >
         {fixture.kpis.state === "ready" ? (
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
               gap: 0,
             }}
           >
@@ -550,6 +603,7 @@ const KpiPanel = ({
             message={fixture.kpis.stateMessage}
             frame={frame}
             policy={fixture.motionPolicy}
+            mode="kpi"
           />
         ) : null}
       </div>
@@ -578,15 +632,18 @@ const ChartBars = ({
     ...chart.points.flatMap((point) => [point.primary, point.secondary ?? 0]),
     1,
   );
+  const plotHeight = chart.points.length > 8 ? 140 : 154;
+  const labelHeight = 22;
+  const chartHeight = plotHeight + labelHeight;
 
   return (
     <div
       style={{
         display: "grid",
         gridTemplateColumns: "54px minmax(0, 1fr)",
-        gap: 18,
-        height: 100,
-        marginTop: 18,
+        gap: 16,
+        height: chartHeight,
+        marginTop: 16,
       }}
     >
       <div
@@ -598,8 +655,9 @@ const ChartBars = ({
           fontSize: 13,
           lineHeight: 1.1,
           fontWeight: 700,
-          paddingTop: 6,
-          paddingBottom: 26,
+          height: plotHeight,
+          paddingTop: 2,
+          paddingBottom: 4,
         }}
       >
         {chart.yAxisLabels.map((label) => (
@@ -611,13 +669,13 @@ const ChartBars = ({
           position: "relative",
           borderLeft: `1px solid ${dashboardDataTokens.color.rule}`,
           borderBottom: `1px solid ${dashboardDataTokens.color.rule}`,
-          padding: "8px 10px 0 18px",
+          padding: "0 10px 0 18px",
         }}
       >
         <div
           style={{
             position: "absolute",
-            inset: "8px 0 26px 18px",
+            inset: `0 0 ${labelHeight}px 18px`,
             display: "grid",
             gridTemplateRows: "repeat(4, minmax(0, 1fr))",
             pointerEvents: "none",
@@ -638,19 +696,22 @@ const ChartBars = ({
         <div
           style={{
             position: "absolute",
-            inset: "8px 0 26px 18px",
+            inset: "0 0 0 18px",
             display: "grid",
             gridTemplateColumns: `repeat(${chart.points.length}, minmax(0, 1fr))`,
-            gap: 10,
+            gap: chart.points.length > 8 ? 7 : 10,
             alignItems: "end",
           }}
         >
           {chart.points.map((point, index) => {
-            const primaryHeight = Math.max(8, (point.primary / maxValue) * 236);
+            const primaryHeight = Math.max(
+              8,
+              (point.primary / maxValue) * plotHeight,
+            );
             const secondaryValue = point.secondary ?? 0;
             const secondaryHeight =
               secondaryValue > 0
-                ? Math.max(8, (secondaryValue / maxValue) * 236)
+                ? Math.max(8, (secondaryValue / maxValue) * plotHeight)
                 : 0;
 
             return (
@@ -670,8 +731,8 @@ const ChartBars = ({
                     1,
                   ),
                   display: "grid",
-                  gridTemplateRows: "1fr auto",
-                  gap: 10,
+                  gridTemplateRows: `${plotHeight}px ${labelHeight}px`,
+                  gap: 0,
                   alignSelf: "stretch",
                 }}
               >
@@ -682,7 +743,7 @@ const ChartBars = ({
                       secondaryValue > 0 ? "1fr 1fr" : "1fr",
                     gap: 6,
                     alignItems: "end",
-                    height: 236,
+                    height: plotHeight,
                   }}
                 >
                   <div
@@ -707,7 +768,7 @@ const ChartBars = ({
                     color: dashboardDataTokens.color.textSoft,
                     fontFamily: dashboardDataTokens.typography.caption.fontFamily,
                     fontSize: 13,
-                    lineHeight: 1.1,
+                    lineHeight: `${labelHeight}px`,
                     fontWeight: 700,
                     textAlign: "center",
                   }}
@@ -756,11 +817,11 @@ const ChartPanel = ({
           <SectionEyebrow tone="success">Trend View</SectionEyebrow>
           <div
             style={drawText({
-              marginTop: 14,
+              marginTop: 10,
               color: dashboardDataTokens.color.textStrong,
               fontFamily: dashboardDataTokens.typography.title.fontFamily,
-              fontSize: dashboardDataTokens.typography.title.fontSize,
-              lineHeight: dashboardDataTokens.typography.title.lineHeight,
+              fontSize: 26,
+              lineHeight: 1.12,
               fontWeight: dashboardDataTokens.typography.title.fontWeight,
             })}
           >
@@ -768,11 +829,11 @@ const ChartPanel = ({
           </div>
           <div
             style={drawText({
-              marginTop: 8,
+              marginTop: 6,
               color: dashboardDataTokens.color.textMuted,
               fontFamily: dashboardDataTokens.typography.caption.fontFamily,
-              fontSize: dashboardDataTokens.typography.caption.fontSize,
-              lineHeight: 1.32,
+              fontSize: 14,
+              lineHeight: 1.24,
               fontWeight: dashboardDataTokens.typography.caption.fontWeight,
               maxWidth: 470,
             })}
@@ -847,8 +908,8 @@ const ChartPanel = ({
               marginTop: 16,
               color: dashboardDataTokens.color.textSoft,
               fontFamily: dashboardDataTokens.typography.caption.fontFamily,
-              fontSize: dashboardDataTokens.typography.caption.fontSize,
-              lineHeight: 1.32,
+              fontSize: 13,
+              lineHeight: 1.24,
               fontWeight: dashboardDataTokens.typography.caption.fontWeight,
             })}
           >
@@ -856,12 +917,13 @@ const ChartPanel = ({
           </div>
         </>
       ) : fixture.chart.stateMessage ? (
-        <div style={{ marginTop: 24 }}>
+        <div style={{ marginTop: 16 }}>
           <PanelStateView
             state={fixture.chart.state}
             message={fixture.chart.stateMessage}
             frame={frame}
             policy={fixture.motionPolicy}
+            mode="compact"
           />
         </div>
       ) : null}
@@ -899,11 +961,11 @@ const WatchlistPanel = ({
       <SectionEyebrow tone="warning">Watchlist</SectionEyebrow>
       <div
         style={drawText({
-          marginTop: 14,
+          marginTop: 10,
           color: dashboardDataTokens.color.textStrong,
           fontFamily: dashboardDataTokens.typography.title.fontFamily,
-          fontSize: dashboardDataTokens.typography.title.fontSize,
-          lineHeight: dashboardDataTokens.typography.title.lineHeight,
+          fontSize: 24,
+          lineHeight: 1.1,
           fontWeight: dashboardDataTokens.typography.title.fontWeight,
         })}
       >
@@ -911,11 +973,11 @@ const WatchlistPanel = ({
       </div>
       <div
         style={drawText({
-          marginTop: 8,
+          marginTop: 6,
           color: dashboardDataTokens.color.textMuted,
           fontFamily: dashboardDataTokens.typography.caption.fontFamily,
-          fontSize: dashboardDataTokens.typography.caption.fontSize,
-          lineHeight: 1.32,
+          fontSize: 13,
+          lineHeight: 1.18,
           fontWeight: dashboardDataTokens.typography.caption.fontWeight,
         })}
       >
@@ -923,9 +985,9 @@ const WatchlistPanel = ({
       </div>
       <div
         style={{
-          marginTop: 18,
+          marginTop: 12,
           display: "grid",
-          gap: 14,
+          gap: 6,
         }}
       >
         {items.map((item, index) => {
@@ -949,7 +1011,7 @@ const WatchlistPanel = ({
                   },
                   2,
                 ),
-                paddingBottom: 14,
+                paddingBottom: 6,
                 borderBottom:
                   index === items.length - 1
                     ? "none"
@@ -968,8 +1030,8 @@ const WatchlistPanel = ({
                   style={{
                     color: palette.mutedText,
                     fontFamily: dashboardDataTokens.typography.label.fontFamily,
-                    fontSize: 14,
-                    lineHeight: 1.16,
+                    fontSize: 12,
+                    lineHeight: 1.08,
                     fontWeight: 760,
                   }}
                 >
@@ -979,8 +1041,8 @@ const WatchlistPanel = ({
                   style={{
                     color: palette.accent,
                     fontFamily: dashboardDataTokens.typography.title.fontFamily,
-                    fontSize: 20,
-                    lineHeight: 1.16,
+                    fontSize: 16,
+                    lineHeight: 1.1,
                     fontWeight: 760,
                     textAlign: "right",
                   }}
@@ -990,11 +1052,11 @@ const WatchlistPanel = ({
               </div>
               <div
                 style={drawText({
-                  marginTop: 8,
+                  marginTop: 4,
                   color: palette.mutedText,
                   fontFamily: dashboardDataTokens.typography.caption.fontFamily,
-                  fontSize: dashboardDataTokens.typography.caption.fontSize,
-                  lineHeight: 1.24,
+                  fontSize: 12,
+                  lineHeight: 1.16,
                   fontWeight: dashboardDataTokens.typography.caption.fontWeight,
                 })}
               >
@@ -1013,13 +1075,11 @@ const OperationRow = ({
   index,
   frame,
   policy,
-  columns,
 }: {
   row: DashboardDataOperationRow;
   index: number;
   frame: number;
   policy: DashboardDataFixture["motionPolicy"];
-  columns: DashboardDataFixture["operations"]["columns"];
 }) => {
   const palette = resolveTonePalette(dashboardDataTokens, row.tone ?? "neutral");
 
@@ -1038,9 +1098,9 @@ const OperationRow = ({
           2,
         ),
         display: "grid",
-        gridTemplateColumns: "2.1fr 1.2fr 1fr 1fr",
-        gap: 18,
-        padding: "14px 0",
+        gridTemplateColumns: "2.2fr 1.1fr 0.9fr 0.9fr",
+        gap: 14,
+        padding: "8px 0",
         borderBottom:
           index === 0 ? `1px solid ${dashboardDataTokens.color.rule}` : "none",
       }}
@@ -1050,8 +1110,8 @@ const OperationRow = ({
           style={{
             color: dashboardDataTokens.color.textStrong,
             fontFamily: dashboardDataTokens.typography.body.fontFamily,
-            fontSize: dashboardDataTokens.typography.body.fontSize,
-            lineHeight: 1.22,
+            fontSize: 18,
+            lineHeight: 1.16,
             fontWeight: 640,
           }}
         >
@@ -1059,11 +1119,11 @@ const OperationRow = ({
         </div>
         <div
           style={drawText({
-            marginTop: 6,
+            marginTop: 4,
             color: dashboardDataTokens.color.textMuted,
             fontFamily: dashboardDataTokens.typography.caption.fontFamily,
-            fontSize: dashboardDataTokens.typography.caption.fontSize,
-            lineHeight: 1.3,
+            fontSize: 13,
+            lineHeight: 1.2,
             fontWeight: dashboardDataTokens.typography.caption.fontWeight,
           })}
         >
@@ -1074,8 +1134,8 @@ const OperationRow = ({
         style={{
           color: dashboardDataTokens.color.textStrong,
           fontFamily: dashboardDataTokens.typography.caption.fontFamily,
-          fontSize: dashboardDataTokens.typography.caption.fontSize,
-          lineHeight: 1.26,
+          fontSize: 13,
+          lineHeight: 1.2,
           fontWeight: 700,
           paddingTop: 4,
         }}
@@ -1086,8 +1146,8 @@ const OperationRow = ({
         style={{
           color: dashboardDataTokens.color.textStrong,
           fontFamily: dashboardDataTokens.typography.caption.fontFamily,
-          fontSize: dashboardDataTokens.typography.caption.fontSize,
-          lineHeight: 1.26,
+          fontSize: 13,
+          lineHeight: 1.2,
           fontWeight: 700,
           paddingTop: 4,
         }}
@@ -1098,8 +1158,8 @@ const OperationRow = ({
         style={{
           color: dashboardDataTokens.color.textStrong,
           fontFamily: dashboardDataTokens.typography.caption.fontFamily,
-          fontSize: dashboardDataTokens.typography.caption.fontSize,
-          lineHeight: 1.26,
+          fontSize: 13,
+          lineHeight: 1.2,
           fontWeight: 700,
           paddingTop: 4,
         }}
@@ -1161,11 +1221,11 @@ const OperationsPanel = ({
           <SectionEyebrow tone="danger">Operations</SectionEyebrow>
           <div
             style={drawText({
-              marginTop: 14,
+              marginTop: 10,
               color: dashboardDataTokens.color.textStrong,
               fontFamily: dashboardDataTokens.typography.title.fontFamily,
-              fontSize: dashboardDataTokens.typography.title.fontSize,
-              lineHeight: dashboardDataTokens.typography.title.lineHeight,
+              fontSize: 26,
+              lineHeight: 1.12,
               fontWeight: dashboardDataTokens.typography.title.fontWeight,
             })}
           >
@@ -1173,11 +1233,11 @@ const OperationsPanel = ({
           </div>
           <div
             style={drawText({
-              marginTop: 8,
+              marginTop: 6,
               color: dashboardDataTokens.color.textMuted,
               fontFamily: dashboardDataTokens.typography.caption.fontFamily,
-              fontSize: dashboardDataTokens.typography.caption.fontSize,
-              lineHeight: 1.32,
+              fontSize: 14,
+              lineHeight: 1.22,
               fontWeight: dashboardDataTokens.typography.caption.fontWeight,
               maxWidth: 720,
             })}
@@ -1189,10 +1249,11 @@ const OperationsPanel = ({
           style={{
             color: dashboardDataTokens.color.textSoft,
             fontFamily: dashboardDataTokens.typography.label.fontFamily,
-            fontSize: 14,
-            lineHeight: 1.16,
+            fontSize: 13,
+            lineHeight: 1.12,
             fontWeight: 760,
             textAlign: "right",
+            maxWidth: 220,
           }}
         >
           {fixture.footer}
@@ -1203,15 +1264,15 @@ const OperationsPanel = ({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "2.1fr 1.2fr 1fr 1fr",
-              gap: 18,
-              marginTop: 18,
-              paddingBottom: 12,
+              gridTemplateColumns: "2.2fr 1.1fr 0.9fr 0.9fr",
+              gap: 14,
+              marginTop: 14,
+              paddingBottom: 10,
               borderBottom: `1px solid ${dashboardDataTokens.color.rule}`,
               color: dashboardDataTokens.color.textSoft,
               fontFamily: dashboardDataTokens.typography.label.fontFamily,
-              fontSize: 14,
-              lineHeight: 1.16,
+              fontSize: 13,
+              lineHeight: 1.12,
               fontWeight: 760,
             }}
           >
@@ -1232,17 +1293,16 @@ const OperationsPanel = ({
                 index={index}
                 frame={frame}
                 policy={fixture.motionPolicy}
-                columns={fixture.operations.columns}
               />
             ))}
           </div>
           <div
             style={drawText({
-              marginTop: 16,
+              marginTop: 10,
               color: dashboardDataTokens.color.textSoft,
               fontFamily: dashboardDataTokens.typography.caption.fontFamily,
-              fontSize: dashboardDataTokens.typography.caption.fontSize,
-              lineHeight: 1.3,
+              fontSize: 13,
+              lineHeight: 1.22,
               fontWeight: dashboardDataTokens.typography.caption.fontWeight,
             })}
           >
@@ -1250,12 +1310,13 @@ const OperationsPanel = ({
           </div>
         </>
       ) : fixture.operations.stateMessage ? (
-        <div style={{ marginTop: 24 }}>
+        <div style={{ marginTop: 16 }}>
           <PanelStateView
             state={fixture.operations.state}
             message={fixture.operations.stateMessage}
             frame={frame}
             policy={fixture.motionPolicy}
+            mode="compact"
           />
         </div>
       ) : null}
@@ -1270,6 +1331,7 @@ export const DashboardDataScene = ({
 }) => {
   const frame = useCurrentFrame();
   const fixture = dashboardDataFixtures[sceneKey];
+  const layoutProfile = layoutProfiles[sceneKey];
   const layout = resolveVerticalLayout({
     platform: "tiktok",
     safeArea: dashboardDataTokens.safeArea,
@@ -1290,22 +1352,22 @@ export const DashboardDataScene = ({
     layout.content.x,
     headerBox.y + headerBox.height + panelGap,
     layout.content.width,
-    kpiHeight,
+    layoutProfile.kpiHeight,
   );
   const midTop = kpiBox.y + kpiBox.height + panelGap;
   const chartBox = makeBox(
     spanColumns(columns, 0, 7).x,
     midTop,
     spanColumns(columns, 0, 7).width,
-    midHeight,
+    layoutProfile.midHeight,
   );
   const watchBox = makeBox(
     spanColumns(columns, 7, 5).x,
     midTop,
     spanColumns(columns, 7, 5).width,
-    midHeight,
+    layoutProfile.midHeight,
   );
-  const operationsTop = midTop + midHeight + panelGap;
+  const operationsTop = midTop + layoutProfile.midHeight + panelGap;
   const operationsBox = makeBox(
     layout.content.x,
     operationsTop,
@@ -1316,21 +1378,21 @@ export const DashboardDataScene = ({
     tokens: dashboardDataTokens,
     role: "headline",
     text: fixture.title,
-    width: headerBox.width - 280,
-    height: 124,
-    maxLines: fixture.density === "dense" ? 4 : 3,
+    width: headerBox.width - 304,
+    height: 126,
+    maxLines: 3,
     density: fixture.density,
-    minScale: 0.72,
+    minScale: 0.68,
   });
   const summaryFit = fitTypographyToBox({
     tokens: dashboardDataTokens,
     role: "body",
     text: fixture.summary,
-    width: headerBox.width - 280,
-    height: 96,
-    maxLines: 4,
+    width: headerBox.width - 304,
+    height: 68,
+    maxLines: 3,
     density: fixture.density,
-    minScale: 0.86,
+    minScale: 0.68,
   });
 
   return (
@@ -1378,8 +1440,8 @@ export const DashboardDataScene = ({
               policy: fixture.motionPolicy,
             }),
             display: "grid",
-            gridTemplateColumns: "minmax(0, 1fr) 240px",
-            gap: 24,
+            gridTemplateColumns: "minmax(0, 1fr) 280px",
+            gap: 20,
             height: "100%",
           }}
         >
@@ -1387,26 +1449,26 @@ export const DashboardDataScene = ({
             <SectionEyebrow>{fixture.eyebrow}</SectionEyebrow>
             <div
               style={drawText({
-                marginTop: 18,
+                marginTop: 12,
                 color: dashboardDataTokens.color.textStrong,
                 fontFamily: titleFit.style.fontFamily,
                 fontSize: titleFit.style.fontSize,
                 lineHeight: titleFit.style.lineHeight,
                 fontWeight: titleFit.style.fontWeight,
-                maxWidth: headerBox.width - 260,
+                maxWidth: headerBox.width - 304,
               })}
             >
               {fixture.title}
             </div>
             <div
               style={drawText({
-                marginTop: 18,
+                marginTop: 10,
                 color: dashboardDataTokens.color.textMuted,
                 fontFamily: summaryFit.style.fontFamily,
                 fontSize: summaryFit.style.fontSize,
                 lineHeight: summaryFit.style.lineHeight,
                 fontWeight: summaryFit.style.fontWeight,
-                maxWidth: headerBox.width - 260,
+                maxWidth: headerBox.width - 304,
               })}
             >
               {fixture.summary}
@@ -1415,7 +1477,8 @@ export const DashboardDataScene = ({
           <div
             style={{
               display: "grid",
-              gap: 12,
+              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+              gap: 8,
               alignContent: "start",
             }}
           >

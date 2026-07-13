@@ -76,6 +76,17 @@
   - `data-track-index`
 - Animation can be driven by CSS, WAAPI, GSAP, Lottie, Three.js, or custom code.
 
+## AI Video Engine layer
+
+- `scene-schema/hyperframes.scene.schema.json` is the LLM-facing contract.
+- `renderer/scene-json-to-hyperframes.mjs` compiles declarative Scene JSON into a normal HyperFrames project with `index.html` and `meta.json`.
+- `renderer/render-project.mjs` renders any generated or hand-written project through `@hyperframes/producer`.
+- The validated path is now:
+  1. LLM or user writes Scene JSON
+  2. Compiler emits HyperFrames composition files
+  3. Producer renders MP4 output
+  4. FFprobe and frame extraction verify the artifact
+
 ## Timeline and animation
 
 - Timeline state is encoded in HTML attributes and runtime helpers rather than a separate proprietary scene language.

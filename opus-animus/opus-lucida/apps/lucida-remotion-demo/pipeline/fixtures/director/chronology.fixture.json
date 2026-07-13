@@ -1,0 +1,49 @@
+{
+  "fixtureId": "chronology",
+  "cases": [
+    {
+      "id": "sourced-case-study-selects-timeline",
+      "scene": {
+        "intent": "case-study",
+        "content": {
+          "headlineChars": 82,
+          "bodyChars": 360,
+          "bulletItems": 4,
+          "codeLines": 0,
+          "dataSeries": 0,
+          "assetClassifications": [],
+          "hasStructuredNumericData": false,
+          "datedEvents": 4,
+          "hasSourcedChronology": true
+        }
+      },
+      "expect": {
+        "selected": "timeline-documentary",
+        "rejected": []
+      }
+    },
+    {
+      "id": "timeline-rejected-with-too-few-events",
+      "scene": {
+        "intent": "case-study",
+        "content": {
+          "headlineChars": 78,
+          "bodyChars": 240,
+          "bulletItems": 2,
+          "codeLines": 0,
+          "dataSeries": 0,
+          "assetClassifications": [],
+          "hasStructuredNumericData": false,
+          "datedEvents": 2,
+          "hasSourcedChronology": true
+        }
+      },
+      "expect": {
+        "selected": "technical-editorial",
+        "rejected": [
+          {"familyId": "timeline-documentary", "filterId": "timeline-dated-events"}
+        ]
+      }
+    }
+  ]
+}

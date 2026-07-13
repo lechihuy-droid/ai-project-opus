@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GPT-5.6, Work và Codex</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      html, body {
+        margin: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: linear-gradient(180deg, #f7f2e8 0%, #f3ede1 48%, #efe6d8 100%);
+        font-family: Inter, Segoe UI, Arial, sans-serif;
+      }
+      #stage {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        color: #f5f7fb;
+        background: linear-gradient(180deg, #f7f2e8 0%, #f3ede1 48%, #efe6d8 100%);
+      }
+      .scene {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+      .layer {
+        position: absolute;
+        box-sizing: border-box;
+      }
+      .text-layer {
+        color: var(--layer-color, #f5f7fb);
+        font-weight: var(--layer-font-weight, 700);
+        font-size: var(--layer-font-size, 64px);
+        line-height: var(--layer-line-height, 1.08);
+        white-space: pre-wrap;
+      }
+      .shape-layer {
+        background: var(--layer-fill, #58a6ff);
+        border: var(--layer-border, 0 solid transparent);
+        border-radius: var(--layer-radius, 0);
+      }
+      .media-layer {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .panel-layer {
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 12px;
+        background: rgba(14,20,28,0.86);
+        box-shadow: 0 28px 90px rgba(0, 0, 0, 0.34);
+      }
+      .terminal-layer, .code-layer {
+        padding: 28px;
+        font-family: "JetBrains Mono", Consolas, monospace;
+        font-size: var(--layer-font-size, 26px);
+        line-height: 1.5;
+        white-space: pre-wrap;
+      }
+      .browser-layer {
+        background: #f7f9fc;
+        color: #17202a;
+      }
+      .browser-bar {
+        height: 44px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 16px;
+        border-bottom: 1px solid rgba(0,0,0,0.08);
+        font-size: 14px;
+        color: rgba(23,32,42,0.68);
+      }
+      .browser-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #d0d7de;
+      }
+      .browser-content {
+        padding: 32px;
+        font-size: var(--layer-font-size, 34px);
+        line-height: 1.22;
+        white-space: pre-line;
+      }
+      .timeline-track {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        height: 4px;
+        transform: translateY(-50%);
+        background: rgba(255,255,255,0.18);
+      }
+      .timeline-node {
+        position: absolute;
+        top: 50%;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        background: #3ddc97;
+        box-shadow: 0 0 0 8px rgba(61,220,151,0.12);
+      }
+      #hook-source-pill { opacity: 0; animation: enter-hook-source-pill-fade-down 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both; }
+      @keyframes enter-hook-source-pill-fade-down {
+        from { opacity: 0; transform: translateY(-32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #hook-source-text { opacity: 0; animation: enter-hook-source-text-fade-down 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both; }
+      @keyframes enter-hook-source-text-fade-down {
+        from { opacity: 0; transform: translateY(-32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #hook-title { opacity: 0; animation: enter-hook-title-fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both; }
+      @keyframes enter-hook-title-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #hook-subtitle { opacity: 0; animation: enter-hook-subtitle-fade-up 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.62s both; }
+      @keyframes enter-hook-subtitle-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #hook-brain-card { opacity: 0; animation: enter-hook-brain-card-slide-right 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1s both; }
+      @keyframes enter-hook-brain-card-slide-right {
+        from { opacity: 0; transform: translateX(-72px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      #hook-work-card { opacity: 0; animation: enter-hook-work-card-slide-right 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.18s both; }
+      @keyframes enter-hook-work-card-slide-right {
+        from { opacity: 0; transform: translateX(-72px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      #hook-codex-card { opacity: 0; animation: enter-hook-codex-card-slide-right 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.36s both; }
+      @keyframes enter-hook-codex-card-slide-right {
+        from { opacity: 0; transform: translateX(-72px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      #hook-brain-text { opacity: 0; animation: enter-hook-brain-text-fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) 1.08s both; }
+      @keyframes enter-hook-brain-text-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #hook-work-text { opacity: 0; animation: enter-hook-work-text-fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) 1.26s both; }
+      @keyframes enter-hook-work-text-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #hook-codex-text { opacity: 0; animation: enter-hook-codex-text-fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) 1.44s both; }
+      @keyframes enter-hook-codex-text-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #hook-progress-base { opacity: 0; animation: enter-hook-progress-base-fade 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both; }
+      @keyframes enter-hook-progress-base-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #hook-progress-fill { opacity: 0; animation: enter-hook-progress-fill-draw-x 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.95s both; }
+      @keyframes enter-hook-progress-fill-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #stack-title { opacity: 0; animation: enter-stack-title-fade-up 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both; }
+      @keyframes enter-stack-title-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #stack-note { opacity: 0; animation: enter-stack-note-fade 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.42s both; }
+      @keyframes enter-stack-note-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #stack-sol-card { opacity: 0; animation: enter-stack-sol-card-slide-right 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both; }
+      @keyframes enter-stack-sol-card-slide-right {
+        from { opacity: 0; transform: translateX(-72px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      #stack-terra-card { opacity: 0; animation: enter-stack-terra-card-slide-right 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.92s both; }
+      @keyframes enter-stack-terra-card-slide-right {
+        from { opacity: 0; transform: translateX(-72px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      #stack-luna-card { opacity: 0; animation: enter-stack-luna-card-slide-right 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.14s both; }
+      @keyframes enter-stack-luna-card-slide-right {
+        from { opacity: 0; transform: translateX(-72px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      #stack-sol-title { opacity: 0; animation: enter-stack-sol-title-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.84s both; }
+      @keyframes enter-stack-sol-title-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #stack-sol-body { opacity: 0; animation: enter-stack-sol-body-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.96s both; }
+      @keyframes enter-stack-sol-body-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #stack-terra-title { opacity: 0; animation: enter-stack-terra-title-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 1.06s both; }
+      @keyframes enter-stack-terra-title-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #stack-terra-body { opacity: 0; animation: enter-stack-terra-body-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 1.18s both; }
+      @keyframes enter-stack-terra-body-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #stack-luna-title { opacity: 0; animation: enter-stack-luna-title-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 1.28s both; }
+      @keyframes enter-stack-luna-title-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #stack-luna-body { opacity: 0; animation: enter-stack-luna-body-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 1.4s both; }
+      @keyframes enter-stack-luna-body-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #stack-progress-base { opacity: 0; animation: enter-stack-progress-base-fade 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both; }
+      @keyframes enter-stack-progress-base-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #stack-progress-fill { opacity: 0; animation: enter-stack-progress-fill-draw-x 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.82s both; }
+      @keyframes enter-stack-progress-fill-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #handoff-title { opacity: 0; animation: enter-handoff-title-fade-up 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both; }
+      @keyframes enter-handoff-title-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #work-window { opacity: 0; animation: enter-work-window-slide-right 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both; }
+      @keyframes enter-work-window-slide-right {
+        from { opacity: 0; transform: translateX(-72px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      #handoff-pill-shape { opacity: 0; animation: enter-handoff-pill-shape-scale-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) 1.24s both; }
+      @keyframes enter-handoff-pill-shape-scale-in {
+        from { opacity: 0; transform: scale(0.94); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      #handoff-pill-text { opacity: 0; animation: enter-handoff-pill-text-fade 0.4s cubic-bezier(0.22, 1, 0.36, 1) 1.34s both; }
+      @keyframes enter-handoff-pill-text-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #codex-window { opacity: 0; animation: enter-codex-window-slide-left 0.65s cubic-bezier(0.22, 1, 0.36, 1) 1.55s both; }
+      @keyframes enter-codex-window-slide-left {
+        from { opacity: 0; transform: translateX(72px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      #handoff-note { opacity: 0; animation: enter-handoff-note-fade 0.55s cubic-bezier(0.22, 1, 0.36, 1) 2.2s both; }
+      @keyframes enter-handoff-note-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #handoff-progress-base { opacity: 0; animation: enter-handoff-progress-base-fade 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both; }
+      @keyframes enter-handoff-progress-base-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #handoff-progress-fill { opacity: 0; animation: enter-handoff-progress-fill-draw-x 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.9s both; }
+      @keyframes enter-handoff-progress-fill-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #workflow-title { opacity: 0; animation: enter-workflow-title-fade-up 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both; }
+      @keyframes enter-workflow-title-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #workflow-rail { opacity: 0; animation: enter-workflow-rail-draw-x 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.45s both; }
+      @keyframes enter-workflow-rail-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #workflow-step-1-dot { opacity: 0; animation: enter-workflow-step-1-dot-scale-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.55s both; }
+      @keyframes enter-workflow-step-1-dot-scale-in {
+        from { opacity: 0; transform: scale(0.94); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      #workflow-step-2-dot { opacity: 0; animation: enter-workflow-step-2-dot-scale-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.78s both; }
+      @keyframes enter-workflow-step-2-dot-scale-in {
+        from { opacity: 0; transform: scale(0.94); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      #workflow-step-3-dot { opacity: 0; animation: enter-workflow-step-3-dot-scale-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) 1.01s both; }
+      @keyframes enter-workflow-step-3-dot-scale-in {
+        from { opacity: 0; transform: scale(0.94); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      #workflow-step-4-dot { opacity: 0; animation: enter-workflow-step-4-dot-scale-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) 1.24s both; }
+      @keyframes enter-workflow-step-4-dot-scale-in {
+        from { opacity: 0; transform: scale(0.94); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      #workflow-step-5-dot { opacity: 0; animation: enter-workflow-step-5-dot-scale-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) 1.47s both; }
+      @keyframes enter-workflow-step-5-dot-scale-in {
+        from { opacity: 0; transform: scale(0.94); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      #workflow-step-1 { opacity: 0; animation: enter-workflow-step-1-fade-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.62s both; }
+      @keyframes enter-workflow-step-1-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #workflow-step-2 { opacity: 0; animation: enter-workflow-step-2-fade-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.85s both; }
+      @keyframes enter-workflow-step-2-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #workflow-step-3 { opacity: 0; animation: enter-workflow-step-3-fade-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) 1.08s both; }
+      @keyframes enter-workflow-step-3-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #workflow-step-4 { opacity: 0; animation: enter-workflow-step-4-fade-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) 1.31s both; }
+      @keyframes enter-workflow-step-4-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #workflow-step-5 { opacity: 0; animation: enter-workflow-step-5-fade-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) 1.54s both; }
+      @keyframes enter-workflow-step-5-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #workflow-work-badge { opacity: 0; animation: enter-workflow-work-badge-fade 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.88s both; }
+      @keyframes enter-workflow-work-badge-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #workflow-work-text { opacity: 0; animation: enter-workflow-work-text-fade 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.95s both; }
+      @keyframes enter-workflow-work-text-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #workflow-codex-badge { opacity: 0; animation: enter-workflow-codex-badge-fade 0.45s cubic-bezier(0.22, 1, 0.36, 1) 1.42s both; }
+      @keyframes enter-workflow-codex-badge-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #workflow-codex-text { opacity: 0; animation: enter-workflow-codex-text-fade 0.4s cubic-bezier(0.22, 1, 0.36, 1) 1.5s both; }
+      @keyframes enter-workflow-codex-text-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #workflow-closing { opacity: 0; animation: enter-workflow-closing-fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) 2s both; }
+      @keyframes enter-workflow-closing-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #workflow-progress-base { opacity: 0; animation: enter-workflow-progress-base-fade 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both; }
+      @keyframes enter-workflow-progress-base-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #workflow-progress-fill { opacity: 0; animation: enter-workflow-progress-fill-draw-x 0.7s cubic-bezier(0.22, 1, 0.36, 1) 1.85s both; }
+      @keyframes enter-workflow-progress-fill-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+
+    </style>
+  </head>
+  <body>
+    <div
+      id="stage"
+      data-composition-id="gpt56-work-codex-vertical"
+      data-start="0"
+      data-duration="16"
+      data-width="1080"
+      data-height="1920"
+      data-no-timeline
+    >
+      <section class="scene" id="hook" data-start="0" data-duration="4">
+        
+        <div class="layer shape-layer clip" id="hook-source-pill" data-start="0" data-duration="4" style="left: 84px; top: 92px; width: 310px; height: 56px; --layer-fill: rgba(20, 41, 60, 0.08); --layer-border: 1px solid rgba(20, 41, 60, 0.12); --layer-radius: 28px"></div>
+        <div class="layer text-layer clip" id="hook-source-text" data-start="0" data-duration="4" style="left: 118px; top: 106px; width: 250px; height: 30px; --layer-color: #23405b; --layer-font-size: 24px; --layer-font-weight: 700">OpenAI · 09 Jul 2026</div>
+        <div class="layer text-layer clip" id="hook-title" data-start="0" data-duration="4" style="left: 84px; top: 218px; width: 880px; height: 250px; --layer-color: #14293c; --layer-font-size: 96px; --layer-font-weight: 850; --layer-line-height: 0.98">OpenAI vừa tách AI thành 3 vai</div>
+        <div class="layer text-layer clip" id="hook-subtitle" data-start="0" data-duration="4" style="left: 88px; top: 520px; width: 860px; height: 120px; --layer-color: rgba(20, 41, 60, 0.84); --layer-font-size: 44px; --layer-font-weight: 600; --layer-line-height: 1.15">bộ não, agent thực thi và kỹ sư sản xuất.</div>
+        <div class="layer shape-layer clip" id="hook-brain-card" data-start="0" data-duration="4" style="left: 88px; top: 760px; width: 904px; height: 140px; --layer-fill: rgba(62, 137, 255, 0.10); --layer-border: 1px solid rgba(62, 137, 255, 0.24); --layer-radius: 26px"></div>
+        <div class="layer shape-layer clip" id="hook-work-card" data-start="0" data-duration="4" style="left: 88px; top: 930px; width: 904px; height: 140px; --layer-fill: rgba(36, 173, 125, 0.10); --layer-border: 1px solid rgba(36, 173, 125, 0.24); --layer-radius: 26px"></div>
+        <div class="layer shape-layer clip" id="hook-codex-card" data-start="0" data-duration="4" style="left: 88px; top: 1100px; width: 904px; height: 140px; --layer-fill: rgba(255, 168, 76, 0.12); --layer-border: 1px solid rgba(255, 168, 76, 0.24); --layer-radius: 26px"></div>
+        <div class="layer text-layer clip" id="hook-brain-text" data-start="0" data-duration="4" style="left: 128px; top: 806px; width: 680px; height: 42px; --layer-color: #204b7f; --layer-font-size: 42px; --layer-font-weight: 850">GPT-5.6 = Bộ não</div>
+        <div class="layer text-layer clip" id="hook-work-text" data-start="0" data-duration="4" style="left: 128px; top: 976px; width: 760px; height: 42px; --layer-color: #16684d; --layer-font-size: 42px; --layer-font-weight: 850">Work = Agent thực thi công việc</div>
+        <div class="layer text-layer clip" id="hook-codex-text" data-start="0" data-duration="4" style="left: 128px; top: 1146px; width: 680px; height: 42px; --layer-color: #8d4d11; --layer-font-size: 42px; --layer-font-weight: 850">Codex = Kỹ sư sản xuất</div>
+        <div class="layer shape-layer clip" id="hook-progress-base" data-start="0" data-duration="4" style="left: 88px; top: 1770px; width: 904px; height: 8px; --layer-fill: rgba(20, 41, 60, 0.12); --layer-radius: 8px"></div>
+        <div class="layer shape-layer clip" id="hook-progress-fill" data-start="0" data-duration="4" style="left: 88px; top: 1770px; width: 226px; height: 8px; --layer-fill: #2c79ff; --layer-radius: 8px"></div>
+      </section>
+      <section class="scene" id="model-stack" data-start="4" data-duration="4">
+        
+        <div class="layer text-layer clip" id="stack-title" data-start="4" data-duration="4" style="left: 84px; top: 118px; width: 760px; height: 96px; --layer-color: #14293c; --layer-font-size: 74px; --layer-font-weight: 850">GPT-5.6 có 3 model</div>
+        <div class="layer text-layer clip" id="stack-note" data-start="4" data-duration="4" style="left: 88px; top: 228px; width: 760px; height: 60px; --layer-color: rgba(20, 41, 60, 0.78); --layer-font-size: 34px; --layer-font-weight: 550">Chọn theo độ sâu, tốc độ và chi phí thực thi.</div>
+        <div class="layer shape-layer clip" id="stack-sol-card" data-start="4" data-duration="4" style="left: 84px; top: 374px; width: 912px; height: 318px; --layer-fill: rgba(62, 137, 255, 0.10); --layer-border: 1px solid rgba(62, 137, 255, 0.22); --layer-radius: 28px"></div>
+        <div class="layer shape-layer clip" id="stack-terra-card" data-start="4" data-duration="4" style="left: 84px; top: 734px; width: 912px; height: 318px; --layer-fill: rgba(36, 173, 125, 0.10); --layer-border: 1px solid rgba(36, 173, 125, 0.22); --layer-radius: 28px"></div>
+        <div class="layer shape-layer clip" id="stack-luna-card" data-start="4" data-duration="4" style="left: 84px; top: 1094px; width: 912px; height: 318px; --layer-fill: rgba(255, 177, 88, 0.12); --layer-border: 1px solid rgba(255, 177, 88, 0.24); --layer-radius: 28px"></div>
+        <div class="layer text-layer clip" id="stack-sol-title" data-start="4" data-duration="4" style="left: 132px; top: 428px; width: 180px; height: 56px; --layer-color: #1f4f87; --layer-font-size: 54px; --layer-font-weight: 850">SOL</div>
+        <div class="layer text-layer clip" id="stack-sol-body" data-start="4" data-duration="4" style="left: 132px; top: 502px; width: 760px; height: 122px; --layer-color: #1d3857; --layer-font-size: 34px; --layer-font-weight: 650; --layer-line-height: 1.18">Flagship reasoning
+        Deep research · Coding phức tạp · Kiến trúc hệ thống</div>
+        <div class="layer text-layer clip" id="stack-terra-title" data-start="4" data-duration="4" style="left: 132px; top: 788px; width: 220px; height: 56px; --layer-color: #16684d; --layer-font-size: 54px; --layer-font-weight: 850">TERRA</div>
+        <div class="layer text-layer clip" id="stack-terra-body" data-start="4" data-duration="4" style="left: 132px; top: 862px; width: 760px; height: 122px; --layer-color: #184939; --layer-font-size: 34px; --layer-font-weight: 650; --layer-line-height: 1.18">Balanced daily work
+        Agents · Production support · Chi phí hợp lý</div>
+        <div class="layer text-layer clip" id="stack-luna-title" data-start="4" data-duration="4" style="left: 132px; top: 1148px; width: 200px; height: 56px; --layer-color: #9a5a13; --layer-font-size: 54px; --layer-font-weight: 850">LUNA</div>
+        <div class="layer text-layer clip" id="stack-luna-body" data-start="4" data-duration="4" style="left: 132px; top: 1222px; width: 760px; height: 122px; --layer-color: #6d4317; --layer-font-size: 34px; --layer-font-weight: 650; --layer-line-height: 1.18">Fastest, lowest cost
+        Phân loại · Tóm tắt · Xử lý khối lượng lớn</div>
+        <div class="layer shape-layer clip" id="stack-progress-base" data-start="4" data-duration="4" style="left: 88px; top: 1770px; width: 904px; height: 8px; --layer-fill: rgba(20, 41, 60, 0.12); --layer-radius: 8px"></div>
+        <div class="layer shape-layer clip" id="stack-progress-fill" data-start="4" data-duration="4" style="left: 88px; top: 1770px; width: 452px; height: 8px; --layer-fill: #2c79ff; --layer-radius: 8px"></div>
+      </section>
+      <section class="scene" id="handoff" data-start="8" data-duration="4">
+        
+        <div class="layer text-layer clip" id="handoff-title" data-start="8" data-duration="4" style="left: 84px; top: 118px; width: 860px; height: 150px; --layer-color: #14293c; --layer-font-size: 74px; --layer-font-weight: 850; --layer-line-height: 0.98">Work lập kế hoạch, Codex sản xuất</div>
+        <div class="layer browser-layer clip panel-layer" id="work-window" data-start="8" data-duration="4" style="left: 84px; top: 390px; width: 912px; height: 530px; --layer-font-size: 42px">
+          <div class="browser-bar"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span><span>ChatGPT Work</span></div>
+          <div class="browser-content">Research
+        Báo cáo
+        Slide, Sheet, Document
+        Website
+        Business deliverables</div>
+        </div>
+        <div class="layer shape-layer clip" id="handoff-pill-shape" data-start="8" data-duration="4" style="left: 312px; top: 972px; width: 456px; height: 94px; --layer-fill: rgba(20, 41, 60, 0.08); --layer-border: 1px solid rgba(20, 41, 60, 0.12); --layer-radius: 47px"></div>
+        <div class="layer text-layer clip" id="handoff-pill-text" data-start="8" data-duration="4" style="left: 386px; top: 1000px; width: 320px; height: 34px; --layer-color: #23405b; --layer-font-size: 28px; --layer-font-weight: 750">handoff → implementation</div>
+        <div class="layer terminal-layer clip panel-layer" id="codex-window" data-start="8" data-duration="4" style="left: 84px; top: 1128px; width: 912px; height: 490px; --layer-font-size: 30px"><div>Codex</div><div>Read codebase</div><div>Build components</div><div>Run tests</div><div>Render video</div><div>Ship artifacts</div></div>
+        <div class="layer text-layer clip" id="handoff-note" data-start="8" data-duration="4" style="left: 88px; top: 1660px; width: 880px; height: 84px; --layer-color: rgba(20, 41, 60, 0.82); --layer-font-size: 32px; --layer-font-weight: 600; --layer-line-height: 1.16">Work tạo brief, script, storyboard. Codex biến chúng thành output chạy được.</div>
+        <div class="layer shape-layer clip" id="handoff-progress-base" data-start="8" data-duration="4" style="left: 88px; top: 1770px; width: 904px; height: 8px; --layer-fill: rgba(20, 41, 60, 0.12); --layer-radius: 8px"></div>
+        <div class="layer shape-layer clip" id="handoff-progress-fill" data-start="8" data-duration="4" style="left: 88px; top: 1770px; width: 678px; height: 8px; --layer-fill: #2c79ff; --layer-radius: 8px"></div>
+      </section>
+      <section class="scene" id="workflow" data-start="12" data-duration="4">
+        
+        <div class="layer text-layer clip" id="workflow-title" data-start="12" data-duration="4" style="left: 84px; top: 118px; width: 760px; height: 96px; --layer-color: #14293c; --layer-font-size: 74px; --layer-font-weight: 850">Pipeline cho video AI</div>
+        <div class="layer shape-layer clip" id="workflow-rail" data-start="12" data-duration="4" style="left: 140px; top: 378px; width: 8px; height: 980px; --layer-fill: rgba(20, 41, 60, 0.12); --layer-radius: 8px"></div>
+        <div class="layer shape-layer clip" id="workflow-step-1-dot" data-start="12" data-duration="4" style="left: 112px; top: 388px; width: 64px; height: 64px; --layer-fill: #2c79ff; --layer-radius: 32px"></div>
+        <div class="layer shape-layer clip" id="workflow-step-2-dot" data-start="12" data-duration="4" style="left: 112px; top: 592px; width: 64px; height: 64px; --layer-fill: #2c79ff; --layer-radius: 32px"></div>
+        <div class="layer shape-layer clip" id="workflow-step-3-dot" data-start="12" data-duration="4" style="left: 112px; top: 796px; width: 64px; height: 64px; --layer-fill: #2c79ff; --layer-radius: 32px"></div>
+        <div class="layer shape-layer clip" id="workflow-step-4-dot" data-start="12" data-duration="4" style="left: 112px; top: 1000px; width: 64px; height: 64px; --layer-fill: #24ad7d; --layer-radius: 32px"></div>
+        <div class="layer shape-layer clip" id="workflow-step-5-dot" data-start="12" data-duration="4" style="left: 112px; top: 1204px; width: 64px; height: 64px; --layer-fill: #24ad7d; --layer-radius: 32px"></div>
+        <div class="layer text-layer clip" id="workflow-step-1" data-start="12" data-duration="4" style="left: 216px; top: 392px; width: 360px; height: 46px; --layer-color: #14293c; --layer-font-size: 42px; --layer-font-weight: 800">Topic</div>
+        <div class="layer text-layer clip" id="workflow-step-2" data-start="12" data-duration="4" style="left: 216px; top: 596px; width: 520px; height: 46px; --layer-color: #14293c; --layer-font-size: 42px; --layer-font-weight: 800">Research &amp; script</div>
+        <div class="layer text-layer clip" id="workflow-step-3" data-start="12" data-duration="4" style="left: 216px; top: 800px; width: 520px; height: 46px; --layer-color: #14293c; --layer-font-size: 42px; --layer-font-weight: 800">Storyboard &amp; assets</div>
+        <div class="layer text-layer clip" id="workflow-step-4" data-start="12" data-duration="4" style="left: 216px; top: 1004px; width: 520px; height: 46px; --layer-color: #14293c; --layer-font-size: 42px; --layer-font-weight: 800">HTML composition</div>
+        <div class="layer text-layer clip" id="workflow-step-5" data-start="12" data-duration="4" style="left: 216px; top: 1208px; width: 520px; height: 46px; --layer-color: #14293c; --layer-font-size: 42px; --layer-font-weight: 800">Test, render &amp; QA</div>
+        <div class="layer shape-layer clip" id="workflow-work-badge" data-start="12" data-duration="4" style="left: 732px; top: 508px; width: 214px; height: 74px; --layer-fill: rgba(44, 121, 255, 0.10); --layer-border: 1px solid rgba(44, 121, 255, 0.20); --layer-radius: 37px"></div>
+        <div class="layer text-layer clip" id="workflow-work-text" data-start="12" data-duration="4" style="left: 800px; top: 530px; width: 90px; height: 30px; --layer-color: #235d9b; --layer-font-size: 30px; --layer-font-weight: 850">Work</div>
+        <div class="layer shape-layer clip" id="workflow-codex-badge" data-start="12" data-duration="4" style="left: 664px; top: 1116px; width: 282px; height: 74px; --layer-fill: rgba(36, 173, 125, 0.10); --layer-border: 1px solid rgba(36, 173, 125, 0.22); --layer-radius: 37px"></div>
+        <div class="layer text-layer clip" id="workflow-codex-text" data-start="12" data-duration="4" style="left: 706px; top: 1138px; width: 210px; height: 30px; --layer-color: #16684d; --layer-font-size: 28px; --layer-font-weight: 850">Codex + HyperFrames</div>
+        <div class="layer text-layer clip" id="workflow-closing" data-start="12" data-duration="4" style="left: 84px; top: 1548px; width: 920px; height: 150px; --layer-color: #14293c; --layer-font-size: 52px; --layer-font-weight: 820; --layer-line-height: 1.02">Work lập kế hoạch. Codex và HyperFrames biến nó thành video.</div>
+        <div class="layer shape-layer clip" id="workflow-progress-base" data-start="12" data-duration="4" style="left: 88px; top: 1770px; width: 904px; height: 8px; --layer-fill: rgba(20, 41, 60, 0.12); --layer-radius: 8px"></div>
+        <div class="layer shape-layer clip" id="workflow-progress-fill" data-start="12" data-duration="4" style="left: 88px; top: 1770px; width: 904px; height: 8px; --layer-fill: #24ad7d; --layer-radius: 8px"></div>
+      </section>
+    </div>
+  </body>
+</html>

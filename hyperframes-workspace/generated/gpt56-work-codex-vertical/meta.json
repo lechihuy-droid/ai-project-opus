@@ -1,0 +1,10 @@
+{
+  "id": "gpt56-work-codex-vertical",
+  "title": "GPT-5.6, Work và Codex",
+  "duration": 16,
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "assets": [],
+  "source": "scene-json-to-hyperframes"
+}

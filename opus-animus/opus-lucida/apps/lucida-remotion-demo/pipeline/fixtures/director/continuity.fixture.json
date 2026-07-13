@@ -1,0 +1,52 @@
+{
+  "fixtureId": "continuity",
+  "continuityCases": [
+    {
+      "id": "valid-dominant-outro-return",
+      "intents": ["explain", "list", "system-architecture", "process", "summarize", "takeaway"],
+      "selectedFamilies": [
+        "technical-editorial",
+        "minimal-education",
+        "technical-editorial",
+        "paper-notebook",
+        "technical-editorial",
+        "technical-editorial"
+      ],
+      "expect": {
+        "valid": true,
+        "dominantFamily": "technical-editorial"
+      }
+    },
+    {
+      "id": "invalid-too-many-families",
+      "intents": ["hook", "explain", "summarize", "process", "use-case", "takeaway"],
+      "selectedFamilies": [
+        "cinematic-type",
+        "technical-editorial",
+        "dashboard-data",
+        "minimal-education",
+        "paper-notebook",
+        "cinematic-type"
+      ],
+      "expect": {
+        "valid": false,
+        "errors": ["maxVisualFamiliesForShort", "dominantFamilyMinimumShare"]
+      }
+    },
+    {
+      "id": "invalid-outro-does-not-return",
+      "intents": ["explain", "system-architecture", "list", "process", "takeaway"],
+      "selectedFamilies": [
+        "technical-editorial",
+        "technical-editorial",
+        "technical-editorial",
+        "minimal-education",
+        "minimal-education"
+      ],
+      "expect": {
+        "valid": false,
+        "errors": ["returnToDominantFamilyForOutro"]
+      }
+    }
+  ]
+}

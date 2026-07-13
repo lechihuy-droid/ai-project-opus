@@ -1,10 +1,21 @@
 {
   "version": 1,
   "defaultBrand": "lucida_dark_ai",
+  "packageRegistry": {
+    "status": "experimental",
+    "packageRoot": "design/visual-library/styles",
+    "plannedIdsSource": "src/styles/types.ts#plannedStyleFamilyIds",
+    "notes": "Production entries are package-backed style families. Legacy generic entries remain alias-only for resolver compatibility and are not production packages."
+  },
   "families": [
     {
       "id": "cinematic-hook",
       "label": "Cinematic Hook",
+      "entryType": "legacy-alias",
+      "alias": true,
+      "production": false,
+      "status": "alias",
+      "aliasTo": ["cinematic-type"],
       "bestFor": [
         "hook",
         "big claim",
@@ -24,11 +35,16 @@
         "vignette-pulse"
       ],
       "density": "low",
-      "notes": "Use for the first or reset scene. One strong headline, one short supporting line."
+      "notes": "Legacy scene-purpose alias retained for existing Director selection rules. Do not treat as a production style package."
     },
     {
       "id": "repo-code",
       "label": "Repo / Code Surface",
+      "entryType": "legacy-alias",
+      "alias": true,
+      "production": false,
+      "status": "alias",
+      "aliasTo": ["terminal-command-center", "technical-editorial"],
       "bestFor": [
         "github repo reveal",
         "file tree",
@@ -48,11 +64,16 @@
         "noise-grain"
       ],
       "density": "medium",
-      "notes": "Use only when code, repo structure, or execution is central to narration."
+      "notes": "Legacy scene-purpose alias retained for existing Director selection rules. Prefer package IDs for new registry-backed selection."
     },
     {
       "id": "contrast-panel",
       "label": "Contrast Panel",
+      "entryType": "legacy-alias",
+      "alias": true,
+      "production": false,
+      "status": "alias",
+      "aliasTo": ["minimal-education", "technical-editorial"],
       "bestFor": [
         "old vs new",
         "myth vs reality",
@@ -70,11 +91,16 @@
         "gradient-shift"
       ],
       "density": "medium",
-      "notes": "Use for exactly two sides. Do not force three-plus concepts into this family."
+      "notes": "Legacy scene-purpose alias retained for existing Director selection rules. Do not count as a finished style package."
     },
     {
       "id": "pattern-list",
       "label": "Pattern List",
+      "entryType": "legacy-alias",
+      "alias": true,
+      "production": false,
+      "status": "alias",
+      "aliasTo": ["minimal-education", "paper-notebook"],
       "bestFor": [
         "enumeration",
         "framework",
@@ -94,11 +120,20 @@
         "noise-grain"
       ],
       "density": "high",
-      "notes": "Use for 3 to 6 short items. Long explanations stay in subtitle, not cards."
+      "notes": "Legacy scene-purpose alias retained for existing Director selection rules. Use package IDs for package-backed routing."
     },
     {
       "id": "workflow-process",
       "label": "Workflow Process",
+      "entryType": "legacy-alias",
+      "alias": true,
+      "production": false,
+      "status": "alias",
+      "aliasTo": [
+        "technical-editorial",
+        "paper-notebook",
+        "timeline-documentary"
+      ],
       "bestFor": [
         "step sequence",
         "pipeline",
@@ -118,11 +153,16 @@
         "starfield"
       ],
       "density": "medium",
-      "notes": "Use progress steps for sequential flow. Use diagram only when links between entities matter."
+      "notes": "Legacy scene-purpose alias retained for existing Director selection rules. It is a routing alias, not a production visual package."
     },
     {
       "id": "data-proof",
       "label": "Data Proof",
+      "entryType": "legacy-alias",
+      "alias": true,
+      "production": false,
+      "status": "alias",
+      "aliasTo": ["dashboard-data"],
       "bestFor": [
         "metric",
         "count",
@@ -142,11 +182,16 @@
         "noise-grain"
       ],
       "density": "medium",
-      "notes": "Use only when script has real numeric content. Do not invent metrics."
+      "notes": "Legacy scene-purpose alias retained for existing Director selection rules. Use only with real numeric content."
     },
     {
       "id": "asset-gallery",
       "label": "Asset Gallery",
+      "entryType": "legacy-alias",
+      "alias": true,
+      "production": false,
+      "status": "alias",
+      "aliasTo": ["product-showcase", "editorial-collage"],
       "bestFor": [
         "screenshots",
         "visual examples",
@@ -167,11 +212,16 @@
         "noise-grain"
       ],
       "density": "high",
-      "notes": "Use only with usable assets marked embed_asset. Style references are not embeddable."
+      "notes": "Legacy scene-purpose alias retained for existing Director selection rules. Style references are not embeddable assets."
     },
     {
       "id": "closing-cta",
       "label": "Closing CTA",
+      "entryType": "legacy-alias",
+      "alias": true,
+      "production": false,
+      "status": "alias",
+      "aliasTo": ["cinematic-type", "minimal-education", "terminal-command-center"],
       "bestFor": [
         "takeaway",
         "follow prompt",
@@ -189,11 +239,23 @@
         "starfield"
       ],
       "density": "medium",
-      "notes": "Return to the dominant visual language and avoid introducing new concepts."
+      "notes": "Legacy scene-purpose alias retained for existing Director selection rules. Return to a package-backed dominant visual language for production."
     },
     {
       "id": "terminal-command-center",
       "label": "Terminal Command Center",
+      "entryType": "style-package",
+      "production": true,
+      "availability": "available",
+      "support": "package-backed",
+      "status": "experimental",
+      "packageDir": "design/visual-library/styles/terminal-command-center",
+      "packageRef": "design/visual-library/styles/terminal-command-center/style-package.json",
+      "artifactManifestRef": "design/visual-library/styles/terminal-command-center/artifact-manifest.json",
+      "artifactRefs": {
+        "renderReport": "design/visual-library/styles/terminal-command-center/artifacts/validation-render-report.json",
+        "previewFrames": "design/visual-library/styles/terminal-command-center/artifacts/frames/"
+      },
       "bestFor": [
         "terminal MVP",
         "repo walkthrough",
@@ -206,27 +268,322 @@
         "progress-steps",
         "typewriter-subtitle"
       ],
+      "packagePreferredTemplates": [
+        "code-panel",
+        "progress-steps",
+        "typewriter-subtitle"
+      ],
       "backgroundEffects": [
         "matrix-rain",
         "grid-pulse",
         "noise-grain"
       ],
       "density": "medium",
-      "status": "prototype-created",
-      "packageRef": "design/visual-library/styles/terminal-command-center/style-package.json",
-      "validationArtifacts": {
-        "videoMap": "design/visual-library/styles/terminal-command-center/artifacts/terminal-demo-video-map.json",
-        "renderReport": "design/visual-library/styles/terminal-command-center/artifacts/validation-render-report.json",
-        "previewFrames": "design/visual-library/styles/terminal-command-center/artifacts/frames/",
-        "videoBinaryRegistered": false
+      "notes": "Package-backed terminal MVP. Generated MP4 output remains runtime-only and unregistered."
+    },
+    {
+      "id": "technical-editorial",
+      "label": "Technical Editorial",
+      "entryType": "style-package",
+      "production": true,
+      "availability": "available",
+      "support": "package-backed",
+      "status": "experimental",
+      "packageDir": "design/visual-library/styles/technical-editorial",
+      "packageRef": "design/visual-library/styles/technical-editorial/style-package.json",
+      "artifactManifestRef": "design/visual-library/styles/technical-editorial/artifact-manifest.json",
+      "artifactRefs": {
+        "renderReport": "design/visual-library/styles/technical-editorial/artifacts/render-report.json",
+        "previewFrames": "design/visual-library/styles/technical-editorial/artifacts/frames/"
       },
-      "sourceArtifacts": {
-        "ingestConfig": "pipeline/fixtures/visual-reference-flow.json",
-        "rawInput": "design/visual-library/styles/terminal-command-center/artifacts/visual-reference-raw-input.json",
-        "normalizedInput": "design/visual-library/styles/terminal-command-center/artifacts/visual-reference-normalized-input.json",
-        "sourceReview": "design/visual-library/styles/terminal-command-center/artifacts/source-review-report.json"
+      "bestFor": [
+        "architecture",
+        "research",
+        "code-aware explanation",
+        "structured evidence"
+      ],
+      "preferredTemplates": [
+        "diagram",
+        "code-panel",
+        "text-highlight"
+      ],
+      "packagePreferredTemplates": [
+        "diagram-build",
+        "annotated-summary",
+        "code-evidence"
+      ],
+      "backgroundEffects": [
+        "rule-matrix",
+        "gradient-depth"
+      ],
+      "density": "medium",
+      "notes": "Package-backed strict-grid technical family for architecture, concepts, and research explainers."
+    },
+    {
+      "id": "minimal-education",
+      "label": "Minimal Education",
+      "entryType": "style-package",
+      "production": true,
+      "availability": "available",
+      "support": "package-backed",
+      "status": "experimental",
+      "packageDir": "design/visual-library/styles/minimal-education",
+      "packageRef": "design/visual-library/styles/minimal-education/style-package.json",
+      "artifactManifestRef": "design/visual-library/styles/minimal-education/artifact-manifest.json",
+      "artifactRefs": {
+        "renderReport": "design/visual-library/styles/minimal-education/artifacts/render-report.json",
+        "previewFrames": "design/visual-library/styles/minimal-education/artifacts/frames/"
       },
-      "notes": "Terminal MVP package derived from terminal/reveal/dashboard references. Store source metadata, tokens, map, and preview frames in the library; do not register the generated MP4 as a reusable asset."
+      "bestFor": [
+        "definition",
+        "teaching",
+        "steps",
+        "structured comparison"
+      ],
+      "preferredTemplates": [
+        "animated-list",
+        "comparison-chart",
+        "text-highlight"
+      ],
+      "packagePreferredTemplates": [
+        "definition-stage",
+        "process-rail",
+        "comparison-grid"
+      ],
+      "backgroundEffects": [
+        "semantic-wash",
+        "quiet-grid"
+      ],
+      "density": "medium",
+      "notes": "Package-backed educational family with generous whitespace and restrained accent hierarchy."
+    },
+    {
+      "id": "cinematic-type",
+      "label": "Cinematic Type",
+      "entryType": "style-package",
+      "production": true,
+      "availability": "available",
+      "support": "package-backed",
+      "status": "experimental",
+      "packageDir": "design/visual-library/styles/cinematic-type",
+      "packageRef": "design/visual-library/styles/cinematic-type/style-package.json",
+      "artifactManifestRef": "design/visual-library/styles/cinematic-type/artifact-manifest.json",
+      "artifactRefs": {
+        "renderReport": "design/visual-library/styles/cinematic-type/artifacts/render-report.json",
+        "previewFrames": "design/visual-library/styles/cinematic-type/artifacts/frames/"
+      },
+      "bestFor": [
+        "hook",
+        "quote",
+        "chapter reset",
+        "transition"
+      ],
+      "preferredTemplates": [
+        "cinematic-title-intro",
+        "chapter-title",
+        "quote-card"
+      ],
+      "packagePreferredTemplates": [
+        "title-card",
+        "quote-card",
+        "chapter-reset"
+      ],
+      "backgroundEffects": [
+        "film-rule",
+        "texture-band"
+      ],
+      "density": "sparse",
+      "notes": "Package-backed oversized-type family for low-density hooks, quotes, and reset scenes."
+    },
+    {
+      "id": "dashboard-data",
+      "label": "Dashboard Data",
+      "entryType": "style-package",
+      "production": true,
+      "availability": "available",
+      "support": "package-backed",
+      "status": "experimental",
+      "packageDir": "design/visual-library/styles/dashboard-data",
+      "packageRef": "design/visual-library/styles/dashboard-data/style-package.json",
+      "artifactManifestRef": "design/visual-library/styles/dashboard-data/artifact-manifest.json",
+      "artifactRefs": {
+        "renderReport": "design/visual-library/styles/dashboard-data/artifacts/render-report.json",
+        "previewFrames": "design/visual-library/styles/dashboard-data/artifacts/frames/"
+      },
+      "bestFor": [
+        "KPI",
+        "chart",
+        "operations",
+        "structured status"
+      ],
+      "preferredTemplates": [
+        "stat-counter",
+        "chart-animation",
+        "area-chart",
+        "progress-bars"
+      ],
+      "packagePreferredTemplates": [
+        "kpi-snapshot",
+        "trend-review",
+        "operations-report"
+      ],
+      "backgroundEffects": [
+        "quiet-grid",
+        "status-wash"
+      ],
+      "density": "dense",
+      "notes": "Package-backed data family. Do not select without real structured numeric data."
+    },
+    {
+      "id": "paper-notebook",
+      "label": "Paper Notebook",
+      "entryType": "style-package",
+      "production": true,
+      "availability": "available",
+      "support": "package-backed",
+      "status": "experimental",
+      "packageDir": "design/visual-library/styles/paper-notebook",
+      "packageRef": "design/visual-library/styles/paper-notebook/style-package.json",
+      "artifactManifestRef": "design/visual-library/styles/paper-notebook/artifact-manifest.json",
+      "artifactRefs": {
+        "renderReport": "design/visual-library/styles/paper-notebook/artifacts/render-report.json",
+        "previewFrames": "design/visual-library/styles/paper-notebook/artifacts/frames/"
+      },
+      "bestFor": [
+        "notes",
+        "derivation",
+        "checklist",
+        "visible reasoning"
+      ],
+      "preferredTemplates": [
+        "animated-list",
+        "text-highlight",
+        "quote-card"
+      ],
+      "packagePreferredTemplates": [
+        "study-notes",
+        "worked-derivation",
+        "review-checklist"
+      ],
+      "backgroundEffects": [
+        "paper-grain",
+        "ruled-lines"
+      ],
+      "density": "balanced",
+      "notes": "Package-backed notebook family for study notes, process reasoning, and review checklists."
+    },
+    {
+      "id": "product-showcase",
+      "label": "Product Showcase",
+      "entryType": "style-package",
+      "production": true,
+      "availability": "available",
+      "support": "package-backed",
+      "status": "experimental",
+      "packageDir": "design/visual-library/styles/product-showcase",
+      "packageRef": "design/visual-library/styles/product-showcase/style-package.json",
+      "artifactManifestRef": "design/visual-library/styles/product-showcase/artifact-manifest.json",
+      "artifactRefs": {
+        "renderReport": "design/visual-library/styles/product-showcase/artifacts/render-report.json",
+        "previewFrames": "design/visual-library/styles/product-showcase/artifacts/frames/"
+      },
+      "bestFor": [
+        "product reveal",
+        "feature walkthrough",
+        "before after",
+        "embeddable UI assets"
+      ],
+      "preferredTemplates": [
+        "picture-in-picture",
+        "image-comparison-slider",
+        "image-zoom-reveal"
+      ],
+      "packagePreferredTemplates": [
+        "product-showcase-reveal",
+        "product-showcase-feature",
+        "product-showcase-before-after"
+      ],
+      "backgroundEffects": [
+        "noise-grain"
+      ],
+      "density": "medium",
+      "notes": "Package-backed asset-led family. Do not select without embeddable product or UI assets."
+    },
+    {
+      "id": "editorial-collage",
+      "label": "Editorial Collage",
+      "entryType": "style-package",
+      "production": true,
+      "availability": "available",
+      "support": "package-backed",
+      "status": "experimental",
+      "packageDir": "design/visual-library/styles/editorial-collage",
+      "packageRef": "design/visual-library/styles/editorial-collage/style-package.json",
+      "artifactManifestRef": "design/visual-library/styles/editorial-collage/artifact-manifest.json",
+      "artifactRefs": {
+        "renderReport": "design/visual-library/styles/editorial-collage/artifacts/render-report.json",
+        "previewFrames": "design/visual-library/styles/editorial-collage/artifacts/frames/"
+      },
+      "bestFor": [
+        "montage",
+        "evidence stack",
+        "recap",
+        "multi-source narrative"
+      ],
+      "preferredTemplates": [
+        "gallery-grid",
+        "photo-stack",
+        "masonry-gallery"
+      ],
+      "packagePreferredTemplates": [
+        "culture-montage",
+        "evidence-stack",
+        "asset-policy-recap"
+      ],
+      "backgroundEffects": [
+        "editorial-grid",
+        "print-texture"
+      ],
+      "density": "balanced",
+      "notes": "Package-backed collage family. Do not select without usable embeddable assets or deliberate placeholders."
+    },
+    {
+      "id": "timeline-documentary",
+      "label": "Timeline Documentary",
+      "entryType": "style-package",
+      "production": true,
+      "availability": "available",
+      "support": "package-backed",
+      "status": "experimental",
+      "packageDir": "design/visual-library/styles/timeline-documentary",
+      "packageRef": "design/visual-library/styles/timeline-documentary/style-package.json",
+      "artifactManifestRef": "design/visual-library/styles/timeline-documentary/artifact-manifest.json",
+      "artifactRefs": {
+        "renderReport": "design/visual-library/styles/timeline-documentary/artifacts/render-report.json",
+        "previewFrames": "design/visual-library/styles/timeline-documentary/artifacts/frames/"
+      },
+      "bestFor": [
+        "milestone",
+        "era change",
+        "chronology",
+        "documentary conclusion"
+      ],
+      "preferredTemplates": [
+        "progress-steps",
+        "lower-third",
+        "credits-roll"
+      ],
+      "packagePreferredTemplates": [
+        "milestone-sequence",
+        "era-change-record",
+        "documentary-conclusion"
+      ],
+      "backgroundEffects": [
+        "archive-grain",
+        "edge-vignette"
+      ],
+      "density": "balanced",
+      "notes": "Package-backed chronology family for dated spines, archival frames, and source-labeled case studies."
     }
   ]
 }

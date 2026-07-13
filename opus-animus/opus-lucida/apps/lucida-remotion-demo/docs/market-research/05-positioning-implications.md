@@ -54,4 +54,4 @@ Mỗi topic nên trả lời được:
 
 ## Brand promise
 
-Lucida không chỉ nói thứ gì đang hot. Lucida lọc điều đáng biết, giải thích tác động và đưa ra hành động tiếp theo.
+Xem bản chính thức tại `06-brand-strategy.md`.

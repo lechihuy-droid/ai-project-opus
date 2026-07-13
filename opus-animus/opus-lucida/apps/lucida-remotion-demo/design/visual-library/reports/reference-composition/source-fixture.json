@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "lucida-all-style-reference/v1",
+  "compositionId": "AllStyleReferenceComposition",
+  "title": "Lucida multi-style reference composition",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "durationInFrames": 1620,
+  "durationSeconds": 54,
+  "dominantFamily": "technical-editorial",
+  "familiesUsed": [
+    "technical-editorial",
+    "cinematic-type",
+    "dashboard-data",
+    "product-showcase"
+  ],
+  "productionSceneComponentsUsed": [
+    "TechnicalEditorialScene",
+    "CinematicTypeScene",
+    "DashboardDataScene",
+    "ProductShowcaseScene"
+  ],
+  "constraints": {
+    "aspectRatio": "9:16",
+    "deterministic": true,
+    "networkAssets": false,
+    "renderedMedia": "png-stills-only",
+    "mp4Generated": false,
+    "registeredInAppRoot": false,
+    "maxVisualFamiliesForShort": 4,
+    "minimumDominantFamilyShare": 0.5
+  },
+  "sequencePlan": [
+    {
+      "id": "opening-system-map",
+      "order": 1,
+      "family": "technical-editorial",
+      "component": "TechnicalEditorialScene",
+      "sceneKey": "normal",
+      "startFrame": 0,
+      "durationInFrames": 360,
+      "startSeconds": 0,
+      "durationSeconds": 12,
+      "role": "dominant-open",
+      "narrativeBeat": "Open with the system architecture so every later style has a shared evidence frame.",
+      "continuityBridge": "Grid and rule structure establish the reference spine."
+    },
+    {
+      "id": "chapter-reset",
+      "order": 2,
+      "family": "cinematic-type",
+      "component": "CinematicTypeScene",
+      "sceneKey": "hook",
+      "startFrame": 360,
+      "durationInFrames": 210,
+      "startSeconds": 12,
+      "durationSeconds": 7,
+      "role": "tension-reset",
+      "narrativeBeat": "Reframe the architecture as a viewer-facing claim before moving into proof.",
+      "continuityBridge": "Large type carries the same claim with lower density."
+    },
+    {
+      "id": "dominant-synthesis",
+      "order": 3,
+      "family": "technical-editorial",
+      "component": "TechnicalEditorialScene",
+      "sceneKey": "dense",
+      "startFrame": 570,
+      "durationInFrames": 270,
+      "startSeconds": 19,
+      "durationSeconds": 9,
+      "role": "dominant-midpoint",
+      "narrativeBeat": "Return to the technical frame before evidence styles branch so the dominant family stays above the continuity threshold.",
+      "continuityBridge": "The same grid converts the cinematic claim into an inspection-ready synthesis."
+    },
+    {
+      "id": "metric-proof",
+      "order": 4,
+      "family": "dashboard-data",
+      "component": "DashboardDataScene",
+      "sceneKey": "normal",
+      "startFrame": 840,
+      "durationInFrames": 240,
+      "startSeconds": 28,
+      "durationSeconds": 8,
+      "role": "structured-proof",
+      "narrativeBeat": "Quantify the state of the system using the production dashboard family.",
+      "continuityBridge": "Architecture evidence becomes operational status."
+    },
+    {
+      "id": "product-surface",
+      "order": 5,
+      "family": "product-showcase",
+      "component": "ProductShowcaseScene",
+      "sceneKey": "normal",
+      "startFrame": 1080,
+      "durationInFrames": 240,
+      "startSeconds": 36,
+      "durationSeconds": 8,
+      "role": "interface-proof",
+      "narrativeBeat": "Show the product surface after the metrics so the UI appears as evidence, not decoration.",
+      "continuityBridge": "Structured proof resolves into a product-first screen."
+    },
+    {
+      "id": "outro-decision-return",
+      "order": 6,
+      "family": "technical-editorial",
+      "component": "TechnicalEditorialScene",
+      "sceneKey": "edge",
+      "startFrame": 1320,
+      "durationInFrames": 300,
+      "startSeconds": 44,
+      "durationSeconds": 10,
+      "role": "dominant-outro-return",
+      "narrativeBeat": "Return to the dominant technical family to close on a decision-ready architecture frame.",
+      "continuityBridge": "The closing grid proves that the multi-style route returns to its original visual contract."
+    }
+  ],
+  "continuityRationale": {
+    "globalNarrative": "A single reference story moves from architecture to claim, synthesis, metrics, product proof, and back to architecture.",
+    "dominantFamilyChoice": "technical-editorial is the dominant family because the composition is a reference-composition QA artifact and the opening and outro both need explicit system evidence.",
+    "styleSwitchPolicy": "Each switch changes density and visual grammar only after the previous beat has established its evidence role.",
+    "outroReturn": "The final sequence uses TechnicalEditorialScene with sceneKey edge, returning to the same family that opened the composition."
+  },
+  "dominantFamilyEvidence": {
+    "family": "technical-editorial",
+    "sequenceIds": [
+      "opening-system-map",
+      "dominant-synthesis",
+      "outro-decision-return"
+    ],
+    "totalFrames": 930,
+    "totalSeconds": 31,
+    "shareOfComposition": 0.5741,
+    "isLargestFamilyShare": true,
+    "appearsInOutro": true,
+    "outroSequenceId": "outro-decision-return"
+  }
+}

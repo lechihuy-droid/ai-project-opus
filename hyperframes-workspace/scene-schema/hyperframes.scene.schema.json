@@ -109,8 +109,38 @@
         "y": { "type": "number" },
         "width": { "type": "number" },
         "height": { "type": "number" },
-        "opacity": { "type": "number", "minimum": 0, "maximum": 1 }
+        "opacity": { "type": "number", "minimum": 0, "maximum": 1 },
+        "enter": { "$ref": "#/$defs/motion" },
+        "emphasis": { "$ref": "#/$defs/motion" }
       }
+    },
+    "motion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": ["fade", "fade-up", "fade-down", "slide-left", "slide-right", "scale-in", "draw-x", "pulse"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["preset"],
+          "properties": {
+            "preset": {
+              "type": "string",
+              "enum": ["fade", "fade-up", "fade-down", "slide-left", "slide-right", "scale-in", "draw-x", "pulse"]
+            },
+            "delay": { "type": "number", "minimum": 0 },
+            "duration": { "type": "number", "exclusiveMinimum": 0 },
+            "ease": { "type": "string" },
+            "iterations": {
+              "oneOf": [
+                { "type": "number", "exclusiveMinimum": 0 },
+                { "type": "string", "enum": ["infinite"] }
+              ]
+            }
+          }
+        }
+      ]
     },
     "animation": {
       "type": "object",

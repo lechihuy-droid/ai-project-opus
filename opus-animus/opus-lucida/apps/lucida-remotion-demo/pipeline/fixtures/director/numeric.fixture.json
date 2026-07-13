@@ -1,0 +1,54 @@
+{
+  "fixtureId": "numeric",
+  "cases": [
+    {
+      "id": "structured-metrics-select-dashboard",
+      "scene": {
+        "intent": "summarize",
+        "content": {
+          "headlineChars": 70,
+          "bodyChars": 220,
+          "bulletItems": 3,
+          "codeLines": 0,
+          "dataSeries": 2,
+          "assetClassifications": [],
+          "hasStructuredNumericData": true,
+          "datedEvents": 0,
+          "hasSourcedChronology": false
+        }
+      },
+      "expect": {
+        "selected": "dashboard-data",
+        "rejected": [
+          {"familyId": "timeline-documentary", "filterId": "timeline-dated-events"},
+          {"familyId": "paper-notebook", "filterId": "data-series-capacity"},
+          {"familyId": "editorial-collage", "filterId": "data-series-capacity"}
+        ]
+      }
+    },
+    {
+      "id": "dashboard-rejected-without-real-numbers",
+      "scene": {
+        "intent": "summarize",
+        "content": {
+          "headlineChars": 70,
+          "bodyChars": 220,
+          "bulletItems": 3,
+          "codeLines": 0,
+          "dataSeries": 2,
+          "assetClassifications": [],
+          "hasStructuredNumericData": false,
+          "datedEvents": 0,
+          "hasSourcedChronology": false
+        }
+      },
+      "expect": {
+        "selected": "technical-editorial",
+        "rejected": [
+          {"familyId": "dashboard-data", "filterId": "dashboard-requires-structured-numeric-data"},
+          {"familyId": "timeline-documentary", "filterId": "timeline-dated-events"}
+        ]
+      }
+    }
+  ]
+}

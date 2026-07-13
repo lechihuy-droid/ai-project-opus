@@ -1,0 +1,29 @@
+{
+  "fixtureId": "code",
+  "cases": [
+    {
+      "id": "code-heavy-prefers-terminal",
+      "scene": {
+        "intent": "code-explanation",
+        "content": {
+          "headlineChars": 64,
+          "bodyChars": 210,
+          "bulletItems": 2,
+          "codeLines": 9,
+          "dataSeries": 0,
+          "assetClassifications": [],
+          "hasStructuredNumericData": false,
+          "datedEvents": 0,
+          "hasSourcedChronology": false
+        }
+      },
+      "expect": {
+        "selected": "terminal-command-center",
+        "rejected": [
+          {"familyId": "technical-editorial", "filterId": "code-line-capacity"},
+          {"familyId": "paper-notebook", "filterId": "code-line-capacity"}
+        ]
+      }
+    }
+  ]
+}
