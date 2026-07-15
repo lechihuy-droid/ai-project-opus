@@ -72,4 +72,7 @@ CẤM:  src/** (trừ khi cần export hằng số scale từ SubtitleBar — ch
 
 ## Kết quả build (append sau khi xong)
 
-(chưa có)
+- 2026-07-14: Hoàn thành Phase B1–B3. Schema enforce brand `lucida-ai-v1` và series enum; brand validator đọc config, chấm điểm/ghi lỗi/cảnh báo và được gọi tự động sau schema validation; visual evidence bridge giữ nguyên provenance từ normalized events.
+- Đã thêm fixtures pass/fail 2 scene và npm scripts `validate:brand`, `evidence:export`.
+- Verify pass: `node --check` cho ba script liên quan; brand fixture pass exit 0 (score 1.00); brand fixture fail exit 1 (score 0.50); root `validate:videomap`; export 8 evidence blocks hợp lệ; `npm run lint`.
+- Claude re-verify độc lập (2026-07-14): exit codes đúng (pass=0/fail=1), violations báo đúng lỗi (nền sáng + series sai), WARN intent coverage hoạt động, evidence blocks giữ provenance. Phase B4 (skill updates) hoàn thành cùng ngày: remotion-visual-qa (brand QA checklist gates 3/4/5 + scorecard), script-template-mapper (brand block bắt buộc), source-ingestor-cleaner (visual-evidence input).

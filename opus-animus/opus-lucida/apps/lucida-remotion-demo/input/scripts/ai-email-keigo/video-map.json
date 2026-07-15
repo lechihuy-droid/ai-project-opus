@@ -1,0 +1,607 @@
+{
+  "video": {
+    "title": "Dùng AI viết email kính ngữ tiếng Nhật trong 5 phút",
+    "subtitle": "Ba bước ra email đúng lễ",
+    "format": "vertical_9_16",
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "durationSec": 52,
+    "style": "lucida-dark-editorial",
+    "language": "vi"
+  },
+  "brand": {
+    "id": "lucida-ai-v1",
+    "series": "lucida-work",
+    "contractRef": "docs/market-research/11-pipeline-contract.md"
+  },
+  "theme": {
+    "name": "lucida_dark_gold_electric_blue",
+    "skin": "premium-gold",
+    "accent": "#D2B47A",
+    "accentSoft": "#4CC2FF",
+    "background": "#0B0C0E",
+    "foreground": "#F4F0E8",
+    "muted": "#A7A39B"
+  },
+  "assets": [],
+  "scenes": [
+    {
+      "id": "hook",
+      "intent": "hook",
+      "templateId": "cinematic-title-intro",
+      "templateRole": "scene",
+      "layout": "oversized-type",
+      "segmentIds": [
+        "seg-001"
+      ],
+      "durationSec": 7,
+      "headline": "30 phút cho một email kính ngữ?",
+      "subtitle": {
+        "text": "Viết email kính ngữ tiếng Nhật vẫn là việc ngốn thời gian nhất của dân văn phòng nước ngoài. Một email xin lỗi khách hàng có thể mất ba mươi phút để viết cho đúng lễ.",
+        "groups": [
+          {
+            "text": "Viết email kính ngữ tiếng Nhật vẫn là việc ngốn thời gian nhất của dân văn phòng nước ngoài.",
+            "lines": [
+              [
+                "Viết",
+                "email",
+                "kính",
+                "ngữ",
+                "tiếng",
+                "Nhật",
+                "vẫn",
+                "là",
+                "việc",
+                "ngốn"
+              ],
+              [
+                "thời",
+                "gian",
+                "nhất",
+                "của",
+                "dân",
+                "văn",
+                "phòng",
+                "nước",
+                "ngoài."
+              ]
+            ]
+          },
+          {
+            "text": "Một email xin lỗi khách hàng có thể mất ba mươi phút để viết cho đúng lễ.",
+            "lines": [
+              [
+                "Một",
+                "email",
+                "xin",
+                "lỗi",
+                "khách",
+                "hàng",
+                "có",
+                "thể",
+                "mất"
+              ],
+              [
+                "ba",
+                "mươi",
+                "phút",
+                "để",
+                "viết",
+                "cho",
+                "đúng",
+                "lễ."
+              ]
+            ]
+          }
+        ]
+      },
+      "content": {
+        "kicker": "01 / HOOK",
+        "title": "30 phút cho một email kính ngữ?",
+        "subtitle": "AI rút xuống 5 phút, nếu dùng đúng cách.",
+        "items": [
+          {
+            "label": "Kính ngữ",
+            "note": "đúng lễ"
+          },
+          {
+            "label": "30 phút",
+            "note": "mỗi email"
+          },
+          {
+            "label": "AI",
+            "note": "bản nháp"
+          },
+          {
+            "label": "5 phút",
+            "note": "hoàn thành"
+          }
+        ],
+        "footer": "Email kính ngữ tiếng Nhật."
+      },
+      "style": {
+        "accent": "#D2B47A",
+        "density": "low",
+        "safeArea": "tiktok"
+      },
+      "motion": [
+        "slow_zoom",
+        "title_reveal",
+        "chip_stagger"
+      ],
+      "reason": "Hook pain-point cụ thể theo editorial voice; oversized-type cho stakes ngay 3 giây đầu."
+    },
+    {
+      "id": "setup",
+      "intent": "process",
+      "templateId": "chapter-title",
+      "templateRole": "scene",
+      "layout": "center-stage",
+      "segmentIds": [
+        "seg-002"
+      ],
+      "durationSec": 5,
+      "headline": "AI xử lý tốt, nếu đưa đúng ngữ cảnh",
+      "subtitle": {
+        "text": "AI xử lý tốt việc này, nếu bạn đưa đúng ngữ cảnh. Cách làm gồm ba bước.",
+        "groups": [
+          {
+            "text": "AI xử lý tốt việc này, nếu bạn đưa đúng ngữ cảnh.",
+            "lines": [
+              [
+                "AI",
+                "xử",
+                "lý",
+                "tốt",
+                "việc",
+                "này,"
+              ],
+              [
+                "nếu",
+                "bạn",
+                "đưa",
+                "đúng",
+                "ngữ",
+                "cảnh."
+              ]
+            ]
+          },
+          {
+            "text": "Cách làm gồm ba bước.",
+            "lines": [
+              [
+                "Cách",
+                "làm",
+                "gồm",
+                "ba",
+                "bước."
+              ]
+            ]
+          }
+        ]
+      },
+      "content": {
+        "kicker": "02 / CÁCH LÀM",
+        "title": "AI xử lý tốt, nếu đưa đúng ngữ cảnh",
+        "subtitle": "Quy trình gồm ba bước.",
+        "items": [
+          {
+            "label": "Ngữ cảnh"
+          },
+          {
+            "label": "Mục đích"
+          },
+          {
+            "label": "Hai phiên bản"
+          }
+        ],
+        "footer": "Ngữ cảnh -> Mục đích -> Phiên bản."
+      },
+      "style": {
+        "accent": "#D2B47A",
+        "density": "low",
+        "safeArea": "tiktok"
+      },
+      "motion": [
+        "title_reveal",
+        "underline_grow"
+      ],
+      "reason": "Chuyển từ pain sang phương pháp; chapter-title đánh dấu section, tránh lặp layout hook."
+    },
+    {
+      "id": "steps",
+      "intent": "process",
+      "templateId": "progress-steps",
+      "templateRole": "scene",
+      "layout": "top-title",
+      "segmentIds": [
+        "seg-003"
+      ],
+      "durationSec": 18,
+      "headline": "Ba bước cho một email đúng lễ",
+      "subtitle": {
+        "text": "Bước một: dán email cần trả lời vào, kèm quan hệ với người nhận. Ví dụ: khách hàng lâu năm, cấp trên, hay đồng nghiệp phòng khác. Bước hai: nói rõ mục đích, xin lỗi, từ chối, hay nhắc tiến độ. Bước ba: yêu cầu hai phiên bản, một trang trọng và một ngắn gọn. Rồi chọn bản phù hợp và chỉnh lại tên riêng, con số, ngày tháng.",
+        "groups": [
+          {
+            "text": "Bước một: dán email cần trả lời vào, kèm quan hệ với người nhận.",
+            "lines": [
+              [
+                "Bước",
+                "một:",
+                "dán",
+                "email",
+                "cần",
+                "trả",
+                "lời"
+              ],
+              [
+                "vào,",
+                "kèm",
+                "quan",
+                "hệ",
+                "với",
+                "người",
+                "nhận."
+              ]
+            ]
+          },
+          {
+            "text": "Ví dụ: khách hàng lâu năm, cấp trên, hay đồng nghiệp phòng khác.",
+            "lines": [
+              [
+                "Ví",
+                "dụ:",
+                "khách",
+                "hàng",
+                "lâu",
+                "năm,",
+                "cấp"
+              ],
+              [
+                "trên,",
+                "hay",
+                "đồng",
+                "nghiệp",
+                "phòng",
+                "khác."
+              ]
+            ]
+          },
+          {
+            "text": "Bước hai: nói rõ mục đích, xin lỗi, từ chối, hay nhắc tiến độ.",
+            "lines": [
+              [
+                "Bước",
+                "hai:",
+                "nói",
+                "rõ",
+                "mục",
+                "đích,",
+                "xin"
+              ],
+              [
+                "lỗi,",
+                "từ",
+                "chối,",
+                "hay",
+                "nhắc",
+                "tiến",
+                "độ."
+              ]
+            ]
+          },
+          {
+            "text": "Bước ba: yêu cầu hai phiên bản, một trang trọng và một ngắn gọn.",
+            "lines": [
+              [
+                "Bước",
+                "ba:",
+                "yêu",
+                "cầu",
+                "hai",
+                "phiên",
+                "bản,"
+              ],
+              [
+                "một",
+                "trang",
+                "trọng",
+                "và",
+                "một",
+                "ngắn",
+                "gọn."
+              ]
+            ]
+          },
+          {
+            "text": "Rồi chọn bản phù hợp và chỉnh lại tên riêng, con số, ngày tháng.",
+            "lines": [
+              [
+                "Rồi",
+                "chọn",
+                "bản",
+                "phù",
+                "hợp",
+                "và",
+                "chỉnh"
+              ],
+              [
+                "lại",
+                "tên",
+                "riêng,",
+                "con",
+                "số,",
+                "ngày",
+                "tháng."
+              ]
+            ]
+          }
+        ]
+      },
+      "content": {
+        "kicker": "03 / BA BƯỚC",
+        "title": "Ba bước cho một email đúng lễ",
+        "subtitle": "Dán ngữ cảnh, nêu mục đích, chọn phiên bản.",
+        "steps": [
+          {
+            "label": "Dán email + quan hệ",
+            "note": "Khách lâu năm, cấp trên, đồng nghiệp"
+          },
+          {
+            "label": "Nói rõ mục đích",
+            "note": "Xin lỗi, từ chối, nhắc tiến độ"
+          },
+          {
+            "label": "Yêu cầu 2 phiên bản",
+            "note": "Trang trọng và ngắn gọn"
+          },
+          {
+            "label": "Chỉnh chi tiết",
+            "note": "Tên riêng, con số, ngày tháng"
+          }
+        ],
+        "footer": "Từ ngữ cảnh đến email hoàn chỉnh."
+      },
+      "style": {
+        "accent": "#D2B47A",
+        "density": "medium",
+        "safeArea": "tiktok"
+      },
+      "motion": [
+        "step_progress",
+        "chip_stagger"
+      ],
+      "reason": "Nội dung quy trình 3 bước khớp progress-steps; scene dài nhất mang phần how-to."
+    },
+    {
+      "id": "caution",
+      "intent": "quote",
+      "templateId": "quote-card",
+      "templateRole": "scene",
+      "layout": "bottom-statement",
+      "segmentIds": [
+        "seg-004"
+      ],
+      "durationSec": 6,
+      "headline": "Đọc lại luôn là bước bắt buộc",
+      "subtitle": {
+        "text": "AI đôi khi dùng kính ngữ quá mức, nên đọc lại luôn là bước bắt buộc.",
+        "groups": [
+          {
+            "text": "AI đôi khi dùng kính ngữ quá mức, nên đọc lại luôn là bước bắt buộc.",
+            "lines": [
+              [
+                "AI",
+                "đôi",
+                "khi",
+                "dùng",
+                "kính",
+                "ngữ",
+                "quá",
+                "mức,"
+              ],
+              [
+                "nên",
+                "đọc",
+                "lại",
+                "luôn",
+                "là",
+                "bước",
+                "bắt",
+                "buộc."
+              ]
+            ]
+          }
+        ]
+      },
+      "content": {
+        "kicker": "04 / LƯU Ý",
+        "title": "Đọc lại luôn là bước bắt buộc",
+        "subtitle": "AI đôi khi dùng kính ngữ quá mức.",
+        "quote": "Kính ngữ quá mức cũng là một lỗi lịch sự.",
+        "attribution": "Luôn kiểm tra trước khi gửi.",
+        "footer": "AI viết nháp, bạn chịu trách nhiệm."
+      },
+      "style": {
+        "accent": "#D2B47A",
+        "density": "low",
+        "safeArea": "tiktok"
+      },
+      "motion": [
+        "title_reveal",
+        "underline_grow"
+      ],
+      "reason": "Caution một luận điểm — quote-card nhấn mạnh; giữ evidence integrity, không overclaim."
+    },
+    {
+      "id": "payoff",
+      "intent": "comparison",
+      "templateId": "split-screen",
+      "templateRole": "scene",
+      "layout": "full-bleed-visual",
+      "segmentIds": [
+        "seg-005"
+      ],
+      "durationSec": 8,
+      "headline": "30 phút xuống 5 phút",
+      "subtitle": {
+        "text": "Ba mươi phút mỗi email có thể rút xuống còn năm phút. Thời gian tiết kiệm được dành cho việc mà chỉ bạn làm được.",
+        "groups": [
+          {
+            "text": "Ba mươi phút mỗi email có thể rút xuống còn năm phút.",
+            "lines": [
+              [
+                "Ba",
+                "mươi",
+                "phút",
+                "mỗi",
+                "email",
+                "có"
+              ],
+              [
+                "thể",
+                "rút",
+                "xuống",
+                "còn",
+                "năm",
+                "phút."
+              ]
+            ]
+          },
+          {
+            "text": "Thời gian tiết kiệm được dành cho việc mà chỉ bạn làm được.",
+            "lines": [
+              [
+                "Thời",
+                "gian",
+                "tiết",
+                "kiệm",
+                "được",
+                "dành",
+                "cho"
+              ],
+              [
+                "việc",
+                "mà",
+                "chỉ",
+                "bạn",
+                "làm",
+                "được."
+              ]
+            ]
+          }
+        ]
+      },
+      "content": {
+        "kicker": "05 / TRƯỚC / SAU",
+        "title": "30 phút xuống 5 phút",
+        "subtitle": "Thời gian dành cho việc chỉ bạn làm được.",
+        "panels": [
+          {
+            "title": "Trước",
+            "body": "30 phút tự viết, tra kính ngữ, sửa từng câu.",
+            "tone": "cool"
+          },
+          {
+            "title": "Sau",
+            "body": "5 phút: AI nháp, bạn duyệt và chỉnh chi tiết.",
+            "tone": "warm"
+          }
+        ],
+        "footer": "Tiết kiệm cho việc quan trọng hơn."
+      },
+      "style": {
+        "accent": "#D2B47A",
+        "density": "low",
+        "safeArea": "tiktok"
+      },
+      "motion": [
+        "panel_slide",
+        "title_reveal"
+      ],
+      "reason": "So sánh trước/sau đúng contract split-screen; payoff định lượng có wording 'có thể' đúng mức."
+    },
+    {
+      "id": "cta",
+      "intent": "takeaway",
+      "templateId": "end-card",
+      "templateRole": "cta",
+      "layout": "center-stage",
+      "segmentIds": [
+        "seg-006"
+      ],
+      "durationSec": 8,
+      "headline": "Lưu lại quy trình ba bước này",
+      "subtitle": {
+        "text": "Lưu lại quy trình ba bước này để thử ngay trong tuần. Theo dõi Lucida để biết thay đổi AI nào thực sự đáng quan tâm.",
+        "groups": [
+          {
+            "text": "Lưu lại quy trình ba bước này để thử ngay trong tuần.",
+            "lines": [
+              [
+                "Lưu",
+                "lại",
+                "quy",
+                "trình",
+                "ba",
+                "bước"
+              ],
+              [
+                "này",
+                "để",
+                "thử",
+                "ngay",
+                "trong",
+                "tuần."
+              ]
+            ]
+          },
+          {
+            "text": "Theo dõi Lucida để biết thay đổi AI nào thực sự đáng quan tâm.",
+            "lines": [
+              [
+                "Theo",
+                "dõi",
+                "Lucida",
+                "để",
+                "biết",
+                "thay",
+                "đổi"
+              ],
+              [
+                "AI",
+                "nào",
+                "thực",
+                "sự",
+                "đáng",
+                "quan",
+                "tâm."
+              ]
+            ]
+          }
+        ]
+      },
+      "content": {
+        "kicker": "06 / CTA",
+        "title": "Lưu lại quy trình ba bước này",
+        "subtitle": "Thử ngay trong tuần.",
+        "cta": {
+          "label": "Follow Lucida",
+          "detail": "Biết thay đổi AI nào thực sự đáng quan tâm."
+        },
+        "footer": "Lucida — hiểu AI sớm, làm việc đi trước."
+      },
+      "style": {
+        "accent": "#D2B47A",
+        "density": "low",
+        "safeArea": "tiktok"
+      },
+      "motion": [
+        "title_reveal",
+        "chip_stagger"
+      ],
+      "reason": "Save CTA + Follow CTA theo editorial voice; end-card khép về brand grammar."
+    }
+  ]
+}

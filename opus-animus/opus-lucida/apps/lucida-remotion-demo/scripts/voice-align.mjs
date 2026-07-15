@@ -79,7 +79,7 @@ function whisperWords(whisperxJson) {
 
 export function reconcileApprovedScript(approvedScript, whisperxJson) {
   const sentences = scriptSentences(approvedScript);
-  const scriptWords = sentences.flatMap((sentence) => tokenize(sentence.text).map((word) => ({...word, ...sentence})));
+  const scriptWords = sentences.flatMap((sentence) => tokenize(sentence.text).map((word) => ({...sentence, ...word})));
   const transcriptWords = whisperWords(whisperxJson);
   const alignedWords = scriptWords.map((word) => ({...word, startMs: null, endMs: null}));
   let scriptIndex = 0;
@@ -236,10 +236,12 @@ function runCli() {
 
   const whisperxDir = join(audioDir, 'whisperx');
   mkdirSync(whisperxDir, {recursive: true});
+  // whisperx VAD/align in this venv emits bogus fixed timestamps (see docs/spike-vieneu-chunking.md);
+  // faster-whisper word timestamps are used instead via scripts/fw-transcribe.py.
   const result = spawnSync(pythonPath, [
-    '-m', 'whisperx', voicePath,
-    '--language', 'vi', '--model', 'small', '--device', 'cpu', '--compute_type', 'int8',
-    '--output_format', 'json', '--output_dir', whisperxDir,
+    join(root, 'scripts', 'fw-transcribe.py'), voicePath,
+    '--language', 'vi', '--model', 'small',
+    '--out', join(whisperxDir, 'voice.json'),
   ], {cwd: root, stdio: 'inherit', env: {...process.env, PYTHONIOENCODING: 'utf-8', PYTHONUTF8: '1'}});
   if (result.error) throw result.error;
   if (result.status !== 0) throw new Error(`WhisperX exited with code ${result.status}`);

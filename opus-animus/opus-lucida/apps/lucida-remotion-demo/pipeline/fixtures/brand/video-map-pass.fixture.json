@@ -1,0 +1,11 @@
+{
+  "brand": { "id": "lucida-ai-v1", "series": "lucida-now", "contractRef": "docs/market-research/11-pipeline-contract.md" },
+  "video": { "title": "Lucida NOW", "subtitle": "Fixture", "format": "9:16", "width": 1080, "height": 1920, "fps": 30, "durationSec": 6, "style": "editorial", "language": "vi" },
+  "theme": { "name": "dark", "accent": "#4CC2FF", "accentSoft": "#17384A", "background": "#081018", "foreground": "#F5F7FA", "muted": "#87919C" },
+  "assets": [],
+  "timedCaptions": [{ "phrase": "Tin AI mới cần được kiểm chứng ngay hôm nay." }],
+  "scenes": [
+    { "id": "hook", "intent": "hook", "templateId": "chapter-title", "templateRole": "scene", "durationSec": 3, "headline": "Điều gì vừa đổi?", "subtitle": { "text": "Tín hiệu mới." }, "content": {}, "style": { "density": "low", "safeArea": "tiktok" }, "motion": [], "layout": "oversized-type", "reason": "Mở câu chuyện." },
+    { "id": "takeaway", "intent": "takeaway", "templateId": "end-card", "templateRole": "scene", "durationSec": 3, "headline": "Bước tiếp theo", "subtitle": { "text": "Kiểm tra nguồn." }, "content": {}, "style": { "density": "low", "safeArea": "tiktok" }, "motion": [], "layout": "bottom-statement", "reason": "Chốt hành động." }
+  ]
+}

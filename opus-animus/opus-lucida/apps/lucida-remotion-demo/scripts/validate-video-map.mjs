@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { spawnSync } from "node:child_process";
 
 const appRoot = process.cwd();
 const read = (p) =>
@@ -12,7 +13,8 @@ const videoMapPath = process.argv[2] ?? "video-map.json";
 // spirit as scripts/validate-visual-input-contracts.mjs. Supports the
 // keywords actually used by schemas/video-map.schema.json: type, enum,
 // const, required, properties, items, minItems, minLength,
-// minimum/exclusiveMinimum, additionalProperties.
+// minimum/exclusiveMinimum, additionalProperties, allOf, if/then/else,
+// and boolean property schemas.
 const typeOf = (value) => {
   if (value === null) return "null";
   if (Array.isArray(value)) return "array";
@@ -20,6 +22,23 @@ const typeOf = (value) => {
 };
 
 const validate = (schema, value, pointer, errors) => {
+  if (schema === true) return;
+  if (schema === false) {
+    errors.push(`${pointer}: property is not allowed in this video-map mode`);
+    return;
+  }
+
+  for (const branch of schema.allOf ?? []) {
+    validate(branch, value, pointer, errors);
+  }
+
+  if (schema.if) {
+    const conditionErrors = [];
+    validate(schema.if, value, pointer, conditionErrors);
+    const selected = conditionErrors.length === 0 ? schema.then : schema.else;
+    if (selected) validate(selected, value, pointer, errors);
+  }
+
   if (schema.const !== undefined && value !== schema.const) {
     errors.push(`${pointer}: expected const ${JSON.stringify(schema.const)}, got ${JSON.stringify(value)}`);
     return;
@@ -120,7 +139,7 @@ const scenes = videoMap.scenes ?? [];
 const effectiveLayouts = scenes.map((scene) => scene.layout ?? "top-title");
 
 // (a) Two consecutive scenes with the same effective layout.
-for (let i = 1; i < scenes.length; i += 1) {
+for (let i = 1; videoMap.mode !== "continuous" && i < scenes.length; i += 1) {
   if (effectiveLayouts[i] === effectiveLayouts[i - 1]) {
     warnings.push(
       `Scenes "${scenes[i - 1].id}" and "${scenes[i].id}" use the same effective layout "${effectiveLayouts[i]}" back to back; vary layouts to avoid scene monotony.`,
@@ -129,7 +148,7 @@ for (let i = 1; i < scenes.length; i += 1) {
 }
 
 // (b) Fewer than 3 distinct layouts when the video has 5+ scenes.
-if (scenes.length >= 5) {
+if (videoMap.mode !== "continuous" && scenes.length >= 5) {
   const distinct = new Set(effectiveLayouts);
   if (distinct.size < 3) {
     warnings.push(
@@ -139,16 +158,18 @@ if (scenes.length >= 5) {
 }
 
 // (c) hook / takeaway scenes should not fall back to the default top-title.
-scenes.forEach((scene, index) => {
-  if (
-    (scene.intent === "hook" || scene.intent === "takeaway") &&
-    effectiveLayouts[index] === "top-title"
-  ) {
-    warnings.push(
-      `Scene "${scene.id}" (intent ${scene.intent}) uses top-title; hook/takeaway beats land harder with center-stage, oversized-type, or bottom-statement.`,
-    );
-  }
-});
+if (videoMap.mode !== "continuous") {
+  scenes.forEach((scene, index) => {
+    if (
+      (scene.intent === "hook" || scene.intent === "takeaway") &&
+      effectiveLayouts[index] === "top-title"
+    ) {
+      warnings.push(
+        `Scene "${scene.id}" (intent ${scene.intent}) uses top-title; hook/takeaway beats land harder with center-stage, oversized-type, or bottom-statement.`,
+      );
+    }
+  });
+}
 
 for (const warning of warnings) {
   console.warn(`WARNING: ${warning}`);
@@ -162,3 +183,16 @@ if (errors.length > 0) {
 }
 
 console.log(`Video map validation passed: ${videoMap.scenes.length} scenes against ${schemaPath}.`);
+
+if (videoMap.brand !== undefined) {
+  const brandValidatorPath = path.resolve(appRoot, "scripts/validate-brand.mjs");
+  const inputPath = path.resolve(appRoot, videoMapPath);
+  const result = spawnSync(process.execPath, [brandValidatorPath, "--input", inputPath], {
+    stdio: "inherit",
+  });
+  if (result.error) {
+    console.error(`ERROR: Could not run brand validator: ${result.error.message}`);
+    process.exit(1);
+  }
+  process.exit(result.status ?? 1);
+}

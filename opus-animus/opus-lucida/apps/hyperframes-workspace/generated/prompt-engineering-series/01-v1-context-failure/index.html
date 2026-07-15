@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prompt Engineering V1–V5 · V1 · CONTEXT</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      html, body {
+        margin: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #080b10;
+        font-family: Inter, Segoe UI, Arial, sans-serif;
+      }
+      #stage {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        color: #f5f7fb;
+        background: #080b10;
+      }
+      .scene {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+      .layer {
+        position: absolute;
+        box-sizing: border-box;
+      }
+      .text-layer {
+        color: var(--layer-color, #f5f7fb);
+        font-weight: var(--layer-font-weight, 700);
+        font-size: var(--layer-font-size, 64px);
+        line-height: var(--layer-line-height, 1.08);
+        white-space: pre-wrap;
+      }
+      .shape-layer {
+        background: var(--layer-fill, #58a6ff);
+        border: var(--layer-border, 0 solid transparent);
+        border-radius: var(--layer-radius, 0);
+      }
+      .media-layer {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .panel-layer {
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 12px;
+        background: rgba(14,20,28,0.86);
+        box-shadow: 0 28px 90px rgba(0, 0, 0, 0.34);
+      }
+      .terminal-layer, .code-layer {
+        padding: 28px;
+        font-family: "JetBrains Mono", Consolas, monospace;
+        font-size: var(--layer-font-size, 26px);
+        line-height: 1.5;
+        white-space: pre-wrap;
+      }
+      .browser-layer {
+        background: #f7f9fc;
+        color: #17202a;
+      }
+      .browser-bar {
+        height: 44px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 16px;
+        border-bottom: 1px solid rgba(0,0,0,0.08);
+        font-size: 14px;
+        color: rgba(23,32,42,0.68);
+      }
+      .browser-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #d0d7de;
+      }
+      .browser-content {
+        padding: 32px;
+        font-size: var(--layer-font-size, 34px);
+        line-height: 1.22;
+        white-space: pre-line;
+      }
+      .timeline-track {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        height: 4px;
+        transform: translateY(-50%);
+        background: rgba(255,255,255,0.18);
+      }
+      .timeline-node {
+        position: absolute;
+        top: 50%;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        background: #3ddc97;
+        box-shadow: 0 0 0 8px rgba(61,220,151,0.12);
+      }
+      @keyframes enter-x01-v1-context-failure-hook-top-rule-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #x01-v1-context-failure-hook-top-rule { opacity: 0; animation: enter-x01-v1-context-failure-hook-top-rule-draw-x 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0s both; }
+      @keyframes enter-x01-v1-context-failure-hook-episode-fade-down {
+        from { opacity: 0; transform: translateY(-32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-hook-episode { opacity: 0; animation: enter-x01-v1-context-failure-hook-episode-fade-down 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.02s both; }
+      @keyframes enter-x01-v1-context-failure-hook-label-fade-down {
+        from { opacity: 0; transform: translateY(-32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-hook-label { opacity: 0; animation: enter-x01-v1-context-failure-hook-label-fade-down 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+      @keyframes enter-x01-v1-context-failure-hook-grid-v1-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #x01-v1-context-failure-hook-grid-v1 { opacity: 0; animation: enter-x01-v1-context-failure-hook-grid-v1-draw-x 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+      @keyframes enter-x01-v1-context-failure-hook-progress-base-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #x01-v1-context-failure-hook-progress-base { opacity: 0; animation: enter-x01-v1-context-failure-hook-progress-base-fade 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both; }
+      @keyframes enter-x01-v1-context-failure-hook-progress-fill-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #x01-v1-context-failure-hook-progress-fill { opacity: 0; animation: enter-x01-v1-context-failure-hook-progress-fill-draw-x 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both; }
+      @keyframes enter-x01-v1-context-failure-hook-footer-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #x01-v1-context-failure-hook-footer { opacity: 0; animation: enter-x01-v1-context-failure-hook-footer-fade 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.32s both; }
+      @keyframes enter-x01-v1-context-failure-hook-accent-line-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #x01-v1-context-failure-hook-accent-line { opacity: 0; animation: enter-x01-v1-context-failure-hook-accent-line-draw-x 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both; }
+      @keyframes enter-x01-v1-context-failure-hook-title-wipe-up {
+        from { opacity: 0; clip-path: inset(100% 0 0 0); transform: translateY(18px); }
+        to { opacity: 1; clip-path: inset(0 0 0 0); transform: translateY(0); }
+      }
+      #x01-v1-context-failure-hook-title { opacity: 0; animation: enter-x01-v1-context-failure-hook-title-wipe-up 0.72s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both; }
+      @keyframes enter-x01-v1-context-failure-hook-subtitle-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-hook-subtitle { opacity: 0; animation: enter-x01-v1-context-failure-hook-subtitle-fade-up 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.88s both; }
+      @keyframes enter-x01-v1-context-failure-hook-orb-a-scale-in {
+        from { opacity: 0; transform: scale(0.94); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      @keyframes emphasis-x01-v1-context-failure-hook-orb-a-float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-14px); }
+      }
+      #x01-v1-context-failure-hook-orb-a { opacity: 0; animation: enter-x01-v1-context-failure-hook-orb-a-scale-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.15s both, emphasis-x01-v1-context-failure-hook-orb-a-float 1.8s ease-in-out 1.7s infinite forwards; }
+      @keyframes enter-x01-v1-context-failure-hook-orb-b-scale-in {
+        from { opacity: 0; transform: scale(0.94); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      @keyframes emphasis-x01-v1-context-failure-hook-orb-b-float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-14px); }
+      }
+      #x01-v1-context-failure-hook-orb-b { opacity: 0; animation: enter-x01-v1-context-failure-hook-orb-b-scale-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) 1.35s both, emphasis-x01-v1-context-failure-hook-orb-b-float 1.4s ease-in-out 1.9s infinite forwards; }
+      @keyframes enter-x01-v1-context-failure-hook-swipe-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #x01-v1-context-failure-hook-swipe { opacity: 0; animation: enter-x01-v1-context-failure-hook-swipe-fade 0.5s cubic-bezier(0.22, 1, 0.36, 1) 1.5s both; }
+      @keyframes enter-x01-v1-context-failure-prompt-top-rule-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #x01-v1-context-failure-prompt-top-rule { opacity: 0; animation: enter-x01-v1-context-failure-prompt-top-rule-draw-x 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0s both; }
+      @keyframes enter-x01-v1-context-failure-prompt-episode-fade-down {
+        from { opacity: 0; transform: translateY(-32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-prompt-episode { opacity: 0; animation: enter-x01-v1-context-failure-prompt-episode-fade-down 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.02s both; }
+      @keyframes enter-x01-v1-context-failure-prompt-label-fade-down {
+        from { opacity: 0; transform: translateY(-32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-prompt-label { opacity: 0; animation: enter-x01-v1-context-failure-prompt-label-fade-down 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+      @keyframes enter-x01-v1-context-failure-prompt-grid-v1-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #x01-v1-context-failure-prompt-grid-v1 { opacity: 0; animation: enter-x01-v1-context-failure-prompt-grid-v1-draw-x 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+      @keyframes enter-x01-v1-context-failure-prompt-progress-base-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #x01-v1-context-failure-prompt-progress-base { opacity: 0; animation: enter-x01-v1-context-failure-prompt-progress-base-fade 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both; }
+      @keyframes enter-x01-v1-context-failure-prompt-progress-fill-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #x01-v1-context-failure-prompt-progress-fill { opacity: 0; animation: enter-x01-v1-context-failure-prompt-progress-fill-draw-x 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both; }
+      @keyframes enter-x01-v1-context-failure-prompt-footer-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #x01-v1-context-failure-prompt-footer { opacity: 0; animation: enter-x01-v1-context-failure-prompt-footer-fade 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.32s both; }
+      @keyframes enter-x01-v1-context-failure-prompt-eyebrow-fade-down {
+        from { opacity: 0; transform: translateY(-32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-prompt-eyebrow { opacity: 0; animation: enter-x01-v1-context-failure-prompt-eyebrow-fade-down 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+      @keyframes enter-x01-v1-context-failure-prompt-prompt-box-scale-in {
+        from { opacity: 0; transform: scale(0.94); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      #x01-v1-context-failure-prompt-prompt-box { opacity: 0; animation: enter-x01-v1-context-failure-prompt-prompt-box-scale-in 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.22s both; }
+      @keyframes enter-x01-v1-context-failure-prompt-cursor-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes emphasis-x01-v1-context-failure-prompt-cursor-pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.78; transform: scale(1.035); }
+      }
+      #x01-v1-context-failure-prompt-cursor { opacity: 0; animation: enter-x01-v1-context-failure-prompt-cursor-fade 0.25s cubic-bezier(0.22, 1, 0.36, 1) 0.9s both, emphasis-x01-v1-context-failure-prompt-cursor-pulse 0.7s ease-in-out 1.2s infinite forwards; }
+      @keyframes enter-x01-v1-context-failure-prompt-question-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-prompt-question { opacity: 0; animation: enter-x01-v1-context-failure-prompt-question-fade-up 0.62s cubic-bezier(0.22, 1, 0.36, 1) 1.05s both; }
+      @keyframes enter-x01-v1-context-failure-prompt-hint-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-prompt-hint { opacity: 0; animation: enter-x01-v1-context-failure-prompt-hint-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.45s both; }
+      @keyframes enter-x01-v1-context-failure-signal-top-rule-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #x01-v1-context-failure-signal-top-rule { opacity: 0; animation: enter-x01-v1-context-failure-signal-top-rule-draw-x 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0s both; }
+      @keyframes enter-x01-v1-context-failure-signal-episode-fade-down {
+        from { opacity: 0; transform: translateY(-32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-signal-episode { opacity: 0; animation: enter-x01-v1-context-failure-signal-episode-fade-down 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.02s both; }
+      @keyframes enter-x01-v1-context-failure-signal-label-fade-down {
+        from { opacity: 0; transform: translateY(-32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-signal-label { opacity: 0; animation: enter-x01-v1-context-failure-signal-label-fade-down 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+      @keyframes enter-x01-v1-context-failure-signal-grid-v1-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #x01-v1-context-failure-signal-grid-v1 { opacity: 0; animation: enter-x01-v1-context-failure-signal-grid-v1-draw-x 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+      @keyframes enter-x01-v1-context-failure-signal-progress-base-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #x01-v1-context-failure-signal-progress-base { opacity: 0; animation: enter-x01-v1-context-failure-signal-progress-base-fade 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both; }
+      @keyframes enter-x01-v1-context-failure-signal-progress-fill-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #x01-v1-context-failure-signal-progress-fill { opacity: 0; animation: enter-x01-v1-context-failure-signal-progress-fill-draw-x 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both; }
+      @keyframes enter-x01-v1-context-failure-signal-footer-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #x01-v1-context-failure-signal-footer { opacity: 0; animation: enter-x01-v1-context-failure-signal-footer-fade 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.32s both; }
+      @keyframes enter-x01-v1-context-failure-signal-eyebrow-fade-down {
+        from { opacity: 0; transform: translateY(-32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-signal-eyebrow { opacity: 0; animation: enter-x01-v1-context-failure-signal-eyebrow-fade-down 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+      @keyframes enter-x01-v1-context-failure-signal-signal-panel-slide-right {
+        from { opacity: 0; transform: translateX(-72px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      @keyframes emphasis-x01-v1-context-failure-signal-signal-panel-glow {
+        0%, 100% { filter: drop-shadow(0 0 0 rgba(45, 212, 191, 0)); }
+        50% { filter: drop-shadow(0 0 24px rgba(45, 212, 191, 0.55)); }
+      }
+      #x01-v1-context-failure-signal-signal-panel { opacity: 0; animation: enter-x01-v1-context-failure-signal-signal-panel-slide-right 0.62s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both, emphasis-x01-v1-context-failure-signal-signal-panel-glow 1.5s ease-in-out 1.1s 2 forwards; }
+      @keyframes enter-x01-v1-context-failure-signal-signal-wipe-up {
+        from { opacity: 0; clip-path: inset(100% 0 0 0); transform: translateY(18px); }
+        to { opacity: 1; clip-path: inset(0 0 0 0); transform: translateY(0); }
+      }
+      #x01-v1-context-failure-signal-signal { opacity: 0; animation: enter-x01-v1-context-failure-signal-signal-wipe-up 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.55s both; }
+      @keyframes enter-x01-v1-context-failure-signal-scan-line-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      @keyframes emphasis-x01-v1-context-failure-signal-scan-line-scan {
+        from { transform: translateX(-36px); opacity: 0.35; }
+        50% { opacity: 1; }
+        to { transform: translateX(36px); opacity: 0.35; }
+      }
+      #x01-v1-context-failure-signal-scan-line { opacity: 0; animation: enter-x01-v1-context-failure-signal-scan-line-draw-x 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.82s both, emphasis-x01-v1-context-failure-signal-scan-line-scan 1s ease-in-out 1.4s infinite forwards; }
+      @keyframes enter-x01-v1-context-failure-signal-status-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-signal-status { opacity: 0; animation: enter-x01-v1-context-failure-signal-status-fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) 1.05s both; }
+      @keyframes enter-x01-v1-context-failure-signal-status-copy-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-signal-status-copy { opacity: 0; animation: enter-x01-v1-context-failure-signal-status-copy-fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1.32s both; }
+      @keyframes enter-x01-v1-context-failure-breakdown-top-rule-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #x01-v1-context-failure-breakdown-top-rule { opacity: 0; animation: enter-x01-v1-context-failure-breakdown-top-rule-draw-x 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0s both; }
+      @keyframes enter-x01-v1-context-failure-breakdown-episode-fade-down {
+        from { opacity: 0; transform: translateY(-32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-breakdown-episode { opacity: 0; animation: enter-x01-v1-context-failure-breakdown-episode-fade-down 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.02s both; }
+      @keyframes enter-x01-v1-context-failure-breakdown-label-fade-down {
+        from { opacity: 0; transform: translateY(-32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-breakdown-label { opacity: 0; animation: enter-x01-v1-context-failure-breakdown-label-fade-down 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+      @keyframes enter-x01-v1-context-failure-breakdown-grid-v1-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #x01-v1-context-failure-breakdown-grid-v1 { opacity: 0; animation: enter-x01-v1-context-failure-breakdown-grid-v1-draw-x 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+      @keyframes enter-x01-v1-context-failure-breakdown-progress-base-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #x01-v1-context-failure-breakdown-progress-base { opacity: 0; animation: enter-x01-v1-context-failure-breakdown-progress-base-fade 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both; }
+      @keyframes enter-x01-v1-context-failure-breakdown-progress-fill-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #x01-v1-context-failure-breakdown-progress-fill { opacity: 0; animation: enter-x01-v1-context-failure-breakdown-progress-fill-draw-x 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both; }
+      @keyframes enter-x01-v1-context-failure-breakdown-footer-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #x01-v1-context-failure-breakdown-footer { opacity: 0; animation: enter-x01-v1-context-failure-breakdown-footer-fade 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.32s both; }
+      @keyframes enter-x01-v1-context-failure-breakdown-title-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-breakdown-title { opacity: 0; animation: enter-x01-v1-context-failure-breakdown-title-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+      @keyframes enter-x01-v1-context-failure-breakdown-rail-0-wipe-up {
+        from { opacity: 0; clip-path: inset(100% 0 0 0); transform: translateY(18px); }
+        to { opacity: 1; clip-path: inset(0 0 0 0); transform: translateY(0); }
+      }
+      #x01-v1-context-failure-breakdown-rail-0 { opacity: 0; animation: enter-x01-v1-context-failure-breakdown-rail-0-wipe-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both; }
+      @keyframes enter-x01-v1-context-failure-breakdown-number-0-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #x01-v1-context-failure-breakdown-number-0 { opacity: 0; animation: enter-x01-v1-context-failure-breakdown-number-0-fade 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.43s both; }
+      @keyframes enter-x01-v1-context-failure-breakdown-item-0-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-breakdown-item-0 { opacity: 0; animation: enter-x01-v1-context-failure-breakdown-item-0-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.47s both; }
+      @keyframes enter-x01-v1-context-failure-breakdown-rail-1-wipe-up {
+        from { opacity: 0; clip-path: inset(100% 0 0 0); transform: translateY(18px); }
+        to { opacity: 1; clip-path: inset(0 0 0 0); transform: translateY(0); }
+      }
+      #x01-v1-context-failure-breakdown-rail-1 { opacity: 0; animation: enter-x01-v1-context-failure-breakdown-rail-1-wipe-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.63s both; }
+      @keyframes enter-x01-v1-context-failure-breakdown-number-1-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #x01-v1-context-failure-breakdown-number-1 { opacity: 0; animation: enter-x01-v1-context-failure-breakdown-number-1-fade 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.71s both; }
+      @keyframes enter-x01-v1-context-failure-breakdown-item-1-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-breakdown-item-1 { opacity: 0; animation: enter-x01-v1-context-failure-breakdown-item-1-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.75s both; }
+      @keyframes enter-x01-v1-context-failure-breakdown-rail-2-wipe-up {
+        from { opacity: 0; clip-path: inset(100% 0 0 0); transform: translateY(18px); }
+        to { opacity: 1; clip-path: inset(0 0 0 0); transform: translateY(0); }
+      }
+      #x01-v1-context-failure-breakdown-rail-2 { opacity: 0; animation: enter-x01-v1-context-failure-breakdown-rail-2-wipe-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.91s both; }
+      @keyframes enter-x01-v1-context-failure-breakdown-number-2-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #x01-v1-context-failure-breakdown-number-2 { opacity: 0; animation: enter-x01-v1-context-failure-breakdown-number-2-fade 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.99s both; }
+      @keyframes enter-x01-v1-context-failure-breakdown-item-2-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-breakdown-item-2 { opacity: 0; animation: enter-x01-v1-context-failure-breakdown-item-2-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.03s both; }
+      @keyframes enter-x01-v1-context-failure-takeaway-top-rule-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #x01-v1-context-failure-takeaway-top-rule { opacity: 0; animation: enter-x01-v1-context-failure-takeaway-top-rule-draw-x 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0s both; }
+      @keyframes enter-x01-v1-context-failure-takeaway-episode-fade-down {
+        from { opacity: 0; transform: translateY(-32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-takeaway-episode { opacity: 0; animation: enter-x01-v1-context-failure-takeaway-episode-fade-down 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.02s both; }
+      @keyframes enter-x01-v1-context-failure-takeaway-label-fade-down {
+        from { opacity: 0; transform: translateY(-32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-takeaway-label { opacity: 0; animation: enter-x01-v1-context-failure-takeaway-label-fade-down 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+      @keyframes enter-x01-v1-context-failure-takeaway-grid-v1-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #x01-v1-context-failure-takeaway-grid-v1 { opacity: 0; animation: enter-x01-v1-context-failure-takeaway-grid-v1-draw-x 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+      @keyframes enter-x01-v1-context-failure-takeaway-progress-base-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #x01-v1-context-failure-takeaway-progress-base { opacity: 0; animation: enter-x01-v1-context-failure-takeaway-progress-base-fade 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both; }
+      @keyframes enter-x01-v1-context-failure-takeaway-progress-fill-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #x01-v1-context-failure-takeaway-progress-fill { opacity: 0; animation: enter-x01-v1-context-failure-takeaway-progress-fill-draw-x 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both; }
+      @keyframes enter-x01-v1-context-failure-takeaway-footer-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #x01-v1-context-failure-takeaway-footer { opacity: 0; animation: enter-x01-v1-context-failure-takeaway-footer-fade 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.32s both; }
+      @keyframes enter-x01-v1-context-failure-takeaway-eyebrow-fade-down {
+        from { opacity: 0; transform: translateY(-32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-takeaway-eyebrow { opacity: 0; animation: enter-x01-v1-context-failure-takeaway-eyebrow-fade-down 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both; }
+      @keyframes enter-x01-v1-context-failure-takeaway-takeaway-wipe-up {
+        from { opacity: 0; clip-path: inset(100% 0 0 0); transform: translateY(18px); }
+        to { opacity: 1; clip-path: inset(0 0 0 0); transform: translateY(0); }
+      }
+      #x01-v1-context-failure-takeaway-takeaway { opacity: 0; animation: enter-x01-v1-context-failure-takeaway-takeaway-wipe-up 0.76s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both; }
+      @keyframes enter-x01-v1-context-failure-takeaway-divider-draw-x {
+        from { opacity: 1; transform: scaleX(0); transform-origin: left center; }
+        to { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+      }
+      #x01-v1-context-failure-takeaway-divider { opacity: 0; animation: enter-x01-v1-context-failure-takeaway-divider-draw-x 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.95s both; }
+      @keyframes enter-x01-v1-context-failure-takeaway-cta-label-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #x01-v1-context-failure-takeaway-cta-label { opacity: 0; animation: enter-x01-v1-context-failure-takeaway-cta-label-fade 0.45s cubic-bezier(0.22, 1, 0.36, 1) 1.18s both; }
+      @keyframes enter-x01-v1-context-failure-takeaway-cta-fade-up {
+        from { opacity: 0; transform: translateY(32px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      #x01-v1-context-failure-takeaway-cta { opacity: 0; animation: enter-x01-v1-context-failure-takeaway-cta-fade-up 0.62s cubic-bezier(0.22, 1, 0.36, 1) 1.34s both; }
+      @keyframes enter-x01-v1-context-failure-takeaway-pulse-dot-scale-in {
+        from { opacity: 0; transform: scale(0.94); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      @keyframes emphasis-x01-v1-context-failure-takeaway-pulse-dot-pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.78; transform: scale(1.035); }
+      }
+      #x01-v1-context-failure-takeaway-pulse-dot { opacity: 0; animation: enter-x01-v1-context-failure-takeaway-pulse-dot-scale-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) 1.7s both, emphasis-x01-v1-context-failure-takeaway-pulse-dot-pulse 0.9s ease-in-out 2s infinite forwards; }
+      @keyframes enter-x01-v1-context-failure-takeaway-brand-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      #x01-v1-context-failure-takeaway-brand { opacity: 0; animation: enter-x01-v1-context-failure-takeaway-brand-fade 0.45s cubic-bezier(0.22, 1, 0.36, 1) 1.78s both; }
+
+    </style>
+  </head>
+  <body>
+    <div
+      id="stage"
+      data-composition-id="prompt-series-01-v1-context-failure"
+      data-start="0"
+      data-duration="20"
+      data-width="1080"
+      data-height="1920"
+      data-no-timeline
+    >
+      <section class="scene" id="01-v1-context-failure-hook" data-start="0" data-duration="4">
+        
+        <div class="layer shape-layer clip" id="01-v1-context-failure-hook-top-rule" data-start="0" data-duration="4" style="left: 0px; top: 0px; width: 1080px; height: 10px; --layer-fill: #ff6b5f; --layer-radius: 0px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-hook-episode" data-start="0" data-duration="4" style="left: 84px; top: 78px; width: 240px; height: 36px; --layer-color: #ff6b5f; --layer-font-size: 24px; --layer-font-weight: 820; --layer-line-height: 1.08">TẬP 01 / 07</div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-hook-label" data-start="0" data-duration="4" style="left: 350px; top: 78px; width: 640px; height: 36px; --layer-color: #aab7c4; --layer-font-size: 24px; --layer-font-weight: 760; --layer-line-height: 1; text-align: right">V1 · CONTEXT</div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-hook-grid-v1" data-start="0" data-duration="4" style="left: 84px; top: 178px; width: 912px; height: 1px; --layer-fill: rgba(255,255,255,0.08); --layer-radius: 0px"></div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-hook-progress-base" data-start="0" data-duration="4" style="left: 84px; top: 1742px; width: 912px; height: 8px; --layer-fill: rgba(255,255,255,0.10); --layer-radius: 4px"></div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-hook-progress-fill" data-start="0" data-duration="4" style="left: 84px; top: 1742px; width: 182px; height: 8px; --layer-fill: #ff6b5f; --layer-radius: 4px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-hook-footer" data-start="0" data-duration="4" style="left: 84px; top: 1790px; width: 912px; height: 28px; --layer-color: #aab7c4; --layer-font-size: 20px; --layer-font-weight: 720; --layer-line-height: 1; text-align: center">PROMPT ENGINEERING · THỰC NGHIỆM V1 → V5</div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-hook-accent-line" data-start="0" data-duration="4" style="left: 84px; top: 312px; width: 132px; height: 12px; --layer-fill: #ff6b5f; --layer-radius: 6px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-hook-title" data-start="0" data-duration="4" style="left: 84px; top: 382px; width: 900px; height: 430px; --layer-color: #f4f7f8; --layer-font-size: 88px; --layer-font-weight: 860; --layer-line-height: 0.98">AI biến tai nạn ô tô thành... trượt tuyết</div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-hook-subtitle" data-start="0" data-duration="4" style="left: 88px; top: 890px; width: 850px; height: 180px; --layer-color: #aab7c4; --layer-font-size: 40px; --layer-font-weight: 580; --layer-line-height: 1.18">Một prompt quá ngắn có thể khiến mô hình tự nối dữ liệu sai.</div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-hook-orb-a" data-start="0" data-duration="4" style="left: 820px; top: 1260px; width: 190px; height: 190px; --layer-fill: #ff6b5f22; --layer-radius: 95px"></div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-hook-orb-b" data-start="0" data-duration="4" style="left: 690px; top: 1398px; width: 90px; height: 90px; --layer-fill: #6d8cff33; --layer-radius: 45px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-hook-swipe" data-start="0" data-duration="4" style="left: 84px; top: 1560px; width: 700px; height: 44px; --layer-color: #ff6b5f; --layer-font-size: 28px; --layer-font-weight: 780; --layer-line-height: 1.08">PROMPT LAB / CASE STUDY</div>
+      </section>
+      <section class="scene" id="01-v1-context-failure-prompt" data-start="4" data-duration="4">
+        
+        <div class="layer shape-layer clip" id="01-v1-context-failure-prompt-top-rule" data-start="4" data-duration="4" style="left: 0px; top: 0px; width: 1080px; height: 10px; --layer-fill: #ff6b5f; --layer-radius: 0px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-prompt-episode" data-start="4" data-duration="4" style="left: 84px; top: 78px; width: 240px; height: 36px; --layer-color: #ff6b5f; --layer-font-size: 24px; --layer-font-weight: 820; --layer-line-height: 1.08">TẬP 01 / 07</div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-prompt-label" data-start="4" data-duration="4" style="left: 350px; top: 78px; width: 640px; height: 36px; --layer-color: #aab7c4; --layer-font-size: 24px; --layer-font-weight: 760; --layer-line-height: 1; text-align: right">V1 · CONTEXT</div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-prompt-grid-v1" data-start="4" data-duration="4" style="left: 84px; top: 178px; width: 912px; height: 1px; --layer-fill: rgba(255,255,255,0.08); --layer-radius: 0px"></div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-prompt-progress-base" data-start="4" data-duration="4" style="left: 84px; top: 1742px; width: 912px; height: 8px; --layer-fill: rgba(255,255,255,0.10); --layer-radius: 4px"></div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-prompt-progress-fill" data-start="4" data-duration="4" style="left: 84px; top: 1742px; width: 365px; height: 8px; --layer-fill: #ff6b5f; --layer-radius: 4px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-prompt-footer" data-start="4" data-duration="4" style="left: 84px; top: 1790px; width: 912px; height: 28px; --layer-color: #aab7c4; --layer-font-size: 20px; --layer-font-weight: 720; --layer-line-height: 1; text-align: center">PROMPT ENGINEERING · THỰC NGHIỆM V1 → V5</div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-prompt-eyebrow" data-start="4" data-duration="4" style="left: 84px; top: 260px; width: 620px; height: 42px; --layer-color: #ff6b5f; --layer-font-size: 26px; --layer-font-weight: 820; --layer-line-height: 1.08">PROMPT / INPUT</div>
+        <div class="layer terminal-layer clip panel-layer" id="01-v1-context-failure-prompt-prompt-box" data-start="4" data-duration="4" style="left: 84px; top: 350px; width: 912px; height: 640px; --layer-font-size: 35px"><div>$ prompt.run</div><div></div><div>Hãy xem form tai nạn này và xác định ai có lỗi.</div><div></div><div>▌</div></div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-prompt-cursor" data-start="4" data-duration="4" style="left: 122px; top: 910px; width: 18px; height: 44px; --layer-fill: #ff6b5f; --layer-radius: 2px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-prompt-question" data-start="4" data-duration="4" style="left: 84px; top: 1128px; width: 900px; height: 120px; --layer-color: #f4f7f8; --layer-font-size: 58px; --layer-font-weight: 820; --layer-line-height: 1.04">Điều gì có thể sai?</div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-prompt-hint" data-start="4" data-duration="4" style="left: 88px; top: 1320px; width: 830px; height: 100px; --layer-color: #aab7c4; --layer-font-size: 34px; --layer-font-weight: 560; --layer-line-height: 1.16">Quan sát output trước khi thêm instruction tiếp theo.</div>
+      </section>
+      <section class="scene" id="01-v1-context-failure-signal" data-start="8" data-duration="4">
+        
+        <div class="layer shape-layer clip" id="01-v1-context-failure-signal-top-rule" data-start="8" data-duration="4" style="left: 0px; top: 0px; width: 1080px; height: 10px; --layer-fill: #ff6b5f; --layer-radius: 0px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-signal-episode" data-start="8" data-duration="4" style="left: 84px; top: 78px; width: 240px; height: 36px; --layer-color: #ff6b5f; --layer-font-size: 24px; --layer-font-weight: 820; --layer-line-height: 1.08">TẬP 01 / 07</div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-signal-label" data-start="8" data-duration="4" style="left: 350px; top: 78px; width: 640px; height: 36px; --layer-color: #aab7c4; --layer-font-size: 24px; --layer-font-weight: 760; --layer-line-height: 1; text-align: right">V1 · CONTEXT</div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-signal-grid-v1" data-start="8" data-duration="4" style="left: 84px; top: 178px; width: 912px; height: 1px; --layer-fill: rgba(255,255,255,0.08); --layer-radius: 0px"></div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-signal-progress-base" data-start="8" data-duration="4" style="left: 84px; top: 1742px; width: 912px; height: 8px; --layer-fill: rgba(255,255,255,0.10); --layer-radius: 4px"></div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-signal-progress-fill" data-start="8" data-duration="4" style="left: 84px; top: 1742px; width: 547px; height: 8px; --layer-fill: #ff6b5f; --layer-radius: 4px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-signal-footer" data-start="8" data-duration="4" style="left: 84px; top: 1790px; width: 912px; height: 28px; --layer-color: #aab7c4; --layer-font-size: 20px; --layer-font-weight: 720; --layer-line-height: 1; text-align: center">PROMPT ENGINEERING · THỰC NGHIỆM V1 → V5</div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-signal-eyebrow" data-start="8" data-duration="4" style="left: 84px; top: 258px; width: 620px; height: 44px; --layer-color: #ff6b5f; --layer-font-size: 28px; --layer-font-weight: 840; --layer-line-height: 1.08">OUTPUT SAI</div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-signal-signal-panel" data-start="8" data-duration="4" style="left: 84px; top: 372px; width: 912px; height: 600px; --layer-fill: #151d28; --layer-radius: 24px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-signal-signal" data-start="8" data-duration="4" style="left: 132px; top: 482px; width: 810px; height: 330px; --layer-color: #f4f7f8; --layer-font-size: 58px; --layer-font-weight: 820; --layer-line-height: 1.1">Sự cố trượt tuyết tại phố Chappangan</div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-signal-scan-line" data-start="8" data-duration="4" style="left: 112px; top: 900px; width: 856px; height: 4px; --layer-fill: #ff6b5f; --layer-radius: 2px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-signal-status" data-start="8" data-duration="4" style="left: 84px; top: 1140px; width: 900px; height: 64px; --layer-color: #ff6b5f; --layer-font-size: 34px; --layer-font-weight: 820; --layer-line-height: 1.08">FAILURE ≠ DEAD END</div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-signal-status-copy" data-start="8" data-duration="4" style="left: 88px; top: 1250px; width: 850px; height: 150px; --layer-color: #f4f7f8; --layer-font-size: 48px; --layer-font-weight: 720; --layer-line-height: 1.08">Lỗi này cho biết prompt đang thiếu ngữ cảnh nào.</div>
+      </section>
+      <section class="scene" id="01-v1-context-failure-breakdown" data-start="12" data-duration="4">
+        
+        <div class="layer shape-layer clip" id="01-v1-context-failure-breakdown-top-rule" data-start="12" data-duration="4" style="left: 0px; top: 0px; width: 1080px; height: 10px; --layer-fill: #ff6b5f; --layer-radius: 0px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-breakdown-episode" data-start="12" data-duration="4" style="left: 84px; top: 78px; width: 240px; height: 36px; --layer-color: #ff6b5f; --layer-font-size: 24px; --layer-font-weight: 820; --layer-line-height: 1.08">TẬP 01 / 07</div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-breakdown-label" data-start="12" data-duration="4" style="left: 350px; top: 78px; width: 640px; height: 36px; --layer-color: #aab7c4; --layer-font-size: 24px; --layer-font-weight: 760; --layer-line-height: 1; text-align: right">V1 · CONTEXT</div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-breakdown-grid-v1" data-start="12" data-duration="4" style="left: 84px; top: 178px; width: 912px; height: 1px; --layer-fill: rgba(255,255,255,0.08); --layer-radius: 0px"></div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-breakdown-progress-base" data-start="12" data-duration="4" style="left: 84px; top: 1742px; width: 912px; height: 8px; --layer-fill: rgba(255,255,255,0.10); --layer-radius: 4px"></div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-breakdown-progress-fill" data-start="12" data-duration="4" style="left: 84px; top: 1742px; width: 730px; height: 8px; --layer-fill: #ff6b5f; --layer-radius: 4px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-breakdown-footer" data-start="12" data-duration="4" style="left: 84px; top: 1790px; width: 912px; height: 28px; --layer-color: #aab7c4; --layer-font-size: 20px; --layer-font-weight: 720; --layer-line-height: 1; text-align: center">PROMPT ENGINEERING · THỰC NGHIỆM V1 → V5</div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-breakdown-title" data-start="12" data-duration="4" style="left: 84px; top: 250px; width: 900px; height: 100px; --layer-color: #f4f7f8; --layer-font-size: 66px; --layer-font-weight: 850; --layer-line-height: 1.08">Ba điểm cần nhớ</div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-breakdown-rail-0" data-start="12" data-duration="4" style="left: 84px; top: 430px; width: 12px; height: 220px; --layer-fill: #ff6b5f; --layer-radius: 6px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-breakdown-number-0" data-start="12" data-duration="4" style="left: 132px; top: 434px; width: 120px; height: 54px; --layer-color: #aab7c4; --layer-font-size: 26px; --layer-font-weight: 850; --layer-line-height: 1.08">01</div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-breakdown-item-0" data-start="12" data-duration="4" style="left: 132px; top: 492px; width: 790px; height: 130px; --layer-color: #f4f7f8; --layer-font-size: 50px; --layer-font-weight: 790; --layer-line-height: 1.08">Không có vai trò</div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-breakdown-rail-1" data-start="12" data-duration="4" style="left: 84px; top: 730px; width: 12px; height: 220px; --layer-fill: #6d8cff; --layer-radius: 6px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-breakdown-number-1" data-start="12" data-duration="4" style="left: 132px; top: 734px; width: 120px; height: 54px; --layer-color: #aab7c4; --layer-font-size: 26px; --layer-font-weight: 850; --layer-line-height: 1.08">02</div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-breakdown-item-1" data-start="12" data-duration="4" style="left: 132px; top: 792px; width: 790px; height: 130px; --layer-color: #f4f7f8; --layer-font-size: 50px; --layer-font-weight: 790; --layer-line-height: 1.08">Không có ngữ cảnh nghiệp vụ</div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-breakdown-rail-2" data-start="12" data-duration="4" style="left: 84px; top: 1030px; width: 12px; height: 220px; --layer-fill: #f7c95c; --layer-radius: 6px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-breakdown-number-2" data-start="12" data-duration="4" style="left: 132px; top: 1034px; width: 120px; height: 54px; --layer-color: #aab7c4; --layer-font-size: 26px; --layer-font-weight: 850; --layer-line-height: 1.08">03</div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-breakdown-item-2" data-start="12" data-duration="4" style="left: 132px; top: 1092px; width: 790px; height: 130px; --layer-color: #f4f7f8; --layer-font-size: 50px; --layer-font-weight: 790; --layer-line-height: 1.08">Dữ liệu ảnh chứa nhiễu</div>
+      </section>
+      <section class="scene" id="01-v1-context-failure-takeaway" data-start="16" data-duration="4">
+        
+        <div class="layer shape-layer clip" id="01-v1-context-failure-takeaway-top-rule" data-start="16" data-duration="4" style="left: 0px; top: 0px; width: 1080px; height: 10px; --layer-fill: #ff6b5f; --layer-radius: 0px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-takeaway-episode" data-start="16" data-duration="4" style="left: 84px; top: 78px; width: 240px; height: 36px; --layer-color: #ff6b5f; --layer-font-size: 24px; --layer-font-weight: 820; --layer-line-height: 1.08">TẬP 01 / 07</div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-takeaway-label" data-start="16" data-duration="4" style="left: 350px; top: 78px; width: 640px; height: 36px; --layer-color: #aab7c4; --layer-font-size: 24px; --layer-font-weight: 760; --layer-line-height: 1; text-align: right">V1 · CONTEXT</div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-takeaway-grid-v1" data-start="16" data-duration="4" style="left: 84px; top: 178px; width: 912px; height: 1px; --layer-fill: rgba(255,255,255,0.08); --layer-radius: 0px"></div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-takeaway-progress-base" data-start="16" data-duration="4" style="left: 84px; top: 1742px; width: 912px; height: 8px; --layer-fill: rgba(255,255,255,0.10); --layer-radius: 4px"></div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-takeaway-progress-fill" data-start="16" data-duration="4" style="left: 84px; top: 1742px; width: 912px; height: 8px; --layer-fill: #ff6b5f; --layer-radius: 4px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-takeaway-footer" data-start="16" data-duration="4" style="left: 84px; top: 1790px; width: 912px; height: 28px; --layer-color: #aab7c4; --layer-font-size: 20px; --layer-font-weight: 720; --layer-line-height: 1; text-align: center">PROMPT ENGINEERING · THỰC NGHIỆM V1 → V5</div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-takeaway-eyebrow" data-start="16" data-duration="4" style="left: 84px; top: 260px; width: 620px; height: 44px; --layer-color: #ff6b5f; --layer-font-size: 28px; --layer-font-weight: 840; --layer-line-height: 1.08">KẾT LUẬN</div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-takeaway-takeaway" data-start="16" data-duration="4" style="left: 84px; top: 400px; width: 900px; height: 500px; --layer-color: #f4f7f8; --layer-font-size: 76px; --layer-font-weight: 850; --layer-line-height: 1.02">Prompt engineering là khoa học thực nghiệm: thử, quan sát lỗi, rồi lặp lại.</div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-takeaway-divider" data-start="16" data-duration="4" style="left: 84px; top: 1030px; width: 912px; height: 4px; --layer-fill: #ff6b5faa; --layer-radius: 2px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-takeaway-cta-label" data-start="16" data-duration="4" style="left: 84px; top: 1140px; width: 700px; height: 40px; --layer-color: #aab7c4; --layer-font-size: 26px; --layer-font-weight: 820; --layer-line-height: 1.08">VIDEO TIẾP THEO</div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-takeaway-cta" data-start="16" data-duration="4" style="left: 84px; top: 1225px; width: 880px; height: 250px; --layer-color: #ff6b5f; --layer-font-size: 46px; --layer-font-weight: 760; --layer-line-height: 1.12">Tập 2: Chặn hallucination bằng role và confidence boundary.</div>
+        <div class="layer shape-layer clip" id="01-v1-context-failure-takeaway-pulse-dot" data-start="16" data-duration="4" style="left: 84px; top: 1580px; width: 22px; height: 22px; --layer-fill: #ff6b5f; --layer-radius: 11px"></div>
+        <div class="layer text-layer clip" id="01-v1-context-failure-takeaway-brand" data-start="16" data-duration="4" style="left: 130px; top: 1576px; width: 620px; height: 36px; --layer-color: #aab7c4; --layer-font-size: 24px; --layer-font-weight: 760; --layer-line-height: 1.08">OPUS · PROMPT ENGINEERING LAB</div>
+      </section>
+    </div>
+  </body>
+</html>

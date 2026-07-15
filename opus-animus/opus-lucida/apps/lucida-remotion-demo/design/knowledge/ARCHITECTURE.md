@@ -14,7 +14,13 @@ The architecture is designed to support:
 - provenance, licensing, auditability, and versioning
 - deterministic rendering with React and Remotion
 
-The core architectural decision is:
+The active local RAG storage decision is [ADR-001](ADR-001-local-rag-storage.md):
+
+> Git canonical packages and schemas -> generated JSON runtime index + SQLite
+> FTS5 local query projection. PostgreSQL and pgvector are deferred behind the
+> triggers in ADR-001.
+
+The core architectural principle is:
 
 > Lucida should use one unified knowledge platform with multiple logical domains, not multiple isolated physical databases.
 
@@ -31,8 +37,10 @@ The core architectural decision is:
 3. **Keep LLMs outside deterministic work.**
    Media probing, frame extraction, hashing, scene detection, optical flow, filtering, license enforcement, schema validation, and rendering should not depend on LLM reasoning.
 
-4. **Use hybrid retrieval, not vector similarity alone.**
-   Retrieval combines hard filters, metadata search, vector search, compatibility scoring, and reranking.
+4. **Use deterministic local retrieval before vector similarity.**
+   The active v0.1 path combines hard filters, FTS5/BM25 lexical search, and
+   compatibility scoring. Vector retrieval is a future candidate generator,
+   never the decision maker.
 
 5. **Preserve evidence lineage.**
    Every Style, Motion preset, Asset, and derived package should be traceable to observations, sources, versions, and review decisions.
@@ -75,8 +83,7 @@ video / image / docs                    |
                               v
           +--------------------------------------+
           | Retrieval and Ranking Layer          |
-          | hard filters / lexical / vector      |
-          | compatibility / reranking            |
+          | hard filters / FTS5 / compatibility  |
           +-------------------+------------------+
                               |
                               v
@@ -100,65 +107,64 @@ video / image / docs                    |
 
 ## 4. Physical architecture
 
-### 4.1 Recommended MVP stack
+### 4.1 Active v0.1 storage stack
 
 ```text
-PostgreSQL
-+ pgvector
-+ JSONB
-+ object storage
-+ background job queue
-+ React review UI
++ Git canonical packages + schemas
++ deterministic compiler
++ generated JSON runtime index
++ SQLite FTS5 local query projection
++ local restricted-media storage outside Git
 + Remotion renderer
 ```
 
 ### 4.2 Storage responsibilities
 
-#### PostgreSQL
+#### Git canonical packages
 
 Store:
 
-- canonical entities
-- observations and candidates
-- metadata
-- entity relationships
-- review state
-- versions
-- rights and provenance
-- compatibility rules
-- vector embeddings
-- job state
-
-#### Object storage
-
-Store:
-
-- raw reference video
-- extracted frames
-- contact sheets
-- thumbnails and previews
-- SVG, image, Lottie, audio, video, and 3D assets
-- optical-flow maps
-- large model outputs
-- render artifacts
-
-Large binary data should not be stored directly in PostgreSQL.
-
-#### Git repository
-
-Store:
-
+- canonical package definitions
 - JSON Schemas
-- canonical documentation
-- prompt templates
 - taxonomy definitions
-- package manifests
-- source history
-- migrations
+- approved provenance and rights metadata
+- compatibility rules
 - deterministic motion implementations
-- validation fixtures
+- validation fixtures and source history
 
-Restricted raw media should remain outside Git.
+#### Generated JSON
+
+Store:
+
+- renderer-ready indexes and manifests
+- normalized package relationships
+- source hashes used to validate the published index
+
+Generated JSON is published only after validation. The renderer reads this
+projection and must not open SQLite.
+
+#### SQLite FTS5
+
+Store:
+
+- rebuildable local query tables
+- FTS5 search documents
+- query-time metadata needed by local tooling
+
+SQLite lives under `.generated/knowledge/`, is local derived data, and can be
+removed before a clean rebuild.
+
+#### Restricted media storage
+
+Raw reference media, frames, previews, and render artifacts remain outside
+Git. They are not canonical knowledge and enter a projection only through the
+approved reference-package flow.
+
+#### Deferred service-backed storage
+
+PostgreSQL, pgvector, object storage services, and distributed queues are not
+part of the active v0.1 stack. Their adoption is governed by the future trigger
+in ADR-001.
 
 ---
 
@@ -525,7 +531,7 @@ A failure in Motion analysis should not require rerunning media normalization or
 
 ### 8.3 Workers
 
-Recommended MVP workers:
+Future ingestion workers may include:
 
 ```text
 Media Probe Worker
@@ -541,9 +547,9 @@ Remotion Validation Worker
 Library Publisher
 ```
 
-### 8.4 Queue and orchestration
+### 8.4 Future queue and orchestration
 
-MVP options:
+When service-backed ingestion is needed, options include:
 
 - PostgreSQL-backed job table
 - BullMQ with Redis
@@ -557,21 +563,20 @@ Temporal is suitable later when the workflow requires:
 - resumability
 - workflow versioning
 
-Kafka is not required for the MVP.
+Kafka remains unnecessary until independently scaled event processing is
+required.
 
 ---
 
 ## 9. Retrieval architecture
 
-Lucida should use hybrid retrieval.
+The long-term target may use hybrid retrieval. The active v0.1 path is local
+and deterministic:
 
 ```text
 1. Hard filters
-2. Lexical and metadata retrieval
-3. Vector retrieval
-4. Compatibility scoring
-5. Contextual reranking
-6. Continuity optimization
+2. SQLite FTS5/BM25 lexical and metadata retrieval
+3. Compatibility scoring
 ```
 
 ### 9.1 Hard filters
@@ -586,7 +591,7 @@ Examples:
 - Brand constraints must pass
 - rendering cost must remain within budget
 
-### 9.2 Vector retrieval
+### 9.2 Future vector retrieval
 
 Embeddings should help answer:
 
@@ -595,7 +600,8 @@ Embeddings should help answer:
 - whether a new observation is close to an existing canonical entity
 - which Assets match the scene description
 
-Vector similarity must not make the final decision by itself.
+Vector similarity must not make the final decision by itself. It is deferred
+until the ADR-001 trigger is met.
 
 ### 9.3 Compatibility scoring
 
@@ -818,62 +824,40 @@ Recommended metrics:
 
 ---
 
-## 17. MVP architecture
+## 17. Active v0.1 architecture
 
-The first implementation should remain deliberately small.
+The active implementation remains deliberately local-first. Wave 0 locks this
+architecture; later waves add the compiler and projections without changing
+the renderer's database-independent boundary.
 
 ```text
-CLI or lightweight UI
+Git canonical packages + schemas
         |
         v
-Ingestion API
+Knowledge compiler
         |
-        v
-Job Queue
+        +--> generated JSON index --> Style Director --> Remotion Renderer
         |
-        +--> FFmpeg / ffprobe
-        +--> PySceneDetect
-        +--> Frame Sampler
-        +--> Visual Observer
-        +--> OpenCV Motion Analyzer
-        +--> Taxonomy Normalizer
-        +--> Candidate Builder
-        +--> Remotion Validator
-        |
-        v
-PostgreSQL + pgvector
-        |
-        +--> Object Storage
-        |
-        v
-Review UI
-        |
-        v
-Canonical Style and Motion Registry
-        |
-        v
-Style Director
-        |
-        v
-Remotion Renderer
+        +--> SQLite FTS5 --> local query and review tooling
 ```
 
-### MVP scope
+### Active v0.1 scope
 
-- one PostgreSQL database
-- pgvector
-- one object-storage bucket or local compatible store
-- one job queue
-- five canonical Styles
-- ten canonical Motion presets
-- one ingestion flow
-- one review screen
-- one renderer adapter
-- one reference video processed end to end
+- Git canonical packages and schemas
+- generated JSON as the renderer runtime projection
+- SQLite FTS5 as a rebuildable local query projection
+- hard filters, BM25, and compatibility scoring
+- local tooling only; no remote database or distributed write path
+- renderer operation when SQLite is absent
 
 ---
 
-## 18. Delivery phases
+## 18. Historical delivery phases
+
+The phases below are retained as historical planning context only. The active
+delivery order is Wave 0 through Wave 6 in
+`design/planning/RAG_IMPLEMENTATION_PLAN_V1.html`; its storage decision is
+ADR-001.
 
 ### Phase 1 — Structured foundation
 
@@ -884,7 +868,7 @@ Remotion Renderer
 - five Style presets
 - ten Motion presets
 - manual review
-- PostgreSQL and pgvector
+- historical proposal: PostgreSQL and pgvector
 
 ### Phase 2 — Retrieval and deduplication
 
@@ -946,34 +930,35 @@ Rights metadata must be captured during ingestion, not immediately before public
 
 ### 19.6 Vector search becoming the decision engine
 
-Vector search is a candidate generator. Constraints, compatibility, and continuity determine the final selection.
+Vector search is a future candidate generator. Constraints, compatibility, and
+continuity determine the final selection; v0.1 uses no vector search.
 
 ---
 
 ## 20. Architecture decision summary
 
-Lucida should be implemented as:
+Lucida is implemented for v0.1 as:
 
 ```text
-One Knowledge Platform
-+ multiple logical domain registries
-+ one evidence-lineage layer
-+ one hybrid retrieval layer
-+ one candidate and review lifecycle
+Git canonical packages + schemas
++ deterministic generated JSON runtime index
++ rebuildable SQLite FTS5 query projection
++ evidence lineage and review lifecycle
 + one deterministic rendering boundary
 ```
 
-The main competitive advantage is not the vector database alone.
+The main competitive advantage is not a database choice alone.
 
 It is the combination of:
 
 ```text
 structured specifications
 + evidence lineage
-+ hybrid retrieval
++ deterministic local retrieval
 + rights-aware ingestion
 + human review
 + deterministic Remotion rendering
 ```
 
-This architecture is small enough for an MVP and provides a clear path toward a production-grade multimodal RAG and AI-video platform.
+This local-first architecture is the active v0.1 decision and provides a
+clear path toward a production-grade multimodal RAG and AI-video platform.

@@ -1,0 +1,5 @@
+{
+  "script": "pipeline/fixtures/audio/approved-script.fixture.json",
+  "videoMap": "pipeline/fixtures/audio/video-map.fixture.json",
+  "runId": "flow-fixture"
+}

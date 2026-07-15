@@ -1,0 +1,45 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-14",
+    "approvedBy": "Lucida reference review",
+    "status": "approved"
+  },
+  "projectId": "lucida-remotion-demo",
+  "sanitization": {
+    "findings": [],
+    "redactions": 0,
+    "status": "passed"
+  },
+  "schemaVersion": "sanitized-visual-input/v1",
+  "sources": [
+    {
+      "checksum": "1b858442c579c78ebeaffb21acfdce567933c003c41caabac890b9bc45baf092",
+      "collectorVersion": "repository-collector/1",
+      "metadata": {
+        "url": "pipeline/fixtures/reference-repo"
+      },
+      "records": [
+        {
+          "data": {
+            "tags": ["terminal", "dashboard", "fixture"]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "repository-collector/1",
+            "sourceChecksum": "1b858442c579c78ebeaffb21acfdce567933c003c41caabac890b9bc45baf092",
+            "sourceRef": "pipeline/fixtures/reference-repo/README.md"
+          },
+          "text": "# Reference Repo\n\nTerminal dashboard reference with compact command panels, status rows, and editorial sections.\n\nThe review scope is layout vocabulary only. This project-owned fixture contains no third-party source or media."
+        }
+      ],
+      "rights": {
+        "evidence": "Project-owned fixture under pipeline/fixtures/reference-repo.",
+        "policy": "internal-fixture",
+        "status": "approved"
+      },
+      "sourceId": "source:reference:fixture-terminal-repo",
+      "sourceRevision": "fixture-2026-07-14",
+      "sourceType": "repository"
+    }
+  ]
+}

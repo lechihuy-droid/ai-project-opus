@@ -1,0 +1,69 @@
+{
+  "video": {
+    "title": "Audio timing fixture",
+    "subtitle": "Two mapped scenes",
+    "format": "vertical_9_16",
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "durationSec": 10,
+    "style": "fixture",
+    "language": "vi"
+  },
+  "theme": {
+    "name": "fixture",
+    "accent": "#ffffff",
+    "accentSoft": "#cccccc",
+    "background": "#000000",
+    "foreground": "#ffffff",
+    "muted": "#999999"
+  },
+  "assets": [],
+  "scenes": [
+    {
+      "id": "scene-001",
+      "intent": "hook",
+      "templateId": "hero",
+      "templateRole": "scene",
+      "durationSec": 5,
+      "segmentIds": [
+        "seg-001"
+      ],
+      "headline": "Scene one",
+      "subtitle": {
+        "text": "First segment"
+      },
+      "content": {},
+      "style": {
+        "density": "low",
+        "safeArea": "tiktok"
+      },
+      "motion": [],
+      "layout": "center-stage",
+      "reason": "Fixture scene"
+    },
+    {
+      "id": "scene-002",
+      "intent": "takeaway",
+      "templateId": "end-card",
+      "templateRole": "scene",
+      "durationSec": 5,
+      "segmentIds": [
+        "seg-002",
+        "seg-003"
+      ],
+      "headline": "Scene two",
+      "subtitle": {
+        "text": "Second segment"
+      },
+      "content": {},
+      "style": {
+        "density": "low",
+        "safeArea": "tiktok"
+      },
+      "motion": [],
+      "layout": "bottom-statement",
+      "reason": "Fixture scene"
+    }
+  ]
+}

@@ -65,8 +65,6 @@ function main() {
 
   const ajv = new Ajv({
     allErrors: true,
-    schemaId: 'auto',
-    jsonPointers: false,
   });
   let validateProduction;
   try {
@@ -718,7 +716,7 @@ function classifyLegacySchemaErrors(schemaErrors) {
 }
 
 function formatSchemaError(error) {
-  const target = error.dataPath ? `$${error.dataPath}` : '$';
+  const target = error.instancePath ? `$${error.instancePath}` : '$';
   if (error.keyword === 'required') {
     return `${target} thiếu trường bắt buộc "${error.params.missingProperty}".`;
   }

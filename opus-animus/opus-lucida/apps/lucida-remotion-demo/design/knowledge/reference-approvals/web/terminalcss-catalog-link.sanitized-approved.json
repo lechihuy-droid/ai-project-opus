@@ -1,0 +1,45 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-14",
+    "approvedBy": "Lucida reference review",
+    "status": "approved"
+  },
+  "projectId": "lucida-remotion-demo",
+  "sanitization": {
+    "findings": [],
+    "redactions": 0,
+    "status": "passed"
+  },
+  "schemaVersion": "sanitized-visual-input/v1",
+  "sources": [
+    {
+      "checksum": "d27f65691ab147d03040435d5ce510bdf557e0a901f393c006f480fd342e54bf",
+      "collectorVersion": "web-reference-collector/1",
+      "metadata": {
+        "url": "https://terminalcss.xyz/"
+      },
+      "records": [
+        {
+          "data": {
+            "tags": ["terminal", "web-reference", "link-only"]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "web-reference-collector/1",
+            "sourceChecksum": "d27f65691ab147d03040435d5ce510bdf557e0a901f393c006f480fd342e54bf",
+            "sourceRef": "https://terminalcss.xyz/#lucida-review-note"
+          },
+          "text": "# Terminal CSS\n\nThe visual reference flow registers Terminal CSS as a terminal web-reference source. This approved package stores the source link and a reviewer-authored taxonomy note only. It does not copy page text, styles, screenshots, or other third-party assets.\n\nUse the evidence for terminal-family vocabulary, then validate any implementation against Lucida-owned components."
+        }
+      ],
+      "rights": {
+        "evidence": "The canonical package retains a reviewer-authored note and source URL only; no page content or assets are vendored.",
+        "policy": "link-and-review-note-only",
+        "status": "approved"
+      },
+      "sourceId": "source:reference:terminalcss-catalog-link",
+      "sourceRevision": "visual-reference-flow-2026-07-14",
+      "sourceType": "web_reference"
+    }
+  ]
+}

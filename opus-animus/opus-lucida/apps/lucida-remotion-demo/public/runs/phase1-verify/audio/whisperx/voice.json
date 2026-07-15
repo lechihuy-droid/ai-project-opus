@@ -1,1 +1,117 @@
-{"segments": [{"start": 0.031, "end": 1.175, "text": " Xin chào, đây là Lucida, âm thanh dẫn nhịp cho từng cảnh.", "words": [{"word": "Xin", "start": 0.031, "end": 0.091, "score": 0.01}, {"word": "chào,", "start": 0.111, "end": 0.212, "score": 0.014}, {"word": "đây", "start": 0.232, "end": 0.292, "score": 0.01}, {"word": "là", "start": 0.312, "end": 0.352, "score": 0.007}, {"word": "Lucida,", "start": 0.372, "end": 0.513, "score": 0.012}, {"word": "âm", "start": 0.533, "end": 0.573, "score": 0.007}, {"word": "thanh", "start": 0.593, "end": 0.693, "score": 0.009}, {"word": "dẫn", "start": 0.713, "end": 0.774, "score": 0.012}, {"word": "nhịp", "start": 0.794, "end": 0.874, "score": 0.011}, {"word": "cho", "start": 0.894, "end": 0.954, "score": 0.008}, {"word": "từng", "start": 0.974, "end": 1.055, "score": 0.01}, {"word": "cảnh.", "start": 1.075, "end": 1.175, "score": 0.015}], "avg_logprob": -0.145355723798275}, {"start": 1.195, "end": 2.018, "text": "Mỗi câu được khóa để giữ nguyên nội dung.", "words": [{"word": "Mỗi", "start": 1.195, "end": 1.255, "score": 0.007}, {"word": "câu", "start": 1.276, "end": 1.336, "score": 0.008}, {"word": "được", "start": 1.356, "end": 1.436, "score": 0.01}, {"word": "khóa", "start": 1.456, "end": 1.536, "score": 0.011}, {"word": "để", "start": 1.557, "end": 1.597, "score": 0.008}, {"word": "giữ", "start": 1.617, "end": 1.677, "score": 0.011}, {"word": "nguyên", "start": 1.697, "end": 1.817, "score": 0.01}, {"word": "nội", "start": 1.838, "end": 1.898, "score": 0.009}, {"word": "dung.", "start": 1.918, "end": 2.018, "score": 0.012}], "avg_logprob": -0.145355723798275}], "word_segments": [{"word": "Xin", "start": 0.031, "end": 0.091, "score": 0.01}, {"word": "chào,", "start": 0.111, "end": 0.212, "score": 0.014}, {"word": "đây", "start": 0.232, "end": 0.292, "score": 0.01}, {"word": "là", "start": 0.312, "end": 0.352, "score": 0.007}, {"word": "Lucida,", "start": 0.372, "end": 0.513, "score": 0.012}, {"word": "âm", "start": 0.533, "end": 0.573, "score": 0.007}, {"word": "thanh", "start": 0.593, "end": 0.693, "score": 0.009}, {"word": "dẫn", "start": 0.713, "end": 0.774, "score": 0.012}, {"word": "nhịp", "start": 0.794, "end": 0.874, "score": 0.011}, {"word": "cho", "start": 0.894, "end": 0.954, "score": 0.008}, {"word": "từng", "start": 0.974, "end": 1.055, "score": 0.01}, {"word": "cảnh.", "start": 1.075, "end": 1.175, "score": 0.015}, {"word": "Mỗi", "start": 1.195, "end": 1.255, "score": 0.007}, {"word": "câu", "start": 1.276, "end": 1.336, "score": 0.008}, {"word": "được", "start": 1.356, "end": 1.436, "score": 0.01}, {"word": "khóa", "start": 1.456, "end": 1.536, "score": 0.011}, {"word": "để", "start": 1.557, "end": 1.597, "score": 0.008}, {"word": "giữ", "start": 1.617, "end": 1.677, "score": 0.011}, {"word": "nguyên", "start": 1.697, "end": 1.817, "score": 0.01}, {"word": "nội", "start": 1.838, "end": 1.898, "score": 0.009}, {"word": "dung.", "start": 1.918, "end": 2.018, "score": 0.012}], "language": "vi"}
+{
+  "language": "vi",
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 6.72,
+      "text": " Xin chào, đây là Lucida, âm thanh dẫn nhịp cho từng cảnh. Mỗi câu được khóa để giữ nguyên nội dùng.",
+      "words": [
+        {
+          "word": " Xin",
+          "start": 0.0,
+          "end": 0.2
+        },
+        {
+          "word": " chào,",
+          "start": 0.2,
+          "end": 0.56
+        },
+        {
+          "word": " đây",
+          "start": 0.86,
+          "end": 0.94
+        },
+        {
+          "word": " là",
+          "start": 0.94,
+          "end": 1.12
+        },
+        {
+          "word": " Lucida,",
+          "start": 1.12,
+          "end": 1.66
+        },
+        {
+          "word": " âm",
+          "start": 2.18,
+          "end": 2.42
+        },
+        {
+          "word": " thanh",
+          "start": 2.42,
+          "end": 2.66
+        },
+        {
+          "word": " dẫn",
+          "start": 2.66,
+          "end": 2.84
+        },
+        {
+          "word": " nhịp",
+          "start": 2.84,
+          "end": 3.12
+        },
+        {
+          "word": " cho",
+          "start": 3.12,
+          "end": 3.46
+        },
+        {
+          "word": " từng",
+          "start": 3.46,
+          "end": 3.82
+        },
+        {
+          "word": " cảnh.",
+          "start": 3.82,
+          "end": 4.08
+        },
+        {
+          "word": " Mỗi",
+          "start": 4.48,
+          "end": 4.82
+        },
+        {
+          "word": " câu",
+          "start": 4.82,
+          "end": 5.08
+        },
+        {
+          "word": " được",
+          "start": 5.08,
+          "end": 5.18
+        },
+        {
+          "word": " khóa",
+          "start": 5.18,
+          "end": 5.64
+        },
+        {
+          "word": " để",
+          "start": 5.64,
+          "end": 5.92
+        },
+        {
+          "word": " giữ",
+          "start": 5.92,
+          "end": 6.16
+        },
+        {
+          "word": " nguyên",
+          "start": 6.16,
+          "end": 6.4
+        },
+        {
+          "word": " nội",
+          "start": 6.4,
+          "end": 6.52
+        },
+        {
+          "word": " dùng.",
+          "start": 6.52,
+          "end": 6.72
+        }
+      ]
+    }
+  ]
+}

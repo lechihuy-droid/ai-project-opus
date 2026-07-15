@@ -1,0 +1,138 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "script-ai-email-keigo-001",
+  "revision": 1,
+  "status": "approved",
+  "language": "vi",
+  "topic": {
+    "slug": "ai-email-keigo",
+    "title": "Dùng AI viết email kính ngữ tiếng Nhật trong 5 phút",
+    "series": "lucida-work",
+    "targetDurationSec": 62,
+    "wordCountAssumption": "≈3.0 từ tiếng Việt / giây (đo VieNeu, spike 2026-07-14)"
+  },
+  "brandRef": {
+    "id": "lucida-ai-v1",
+    "contract": "docs/market-research/11-pipeline-contract.md"
+  },
+  "content": {
+    "voiceoverText": "Viết email kính ngữ tiếng Nhật vẫn là việc ngốn thời gian nhất của dân văn phòng nước ngoài. Một email xin lỗi khách hàng có thể mất ba mươi phút để viết cho đúng lễ. AI xử lý tốt việc này, nếu bạn đưa đúng ngữ cảnh. Cách làm gồm ba bước. Bước một: dán email cần trả lời vào, kèm quan hệ với người nhận. Ví dụ: khách hàng lâu năm, cấp trên, hay đồng nghiệp phòng khác. Bước hai: nói rõ mục đích, xin lỗi, từ chối, hay nhắc tiến độ. Bước ba: yêu cầu hai phiên bản, một trang trọng và một ngắn gọn. Rồi chọn bản phù hợp và chỉnh lại tên riêng, con số, ngày tháng. AI đôi khi dùng kính ngữ quá mức, nên đọc lại luôn là bước bắt buộc. Ba mươi phút mỗi email có thể rút xuống còn năm phút. Thời gian tiết kiệm được dành cho việc mà chỉ bạn làm được. Lưu lại quy trình ba bước này để thử ngay trong tuần. Theo dõi Lucida để biết thay đổi AI nào thực sự đáng quan tâm."
+  },
+  "sentences": [
+    {
+      "sentenceId": "sent-001",
+      "segmentId": "seg-001",
+      "order": 1,
+      "text": "Viết email kính ngữ tiếng Nhật vẫn là việc ngốn thời gian nhất của dân văn phòng nước ngoài.",
+      "locked": true
+    },
+    {
+      "sentenceId": "sent-002",
+      "segmentId": "seg-001",
+      "order": 2,
+      "text": "Một email xin lỗi khách hàng có thể mất ba mươi phút để viết cho đúng lễ.",
+      "locked": true
+    },
+    {
+      "sentenceId": "sent-003",
+      "segmentId": "seg-002",
+      "order": 3,
+      "text": "AI xử lý tốt việc này, nếu bạn đưa đúng ngữ cảnh.",
+      "locked": true
+    },
+    {
+      "sentenceId": "sent-004",
+      "segmentId": "seg-002",
+      "order": 4,
+      "text": "Cách làm gồm ba bước.",
+      "locked": true
+    },
+    {
+      "sentenceId": "sent-005",
+      "segmentId": "seg-003",
+      "order": 5,
+      "text": "Bước một: dán email cần trả lời vào, kèm quan hệ với người nhận.",
+      "locked": true
+    },
+    {
+      "sentenceId": "sent-006",
+      "segmentId": "seg-003",
+      "order": 6,
+      "text": "Ví dụ: khách hàng lâu năm, cấp trên, hay đồng nghiệp phòng khác.",
+      "locked": true
+    },
+    {
+      "sentenceId": "sent-007",
+      "segmentId": "seg-003",
+      "order": 7,
+      "text": "Bước hai: nói rõ mục đích, xin lỗi, từ chối, hay nhắc tiến độ.",
+      "locked": true
+    },
+    {
+      "sentenceId": "sent-008",
+      "segmentId": "seg-003",
+      "order": 8,
+      "text": "Bước ba: yêu cầu hai phiên bản, một trang trọng và một ngắn gọn.",
+      "locked": true
+    },
+    {
+      "sentenceId": "sent-009",
+      "segmentId": "seg-003",
+      "order": 9,
+      "text": "Rồi chọn bản phù hợp và chỉnh lại tên riêng, con số, ngày tháng.",
+      "locked": true
+    },
+    {
+      "sentenceId": "sent-010",
+      "segmentId": "seg-004",
+      "order": 10,
+      "text": "AI đôi khi dùng kính ngữ quá mức, nên đọc lại luôn là bước bắt buộc.",
+      "locked": true
+    },
+    {
+      "sentenceId": "sent-011",
+      "segmentId": "seg-005",
+      "order": 11,
+      "text": "Ba mươi phút mỗi email có thể rút xuống còn năm phút.",
+      "locked": true
+    },
+    {
+      "sentenceId": "sent-012",
+      "segmentId": "seg-005",
+      "order": 12,
+      "text": "Thời gian tiết kiệm được dành cho việc mà chỉ bạn làm được.",
+      "locked": true
+    },
+    {
+      "sentenceId": "sent-013",
+      "segmentId": "seg-006",
+      "order": 13,
+      "text": "Lưu lại quy trình ba bước này để thử ngay trong tuần.",
+      "locked": true
+    },
+    {
+      "sentenceId": "sent-014",
+      "segmentId": "seg-006",
+      "order": 14,
+      "text": "Theo dõi Lucida để biết thay đổi AI nào thực sự đáng quan tâm.",
+      "locked": true
+    }
+  ],
+  "claimsNeedingEvidence": [],
+  "editorialConstraints": {
+    "allowedRewriteLevel": "none"
+  },
+  "approval": {
+    "approvedBy": "user",
+    "approvedAt": "2026-07-14T08:20:00+09:00",
+    "contentFrozen": true
+  },
+  "provenance": {
+    "researchDocsUsed": [
+      "docs/market-research/08-editorial-voice.md",
+      "docs/market-research/04-growth-hypotheses.md",
+      "docs/market-research/11-pipeline-contract.md"
+    ],
+    "contentHash": "sha256:2ea8980c25a206cee2a603a03fb95c07f7ea5125cfd771fb2a7660bb7554dd1b"
+  }
+}

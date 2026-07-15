@@ -1,0 +1,1882 @@
+{
+  "videoMap": {
+    "video": {
+      "title": "Dùng AI viết email kính ngữ tiếng Nhật trong 5 phút",
+      "subtitle": "Ba bước ra email đúng lễ",
+      "format": "vertical_9_16",
+      "width": 1080,
+      "height": 1920,
+      "fps": 30,
+      "durationSec": 54.88,
+      "style": "lucida-dark-editorial",
+      "language": "vi"
+    },
+    "brand": {
+      "id": "lucida-ai-v1",
+      "series": "lucida-work",
+      "contractRef": "docs/market-research/11-pipeline-contract.md"
+    },
+    "theme": {
+      "name": "lucida_dark_gold_electric_blue",
+      "skin": "premium-gold",
+      "accent": "#D2B47A",
+      "accentSoft": "#4CC2FF",
+      "background": "#0B0C0E",
+      "foreground": "#F4F0E8",
+      "muted": "#A7A39B"
+    },
+    "assets": [],
+    "scenes": [
+      {
+        "id": "hook",
+        "intent": "hook",
+        "templateId": "cinematic-title-intro",
+        "templateRole": "scene",
+        "layout": "oversized-type",
+        "segmentIds": [
+          "seg-001"
+        ],
+        "durationSec": 9.96,
+        "headline": "30 phút cho một email kính ngữ?",
+        "subtitle": {
+          "text": "Viết email kính ngữ tiếng Nhật vẫn là việc ngốn thời gian nhất của dân văn phòng nước ngoài. Một email xin lỗi khách hàng có thể mất ba mươi phút để viết cho đúng lễ.",
+          "groups": [
+            {
+              "text": "Viết email kính ngữ tiếng Nhật vẫn là việc ngốn thời gian nhất của dân văn phòng nước ngoài.",
+              "lines": [
+                [
+                  "Viết",
+                  "email",
+                  "kính",
+                  "ngữ",
+                  "tiếng",
+                  "Nhật",
+                  "vẫn",
+                  "là",
+                  "việc",
+                  "ngốn"
+                ],
+                [
+                  "thời",
+                  "gian",
+                  "nhất",
+                  "của",
+                  "dân",
+                  "văn",
+                  "phòng",
+                  "nước",
+                  "ngoài."
+                ]
+              ]
+            },
+            {
+              "text": "Một email xin lỗi khách hàng có thể mất ba mươi phút để viết cho đúng lễ.",
+              "lines": [
+                [
+                  "Một",
+                  "email",
+                  "xin",
+                  "lỗi",
+                  "khách",
+                  "hàng",
+                  "có",
+                  "thể",
+                  "mất"
+                ],
+                [
+                  "ba",
+                  "mươi",
+                  "phút",
+                  "để",
+                  "viết",
+                  "cho",
+                  "đúng",
+                  "lễ."
+                ]
+              ]
+            }
+          ]
+        },
+        "content": {
+          "kicker": "01 / HOOK",
+          "title": "30 phút cho một email kính ngữ?",
+          "subtitle": "AI rút xuống 5 phút, nếu dùng đúng cách.",
+          "items": [
+            {
+              "label": "Kính ngữ",
+              "note": "đúng lễ"
+            },
+            {
+              "label": "30 phút",
+              "note": "mỗi email"
+            },
+            {
+              "label": "AI",
+              "note": "bản nháp"
+            },
+            {
+              "label": "5 phút",
+              "note": "hoàn thành"
+            }
+          ],
+          "footer": "Email kính ngữ tiếng Nhật."
+        },
+        "style": {
+          "accent": "#D2B47A",
+          "density": "low",
+          "safeArea": "tiktok"
+        },
+        "motion": [
+          "slow_zoom",
+          "title_reveal",
+          "chip_stagger"
+        ],
+        "reason": "Hook pain-point cụ thể theo editorial voice; oversized-type cho stakes ngay 3 giây đầu.",
+        "startMs": 0,
+        "endMs": 9960
+      },
+      {
+        "id": "setup",
+        "intent": "process",
+        "templateId": "chapter-title",
+        "templateRole": "scene",
+        "layout": "center-stage",
+        "segmentIds": [
+          "seg-002"
+        ],
+        "durationSec": 5.16,
+        "headline": "AI xử lý tốt, nếu đưa đúng ngữ cảnh",
+        "subtitle": {
+          "text": "AI xử lý tốt việc này, nếu bạn đưa đúng ngữ cảnh. Cách làm gồm ba bước.",
+          "groups": [
+            {
+              "text": "AI xử lý tốt việc này, nếu bạn đưa đúng ngữ cảnh.",
+              "lines": [
+                [
+                  "AI",
+                  "xử",
+                  "lý",
+                  "tốt",
+                  "việc",
+                  "này,"
+                ],
+                [
+                  "nếu",
+                  "bạn",
+                  "đưa",
+                  "đúng",
+                  "ngữ",
+                  "cảnh."
+                ]
+              ]
+            },
+            {
+              "text": "Cách làm gồm ba bước.",
+              "lines": [
+                [
+                  "Cách",
+                  "làm",
+                  "gồm",
+                  "ba",
+                  "bước."
+                ]
+              ]
+            }
+          ]
+        },
+        "content": {
+          "kicker": "02 / CÁCH LÀM",
+          "title": "AI xử lý tốt, nếu đưa đúng ngữ cảnh",
+          "subtitle": "Quy trình gồm ba bước.",
+          "items": [
+            {
+              "label": "Ngữ cảnh"
+            },
+            {
+              "label": "Mục đích"
+            },
+            {
+              "label": "Hai phiên bản"
+            }
+          ],
+          "footer": "Ngữ cảnh -> Mục đích -> Phiên bản."
+        },
+        "style": {
+          "accent": "#D2B47A",
+          "density": "low",
+          "safeArea": "tiktok"
+        },
+        "motion": [
+          "title_reveal",
+          "underline_grow"
+        ],
+        "reason": "Chuyển từ pain sang phương pháp; chapter-title đánh dấu section, tránh lặp layout hook.",
+        "startMs": 10560,
+        "endMs": 15720
+      },
+      {
+        "id": "steps",
+        "intent": "process",
+        "templateId": "progress-steps",
+        "templateRole": "scene",
+        "layout": "top-title",
+        "segmentIds": [
+          "seg-003"
+        ],
+        "durationSec": 21.52,
+        "headline": "Ba bước cho một email đúng lễ",
+        "subtitle": {
+          "text": "Bước một: dán email cần trả lời vào, kèm quan hệ với người nhận. Ví dụ: khách hàng lâu năm, cấp trên, hay đồng nghiệp phòng khác. Bước hai: nói rõ mục đích, xin lỗi, từ chối, hay nhắc tiến độ. Bước ba: yêu cầu hai phiên bản, một trang trọng và một ngắn gọn. Rồi chọn bản phù hợp và chỉnh lại tên riêng, con số, ngày tháng.",
+          "groups": [
+            {
+              "text": "Bước một: dán email cần trả lời vào, kèm quan hệ với người nhận.",
+              "lines": [
+                [
+                  "Bước",
+                  "một:",
+                  "dán",
+                  "email",
+                  "cần",
+                  "trả",
+                  "lời"
+                ],
+                [
+                  "vào,",
+                  "kèm",
+                  "quan",
+                  "hệ",
+                  "với",
+                  "người",
+                  "nhận."
+                ]
+              ]
+            },
+            {
+              "text": "Ví dụ: khách hàng lâu năm, cấp trên, hay đồng nghiệp phòng khác.",
+              "lines": [
+                [
+                  "Ví",
+                  "dụ:",
+                  "khách",
+                  "hàng",
+                  "lâu",
+                  "năm,",
+                  "cấp"
+                ],
+                [
+                  "trên,",
+                  "hay",
+                  "đồng",
+                  "nghiệp",
+                  "phòng",
+                  "khác."
+                ]
+              ]
+            },
+            {
+              "text": "Bước hai: nói rõ mục đích, xin lỗi, từ chối, hay nhắc tiến độ.",
+              "lines": [
+                [
+                  "Bước",
+                  "hai:",
+                  "nói",
+                  "rõ",
+                  "mục",
+                  "đích,",
+                  "xin"
+                ],
+                [
+                  "lỗi,",
+                  "từ",
+                  "chối,",
+                  "hay",
+                  "nhắc",
+                  "tiến",
+                  "độ."
+                ]
+              ]
+            },
+            {
+              "text": "Bước ba: yêu cầu hai phiên bản, một trang trọng và một ngắn gọn.",
+              "lines": [
+                [
+                  "Bước",
+                  "ba:",
+                  "yêu",
+                  "cầu",
+                  "hai",
+                  "phiên",
+                  "bản,"
+                ],
+                [
+                  "một",
+                  "trang",
+                  "trọng",
+                  "và",
+                  "một",
+                  "ngắn",
+                  "gọn."
+                ]
+              ]
+            },
+            {
+              "text": "Rồi chọn bản phù hợp và chỉnh lại tên riêng, con số, ngày tháng.",
+              "lines": [
+                [
+                  "Rồi",
+                  "chọn",
+                  "bản",
+                  "phù",
+                  "hợp",
+                  "và",
+                  "chỉnh"
+                ],
+                [
+                  "lại",
+                  "tên",
+                  "riêng,",
+                  "con",
+                  "số,",
+                  "ngày",
+                  "tháng."
+                ]
+              ]
+            }
+          ]
+        },
+        "content": {
+          "kicker": "03 / BA BƯỚC",
+          "title": "Ba bước cho một email đúng lễ",
+          "subtitle": "Dán ngữ cảnh, nêu mục đích, chọn phiên bản.",
+          "steps": [
+            {
+              "label": "Dán email + quan hệ",
+              "note": "Khách lâu năm, cấp trên, đồng nghiệp"
+            },
+            {
+              "label": "Nói rõ mục đích",
+              "note": "Xin lỗi, từ chối, nhắc tiến độ"
+            },
+            {
+              "label": "Yêu cầu 2 phiên bản",
+              "note": "Trang trọng và ngắn gọn"
+            },
+            {
+              "label": "Chỉnh chi tiết",
+              "note": "Tên riêng, con số, ngày tháng"
+            }
+          ],
+          "footer": "Từ ngữ cảnh đến email hoàn chỉnh."
+        },
+        "style": {
+          "accent": "#D2B47A",
+          "density": "medium",
+          "safeArea": "tiktok"
+        },
+        "motion": [
+          "step_progress",
+          "chip_stagger"
+        ],
+        "reason": "Nội dung quy trình 3 bước khớp progress-steps; scene dài nhất mang phần how-to.",
+        "startMs": 16200,
+        "endMs": 37720
+      },
+      {
+        "id": "caution",
+        "intent": "quote",
+        "templateId": "quote-card",
+        "templateRole": "scene",
+        "layout": "bottom-statement",
+        "segmentIds": [
+          "seg-004"
+        ],
+        "durationSec": 3.98,
+        "headline": "Đọc lại luôn là bước bắt buộc",
+        "subtitle": {
+          "text": "AI đôi khi dùng kính ngữ quá mức, nên đọc lại luôn là bước bắt buộc.",
+          "groups": [
+            {
+              "text": "AI đôi khi dùng kính ngữ quá mức, nên đọc lại luôn là bước bắt buộc.",
+              "lines": [
+                [
+                  "AI",
+                  "đôi",
+                  "khi",
+                  "dùng",
+                  "kính",
+                  "ngữ",
+                  "quá",
+                  "mức,"
+                ],
+                [
+                  "nên",
+                  "đọc",
+                  "lại",
+                  "luôn",
+                  "là",
+                  "bước",
+                  "bắt",
+                  "buộc."
+                ]
+              ]
+            }
+          ]
+        },
+        "content": {
+          "kicker": "04 / LƯU Ý",
+          "title": "Đọc lại luôn là bước bắt buộc",
+          "subtitle": "AI đôi khi dùng kính ngữ quá mức.",
+          "quote": "Kính ngữ quá mức cũng là một lỗi lịch sự.",
+          "attribution": "Luôn kiểm tra trước khi gửi.",
+          "footer": "AI viết nháp, bạn chịu trách nhiệm."
+        },
+        "style": {
+          "accent": "#D2B47A",
+          "density": "low",
+          "safeArea": "tiktok"
+        },
+        "motion": [
+          "title_reveal",
+          "underline_grow"
+        ],
+        "reason": "Caution một luận điểm — quote-card nhấn mạnh; giữ evidence integrity, không overclaim.",
+        "startMs": 38320,
+        "endMs": 42300
+      },
+      {
+        "id": "payoff",
+        "intent": "comparison",
+        "templateId": "split-screen",
+        "templateRole": "scene",
+        "layout": "full-bleed-visual",
+        "segmentIds": [
+          "seg-005"
+        ],
+        "durationSec": 6.2,
+        "headline": "30 phút xuống 5 phút",
+        "subtitle": {
+          "text": "Ba mươi phút mỗi email có thể rút xuống còn năm phút. Thời gian tiết kiệm được dành cho việc mà chỉ bạn làm được.",
+          "groups": [
+            {
+              "text": "Ba mươi phút mỗi email có thể rút xuống còn năm phút.",
+              "lines": [
+                [
+                  "Ba",
+                  "mươi",
+                  "phút",
+                  "mỗi",
+                  "email",
+                  "có"
+                ],
+                [
+                  "thể",
+                  "rút",
+                  "xuống",
+                  "còn",
+                  "năm",
+                  "phút."
+                ]
+              ]
+            },
+            {
+              "text": "Thời gian tiết kiệm được dành cho việc mà chỉ bạn làm được.",
+              "lines": [
+                [
+                  "Thời",
+                  "gian",
+                  "tiết",
+                  "kiệm",
+                  "được",
+                  "dành",
+                  "cho"
+                ],
+                [
+                  "việc",
+                  "mà",
+                  "chỉ",
+                  "bạn",
+                  "làm",
+                  "được."
+                ]
+              ]
+            }
+          ]
+        },
+        "content": {
+          "kicker": "05 / TRƯỚC / SAU",
+          "title": "30 phút xuống 5 phút",
+          "subtitle": "Thời gian dành cho việc chỉ bạn làm được.",
+          "panels": [
+            {
+              "title": "Trước",
+              "body": "30 phút tự viết, tra kính ngữ, sửa từng câu.",
+              "tone": "cool"
+            },
+            {
+              "title": "Sau",
+              "body": "5 phút: AI nháp, bạn duyệt và chỉnh chi tiết.",
+              "tone": "warm"
+            }
+          ],
+          "footer": "Tiết kiệm cho việc quan trọng hơn."
+        },
+        "style": {
+          "accent": "#D2B47A",
+          "density": "low",
+          "safeArea": "tiktok"
+        },
+        "motion": [
+          "panel_slide",
+          "title_reveal"
+        ],
+        "reason": "So sánh trước/sau đúng contract split-screen; payoff định lượng có wording 'có thể' đúng mức.",
+        "startMs": 43060,
+        "endMs": 49260
+      },
+      {
+        "id": "cta",
+        "intent": "takeaway",
+        "templateId": "end-card",
+        "templateRole": "cta",
+        "layout": "center-stage",
+        "segmentIds": [
+          "seg-006"
+        ],
+        "durationSec": 8.06,
+        "headline": "Lưu lại quy trình ba bước này",
+        "subtitle": {
+          "text": "Lưu lại quy trình ba bước này để thử ngay trong tuần. Theo dõi Lucida để biết thay đổi AI nào thực sự đáng quan tâm.",
+          "groups": [
+            {
+              "text": "Lưu lại quy trình ba bước này để thử ngay trong tuần.",
+              "lines": [
+                [
+                  "Lưu",
+                  "lại",
+                  "quy",
+                  "trình",
+                  "ba",
+                  "bước"
+                ],
+                [
+                  "này",
+                  "để",
+                  "thử",
+                  "ngay",
+                  "trong",
+                  "tuần."
+                ]
+              ]
+            },
+            {
+              "text": "Theo dõi Lucida để biết thay đổi AI nào thực sự đáng quan tâm.",
+              "lines": [
+                [
+                  "Theo",
+                  "dõi",
+                  "Lucida",
+                  "để",
+                  "biết",
+                  "thay",
+                  "đổi"
+                ],
+                [
+                  "AI",
+                  "nào",
+                  "thực",
+                  "sự",
+                  "đáng",
+                  "quan",
+                  "tâm."
+                ]
+              ]
+            }
+          ]
+        },
+        "content": {
+          "kicker": "06 / CTA",
+          "title": "Lưu lại quy trình ba bước này",
+          "subtitle": "Thử ngay trong tuần.",
+          "cta": {
+            "label": "Follow Lucida",
+            "detail": "Biết thay đổi AI nào thực sự đáng quan tâm."
+          },
+          "footer": "Lucida — hiểu AI sớm, làm việc đi trước."
+        },
+        "style": {
+          "accent": "#D2B47A",
+          "density": "low",
+          "safeArea": "tiktok"
+        },
+        "motion": [
+          "title_reveal",
+          "chip_stagger"
+        ],
+        "reason": "Save CTA + Follow CTA theo editorial voice; end-card khép về brand grammar.",
+        "startMs": 49740,
+        "endMs": 57800
+      }
+    ]
+  },
+  "audio": {
+    "src": "runs/email-keigo/audio/voice.wav",
+    "durationMs": 57970,
+    "checksum": "sha256:4b11e91614f36700d4eb51729c8f7ec44aee622801656dc65c3ce1f45ae68ea9"
+  },
+  "timedCaptions": {
+    "voiceChecksum": "sha256:4b11e91614f36700d4eb51729c8f7ec44aee622801656dc65c3ce1f45ae68ea9",
+    "phrases": [
+      {
+        "phraseId": "phrase-001",
+        "sentenceId": "sent-001",
+        "text": "Viết email kính ngữ tiếng Nhật vẫn là việc ngốn thời gian",
+        "startMs": 0,
+        "endMs": 3000,
+        "words": [
+          {
+            "text": "Viết",
+            "startMs": 0,
+            "endMs": 280
+          },
+          {
+            "text": "email",
+            "startMs": null,
+            "endMs": null
+          },
+          {
+            "text": "kính",
+            "startMs": 660,
+            "endMs": 900
+          },
+          {
+            "text": "ngữ",
+            "startMs": 900,
+            "endMs": 1160
+          },
+          {
+            "text": "tiếng",
+            "startMs": null,
+            "endMs": null
+          },
+          {
+            "text": "Nhật",
+            "startMs": 1420,
+            "endMs": 1660
+          },
+          {
+            "text": "vẫn",
+            "startMs": 1660,
+            "endMs": 1920
+          },
+          {
+            "text": "là",
+            "startMs": 1920,
+            "endMs": 2100
+          },
+          {
+            "text": "việc",
+            "startMs": 2100,
+            "endMs": 2240
+          },
+          {
+            "text": "ngốn",
+            "startMs": null,
+            "endMs": null
+          },
+          {
+            "text": "thời",
+            "startMs": 2620,
+            "endMs": 2780
+          },
+          {
+            "text": "gian",
+            "startMs": 2780,
+            "endMs": 3000
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-002",
+        "sentenceId": "sent-001",
+        "text": "nhất của dân văn phòng nước ngoài.",
+        "startMs": 3000,
+        "endMs": 4980,
+        "words": [
+          {
+            "text": "nhất",
+            "startMs": 3000,
+            "endMs": 3240
+          },
+          {
+            "text": "của",
+            "startMs": 3240,
+            "endMs": 3780
+          },
+          {
+            "text": "dân",
+            "startMs": 3780,
+            "endMs": 4060
+          },
+          {
+            "text": "văn",
+            "startMs": 4060,
+            "endMs": 4240
+          },
+          {
+            "text": "phòng",
+            "startMs": 4240,
+            "endMs": 4460
+          },
+          {
+            "text": "nước",
+            "startMs": 4460,
+            "endMs": 4660
+          },
+          {
+            "text": "ngoài",
+            "startMs": 4660,
+            "endMs": 4980
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-003",
+        "sentenceId": "sent-002",
+        "text": "Một email xin lỗi khách hàng có thể mất ba mươi phút",
+        "startMs": 5440,
+        "endMs": 8780,
+        "words": [
+          {
+            "text": "Một",
+            "startMs": 5440,
+            "endMs": 5720
+          },
+          {
+            "text": "email",
+            "startMs": null,
+            "endMs": null
+          },
+          {
+            "text": "xin",
+            "startMs": 6180,
+            "endMs": 6620
+          },
+          {
+            "text": "lỗi",
+            "startMs": 6620,
+            "endMs": 6800
+          },
+          {
+            "text": "khách",
+            "startMs": 6800,
+            "endMs": 7000
+          },
+          {
+            "text": "hàng",
+            "startMs": 7000,
+            "endMs": 7220
+          },
+          {
+            "text": "có",
+            "startMs": 7220,
+            "endMs": 7680
+          },
+          {
+            "text": "thể",
+            "startMs": 7680,
+            "endMs": 7860
+          },
+          {
+            "text": "mất",
+            "startMs": 7860,
+            "endMs": 8100
+          },
+          {
+            "text": "ba",
+            "startMs": null,
+            "endMs": null
+          },
+          {
+            "text": "mươi",
+            "startMs": null,
+            "endMs": null
+          },
+          {
+            "text": "phút",
+            "startMs": 8460,
+            "endMs": 8780
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-004",
+        "sentenceId": "sent-002",
+        "text": "để viết cho đúng lễ.",
+        "startMs": 8780,
+        "endMs": 9960,
+        "words": [
+          {
+            "text": "để",
+            "startMs": 8780,
+            "endMs": 9120
+          },
+          {
+            "text": "viết",
+            "startMs": 9120,
+            "endMs": 9380
+          },
+          {
+            "text": "cho",
+            "startMs": 9380,
+            "endMs": 9580
+          },
+          {
+            "text": "đúng",
+            "startMs": 9580,
+            "endMs": 9740
+          },
+          {
+            "text": "lễ",
+            "startMs": 9740,
+            "endMs": 9960
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-005",
+        "sentenceId": "sent-003",
+        "text": "AI xử lý tốt việc này,",
+        "startMs": 10560,
+        "endMs": 12140,
+        "words": [
+          {
+            "text": "AI",
+            "startMs": 10560,
+            "endMs": 10880
+          },
+          {
+            "text": "xử",
+            "startMs": 10880,
+            "endMs": 11400
+          },
+          {
+            "text": "lý",
+            "startMs": 11400,
+            "endMs": 11560
+          },
+          {
+            "text": "tốt",
+            "startMs": 11560,
+            "endMs": 11720
+          },
+          {
+            "text": "việc",
+            "startMs": 11720,
+            "endMs": 11880
+          },
+          {
+            "text": "này",
+            "startMs": 11880,
+            "endMs": 12140
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-006",
+        "sentenceId": "sent-003",
+        "text": "nếu bạn đưa đúng ngữ cảnh.",
+        "startMs": 12140,
+        "endMs": 13760,
+        "words": [
+          {
+            "text": "nếu",
+            "startMs": 12140,
+            "endMs": 12780
+          },
+          {
+            "text": "bạn",
+            "startMs": 12780,
+            "endMs": 12960
+          },
+          {
+            "text": "đưa",
+            "startMs": 12960,
+            "endMs": 13160
+          },
+          {
+            "text": "đúng",
+            "startMs": 13160,
+            "endMs": 13340
+          },
+          {
+            "text": "ngữ",
+            "startMs": 13340,
+            "endMs": 13480
+          },
+          {
+            "text": "cảnh",
+            "startMs": 13480,
+            "endMs": 13760
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-007",
+        "sentenceId": "sent-004",
+        "text": "Cách làm gồm ba bước.",
+        "startMs": 13760,
+        "endMs": 15720,
+        "words": [
+          {
+            "text": "Cách",
+            "startMs": 13760,
+            "endMs": 14340
+          },
+          {
+            "text": "làm",
+            "startMs": 14340,
+            "endMs": 14640
+          },
+          {
+            "text": "gồm",
+            "startMs": 14640,
+            "endMs": 15320
+          },
+          {
+            "text": "ba",
+            "startMs": null,
+            "endMs": null
+          },
+          {
+            "text": "bước",
+            "startMs": 15520,
+            "endMs": 15720
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-008",
+        "sentenceId": "sent-005",
+        "text": "Bước một:",
+        "startMs": 16200,
+        "endMs": 16320,
+        "words": [
+          {
+            "text": "Bước",
+            "startMs": 16200,
+            "endMs": 16320
+          },
+          {
+            "text": "một",
+            "startMs": null,
+            "endMs": null
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-009",
+        "sentenceId": "sent-005",
+        "text": "dán email cần trả lời vào,",
+        "startMs": 17560,
+        "endMs": 18440,
+        "words": [
+          {
+            "text": "dán",
+            "startMs": null,
+            "endMs": null
+          },
+          {
+            "text": "email",
+            "startMs": null,
+            "endMs": null
+          },
+          {
+            "text": "cần",
+            "startMs": 17560,
+            "endMs": 17760
+          },
+          {
+            "text": "trả",
+            "startMs": 17760,
+            "endMs": 18020
+          },
+          {
+            "text": "lời",
+            "startMs": 18020,
+            "endMs": 18160
+          },
+          {
+            "text": "vào",
+            "startMs": 18160,
+            "endMs": 18440
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-010",
+        "sentenceId": "sent-005",
+        "text": "kèm quan hệ với người nhận.",
+        "startMs": 18960,
+        "endMs": 20160,
+        "words": [
+          {
+            "text": "kèm",
+            "startMs": 18960,
+            "endMs": 19140
+          },
+          {
+            "text": "quan",
+            "startMs": 19140,
+            "endMs": 19300
+          },
+          {
+            "text": "hệ",
+            "startMs": 19300,
+            "endMs": 19540
+          },
+          {
+            "text": "với",
+            "startMs": 19540,
+            "endMs": 19740
+          },
+          {
+            "text": "người",
+            "startMs": 19740,
+            "endMs": 19880
+          },
+          {
+            "text": "nhận",
+            "startMs": 19880,
+            "endMs": 20160
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-011",
+        "sentenceId": "sent-006",
+        "text": "Ví dụ:",
+        "startMs": 20560,
+        "endMs": 21000,
+        "words": [
+          {
+            "text": "Ví",
+            "startMs": 20560,
+            "endMs": 20820
+          },
+          {
+            "text": "dụ",
+            "startMs": 20820,
+            "endMs": 21000
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-012",
+        "sentenceId": "sent-006",
+        "text": "khách hàng lâu năm,",
+        "startMs": 21460,
+        "endMs": 22300,
+        "words": [
+          {
+            "text": "khách",
+            "startMs": 21460,
+            "endMs": 21600
+          },
+          {
+            "text": "hàng",
+            "startMs": 21600,
+            "endMs": 21840
+          },
+          {
+            "text": "lâu",
+            "startMs": 21840,
+            "endMs": 22080
+          },
+          {
+            "text": "năm",
+            "startMs": 22080,
+            "endMs": 22300
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-013",
+        "sentenceId": "sent-006",
+        "text": "cấp trên,",
+        "startMs": 22760,
+        "endMs": 23060,
+        "words": [
+          {
+            "text": "cấp",
+            "startMs": 22760,
+            "endMs": 22820
+          },
+          {
+            "text": "trên",
+            "startMs": 22820,
+            "endMs": 23060
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-014",
+        "sentenceId": "sent-006",
+        "text": "hay đồng nghiệp phòng khác.",
+        "startMs": 23560,
+        "endMs": 24620,
+        "words": [
+          {
+            "text": "hay",
+            "startMs": 23560,
+            "endMs": 23680
+          },
+          {
+            "text": "đồng",
+            "startMs": 23680,
+            "endMs": 23940
+          },
+          {
+            "text": "nghiệp",
+            "startMs": 23940,
+            "endMs": 24140
+          },
+          {
+            "text": "phòng",
+            "startMs": 24140,
+            "endMs": 24340
+          },
+          {
+            "text": "khác",
+            "startMs": 24340,
+            "endMs": 24620
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-015",
+        "sentenceId": "sent-007",
+        "text": "Bước hai:",
+        "startMs": 24960,
+        "endMs": 25260,
+        "words": [
+          {
+            "text": "Bước",
+            "startMs": 24960,
+            "endMs": 25260
+          },
+          {
+            "text": "hai",
+            "startMs": null,
+            "endMs": null
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-016",
+        "sentenceId": "sent-007",
+        "text": "nói rõ mục đích,",
+        "startMs": 25960,
+        "endMs": 26760,
+        "words": [
+          {
+            "text": "nói",
+            "startMs": 25960,
+            "endMs": 26060
+          },
+          {
+            "text": "rõ",
+            "startMs": 26060,
+            "endMs": 26340
+          },
+          {
+            "text": "mục",
+            "startMs": 26340,
+            "endMs": 26560
+          },
+          {
+            "text": "đích",
+            "startMs": 26560,
+            "endMs": 26760
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-017",
+        "sentenceId": "sent-007",
+        "text": "xin lỗi,",
+        "startMs": 26760,
+        "endMs": 27480,
+        "words": [
+          {
+            "text": "xin",
+            "startMs": 26760,
+            "endMs": 27240
+          },
+          {
+            "text": "lỗi",
+            "startMs": 27240,
+            "endMs": 27480
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-018",
+        "sentenceId": "sent-007",
+        "text": "từ chối,",
+        "startMs": 27480,
+        "endMs": 28060,
+        "words": [
+          {
+            "text": "từ",
+            "startMs": 27480,
+            "endMs": 27720
+          },
+          {
+            "text": "chối",
+            "startMs": 27720,
+            "endMs": 28060
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-019",
+        "sentenceId": "sent-007",
+        "text": "hay nhắc tiến độ.",
+        "startMs": 28460,
+        "endMs": 29380,
+        "words": [
+          {
+            "text": "hay",
+            "startMs": 28460,
+            "endMs": 28700
+          },
+          {
+            "text": "nhắc",
+            "startMs": 28700,
+            "endMs": 28980
+          },
+          {
+            "text": "tiến",
+            "startMs": 28980,
+            "endMs": 29180
+          },
+          {
+            "text": "độ",
+            "startMs": 29180,
+            "endMs": 29380
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-020",
+        "sentenceId": "sent-008",
+        "text": "Bước ba:",
+        "startMs": 29380,
+        "endMs": 30100,
+        "words": [
+          {
+            "text": "Bước",
+            "startMs": 29380,
+            "endMs": 30100
+          },
+          {
+            "text": "ba",
+            "startMs": null,
+            "endMs": null
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-021",
+        "sentenceId": "sent-008",
+        "text": "yêu cầu hai phiên bản,",
+        "startMs": 30700,
+        "endMs": 31740,
+        "words": [
+          {
+            "text": "yêu",
+            "startMs": 30700,
+            "endMs": 30860
+          },
+          {
+            "text": "cầu",
+            "startMs": 30860,
+            "endMs": 31080
+          },
+          {
+            "text": "hai",
+            "startMs": 31080,
+            "endMs": 31320
+          },
+          {
+            "text": "phiên",
+            "startMs": 31320,
+            "endMs": 31520
+          },
+          {
+            "text": "bản",
+            "startMs": 31520,
+            "endMs": 31740
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-022",
+        "sentenceId": "sent-008",
+        "text": "một trang trọng và một ngắn gọn.",
+        "startMs": 32260,
+        "endMs": 33600,
+        "words": [
+          {
+            "text": "một",
+            "startMs": 32260,
+            "endMs": 32420
+          },
+          {
+            "text": "trang",
+            "startMs": null,
+            "endMs": null
+          },
+          {
+            "text": "trọng",
+            "startMs": 32700,
+            "endMs": 32920
+          },
+          {
+            "text": "và",
+            "startMs": 32920,
+            "endMs": 33040
+          },
+          {
+            "text": "một",
+            "startMs": 33040,
+            "endMs": 33220
+          },
+          {
+            "text": "ngắn",
+            "startMs": 33220,
+            "endMs": 33360
+          },
+          {
+            "text": "gọn",
+            "startMs": 33360,
+            "endMs": 33600
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-023",
+        "sentenceId": "sent-009",
+        "text": "Rồi chọn bản phù hợp và chỉnh lại tên riêng,",
+        "startMs": 34000,
+        "endMs": 36360,
+        "words": [
+          {
+            "text": "Rồi",
+            "startMs": 34000,
+            "endMs": 34360
+          },
+          {
+            "text": "chọn",
+            "startMs": 34360,
+            "endMs": 34600
+          },
+          {
+            "text": "bản",
+            "startMs": 34600,
+            "endMs": 34840
+          },
+          {
+            "text": "phù",
+            "startMs": 34840,
+            "endMs": 35060
+          },
+          {
+            "text": "hợp",
+            "startMs": 35060,
+            "endMs": 35280
+          },
+          {
+            "text": "và",
+            "startMs": 35280,
+            "endMs": 35440
+          },
+          {
+            "text": "chỉnh",
+            "startMs": 35440,
+            "endMs": 35660
+          },
+          {
+            "text": "lại",
+            "startMs": 35660,
+            "endMs": 35840
+          },
+          {
+            "text": "tên",
+            "startMs": 35840,
+            "endMs": 36060
+          },
+          {
+            "text": "riêng",
+            "startMs": 36060,
+            "endMs": 36360
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-024",
+        "sentenceId": "sent-009",
+        "text": "con số,",
+        "startMs": 36720,
+        "endMs": 37000,
+        "words": [
+          {
+            "text": "con",
+            "startMs": null,
+            "endMs": null
+          },
+          {
+            "text": "số",
+            "startMs": 36720,
+            "endMs": 37000
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-025",
+        "sentenceId": "sent-009",
+        "text": "ngày tháng.",
+        "startMs": 37000,
+        "endMs": 37720,
+        "words": [
+          {
+            "text": "ngày",
+            "startMs": 37000,
+            "endMs": 37400
+          },
+          {
+            "text": "tháng",
+            "startMs": 37400,
+            "endMs": 37720
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-026",
+        "sentenceId": "sent-010",
+        "text": "AI",
+        "startMs": 38320,
+        "endMs": 38560,
+        "words": [
+          {
+            "text": "AI",
+            "startMs": 38320,
+            "endMs": 38560
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-027",
+        "sentenceId": "sent-010",
+        "text": "đôi khi dùng kính ngữ quá mức,",
+        "startMs": 39000,
+        "endMs": 40300,
+        "words": [
+          {
+            "text": "đôi",
+            "startMs": 39000,
+            "endMs": 39100
+          },
+          {
+            "text": "khi",
+            "startMs": 39100,
+            "endMs": 39300
+          },
+          {
+            "text": "dùng",
+            "startMs": 39300,
+            "endMs": 39560
+          },
+          {
+            "text": "kính",
+            "startMs": 39560,
+            "endMs": 39700
+          },
+          {
+            "text": "ngữ",
+            "startMs": 39700,
+            "endMs": 39900
+          },
+          {
+            "text": "quá",
+            "startMs": 39900,
+            "endMs": 40080
+          },
+          {
+            "text": "mức",
+            "startMs": 40080,
+            "endMs": 40300
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-028",
+        "sentenceId": "sent-010",
+        "text": "nên đọc lại luôn là bước bắt buộc.",
+        "startMs": 40300,
+        "endMs": 42300,
+        "words": [
+          {
+            "text": "nên",
+            "startMs": 40300,
+            "endMs": 40860
+          },
+          {
+            "text": "đọc",
+            "startMs": 40860,
+            "endMs": 41200
+          },
+          {
+            "text": "lại",
+            "startMs": 41200,
+            "endMs": 41400
+          },
+          {
+            "text": "luôn",
+            "startMs": 41400,
+            "endMs": 41620
+          },
+          {
+            "text": "là",
+            "startMs": 41620,
+            "endMs": 41780
+          },
+          {
+            "text": "bước",
+            "startMs": 41780,
+            "endMs": 41900
+          },
+          {
+            "text": "bắt",
+            "startMs": 41900,
+            "endMs": 42080
+          },
+          {
+            "text": "buộc",
+            "startMs": 42080,
+            "endMs": 42300
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-029",
+        "sentenceId": "sent-011",
+        "text": "Ba mươi phút mỗi email có thể rút xuống còn năm phút.",
+        "startMs": 43060,
+        "endMs": 46120,
+        "words": [
+          {
+            "text": "Ba",
+            "startMs": null,
+            "endMs": null
+          },
+          {
+            "text": "mươi",
+            "startMs": null,
+            "endMs": null
+          },
+          {
+            "text": "phút",
+            "startMs": 43060,
+            "endMs": 43380
+          },
+          {
+            "text": "mỗi",
+            "startMs": 43380,
+            "endMs": 43660
+          },
+          {
+            "text": "email",
+            "startMs": null,
+            "endMs": null
+          },
+          {
+            "text": "có",
+            "startMs": 44080,
+            "endMs": 44460
+          },
+          {
+            "text": "thể",
+            "startMs": 44460,
+            "endMs": 44680
+          },
+          {
+            "text": "rút",
+            "startMs": 44680,
+            "endMs": 44940
+          },
+          {
+            "text": "xuống",
+            "startMs": 44940,
+            "endMs": 45300
+          },
+          {
+            "text": "còn",
+            "startMs": 45300,
+            "endMs": 45540
+          },
+          {
+            "text": "năm",
+            "startMs": null,
+            "endMs": null
+          },
+          {
+            "text": "phút",
+            "startMs": 45820,
+            "endMs": 46120
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-030",
+        "sentenceId": "sent-012",
+        "text": "Thời gian tiết kiệm được dành cho việc mà chỉ bạn làm",
+        "startMs": 46620,
+        "endMs": 49060,
+        "words": [
+          {
+            "text": "Thời",
+            "startMs": 46620,
+            "endMs": 46720
+          },
+          {
+            "text": "gian",
+            "startMs": 46720,
+            "endMs": 46920
+          },
+          {
+            "text": "tiết",
+            "startMs": 46920,
+            "endMs": 47100
+          },
+          {
+            "text": "kiệm",
+            "startMs": 47100,
+            "endMs": 47340
+          },
+          {
+            "text": "được",
+            "startMs": 47340,
+            "endMs": 47500
+          },
+          {
+            "text": "dành",
+            "startMs": 47500,
+            "endMs": 47720
+          },
+          {
+            "text": "cho",
+            "startMs": 47720,
+            "endMs": 47920
+          },
+          {
+            "text": "việc",
+            "startMs": 47920,
+            "endMs": 48120
+          },
+          {
+            "text": "mà",
+            "startMs": 48120,
+            "endMs": 48400
+          },
+          {
+            "text": "chỉ",
+            "startMs": 48400,
+            "endMs": 48600
+          },
+          {
+            "text": "bạn",
+            "startMs": 48600,
+            "endMs": 48800
+          },
+          {
+            "text": "làm",
+            "startMs": 48800,
+            "endMs": 49060
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-031",
+        "sentenceId": "sent-012",
+        "text": "được.",
+        "startMs": 49060,
+        "endMs": 49260,
+        "words": [
+          {
+            "text": "được",
+            "startMs": 49060,
+            "endMs": 49260
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-032",
+        "sentenceId": "sent-013",
+        "text": "Lưu lại quy trình ba bước này để thử ngay trong tuần.",
+        "startMs": 49740,
+        "endMs": 52820,
+        "words": [
+          {
+            "text": "Lưu",
+            "startMs": 49740,
+            "endMs": 50000
+          },
+          {
+            "text": "lại",
+            "startMs": 50000,
+            "endMs": 50160
+          },
+          {
+            "text": "quy",
+            "startMs": 50160,
+            "endMs": 50360
+          },
+          {
+            "text": "trình",
+            "startMs": null,
+            "endMs": null
+          },
+          {
+            "text": "ba",
+            "startMs": null,
+            "endMs": null
+          },
+          {
+            "text": "bước",
+            "startMs": 50840,
+            "endMs": 51020
+          },
+          {
+            "text": "này",
+            "startMs": 51020,
+            "endMs": 51260
+          },
+          {
+            "text": "để",
+            "startMs": 51260,
+            "endMs": 51720
+          },
+          {
+            "text": "thử",
+            "startMs": 51720,
+            "endMs": 52020
+          },
+          {
+            "text": "ngay",
+            "startMs": 52020,
+            "endMs": 52320
+          },
+          {
+            "text": "trong",
+            "startMs": 52320,
+            "endMs": 52540
+          },
+          {
+            "text": "tuần",
+            "startMs": 52540,
+            "endMs": 52820
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-033",
+        "sentenceId": "sent-014",
+        "text": "Theo dõi Lucida để biết thay đổi AI nào thực sự đáng",
+        "startMs": 53360,
+        "endMs": 57320,
+        "words": [
+          {
+            "text": "Theo",
+            "startMs": 53360,
+            "endMs": 53540
+          },
+          {
+            "text": "dõi",
+            "startMs": 53540,
+            "endMs": 53900
+          },
+          {
+            "text": "Lucida",
+            "startMs": 53900,
+            "endMs": 54500
+          },
+          {
+            "text": "để",
+            "startMs": 54500,
+            "endMs": 55140
+          },
+          {
+            "text": "biết",
+            "startMs": 55140,
+            "endMs": 55300
+          },
+          {
+            "text": "thay",
+            "startMs": 55300,
+            "endMs": 55540
+          },
+          {
+            "text": "đổi",
+            "startMs": 55540,
+            "endMs": 55720
+          },
+          {
+            "text": "AI",
+            "startMs": 55720,
+            "endMs": 56140
+          },
+          {
+            "text": "nào",
+            "startMs": 56140,
+            "endMs": 56420
+          },
+          {
+            "text": "thực",
+            "startMs": 56420,
+            "endMs": 56680
+          },
+          {
+            "text": "sự",
+            "startMs": 56680,
+            "endMs": 57000
+          },
+          {
+            "text": "đáng",
+            "startMs": 57000,
+            "endMs": 57320
+          }
+        ]
+      },
+      {
+        "phraseId": "phrase-034",
+        "sentenceId": "sent-014",
+        "text": "quan tâm.",
+        "startMs": 57320,
+        "endMs": 57800,
+        "words": [
+          {
+            "text": "quan",
+            "startMs": 57320,
+            "endMs": 57540
+          },
+          {
+            "text": "tâm",
+            "startMs": 57540,
+            "endMs": 57800
+          }
+        ]
+      }
+    ]
+  }
+}

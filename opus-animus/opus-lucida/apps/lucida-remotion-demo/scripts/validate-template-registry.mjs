@@ -5,13 +5,17 @@ const appRoot = process.cwd();
 const catalogPath = path.resolve(appRoot, "../remotion-templates/template-catalog.json");
 const videoMapPath = path.resolve(appRoot, "video-map.json");
 const registryMapPath = path.resolve(appRoot, "src/template-registry-map.json");
+const generatedIndexPath = path.resolve(appRoot, ".generated/knowledge/template-index.json");
 
 const readJson = (filePath) => JSON.parse(fs.readFileSync(filePath, "utf8"));
 
 const catalog = readJson(catalogPath);
 const videoMap = readJson(videoMapPath);
 const templateRegistryMap = readJson(registryMapPath);
-const supportedTemplateIds = new Set(Object.keys(templateRegistryMap));
+const generatedIndex = fs.existsSync(generatedIndexPath) ? readJson(generatedIndexPath) : null;
+const canonicalTemplates = generatedIndex?.templates ?? [];
+const canonicalTemplateIds = new Set(canonicalTemplates.map((template) => template.id));
+const supportedTemplateIds = new Set([...Object.keys(templateRegistryMap), ...canonicalTemplateIds]);
 
 const errors = [];
 const warnings = [];
@@ -20,6 +24,26 @@ const templates = catalog.templates ?? [];
 const localAdapters = catalog.localAdapters ?? [];
 const allTemplateEntries = [...templates, ...localAdapters];
 const knownTemplateIds = new Set();
+
+if (!generatedIndex) {
+  errors.push("Missing generated template index. Run npm run knowledge:compile first.");
+}
+
+for (const templateId of Object.keys(templateRegistryMap)) {
+  if (canonicalTemplateIds.has(templateId)) {
+    errors.push(`Manual template registry must not duplicate canonical template: ${templateId}`);
+  }
+}
+
+for (const template of canonicalTemplates) {
+  if (typeof template.id !== "string" || typeof template.adapterId !== "string") {
+    errors.push("Generated template index contains an invalid canonical entry.");
+  }
+}
+
+if (Object.prototype.hasOwnProperty.call(templateRegistryMap, "glitch-text")) {
+  errors.push("glitch-text must resolve from the generated canonical index, not src/template-registry-map.json.");
+}
 
 for (const template of templates) {
   const sourcePath = path.resolve(catalogDir, template.sourceFile);
@@ -40,6 +64,10 @@ for (const entry of allTemplateEntries) {
     errors.push(`Duplicate template id in catalog: ${entry.id}`);
   }
   knownTemplateIds.add(entry.id);
+}
+
+for (const templateId of canonicalTemplateIds) {
+  knownTemplateIds.add(templateId);
 }
 
 const hasContentField = (scene, field) => {
@@ -153,4 +181,4 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log(`Template registry validation passed: ${videoMap.scenes.length} scenes, ${templates.length} catalog templates.`);
+console.log(`Template registry validation passed: ${videoMap.scenes.length} scenes, ${templates.length} catalog templates, ${canonicalTemplateIds.size} canonical templates.`);

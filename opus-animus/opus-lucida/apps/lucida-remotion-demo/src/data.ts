@@ -1,4 +1,11 @@
 import videoMapJson from "../video-map.json";
+import type {
+  ContextChipProps,
+  DiffHighlightProps,
+  MechanismWindowProps,
+  MechanismWindowVariant,
+  TimerMorphProps,
+} from "./mechanism";
 
 export type TemplateRole =
   | "scene"
@@ -154,14 +161,13 @@ export type TimedCaptions = {
   phrases: TimedCaptionPhrase[];
 };
 
-export type VideoMapScene = {
+export type VideoMapSceneBase = {
   id: string;
   intent: SceneIntent;
-  templateId: string;
   /** Optional package-backed production renderer family. Absent preserves legacy templateId dispatch. */
   visualFamily?: ProductionVisualFamily | (string & {});
-  templateRole: TemplateRole;
   durationSec: number;
+  segmentIds?: string[];
   startMs?: number;
   endMs?: number;
   headline: string;
@@ -178,7 +184,62 @@ export type VideoMapScene = {
   reason: string;
 };
 
-export type VideoMap = {
+export type VideoMapSlideScene = VideoMapSceneBase & {
+  templateId: string;
+  templateRole: TemplateRole;
+  transitions?: never;
+};
+
+export type ContinuousEnvironment = {
+  component: "MechanismWindow";
+  variant: MechanismWindowVariant;
+  props: Omit<MechanismWindowProps, "variant">;
+};
+
+type AddableMechanism =
+  | ({ component: "ContextChip" } & ContextChipProps)
+  | ({ component: "TimerMorph" } & TimerMorphProps)
+  | ({ component: "DiffHighlight" } & DiffHighlightProps);
+
+export type MechanismTransition = (
+  | {
+      target: "environment";
+      action: "update";
+      props: Partial<Omit<MechanismWindowProps, "variant">>;
+    }
+  | {
+      target: string;
+      action: "add";
+      props: AddableMechanism;
+    }
+  | {
+      target: string;
+      action: "update";
+      props: Partial<AddableMechanism>;
+    }
+  | {
+      target: string;
+      action: "remove";
+      props: Record<string, never>;
+    }
+) & {
+  /** Delay from the containing scene's start. Defaults to 0. */
+  offsetSec?: number;
+};
+
+export type VideoMapContinuousScene = VideoMapSceneBase & {
+  templateId?: never;
+  templateRole?: never;
+  transitions: MechanismTransition[];
+};
+
+type VideoMapBase = {
+  debug?: {
+    showTechnicalLabels?: boolean;
+  };
+  audio?: AudioTrack;
+  timedCaptions?: TimedCaptions;
+  brand?: Record<string, unknown>;
   video: {
     title: string;
     subtitle: string;
@@ -201,8 +262,22 @@ export type VideoMap = {
     skin?: "premium-gold" | "modern-terminal";
   };
   assets: VisualAsset[];
-  scenes: VideoMapScene[];
 };
+
+export type SlidesVideoMap = VideoMapBase & {
+  mode?: "slides";
+  environment?: never;
+  scenes: VideoMapSlideScene[];
+};
+
+export type ContinuousVideoMap = VideoMapBase & {
+  mode: "continuous";
+  environment: ContinuousEnvironment;
+  scenes: VideoMapContinuousScene[];
+};
+
+export type VideoMap = SlidesVideoMap | ContinuousVideoMap;
+export type VideoMapScene = VideoMapSlideScene | VideoMapContinuousScene;
 
 export type VisualAsset = {
   id: string;
@@ -212,7 +287,10 @@ export type VisualAsset = {
   alt?: string;
 };
 
-export type VideoScene = VideoMapScene & {
+export type VideoScene = VideoMapSceneBase & {
+  templateId: string;
+  templateRole: TemplateRole;
+  transitions?: MechanismTransition[];
   kicker: string;
   title: string;
   narration: string[];
@@ -234,7 +312,7 @@ export type VideoInput = {
   scenes: VideoScene[];
 };
 
-export const defaultVideoMap = videoMapJson as VideoMap;
+export const defaultVideoMap = videoMapJson as unknown as VideoMap;
 
 export const videoMeta = {
   fps: defaultVideoMap.video.fps,
@@ -279,6 +357,8 @@ const normalizeScene = (
   videoMap: VideoMap,
 ): VideoScene => ({
   ...scene,
+  templateId: scene.templateId ?? "continuous-environment",
+  templateRole: scene.templateRole ?? "scene",
   kicker: scene.content.kicker ?? scene.intent,
   title: scene.content.title ?? scene.headline,
   narration: getNarration(scene.subtitle),

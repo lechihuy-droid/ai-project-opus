@@ -56,6 +56,13 @@ Rules:
 - Put long narration in subtitle.text or subtitle.segments, not card labels.
 - Avoid arbitrary absolute coordinates.
 
+Hierarchy rules (M6, RD-visual-mechanism FR4 — voice tells, visual shows):
+- headline must be 6 words or fewer and must NOT repeat a voice-over sentence verbatim.
+- subtitle is the ONLY channel that repeats narration; every other on-screen text illustrates, never restates.
+- Hook-scale (oversized) typography may appear in at most ONE scene per video.
+- When the script has a visualMechanism, prefer showing it (window / context chip / timer morph / diff-highlight state changes) over adding another headline.
+- A number stated in any headline/CTA ("ba bước", "3") must equal the number of items/steps rendered in that scene.
+
 Constraints:
 - Format: 9:16 vertical.
 - Style: dark AI tech, warm orange glow.

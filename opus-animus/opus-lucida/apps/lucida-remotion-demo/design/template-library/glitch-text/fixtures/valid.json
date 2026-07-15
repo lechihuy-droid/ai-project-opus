@@ -1,0 +1,8 @@
+{
+  "intent": "hook",
+  "headline": "Khi pipeline sai, mọi frame đều nhấp nháy",
+  "content": {
+    "subtitle": "Khoanh vùng lỗi trước khi tăng độ phức tạp của hệ thống.",
+    "codeTitle": "validate()"
+  }
+}

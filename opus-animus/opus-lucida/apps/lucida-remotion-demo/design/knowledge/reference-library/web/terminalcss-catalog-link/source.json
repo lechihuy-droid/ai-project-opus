@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "lucida-reference-source/v1",
+  "sourceId": "source:reference:terminalcss-catalog-link",
+  "sourceType": "web",
+  "sourceRef": "https://terminalcss.xyz/",
+  "sourceRevision": "visual-reference-flow-2026-07-14",
+  "snapshotChecksum": "d27f65691ab147d03040435d5ce510bdf557e0a901f393c006f480fd342e54bf",
+  "collectorVersion": "web-reference-collector/1",
+  "rights": { "policy": "link-and-review-note-only", "status": "approved", "evidence": "The canonical package retains a reviewer-authored note and source URL only; no page content or assets are vendored." },
+  "approval": { "status": "approved", "approvedBy": "Lucida reference review", "approvedAt": "2026-07-14" },
+  "provenance": { "sanitizedArtifactChecksum": "307c7b8586bafed04224b2b792a7e26c7b1a72c9f0e0bbf057504e2e51fe1412", "collectorArtifact": "design/knowledge/reference-approvals/web/terminalcss-catalog-link.sanitized-approved.json" }
+}

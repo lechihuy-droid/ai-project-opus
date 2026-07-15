@@ -1,10 +1,5 @@
 import { cloneElement, isValidElement, type ReactNode } from "react";
-import {
-  AbsoluteFill,
-  interpolate,
-  spring,
-  useVideoConfig,
-} from "remotion";
+import { AbsoluteFill, interpolate, spring, useVideoConfig } from "remotion";
 import type {
   DiagramLink,
   DiagramNode,
@@ -31,6 +26,9 @@ import {
   TerminalFrame,
   useTypewriter,
 } from "./terminalChrome";
+import generatedTemplateIndex from "../.generated/knowledge/template-index.json";
+import { GlitchTextAdapter } from "./templates/adapters/GlitchTextAdapter";
+import { splitSubtitleLines } from "./subtitleLines";
 
 type Theme = VideoInput["theme"];
 
@@ -46,7 +44,8 @@ type TemplateAdapter = React.FC<TemplateAdapterProps>;
 
 const normalizeText = (text?: string) => (text ?? "").normalize("NFC");
 
-const splitWords = (text: string) => normalizeText(text).split(/\s+/).filter(Boolean);
+const splitWords = (text: string) =>
+  normalizeText(text).split(/\s+/).filter(Boolean);
 
 const lightSubtitleWords = new Set([
   "và",
@@ -146,7 +145,9 @@ const MatrixEffect: React.FC<{ localFrame: number }> = ({ localFrame }) => {
         const x = (index / columns) * width;
         const speed = 3 + (index % 7);
         const y = ((index * 47 + localFrame * speed) % (height + 120)) - 80;
-        const charIndex = Math.floor((localFrame / 4 + index * 3) % characters.length);
+        const charIndex = Math.floor(
+          (localFrame / 4 + index * 3) % characters.length,
+        );
 
         return (
           <div
@@ -183,10 +184,12 @@ const StarfieldEffect: React.FC<{ localFrame: number }> = ({ localFrame }) => {
         const angle = ((index * 137.508) % 360) * (Math.PI / 180);
         const seedRadius = ((index * 31 + 17) % 50) / 50;
         const speed = 0.5 + ((index * 7 + 3) % 10) / 10;
-        const progress = ((localFrame * speed + index * 15) % cycleLength) / cycleLength;
+        const progress =
+          ((localFrame * speed + index * 15) % cycleLength) / cycleLength;
         const radius = seedRadius * 20 + progress * Math.max(cx, cy) * 1.18;
         const size = (1 + ((index * 13 + 5) % 3)) * (1 + progress * 2);
-        const opacity = Math.min(progress * 4, 1) * Math.max(1 - progress * 0.8, 0.2);
+        const opacity =
+          Math.min(progress * 4, 1) * Math.max(1 - progress * 0.8, 0.2);
 
         return (
           <div
@@ -217,7 +220,7 @@ const BokehEffect: React.FC<{ localFrame: number; accent: string }> = ({
   <AbsoluteFill style={{ opacity: 0.24 }}>
     {Array.from({ length: 18 }, (_, index) => {
       const x = 70 + ((index * 173) % 940);
-      const y = 150 + ((index * 281 + localFrame * (index % 3 + 1)) % 1500);
+      const y = 150 + ((index * 281 + localFrame * ((index % 3) + 1)) % 1500);
       const size = 80 + ((index * 37) % 170);
       const wobble = Math.sin((localFrame + index * 22) / 34) * 14;
 
@@ -330,33 +333,34 @@ const GlowBackground: React.FC<{
   const skin = useSkin();
 
   return (
-  <AbsoluteFill
-    style={{
-      fontFamily: skin.palette.font,
-      background: skin.palette.backgroundGradient,
-    }}
-  >
-    <BackgroundEffect
-      effectId={scene.backgroundEffect}
-      localFrame={localFrame}
-      accent={skinSceneAccent(skin, scene.accent)}
-    />
-    <div
+    <AbsoluteFill
       style={{
-        position: "absolute",
-        inset: 0,
-        background:
-          "linear-gradient(180deg, rgba(255,255,255,0.035), transparent 20%, transparent 76%, rgba(0,0,0,0.46))",
+        fontFamily: skin.palette.font,
+        background: skin.palette.backgroundGradient,
       }}
-    />
-    <div
-      style={{
-        position: "absolute",
-        inset: 0,
-        boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.035), inset 0 0 100px rgba(0,0,0,0.40)",
-      }}
-    />
-  </AbsoluteFill>
+    >
+      <BackgroundEffect
+        effectId={scene.backgroundEffect}
+        localFrame={localFrame}
+        accent={skinSceneAccent(skin, scene.accent)}
+      />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(180deg, rgba(255,255,255,0.035), transparent 20%, transparent 76%, rgba(0,0,0,0.46))",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          boxShadow:
+            "inset 0 0 0 1px rgba(255,255,255,0.035), inset 0 0 100px rgba(0,0,0,0.40)",
+        }}
+      />
+    </AbsoluteFill>
   );
 };
 
@@ -364,7 +368,8 @@ const Header: React.FC<{
   scene: VideoScene;
   localFrame: number;
   theme: Theme;
-}> = ({ scene, localFrame, theme }) => {
+  showTechnicalLabels: boolean;
+}> = ({ scene, localFrame, theme, showTechnicalLabels }) => {
   const skin = useSkin();
   const isTerminal = skin.chrome.typewriterTitles;
   const titleIn = ease(localFrame, 4, 22);
@@ -377,27 +382,29 @@ const Header: React.FC<{
 
   return (
     <>
-      <div
-        style={{
-          position: "absolute",
-          top: 86,
-          left: 76,
-          right: 76,
-          fontSize: 22,
-          textTransform: "uppercase",
-          color: withAlpha(skin.palette.textPrimaryRgb, 0.52),
-          fontWeight: 800,
-          letterSpacing: 0.8,
-          fontFamily: isTerminal ? skin.palette.fontMono : undefined,
-        }}
-      >
-        {skin.palette.promptSymbol ? (
-          <span style={{ color: skin.palette.accent, marginRight: 12 }}>
-            {skin.palette.promptSymbol}
-          </span>
-        ) : null}
-        {normalizeText(scene.kicker)}
-      </div>
+      {showTechnicalLabels ? (
+        <div
+          style={{
+            position: "absolute",
+            top: 86,
+            left: 76,
+            right: 76,
+            fontSize: 22,
+            textTransform: "uppercase",
+            color: withAlpha(skin.palette.textPrimaryRgb, 0.52),
+            fontWeight: 800,
+            letterSpacing: 0.8,
+            fontFamily: isTerminal ? skin.palette.fontMono : undefined,
+          }}
+        >
+          {skin.palette.promptSymbol ? (
+            <span style={{ color: skin.palette.accent, marginRight: 12 }}>
+              {skin.palette.promptSymbol}
+            </span>
+          ) : null}
+          {normalizeText(scene.kicker)}
+        </div>
+      ) : null}
       {hideTitle ? null : (
         <div
           style={{
@@ -483,6 +490,7 @@ type LayoutTitleProps = {
   scene: VideoScene;
   localFrame: number;
   theme: Theme;
+  showTechnicalLabels: boolean;
 };
 
 /** center-stage: compact kicker + headline rendered above the stage region. */
@@ -490,6 +498,7 @@ const CenterStageTitle: React.FC<LayoutTitleProps> = ({
   scene,
   localFrame,
   theme,
+  showTechnicalLabels,
 }) => {
   const skin = useSkin();
   const isTerminal = skin.chrome.typewriterTitles;
@@ -499,28 +508,30 @@ const CenterStageTitle: React.FC<LayoutTitleProps> = ({
 
   return (
     <>
-      <div
-        style={{
-          position: "absolute",
-          top: 452,
-          left: 90,
-          right: 90,
-          textAlign: "center",
-          fontSize: 20,
-          textTransform: "uppercase",
-          letterSpacing: 1.2,
-          fontWeight: 800,
-          color: withAlpha(skin.palette.textPrimaryRgb, 0.52),
-          fontFamily: isTerminal ? skin.palette.fontMono : skin.palette.font,
-        }}
-      >
-        {skin.palette.promptSymbol ? (
-          <span style={{ color: skin.palette.accent, marginRight: 10 }}>
-            {skin.palette.promptSymbol}
-          </span>
-        ) : null}
-        {normalizeText(scene.kicker)}
-      </div>
+      {showTechnicalLabels ? (
+        <div
+          style={{
+            position: "absolute",
+            top: 452,
+            left: 90,
+            right: 90,
+            textAlign: "center",
+            fontSize: 20,
+            textTransform: "uppercase",
+            letterSpacing: 1.2,
+            fontWeight: 800,
+            color: withAlpha(skin.palette.textPrimaryRgb, 0.52),
+            fontFamily: isTerminal ? skin.palette.fontMono : skin.palette.font,
+          }}
+        >
+          {skin.palette.promptSymbol ? (
+            <span style={{ color: skin.palette.accent, marginRight: 10 }}>
+              {skin.palette.promptSymbol}
+            </span>
+          ) : null}
+          {normalizeText(scene.kicker)}
+        </div>
+      ) : null}
       <div
         style={{
           position: "absolute",
@@ -557,6 +568,7 @@ const OversizedTitle: React.FC<LayoutTitleProps> = ({
   scene,
   localFrame,
   theme,
+  showTechnicalLabels,
 }) => {
   const skin = useSkin();
   const isTerminal = skin.chrome.typewriterTitles;
@@ -567,27 +579,29 @@ const OversizedTitle: React.FC<LayoutTitleProps> = ({
 
   return (
     <>
-      <div
-        style={{
-          position: "absolute",
-          top: 146,
-          left: 76,
-          right: 76,
-          fontSize: 22,
-          textTransform: "uppercase",
-          letterSpacing: 0.8,
-          fontWeight: 800,
-          color: withAlpha(skin.palette.textPrimaryRgb, 0.52),
-          fontFamily: isTerminal ? skin.palette.fontMono : skin.palette.font,
-        }}
-      >
-        {skin.palette.promptSymbol ? (
-          <span style={{ color: skin.palette.accent, marginRight: 12 }}>
-            {skin.palette.promptSymbol}
-          </span>
-        ) : null}
-        {normalizeText(scene.kicker)}
-      </div>
+      {showTechnicalLabels ? (
+        <div
+          style={{
+            position: "absolute",
+            top: 146,
+            left: 76,
+            right: 76,
+            fontSize: 22,
+            textTransform: "uppercase",
+            letterSpacing: 0.8,
+            fontWeight: 800,
+            color: withAlpha(skin.palette.textPrimaryRgb, 0.52),
+            fontFamily: isTerminal ? skin.palette.fontMono : skin.palette.font,
+          }}
+        >
+          {skin.palette.promptSymbol ? (
+            <span style={{ color: skin.palette.accent, marginRight: 12 }}>
+              {skin.palette.promptSymbol}
+            </span>
+          ) : null}
+          {normalizeText(scene.kicker)}
+        </div>
+      ) : null}
       <div
         style={{
           // Intentionally bleeds/clips at the canvas edges.
@@ -627,6 +641,7 @@ const BottomStatementBand: React.FC<LayoutTitleProps> = ({
   scene,
   localFrame,
   theme,
+  showTechnicalLabels,
 }) => {
   const skin = useSkin();
   const isTerminal = skin.chrome.typewriterTitles;
@@ -650,18 +665,20 @@ const BottomStatementBand: React.FC<LayoutTitleProps> = ({
         transform: `translateY(${interpolate(bandIn, [0, 1], [18, 0])}px)`,
       }}
     >
-      <div
-        style={{
-          fontSize: 18,
-          textTransform: "uppercase",
-          letterSpacing: 1.1,
-          fontWeight: 800,
-          color: skin.palette.accent,
-          marginBottom: 10,
-        }}
-      >
-        {normalizeText(scene.kicker)}
-      </div>
+      {showTechnicalLabels ? (
+        <div
+          style={{
+            fontSize: 18,
+            textTransform: "uppercase",
+            letterSpacing: 1.1,
+            fontWeight: 800,
+            color: skin.palette.accent,
+            marginBottom: 10,
+          }}
+        >
+          {normalizeText(scene.kicker)}
+        </div>
+      ) : null}
       <div
         style={{
           fontSize: headline.length > 40 ? 44 : 54,
@@ -688,6 +705,7 @@ const FloatingLabelChip: React.FC<LayoutTitleProps> = ({
   scene,
   localFrame,
   theme,
+  showTechnicalLabels,
 }) => {
   const skin = useSkin();
   const isTerminal = skin.chrome.typewriterTitles;
@@ -711,20 +729,22 @@ const FloatingLabelChip: React.FC<LayoutTitleProps> = ({
         transform: `translateY(${interpolate(chipIn, [0, 1], [-12, 0])}px)`,
       }}
     >
-      <div
-        style={{
-          fontSize: 15,
-          textTransform: "uppercase",
-          letterSpacing: 1.2,
-          fontWeight: 800,
-          color: skin.palette.accent,
-        }}
-      >
-        {skin.palette.promptSymbol ? (
-          <span style={{ marginRight: 8 }}>{skin.palette.promptSymbol}</span>
-        ) : null}
-        {normalizeText(scene.kicker)}
-      </div>
+      {showTechnicalLabels ? (
+        <div
+          style={{
+            fontSize: 15,
+            textTransform: "uppercase",
+            letterSpacing: 1.2,
+            fontWeight: 800,
+            color: skin.palette.accent,
+          }}
+        >
+          {skin.palette.promptSymbol ? (
+            <span style={{ marginRight: 8 }}>{skin.palette.promptSymbol}</span>
+          ) : null}
+          {normalizeText(scene.kicker)}
+        </div>
+      ) : null}
       <div
         style={{
           fontSize: 26,
@@ -740,7 +760,7 @@ const FloatingLabelChip: React.FC<LayoutTitleProps> = ({
   );
 };
 
-const SubtitleBar: React.FC<{
+export const SubtitleBar: React.FC<{
   scene: VideoScene;
   localFrame: number;
   timedPhrases?: TimedCaptionPhrase[];
@@ -760,20 +780,15 @@ const SubtitleBar: React.FC<{
       return null;
     }
 
-    const phraseWords = phrase.words.length > 0
-      ? phrase.words
-      : splitWords(phrase.text).map((text) => ({
-          text,
-          startMs: null,
-          endMs: null,
-        }));
-    const lineBreak = phraseWords.length > 6
-      ? Math.ceil(phraseWords.length / 2)
-      : phraseWords.length;
-    const lines = [
-      phraseWords.slice(0, lineBreak),
-      phraseWords.slice(lineBreak),
-    ].filter((line) => line.length > 0);
+    const phraseWords =
+      phrase.words.length > 0
+        ? phrase.words
+        : splitWords(phrase.text).map((text) => ({
+            text,
+            startMs: null,
+            endMs: null,
+          }));
+    const lines = splitSubtitleLines(phraseWords);
     const phraseFrame = ((currentMs - phrase.startMs) / 1000) * fps;
     const phraseLength = Math.max(
       1,
@@ -882,21 +897,30 @@ const SubtitleBar: React.FC<{
   );
   const segmentFrame = localFrame - index * segmentLength;
   const group = scene.captionGroups[index];
-  const lines = group.lines.length > 0 ? group.lines : [splitWords(group.text)];
+  const lines = splitSubtitleLines(
+    group.lines.length > 0 ? group.lines.flat() : splitWords(group.text),
+  );
   const words = lines.flat();
   const activeIndex = Math.min(
     Math.max(0, words.length - 1),
-    Math.floor((segmentFrame / Math.max(1, segmentLength)) * Math.max(1, words.length)),
+    Math.floor(
+      (segmentFrame / Math.max(1, segmentLength)) * Math.max(1, words.length),
+    ),
   );
   const wordFrameLength = segmentLength / Math.max(1, words.length);
   const groupEnter = interpolate(segmentFrame, [0, 6], [0.72, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const groupExit = interpolate(segmentFrame, [segmentLength - 7, segmentLength - 1], [1, 0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const groupExit = interpolate(
+    segmentFrame,
+    [segmentLength - 7, segmentLength - 1],
+    [1, 0],
+    {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    },
+  );
   let runningIndex = 0;
 
   return (
@@ -964,7 +988,11 @@ const SubtitleBar: React.FC<{
                 ? interpolate(activeMotion, [0, 1], [2, lightWord ? -2 : -5])
                 : 0;
               const activeScale = isActive
-                ? interpolate(activeMotion, [0, 1], [0.99, lightWord ? 1.025 : 1.07])
+                ? interpolate(
+                    activeMotion,
+                    [0, 1],
+                    [0.99, lightWord ? 1.025 : 1.07],
+                  )
                 : 1;
 
               return (
@@ -973,7 +1001,9 @@ const SubtitleBar: React.FC<{
                   style={{
                     display: "inline-block",
                     margin: "0 7px",
-                    color: isActive ? skin.palette.accent : skin.palette.textPrimary,
+                    color: isActive
+                      ? skin.palette.accent
+                      : skin.palette.textPrimary,
                     opacity: isActive ? 1 : 0.84,
                     transform: `translateY(${activeLift}px) scale(${activeScale})`,
                     transformOrigin: "center bottom",
@@ -1023,7 +1053,7 @@ const TransitionOverlay: React.FC<{
     return (
       <AbsoluteFill
         style={{
-          background: `linear-gradient(90deg, transparent, ${withAlpha(skin.palette.accentRgb, 0.20)}, transparent)`,
+          background: `linear-gradient(90deg, transparent, ${withAlpha(skin.palette.accentRgb, 0.2)}, transparent)`,
           filter: "blur(10px)",
           opacity: progress * 0.75,
           transform: `translateX(${interpolate(progress, [0, 1], [0, 60])}px) scale(${1 + progress * 0.025})`,
@@ -1058,16 +1088,29 @@ export const SceneShell: React.FC<{
   localFrame: number;
   theme: Theme;
   timedPhrases?: TimedCaptionPhrase[];
+  showTechnicalLabels?: boolean;
   children: ReactNode;
-}> = ({ scene, localFrame, theme, timedPhrases, children }) => {
+}> = ({
+  scene,
+  localFrame,
+  theme,
+  timedPhrases,
+  showTechnicalLabels = false,
+  children,
+}) => {
   const skin = useSkin();
   const layout: SceneLayout = scene.layout ?? "top-title";
   const sceneFade =
     ease(localFrame, 0, 8) *
-    interpolate(localFrame, [scene.durationFrames - 12, scene.durationFrames - 1], [1, 0], {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    });
+    interpolate(
+      localFrame,
+      [scene.durationFrames - 12, scene.durationFrames - 1],
+      [1, 0],
+      {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+      },
+    );
 
   let stagedChildren: ReactNode = children;
   if (layout !== "top-title") {
@@ -1102,20 +1145,45 @@ export const SceneShell: React.FC<{
       {skin.chrome.terminalFrame ? <TerminalFrame sceneId={scene.id} /> : null}
       <div style={{ opacity: sceneFade }}>
         {layout === "top-title" ? (
-          <Header scene={scene} localFrame={localFrame} theme={theme} />
+          <Header
+            scene={scene}
+            localFrame={localFrame}
+            theme={theme}
+            showTechnicalLabels={showTechnicalLabels}
+          />
         ) : null}
         {layout === "center-stage" ? (
-          <CenterStageTitle scene={scene} localFrame={localFrame} theme={theme} />
+          <CenterStageTitle
+            scene={scene}
+            localFrame={localFrame}
+            theme={theme}
+            showTechnicalLabels={showTechnicalLabels}
+          />
         ) : null}
         {layout === "oversized-type" ? (
-          <OversizedTitle scene={scene} localFrame={localFrame} theme={theme} />
+          <OversizedTitle
+            scene={scene}
+            localFrame={localFrame}
+            theme={theme}
+            showTechnicalLabels={showTechnicalLabels}
+          />
         ) : null}
         {layout === "full-bleed-visual" ? (
-          <FloatingLabelChip scene={scene} localFrame={localFrame} theme={theme} />
+          <FloatingLabelChip
+            scene={scene}
+            localFrame={localFrame}
+            theme={theme}
+            showTechnicalLabels={showTechnicalLabels}
+          />
         ) : null}
         {stagedChildren}
         {layout === "bottom-statement" ? (
-          <BottomStatementBand scene={scene} localFrame={localFrame} theme={theme} />
+          <BottomStatementBand
+            scene={scene}
+            localFrame={localFrame}
+            theme={theme}
+            showTechnicalLabels={showTechnicalLabels}
+          />
         ) : null}
         <SubtitleBar
           scene={scene}
@@ -1136,9 +1204,13 @@ const HeroTitleAdapter: React.FC<TemplateAdapterProps> = ({
 }) => {
   const skin = useSkin();
   const isTerminal = skin.chrome.typewriterTitles;
-  const typedHeadline = useTypewriter(normalizeText(scene.headline), localFrame, {
-    startFrame: 2,
-  });
+  const typedHeadline = useTypewriter(
+    normalizeText(scene.headline),
+    localFrame,
+    {
+      startFrame: 2,
+    },
+  );
   const { fps } = useVideoConfig();
   const titleY = spring({
     frame: localFrame,
@@ -1163,10 +1235,17 @@ const HeroTitleAdapter: React.FC<TemplateAdapterProps> = ({
   const payoffIn = ease(localFrame, 30, 48);
   const activeChip = Math.min(
     Math.max(0, chips.length - 1),
-    Math.floor(interpolate(localFrame, [56, scene.durationFrames - 28], [0, chips.length], {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    })),
+    Math.floor(
+      interpolate(
+        localFrame,
+        [56, scene.durationFrames - 28],
+        [0, chips.length],
+        {
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
+        },
+      ),
+    ),
   );
 
   return (
@@ -1259,7 +1338,7 @@ const HeroTitleAdapter: React.FC<TemplateAdapterProps> = ({
                 opacity: isActive ? progress : progress * 0.78,
                 transform: `translateY(${interpolate(progress, [0, 1], [20, 0])}px) scale(${isActive ? 1.04 : 1})`,
                 boxShadow: isActive
-                  ? `0 0 28px ${withAlpha(skin.palette.accentRgb, 0.20)}`
+                  ? `0 0 28px ${withAlpha(skin.palette.accentRgb, 0.2)}`
                   : `0 0 20px ${withAlpha(skin.palette.accentRgb, 0.08)}`,
               }}
             >
@@ -1293,17 +1372,27 @@ const HeroTitleAdapter: React.FC<TemplateAdapterProps> = ({
   );
 };
 
-const CodePanelAdapter: React.FC<TemplateAdapterProps> = ({ scene, localFrame }) => {
+const CodePanelAdapter: React.FC<TemplateAdapterProps> = ({
+  scene,
+  localFrame,
+}) => {
   const skin = useSkin();
   const lines = scene.content.lines ?? [];
   const highlighted = new Set(scene.content.highlights ?? []);
   const lineHeight = lines.length > 6 ? 66 : 78;
   const activeLine = Math.min(
     Math.max(1, lines.length - 1),
-    Math.floor(interpolate(localFrame, [18, scene.durationFrames - 34], [1, lines.length - 1], {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    })),
+    Math.floor(
+      interpolate(
+        localFrame,
+        [18, scene.durationFrames - 34],
+        [1, lines.length - 1],
+        {
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
+        },
+      ),
+    ),
   );
 
   return (
@@ -1317,13 +1406,19 @@ const CodePanelAdapter: React.FC<TemplateAdapterProps> = ({ scene, localFrame })
           height: 720,
           borderRadius: 22,
           border: "1px solid rgba(255,255,255,0.13)",
-          background: "linear-gradient(180deg, rgba(25,26,30,0.98), rgba(14,15,17,0.94))",
-          boxShadow: `0 28px 70px rgba(0,0,0,0.42), 0 0 34px ${withAlpha(skin.palette.accentRgb, 0.10)}`,
+          background:
+            "linear-gradient(180deg, rgba(25,26,30,0.98), rgba(14,15,17,0.94))",
+          boxShadow: `0 28px 70px rgba(0,0,0,0.42), 0 0 34px ${withAlpha(skin.palette.accentRgb, 0.1)}`,
           overflow: "hidden",
-          transform: `scale(${interpolate(localFrame, [12, scene.durationFrames - 24], [1, 1.075], {
-            extrapolateLeft: "clamp",
-            extrapolateRight: "clamp",
-          })})`,
+          transform: `scale(${interpolate(
+            localFrame,
+            [12, scene.durationFrames - 24],
+            [1, 1.075],
+            {
+              extrapolateLeft: "clamp",
+              extrapolateRight: "clamp",
+            },
+          )})`,
           transformOrigin: "50% 42%",
         }}
       >
@@ -1364,7 +1459,8 @@ const CodePanelAdapter: React.FC<TemplateAdapterProps> = ({ scene, localFrame })
         <div style={{ padding: "32px 34px" }}>
           {lines.map((line, index) => {
             const lineIn = ease(localFrame, 12 + index * 5, 26 + index * 5);
-            const isHighlighted = highlighted.has(index) || highlighted.has(index + 1);
+            const isHighlighted =
+              highlighted.has(index) || highlighted.has(index + 1);
             const isActive = index === activeLine;
 
             return (
@@ -1380,11 +1476,14 @@ const CodePanelAdapter: React.FC<TemplateAdapterProps> = ({ scene, localFrame })
                   fontSize: 38,
                   color: isActive
                     ? skin.palette.textPrimary
-                    : withAlpha(skin.palette.textPrimaryRgb, 0.60),
-                  background: isActive || isHighlighted
-                    ? `linear-gradient(90deg, ${withAlpha(skin.palette.accentRgb, 0.18)}, transparent)`
-                    : "transparent",
-                  borderLeft: isActive ? `4px solid ${skin.palette.accent}` : "4px solid transparent",
+                    : withAlpha(skin.palette.textPrimaryRgb, 0.6),
+                  background:
+                    isActive || isHighlighted
+                      ? `linear-gradient(90deg, ${withAlpha(skin.palette.accentRgb, 0.18)}, transparent)`
+                      : "transparent",
+                  borderLeft: isActive
+                    ? `4px solid ${skin.palette.accent}`
+                    : "4px solid transparent",
                   paddingLeft: 18,
                 }}
               >
@@ -1424,14 +1523,20 @@ const CodePanelAdapter: React.FC<TemplateAdapterProps> = ({ scene, localFrame })
                     ? `1px solid ${skin.palette.accent}`
                     : "1px solid rgba(255,255,255,0.08)",
                   background: isActive
-                    ? withAlpha(skin.palette.accentRgb, 0.10)
+                    ? withAlpha(skin.palette.accentRgb, 0.1)
                     : "rgba(255,255,255,0.045)",
                   padding: 16,
                   opacity: isActive ? progress : progress * 0.45,
                   transform: `translateY(${interpolate(progress, [0, 1], [16, 0])}px) translateX(${isActive ? 8 : 0}px)`,
                 }}
               >
-                <div style={{ color: skin.palette.textPrimary, fontSize: 19, fontWeight: 800 }}>
+                <div
+                  style={{
+                    color: skin.palette.textPrimary,
+                    fontSize: 19,
+                    fontWeight: 800,
+                  }}
+                >
                   {normalizeText(labelForItem(item))}
                 </div>
                 <div
@@ -1487,7 +1592,8 @@ const SplitScreenAdapter: React.FC<TemplateAdapterProps> = ({
         }}
       >
         {panels.map((panel, index) => {
-          const tone = skin.toneMap[panel.tone ?? (index === 0 ? "neutral" : "warm")];
+          const tone =
+            skin.toneMap[panel.tone ?? (index === 0 ? "neutral" : "warm")];
           const translateX =
             index === 0
               ? interpolate(leftSlide, [0, 1], [-100, 0])
@@ -1505,7 +1611,8 @@ const SplitScreenAdapter: React.FC<TemplateAdapterProps> = ({
                 flexDirection: "column",
                 justifyContent: "center",
                 padding: 48,
-                borderRight: index === 0 ? "1px solid rgba(255,255,255,0.08)" : "none",
+                borderRight:
+                  index === 0 ? "1px solid rgba(255,255,255,0.08)" : "none",
               }}
             >
               {panel.kicker ? (
@@ -1607,10 +1714,12 @@ const AnimatedListAdapter: React.FC<TemplateAdapterProps> = ({
   const items = getItems(scene).slice(0, 6);
   const activeGroup = Math.min(
     2,
-    Math.floor(interpolate(localFrame, [16, scene.durationFrames - 30], [0, 2.99], {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    })),
+    Math.floor(
+      interpolate(localFrame, [16, scene.durationFrames - 30], [0, 2.99], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+      }),
+    ),
   );
 
   return (
@@ -1669,7 +1778,9 @@ const AnimatedListAdapter: React.FC<TemplateAdapterProps> = ({
               style={{
                 minHeight: 178,
                 borderRadius: 20,
-                border: isActive ? `2px solid ${skin.palette.accent}` : `1px solid rgba(255,255,255,0.12)`,
+                border: isActive
+                  ? `2px solid ${skin.palette.accent}`
+                  : `1px solid rgba(255,255,255,0.12)`,
                 background:
                   "linear-gradient(180deg, rgba(255,255,255,0.095), rgba(255,255,255,0.045))",
                 boxShadow: isActive
@@ -1708,7 +1819,7 @@ const AnimatedListAdapter: React.FC<TemplateAdapterProps> = ({
                 <div
                   style={{
                     color: skinForeground(skin, theme),
-                  fontSize: 31,
+                    fontSize: 31,
                     fontWeight: 860,
                     lineHeight: 1.05,
                   }}
@@ -1723,7 +1834,7 @@ const AnimatedListAdapter: React.FC<TemplateAdapterProps> = ({
                   lineHeight: 1.34,
                 }}
               >
-                  {normalizeText(bodyForItem(item))}
+                {normalizeText(bodyForItem(item))}
               </div>
             </div>
           );
@@ -1741,15 +1852,23 @@ const ProgressStepsAdapter: React.FC<TemplateAdapterProps> = ({
   const skin = useSkin();
   const { fps } = useVideoConfig();
   const steps = getSteps(scene).slice(0, 5);
-  const framesPerStep = Math.max(16, Math.floor(scene.durationFrames / Math.max(1, steps.length)));
+  const framesPerStep = Math.max(
+    16,
+    Math.floor(scene.durationFrames / Math.max(1, steps.length)),
+  );
   const activeStep = Math.min(
     steps.length - 1,
     Math.max(0, Math.floor(localFrame / Math.max(1, framesPerStep))),
   );
-  const cameraY = interpolate(activeStep, [0, Math.max(1, steps.length - 1)], [34, -34], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const cameraY = interpolate(
+    activeStep,
+    [0, Math.max(1, steps.length - 1)],
+    [34, -34],
+    {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    },
+  );
 
   return (
     <div style={stageStyle(skin)}>
@@ -1769,7 +1888,11 @@ const ProgressStepsAdapter: React.FC<TemplateAdapterProps> = ({
       >
         {steps.map((step, index) => {
           const stepStart = index * framesPerStep;
-          const fillProgress = ease(localFrame, stepStart, stepStart + framesPerStep * 0.65);
+          const fillProgress = ease(
+            localFrame,
+            stepStart,
+            stepStart + framesPerStep * 0.65,
+          );
           const lineProgress = ease(
             localFrame,
             stepStart + framesPerStep * 0.45,
@@ -1796,17 +1919,22 @@ const ProgressStepsAdapter: React.FC<TemplateAdapterProps> = ({
                 position: "relative",
               }}
             >
-              <div style={{ position: "relative", display: "flex", justifyContent: "center" }}>
+              <div
+                style={{
+                  position: "relative",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
                 <div
                   style={{
                     width: 62,
                     height: 62,
                     borderRadius: "50%",
-                    border: `3px solid ${isActive ? skin.palette.accent : isPast ? withAlpha(skin.palette.textPrimaryRgb, 0.40) : "rgba(255,255,255,0.18)"}`,
-                    background:
-                      isActive
-                        ? `linear-gradient(135deg, ${skin.palette.accent}, rgba(255,255,255,0.18))`
-                        : "rgba(255,255,255,0.04)",
+                    border: `3px solid ${isActive ? skin.palette.accent : isPast ? withAlpha(skin.palette.textPrimaryRgb, 0.4) : "rgba(255,255,255,0.18)"}`,
+                    background: isActive
+                      ? `linear-gradient(135deg, ${skin.palette.accent}, rgba(255,255,255,0.18))`
+                      : "rgba(255,255,255,0.04)",
                     color: isActive ? "#101113" : "rgba(255,255,255,0.52)",
                     display: "flex",
                     alignItems: "center",
@@ -1954,12 +2082,16 @@ const QuoteCardAdapter: React.FC<TemplateAdapterProps> = ({
   );
 };
 
-const ImageCarouselAdapter: React.FC<TemplateAdapterProps> = ({ scene, localFrame }) => {
+const ImageCarouselAdapter: React.FC<TemplateAdapterProps> = ({
+  scene,
+  localFrame,
+}) => {
   const skin = useSkin();
   const { fps } = useVideoConfig();
   const items = getItems(scene).slice(0, 5);
   const cycleLength = fps * 1.7;
-  const progress = (localFrame % Math.max(1, cycleLength * items.length)) / cycleLength;
+  const progress =
+    (localFrame % Math.max(1, cycleLength * items.length)) / cycleLength;
 
   return (
     <div style={stageStyle(skin)}>
@@ -1976,13 +2108,27 @@ const ImageCarouselAdapter: React.FC<TemplateAdapterProps> = ({ scene, localFram
         {items.map((item, index) => {
           const offset = index - progress;
           const normalizedOffset =
-            offset < -2 ? offset + items.length : offset > 2 ? offset - items.length : offset;
-          const scale = interpolate(Math.abs(normalizedOffset), [0, 1, 2], [1, 0.76, 0.56], {
-            extrapolateRight: "clamp",
-          });
-          const opacity = interpolate(Math.abs(normalizedOffset), [0, 1, 2], [1, 0.55, 0.18], {
-            extrapolateRight: "clamp",
-          });
+            offset < -2
+              ? offset + items.length
+              : offset > 2
+                ? offset - items.length
+                : offset;
+          const scale = interpolate(
+            Math.abs(normalizedOffset),
+            [0, 1, 2],
+            [1, 0.76, 0.56],
+            {
+              extrapolateRight: "clamp",
+            },
+          );
+          const opacity = interpolate(
+            Math.abs(normalizedOffset),
+            [0, 1, 2],
+            [1, 0.55, 0.18],
+            {
+              extrapolateRight: "clamp",
+            },
+          );
 
           return (
             <div
@@ -1994,7 +2140,8 @@ const ImageCarouselAdapter: React.FC<TemplateAdapterProps> = ({ scene, localFram
                 borderRadius: 22,
                 border: "1px solid rgba(255,255,255,0.12)",
                 background: `linear-gradient(150deg, ${skinSceneAccent(skin, scene.accent)}45, rgba(255,255,255,0.06))`,
-                boxShadow: "0 26px 60px rgba(0,0,0,0.35), 0 0 28px rgba(255,138,61,0.18)",
+                boxShadow:
+                  "0 26px 60px rgba(0,0,0,0.35), 0 0 28px rgba(255,138,61,0.18)",
                 transform: `translateX(${normalizedOffset * 280}px) scale(${scale})`,
                 opacity,
                 padding: 28,
@@ -2079,8 +2226,10 @@ const StatCounterAdapter: React.FC<TemplateAdapterProps> = ({
           justifyContent: "center",
           borderRadius: 26,
           border: "1px solid rgba(255,255,255,0.12)",
-          background: "linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.035))",
-          boxShadow: "0 30px 72px rgba(0,0,0,0.38), 0 0 46px rgba(255,138,61,0.18)",
+          background:
+            "linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.035))",
+          boxShadow:
+            "0 30px 72px rgba(0,0,0,0.38), 0 0 46px rgba(255,138,61,0.18)",
           transform: `scale(${scale})`,
         }}
       >
@@ -2230,7 +2379,7 @@ const EndCardAdapter: React.FC<TemplateAdapterProps> = ({
         </div>
         <div
           style={{
-            color: withAlpha(skin.palette.textPrimaryRgb, 0.70),
+            color: withAlpha(skin.palette.textPrimaryRgb, 0.7),
             fontSize: 20,
             lineHeight: 1.3,
             maxWidth: 720,
@@ -2262,7 +2411,11 @@ const getEdgePoint = (node: PositionedNode, target: PositionedNode) => {
   const destination = getCenter(target);
   const dx = destination.x - source.x;
   const dy = destination.y - source.y;
-  const scale = Math.max(Math.abs(dx) / (node.w / 2), Math.abs(dy) / (node.h / 2), 0.001);
+  const scale = Math.max(
+    Math.abs(dx) / (node.w / 2),
+    Math.abs(dy) / (node.h / 2),
+    0.001,
+  );
 
   return {
     x: source.x + dx / scale,
@@ -2277,9 +2430,7 @@ const layoutDiagramNodes = (scene: VideoScene): PositionedNode[] => {
     tone: item.tone ?? (index === 0 ? "warm" : "neutral"),
   }));
   const sourceNodes: DiagramNode[] =
-    scene.nodes.length > 0
-      ? scene.nodes
-      : fallbackNodes;
+    scene.nodes.length > 0 ? scene.nodes : fallbackNodes;
 
   return sourceNodes.slice(0, 6).map((node, index) => {
     const column = index % 3;
@@ -2376,66 +2527,88 @@ const Links: React.FC<{
   const skin = useSkin();
 
   return (
-  <svg
-    width="944"
-    height="720"
-    style={{
-      position: "absolute",
-      left: 0,
-      top: 0,
-      pointerEvents: "none",
-    }}
-  >
-    <defs>
-      <linearGradient id="connector" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0%" stopColor={skin.effects.connector.start} stopOpacity="0.18" />
-        <stop offset="55%" stopColor={skin.effects.connector.mid} stopOpacity="1" />
-        <stop offset="100%" stopColor={skin.effects.connector.end} stopOpacity="0.8" />
-      </linearGradient>
-      <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-        <path d="M0,0 L12,6 L0,12 z" fill={skin.effects.connector.arrow} />
-      </marker>
-    </defs>
-    {links.map((link, index) => {
-      const from = nodes[link.from];
-      const to = nodes[link.to];
-      if (!from || !to) {
-        return null;
-      }
-
-      const start = getEdgePoint(from, to);
-      const finish = getEdgePoint(to, from);
-      const p = ease(localFrame, index * 6, 24 + index * 6);
-
-      return (
-        <g key={`${link.from}-${link.to}-${index}`}>
-          <line
-            x1={start.x}
-            y1={start.y}
-            x2={finish.x}
-            y2={finish.y}
-            stroke="rgba(255,255,255,0.12)"
-            strokeWidth={5}
-            strokeLinecap="round"
+    <svg
+      width="944"
+      height="720"
+      style={{
+        position: "absolute",
+        left: 0,
+        top: 0,
+        pointerEvents: "none",
+      }}
+    >
+      <defs>
+        <linearGradient id="connector" x1="0%" x2="100%" y1="0%" y2="0%">
+          <stop
+            offset="0%"
+            stopColor={skin.effects.connector.start}
+            stopOpacity="0.18"
           />
-          <line
-            x1={start.x}
-            y1={start.y}
-            x2={start.x + (finish.x - start.x) * p}
-            y2={start.y + (finish.y - start.y) * p}
-            stroke="url(#connector)"
-            strokeWidth={5}
-            strokeLinecap="round"
-            markerEnd="url(#arrow)"
+          <stop
+            offset="55%"
+            stopColor={skin.effects.connector.mid}
+            stopOpacity="1"
           />
-        </g>
-      );
-    })}
-  </svg>
+          <stop
+            offset="100%"
+            stopColor={skin.effects.connector.end}
+            stopOpacity="0.8"
+          />
+        </linearGradient>
+        <marker
+          id="arrow"
+          markerWidth="12"
+          markerHeight="12"
+          refX="10"
+          refY="6"
+          orient="auto"
+        >
+          <path d="M0,0 L12,6 L0,12 z" fill={skin.effects.connector.arrow} />
+        </marker>
+      </defs>
+      {links.map((link, index) => {
+        const from = nodes[link.from];
+        const to = nodes[link.to];
+        if (!from || !to) {
+          return null;
+        }
+
+        const start = getEdgePoint(from, to);
+        const finish = getEdgePoint(to, from);
+        const p = ease(localFrame, index * 6, 24 + index * 6);
+
+        return (
+          <g key={`${link.from}-${link.to}-${index}`}>
+            <line
+              x1={start.x}
+              y1={start.y}
+              x2={finish.x}
+              y2={finish.y}
+              stroke="rgba(255,255,255,0.12)"
+              strokeWidth={5}
+              strokeLinecap="round"
+            />
+            <line
+              x1={start.x}
+              y1={start.y}
+              x2={start.x + (finish.x - start.x) * p}
+              y2={start.y + (finish.y - start.y) * p}
+              stroke="url(#connector)"
+              strokeWidth={5}
+              strokeLinecap="round"
+              markerEnd="url(#arrow)"
+            />
+          </g>
+        );
+      })}
+    </svg>
   );
 };
 
-const DiagramAdapter: React.FC<TemplateAdapterProps> = ({ scene, localFrame }) => {
+const DiagramAdapter: React.FC<TemplateAdapterProps> = ({
+  scene,
+  localFrame,
+}) => {
   const skin = useSkin();
   const { fps } = useVideoConfig();
   const nodes = layoutDiagramNodes(scene);
@@ -2452,7 +2625,8 @@ const DiagramAdapter: React.FC<TemplateAdapterProps> = ({ scene, localFrame }) =
           inset: "20px 0 58px",
           borderRadius: 28,
           border: "1px solid rgba(255,255,255,0.07)",
-          background: "linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012))",
+          background:
+            "linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012))",
           boxShadow: `0 0 42px ${skinSceneAccent(skin, scene.accent)}2f`,
           overflow: "hidden",
         }}
@@ -2478,30 +2652,38 @@ const UnsupportedTemplateAdapter: React.FC<TemplateAdapterProps> = ({
   const skin = useSkin();
 
   return (
-  <div style={stageStyle(skin)}>
-    <div
-      style={{
-        position: "absolute",
-        inset: "120px 60px 180px",
-        borderRadius: 24,
-        border: "1px solid rgba(255,108,108,0.52)",
-        background: "rgba(80,18,18,0.40)",
-        color: "#ffe8e3",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        textAlign: "center",
-        padding: 40,
-      }}
-    >
-      <div style={{ fontSize: 34, fontWeight: 860 }}>Unsupported template</div>
-      <div style={{ fontSize: 24, marginTop: 14 }}>{scene.templateId}</div>
-      <div style={{ fontSize: 18, marginTop: 22, color: "rgba(255,232,227,0.70)" }}>
-        Add an adapter or change video-map.json. No diagram fallback was used.
+    <div style={stageStyle(skin)}>
+      <div
+        style={{
+          position: "absolute",
+          inset: "120px 60px 180px",
+          borderRadius: 24,
+          border: "1px solid rgba(255,108,108,0.52)",
+          background: "rgba(80,18,18,0.40)",
+          color: "#ffe8e3",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+          padding: 40,
+        }}
+      >
+        <div style={{ fontSize: 34, fontWeight: 860 }}>
+          Unsupported template
+        </div>
+        <div style={{ fontSize: 24, marginTop: 14 }}>{scene.templateId}</div>
+        <div
+          style={{
+            fontSize: 18,
+            marginTop: 22,
+            color: "rgba(255,232,227,0.70)",
+          }}
+        >
+          Add an adapter or change video-map.json. No diagram fallback was used.
+        </div>
       </div>
     </div>
-  </div>
   );
 };
 
@@ -2516,18 +2698,61 @@ const adapterComponents = {
   ProgressStepsAdapter,
   QuoteCardAdapter,
   StatCounterAdapter,
+  GlitchTextAdapter,
 } satisfies Record<string, TemplateAdapter>;
 
-export const templateRegistry: Record<string, TemplateAdapter> = Object.fromEntries(
-  Object.entries(templateRegistryMap as Record<string, string>).map(
-    ([templateId, adapterName]) => [
-      templateId,
-      adapterComponents[adapterName as keyof typeof adapterComponents],
-    ],
-  ),
-);
+type GeneratedTemplateEntry = {
+  id: string;
+  adapterId: string;
+};
+
+const canonicalTemplateRegistry: Record<string, TemplateAdapter> =
+  Object.fromEntries(
+    (generatedTemplateIndex.templates as GeneratedTemplateEntry[]).map(
+      (template) => {
+        const adapter =
+          adapterComponents[
+            template.adapterId as keyof typeof adapterComponents
+          ];
+        if (!adapter) {
+          throw new Error(
+            `Canonical template ${template.id} references unknown adapter ${template.adapterId}. Run knowledge:compile or register the adapter.`,
+          );
+        }
+        return [template.id, adapter];
+      },
+    ),
+  );
+
+const legacyTemplateRegistry: Record<string, TemplateAdapter> =
+  Object.fromEntries(
+    Object.entries(templateRegistryMap as Record<string, string>).map(
+      ([templateId, adapterName]) => {
+        if (canonicalTemplateRegistry[templateId]) {
+          throw new Error(
+            `Template ${templateId} is present in both canonical and legacy registries.`,
+          );
+        }
+        const adapter =
+          adapterComponents[adapterName as keyof typeof adapterComponents];
+        if (!adapter) {
+          throw new Error(
+            `Legacy template ${templateId} references unknown adapter ${adapterName}.`,
+          );
+        }
+        return [templateId, adapter];
+      },
+    ),
+  );
+
+export const templateRegistry: Record<string, TemplateAdapter> = {
+  ...legacyTemplateRegistry,
+  ...canonicalTemplateRegistry,
+};
 
 export const supportedTemplateIds = Object.keys(templateRegistry);
 
 export const resolveTemplateAdapter = (templateId: string): TemplateAdapter =>
-  templateRegistry[templateId] ?? UnsupportedTemplateAdapter;
+  canonicalTemplateRegistry[templateId] ??
+  legacyTemplateRegistry[templateId] ??
+  UnsupportedTemplateAdapter;

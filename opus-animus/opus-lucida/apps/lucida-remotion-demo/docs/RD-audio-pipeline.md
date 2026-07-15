@@ -20,7 +20,7 @@ Nền tảng kỹ thuật: `design/research/AUDIO_FIRST_VIDEO_PRODUCTION_FLOW.md
 | Quyết định | Giá trị | Lý do |
 |---|---|---|
 | TTS engine | **VieNeu-TTS v3 Turbo, CPU ONNX INT8** tại `opus-lucida/apps/VieNeu-TTS/` | User chọn 2026-07-14; đã cài và test OK trên Surface Laptop 2 |
-| Alignment | WhisperX (`scripts/run-whisperx.ps1`, venv `.venv-whisperx` có sẵn) | Đã chạy thành công với tiếng Việt (`input/whisperx-transcripts/AI Tự Quản Lý.json`) |
+| Alignment | ~~WhisperX~~ → **faster-whisper word timestamps** (`scripts/fw-transcribe.py`, cùng venv `.venv-whisperx`) | Đổi 2026-07-14 khi build: whisperx VAD/align trong venv này load model lỗi, sinh timestamps rác cố định; faster-whisper cho word timestamps chuẩn (chi tiết: BD mục Kết quả build) |
 | Text truth | ApprovedScript — WhisperX chỉ cung cấp timing, không được sửa text | Nguyên tắc nền tảng của audio-first doc |
 | Timeline truth | VoiceTrack — composition duration lấy từ audio duration | như trên |
 | Caption style | `sentence-first-word-highlight`, max 2 lines, ≤12 từ/chunk, active word scale 1.04 | Đã lock trong brand contract `docs/market-research/11-pipeline-contract.md` |

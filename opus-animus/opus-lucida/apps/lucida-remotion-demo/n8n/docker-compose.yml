@@ -18,6 +18,8 @@ services:
     volumes:
       - n8n_data:/home/node/.n8n
       - ..:/workspace/lucida-remotion-demo
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 volumes:
   n8n_data:

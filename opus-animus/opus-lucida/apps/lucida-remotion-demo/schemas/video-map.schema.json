@@ -4,6 +4,55 @@
   "type": "object",
   "required": ["video", "theme", "assets", "scenes"],
   "properties": {
+    "mode": {
+      "enum": ["slides", "continuous"],
+      "default": "slides"
+    },
+    "environment": {
+      "type": "object",
+      "required": ["component", "variant", "props"],
+      "properties": {
+        "component": { "const": "MechanismWindow" },
+        "variant": { "enum": ["email", "chat", "doc"] },
+        "props": {
+          "type": "object",
+          "required": ["title", "japaneseText", "vietnameseText"],
+          "properties": {
+            "title": { "type": "string" },
+            "japaneseText": { "type": "string" },
+            "vietnameseText": { "type": "string" },
+            "state": { "enum": ["draft", "sent"] },
+            "showCursor": { "type": "boolean" },
+            "cursorBlinkFrames": { "type": "number", "exclusiveMinimum": 0 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "debug": {
+      "type": "object",
+      "properties": {
+        "showTechnicalLabels": { "type": "boolean", "default": false }
+      },
+      "additionalProperties": false
+    },
+    "audio": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "brand": {
+      "type": "object",
+      "required": ["id", "series"],
+      "properties": {
+        "id": { "const": "lucida-ai-v1" },
+        "series": {
+          "enum": ["lucida-now", "lucida-work", "lucida-lab", "lucida-check"]
+        },
+        "contractRef": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
     "video": {
       "type": "object",
       "required": [
@@ -77,8 +126,6 @@
         "required": [
           "id",
           "intent",
-          "templateId",
-          "templateRole",
           "durationSec",
           "headline",
           "subtitle",
@@ -114,7 +161,34 @@
               "cta"
             ]
           },
+          "transitions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["target", "action", "props"],
+              "properties": {
+                "target": { "type": "string", "minLength": 1 },
+                "action": { "enum": ["add", "update", "remove"] },
+                "offsetSec": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 0
+                },
+                "props": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": false
+            }
+          },
           "durationSec": { "type": "number", "exclusiveMinimum": 0 },
+          "segmentIds": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "startMs": { "type": "number" },
+          "endMs": { "type": "number" },
           "headline": { "type": "string" },
           "subtitle": {
             "type": "object",
@@ -193,5 +267,38 @@
         }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["mode"],
+        "properties": { "mode": { "const": "continuous" } }
+      },
+      "then": {
+        "required": ["environment"],
+        "properties": {
+          "scenes": {
+            "items": {
+              "required": ["transitions"],
+              "properties": {
+                "templateId": false,
+                "templateRole": false
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "environment": false,
+          "scenes": {
+            "items": {
+              "required": ["templateId", "templateRole"],
+              "properties": { "transitions": false }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

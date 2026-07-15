@@ -38,8 +38,9 @@ Read when needed:
 2. **Series mapping.** Map topic → series using the fixed table in `references/topic-selection-rules.md`. Series is chosen, brand is never re-created per video.
 3. **Value check.** The topic must plausibly deliver Lucida's three feelings: (1) tôi vừa biết một điều đáng chú ý, (2) tôi hiểu tại sao nó liên quan đến mình, (3) tôi biết nên làm gì tiếp theo. If it cannot, say so and propose a reframe.
 4. **Script draft.** Write the full voiceover script in Vietnamese following `08-editorial-voice.md` and the narrative functions `signal → proof → meaning → action`. State target duration and the word-count assumption used.
-5. **Sentence split.** Split into sentences with stable `sentenceId`s and build `approved-script.json` per `references/approved-script-schema.md`.
-6. **[GATE] User approval.** Present: topic, series, duration estimate, full script text, claims needing evidence. STOP and wait for approval. On approve: set `status: "approved"`, `approval.contentFrozen: true`, write the artifact.
+5. **Visual mechanism.** Propose the video's `visualMechanism` (see schema §visualMechanism): one `environment` tied to the topic, a `transformation`, one beat per `segmentId`, and a `payoff`. Generic "cards + big typography" is NOT a mechanism — if the video is deliberately slide-style, state `none` + reason. The mechanism must be showable with the mechanism kit (window / context chip / timer morph / diff-highlight) or flag what new component it would need.
+6. **Sentence split.** Split into sentences with stable `sentenceId`s and build `approved-script.json` per `references/approved-script-schema.md`.
+7. **[GATE] User approval.** Present: topic, series, duration estimate, full script text, **visual mechanism (environment → beats → payoff)**, claims needing evidence. STOP and wait for approval — script and mechanism are approved together in this single gate. On approve: set `status: "approved"`, `approval.contentFrozen: true`, write the artifact.
 
 ## Output contract
 
@@ -60,6 +61,7 @@ apps/lucida-remotion-demo/input/scripts/<topic-slug>/approved-script.json
 ## Completion criteria
 
 - `approved-script.json` exists, schema-valid, `status: "approved"`, sentence IDs stable.
-- Topic, series, and duration were explicitly approved by the user.
+- `visualMechanism` present (or explicit `none` + reason); every `segmentId` has exactly one beat.
+- Topic, series, duration, and visual mechanism were explicitly approved by the user.
 - Claims needing evidence are enumerated.
 - The script passes the opening rule and narrative-function check.

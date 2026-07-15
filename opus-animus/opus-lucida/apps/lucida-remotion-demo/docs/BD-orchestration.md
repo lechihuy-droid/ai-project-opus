@@ -59,3 +59,6 @@ CẤM:  src/**, design/**, docs/market-research/**, schemas/** (trừ khi flow-r
 ## Kết quả build (append sau khi xong)
 
 (chưa có)
+
+- 2026-07-14 — Implemented O1–O3: host flow orchestrator (`flow:run`) với stage report/stop-on-fail/skip-voice; publish bundle (`publish:handoff`) gồm video, thumbnail, metadata và checklist; HTTP bridge (`flow:server`) với path containment; n8n webhook/poll workflow, Docker host mapping, fixture request và README hướng dẫn vận hành.
+- Verify: `node --check` cho ba script mới; `npm run lint`; JSON parse workflow/fixture; smoke test `/health` = 200 và POST `/run` với path ngoài repo = 400. Không chạy render, TTS, WhisperX hoặc Docker.

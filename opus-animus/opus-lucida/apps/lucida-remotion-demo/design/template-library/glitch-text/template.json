@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "lucida-template-definition/v1",
+  "id": "glitch-text",
+  "logicalId": "template:glitch-text",
+  "version": "1.0.0",
+  "status": "experimental",
+  "label": "Glitch Text",
+  "description": "Cinematic RGB tear typography for concise vertical narrative beats.",
+  "familyId": "cinematic-type",
+  "familyRef": "design/visual-library/styles/cinematic-type/style-package.json",
+  "componentRef": "component.json",
+  "adapter": {
+    "name": "GlitchTextAdapter",
+    "path": "src/templates/adapters/GlitchTextAdapter.tsx",
+    "export": "GlitchTextAdapter"
+  },
+  "capabilities": {
+    "intents": ["hook", "problem", "code-explanation"],
+    "aspectRatios": ["9:16"],
+    "presets": ["rgb-tear-medium"],
+    "renderable": true
+  },
+  "content": {
+    "schemaRef": "content.schema.json",
+    "requiredSlots": ["headline"],
+    "capacity": {
+      "headlineChars": 120,
+      "bodyChars": 220
+    }
+  },
+  "slots": { "schemaRef": "slots.schema.json" },
+  "render": {
+    "coordinateSpace": "scene-local",
+    "deterministic": true,
+    "safeAreaProfile": "vertical-9-16",
+    "motionPreset": "rgb-tear-medium"
+  },
+  "qa": {
+    "status": "defined",
+    "checks": ["schema-valid", "invalid-fixture-rejected", "scene-local-deterministic-motion", "vertical-safe-area"]
+  },
+  "provenanceRef": "provenance.json",
+  "files": {
+    "template": "template.json",
+    "component": "component.json",
+    "contentSchema": "content.schema.json",
+    "slots": "slots.schema.json",
+    "provenance": "provenance.json",
+    "validFixture": "fixtures/valid.json",
+    "invalidFixture": "fixtures/invalid.json"
+  }
+}

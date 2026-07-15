@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "lucida-template-slots/v1",
+  "templateId": "glitch-text",
+  "slots": [
+    { "id": "headline", "label": "Headline", "sourcePath": "scene.headline", "required": true, "maxChars": 120 },
+    { "id": "supporting-text", "label": "Supporting text", "sourcePath": "scene.content.subtitle", "required": false, "maxChars": 220 },
+    { "id": "code-context", "label": "Code context", "sourcePath": "scene.content.codeTitle", "required": false, "maxChars": 80 }
+  ]
+}

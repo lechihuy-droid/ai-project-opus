@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "lucida-reference-document/v1",
+  "sourceRef": "pipeline/fixtures/reference-repo/README.md",
+  "title": "Fixture terminal repository overview",
+  "mediaType": "repository",
+  "rawText": "# Reference Repo\n\nTerminal dashboard reference with compact command panels, status rows, and editorial sections.\n\nThe review scope is layout vocabulary only. This project-owned fixture contains no third-party source or media.",
+  "contentChecksum": "59bfab2ac6d50817b2ced7f14faa31a8c40c6ad1c3ea187bbc34394607c544e1",
+  "tags": ["terminal", "dashboard", "fixture"],
+  "observations": [{ "kind": "layout_reference", "reviewStatus": "approved", "definition": { "family": "terminal", "traits": ["compact panels", "status rows", "editorial sections"] } }]
+}

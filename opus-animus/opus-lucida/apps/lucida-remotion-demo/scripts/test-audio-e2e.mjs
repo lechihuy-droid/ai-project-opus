@@ -65,11 +65,16 @@ const ranges = (videoMap?.scenes ?? [])
   .map((scene) => ({ id: scene.id, startMs: scene.startMs, endMs: scene.endMs }))
   .sort((a, b) => a.startMs - b.startMs);
 const allScenesTimed = Boolean(videoMap?.scenes?.length) && ranges.length === videoMap.scenes.length;
-let largestGapMs = 0;
+const expectedDurationMs = Number(voiceTrack?.durationMs ?? timedScript?.durationMs);
+const rangesValid = ranges.every((range) => range.startMs >= 0 && range.endMs > range.startMs);
+let largestGapMs = ranges.length > 0 ? ranges[0].startMs : Number.POSITIVE_INFINITY;
 for (let index = 1; index < ranges.length; index += 1) {
   largestGapMs = Math.max(largestGapMs, ranges[index].startMs - ranges[index - 1].endMs);
 }
-check("video-map scene timing covers without gaps over 1000ms", allScenesTimed && largestGapMs <= 1000,
+if (ranges.length > 0 && Number.isFinite(expectedDurationMs)) {
+  largestGapMs = Math.max(largestGapMs, expectedDurationMs - ranges[ranges.length - 1].endMs);
+}
+check("video-map scene timing covers without gaps over 1000ms", allScenesTimed && rangesValid && largestGapMs <= 1000,
   `timed=${ranges.length}/${videoMap?.scenes?.length ?? 0}, largestGapMs=${largestGapMs}`);
 
 const mp4Path = mp4Candidates.find((candidate) => fs.existsSync(candidate));
@@ -78,7 +83,6 @@ if (mp4Path) {
   const hasAudio = Boolean(mp4Probe?.streams?.some((stream) => stream.codec_type === "audio"));
   check("mp4 contains an audio stream", hasAudio, mp4Path);
   const mp4DurationMs = Number(mp4Probe?.format?.duration) * 1000;
-  const expectedDurationMs = Number(voiceTrack?.durationMs ?? timedScript?.durationMs);
   const durationOk = Number.isFinite(mp4DurationMs) && Number.isFinite(expectedDurationMs) &&
     Math.abs(mp4DurationMs - expectedDurationMs) <= 100;
   check("mp4 duration matches voice within 100ms", durationOk,

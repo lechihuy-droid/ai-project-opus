@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "lucida-reference-document/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "sourceRef", "title", "mediaType", "rawText", "contentChecksum", "tags", "observations"],
+  "properties": {
+    "schemaVersion": { "const": "lucida-reference-document/v1" },
+    "sourceRef": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "mediaType": { "enum": ["repository", "web", "image", "theme"] },
+    "rawText": { "type": "string", "minLength": 1 },
+    "contentChecksum": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "tags": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "reviewStatus", "definition"],
+        "properties": {
+          "kind": { "type": "string", "minLength": 1 },
+          "reviewStatus": { "const": "approved" },
+          "definition": { "type": "object" }
+        }
+      }
+    }
+  }
+}

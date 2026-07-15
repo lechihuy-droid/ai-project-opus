@@ -1,0 +1,10 @@
+{
+  "brand": { "id": "lucida-ai-v1", "series": "lucida-unknown" },
+  "video": { "title": "Invalid brand", "subtitle": "Fixture", "format": "9:16", "width": 1080, "height": 1920, "fps": 30, "durationSec": 6, "style": "editorial", "language": "vi" },
+  "theme": { "name": "light", "accent": "#4CC2FF", "accentSoft": "#DCEEFF", "background": "#FFFFFF", "foreground": "#111111", "muted": "#666666" },
+  "assets": [],
+  "scenes": [
+    { "id": "hook", "intent": "hook", "templateId": "chapter-title", "templateRole": "scene", "durationSec": 3, "headline": "Sai nền", "subtitle": { "text": "Nền quá sáng." }, "content": {}, "style": { "density": "low", "safeArea": "tiktok" }, "motion": [], "layout": "oversized-type", "reason": "Fixture lỗi." },
+    { "id": "takeaway", "intent": "takeaway", "templateId": "end-card", "templateRole": "scene", "durationSec": 3, "headline": "Sai series", "subtitle": { "text": "Series không hợp lệ." }, "content": {}, "style": { "density": "low", "safeArea": "tiktok" }, "motion": [], "layout": "bottom-statement", "reason": "Fixture lỗi." }
+  ]
+}

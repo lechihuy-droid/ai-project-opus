@@ -1,0 +1,45 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-14",
+    "approvedBy": "Lucida reference review",
+    "status": "approved"
+  },
+  "projectId": "lucida-remotion-demo",
+  "sanitization": {
+    "findings": [],
+    "redactions": 0,
+    "status": "passed"
+  },
+  "schemaVersion": "sanitized-visual-input/v1",
+  "sources": [
+    {
+      "checksum": "ca7b33d28dbdb796e8033ef038768a9ecb3918560f0f64576f3a9471885982a6",
+      "collectorVersion": "image-reference-collector/1",
+      "metadata": {
+        "url": "pipeline/fixtures/styles/package-valid/technical-editorial/artifacts/frames/scene-01.png"
+      },
+      "records": [
+        {
+          "data": {
+            "tags": ["image", "technical-editorial", "fixture"]
+          },
+          "kind": "image_composition",
+          "provenance": {
+            "collectorVersion": "image-reference-collector/1",
+            "sourceChecksum": "ca7b33d28dbdb796e8033ef038768a9ecb3918560f0f64576f3a9471885982a6",
+            "sourceRef": "pipeline/fixtures/styles/package-valid/technical-editorial/artifacts/frames/scene-01.png#review-note"
+          },
+          "text": "# Technical editorial frame\n\nProject-owned render fixture reviewed as image evidence. The observation is intentionally descriptive: use technical editorial hierarchy, restrained contrast, and structured information grouping. The bitmap remains evidence only and is not a production asset selection."
+        }
+      ],
+      "rights": {
+        "evidence": "Project-owned visual validation fixture.",
+        "policy": "internal-fixture",
+        "status": "approved"
+      },
+      "sourceId": "source:reference:technical-editorial-frame",
+      "sourceRevision": "technical-editorial-fixture-2026-07-14",
+      "sourceType": "image_reference"
+    }
+  ]
+}

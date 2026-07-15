@@ -1,0 +1,9 @@
+{
+  "score": 0.5,
+  "violations": [
+    "theme.background must be a hex color with relative luminance < 0.2; got \"#FFFFFF\" (1.0000).",
+    "brand.series must be one of lucida-now, lucida-work, lucida-lab, lucida-check; got \"lucida-unknown\"."
+  ],
+  "warnings": [],
+  "checkedAt": "2026-07-14T08:04:18.984Z"
+}

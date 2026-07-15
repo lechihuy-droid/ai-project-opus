@@ -6,5 +6,8 @@ dist
 # Rendered/generated output lives outside git; source transcripts kept in input/ are tracked separately.
 /output/
 
+# Deterministic local RAG runtime indexes are generated from canonical packages.
+/.generated/knowledge/
+
 # Visual input pipeline runtime artifacts.
 /pipeline/runs/

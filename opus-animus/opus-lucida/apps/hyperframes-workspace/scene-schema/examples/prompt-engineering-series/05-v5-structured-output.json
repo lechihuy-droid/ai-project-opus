@@ -1,0 +1,1306 @@
+{
+  "metadata": {
+    "id": "prompt-series-05-v5-structured-output",
+    "title": "Prompt Engineering V1–V5 · V5 · OUTPUT",
+    "description": "Video dọc 9:16 thuộc series prompt engineering thực nghiệm.",
+    "author": "Opus AI Video Engine",
+    "version": "1.0.0",
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "background": "#080b10"
+  },
+  "duration": 20,
+  "assets": [],
+  "scenes": [
+    {
+      "id": "05-v5-structured-output-hook",
+      "title": "05-v5-structured-output-hook",
+      "start": 0,
+      "duration": 4,
+      "composition": {
+        "type": "html",
+        "html": ""
+      },
+      "layers": [
+        {
+          "id": "05-v5-structured-output-hook-top-rule",
+          "kind": "shape",
+          "x": 0,
+          "y": 0,
+          "width": 1080,
+          "height": 10,
+          "fill": "#54dc8b",
+          "radius": 0,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0,
+            "duration": 0.45
+          }
+        },
+        {
+          "id": "05-v5-structured-output-hook-episode",
+          "kind": "text",
+          "text": "TẬP 05 / 07",
+          "x": 84,
+          "y": 78,
+          "width": 240,
+          "height": 36,
+          "fontSize": 24,
+          "fontWeight": 820,
+          "color": "#54dc8b",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade-down",
+            "delay": 0.02,
+            "duration": 0.4
+          }
+        },
+        {
+          "id": "05-v5-structured-output-hook-label",
+          "kind": "text",
+          "text": "V5 · OUTPUT",
+          "x": 350,
+          "y": 78,
+          "width": 640,
+          "height": 36,
+          "fontSize": 24,
+          "fontWeight": 760,
+          "color": "#aab7c4",
+          "lineHeight": 1,
+          "align": "right",
+          "enter": {
+            "preset": "fade-down",
+            "delay": 0.08,
+            "duration": 0.4
+          }
+        },
+        {
+          "id": "05-v5-structured-output-hook-grid-v1",
+          "kind": "shape",
+          "x": 84,
+          "y": 178,
+          "width": 912,
+          "height": 1,
+          "fill": "rgba(255,255,255,0.08)",
+          "radius": 0,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0.08,
+            "duration": 0.45
+          }
+        },
+        {
+          "id": "05-v5-structured-output-hook-progress-base",
+          "kind": "shape",
+          "x": 84,
+          "y": 1742,
+          "width": 912,
+          "height": 8,
+          "fill": "rgba(255,255,255,0.10)",
+          "radius": 4,
+          "enter": {
+            "preset": "fade",
+            "delay": 0.05,
+            "duration": 0.35
+          }
+        },
+        {
+          "id": "05-v5-structured-output-hook-progress-fill",
+          "kind": "shape",
+          "x": 84,
+          "y": 1742,
+          "width": 182,
+          "height": 8,
+          "fill": "#54dc8b",
+          "radius": 4,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0.18,
+            "duration": 0.65
+          }
+        },
+        {
+          "id": "05-v5-structured-output-hook-footer",
+          "kind": "text",
+          "text": "PROMPT ENGINEERING · THỰC NGHIỆM V1 → V5",
+          "x": 84,
+          "y": 1790,
+          "width": 912,
+          "height": 28,
+          "fontSize": 20,
+          "fontWeight": 720,
+          "color": "#aab7c4",
+          "lineHeight": 1,
+          "align": "center",
+          "enter": {
+            "preset": "fade",
+            "delay": 0.32,
+            "duration": 0.4
+          }
+        },
+        {
+          "id": "05-v5-structured-output-hook-accent-line",
+          "kind": "shape",
+          "x": 84,
+          "y": 312,
+          "width": 132,
+          "height": 12,
+          "fill": "#54dc8b",
+          "radius": 6,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0.12,
+            "duration": 0.55
+          }
+        },
+        {
+          "id": "05-v5-structured-output-hook-title",
+          "kind": "text",
+          "text": "Câu trả lời đúng vẫn chưa đủ cho production",
+          "x": 84,
+          "y": 382,
+          "width": 900,
+          "height": 430,
+          "fontSize": 88,
+          "fontWeight": 860,
+          "color": "#f4f7f8",
+          "lineHeight": 0.98,
+          "enter": {
+            "preset": "wipe-up",
+            "delay": 0.24,
+            "duration": 0.72
+          }
+        },
+        {
+          "id": "05-v5-structured-output-hook-subtitle",
+          "kind": "text",
+          "text": "Output phải ngắn, ổn định và có thể được máy bóc tách.",
+          "x": 88,
+          "y": 890,
+          "width": 850,
+          "height": 180,
+          "fontSize": 40,
+          "fontWeight": 580,
+          "color": "#aab7c4",
+          "lineHeight": 1.18,
+          "enter": {
+            "preset": "fade-up",
+            "delay": 0.88,
+            "duration": 0.62
+          }
+        },
+        {
+          "id": "05-v5-structured-output-hook-orb-a",
+          "kind": "shape",
+          "x": 820,
+          "y": 1260,
+          "width": 190,
+          "height": 190,
+          "fill": "#54dc8b22",
+          "radius": 95,
+          "enter": {
+            "preset": "scale-in",
+            "delay": 1.15,
+            "duration": 0.55
+          },
+          "emphasis": {
+            "preset": "float",
+            "delay": 1.7,
+            "duration": 1.8,
+            "iterations": "infinite"
+          }
+        },
+        {
+          "id": "05-v5-structured-output-hook-orb-b",
+          "kind": "shape",
+          "x": 690,
+          "y": 1398,
+          "width": 90,
+          "height": 90,
+          "fill": "#6d8cff33",
+          "radius": 45,
+          "enter": {
+            "preset": "scale-in",
+            "delay": 1.35,
+            "duration": 0.45
+          },
+          "emphasis": {
+            "preset": "float",
+            "delay": 1.9,
+            "duration": 1.4,
+            "iterations": "infinite"
+          }
+        },
+        {
+          "id": "05-v5-structured-output-hook-swipe",
+          "kind": "text",
+          "text": "PROMPT LAB / CASE STUDY",
+          "x": 84,
+          "y": 1560,
+          "width": 700,
+          "height": 44,
+          "fontSize": 28,
+          "fontWeight": 780,
+          "color": "#54dc8b",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade",
+            "delay": 1.5,
+            "duration": 0.5
+          }
+        }
+      ],
+      "animation": []
+    },
+    {
+      "id": "05-v5-structured-output-prompt",
+      "title": "05-v5-structured-output-prompt",
+      "start": 4,
+      "duration": 4,
+      "composition": {
+        "type": "html",
+        "html": ""
+      },
+      "layers": [
+        {
+          "id": "05-v5-structured-output-prompt-top-rule",
+          "kind": "shape",
+          "x": 0,
+          "y": 0,
+          "width": 1080,
+          "height": 10,
+          "fill": "#54dc8b",
+          "radius": 0,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0,
+            "duration": 0.45
+          }
+        },
+        {
+          "id": "05-v5-structured-output-prompt-episode",
+          "kind": "text",
+          "text": "TẬP 05 / 07",
+          "x": 84,
+          "y": 78,
+          "width": 240,
+          "height": 36,
+          "fontSize": 24,
+          "fontWeight": 820,
+          "color": "#54dc8b",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade-down",
+            "delay": 0.02,
+            "duration": 0.4
+          }
+        },
+        {
+          "id": "05-v5-structured-output-prompt-label",
+          "kind": "text",
+          "text": "V5 · OUTPUT",
+          "x": 350,
+          "y": 78,
+          "width": 640,
+          "height": 36,
+          "fontSize": 24,
+          "fontWeight": 760,
+          "color": "#aab7c4",
+          "lineHeight": 1,
+          "align": "right",
+          "enter": {
+            "preset": "fade-down",
+            "delay": 0.08,
+            "duration": 0.4
+          }
+        },
+        {
+          "id": "05-v5-structured-output-prompt-grid-v1",
+          "kind": "shape",
+          "x": 84,
+          "y": 178,
+          "width": 912,
+          "height": 1,
+          "fill": "rgba(255,255,255,0.08)",
+          "radius": 0,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0.08,
+            "duration": 0.45
+          }
+        },
+        {
+          "id": "05-v5-structured-output-prompt-progress-base",
+          "kind": "shape",
+          "x": 84,
+          "y": 1742,
+          "width": 912,
+          "height": 8,
+          "fill": "rgba(255,255,255,0.10)",
+          "radius": 4,
+          "enter": {
+            "preset": "fade",
+            "delay": 0.05,
+            "duration": 0.35
+          }
+        },
+        {
+          "id": "05-v5-structured-output-prompt-progress-fill",
+          "kind": "shape",
+          "x": 84,
+          "y": 1742,
+          "width": 365,
+          "height": 8,
+          "fill": "#54dc8b",
+          "radius": 4,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0.18,
+            "duration": 0.65
+          }
+        },
+        {
+          "id": "05-v5-structured-output-prompt-footer",
+          "kind": "text",
+          "text": "PROMPT ENGINEERING · THỰC NGHIỆM V1 → V5",
+          "x": 84,
+          "y": 1790,
+          "width": 912,
+          "height": 28,
+          "fontSize": 20,
+          "fontWeight": 720,
+          "color": "#aab7c4",
+          "lineHeight": 1,
+          "align": "center",
+          "enter": {
+            "preset": "fade",
+            "delay": 0.32,
+            "duration": 0.4
+          }
+        },
+        {
+          "id": "05-v5-structured-output-prompt-eyebrow",
+          "kind": "text",
+          "text": "PROMPT / INPUT",
+          "x": 84,
+          "y": 260,
+          "width": 620,
+          "height": 42,
+          "fontSize": 26,
+          "fontWeight": 820,
+          "color": "#54dc8b",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade-down",
+            "delay": 0.08,
+            "duration": 0.42
+          }
+        },
+        {
+          "id": "05-v5-structured-output-prompt-prompt-box",
+          "kind": "terminal",
+          "x": 84,
+          "y": 350,
+          "width": 912,
+          "height": 640,
+          "fontSize": 35,
+          "lines": [
+            "$ prompt.run",
+            "",
+            "Tóm tắt ngắn. Chỉ trả kết luận trong thẻ <final_verdict>.",
+            "",
+            "▌"
+          ],
+          "enter": {
+            "preset": "scale-in",
+            "delay": 0.22,
+            "duration": 0.62
+          }
+        },
+        {
+          "id": "05-v5-structured-output-prompt-cursor",
+          "kind": "shape",
+          "x": 122,
+          "y": 910,
+          "width": 18,
+          "height": 44,
+          "fill": "#54dc8b",
+          "radius": 2,
+          "enter": {
+            "preset": "fade",
+            "delay": 0.9,
+            "duration": 0.25
+          },
+          "emphasis": {
+            "preset": "pulse",
+            "delay": 1.2,
+            "duration": 0.7,
+            "iterations": "infinite"
+          }
+        },
+        {
+          "id": "05-v5-structured-output-prompt-question",
+          "kind": "text",
+          "text": "Thay đổi nhỏ. Hành vi khác hẳn.",
+          "x": 84,
+          "y": 1128,
+          "width": 900,
+          "height": 120,
+          "fontSize": 58,
+          "fontWeight": 820,
+          "color": "#f4f7f8",
+          "lineHeight": 1.04,
+          "enter": {
+            "preset": "fade-up",
+            "delay": 1.05,
+            "duration": 0.62
+          }
+        },
+        {
+          "id": "05-v5-structured-output-prompt-hint",
+          "kind": "text",
+          "text": "Quan sát output trước khi thêm instruction tiếp theo.",
+          "x": 88,
+          "y": 1320,
+          "width": 830,
+          "height": 100,
+          "fontSize": 34,
+          "fontWeight": 560,
+          "color": "#aab7c4",
+          "lineHeight": 1.16,
+          "enter": {
+            "preset": "fade-up",
+            "delay": 1.45,
+            "duration": 0.55
+          }
+        }
+      ],
+      "animation": []
+    },
+    {
+      "id": "05-v5-structured-output-signal",
+      "title": "05-v5-structured-output-signal",
+      "start": 8,
+      "duration": 4,
+      "composition": {
+        "type": "html",
+        "html": ""
+      },
+      "layers": [
+        {
+          "id": "05-v5-structured-output-signal-top-rule",
+          "kind": "shape",
+          "x": 0,
+          "y": 0,
+          "width": 1080,
+          "height": 10,
+          "fill": "#54dc8b",
+          "radius": 0,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0,
+            "duration": 0.45
+          }
+        },
+        {
+          "id": "05-v5-structured-output-signal-episode",
+          "kind": "text",
+          "text": "TẬP 05 / 07",
+          "x": 84,
+          "y": 78,
+          "width": 240,
+          "height": 36,
+          "fontSize": 24,
+          "fontWeight": 820,
+          "color": "#54dc8b",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade-down",
+            "delay": 0.02,
+            "duration": 0.4
+          }
+        },
+        {
+          "id": "05-v5-structured-output-signal-label",
+          "kind": "text",
+          "text": "V5 · OUTPUT",
+          "x": 350,
+          "y": 78,
+          "width": 640,
+          "height": 36,
+          "fontSize": 24,
+          "fontWeight": 760,
+          "color": "#aab7c4",
+          "lineHeight": 1,
+          "align": "right",
+          "enter": {
+            "preset": "fade-down",
+            "delay": 0.08,
+            "duration": 0.4
+          }
+        },
+        {
+          "id": "05-v5-structured-output-signal-grid-v1",
+          "kind": "shape",
+          "x": 84,
+          "y": 178,
+          "width": 912,
+          "height": 1,
+          "fill": "rgba(255,255,255,0.08)",
+          "radius": 0,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0.08,
+            "duration": 0.45
+          }
+        },
+        {
+          "id": "05-v5-structured-output-signal-progress-base",
+          "kind": "shape",
+          "x": 84,
+          "y": 1742,
+          "width": 912,
+          "height": 8,
+          "fill": "rgba(255,255,255,0.10)",
+          "radius": 4,
+          "enter": {
+            "preset": "fade",
+            "delay": 0.05,
+            "duration": 0.35
+          }
+        },
+        {
+          "id": "05-v5-structured-output-signal-progress-fill",
+          "kind": "shape",
+          "x": 84,
+          "y": 1742,
+          "width": 547,
+          "height": 8,
+          "fill": "#54dc8b",
+          "radius": 4,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0.18,
+            "duration": 0.65
+          }
+        },
+        {
+          "id": "05-v5-structured-output-signal-footer",
+          "kind": "text",
+          "text": "PROMPT ENGINEERING · THỰC NGHIỆM V1 → V5",
+          "x": 84,
+          "y": 1790,
+          "width": 912,
+          "height": 28,
+          "fontSize": 20,
+          "fontWeight": 720,
+          "color": "#aab7c4",
+          "lineHeight": 1,
+          "align": "center",
+          "enter": {
+            "preset": "fade",
+            "delay": 0.32,
+            "duration": 0.4
+          }
+        },
+        {
+          "id": "05-v5-structured-output-signal-eyebrow",
+          "kind": "text",
+          "text": "TÍN HIỆU CHÍNH",
+          "x": 84,
+          "y": 258,
+          "width": 620,
+          "height": 44,
+          "fontSize": 28,
+          "fontWeight": 840,
+          "color": "#54dc8b",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade-down",
+            "delay": 0.08,
+            "duration": 0.42
+          }
+        },
+        {
+          "id": "05-v5-structured-output-signal-signal-panel",
+          "kind": "shape",
+          "x": 84,
+          "y": 372,
+          "width": 912,
+          "height": 600,
+          "fill": "#151d28",
+          "radius": 24,
+          "enter": {
+            "preset": "slide-right",
+            "delay": 0.24,
+            "duration": 0.62
+          },
+          "emphasis": {
+            "preset": "glow",
+            "delay": 1.1,
+            "duration": 1.5,
+            "iterations": 2
+          }
+        },
+        {
+          "id": "05-v5-structured-output-signal-signal",
+          "kind": "text",
+          "text": "<final_verdict>Vehicle B</final_verdict>",
+          "x": 132,
+          "y": 482,
+          "width": 810,
+          "height": 330,
+          "fontSize": 46,
+          "fontWeight": 820,
+          "color": "#f4f7f8",
+          "lineHeight": 1.1,
+          "enter": {
+            "preset": "wipe-up",
+            "delay": 0.55,
+            "duration": 0.65
+          }
+        },
+        {
+          "id": "05-v5-structured-output-signal-scan-line",
+          "kind": "shape",
+          "x": 112,
+          "y": 900,
+          "width": 856,
+          "height": 4,
+          "fill": "#54dc8b",
+          "radius": 2,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0.82,
+            "duration": 0.6
+          },
+          "emphasis": {
+            "preset": "scan",
+            "delay": 1.4,
+            "duration": 1,
+            "iterations": "infinite"
+          }
+        },
+        {
+          "id": "05-v5-structured-output-signal-status",
+          "kind": "text",
+          "text": "OBSERVE → COMPARE → UPDATE",
+          "x": 84,
+          "y": 1140,
+          "width": 900,
+          "height": 64,
+          "fontSize": 34,
+          "fontWeight": 820,
+          "color": "#54dc8b",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade-up",
+            "delay": 1.05,
+            "duration": 0.5
+          }
+        },
+        {
+          "id": "05-v5-structured-output-signal-status-copy",
+          "kind": "text",
+          "text": "Đo sự thay đổi hành vi sau mỗi phiên bản.",
+          "x": 88,
+          "y": 1250,
+          "width": 850,
+          "height": 150,
+          "fontSize": 48,
+          "fontWeight": 720,
+          "color": "#f4f7f8",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade-up",
+            "delay": 1.32,
+            "duration": 0.6
+          }
+        }
+      ],
+      "animation": []
+    },
+    {
+      "id": "05-v5-structured-output-breakdown",
+      "title": "05-v5-structured-output-breakdown",
+      "start": 12,
+      "duration": 4,
+      "composition": {
+        "type": "html",
+        "html": ""
+      },
+      "layers": [
+        {
+          "id": "05-v5-structured-output-breakdown-top-rule",
+          "kind": "shape",
+          "x": 0,
+          "y": 0,
+          "width": 1080,
+          "height": 10,
+          "fill": "#54dc8b",
+          "radius": 0,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0,
+            "duration": 0.45
+          }
+        },
+        {
+          "id": "05-v5-structured-output-breakdown-episode",
+          "kind": "text",
+          "text": "TẬP 05 / 07",
+          "x": 84,
+          "y": 78,
+          "width": 240,
+          "height": 36,
+          "fontSize": 24,
+          "fontWeight": 820,
+          "color": "#54dc8b",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade-down",
+            "delay": 0.02,
+            "duration": 0.4
+          }
+        },
+        {
+          "id": "05-v5-structured-output-breakdown-label",
+          "kind": "text",
+          "text": "V5 · OUTPUT",
+          "x": 350,
+          "y": 78,
+          "width": 640,
+          "height": 36,
+          "fontSize": 24,
+          "fontWeight": 760,
+          "color": "#aab7c4",
+          "lineHeight": 1,
+          "align": "right",
+          "enter": {
+            "preset": "fade-down",
+            "delay": 0.08,
+            "duration": 0.4
+          }
+        },
+        {
+          "id": "05-v5-structured-output-breakdown-grid-v1",
+          "kind": "shape",
+          "x": 84,
+          "y": 178,
+          "width": 912,
+          "height": 1,
+          "fill": "rgba(255,255,255,0.08)",
+          "radius": 0,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0.08,
+            "duration": 0.45
+          }
+        },
+        {
+          "id": "05-v5-structured-output-breakdown-progress-base",
+          "kind": "shape",
+          "x": 84,
+          "y": 1742,
+          "width": 912,
+          "height": 8,
+          "fill": "rgba(255,255,255,0.10)",
+          "radius": 4,
+          "enter": {
+            "preset": "fade",
+            "delay": 0.05,
+            "duration": 0.35
+          }
+        },
+        {
+          "id": "05-v5-structured-output-breakdown-progress-fill",
+          "kind": "shape",
+          "x": 84,
+          "y": 1742,
+          "width": 730,
+          "height": 8,
+          "fill": "#54dc8b",
+          "radius": 4,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0.18,
+            "duration": 0.65
+          }
+        },
+        {
+          "id": "05-v5-structured-output-breakdown-footer",
+          "kind": "text",
+          "text": "PROMPT ENGINEERING · THỰC NGHIỆM V1 → V5",
+          "x": 84,
+          "y": 1790,
+          "width": 912,
+          "height": 28,
+          "fontSize": 20,
+          "fontWeight": 720,
+          "color": "#aab7c4",
+          "lineHeight": 1,
+          "align": "center",
+          "enter": {
+            "preset": "fade",
+            "delay": 0.32,
+            "duration": 0.4
+          }
+        },
+        {
+          "id": "05-v5-structured-output-breakdown-title",
+          "kind": "text",
+          "text": "Ba điểm cần nhớ",
+          "x": 84,
+          "y": 250,
+          "width": 900,
+          "height": 100,
+          "fontSize": 66,
+          "fontWeight": 850,
+          "color": "#f4f7f8",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade-up",
+            "delay": 0.08,
+            "duration": 0.55
+          }
+        },
+        {
+          "id": "05-v5-structured-output-breakdown-rail-0",
+          "kind": "shape",
+          "x": 84,
+          "y": 430,
+          "width": 12,
+          "height": 220,
+          "fill": "#54dc8b",
+          "radius": 6,
+          "enter": {
+            "preset": "wipe-up",
+            "delay": 0.35,
+            "duration": 0.5
+          }
+        },
+        {
+          "id": "05-v5-structured-output-breakdown-number-0",
+          "kind": "text",
+          "text": "01",
+          "x": 132,
+          "y": 434,
+          "width": 120,
+          "height": 54,
+          "fontSize": 26,
+          "fontWeight": 850,
+          "color": "#aab7c4",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade",
+            "delay": 0.43,
+            "duration": 0.42
+          }
+        },
+        {
+          "id": "05-v5-structured-output-breakdown-item-0",
+          "kind": "text",
+          "text": "Bỏ lời dẫn thừa",
+          "x": 132,
+          "y": 492,
+          "width": 790,
+          "height": 130,
+          "fontSize": 50,
+          "fontWeight": 790,
+          "color": "#f4f7f8",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade-up",
+            "delay": 0.47,
+            "duration": 0.55
+          }
+        },
+        {
+          "id": "05-v5-structured-output-breakdown-rail-1",
+          "kind": "shape",
+          "x": 84,
+          "y": 730,
+          "width": 12,
+          "height": 220,
+          "fill": "#6d8cff",
+          "radius": 6,
+          "enter": {
+            "preset": "wipe-up",
+            "delay": 0.63,
+            "duration": 0.5
+          }
+        },
+        {
+          "id": "05-v5-structured-output-breakdown-number-1",
+          "kind": "text",
+          "text": "02",
+          "x": 132,
+          "y": 734,
+          "width": 120,
+          "height": 54,
+          "fontSize": 26,
+          "fontWeight": 850,
+          "color": "#aab7c4",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade",
+            "delay": 0.71,
+            "duration": 0.42
+          }
+        },
+        {
+          "id": "05-v5-structured-output-breakdown-item-1",
+          "kind": "text",
+          "text": "Cấu trúc ổn định",
+          "x": 132,
+          "y": 792,
+          "width": 790,
+          "height": 130,
+          "fontSize": 50,
+          "fontWeight": 790,
+          "color": "#f4f7f8",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade-up",
+            "delay": 0.75,
+            "duration": 0.55
+          }
+        },
+        {
+          "id": "05-v5-structured-output-breakdown-rail-2",
+          "kind": "shape",
+          "x": 84,
+          "y": 1030,
+          "width": 12,
+          "height": 220,
+          "fill": "#f7c95c",
+          "radius": 6,
+          "enter": {
+            "preset": "wipe-up",
+            "delay": 0.91,
+            "duration": 0.5
+          }
+        },
+        {
+          "id": "05-v5-structured-output-breakdown-number-2",
+          "kind": "text",
+          "text": "03",
+          "x": 132,
+          "y": 1034,
+          "width": 120,
+          "height": 54,
+          "fontSize": 26,
+          "fontWeight": 850,
+          "color": "#aab7c4",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade",
+            "delay": 0.99,
+            "duration": 0.42
+          }
+        },
+        {
+          "id": "05-v5-structured-output-breakdown-item-2",
+          "kind": "text",
+          "text": "Backend → parser → SQL",
+          "x": 132,
+          "y": 1092,
+          "width": 790,
+          "height": 130,
+          "fontSize": 50,
+          "fontWeight": 790,
+          "color": "#f4f7f8",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade-up",
+            "delay": 1.03,
+            "duration": 0.55
+          }
+        }
+      ],
+      "animation": []
+    },
+    {
+      "id": "05-v5-structured-output-takeaway",
+      "title": "05-v5-structured-output-takeaway",
+      "start": 16,
+      "duration": 4,
+      "composition": {
+        "type": "html",
+        "html": ""
+      },
+      "layers": [
+        {
+          "id": "05-v5-structured-output-takeaway-top-rule",
+          "kind": "shape",
+          "x": 0,
+          "y": 0,
+          "width": 1080,
+          "height": 10,
+          "fill": "#54dc8b",
+          "radius": 0,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0,
+            "duration": 0.45
+          }
+        },
+        {
+          "id": "05-v5-structured-output-takeaway-episode",
+          "kind": "text",
+          "text": "TẬP 05 / 07",
+          "x": 84,
+          "y": 78,
+          "width": 240,
+          "height": 36,
+          "fontSize": 24,
+          "fontWeight": 820,
+          "color": "#54dc8b",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade-down",
+            "delay": 0.02,
+            "duration": 0.4
+          }
+        },
+        {
+          "id": "05-v5-structured-output-takeaway-label",
+          "kind": "text",
+          "text": "V5 · OUTPUT",
+          "x": 350,
+          "y": 78,
+          "width": 640,
+          "height": 36,
+          "fontSize": 24,
+          "fontWeight": 760,
+          "color": "#aab7c4",
+          "lineHeight": 1,
+          "align": "right",
+          "enter": {
+            "preset": "fade-down",
+            "delay": 0.08,
+            "duration": 0.4
+          }
+        },
+        {
+          "id": "05-v5-structured-output-takeaway-grid-v1",
+          "kind": "shape",
+          "x": 84,
+          "y": 178,
+          "width": 912,
+          "height": 1,
+          "fill": "rgba(255,255,255,0.08)",
+          "radius": 0,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0.08,
+            "duration": 0.45
+          }
+        },
+        {
+          "id": "05-v5-structured-output-takeaway-progress-base",
+          "kind": "shape",
+          "x": 84,
+          "y": 1742,
+          "width": 912,
+          "height": 8,
+          "fill": "rgba(255,255,255,0.10)",
+          "radius": 4,
+          "enter": {
+            "preset": "fade",
+            "delay": 0.05,
+            "duration": 0.35
+          }
+        },
+        {
+          "id": "05-v5-structured-output-takeaway-progress-fill",
+          "kind": "shape",
+          "x": 84,
+          "y": 1742,
+          "width": 912,
+          "height": 8,
+          "fill": "#54dc8b",
+          "radius": 4,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0.18,
+            "duration": 0.65
+          }
+        },
+        {
+          "id": "05-v5-structured-output-takeaway-footer",
+          "kind": "text",
+          "text": "PROMPT ENGINEERING · THỰC NGHIỆM V1 → V5",
+          "x": 84,
+          "y": 1790,
+          "width": 912,
+          "height": 28,
+          "fontSize": 20,
+          "fontWeight": 720,
+          "color": "#aab7c4",
+          "lineHeight": 1,
+          "align": "center",
+          "enter": {
+            "preset": "fade",
+            "delay": 0.32,
+            "duration": 0.4
+          }
+        },
+        {
+          "id": "05-v5-structured-output-takeaway-eyebrow",
+          "kind": "text",
+          "text": "KẾT LUẬN",
+          "x": 84,
+          "y": 260,
+          "width": 620,
+          "height": 44,
+          "fontSize": 28,
+          "fontWeight": 840,
+          "color": "#54dc8b",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade-down",
+            "delay": 0.08,
+            "duration": 0.42
+          }
+        },
+        {
+          "id": "05-v5-structured-output-takeaway-takeaway",
+          "kind": "text",
+          "text": "Prompt chỉ trở thành sản phẩm khi output có contract rõ ràng.",
+          "x": 84,
+          "y": 400,
+          "width": 900,
+          "height": 500,
+          "fontSize": 76,
+          "fontWeight": 850,
+          "color": "#f4f7f8",
+          "lineHeight": 1.02,
+          "enter": {
+            "preset": "wipe-up",
+            "delay": 0.24,
+            "duration": 0.76
+          }
+        },
+        {
+          "id": "05-v5-structured-output-takeaway-divider",
+          "kind": "shape",
+          "x": 84,
+          "y": 1030,
+          "width": 912,
+          "height": 4,
+          "fill": "#54dc8baa",
+          "radius": 2,
+          "enter": {
+            "preset": "draw-x",
+            "delay": 0.95,
+            "duration": 0.65
+          }
+        },
+        {
+          "id": "05-v5-structured-output-takeaway-cta-label",
+          "kind": "text",
+          "text": "VIDEO TIẾP THEO",
+          "x": 84,
+          "y": 1140,
+          "width": 700,
+          "height": 40,
+          "fontSize": 26,
+          "fontWeight": 820,
+          "color": "#aab7c4",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade",
+            "delay": 1.18,
+            "duration": 0.45
+          }
+        },
+        {
+          "id": "05-v5-structured-output-takeaway-cta",
+          "kind": "text",
+          "text": "Tập 6: Vision few-shot, prefill và extended thinking.",
+          "x": 84,
+          "y": 1225,
+          "width": 880,
+          "height": 250,
+          "fontSize": 46,
+          "fontWeight": 760,
+          "color": "#54dc8b",
+          "lineHeight": 1.12,
+          "enter": {
+            "preset": "fade-up",
+            "delay": 1.34,
+            "duration": 0.62
+          }
+        },
+        {
+          "id": "05-v5-structured-output-takeaway-pulse-dot",
+          "kind": "shape",
+          "x": 84,
+          "y": 1580,
+          "width": 22,
+          "height": 22,
+          "fill": "#54dc8b",
+          "radius": 11,
+          "enter": {
+            "preset": "scale-in",
+            "delay": 1.7,
+            "duration": 0.38
+          },
+          "emphasis": {
+            "preset": "pulse",
+            "delay": 2,
+            "duration": 0.9,
+            "iterations": "infinite"
+          }
+        },
+        {
+          "id": "05-v5-structured-output-takeaway-brand",
+          "kind": "text",
+          "text": "OPUS · PROMPT ENGINEERING LAB",
+          "x": 130,
+          "y": 1576,
+          "width": 620,
+          "height": 36,
+          "fontSize": 24,
+          "fontWeight": 760,
+          "color": "#aab7c4",
+          "lineHeight": 1.08,
+          "enter": {
+            "preset": "fade",
+            "delay": 1.78,
+            "duration": 0.45
+          }
+        }
+      ],
+      "animation": []
+    }
+  ],
+  "transitions": [
+    {
+      "from": "05-v5-structured-output-hook",
+      "to": "05-v5-structured-output-prompt",
+      "type": "cut",
+      "duration": 0
+    },
+    {
+      "from": "05-v5-structured-output-prompt",
+      "to": "05-v5-structured-output-signal",
+      "type": "cut",
+      "duration": 0
+    },
+    {
+      "from": "05-v5-structured-output-signal",
+      "to": "05-v5-structured-output-breakdown",
+      "type": "cut",
+      "duration": 0
+    },
+    {
+      "from": "05-v5-structured-output-breakdown",
+      "to": "05-v5-structured-output-takeaway",
+      "type": "cut",
+      "duration": 0
+    }
+  ]
+}

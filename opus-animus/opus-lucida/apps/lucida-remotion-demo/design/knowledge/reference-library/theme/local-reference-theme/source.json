@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "lucida-reference-source/v1",
+  "sourceId": "source:reference:local-reference-theme",
+  "sourceType": "theme",
+  "sourceRef": "pipeline/fixtures/reference-theme.css",
+  "sourceRevision": "visual-reference-flow-2026-07-14",
+  "snapshotChecksum": "1a8844fa3c888cd1d13d498795f0bad7a1a5813c3f376bb61dd46cd23efe2827",
+  "collectorVersion": "theme-reference-collector/1",
+  "rights": { "policy": "internal-fixture", "status": "approved", "evidence": "Project-owned CSS fixture listed by visual-reference-flow." },
+  "approval": { "status": "approved", "approvedBy": "Lucida reference review", "approvedAt": "2026-07-14" },
+  "provenance": { "sanitizedArtifactChecksum": "a8bf12449cdfd51dd8b506cc52d60652c49ab80c3bf386fd689922d93ba616e2", "collectorArtifact": "design/knowledge/reference-approvals/theme/local-reference-theme.sanitized-approved.json" }
+}

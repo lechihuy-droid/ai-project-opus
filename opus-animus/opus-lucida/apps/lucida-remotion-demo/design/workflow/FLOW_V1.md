@@ -80,10 +80,10 @@ File này trả lời: **flow hoàn chỉnh từ market research đến video re
 - **Worker:** skill `remotion-visual-qa` + checklist `docs/market-research/12-quality-gates.md` (M4).
 - **Gate:** **user duyệt video final**. QA fail → route: sai nội dung/mapping → sửa video-map (S3); bug layout/render → sửa component (S4).
 
-### S6 — Publish *(chưa có — build ở M5)*
+### S6 — Publish *(✅ implemented 2026-07-14 — M5)*
 
-- **Worker:** n8n (`n8n/docker-compose.yml`) orchestrate S1→S5 qua webhook/schedule + publish handoff (metadata, thumbnail, upload checklist).
-- **Gate:** theo policy — publish ra kênh ngoài luôn cần user xác nhận.
+- **Worker:** host runner `npm run flow:run` (chain S2→S5→handoff, flow-report per stage) + `npm run flow:server` (HTTP bridge 127.0.0.1:8790) + n8n workflow `n8n/workflows/lucida-flow.json` (webhook trigger → poll status). `npm run publish:handoff` tạo bundle: video.mp4, thumbnail.png, metadata.json, checklist.md (kèm non-negotiable failures từ quality gates 12).
+- **Gate:** upload lên kênh ngoài là **manual** — user tự đăng theo checklist; hệ thống không auto-publish.
 
 ## 4. Map G00–G12 (north star) → Flow v1
 
@@ -103,9 +103,10 @@ File này trả lời: **flow hoàn chỉnh từ market research đến video re
 |---|---|---|---|
 | M1 | Thiết kế Flow v1 (file này) + sync docs | Claude (docs) | ✅ done 2026-07-14 |
 | M2 | S0: skill `topic-script-writer` + ApprovedScript template + checklist duyệt | Claude (skill/prompt) | ✅ done 2026-07-14 — `opus-lucida/ai/skills/topic-script-writer/` |
-| M3 | S2 + S4 audio: RD (TTS = **VieNeu-TTS**, chốt 2026-07-14) → BD → Codex build (VieNeu adapter, WhisperX→TimedScript, `<Audio>` layer, caption word-sync) | RD/BD: Claude; code: Codex | RD viết xong (`docs/RD-audio-pipeline.md`) — chờ approve → BD |
-| M4 | Brand gate (brand block vào video-map schema + validate + quality-gates 12 vào QA) + hợp nhất `pipeline/` collectors làm visual evidence | BD: Claude; code: Codex | pending — sau M2/M3 |
-| M5 | n8n orchestration end-to-end + publish handoff (S6) | BD: Claude; code: Codex | pending — sau M4 |
+| M3 | S2 + S4 audio: VieNeu adapter, faster-whisper→TimedScript, `<Audio>` layer, caption word-sync, preflight/report | RD/BD: Claude; code: Codex | ✅ done 2026-07-14 — E2E PASS (mp4 có AAC, caption word-highlight đúng); RD/BD/spike: `docs/RD-audio-pipeline.md`, `docs/BD-audio-pipeline.md`, `docs/spike-vieneu-chunking.md` |
+| M4 | Brand gate (brand block vào video-map schema + `validate:brand` + quality-gates 12 vào QA skill) + `evidence:export` hợp nhất collectors | BD: Claude; code: Codex | ✅ done 2026-07-14 — BD: `docs/BD-brand-gate.md`; skill updates: remotion-visual-qa, script-template-mapper, source-ingestor-cleaner |
+| M5 | n8n orchestration end-to-end + publish handoff (S6): `flow:run`, `flow:server` (127.0.0.1:8790), `publish:handoff`, n8n workflow importable | BD: Claude; code: Codex | ✅ done 2026-07-14 — BD: `docs/BD-orchestration.md`; upload vẫn là manual gate |
+| M6 | Visual Mechanism Kit: `visualMechanism` vào S0, kit 4 khối (window/chip/timer-morph/diff-highlight), continuous scene mode, hierarchy rules, semantic QA vào S5 | RD/BD: Claude; code: Codex | 🔨 RD draft 2026-07-14 — `docs/RD-visual-mechanism.md`; nguồn: gate 3 nghiệm thu v1 không duyệt (`docs/review-v1-improvement-report.md`); acceptance = dựng lại email-keigo |
 
 ## 6. Link downward
 

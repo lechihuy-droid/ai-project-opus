@@ -68,7 +68,7 @@ export const applyTimedDurations = (videoMap, timedScript) => {
     const ranges = scene.segmentIds.flatMap((segmentId) => segments.get(segmentId));
     const startMs = Math.min(...ranges.map((range) => range.startMs));
     const endMs = Math.max(...ranges.map((range) => range.endMs));
-    if (endMs < startMs) {
+    if (endMs <= startMs) {
       warnings.push(`scene "${scene.id ?? "<unknown>"}": invalid mapped range; kept existing timing`);
       return scene;
     }

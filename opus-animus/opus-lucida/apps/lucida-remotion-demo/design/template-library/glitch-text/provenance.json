@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "lucida-template-provenance/v1",
+  "templateId": "glitch-text",
+  "source": {
+    "repository": "https://github.com/reactvideoeditor/remotion-templates",
+    "localCommitPin": "18b9b589116ed188bcfc82fcbc98f7c8524f206f",
+    "sourcePath": "../remotion-templates/templates/glitch-text.tsx",
+    "evidence": [
+      {
+        "kind": "source-header",
+        "path": "../remotion-templates/templates/glitch-text.tsx",
+        "summary": "The local source header calls this a free Remotion template and says it is free to use."
+      },
+      {
+        "kind": "local-repository-observation",
+        "path": "../remotion-templates",
+        "summary": "The verified local source root did not contain a LICENSE file at implementation review time."
+      }
+    ]
+  },
+  "adaptation": {
+    "status": "adapted",
+    "summary": "Lucida rewrites the component as a scene-local TemplateAdapterProps renderer with safe-area and long-text handling."
+  },
+  "license": {
+    "status": "review-required",
+    "claim": "No formal license is confirmed from the verified local source evidence.",
+    "evidenceStatus": "header-only",
+    "reviewStatus": "required"
+  }
+}

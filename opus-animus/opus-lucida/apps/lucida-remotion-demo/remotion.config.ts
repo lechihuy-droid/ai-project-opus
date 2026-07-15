@@ -10,4 +10,6 @@ import { enableTailwind } from '@remotion/tailwind-v4';
 
 Config.setVideoImageFormat("jpeg");
 Config.setOverwriteOutput(true);
+// Surface Laptop 2: Chrome hết RAM khi render concurrency mặc định (fail giữa chừng).
+Config.setConcurrency(1);
 Config.overrideWebpackConfig(enableTailwind);

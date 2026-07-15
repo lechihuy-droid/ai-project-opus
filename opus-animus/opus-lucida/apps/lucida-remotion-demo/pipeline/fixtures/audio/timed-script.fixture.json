@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0",
+  "voiceChecksum": "sha256:fixture-voice-checksum",
+  "durationMs": 5000,
+  "sentences": [
+    { "sentenceId": "sent-001", "segmentId": "seg-001", "startMs": 0, "endMs": 2000 },
+    { "sentenceId": "sent-002", "segmentId": "seg-002", "startMs": 2500, "endMs": 5000 }
+  ],
+  "phrases": []
+}

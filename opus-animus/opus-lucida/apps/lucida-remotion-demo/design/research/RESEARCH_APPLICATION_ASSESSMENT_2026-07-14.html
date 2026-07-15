@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Lucida Research Application Assessment</title>
+  <style>
+    :root{--bg:#f5f6f8;--paper:#fff;--ink:#171a1f;--muted:#606773;--line:#d9dde4;--red:#b42318;--amber:#9a6700;--green:#067647;--blue:#175cd3;--code:#111827}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Inter,Segoe UI,Arial,sans-serif;letter-spacing:0}
+    main{max-width:1180px;margin:0 auto;padding:42px 28px 72px} h1{font-size:36px;line-height:1.12;margin:0 0 12px} h2{font-size:23px;margin:38px 0 12px;border-bottom:1px solid var(--line);padding-bottom:8px} h3{font-size:17px;margin:24px 0 8px}
+    p{margin:8px 0 14px}.lede{font-size:18px;max-width:900px}.meta,.muted{color:var(--muted)}
+    .decision{background:var(--paper);border-left:5px solid var(--green);padding:18px 20px;margin:24px 0;box-shadow:0 1px 2px #0000000d}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.metric{background:var(--paper);border:1px solid var(--line);padding:16px;border-radius:6px}.metric b{display:block;font-size:25px}.metric span{color:var(--muted)}
+    table{width:100%;border-collapse:collapse;background:var(--paper);font-size:14px}th,td{text-align:left;vertical-align:top;border:1px solid var(--line);padding:10px 12px}th{background:#edf0f4;font-weight:700}
+    .pass{color:var(--green);font-weight:700}.warn{color:var(--amber);font-weight:700}.fail{color:var(--red);font-weight:700}.info{color:var(--blue);font-weight:700}
+    code{background:#eef1f5;border-radius:3px;padding:1px 5px;font:13px Consolas,monospace}pre{background:var(--code);color:#e5e7eb;padding:18px;overflow:auto;border-radius:6px;font:13px/1.55 Consolas,monospace}
+    ul,ol{padding-left:22px}li{margin:5px 0}.flow{display:grid;grid-template-columns:1fr 32px 1fr 32px 1fr;align-items:stretch;margin:14px 0}.node{border:1px solid var(--line);background:var(--paper);padding:14px;border-radius:6px}.arrow{display:grid;place-items:center;color:var(--blue);font-size:22px}
+    .callout{border:1px solid var(--line);background:#fff;padding:14px 16px;border-radius:6px;margin:12px 0}.sources a{color:var(--blue)}
+    @media(max-width:800px){main{padding:24px 16px}.grid{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);min-height:30px}table{display:block;overflow-x:auto}h1{font-size:29px}}
+    @media print{body{background:#fff}main{max-width:none;padding:20px}.metric,.decision,.node,.callout{box-shadow:none}a{color:inherit}}
+  </style>
+</head>
+<body>
+<main>
+  <p class="meta">Opus Lucida / lucida-remotion-demo · Đánh giá ngày 2026-07-14</p>
+  <h1>Đánh giá research để áp dụng vào Lucida</h1>
+  <p class="lede">Bộ research có hướng kiến trúc đúng, nhưng chưa nên triển khai nguyên xi. Ưu tiên đúng là hoàn thiện canonical component model và generated registry trước; sau đó build SQLite projection + FTS5. Database này phải tách hai corpus: production knowledge và reference evidence.</p>
+
+  <div class="decision">
+    <strong>Quyết định cập nhật: IMPLEMENTATION-READY cho BD-A.</strong><br>
+    Scope, contracts, file map, rollback, gold dataset và thresholds đã được khóa trong <a href="../planning/RAG_IMPLEMENTATION_PLAN_V1.html">RAG Implementation Plan v1.0</a>. Triển khai Wave 0–2 trước; chỉ bắt đầu SQLite sau khi pilot <code>glitch-text</code> đạt Gate A 7/7.
+  </div>
+
+  <div class="grid">
+    <div class="metric"><b>7</b><span>research documents đã review</span></div>
+    <div class="metric"><b>9</b><span>style packages đã validate</span></div>
+    <div class="metric"><b>0/7</b><span>điều kiện Phase 0 database đã hoàn tất</span></div>
+  </div>
+
+  <h2>1. Kết luận chính</h2>
+  <ol>
+    <li><strong>Research đúng về boundary:</strong> Git/package là canonical source; generated JSON phục vụ runtime; SQLite chỉ là projection có thể xóa và rebuild.</li>
+    <li><strong>Research đúng khi hoãn vector:</strong> catalog hiện chỉ có 9 style package, 28 template mappings và 7 motion presets. Bottleneck là domain model/capability, không phải tốc độ semantic search.</li>
+    <li><strong>Storage research chưa mô tả một RAG database hoàn chỉnh:</strong> schema chỉ index component/template entity, chưa có source snapshot, document, chunk, observation, asset và evaluation query.</li>
+    <li><strong>Hai source of truth đang xung đột:</strong> <code>design/knowledge/ARCHITECTURE.md</code> vẫn gọi PostgreSQL + pgvector là MVP; research mới chuyển sang local-first SQLite. Phải cập nhật architecture decision trước implementation.</li>
+    <li><strong>Điều kiện Phase 0 chưa đạt:</strong> <code>glitch-text</code> vẫn map về <code>HeroTitleAdapter</code>; chưa có <code>design/template-library</code>, knowledge compiler hoặc generated template index.</li>
+    <li><strong>Audio đã có plumbing nhưng bằng chứng E2E chưa kín:</strong> script test yêu cầu <code>--run-id</code>; chạy package script mặc định chỉ báo usage và fail, nên chưa thể coi Audio Foundation đã fully verified.</li>
+  </ol>
+
+  <h2>2. Đánh giá từng research</h2>
+  <table>
+    <thead><tr><th>Tài liệu</th><th>Điểm</th><th>Áp dụng</th><th>Điều chỉnh bắt buộc</th></tr></thead>
+    <tbody>
+      <tr><td><code>AUDIO_FIRST_VIDEO_PRODUCTION_FLOW.md</code></td><td>9/10</td><td class="pass">Apply</td><td>Giữ audio là timeline authority; bổ sung test fixture/run-id mặc định và artifact invalidation test.</td></tr>
+      <tr><td><code>ASSET_COMPONENT_RENDER_ARCHITECTURE_REVIEW.md</code></td><td>8.5/10</td><td class="pass">Apply theo slice</td><td>Audio P0 trước asset binding; không ghép asset retrieval vào renderer.</td></tr>
+      <tr><td><code>REMOTION_KNOWLEDGE_BASE_ARCHITECTURE_REVIEW.md</code></td><td>9/10</td><td class="pass">Apply ngay</td><td>Dùng package pilot để chốt schema, không thiết kế database trước domain.</td></tr>
+      <tr><td><code>REMOTION_KNOWLEDGE_BASE_STORAGE_RESEARCH.md</code></td><td>8/10</td><td class="warn">Revise rồi apply</td><td>Thêm integrity constraints và reference/chunk corpus; sửa FTS design.</td></tr>
+      <tr><td><code>REMOTION_COMPONENT_LIBRARY_LUCIDA_INTEGRATION_ASSESSMENT.md</code></td><td>8/10</td><td class="warn">Apply sau registry</td><td>Import từng component qua adapter/package/QA, không bulk copy library.</td></tr>
+      <tr><td><code>LOCAL_REMOTION_AI_ARCHITECTURE_REVIEW.md</code></td><td>7.5/10</td><td class="info">Defer semantic layer</td><td>Giữ hard-filter → lexical → rerank; chỉ benchmark embedding khi FTS thất bại có đo lường.</td></tr>
+      <tr><td><code>SUPPLEMENTARY_REFERENCE_ANY2VIDEO.md</code></td><td>7/10</td><td class="info">Reference only</td><td>Lấy deep extraction/audio-first/QA; không lấy per-video TSX generation.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>3. Database RAG: scope đúng</h2>
+  <p>Không nên gọi một bảng <code>knowledge_fts</code> là toàn bộ RAG database. Lucida cần hai corpus cùng nằm trong một SQLite projection nhưng có lifecycle khác nhau.</p>
+  <div class="flow">
+    <div class="node"><strong>Corpus A: Production Knowledge</strong><br>style, component, template, motion, transition, capability, compatibility, validation</div>
+    <div class="arrow">→</div>
+    <div class="node"><strong>KnowledgeRepository</strong><br>hard filters, FTS5/BM25, capability scoring, continuity rerank, reasons</div>
+    <div class="arrow">→</div>
+    <div class="node"><strong>Director / Tooling</strong><br>chọn template và asset; renderer chỉ đọc generated JSON đã resolve</div>
+  </div>
+  <div class="flow">
+    <div class="node"><strong>Corpus B: Reference Evidence</strong><br>repository, web, image, theme, source snapshot, document/chunk, observation, rights</div>
+    <div class="arrow">→</div>
+    <div class="node"><strong>Candidate Builder</strong><br>retrieval để nghiên cứu, dedupe và đề xuất; không tự publish</div>
+    <div class="arrow">→</div>
+    <div class="node"><strong>Review Gate</strong><br>approved candidate mới trở thành canonical package trong Git</div>
+  </div>
+  <p><strong>Boundary:</strong> Corpus B không được truy cập trực tiếp trong render path. Reference media là evidence, không tự động trở thành production asset hay style.</p>
+
+  <h2>4. Sửa schema SQLite v0.1</h2>
+  <h3>4.1 Những thiếu sót của schema research hiện tại</h3>
+  <ul>
+    <li>Không khai báo foreign key cho intents, capabilities, provenance và validation artifacts.</li>
+    <li>Không có <code>CHECK</code>, <code>STRICT</code>, unique relation constraints hoặc delete behavior.</li>
+    <li><code>knowledge_fts</code> là bảng rời, không có content table/triggers hoặc invariant rebuild nên dễ drift và duplicate.</li>
+    <li>Không có retrieval unit cho repository/web/theme: thiếu <code>sources</code>, <code>source_snapshots</code>, <code>documents</code>, <code>chunks</code>.</li>
+    <li>Không có <code>build_id</code> trên projection rows để audit toàn bộ snapshot.</li>
+    <li><code>source_commit NOT NULL</code> không phù hợp với web/image/local source; cần <code>source_revision</code> theo loại nguồn và checksum bắt buộc.</li>
+    <li>Chưa có policy cho tiếng Việt. FTS5 <code>unicode61</code> có thể bỏ dấu Latin nhưng không tự map <code>đ → d</code>; cần lưu thêm normalized search text.</li>
+  </ul>
+
+  <h3>4.2 Logical tables đề xuất</h3>
+  <pre>projection_builds
+schema_versions
+
+canonical_entities       -- style/component/template/motion/transition
+entity_capabilities
+entity_relations         -- compatibility and provenance links
+validation_artifacts
+provenance_records
+
+sources                  -- repo/web/image/theme/media
+source_snapshots         -- immutable checksum/revision/license snapshot
+documents                -- one source file/page/theme/image note
+chunks                   -- stable chunk id + raw text + vi_normalized_text
+observations             -- extracted evidence, never production by default
+
+search_documents         -- materialized retrieval document with entity/chunk link
+search_fts               -- FTS5 external-content index over search_documents</pre>
+  <p>Mỗi row phải có stable ID, schema version, source/package path, content hash và build ID. Build dùng một transaction, rollback khi lỗi, rồi chạy <code>foreign_key_check</code>, FTS integrity check và parity test với generated JSON.</p>
+
+  <h3>4.3 Retrieval v0.1</h3>
+  <pre>query intent
+→ normalize Vietnamese text (NFC + accent-folded field + đ/d mapping)
+→ hard filters: status, renderable, rights, aspect ratio, safe area, slots
+→ FTS5 BM25 candidate retrieval
+→ capability + content-fit + continuity scoring in application code
+→ return ranked IDs + selected/rejected reasons + provenance
+→ renderer consumes resolved generated JSON, never queries SQLite</pre>
+
+  <h2>5. Roadmap áp dụng</h2>
+  <table>
+    <thead><tr><th>Wave</th><th>Deliverable</th><th>Gate</th><th>Quyết định</th></tr></thead>
+    <tbody>
+      <tr><td>0</td><td>ADR hợp nhất local-first storage; đổi tài liệu PostgreSQL MVP thành future target.</td><td>Một architecture source of truth.</td><td class="pass">Làm trước</td></tr>
+      <tr><td>1</td><td>Component Knowledge Model v0.1 + package <code>glitch-text</code> + dedicated adapter.</td><td>Schema, Vietnamese overflow, safe area, deterministic render pass.</td><td class="pass">P0</td></tr>
+      <tr><td>2</td><td>Knowledge compiler sinh template/director/compatibility JSON.</td><td>Runtime resolve <code>glitch-text</code> không qua mapping thủ công.</td><td class="pass">P1</td></tr>
+      <tr><td>3</td><td>SQLite scaffold bằng built-in <code>node:sqlite</code>, migrations, projection transaction.</td><td>Clean rebuild, idempotency, delete cleanup, FK/FTS integrity.</td><td class="warn">Sau Wave 2</td></tr>
+      <tr><td>4</td><td>Reference corpus ingest từ repository/web/image/theme collectors.</td><td>Stable chunks, source snapshots, license/checksum, no raw-to-canonical promotion.</td><td class="warn">P2</td></tr>
+      <tr><td>5</td><td><code>JsonKnowledgeRepository</code> và <code>SQLiteKnowledgeRepository</code>.</td><td>Query parity + explanations + runtime DB independence.</td><td class="warn">P2</td></tr>
+      <tr><td>6</td><td>Retrieval benchmark và gold query set tiếng Việt/Anh.</td><td>Recall@k/MRR/nDCG + hard-filter precision; chỉ bật vector nếu FTS không đạt target.</td><td class="info">P3</td></tr>
+      <tr><td>7</td><td>Optional embeddings/LanceDB hoặc PostgreSQL + pgvector.</td><td>Có trigger thật: corpus lớn, multi-user, distributed workers hoặc benchmark chứng minh lợi ích.</td><td class="info">Deferred</td></tr>
+    </tbody>
+  </table>
+
+  <h2>6. Acceptance criteria cho RAG v0.1</h2>
+  <ul>
+    <li>Xóa database và rebuild tạo cùng logical rows và cùng manifest hash.</li>
+    <li>Canonical package là input duy nhất cho production entities; không có API sửa canonical entity trong DB.</li>
+    <li>Query <code>hook + code explanation + low density + 9:16</code> trả đúng <code>glitch-text</code> sau pilot.</li>
+    <li>Query tiếng Việt có dấu và không dấu trả cùng candidate set trong bộ test đã định nghĩa.</li>
+    <li>Reference result luôn trả source snapshot, checksum, source path/URL, license/rights và collector version.</li>
+    <li>Unsupported/catalog-only template bị loại khi <code>renderable=true</code>.</li>
+    <li>SQLite và generated JSON parity cho production queries.</li>
+    <li>Renderer vẫn render khi database bị xóa nhưng generated runtime index còn hợp lệ.</li>
+    <li>Không có embedding dependency, vector extension hoặc network database trong v0.1.</li>
+  </ul>
+
+  <h2>7. Evidence đã kiểm tra</h2>
+  <div class="callout">
+    <span class="pass">PASS</span> 9 visual packages strict validation; style registry có 9 package-backed families và 8 legacy aliases; template registry validator pass.<br>
+    <span class="pass">PASS</span> Máy local chạy Node <code>v24.15.0</code>; built-in <code>node:sqlite</code> và FTS5 hoạt động, không cần thêm native DB package.<br>
+    <span class="fail">NOT READY</span> Không có <code>design/template-library</code> hoặc generated knowledge index; <code>glitch-text</code> vẫn map tới <code>HeroTitleAdapter</code>.<br>
+    <span class="warn">INCOMPLETE EVIDENCE</span> <code>npm run test:audio-e2e</code> cần <code>--run-id</code>; package script mặc định không chạy một fixture E2E hoàn chỉnh.
+  </div>
+
+  <h2>8. Nguồn kỹ thuật chính thức</h2>
+  <ul class="sources">
+    <li><a href="https://nodejs.org/api/sqlite.html">Node.js SQLite API</a>: <code>DatabaseSync</code>, foreign-key option và timeout có sẵn trong runtime hiện tại.</li>
+    <li><a href="https://www.sqlite.org/fts5.html">SQLite FTS5</a>: tokenizer, external-content table, rebuild và integrity-check.</li>
+    <li><a href="https://docs.lancedb.com/search/hybrid-search">LanceDB hybrid search</a>: vector + FTS cần reranking; metadata prefilter là default.</li>
+    <li><a href="https://huggingface.co/docs/transformers.js/en/index">Transformers.js</a>: local feature-extraction khả dụng, nhưng model fit và evaluation vẫn là trách nhiệm của Lucida.</li>
+  </ul>
+
+  <h2>9. Go / No-go</h2>
+  <p><strong class="pass">GO:</strong> BD-A gồm Wave 0–2. Kế hoạch đã khóa scope app-local, Node <code>&gt;=24.14 &lt;25</code>, stable IDs, chunking, Vietnamese normalization, exact file map và verification commands.</p>
+  <p><strong class="warn">GATED:</strong> BD-B gồm Wave 3–6 chỉ mở khi <code>glitch-text</code> đạt 7/7. RAG v0.1 dùng 32 gold queries; hard-filter precision, accent parity, JSON/SQLite parity và provenance completeness phải đạt 100%; Recall@5 ≥ 0.90, MRR ≥ 0.80, nDCG@5 ≥ 0.85.</p>
+  <p><strong class="fail">NO-GO:</strong> build database trước component pilot; để director/renderer query SQL trực tiếp; ingest raw reference thành canonical knowledge; triển khai embedding/LanceDB/PostgreSQL mà chưa có gold query benchmark.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,141 @@
+{
+  "checks": [
+    {
+      "evidence": {
+        "contentHash": "0dfa7eb8e43357ed6c925c3011d525370773718fe681d8a27e81e0dd53d513c3",
+        "logicalId": "template:glitch-text",
+        "package": "design/template-library/glitch-text"
+      },
+      "id": "canonical-package",
+      "status": "passed"
+    },
+    {
+      "evidence": {
+        "localCommitPin": "18b9b589116ed188bcfc82fcbc98f7c8524f206f",
+        "repository": "https://github.com/reactvideoeditor/remotion-templates",
+        "reviewStatus": "required"
+      },
+      "id": "provenance",
+      "status": "passed"
+    },
+    {
+      "evidence": {
+        "validator": "scripts/knowledge/validate.mjs"
+      },
+      "id": "schema",
+      "status": "passed"
+    },
+    {
+      "evidence": {
+        "adapterId": "GlitchTextAdapter",
+        "adapterPath": "src/templates/adapters/GlitchTextAdapter.tsx",
+        "adapterSourceHash": "50446fc92201422d5ab16f1383126b77a174e55b07d5316cbc427461565ad5c3"
+      },
+      "id": "dedicated-adapter",
+      "status": "passed"
+    },
+    {
+      "evidence": {
+        "familyId": "cinematic-type",
+        "manifestHash": "c16b9b1ed416d1d155fcac0c9a3b74215e2d09782bc1f30e0de94a77fe493dcb",
+        "preset": "rgb-tear-medium",
+        "status": "experimental"
+      },
+      "id": "generated-index",
+      "status": "passed"
+    },
+    {
+      "evidence": {
+        "bbox": {
+          "maxX": 964,
+          "maxY": 1564,
+          "minX": 115,
+          "minY": 678
+        },
+        "checksum": "00b7ca648d5868c3f2707ba55090e29b7f03fa2ce3a1d8d8bb93fffd38bb47f0",
+        "fixture": "pipeline/fixtures/knowledge/glitch-text/long-vietnamese-9x16.json",
+        "frame": 45,
+        "height": 1920,
+        "mp4Files": [],
+        "nonBackgroundPixelCount": 223224,
+        "nonBlank": true,
+        "props": "output/render/knowledge/glitch-text-preview/render-props.json",
+        "propsShape": "{ videoMap: VideoMap }",
+        "renderedInputTemplateId": "glitch-text",
+        "safeArea": {
+          "bbox": {
+            "maxX": 964,
+            "maxY": 1564,
+            "minX": 115,
+            "minY": 678
+          },
+          "bounds": {
+            "maxX": 971,
+            "maxY": 1611,
+            "minX": 108,
+            "minY": 231
+          },
+          "inset": {
+            "bottom": 308,
+            "left": 108,
+            "right": 108,
+            "top": 231
+          },
+          "inside": true,
+          "margins": {
+            "bottom": 355,
+            "left": 115,
+            "right": 115,
+            "top": 678
+          }
+        },
+        "secondChecksum": "00b7ca648d5868c3f2707ba55090e29b7f03fa2ce3a1d8d8bb93fffd38bb47f0",
+        "width": 1080
+      },
+      "id": "deterministic-preview",
+      "status": "passed"
+    },
+    {
+      "evidence": {
+        "map": "src/template-registry-map.json"
+      },
+      "id": "no-manual-map",
+      "status": "passed"
+    },
+    {
+      "evidence": {
+        "bbox": {
+          "maxX": 964,
+          "maxY": 1564,
+          "minX": 115,
+          "minY": 678
+        },
+        "bounds": {
+          "maxX": 971,
+          "maxY": 1611,
+          "minX": 108,
+          "minY": 231
+        },
+        "inset": {
+          "bottom": 308,
+          "left": 108,
+          "right": 108,
+          "top": 231
+        },
+        "inside": true,
+        "margins": {
+          "bottom": 355,
+          "left": 115,
+          "right": 115,
+          "top": 678
+        }
+      },
+      "id": "safe-area-pixels",
+      "status": "passed"
+    }
+  ],
+  "gate": "A",
+  "schemaVersion": "lucida-gate-a-report/v1",
+  "status": "passed",
+  "templateId": "glitch-text"
+}

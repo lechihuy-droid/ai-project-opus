@@ -1,0 +1,52 @@
+{
+  "video": {
+    "title": "Glitch Text deterministic preview",
+    "subtitle": "Fixture 9:16 for long Vietnamese typography.",
+    "format": "vertical_9_16",
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "durationSec": 4,
+    "style": "cinematic-type",
+    "language": "vi"
+  },
+  "theme": {
+    "name": "glitch-preview",
+    "skin": "modern-terminal",
+    "accent": "#00e5ff",
+    "accentSoft": "#ff3eb5",
+    "background": "#0b0d12",
+    "foreground": "#f4f7fb",
+    "muted": "#a7a39b"
+  },
+  "assets": [],
+  "scenes": [
+    {
+      "id": "glitch-text-long-vietnamese",
+      "intent": "hook",
+      "templateId": "glitch-text",
+      "templateRole": "scene",
+      "durationSec": 4,
+      "headline": "Khi quy trình kiểm tra không còn deterministic, một thay đổi nhỏ cũng có thể làm mọi frame lệch khỏi sự thật",
+      "subtitle": {
+        "text": "Giữ canonical package, generated index và preview cùng một nguồn dữ liệu để đội ngũ vẫn nhìn thấy lỗi trước khi lỗi đi vào bản dựng cuối cùng."
+      },
+      "content": {
+        "kicker": "GATE A / DETERMINISTIC",
+        "title": "Kiểm tra deterministic trước khi render",
+        "subtitle": "Generated runtime index phải resolve GlitchTextAdapter thay vì một mapping thủ công cũ.",
+        "codeTitle": "knowledge:validate-index"
+      },
+      "style": {
+        "accent": "#00e5ff",
+        "density": "medium",
+        "safeArea": "tiktok"
+      },
+      "motion": ["rgb-tear-medium"],
+      "backgroundEffect": "noise-grain",
+      "subtitleMode": "none",
+      "layout": "top-title",
+      "reason": "Canonical glitch-text fixture exercises long Vietnamese text in the vertical safe area."
+    }
+  ]
+}

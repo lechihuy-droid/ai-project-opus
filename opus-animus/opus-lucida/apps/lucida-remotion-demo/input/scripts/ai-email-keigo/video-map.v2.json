@@ -1,0 +1,684 @@
+{
+  "mode": "continuous",
+  "environment": {
+    "component": "MechanismWindow",
+    "variant": "email",
+    "props": {
+      "title": "納期のご連絡",
+      "japaneseText": "すみません、納期が遅れます。\n来週になります。",
+      "vietnameseText": "Bản nháp — chưa đạt lễ với khách hàng.",
+      "state": "draft"
+    }
+  },
+  "video": {
+    "title": "Dùng AI viết email kính ngữ tiếng Nhật trong 5 phút",
+    "subtitle": "Một email biến đổi từ chưa đạt lễ thành gửi được",
+    "format": "vertical_9_16",
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "durationSec": 55.00000000000001,
+    "style": "mechanism-v2",
+    "language": "vi"
+  },
+  "brand": {
+    "id": "lucida-ai-v1",
+    "series": "lucida-work",
+    "contractRef": "docs/market-research/11-pipeline-contract.md"
+  },
+  "theme": {
+    "name": "lucida-mechanism-v2",
+    "accent": "#D2B47A",
+    "accentSoft": "#F4F0E8",
+    "background": "#171717",
+    "foreground": "#F4F0E8",
+    "muted": "#A7A39B"
+  },
+  "debug": {
+    "showTechnicalLabels": false
+  },
+  "assets": [],
+  "scenes": [
+    {
+      "id": "hook",
+      "intent": "hook",
+      "durationSec": 10,
+      "segmentIds": [
+        "seg-001"
+      ],
+      "headline": "Sao mất nửa tiếng?",
+      "subtitle": {
+        "text": "Viết email kính ngữ tiếng Nhật vẫn là việc ngốn thời gian nhất của dân văn phòng nước ngoài. Một email xin lỗi khách hàng có thể mất ba mươi phút để viết cho đúng lễ.",
+        "groups": [
+          {
+            "text": "Viết email kính ngữ tiếng Nhật vẫn là việc ngốn thời gian nhất của dân văn phòng nước ngoài.",
+            "lines": [
+              [
+                "Viết",
+                "email",
+                "kính",
+                "ngữ",
+                "tiếng",
+                "Nhật",
+                "vẫn",
+                "là",
+                "việc",
+                "ngốn"
+              ],
+              [
+                "thời",
+                "gian",
+                "nhất",
+                "của",
+                "dân",
+                "văn",
+                "phòng",
+                "nước",
+                "ngoài."
+              ]
+            ]
+          },
+          {
+            "text": "Một email xin lỗi khách hàng có thể mất ba mươi phút để viết cho đúng lễ.",
+            "lines": [
+              [
+                "Một",
+                "email",
+                "xin",
+                "lỗi",
+                "khách",
+                "hàng",
+                "có",
+                "thể",
+                "mất"
+              ],
+              [
+                "ba",
+                "mươi",
+                "phút",
+                "để",
+                "viết",
+                "cho",
+                "đúng",
+                "lễ."
+              ]
+            ]
+          }
+        ]
+      },
+      "content": {},
+      "style": {
+        "density": "low",
+        "safeArea": "tiktok"
+      },
+      "motion": [],
+      "reason": "Mở thẳng trong email window: bản nháp chưa đạt lễ + đồng hồ trôi — pain point bằng hình, không bằng chữ to.",
+      "transitions": [
+        {
+          "target": "environment",
+          "action": "update",
+          "props": {
+            "state": "draft",
+            "showCursor": true
+          }
+        },
+        {
+          "target": "hook-timer",
+          "action": "add",
+          "offsetSec": 5.4,
+          "props": {
+            "component": "TimerMorph",
+            "from": "05:12",
+            "to": "29:58",
+            "label": "THỜI GIAN VIẾT",
+            "durationInFrames": 60
+          }
+        }
+      ]
+    },
+    {
+      "id": "setup",
+      "intent": "process",
+      "durationSec": 5.2,
+      "segmentIds": [
+        "seg-002"
+      ],
+      "headline": "Cho AI đủ bối cảnh",
+      "subtitle": {
+        "text": "AI xử lý tốt việc này, nếu bạn đưa đúng ngữ cảnh. Cách làm gồm ba bước.",
+        "groups": [
+          {
+            "text": "AI xử lý tốt việc này, nếu bạn đưa đúng ngữ cảnh.",
+            "lines": [
+              [
+                "AI",
+                "xử",
+                "lý",
+                "tốt",
+                "việc",
+                "này,"
+              ],
+              [
+                "nếu",
+                "bạn",
+                "đưa",
+                "đúng",
+                "ngữ",
+                "cảnh."
+              ]
+            ]
+          },
+          {
+            "text": "Cách làm gồm ba bước.",
+            "lines": [
+              [
+                "Cách",
+                "làm",
+                "gồm",
+                "ba",
+                "bước."
+              ]
+            ]
+          }
+        ]
+      },
+      "content": {},
+      "style": {
+        "density": "low",
+        "safeArea": "tiktok"
+      },
+      "motion": [],
+      "reason": "Email được dán vào AI (window đổi vai thành prompt); dọn đồng hồ để mở chỗ cho các chip.",
+      "transitions": [
+        {
+          "target": "hook-timer",
+          "action": "remove"
+        },
+        {
+          "target": "environment",
+          "action": "update",
+          "props": {
+            "title": "AI PROMPT",
+            "state": "draft"
+          }
+        }
+      ]
+    },
+    {
+      "id": "steps",
+      "intent": "process",
+      "durationSec": 21.5,
+      "segmentIds": [
+        "seg-003"
+      ],
+      "headline": "Ba dữ kiện cho AI",
+      "subtitle": {
+        "text": "Bước một: dán email cần trả lời vào, kèm quan hệ với người nhận. Ví dụ: khách hàng lâu năm, cấp trên, hay đồng nghiệp phòng khác. Bước hai: nói rõ mục đích, xin lỗi, từ chối, hay nhắc tiến độ. Bước ba: yêu cầu hai phiên bản, một trang trọng và một ngắn gọn. Rồi chọn bản phù hợp và chỉnh lại tên riêng, con số, ngày tháng.",
+        "groups": [
+          {
+            "text": "Bước một: dán email cần trả lời vào, kèm quan hệ với người nhận.",
+            "lines": [
+              [
+                "Bước",
+                "một:",
+                "dán",
+                "email",
+                "cần",
+                "trả",
+                "lời"
+              ],
+              [
+                "vào,",
+                "kèm",
+                "quan",
+                "hệ",
+                "với",
+                "người",
+                "nhận."
+              ]
+            ]
+          },
+          {
+            "text": "Ví dụ: khách hàng lâu năm, cấp trên, hay đồng nghiệp phòng khác.",
+            "lines": [
+              [
+                "Ví",
+                "dụ:",
+                "khách",
+                "hàng",
+                "lâu",
+                "năm,",
+                "cấp"
+              ],
+              [
+                "trên,",
+                "hay",
+                "đồng",
+                "nghiệp",
+                "phòng",
+                "khác."
+              ]
+            ]
+          },
+          {
+            "text": "Bước hai: nói rõ mục đích, xin lỗi, từ chối, hay nhắc tiến độ.",
+            "lines": [
+              [
+                "Bước",
+                "hai:",
+                "nói",
+                "rõ",
+                "mục",
+                "đích,",
+                "xin"
+              ],
+              [
+                "lỗi,",
+                "từ",
+                "chối,",
+                "hay",
+                "nhắc",
+                "tiến",
+                "độ."
+              ]
+            ]
+          },
+          {
+            "text": "Bước ba: yêu cầu hai phiên bản, một trang trọng và một ngắn gọn.",
+            "lines": [
+              [
+                "Bước",
+                "ba:",
+                "yêu",
+                "cầu",
+                "hai",
+                "phiên",
+                "bản,"
+              ],
+              [
+                "một",
+                "trang",
+                "trọng",
+                "và",
+                "một",
+                "ngắn",
+                "gọn."
+              ]
+            ]
+          },
+          {
+            "text": "Rồi chọn bản phù hợp và chỉnh lại tên riêng, con số, ngày tháng.",
+            "lines": [
+              [
+                "Rồi",
+                "chọn",
+                "bản",
+                "phù",
+                "hợp",
+                "và",
+                "chỉnh"
+              ],
+              [
+                "lại",
+                "tên",
+                "riêng,",
+                "con",
+                "số,",
+                "ngày",
+                "tháng."
+              ]
+            ]
+          }
+        ]
+      },
+      "content": {},
+      "style": {
+        "density": "low",
+        "safeArea": "tiktok"
+      },
+      "motion": [],
+      "reason": "3 chip bay vào LẦN LƯỢT theo đúng câu đọc (offset từ timed-script); câu 5 (chỉnh chi tiết) = email biến thành bản keigo, không phải bước 4.",
+      "transitions": [
+        {
+          "target": "chip-quan-he",
+          "action": "add",
+          "offsetSec": 0,
+          "props": {
+            "component": "ContextChip",
+            "label": "Quan hệ",
+            "value": "Khách hàng lâu năm",
+            "target": {
+              "x": 0.5,
+              "y": 0.5
+            }
+          }
+        },
+        {
+          "target": "chip-muc-dich",
+          "action": "add",
+          "offsetSec": 8.7,
+          "props": {
+            "component": "ContextChip",
+            "label": "Mục đích",
+            "value": "Xin lỗi giao trễ",
+            "target": {
+              "x": 0.5,
+              "y": 0.585
+            }
+          }
+        },
+        {
+          "target": "chip-dau-ra",
+          "action": "add",
+          "offsetSec": 13.2,
+          "props": {
+            "component": "ContextChip",
+            "label": "Đầu ra",
+            "value": "2 phiên bản",
+            "target": {
+              "x": 0.5,
+              "y": 0.67
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "caution",
+      "intent": "quote",
+      "durationSec": 4,
+      "segmentIds": [
+        "seg-004"
+      ],
+      "headline": "Đọc lại trước khi gửi",
+      "subtitle": {
+        "text": "AI đôi khi dùng kính ngữ quá mức, nên đọc lại luôn là bước bắt buộc.",
+        "groups": [
+          {
+            "text": "AI đôi khi dùng kính ngữ quá mức, nên đọc lại luôn là bước bắt buộc.",
+            "lines": [
+              [
+                "AI",
+                "đôi",
+                "khi",
+                "dùng",
+                "kính",
+                "ngữ",
+                "quá",
+                "mức,"
+              ],
+              [
+                "nên",
+                "đọc",
+                "lại",
+                "luôn",
+                "là",
+                "bước",
+                "bắt",
+                "buộc."
+              ]
+            ]
+          }
+        ]
+      },
+      "content": {},
+      "style": {
+        "density": "low",
+        "safeArea": "tiktok"
+      },
+      "motion": [],
+      "reason": "Email biến thành bản keigo (env update đầu scene, khớp ngay sau câu 'chọn bản và chỉnh lại') + chip kiểm tra — đọc lại là thao tác bắt buộc, không phải bước 4.",
+      "transitions": [
+        {
+          "target": "environment",
+          "action": "update",
+          "props": {
+            "japaneseText": "誠に申し訳ございませんが、\n納期を7月20日に変更させて\nいただきたく存じます。",
+            "vietnameseText": "Bản trang trọng AI đề xuất — chỉnh tên, số, ngày.",
+            "state": "draft"
+          }
+        },
+        {
+          "target": "chip-kiem-tra",
+          "action": "add",
+          "props": {
+            "component": "ContextChip",
+            "label": "Kiểm tra",
+            "value": "Tên · Số · Ngày",
+            "target": {
+              "x": 0.5,
+              "y": 0.74
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "payoff",
+      "intent": "comparison",
+      "durationSec": 6.2,
+      "segmentIds": [
+        "seg-005"
+      ],
+      "headline": "Trước và sau",
+      "subtitle": {
+        "text": "Ba mươi phút mỗi email có thể rút xuống còn năm phút. Thời gian tiết kiệm được dành cho việc mà chỉ bạn làm được.",
+        "groups": [
+          {
+            "text": "Ba mươi phút mỗi email có thể rút xuống còn năm phút.",
+            "lines": [
+              [
+                "Ba",
+                "mươi",
+                "phút",
+                "mỗi",
+                "email",
+                "có"
+              ],
+              [
+                "thể",
+                "rút",
+                "xuống",
+                "còn",
+                "năm",
+                "phút."
+              ]
+            ]
+          },
+          {
+            "text": "Thời gian tiết kiệm được dành cho việc mà chỉ bạn làm được.",
+            "lines": [
+              [
+                "Thời",
+                "gian",
+                "tiết",
+                "kiệm",
+                "được",
+                "dành",
+                "cho"
+              ],
+              [
+                "việc",
+                "mà",
+                "chỉ",
+                "bạn",
+                "làm",
+                "được."
+              ]
+            ]
+          }
+        ]
+      },
+      "content": {},
+      "style": {
+        "density": "low",
+        "safeArea": "tiktok"
+      },
+      "motion": [],
+      "reason": "Bằng chứng thật thay lời khẳng định: diff kính ngữ highlight + timer morph 30:00→05:00 đúng câu 'rút xuống còn năm phút'.",
+      "transitions": [
+        {
+          "target": "chip-quan-he",
+          "action": "remove"
+        },
+        {
+          "target": "chip-muc-dich",
+          "action": "remove"
+        },
+        {
+          "target": "chip-dau-ra",
+          "action": "remove"
+        },
+        {
+          "target": "chip-kiem-tra",
+          "action": "remove"
+        },
+        {
+          "target": "diff-keigo",
+          "action": "add",
+          "props": {
+            "component": "DiffHighlight",
+            "beforeLabel": "TRƯỚC",
+            "afterLabel": "SAU",
+            "before": [
+              {
+                "text": "すみません、",
+                "highlight": "error",
+                "annotation": "quá thân mật"
+              },
+              {
+                "text": "納期が遅れます。"
+              }
+            ],
+            "after": [
+              {
+                "text": "誠に申し訳ございませんが、",
+                "highlight": "correction",
+                "annotation": "xin lỗi đúng lễ"
+              },
+              {
+                "text": "納期を7月20日に"
+              },
+              {
+                "text": "変更させていただきたく存じます。",
+                "highlight": "correction",
+                "annotation": "khiêm nhường ngữ"
+              }
+            ]
+          }
+        },
+        {
+          "target": "diff-keigo",
+          "action": "remove",
+          "offsetSec": 3.5
+        },
+        {
+          "target": "timer-payoff",
+          "action": "add",
+          "offsetSec": 3.5,
+          "props": {
+            "component": "TimerMorph",
+            "from": "30:00",
+            "to": "05:00",
+            "label": "MỖI EMAIL",
+            "durationInFrames": 48
+          }
+        }
+      ]
+    },
+    {
+      "id": "cta",
+      "intent": "takeaway",
+      "durationSec": 8.1,
+      "segmentIds": [
+        "seg-006"
+      ],
+      "headline": "Giữ cách làm này",
+      "subtitle": {
+        "text": "Lưu lại quy trình ba bước này để thử ngay trong tuần. Theo dõi Lucida để biết thay đổi AI nào thực sự đáng quan tâm.",
+        "groups": [
+          {
+            "text": "Lưu lại quy trình ba bước này để thử ngay trong tuần.",
+            "lines": [
+              [
+                "Lưu",
+                "lại",
+                "quy",
+                "trình",
+                "ba",
+                "bước"
+              ],
+              [
+                "này",
+                "để",
+                "thử",
+                "ngay",
+                "trong",
+                "tuần."
+              ]
+            ]
+          },
+          {
+            "text": "Theo dõi Lucida để biết thay đổi AI nào thực sự đáng quan tâm.",
+            "lines": [
+              [
+                "Theo",
+                "dõi",
+                "Lucida",
+                "để",
+                "biết",
+                "thay",
+                "đổi"
+              ],
+              [
+                "AI",
+                "nào",
+                "thực",
+                "sự",
+                "đáng",
+                "quan",
+                "tâm."
+              ]
+            ]
+          }
+        ]
+      },
+      "content": {},
+      "style": {
+        "density": "low",
+        "safeArea": "tiktok"
+      },
+      "motion": [],
+      "reason": "Email chuyển SENT = kết truyện trong cùng không gian; follow chip nhỏ 4s cuối thay end-card tĩnh.",
+      "transitions": [
+        {
+          "target": "environment",
+          "action": "update",
+          "props": {
+            "state": "sent",
+            "showCursor": false
+          }
+        },
+        {
+          "target": "timer-payoff",
+          "action": "remove",
+          "offsetSec": 3.6
+        },
+        {
+          "target": "chip-follow",
+          "action": "add",
+          "offsetSec": 3.6,
+          "props": {
+            "component": "ContextChip",
+            "label": "Lucida",
+            "value": "Follow · thử trong tuần",
+            "target": {
+              "x": 0.5,
+              "y": 0.62
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

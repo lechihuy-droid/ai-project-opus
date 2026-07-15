@@ -1,0 +1,105 @@
+{
+  "mode": "continuous",
+  "environment": {
+    "component": "MechanismWindow",
+    "variant": "email",
+    "props": {
+      "title": "Email keigo",
+      "japaneseText": "資料を送ります。",
+      "vietnameseText": "Tôi gửi tài liệu.",
+      "state": "draft"
+    }
+  },
+  "video": {
+    "title": "Continuous mechanism sample",
+    "subtitle": "Window, chip, and timer",
+    "format": "vertical_9_16",
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "durationSec": 9,
+    "style": "mechanism-v2",
+    "language": "vi"
+  },
+  "theme": {
+    "name": "lucida-mechanism-v2",
+    "accent": "#D2B47A",
+    "accentSoft": "#F4F0E8",
+    "background": "#171717",
+    "foreground": "#F4F0E8",
+    "muted": "#A7A39B"
+  },
+  "assets": [],
+  "scenes": [
+    {
+      "id": "window-draft",
+      "intent": "hook",
+      "durationSec": 3,
+      "headline": "Draft the email",
+      "subtitle": { "text": "Bắt đầu trong một cửa sổ email duy nhất." },
+      "content": {},
+      "style": { "density": "low", "safeArea": "tiktok" },
+      "motion": [],
+      "reason": "Establish the persistent environment.",
+      "transitions": [
+        {
+          "target": "environment",
+          "action": "update",
+          "props": { "state": "draft" }
+        }
+      ]
+    },
+    {
+      "id": "add-context",
+      "intent": "process",
+      "durationSec": 3,
+      "headline": "Add context",
+      "subtitle": { "text": "Đưa ngữ cảnh người nhận vào prompt." },
+      "content": {},
+      "style": { "density": "low", "safeArea": "tiktok" },
+      "motion": [],
+      "reason": "Show one context chip transition.",
+      "transitions": [
+        {
+          "target": "recipient-chip",
+          "action": "add",
+          "props": {
+            "component": "ContextChip",
+            "label": "Người nhận",
+            "value": "Khách hàng Nhật",
+            "target": { "x": 0.5, "y": 0.58 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "show-timer",
+      "intent": "takeaway",
+      "durationSec": 3,
+      "headline": "Save time",
+      "subtitle": { "text": "Thời gian xử lý giảm từ ba mươi xuống năm phút." },
+      "content": {},
+      "style": { "density": "low", "safeArea": "tiktok" },
+      "motion": [],
+      "reason": "Show one timer transition as the payoff.",
+      "transitions": [
+        {
+          "target": "recipient-chip",
+          "action": "remove",
+          "props": {}
+        },
+        {
+          "target": "time-saved",
+          "action": "add",
+          "props": {
+            "component": "TimerMorph",
+            "from": "30:00",
+            "to": "05:00",
+            "label": "TIME SAVED",
+            "position": { "left": 115, "top": 1000 }
+          }
+        }
+      ]
+    }
+  ]
+}

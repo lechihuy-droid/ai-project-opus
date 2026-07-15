@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "lucida-component-primitive/v1",
+  "id": "glitch-text",
+  "logicalId": "component:glitch-text",
+  "version": "1.0.0",
+  "status": "experimental",
+  "label": "Glitch Text Primitive",
+  "description": "Deterministic RGB-offset typography primitive adapted for Lucida scenes.",
+  "adapterPath": "src/templates/adapters/GlitchTextAdapter.tsx",
+  "capabilities": {
+    "intents": ["hook", "problem", "code-explanation"],
+    "aspectRatios": ["9:16"],
+    "presets": ["rgb-tear-medium"]
+  },
+  "contentSlots": ["headline", "supporting-text", "code-context"],
+  "render": {
+    "coordinateSpace": "scene-local",
+    "deterministic": true,
+    "safeAreaProfile": "vertical-9-16"
+  },
+  "qa": {
+    "status": "defined",
+    "requiredChecks": ["schema-valid", "scene-local-deterministic-motion", "vertical-safe-area"]
+  },
+  "provenanceRef": "provenance.json"
+}

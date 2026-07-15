@@ -1,0 +1,172 @@
+{
+  "name": "Lucida Remotion Flow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lucida-flow",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-680, 0],
+      "webhookId": "lucida-flow"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8790/run",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify($json.body ?? $json) }}",
+        "options": {}
+      },
+      "id": "start-flow",
+      "name": "Start Flow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-440, 0]
+    },
+    {
+      "parameters": {
+        "amount": 30,
+        "unit": "seconds"
+      },
+      "id": "wait-30-seconds",
+      "name": "Wait 30 Seconds",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [-200, 0],
+      "webhookId": "lucida-flow-wait"
+    },
+    {
+      "parameters": {
+        "url": "=http://host.docker.internal:8790/status/{{ $('Start Flow').item.json.runId }}",
+        "options": {}
+      },
+      "id": "get-status",
+      "name": "Get Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [40, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "flow-is-terminal",
+              "leftValue": "={{ $json.stages.some(stage => stage.status === 'failed') || $json.stages.at(-1)?.status === 'completed' }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "is-finished",
+      "name": "Flow Finished?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [280, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "summary-run-id",
+              "name": "runId",
+              "value": "={{ $json.runId }}",
+              "type": "string"
+            },
+            {
+              "id": "summary-status",
+              "name": "status",
+              "value": "={{ $json.stages.some(stage => stage.status === 'failed') ? 'failed' : 'completed' }}",
+              "type": "string"
+            },
+            {
+              "id": "summary-completed-at",
+              "name": "completedAt",
+              "value": "={{ $json.completedAt }}",
+              "type": "string"
+            },
+            {
+              "id": "summary-stages",
+              "name": "stages",
+              "value": "={{ $json.stages }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "summarize-result",
+      "name": "Summarize Result",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [520, -100]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "respond-to-webhook",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [760, -100]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Start Flow", "type": "main", "index": 0 }]]
+    },
+    "Start Flow": {
+      "main": [[{ "node": "Wait 30 Seconds", "type": "main", "index": 0 }]]
+    },
+    "Wait 30 Seconds": {
+      "main": [[{ "node": "Get Status", "type": "main", "index": 0 }]]
+    },
+    "Get Status": {
+      "main": [[{ "node": "Flow Finished?", "type": "main", "index": 0 }]]
+    },
+    "Flow Finished?": {
+      "main": [
+        [{ "node": "Summarize Result", "type": "main", "index": 0 }],
+        [{ "node": "Wait 30 Seconds", "type": "main", "index": 0 }]
+      ]
+    },
+    "Summarize Result": {
+      "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2a9389ba-3b48-44d4-b66b-0c51fa4a0379",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}

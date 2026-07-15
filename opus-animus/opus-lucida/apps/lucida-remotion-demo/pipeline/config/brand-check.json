@@ -1,0 +1,9 @@
+{
+  "bannedTemplateIds": [],
+  "darkLuminanceMax": 0.2,
+  "maxWordsPerPhrase": 12,
+  "thresholds": {
+    "pass": 0.85,
+    "normalize": 0.7
+  }
+}

@@ -15,11 +15,16 @@ import {
   type VideoMap,
 } from "./data";
 import { resolveSkin, SkinContext } from "./skins";
+import { ContinuousEnvironment } from "./mechanism";
 import {
   resolveStyleRuntimeChoice,
   RuntimeStyleRenderer,
 } from "./styles/runtime";
-import { resolveTemplateAdapter, SceneShell } from "./templateRegistry";
+import {
+  resolveTemplateAdapter,
+  SceneShell,
+  SubtitleBar,
+} from "./templateRegistry";
 
 export type MyCompositionProps = {
   videoMap?: VideoMap;
@@ -37,7 +42,12 @@ const getSceneAtFrame = (input: VideoInput, frame: number) => {
   for (const scene of input.scenes) {
     const end = start + scene.durationFrames;
     if (frame >= start && frame < end) {
-      return { scene, sceneIndex: input.scenes.indexOf(scene), localFrame: frame - start, totalFrames };
+      return {
+        scene,
+        sceneIndex: input.scenes.indexOf(scene),
+        localFrame: frame - start,
+        totalFrames,
+      };
     }
     start = end;
   }
@@ -133,7 +143,10 @@ export const MyComposition: React.FC<MyCompositionProps> = ({
   const baseInput = createVideoInput(videoMap);
   const input = extendLastSceneToAudio(baseInput, audio, fps);
   const skin = resolveSkin(input.theme);
-  const { scene, sceneIndex, localFrame, totalFrames } = getSceneAtFrame(input, frame);
+  const { scene, sceneIndex, localFrame, totalFrames } = getSceneAtFrame(
+    input,
+    frame,
+  );
   const sceneRange = getSceneRangeMs(videoMap, sceneIndex, audio);
   const timedPhrases = timedCaptions
     ? localizeTimedPhrases(
@@ -142,15 +155,47 @@ export const MyComposition: React.FC<MyCompositionProps> = ({
         sceneRange.endMs,
       )
     : undefined;
+  const zoom = interpolate(frame, [0, totalFrames], [1, 1.025], {
+    extrapolateRight: "clamp",
+  });
+
+  if (videoMap.mode === "continuous") {
+    return (
+      <SkinContext.Provider value={skin}>
+        {audio ? <Audio src={staticFile(audio.src)} /> : null}
+        <AbsoluteFill
+          style={{
+            overflow: "hidden",
+            transform: `scale(${zoom})`,
+            transformOrigin: "center center",
+          }}
+          data-runtime-family="continuous-mechanism"
+          data-runtime-renderer="continuous"
+          data-runtime-template={videoMap.environment.component}
+          data-runtime-scene-key={scene.id}
+          data-runtime-rejections=""
+        >
+          <ContinuousEnvironment
+            environment={videoMap.environment}
+            scenes={input.scenes}
+            sceneIndex={sceneIndex}
+          />
+          <SubtitleBar
+            scene={scene}
+            localFrame={localFrame}
+            timedPhrases={timedPhrases}
+          />
+        </AbsoluteFill>
+      </SkinContext.Provider>
+    );
+  }
+
   const runtimeChoice = resolveStyleRuntimeChoice({
     scene,
     assets: input.assets,
   });
   const Adapter = resolveTemplateAdapter(runtimeChoice.templateId);
   const sceneWithRuntime = { ...scene, runtimeChoice };
-  const zoom = interpolate(frame, [0, totalFrames], [1, 1.025], {
-    extrapolateRight: "clamp",
-  });
   const renderedScene = (
     <RuntimeStyleRenderer
       choice={runtimeChoice}
@@ -180,12 +225,16 @@ export const MyComposition: React.FC<MyCompositionProps> = ({
           transform: `scale(${zoom})`,
           transformOrigin: "center center",
         }}
-        data-runtime-family={runtimeChoice.selectedFamily ?? "legacy-templateId"}
+        data-runtime-family={
+          runtimeChoice.selectedFamily ?? "legacy-templateId"
+        }
         data-runtime-renderer={runtimeChoice.rendererKind}
         data-runtime-template={runtimeChoice.templateId}
         data-runtime-scene-key={runtimeChoice.familySceneKey ?? ""}
         data-runtime-rejections={runtimeChoice.rejected
-          .map((rejection) => `${rejection.family}:${rejection.codes.join("+")}`)
+          .map(
+            (rejection) => `${rejection.family}:${rejection.codes.join("+")}`,
+          )
           .join("|")}
       >
         {runtimeChoice.rendererKind === "family-renderer" ? (
@@ -196,6 +245,7 @@ export const MyComposition: React.FC<MyCompositionProps> = ({
             localFrame={localFrame}
             theme={input.theme}
             timedPhrases={timedPhrases}
+            showTechnicalLabels={videoMap.debug?.showTechnicalLabels ?? false}
           >
             {renderedScene}
           </SceneShell>

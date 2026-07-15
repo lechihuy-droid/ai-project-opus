@@ -1,0 +1,45 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-14",
+    "approvedBy": "Lucida reference review",
+    "status": "approved"
+  },
+  "projectId": "lucida-remotion-demo",
+  "sanitization": {
+    "findings": [],
+    "redactions": 0,
+    "status": "passed"
+  },
+  "schemaVersion": "sanitized-visual-input/v1",
+  "sources": [
+    {
+      "checksum": "1a8844fa3c888cd1d13d498795f0bad7a1a5813c3f376bb61dd46cd23efe2827",
+      "collectorVersion": "theme-reference-collector/1",
+      "metadata": {
+        "url": "pipeline/fixtures/reference-theme.css"
+      },
+      "records": [
+        {
+          "data": {
+            "tags": ["theme", "terminal", "tokens", "fixture"]
+          },
+          "kind": "design_token",
+          "provenance": {
+            "collectorVersion": "theme-reference-collector/1",
+            "sourceChecksum": "1a8844fa3c888cd1d13d498795f0bad7a1a5813c3f376bb61dd46cd23efe2827",
+            "sourceRef": "pipeline/fixtures/reference-theme.css"
+          },
+          "text": "# Local reference theme\n\nThe local reference theme is an internal fixture registered by the visual reference flow. Its reviewed evidence supports terminal-family token analysis: a dark surface, high-contrast foreground text, and a constrained accent token set. Use this evidence as a design reference, not as automatic production styling."
+        }
+      ],
+      "rights": {
+        "evidence": "Project-owned CSS fixture listed by visual-reference-flow.",
+        "policy": "internal-fixture",
+        "status": "approved"
+      },
+      "sourceId": "source:reference:local-reference-theme",
+      "sourceRevision": "visual-reference-flow-2026-07-14",
+      "sourceType": "theme_reference"
+    }
+  ]
+}

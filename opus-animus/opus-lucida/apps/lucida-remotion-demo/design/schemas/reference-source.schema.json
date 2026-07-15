@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "lucida-reference-source/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "sourceId", "sourceType", "sourceRef", "sourceRevision", "snapshotChecksum", "collectorVersion", "rights", "approval", "provenance"],
+  "properties": {
+    "schemaVersion": { "const": "lucida-reference-source/v1" },
+    "sourceId": { "type": "string", "pattern": "^source:reference:[a-z0-9-]+$" },
+    "sourceType": { "enum": ["repository", "web", "image", "theme"] },
+    "sourceRef": { "type": "string", "minLength": 1 },
+    "sourceRevision": { "type": "string", "minLength": 1 },
+    "snapshotChecksum": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "collectorVersion": { "type": "string", "minLength": 1 },
+    "rights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "status", "evidence"],
+      "properties": {
+        "policy": { "type": "string", "minLength": 1 },
+        "status": { "const": "approved" },
+        "evidence": { "type": "string", "minLength": 1 }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "approvedBy", "approvedAt"],
+      "properties": {
+        "status": { "const": "approved" },
+        "approvedBy": { "type": "string", "minLength": 1 },
+        "approvedAt": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sanitizedArtifactChecksum", "collectorArtifact"],
+      "properties": {
+        "sanitizedArtifactChecksum": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "collectorArtifact": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

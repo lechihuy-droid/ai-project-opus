@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "lucida-reference-source/v1",
+  "sourceId": "source:reference:fixture-terminal-repo",
+  "sourceType": "repository",
+  "sourceRef": "pipeline/fixtures/reference-repo",
+  "sourceRevision": "fixture-2026-07-14",
+  "snapshotChecksum": "1b858442c579c78ebeaffb21acfdce567933c003c41caabac890b9bc45baf092",
+  "collectorVersion": "repository-collector/1",
+  "rights": { "policy": "internal-fixture", "status": "approved", "evidence": "Project-owned fixture under pipeline/fixtures/reference-repo." },
+  "approval": { "status": "approved", "approvedBy": "Lucida reference review", "approvedAt": "2026-07-14" },
+  "provenance": { "sanitizedArtifactChecksum": "ca7b9784ee9d5eef76660c00d8db337ade9835a4b5acd5bdb9c647c7b39e8511", "collectorArtifact": "design/knowledge/reference-approvals/repository/fixture-terminal-repo.sanitized-approved.json" }
+}

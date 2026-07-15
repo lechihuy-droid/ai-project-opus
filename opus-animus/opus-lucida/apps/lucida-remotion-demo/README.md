@@ -58,9 +58,15 @@ npx remotion upgrade
 
 ## n8n for Remotion
 
-This app includes a local n8n starter under `n8n/` for orchestration around the existing Remotion render script.
+This app keeps voice generation, alignment, Remotion rendering, and publish handoff on the Windows host. n8n only triggers the host flow and polls its report.
 
-Start n8n:
+Start the host bridge from the app root:
+
+```console
+npm run flow:server
+```
+
+In another terminal, start n8n:
 
 ```console
 cd n8n
@@ -73,13 +79,13 @@ Open:
 http://127.0.0.1:5678
 ```
 
-The starter is set up to trigger the existing app-level render path:
+Import `n8n/workflows/lucida-flow.json`, activate the workflow, then POST a request to the webhook URL shown by n8n. A sample body is available at `pipeline/fixtures/flow/request.fixture.json`:
 
-```text
-scripts/render-run.mjs -> remotion render LucidaMotionDemo -> output/render/flow-runs/<runId>/video.mp4
+```console
+curl -X POST http://127.0.0.1:5678/webhook/lucida-flow -H "Content-Type: application/json" --data @pipeline/fixtures/flow/request.fixture.json
 ```
 
-Use this when you want n8n to schedule or webhook-drive renders without changing the Remotion app contract.
+The workflow calls `http://host.docker.internal:8790/run`, polls `/status/<runId>` every 30 seconds, and returns the completed or failed flow summary. Keep `npm run flow:server` running while n8n jobs are active.
 
 ## Docs
 

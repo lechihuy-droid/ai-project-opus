@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "lucida-reference-document/v1",
+  "sourceRef": "pipeline/fixtures/reference-theme.css",
+  "title": "Local reference theme tokens",
+  "mediaType": "theme",
+  "rawText": "# Local reference theme\n\nThe local reference theme is an internal fixture registered by the visual reference flow. Its reviewed evidence supports terminal-family token analysis: a dark surface, high-contrast foreground text, and a constrained accent token set. Use this evidence as a design reference, not as automatic production styling.",
+  "contentChecksum": "8254b374213af89a68202114d983b2830ea62a2545cb7139f1f8220bf3aafc49",
+  "tags": ["theme", "terminal", "tokens", "fixture"],
+  "observations": [{ "kind": "design_token", "reviewStatus": "approved", "definition": { "family": "terminal", "traits": ["dark surface", "high contrast", "constrained accents"] } }]
+}
