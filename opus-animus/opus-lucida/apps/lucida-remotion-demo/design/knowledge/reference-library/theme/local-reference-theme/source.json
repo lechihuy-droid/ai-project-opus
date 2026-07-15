@@ -8,5 +8,5 @@
   "collectorVersion": "theme-reference-collector/1",
   "rights": { "policy": "internal-fixture", "status": "approved", "evidence": "Project-owned CSS fixture listed by visual-reference-flow." },
   "approval": { "status": "approved", "approvedBy": "Lucida reference review", "approvedAt": "2026-07-14" },
-  "provenance": { "sanitizedArtifactChecksum": "a8bf12449cdfd51dd8b506cc52d60652c49ab80c3bf386fd689922d93ba616e2", "collectorArtifact": "design/knowledge/reference-approvals/theme/local-reference-theme.sanitized-approved.json" }
+  "provenance": { "sanitizedArtifactChecksum": "72552f1841fb7461154a903e0f643b22fa476e0c23617d6545b23d465577f4f2", "collectorArtifact": "design/knowledge/reference-approvals/theme/local-reference-theme.sanitized-approved.json" }
 }

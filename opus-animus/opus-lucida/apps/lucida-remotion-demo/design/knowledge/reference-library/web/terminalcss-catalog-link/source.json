@@ -8,5 +8,5 @@
   "collectorVersion": "web-reference-collector/1",
   "rights": { "policy": "link-and-review-note-only", "status": "approved", "evidence": "The canonical package retains a reviewer-authored note and source URL only; no page content or assets are vendored." },
   "approval": { "status": "approved", "approvedBy": "Lucida reference review", "approvedAt": "2026-07-14" },
-  "provenance": { "sanitizedArtifactChecksum": "307c7b8586bafed04224b2b792a7e26c7b1a72c9f0e0bbf057504e2e51fe1412", "collectorArtifact": "design/knowledge/reference-approvals/web/terminalcss-catalog-link.sanitized-approved.json" }
+  "provenance": { "sanitizedArtifactChecksum": "702242970274dcdb8816682d4dfd2d5ece8dcb3dc79d5774ebe02fed867909fc", "collectorArtifact": "design/knowledge/reference-approvals/web/terminalcss-catalog-link.sanitized-approved.json" }
 }

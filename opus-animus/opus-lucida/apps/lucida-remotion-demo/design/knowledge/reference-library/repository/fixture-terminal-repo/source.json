@@ -8,5 +8,5 @@
   "collectorVersion": "repository-collector/1",
   "rights": { "policy": "internal-fixture", "status": "approved", "evidence": "Project-owned fixture under pipeline/fixtures/reference-repo." },
   "approval": { "status": "approved", "approvedBy": "Lucida reference review", "approvedAt": "2026-07-14" },
-  "provenance": { "sanitizedArtifactChecksum": "ca7b9784ee9d5eef76660c00d8db337ade9835a4b5acd5bdb9c647c7b39e8511", "collectorArtifact": "design/knowledge/reference-approvals/repository/fixture-terminal-repo.sanitized-approved.json" }
+  "provenance": { "sanitizedArtifactChecksum": "0ff64a425e8cc3fc1f3b7ed8b9ad1ee2d9084f5e85b443fdb89e7d4b178855b9", "collectorArtifact": "design/knowledge/reference-approvals/repository/fixture-terminal-repo.sanitized-approved.json" }
 }
