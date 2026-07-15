@@ -8,5 +8,5 @@
   "collectorVersion": "image-reference-collector/1",
   "rights": { "policy": "internal-fixture", "status": "approved", "evidence": "Project-owned visual validation fixture." },
   "approval": { "status": "approved", "approvedBy": "Lucida reference review", "approvedAt": "2026-07-14" },
-  "provenance": { "sanitizedArtifactChecksum": "0bde5c80e1d154efa064a771d298e62ba740a25484b85c53897898c8a5bc6860", "collectorArtifact": "design/knowledge/reference-approvals/image/technical-editorial-frame.sanitized-approved.json" }
+  "provenance": { "sanitizedArtifactChecksum": "d903235145d3e4d8451392f09a0a09e01ac1f45b7dc7115ae3ba2bf51c1d7f46", "collectorArtifact": "design/knowledge/reference-approvals/image/technical-editorial-frame.sanitized-approved.json" }
 }

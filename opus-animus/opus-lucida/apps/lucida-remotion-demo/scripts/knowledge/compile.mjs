@@ -33,8 +33,9 @@ const validation = spawnSync(process.execPath, [validatorPath], {
   encoding: "utf8",
 });
 if (validation.status !== 0) {
-  process.stderr.write(validation.stdout);
-  process.stderr.write(validation.stderr);
+  process.stderr.write(validation.stdout ?? "");
+  process.stderr.write(validation.stderr ?? "");
+  if (validation.error) process.stderr.write(`Knowledge validation could not run: ${validation.error.message}\n`);
   process.exit(validation.status ?? 1);
 }
 

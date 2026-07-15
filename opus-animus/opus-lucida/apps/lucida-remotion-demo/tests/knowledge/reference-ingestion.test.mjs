@@ -8,11 +8,10 @@ import test from "node:test";
 
 import { chunkStructuralV1, compileReferences } from "../../scripts/knowledge/compile-references.mjs";
 import { promoteReference } from "../../scripts/knowledge/promote-reference.mjs";
-import { sha256, stableJson } from "../../scripts/knowledge/index-utils.mjs";
+import { sha256, sha256File, stableJson } from "../../scripts/knowledge/index-utils.mjs";
 
 const APP_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const CHECKSUM = "a".repeat(64);
-const RECORD_CHECKSUM = "b".repeat(64);
 
 const readJson = (filePath) => JSON.parse(fs.readFileSync(filePath, "utf8"));
 const writeJson = (filePath, value) => {
@@ -30,6 +29,10 @@ const createRoot = () => {
   copy(
     path.join(APP_ROOT, "design/knowledge/reference-library"),
     path.join(root, "design/knowledge/reference-library"),
+  );
+  copy(
+    path.join(APP_ROOT, "design/knowledge/reference-approvals"),
+    path.join(root, "design/knowledge/reference-approvals"),
   );
   return root;
 };
@@ -80,7 +83,7 @@ const sanitizedArtifact = ({ sourceType = "repository", sourceId = "collector:fi
         text,
         data: { tags: ["fixture", sourceType] },
         provenance: {
-          sourceChecksum: `sha256:${RECORD_CHECKSUM}`,
+          sourceChecksum: `sha256:${CHECKSUM}`,
           collectorVersion,
           sourceRef: `${sourceType}://fixture/${sourceId}#record-1`,
         },
@@ -127,6 +130,164 @@ test("canonical reference packages validate schemas and cover repository/web/ima
       chunks: index.chunks.length,
     });
   });
+});
+
+test("all four canonical source provenance checksums match project-owned approval files", () => {
+  withRoot((root) => {
+    const approvalRoot = path.join(root, "design/knowledge/reference-approvals");
+    const packages = referencePackages(root);
+    assert.equal(packages.length, 4);
+    for (const pkg of packages) {
+      const sourcePath = path.join(pkg.path, "source.json");
+      const source = readJson(sourcePath);
+      const artifactPath = path.resolve(root, source.provenance.collectorArtifact);
+      const relativeToApprovalRoot = path.relative(approvalRoot, artifactPath);
+
+      assert.ok(relativeToApprovalRoot && !relativeToApprovalRoot.startsWith("..") && !path.isAbsolute(relativeToApprovalRoot));
+      assert.equal(fs.existsSync(artifactPath), true, sourcePath);
+      assert.equal(sha256File(artifactPath), source.provenance.sanitizedArtifactChecksum, sourcePath);
+    }
+  });
+});
+
+test("reference compilation rejects tampered approval bytes and source provenance checksum drift", () => {
+  withRoot((root) => {
+    const artifactPath = path.join(root, "design/knowledge/reference-approvals/repository/fixture-terminal-repo.sanitized-approved.json");
+    fs.appendFileSync(artifactPath, "tampered approval bytes", "utf8");
+    assert.throws(
+      () => compileReferences({ appRoot: root }),
+      /sanitizedArtifactChecksum does not match collectorArtifact/,
+      "approval artifact byte tamper",
+    );
+  });
+
+  withRoot((root) => {
+    const sourcePath = path.join(root, "design/knowledge/reference-library/repository/fixture-terminal-repo/source.json");
+    const source = readJson(sourcePath);
+    source.provenance.sanitizedArtifactChecksum = "0".repeat(64);
+    writeJson(sourcePath, source);
+    assert.throws(
+      () => compileReferences({ appRoot: root }),
+      /sanitizedArtifactChecksum does not match collectorArtifact/,
+      "source provenance checksum drift",
+    );
+  });
+
+  withRoot((root) => {
+    const sourcePath = path.join(root, "design/knowledge/reference-library/repository/fixture-terminal-repo/source.json");
+    const source = readJson(sourcePath);
+    source.snapshotChecksum = "0".repeat(64);
+    writeJson(sourcePath, source);
+    assert.throws(
+      () => compileReferences({ appRoot: root }),
+      /collectorArtifact checksum does not match canonical snapshotChecksum/,
+      "source snapshot checksum drift",
+    );
+  });
+});
+
+test("reference compilation rejects approval artifact path escape and raw pipeline paths", () => {
+  const cases = [
+    { name: "path escape", collectorArtifact: "../../outside-approved.json" },
+    { name: "raw pipeline artifact", collectorArtifact: "pipeline/runs/raw.json" },
+  ];
+
+  for (const item of cases) {
+    withRoot((root) => {
+      const sourcePath = path.join(root, "design/knowledge/reference-library/repository/fixture-terminal-repo/source.json");
+      const source = readJson(sourcePath);
+      if (item.name === "raw pipeline artifact") {
+        writeJson(
+          path.join(root, "pipeline/runs/raw.json"),
+          readJson(path.join(root, source.provenance.collectorArtifact)),
+        );
+      }
+      source.provenance.collectorArtifact = item.collectorArtifact;
+      writeJson(sourcePath, source);
+      assert.throws(
+        () => compileReferences({ appRoot: root }),
+        /collectorArtifact must be design\/knowledge\/reference-approvals\/repository\/fixture-terminal-repo\.sanitized-approved\.json/,
+        item.name,
+      );
+    });
+  }
+});
+
+test("reference compilation rejects every canonical approval and record provenance inconsistency with a precise reason", () => {
+  const cases = [
+    {
+      name: "approval",
+      mutate: (artifact) => { artifact.approval.status = "rejected"; },
+      error: /collectorArtifact approval does not match canonical approval/,
+    },
+    {
+      name: "schema",
+      mutate: (artifact) => { artifact.schemaVersion = "raw-visual-input/v1"; },
+      error: /collectorArtifact must use sanitized-visual-input\/v1/,
+    },
+    {
+      name: "sanitization",
+      mutate: (artifact) => { artifact.sanitization.status = "failed"; },
+      error: /collectorArtifact sanitization must have passed/,
+    },
+    {
+      name: "sourceId",
+      mutate: (artifact) => { artifact.sources[0].sourceId = "source:tampered"; },
+      error: /collectorArtifact sourceId does not match canonical sourceId/,
+    },
+    {
+      name: "sourceType",
+      mutate: (artifact) => { artifact.sources[0].sourceType = "web_reference"; },
+      error: /collectorArtifact sourceType does not match canonical sourceType/,
+    },
+    {
+      name: "collectorVersion",
+      mutate: (artifact) => { artifact.sources[0].collectorVersion = "tampered-collector\/2"; },
+      error: /collectorArtifact collectorVersion does not match canonical source/,
+    },
+    {
+      name: "revision",
+      mutate: (artifact) => { artifact.sources[0].sourceRevision = "tampered-revision"; },
+      error: /collectorArtifact sourceRevision does not match canonical source/,
+    },
+    {
+      name: "snapshot checksum",
+      mutate: (artifact) => { artifact.sources[0].checksum = "0".repeat(64); },
+      error: /collectorArtifact checksum does not match canonical snapshotChecksum/,
+    },
+    {
+      name: "rights",
+      mutate: (artifact) => { artifact.sources[0].rights.policy = "external"; },
+      error: /collectorArtifact rights do not match canonical rights/,
+    },
+    {
+      name: "sourceRef",
+      mutate: (artifact) => { artifact.sources[0].metadata.url = "pipeline/runs/raw.json"; },
+      error: /collectorArtifact sourceRef does not match canonical sourceRef/,
+    },
+    {
+      name: "record text",
+      mutate: (artifact) => { artifact.sources[0].records[0].text = "Tampered record text."; },
+      error: /collectorArtifact record text does not match canonical document/,
+    },
+  ];
+
+  for (const item of cases) {
+    withRoot((root) => {
+      const packagePath = path.join(root, "design/knowledge/reference-library/repository/fixture-terminal-repo");
+      const sourcePath = path.join(packagePath, "source.json");
+      const artifactPath = path.join(root, "design/knowledge/reference-approvals/repository/fixture-terminal-repo.sanitized-approved.json");
+      const artifact = readJson(artifactPath);
+      item.mutate(artifact);
+      writeJson(artifactPath, artifact);
+
+      const source = readJson(sourcePath);
+      source.provenance.sanitizedArtifactChecksum = sha256File(artifactPath);
+      writeJson(sourcePath, source);
+
+      assert.throws(() => compileReferences({ appRoot: root }), item.error, item.name);
+    });
+  }
 });
 
 test("promotion rejects unsafe or incomplete evidence through the Wave 4 matrix", () => {

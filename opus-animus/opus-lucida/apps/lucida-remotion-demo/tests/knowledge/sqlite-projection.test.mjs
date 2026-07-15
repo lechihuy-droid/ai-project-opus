@@ -65,6 +65,10 @@ const createRoot = ({ generated = false } = {}) => {
       path.join(root, "design/knowledge/reference-library"),
     );
     copy(
+      path.join(APP_ROOT, "design/knowledge/reference-approvals"),
+      path.join(root, "design/knowledge/reference-approvals"),
+    );
+    copy(
       path.join(APP_ROOT, "design/visual-library/styles/cinematic-type"),
       path.join(root, "design/visual-library/styles/cinematic-type"),
     );
