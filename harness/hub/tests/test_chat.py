@@ -18,7 +18,7 @@ from services import chat as chat_service
 @pytest.fixture()
 def client(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> TestClient:
     monkeypatch.setattr(chat_service, "CHAT_USAGE_FILE", tmp_path / "chat_usage.jsonl")
-    return TestClient(server.app)
+    return TestClient(server.app, headers={"x-hub-client": "harness-hub"})
 
 
 def _messages() -> list[dict[str, str]]:
@@ -107,8 +107,11 @@ def test_chat_models_are_derived_from_catalog() -> None:
 
 def test_chat_rejects_unknown_model(client: TestClient) -> None:
     response = client.post("/api/chat", json={"messages": _messages(), "model": "not-a-model"})
+    events = _sse_events(response.text)
 
-    assert response.status_code == 400
+    assert response.status_code == 200
+    assert [event for event, _payload in events] == ["error"]
+    assert "not-a-model" in str(events[0][1]["message"])
 
 
 def test_chat_streams_delta_done_and_records_usage(
@@ -139,6 +142,7 @@ def test_chat_streams_delta_done_and_records_usage(
     assert events[3][1] == {
         "usage": {"input_tokens": 12, "output_tokens": 5, "total_tokens": 17},
         "model": config.CHAT_DEFAULT_MODEL,
+        "session_id": None,
     }
     assert client_calls == [{"base_url": chat_service.NVIDIA_BASE_URL, "api_key": "test-key"}]
     assert calls == [

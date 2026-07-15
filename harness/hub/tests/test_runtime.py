@@ -110,7 +110,7 @@ def test_runtime_state_checkpoint_events_interrupts_and_boundaries(runtime_tmp: 
 
 
 def test_runtime_pipeline_api_create_interrupt_resume_and_404(runtime_tmp: Path) -> None:
-    client = TestClient(server.app)
+    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
     response = client.post("/api/agent/runs", json={"objective": "api runtime smoke"})
     assert response.status_code == 200
     assert "event: node_update" in response.text
@@ -195,7 +195,7 @@ def test_runtime_skills_memory_and_guardrail_apis(runtime_tmp: Path, monkeypatch
     monkeypatch.setattr(runtime_skills, "_skill_roots", lambda: [tmp_path / "skills"])
 
     candidate = runtime_memory.create_candidate("Remember explicit approvals only")
-    client = TestClient(server.app)
+    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
 
     skills = client.get("/api/skills")
     assert skills.status_code == 200

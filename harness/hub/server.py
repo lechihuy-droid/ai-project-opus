@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 import sys
+import threading
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 
@@ -9,8 +11,8 @@ HUB_DIR = Path(__file__).resolve().parent
 if str(HUB_DIR) not in sys.path:
     sys.path.insert(0, str(HUB_DIR))
 
-from fastapi import FastAPI, HTTPException, Query
-from fastapi.responses import FileResponse, PlainTextResponse, StreamingResponse
+from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 import config
@@ -32,15 +34,47 @@ from services import (
     runtime_policy,
     runtime_skills,
     runtime_state,
+    skill_library,
     suites,
     trigger,
     usage,
 )
+from services.providers import get_provider, list_providers
 
 
-app = FastAPI(title="Harness Hub")
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    threading.Thread(target=usage.warm, name="usage-warm", daemon=True).start()
+    threading.Thread(target=behavior.warm, name="behavior-warm", daemon=True).start()
+    try:
+        gitjobs.reconcile_orphans()
+    except Exception:
+        pass
+    yield
+    try:
+        from services.providers import procs
+
+        procs.kill_all()
+    except Exception:
+        pass
+
+
+app = FastAPI(title="Harness Hub", lifespan=lifespan)
 WEB_DIR = config.HUB_DIR / "web"
 app.mount("/static", StaticFiles(directory=WEB_DIR), name="static")
+
+_CSRF_SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
+
+
+@app.middleware("http")
+async def _csrf_guard(request: Request, call_next):
+    if request.method not in _CSRF_SAFE_METHODS:
+        origin = request.headers.get("origin") or request.headers.get("referer")
+        if origin and not any(origin.startswith(allowed) for allowed in config.ALLOWED_ORIGINS):
+            return JSONResponse(status_code=403, content={"detail": "cross-origin blocked"})
+        if request.headers.get(config.HUB_CLIENT_HEADER) != config.HUB_CLIENT_VALUE:
+            return JSONResponse(status_code=403, content={"detail": "missing hub client header"})
+    return await call_next(request)
 
 
 def _http_error(exc: Exception) -> HTTPException:
@@ -98,29 +132,45 @@ def api_chat_models() -> dict[str, object]:
     }
 
 
+@app.get("/api/providers")
+def api_providers() -> list[dict[str, object]]:
+    return list_providers()
+
+
 @app.post("/api/chat")
 def api_chat(payload: dict[str, object]) -> StreamingResponse:
-    model = payload.get("model") or config.CHAT_DEFAULT_MODEL
-    if not isinstance(model, str):
-        raise HTTPException(status_code=400, detail="model must be a string")
-    if model not in config.CHAT_MODELS:
-        raise HTTPException(status_code=400, detail=f"Unsupported chat model: {model}")
+    provider_id = payload.get("provider") or "nvidia"
+    if not isinstance(provider_id, str):
+        raise HTTPException(status_code=400, detail="provider must be a string")
+    try:
+        provider = get_provider(provider_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
     messages = _chat_messages(payload.get("messages"))
+    model = payload.get("model")
+    if model is not None and not isinstance(model, str):
+        raise HTTPException(status_code=400, detail="model must be a string")
+    session_id = payload.get("session_id")
+    if session_id is not None and not isinstance(session_id, str):
+        raise HTTPException(status_code=400, detail="session_id must be a string")
 
     def events():
         try:
-            for item in chat.stream_chat(messages, model, config.CHAT_MAX_TOKENS):
+            for item in provider.stream_chat(messages, session_id=session_id, model=model):
                 item_type = item.get("type")
                 if item_type == "reasoning":
                     yield _sse("reasoning", {"text": item.get("text", "")})
                 elif item_type == "delta":
                     yield _sse("delta", {"text": item.get("text", "")})
                 elif item_type == "done":
-                    yield _sse("done", {"usage": item.get("usage", {}), "model": item.get("model", model)})
-        except chat.ChatUpstreamError as exc:
-            yield _sse("error", {"message": str(exc), "code": exc.code or None})
-        except chat.ChatAuthError as exc:
-            yield _sse("error", {"message": str(exc) or chat.AUTH_ERROR_MESSAGE, "code": None})
+                    yield _sse("done", {
+                        "usage": item.get("usage", {}),
+                        "model": item.get("model") or model or provider_id,
+                        "session_id": item.get("session_id"),
+                    })
+                elif item_type == "error":
+                    yield _sse("error", {"message": item.get("message", ""), "code": item.get("code")})
         except Exception:
             yield _sse("error", {"message": "Chat stream error", "code": None})
 
@@ -475,6 +525,47 @@ def api_inspect_mep() -> dict[str, object]:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
+@app.get("/api/usage/cockpit")
+def api_usage_cockpit() -> dict[str, object]:
+    stats = usage.cockpit_stats()
+    stats["providers_online"] = [
+        {"id": provider["id"], "available": provider["available"]}
+        for provider in list_providers()
+    ]
+    return stats
+
+
+@app.get("/api/skill-library")
+def api_skill_library() -> list[dict[str, object]]:
+    return skill_library.list_skills()
+
+
+@app.get("/api/skill-library/drift")
+def api_skill_library_drift() -> list[dict[str, object]]:
+    return skill_library.drift()
+
+
+@app.get("/api/skill-library/{skill_id:path}")
+def api_skill_library_detail(skill_id: str) -> dict[str, object]:
+    try:
+        return skill_library.get_skill(skill_id)
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.post("/api/skill-library/{skill_id:path}/deploy")
+def api_skill_library_deploy(skill_id: str, payload: dict[str, object]) -> dict[str, object]:
+    target = payload.get("target")
+    if not isinstance(target, str) or not target:
+        raise HTTPException(status_code=400, detail="target is required")
+    try:
+        return skill_library.deploy(skill_id, target)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+
+
 @app.get("/api/board")
 def api_board() -> dict[str, object]:
     return board.task_board()
@@ -501,14 +592,6 @@ def api_session_replay(session: str) -> dict[str, object]:
         return replay.session_replay(session)
     except FileNotFoundError as exc:
         raise _http_error(exc) from exc
-
-
-@app.on_event("startup")
-def _warm_usage_cache() -> None:
-    import threading
-
-    threading.Thread(target=usage.warm, name="usage-warm", daemon=True).start()
-    threading.Thread(target=behavior.warm, name="behavior-warm", daemon=True).start()
 
 
 if __name__ == "__main__":

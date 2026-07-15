@@ -444,6 +444,34 @@ def create_job(brief: str, agent: str = "codex", allow_override: bool = False) -
         raise
 
 
+def reconcile_orphans() -> list[str]:
+    """Mark jobs stuck in 'running' with no live stream as failed (restart recovery)."""
+    orphaned: list[str] = []
+    if not config.JOBS_DIR.exists():
+        return orphaned
+    for path in config.JOBS_DIR.glob("*/job.json"):
+        try:
+            with path.open("r", encoding="utf-8") as handle:
+                data = json.load(handle)
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not isinstance(data, dict):
+            continue
+        job_id = str(data.get("id") or "")
+        if not JOB_ID_RE.fullmatch(job_id):
+            continue
+        if data.get("status") == "running" and job_id not in _STREAMS:
+            data["status"] = "failed"
+            data["error"] = "orphaned by restart"
+            data["finished_at"] = _now()
+            try:
+                _write_job(data)
+                orphaned.append(job_id)
+            except OSError:
+                continue
+    return orphaned
+
+
 def list_jobs() -> list[dict[str, Any]]:
     jobs: list[dict[str, Any]] = []
     if not config.JOBS_DIR.exists():

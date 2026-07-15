@@ -332,6 +332,37 @@ CHAT_REASONING: list[dict[str, Any]] = [
 ]
 
 
+# --- Hub v2: Command Center (Phase A) ---
+CHAT_USAGE_FILE = HUB_DIR / ".cache" / "chat_usage.jsonl"
+SKILL_DEPLOY_LOG = HUB_DIR / ".cache" / "skill_deploy_log.jsonl"
+
+# CLI provider layer
+MAX_CONCURRENT_CLI = 3
+CHAT_CLI_TIMEOUT = 300
+QUOTA_WARN_PER_DAY = 200
+PROVIDERS: dict[str, Any] = {
+    "claude": {"cmd": ["claude"]},
+    "codex": {"cmd": [str(Path.home() / "AppData" / "Local" / "pnpm" / "codex")]},
+    "nvidia": {},
+    "gemini": {"cmd": ["gemini"]},
+}
+
+# Skill library sources (read + deploy targets)
+SKILL_SOURCES: dict[str, Path] = {
+    "claude_user": Path.home() / ".claude" / "skills",
+    "claude_project": ROOT / ".claude" / "skills",
+    "codex_user": Path.home() / ".codex" / "skills",
+}
+
+# CSRF guard (local-only origins)
+ALLOWED_ORIGINS = (
+    "http://127.0.0.1:8799",
+    "http://localhost:8799",
+)
+HUB_CLIENT_HEADER = "x-hub-client"
+HUB_CLIENT_VALUE = "harness-hub"
+
+
 if __name__ == "__main__":
     print(ROOT)
 
