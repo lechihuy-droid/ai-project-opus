@@ -74,7 +74,12 @@ async def _csrf_guard(request: Request, call_next):
             return JSONResponse(status_code=403, content={"detail": "cross-origin blocked"})
         if request.headers.get(config.HUB_CLIENT_HEADER) != config.HUB_CLIENT_VALUE:
             return JSONResponse(status_code=403, content={"detail": "missing hub client header"})
-    return await call_next(request)
+    response = await call_next(request)
+    # SPA assets change on every deploy; force revalidation so the browser
+    # never runs stale app.js/workspace.js against a newer backend.
+    if request.url.path == "/" or request.url.path.startswith("/static"):
+        response.headers["Cache-Control"] = "no-cache"
+    return response
 
 
 def _http_error(exc: Exception) -> HTTPException:

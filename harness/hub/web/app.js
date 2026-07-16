@@ -3447,6 +3447,44 @@ async function renderSkillDetail(skillId) {
   });
 }
 
+function providerHint(provider) {
+  if (provider.id === "gemini") return "Install/login: npm i -g @google/gemini-cli";
+  if (provider.id === "claude" || provider.id === "codex") return "Check CLI installation and login.";
+  return "Check provider configuration.";
+}
+
+function providerCapabilities(capabilities) {
+  const values = capabilities && typeof capabilities === "object" ? capabilities : {};
+  const models = Array.isArray(values.models) ? values.models.length : "—";
+  return `stream: ${values.stream ? "yes" : "no"} · resume: ${values.resume ? "yes" : "no"} · models: ${models}`;
+}
+
+async function renderSettings() {
+  setActiveNav("/settings");
+  setLoading("Settings");
+  const providers = await getJson("/api/providers");
+  if ((location.hash || "#/") !== "#/settings") return;
+  const rows = (Array.isArray(providers) ? providers : []).map((provider) => {
+    const available = Boolean(provider.available);
+    const detail = available ? (provider.detail || "ok") : `${provider.detail || "offline"} — ${providerHint(provider)}`;
+    return `<tr>
+      <td>${escapeHtml(provider.id || "—")}</td>
+      <td><span class="badge ${available ? "green" : "red"}">${available ? "available" : "offline"}</span></td>
+      <td>${escapeHtml(provider.version || "—")}</td>
+      <td>${escapeHtml(detail)}</td>
+      <td>${escapeHtml(providerCapabilities(provider.capabilities))}</td>
+    </tr>`;
+  }).join("");
+  app.innerHTML = `
+    <div class="page-hero"><h1>Settings</h1><p class="lead">Provider availability and CLI configuration.</p></div>
+    <div class="hub-actions"><button class="link-button" type="button" id="settings-refresh">Refresh</button></div>
+    <section class="card"><table class="hub-table">
+      <thead><tr><th>Provider</th><th>Available</th><th>Version</th><th>Detail</th><th>Capabilities</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="5" class="muted">No providers reported</td></tr>'}</tbody>
+    </table></section>`;
+  document.getElementById("settings-refresh")?.addEventListener("click", () => renderSettings().catch(setError));
+}
+
 async function route() {
   clearAutoRefresh();
   clearJobStream();
@@ -3472,7 +3510,8 @@ async function route() {
     } else if (parts[0] === "suites") {
       await renderSuites();
     } else if (parts[0] === "chat") {
-      await renderChat();
+      location.hash = "#/workspace";
+      return;
     } else if (parts[0] === "skills-lib" && parts[1]) {
       await renderSkillDetail(parts.slice(1).join("/"));
     } else if (parts[0] === "skills-lib") {
@@ -3484,6 +3523,8 @@ async function route() {
         throw new Error("Workspace module failed to load.");
       }
       window.HubWorkspace.mount(app);
+    } else if (parts[0] === "settings") {
+      await renderSettings();
     } else if (parts[0] === "usage") {
       await renderUsage();
     } else if (parts[0] === "tools") {

@@ -30,11 +30,10 @@ def _build_cmd(prompt: str, session_id: str | None) -> list[str]:
     full_prompt = f"FRESH START\n\n{prompt}"
     base = _base_cmd()
     if session_id:
-        # Resume path (BD Step 6): codex 0.144.3 exec resume <id>. Not yet verified
-        # against the real binary in this task (fake-CLI-only constraint) — if the
-        # real CLI rejects this form, fall back to no-resume (transcript-in-prompt)
-        # per SD §3.3 and flip capabilities.resume to False below.
-        return base + ["exec", "resume", session_id, "-s", "read-only", "--skip-git-repo-check", "--json", full_prompt]
+        # Resume path — verified against real Codex CLI 0.144.3 (B3 gate):
+        # exec options must precede the `resume` subcommand per clap grammar
+        # `codex exec [OPTIONS] resume [SESSION_ID] [PROMPT]`.
+        return base + ["exec", "-s", "read-only", "--skip-git-repo-check", "--json", "resume", session_id, full_prompt]
     return base + ["exec", "-s", "read-only", "--skip-git-repo-check", "--json", full_prompt]
 
 

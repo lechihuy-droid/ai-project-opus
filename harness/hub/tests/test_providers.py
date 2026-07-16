@@ -69,6 +69,11 @@ def test_nvidia_stream_chat_auth_error_becomes_error_event(monkeypatch: pytest.M
 
 _FAKE_CLAUDE_SCRIPT = """
 import json
+import os
+import sys
+if os.environ.get("FAKE_CLI_ARGS_FILE"):
+    with open(os.environ["FAKE_CLI_ARGS_FILE"], "a", encoding="utf-8") as handle:
+        handle.write(json.dumps(sys.argv[1:]) + "\\n")
 print(json.dumps({"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "Hello "}]}}))
 print(json.dumps({"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "world"}]}}))
 print(json.dumps({"type": "result", "subtype": "success", "session_id": "sess-abc123", "usage": {"input_tokens": 11, "output_tokens": 22}}))
@@ -81,6 +86,7 @@ def fake_claude_cli(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     script.write_text(_FAKE_CLAUDE_SCRIPT, encoding="utf-8")
     monkeypatch.setitem(config.PROVIDERS, "claude", {"cmd": [sys.executable, str(script)]})
     monkeypatch.setattr(config, "CHAT_USAGE_FILE", tmp_path / "chat_usage.jsonl")
+    monkeypatch.setenv("FAKE_CLI_ARGS_FILE", str(tmp_path / "claude_args.jsonl"))
     return script
 
 
@@ -110,12 +116,25 @@ def test_claude_cli_build_cmd_includes_disallowed_tools_and_resume() -> None:
     assert "-r" in cmd and "sess-1" in cmd
 
 
+def test_claude_cli_second_turn_passes_session_id_to_fake_cli(fake_claude_cli: Path, tmp_path: Path) -> None:
+    list(claude_cli.stream_chat([{"role": "user", "content": "first"}]))
+    list(claude_cli.stream_chat([{"role": "user", "content": "second"}], session_id="sess-abc123"))
+
+    calls = [json.loads(line) for line in (tmp_path / "claude_args.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert calls[1][-2:] == ["-r", "sess-abc123"]
+
+
 # ---------------------------------------------------------------------------
 # codex_cli — fake CLI subprocess, never invoke the real `codex` binary
 # ---------------------------------------------------------------------------
 
 _FAKE_CODEX_SCRIPT = """
 import json
+import os
+import sys
+if os.environ.get("FAKE_CLI_ARGS_FILE"):
+    with open(os.environ["FAKE_CLI_ARGS_FILE"], "a", encoding="utf-8") as handle:
+        handle.write(json.dumps(sys.argv[1:]) + "\\n")
 print(json.dumps({"type": "item.completed", "item": {"type": "agent_message", "text": "Hi from codex"}}))
 print(json.dumps({"type": "token_count", "usage": {"input_tokens": 4, "output_tokens": 6}}))
 print(json.dumps({"type": "turn.completed", "session_id": "codex-sess-1"}))
@@ -128,6 +147,7 @@ def fake_codex_cli(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     script.write_text(_FAKE_CODEX_SCRIPT, encoding="utf-8")
     monkeypatch.setitem(config.PROVIDERS, "codex", {"cmd": [sys.executable, str(script)]})
     monkeypatch.setattr(config, "CHAT_USAGE_FILE", tmp_path / "chat_usage.jsonl")
+    monkeypatch.setenv("FAKE_CLI_ARGS_FILE", str(tmp_path / "codex_args.jsonl"))
     return script
 
 
@@ -151,6 +171,14 @@ def test_codex_cli_build_cmd_has_fresh_start_preamble_and_flags() -> None:
     assert "--json" in cmd
     assert cmd[-1].startswith("FRESH START\n\n")
     assert cmd[-1].endswith("do the thing")
+
+
+def test_codex_cli_second_turn_resumes_session_in_fake_cli(fake_codex_cli: Path, tmp_path: Path) -> None:
+    list(codex_cli.stream_chat([{"role": "user", "content": "first"}]))
+    list(codex_cli.stream_chat([{"role": "user", "content": "second"}], session_id="codex-sess-1"))
+
+    calls = [json.loads(line) for line in (tmp_path / "codex_args.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert calls[1] == ["exec", "-s", "read-only", "--skip-git-repo-check", "--json", "resume", "codex-sess-1", "FRESH START\n\nsecond"]
 
 
 def test_codex_status_reports_stderr_on_failure(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -195,16 +223,41 @@ def test_codex_status_parses_version(tmp_path: Path, monkeypatch: pytest.MonkeyP
 # ---------------------------------------------------------------------------
 
 
-def test_gemini_status_not_installed() -> None:
+_FAKE_GEMINI_SCRIPT = """
+import sys
+if "--version" in sys.argv:
+    print("gemini-cli 1.2.3")
+else:
+    print("first response")
+    print("second response")
+"""
+
+
+@pytest.fixture
+def fake_gemini_cli(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    script = tmp_path / "fake_gemini.py"
+    script.write_text(_FAKE_GEMINI_SCRIPT, encoding="utf-8")
+    monkeypatch.setitem(config.PROVIDERS, "gemini", {"cmd": [sys.executable, str(script)]})
+    monkeypatch.setattr(config, "CHAT_USAGE_FILE", tmp_path / "chat_usage.jsonl")
+    monkeypatch.setitem(gemini_cli._status_cache, "value", None)
+    return script
+
+
+def test_gemini_status_parses_version(fake_gemini_cli: Path) -> None:
     status = gemini_cli.status()
-    assert status["available"] is False
-    assert status["detail"] == "not_installed"
+    assert status["available"] is True
+    assert status["version"] == "gemini-cli 1.2.3"
+    assert status["capabilities"] == {"stream": True, "resume": False, "models": None}
 
 
-def test_gemini_stream_chat_yields_error() -> None:
-    events = list(gemini_cli.stream_chat([{"role": "user", "content": "hi"}]))
-    assert len(events) == 1
-    assert events[0]["type"] == "error"
+def test_gemini_stream_chat_yields_delta_done_and_transcript(fake_gemini_cli: Path) -> None:
+    messages = [{"role": "user", "content": "prior question"}, {"role": "assistant", "content": "prior answer"}, {"role": "user", "content": "new question"}]
+    events = list(gemini_cli.stream_chat(messages))
+
+    assert [event["text"] for event in events if event["type"] == "delta"] == ["first response", "second response"]
+    assert events[-1] == {"type": "done", "usage": {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0}, "session_id": None}
+    prompt = gemini_cli._build_cmd(messages)[-1]
+    assert "prior question" in prompt and "prior answer" in prompt and "new question" in prompt
 
 
 # ---------------------------------------------------------------------------
@@ -236,6 +289,8 @@ def test_procs_kills_process_that_exceeds_timeout(fake_sleeper: Path) -> None:
     assert registry.is_timed_out(proc_id) is True
     process = registry.get(proc_id)
     assert process is not None
+    while time.monotonic() < deadline and process.poll() is None:
+        time.sleep(0.05)
     assert process.poll() is not None  # killed
     registry.unregister(proc_id)
 

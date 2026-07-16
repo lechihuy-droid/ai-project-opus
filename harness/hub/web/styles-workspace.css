@@ -591,6 +591,50 @@ body.route-workspace .hub-app {
   font-weight: 500;
 }
 
+.ws-broadcast-chat,
+.ws-stop-all {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 10px;
+}
+
+.ws-sidebar-top {
+  display: flex;
+  gap: 7px;
+}
+
+.ws-broadcast-chat {
+  flex: 1 1 auto;
+}
+
+.ws-broadcast-badge {
+  color: var(--accent);
+  font-size: 11px;
+}
+
+.ws-broadcast-providers {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.ws-broadcast-provider {
+  align-items: center;
+  color: var(--text-secondary);
+  display: flex;
+  font-size: 11px;
+  gap: 3px;
+}
+
+.ws-broadcast-provider input {
+  margin: 0;
+}
+
 .ws-chat-row.is-active .ws-chat-title {
   font-weight: 700;
 }
@@ -813,6 +857,59 @@ body.route-workspace .hub-app {
 .ws-message-wrap {
   max-width: 78%;
   min-width: 0;
+}
+
+.ws-broadcast-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  width: 100%;
+}
+
+.ws-broadcast-column {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ws-broadcast-column-head {
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  display: flex;
+  font-size: 12px;
+  font-weight: 700;
+  gap: 6px;
+  padding: 8px 10px;
+}
+
+.ws-broadcast-status {
+  border-radius: 999px;
+  height: 7px;
+  width: 7px;
+}
+
+.ws-broadcast-status-streaming { background: var(--warning); }
+.ws-broadcast-status-ok { background: var(--success); }
+.ws-broadcast-status-error { background: var(--danger); }
+.ws-broadcast-status-pending { background: var(--text-tertiary); }
+
+.ws-broadcast-usage {
+  color: var(--text-tertiary);
+  font-size: 10px;
+  font-weight: 500;
+  margin-left: auto;
+}
+
+.ws-broadcast-column-body {
+  color: var(--text);
+  font-size: 13px;
+  min-height: 46px;
+  overflow-wrap: anywhere;
+  padding: 10px;
+  white-space: pre-wrap;
 }
 
 .ws-bubble {

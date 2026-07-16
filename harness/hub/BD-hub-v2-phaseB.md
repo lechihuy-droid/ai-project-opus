@@ -66,10 +66,17 @@
 **Test:** `node --check workspace.js`; backend suite xanh (không đổi backend).
 **DoD:** browser-verify: New Chat → chọn Claude → chat thật trả lời + session resume lượt 2; chat khác chạy NVIDIA; switch qua lại không lẫn state.
 
-## Step B2 — Broadcast mode `[CODEX]` (M, sau B1)
+## Step B2 — Broadcast chat trong Workspace `[CODEX]` (M, sau B3) — CHỐT UX 2026-07-17
 
-**Việc (FR-104):** thanh input broadcast trên đầu trang chat + toggle per-pane "nhận broadcast"; 1 prompt gửi đồng thời mọi pane active (mỗi pane stream độc lập, lỗi pane nào hiện pane đó). Nút Stop All.
-**DoD:** browser-verify 1 prompt → 2 pane trả lời song song.
+**Quyết định user:** phương án B (broadcast chat) trong Workspace UI; **bỏ hẳn tab `#/chat`** (nav xoá, route redirect về `#/workspace`; code chat cũ trong app.js để nguyên như dead-code, dọn ở step riêng nếu cần).
+
+**Việc (workspace.js):**
+- Chat có thể là **broadcast chat**: `providers: [id...]` (thay vì 1 provider). Nút "Broadcast" cạnh New Chat → checkbox chọn provider (mặc định mọi provider online).
+- Gửi 1 prompt → POST /api/chat song song mỗi provider; assistant row render **cột grid theo provider** (header: tên + LED trạng thái + tokens), mỗi cột stream độc lập, lỗi cột nào báo cột đó.
+- `sessionId` per provider (map `{provider: sid}`) → lượt 2 tiếp tục đủ N session.
+- Nút Stop all. Sidebar: badge "N⚡" cho broadcast chat.
+- Nav: xoá link Chat; route `#/chat` → `location.hash = "#/workspace"`.
+**DoD:** browser-verify: broadcast 2 provider (nvidia+claude) trả song song 2 cột; hỏi lượt 2 cả hai nhớ ngữ cảnh; #/chat redirect.
 
 ## Step B3 — Session resume bền vững `[CODEX]` (M, sau B1)
 

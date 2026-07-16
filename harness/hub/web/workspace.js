@@ -120,6 +120,7 @@
       this.timers = new Set();
       this.toastTimer = null;
       this.streamController = null;
+      this.broadcastControllers = new Map();
       this.runtimeStreamController = null;
       this.modelController = null;
       this.providerController = null;
@@ -197,6 +198,7 @@
 
     unmount() {
       this.abortStream();
+      this.abortBroadcastStreams();
       this.abortRuntimeStream();
       if (this.modelController) {
         this.modelController.abort();
@@ -494,6 +496,14 @@
       };
     }
 
+    providerLabel(id) {
+      return ({ nvidia: "NVIDIA", claude: "Claude", codex: "Codex", gemini: "Gemini" })[id] || id;
+    }
+
+    isBroadcastChat(chat) {
+      return Array.isArray(chat?.providers) && chat.providers.length >= 2;
+    }
+
     statusMeta(kind, status) {
       const map = {
         file: {
@@ -541,10 +551,10 @@
     renderTopbar(art) {
       const chat = this.getActiveChat();
       const provider = this.getActiveProvider();
+      const broadcast = this.isBroadcastChat(chat);
       const providerLocked = Boolean(chat?.messages.length);
-      const providerLabels = { nvidia: "NVIDIA", claude: "Claude", codex: "Codex", gemini: "Gemini" };
       const providerOptions = this.state.providers.map((row) => {
-        const label = providerLabels[row.id] || row.id;
+        const label = this.providerLabel(row.id);
         const offline = row.available ? "" : " (offline)";
         return `<option value="${html(row.id)}" ${row.id === provider.id ? "selected" : ""} ${row.available ? "" : "disabled"}>${html(label + offline)}</option>`;
       }).join("");
@@ -556,13 +566,18 @@
             <div class="ws-status-pill"><span class="ws-status-dot"></span>Active</div>
           </div>
           <div class="ws-top-actions">
-            <div class="ws-provider-wrap">
+            ${broadcast ? `<div class="ws-broadcast-providers">
+              <span class="ws-provider-badge">Broadcast</span>
+              ${this.state.providers.map((row) => `<label class="ws-broadcast-provider"><input type="checkbox" data-ws-broadcast-provider="${html(row.id)}" ${chat.providers.includes(row.id) ? "checked" : ""} ${providerLocked || !row.available ? "disabled" : ""}>${html(this.providerLabel(row.id))}</label>`).join("")}
+              ${Object.values(chat.sessionIds || {}).length ? `<span class="ws-provider-badge">${Object.keys(chat.sessionIds).length} sessions</span>` : ""}
+            </div>` : `<div class="ws-provider-wrap">
               <select class="ws-provider-select" data-ws-provider aria-label="Provider" ${providerLocked ? 'disabled title="provider locked after first message"' : ""}>
                 ${providerOptions || `<option value="nvidia">${this.state.providerLoading ? "Loading providers..." : "NVIDIA"}</option>`}
               </select>
               ${provider.id !== "nvidia" ? `<span class="ws-provider-badge">read-only</span>${provider.version ? `<span class="ws-provider-version">${html(provider.version)}</span>` : ""}` : ""}
-            </div>
-            ${provider.id === "nvidia" ? `
+              ${chat?.sessionId ? `<span class="ws-provider-badge" title="${html(chat.sessionId)}">session ${html(String(chat.sessionId).slice(0, 8))}</span>` : ""}
+            </div>`}
+            ${!broadcast && provider.id === "nvidia" ? `
               <div class="ws-model-wrap">
                 <button class="ws-model-button" type="button" data-ws-action="toggle-model-popover" aria-haspopup="true" aria-expanded="${this.state.showModelPopover ? "true" : "false"}">
                   <span class="ws-model-dot"></span>
@@ -621,6 +636,7 @@
         <aside class="ws-sidebar" aria-label="Workspace">
           <div class="ws-sidebar-top">
             <button class="ws-new-chat" type="button" data-ws-action="new-chat"><span>+</span> New Chat</button>
+            <button class="ws-broadcast-chat" type="button" data-ws-action="new-broadcast-chat">Broadcast</button>
           </div>
           <div class="ws-left-nav">
             ${this.renderLeftNavRow("chats", "&#128172;", "Chats", this.state.chats.length)}
@@ -658,7 +674,7 @@
         const subtitle = chat.messages.length === 0 ? "Empty" : `${chat.messages.length} messages`;
         return `
           <button class="ws-chat-row${active ? " is-active" : ""}" type="button" data-ws-action="switch-chat" data-chat-id="${html(chat.id)}">
-            <div class="ws-chat-title">${html(chat.title)}</div>
+            <div class="ws-chat-title">${html(chat.title)}${this.isBroadcastChat(chat) ? ' <span class="ws-broadcast-badge">N&#9889;</span>' : ""}</div>
             <div class="ws-chat-subtitle">${html(subtitle)}</div>
           </button>
         `;
@@ -890,7 +906,8 @@
             <div class="ws-composer-box">
               <textarea class="ws-prompt" data-ws-prompt rows="1" placeholder="Ask AI anything..." ${this.state.sending ? "disabled" : ""}>${html(this.state.promptText)}</textarea>
               <button class="ws-attach" type="button" title="Attach file" aria-label="Attach file" data-ws-action="attach-file">&#128206;</button>
-              <button class="ws-send" type="submit" title="Send" aria-label="Send" ${this.state.sending || (chat.provider === "nvidia" && !this.state.selectedModel) ? "disabled" : ""}>&#10148;</button>
+              ${this.state.sending && this.isBroadcastChat(chat) ? '<button class="ws-stop-all" type="button" data-ws-action="stop-all">Stop all</button>' : ""}
+              <button class="ws-send" type="submit" title="Send" aria-label="Send" ${this.state.sending || (!this.isBroadcastChat(chat) && chat.provider === "nvidia" && !this.state.selectedModel) ? "disabled" : ""}>&#10148;</button>
             </div>
           </form>
         </main>
@@ -899,6 +916,7 @@
 
     renderMessages(chat) {
       return chat.messages.map((message) => {
+        if (message.broadcast) return this.renderBroadcastMessage(message);
         const role = message.role === "user" ? "user" : "assistant";
         const visible = role === "user" || message.text || message.error || message.artifactRef || message.canCreateArtifact;
         if (!visible) return "";
@@ -914,6 +932,16 @@
           </div>
         `;
       }).join("");
+    }
+
+    renderBroadcastMessage(message) {
+      const responses = message.responses || {};
+      return `<div class="ws-message-row ws-message-row-assistant"><div class="ws-broadcast-grid">${Object.keys(responses).map((provider) => {
+        const response = responses[provider];
+        const status = response.error ? "error" : response.streaming ? "streaming" : response.done ? "ok" : "pending";
+        const tokens = response.usage?.total_tokens ?? response.usage?.total ?? response.usage?.completion_tokens;
+        return `<section class="ws-broadcast-column"><div class="ws-broadcast-column-head"><span>${html(this.providerLabel(provider))}</span><span class="ws-broadcast-status ws-broadcast-status-${status}" title="${status}"></span>${response.done && tokens != null ? `<span class="ws-broadcast-usage">${html(tokens)} tokens</span>` : ""}</div><div class="ws-broadcast-column-body${response.error ? " ws-message-error" : ""}">${html(response.text || response.error || (response.streaming ? "" : "Waiting..."))}</div></section>`;
+      }).join("")}</div></div>`;
     }
 
     renderMessageArtifactCard(artifactId) {
@@ -1260,6 +1288,12 @@
         case "new-chat":
           this.newChat();
           break;
+        case "new-broadcast-chat":
+          this.newBroadcastChat();
+          break;
+        case "stop-all":
+          this.abortBroadcastStreams();
+          break;
         case "set-left-tab":
           this.setState({ leftTab: actionEl.getAttribute("data-tab") || "chats" });
           if (actionEl.getAttribute("data-tab") === "runs") this.loadRuntimeRuns();
@@ -1382,6 +1416,11 @@
         return;
       }
       if (!(target instanceof HTMLInputElement)) return;
+      const broadcastProvider = target.getAttribute("data-ws-broadcast-provider");
+      if (broadcastProvider) {
+        this.toggleBroadcastProvider(broadcastProvider, target.checked);
+        return;
+      }
       const fileId = target.getAttribute("data-context-file-id");
       if (fileId) {
         this.toggleContextFile(fileId);
@@ -1453,7 +1492,10 @@
     }
 
     newChat() {
-      if (this.state.sending) this.abortStream();
+      if (this.state.sending) {
+        this.abortStream();
+        this.abortBroadcastStreams();
+      }
       const id = genId("chat");
       const chat = { id, title: "New Chat", messages: [], provider: "nvidia", sessionId: null };
       this.setState((state) => ({
@@ -1466,9 +1508,41 @@
       }));
     }
 
+    newBroadcastChat() {
+      if (this.state.sending) {
+        this.abortStream();
+        this.abortBroadcastStreams();
+      }
+      const providers = this.state.providers.filter((row) => row.available).map((row) => row.id);
+      if (providers.length < 2) {
+        this.showToast("Broadcast needs at least two available providers.");
+        return;
+      }
+      const id = genId("chat");
+      const chat = { id, title: "New Broadcast", messages: [], providers, sessionIds: {} };
+      this.setState((state) => ({
+        chats: [chat, ...state.chats], activeChatId: id, leftTab: "chats", promptText: "", aiThinking: false, taskStatus: null,
+      }));
+    }
+
+    toggleBroadcastProvider(providerId, checked) {
+      const chat = this.getActiveChat();
+      if (!chat || !this.isBroadcastChat(chat) || chat.messages.length) return;
+      const providers = checked ? [...new Set([...chat.providers, providerId])] : chat.providers.filter((id) => id !== providerId);
+      if (providers.length < 2) {
+        this.showToast("Select at least two providers for broadcast.");
+        this.render();
+        return;
+      }
+      this.setState((state) => ({ chats: state.chats.map((item) => item.id === chat.id ? { ...item, providers } : item) }));
+    }
+
     switchChat(id) {
       if (!this.state.chats.some((chat) => chat.id === id)) return;
-      if (this.state.sending) this.abortStream();
+      if (this.state.sending) {
+        this.abortStream();
+        this.abortBroadcastStreams();
+      }
       this.setState({ activeChatId: id, leftTab: "chats", promptText: "", aiThinking: false, taskStatus: null, showModelPopover: false }, { scrollMessagesBottom: true });
     }
 
@@ -1521,9 +1595,26 @@
       return rows;
     }
 
+    broadcastRequestMessages(chat, provider, additionalUserText) {
+      const rows = chat.messages.flatMap((message) => {
+        if (message.role === "user" && message.text) return [{ role: "user", content: String(message.text) }];
+        if (message.broadcast) {
+          const response = message.responses?.[provider];
+          return response?.text ? [{ role: "assistant", content: String(response.text) }] : [];
+        }
+        return message.role === "assistant" && message.text ? [{ role: "assistant", content: String(message.text) }] : [];
+      });
+      if (additionalUserText) rows.push({ role: "user", content: additionalUserText });
+      return rows;
+    }
+
     sendMessage(text) {
       const chat = this.getActiveChat();
       if (!chat) return;
+      if (this.isBroadcastChat(chat)) {
+        this.sendBroadcastMessage(chat, text);
+        return;
+      }
       const provider = chat.provider || "nvidia";
       if (provider === "nvidia" && !this.state.selectedModel) {
         this.showToast(this.state.modelLoading ? "Models are still loading." : "Select a model first.");
@@ -1547,6 +1638,19 @@
       this.streamChatResponse(chat.id, assistantMessage.id, requestMessages, provider, this.state.selectedModel, chat.sessionId);
     }
 
+    sendBroadcastMessage(chat, text) {
+      const providers = chat.providers.filter((id) => this.state.providers.some((row) => row.id === id && row.available));
+      if (providers.length < 2) {
+        this.showToast("Broadcast needs at least two available providers.");
+        return;
+      }
+      const userMessage = { id: genId("msg"), role: "user", text };
+      const assistantMessage = { id: genId("msg"), role: "assistant", broadcast: true, responses: Object.fromEntries(providers.map((id) => [id, { text: "", streaming: true, done: false }])) };
+      const nextTitle = chat.title === "New Broadcast" && chat.messages.length === 0 ? text.slice(0, 42) || "New Broadcast" : chat.title;
+      this.setState((state) => ({ chats: state.chats.map((item) => item.id === chat.id ? { ...item, title: nextTitle, messages: [...item.messages, userMessage, assistantMessage] } : item), aiThinking: true, sending: true, showModelPopover: false }), { scrollMessagesBottom: true });
+      providers.forEach((provider) => this.streamBroadcastResponse(chat.id, assistantMessage.id, provider, this.broadcastRequestMessages(chat, provider, text), chat.sessionIds?.[provider]));
+    }
+
     abortStream() {
       if (this.streamController) {
         this.streamController.abort();
@@ -1555,6 +1659,12 @@
       if (this.mounted && this.state.sending) {
         this.setState({ sending: false, aiThinking: false });
       }
+    }
+
+    abortBroadcastStreams() {
+      this.broadcastControllers.forEach((controller) => controller.abort());
+      this.broadcastControllers.clear();
+      if (this.mounted && this.state.sending) this.setState({ sending: false, aiThinking: false });
     }
 
     async streamChatResponse(chatId, messageId, requestMessages, requestProvider, requestModel, sessionId) {
@@ -1611,6 +1721,78 @@
           this.setState({ sending: false, aiThinking: false }, { scrollMessagesBottom: true });
         }
       }
+    }
+
+    async streamBroadcastResponse(chatId, messageId, provider, requestMessages, sessionId) {
+      const controller = new AbortController();
+      this.broadcastControllers.set(provider, controller);
+      try {
+        const body = { provider, messages: requestMessages };
+        if (provider === "nvidia" && this.state.selectedModel) body.model = this.state.selectedModel;
+        if (sessionId) body.session_id = sessionId;
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-Hub-Client": "harness-hub" },
+          body: JSON.stringify(body), signal: controller.signal,
+        });
+        if (!response.ok) {
+          const raw = await response.text();
+          throw new Error(raw || `${response.status} ${response.statusText}`);
+        }
+        if (!response.body) throw new Error("Empty chat stream");
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const parts = buffer.split(/\r?\n\r?\n/);
+          buffer = parts.pop() || "";
+          parts.forEach((part) => this.handleBroadcastSseBlock(part, chatId, messageId, provider));
+        }
+        buffer += decoder.decode();
+        this.handleBroadcastSseBlock(buffer, chatId, messageId, provider);
+      } catch (error) {
+        if (error.name !== "AbortError") this.updateBroadcastResponse(chatId, messageId, provider, { text: error.message || String(error), error: error.message || String(error), streaming: false, done: false });
+      } finally {
+        this.broadcastControllers.delete(provider);
+        if (this.mounted) {
+          this.updateBroadcastResponse(chatId, messageId, provider, { streaming: false });
+          if (this.broadcastControllers.size === 0) this.setState({ sending: false, aiThinking: false }, { scrollMessagesBottom: true });
+        }
+      }
+    }
+
+    handleBroadcastSseBlock(block, chatId, messageId, provider) {
+      if (!String(block || "").trim()) return;
+      try {
+        const parsed = parseSseBlock(block);
+        const payload = parsed.data ? JSON.parse(parsed.data) : {};
+        if (parsed.eventName === "delta") {
+          this.appendBroadcastText(chatId, messageId, provider, String(payload.text || ""));
+          this.setState({ aiThinking: false }, { scrollMessagesBottom: true });
+        } else if (parsed.eventName === "done") {
+          if (payload.session_id) this.setState((state) => ({ chats: state.chats.map((chat) => chat.id === chatId ? { ...chat, sessionIds: { ...(chat.sessionIds || {}), [provider]: String(payload.session_id) } } : chat) }));
+          this.updateBroadcastResponse(chatId, messageId, provider, { streaming: false, done: true, usage: payload.usage || null, model: payload.model || null });
+        } else if (parsed.eventName === "error") {
+          const message = String(payload.message || "Chat stream error");
+          this.updateBroadcastResponse(chatId, messageId, provider, { text: message, error: message, streaming: false, done: false });
+        }
+      } catch (error) {
+        this.updateBroadcastResponse(chatId, messageId, provider, { text: error.message || String(error), error: error.message || String(error), streaming: false, done: false });
+      }
+    }
+
+    updateBroadcastResponse(chatId, messageId, provider, patch) {
+      this.setState((state) => ({ chats: state.chats.map((chat) => chat.id === chatId ? { ...chat, messages: chat.messages.map((message) => message.id === messageId ? { ...message, responses: { ...message.responses, [provider]: { ...message.responses?.[provider], ...patch } } } : message) } : chat) }), { scrollMessagesBottom: true });
+    }
+
+    appendBroadcastText(chatId, messageId, provider, text) {
+      if (!text) return;
+      const chat = this.state.chats.find((item) => item.id === chatId);
+      const message = chat?.messages.find((item) => item.id === messageId);
+      this.updateBroadcastResponse(chatId, messageId, provider, { text: String(message?.responses?.[provider]?.text || "") + text });
     }
 
     handleSseBlock(block, chatId, messageId, requestModel) {
