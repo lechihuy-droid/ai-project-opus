@@ -60,22 +60,25 @@ def status() -> ProviderStatus:
     try:
         result = subprocess.run(
             procs.resolve_cmd([*_base_cmd(), "--version"]),
+            stdin=subprocess.DEVNULL,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
             encoding="utf-8",
             errors="replace",
             shell=False,
-            timeout=5,
+            timeout=10,
         )
         if result.returncode == 0:
             available = True
             version = (result.stdout or result.stderr or "").strip() or None
             detail = "ok"
         else:
-            detail = (result.stderr or result.stdout or "not_installed").strip() or "not_installed"
-    except (OSError, subprocess.TimeoutExpired):
+            detail = (result.stderr or result.stdout or f"exit code {result.returncode}").strip()[:200]
+    except FileNotFoundError:
         detail = "not_installed"
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        detail = str(exc).strip()[:200]
 
     value: ProviderStatus = {
         "id": PROVIDER_ID,
