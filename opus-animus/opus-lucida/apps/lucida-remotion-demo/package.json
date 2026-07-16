@@ -33,6 +33,7 @@
     "knowledge:validate": "node scripts/knowledge/validate.mjs",
     "knowledge:compile": "node scripts/knowledge/compile.mjs",
     "knowledge:compile-references": "node scripts/knowledge/compile-references.mjs",
+    "knowledge:approve": "node scripts/knowledge/approve-reference.mjs",
     "knowledge:promote": "node scripts/knowledge/promote-reference.mjs",
     "knowledge:validate-index": "node scripts/knowledge/validate-index.mjs",
     "knowledge:migrate": "node scripts/knowledge/migrate.mjs",

@@ -193,13 +193,27 @@ export type VideoMapSlideScene = VideoMapSceneBase & {
 export type ContinuousEnvironment = {
   component: "MechanismWindow";
   variant: MechanismWindowVariant;
-  props: Omit<MechanismWindowProps, "variant">;
+  props: Omit<MechanismWindowProps, "variant"> & WindowTransformProps;
 };
 
-type AddableMechanism =
+export type WindowPosition = {
+  left: number;
+  top: number;
+};
+
+export type WindowTransformProps = {
+  position?: WindowPosition;
+  scale?: number;
+};
+
+export type AddableMechanism =
   | ({ component: "ContextChip" } & ContextChipProps)
   | ({ component: "TimerMorph" } & TimerMorphProps)
-  | ({ component: "DiffHighlight" } & DiffHighlightProps);
+  | ({ component: "DiffHighlight" } & DiffHighlightProps)
+  | ({ component: "MechanismWindow" } & MechanismWindowProps & {
+      position: WindowPosition;
+      scale?: number;
+    });
 
 export type MechanismTransition = (
   | {
@@ -220,7 +234,6 @@ export type MechanismTransition = (
   | {
       target: string;
       action: "remove";
-      props: Record<string, never>;
     }
 ) & {
   /** Delay from the containing scene's start. Defaults to 0. */
@@ -234,6 +247,10 @@ export type VideoMapContinuousScene = VideoMapSceneBase & {
 };
 
 type VideoMapBase = {
+  actors?: {
+    id: string;
+    target: string;
+  }[];
   debug?: {
     showTechnicalLabels?: boolean;
   };

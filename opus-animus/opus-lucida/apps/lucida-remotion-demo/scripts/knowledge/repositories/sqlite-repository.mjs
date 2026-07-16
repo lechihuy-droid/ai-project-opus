@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import path from "node:path";
 import { databasePath, openDatabase } from "../sqlite-client.mjs";
 import {
   applyHardFilters,
@@ -96,6 +97,20 @@ const retrieveFtsIds = (database, tokens) => {
   return new Set(rows.map((row) => row.owner_id));
 };
 
+const assertFreshProjection = ({ database, appRoot }) => {
+  const manifestPath = path.join(appRoot, ".generated", "knowledge", "manifest.json");
+  if (!fs.existsSync(manifestPath)) {
+    throw new Error("SQLite projection freshness cannot be verified: generated manifest is absent. Run npm run knowledge:compile first.");
+  }
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  const builds = database.prepare(
+    "SELECT manifest_hash FROM projection_builds WHERE status = 'published' ORDER BY build_id",
+  ).all();
+  if (builds.length !== 1 || builds[0].manifest_hash !== manifest.manifestHash) {
+    throw new Error("SQLite projection is stale for the current generated manifest. Run npm run knowledge:build first.");
+  }
+};
+
 export class SqliteKnowledgeRepository {
   constructor({ appRoot = process.cwd(), dbPath = databasePath(appRoot) } = {}) {
     this.appRoot = appRoot;
@@ -109,6 +124,7 @@ export class SqliteKnowledgeRepository {
     }
     const database = openDatabase(this.dbPath);
     try {
+      assertFreshProjection({ database, appRoot: this.appRoot });
       const records = readRecords(database);
       const { eligible, rejected } = applyHardFilters(records, query);
       return rankEligible({

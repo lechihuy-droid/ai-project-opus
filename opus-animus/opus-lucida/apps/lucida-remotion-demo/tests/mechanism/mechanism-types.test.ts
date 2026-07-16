@@ -3,12 +3,53 @@ import type { DiffHighlightProps } from "../../src/mechanism/DiffHighlight";
 import type { MechanismWindowProps } from "../../src/mechanism/MechanismWindow";
 import type { TimerMorphProps } from "../../src/mechanism/TimerMorph";
 import continuousSampleJson from "../fixtures/continuous-video-map.json";
-import type { ContinuousVideoMap } from "../../src/data";
+import type { ContinuousVideoMap, MechanismTransition } from "../../src/data";
 
 // The schema test verifies the JSON shape. Keeping the fixture in the TS
 // program also checks that consumers can bind it to the continuous contract.
 export const typedContinuousSample =
   continuousSampleJson as unknown as ContinuousVideoMap;
+
+export const validRemoveTransition = {
+  target: "recipient-chip",
+  action: "remove",
+  offsetSec: 0.5,
+} satisfies MechanismTransition;
+
+export const validAddableWindowTransition = {
+  target: "chat-window",
+  action: "add",
+  props: {
+    component: "MechanismWindow",
+    variant: "chat",
+    title: "Chat keigo",
+    japaneseText: "承知いたしました。",
+    vietnameseText: "Tôi đã hiểu.",
+    state: "draft",
+    showCursor: true,
+    cursorBlinkFrames: 12,
+    position: { left: 520, top: 720 },
+    scale: 0.5,
+  },
+} satisfies MechanismTransition;
+
+export const typedDualWindowMap: ContinuousVideoMap = {
+  ...typedContinuousSample,
+  environment: {
+    ...typedContinuousSample.environment,
+    props: {
+      ...typedContinuousSample.environment.props,
+      position: { left: 80, top: 250 },
+      scale: 0.8,
+    },
+  },
+  scenes: [
+    {
+      ...typedContinuousSample.scenes[0],
+      transitions: [validAddableWindowTransition],
+    },
+  ],
+};
 
 export const validWindowProps = {
   variant: "email",

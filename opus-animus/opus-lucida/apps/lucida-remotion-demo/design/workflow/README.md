@@ -13,6 +13,8 @@ File này trả lời câu hỏi: **spec pipeline lý tưởng (G00–G12) khác
 
 > **Flow production active (approved 2026-07-14):** xem [`FLOW_V1.md`](FLOW_V1.md) — flow S0–S6 nối market research → script → audio → mapping → render → QA → publish, kèm map G-gate → stage và milestones M1–M5. G00–G12 giữ vai trò north star, không implement full ở v1.
 
+> **RAG ingest/retrieval active (2026-07-16):** xem [`RAG_INGEST_AND_RETRIEVAL.md`](RAG_INGEST_AND_RETRIEVAL.md) — human approval, canonical promotion, SQLite projection và build-time retrieval trước Remotion mapping.
+
 ## Implementation Status (spec vs code thực tế)
 
 Toàn bộ spec dưới đây mô tả **pipeline mục tiêu** với approval gates, immutable artifacts, checksums, state machine. **Code hiện tại KHÔNG có các cơ chế đó.** Thực tế đang chạy là flow skill-orchestrated đơn giản (xem `opus-lucida/11-current-operating-flow.md` và `ai/skills/remotion-script-to-video/SKILL.md`).

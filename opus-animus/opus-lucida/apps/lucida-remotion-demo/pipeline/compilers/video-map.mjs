@@ -18,11 +18,15 @@ const contentFor = (scene) => {
     footer: scene.preset,
   };
   if (scene.visualFamily === "terminal" || scene.visualFamily === "code") {
+    const lines = texts.flatMap((text) => text.split(/\r?\n/))
+      .map((line) => line.trim())
+      .filter(Boolean);
+    if (lines[0] === scene.title) lines.shift();
     return {
       ...base,
       codeTitle: scene.preset,
-      lines: texts.length ? texts : ["No output"],
-      highlights: texts.map((_, i) => i),
+      lines: lines.length ? lines : ["No output"],
+      highlights: lines.map((_, i) => i),
     };
   }
   if (
@@ -84,8 +88,11 @@ export const compileVideoMap = (mapped, config) => {
         scene.visualFamily === "terminal" ? "matrix-rain" : "noise-grain",
       transitionIn: "cross-dissolve",
       transitionOut: "cross-dissolve",
-      subtitleMode: "bar",
-      reason: `Compiled from ${scene.visualFamily}/${scene.preset} with provenance-backed blocks.`,
+      subtitleMode:
+        scene.visualFamily === "terminal" || scene.visualFamily === "code"
+          ? "none"
+          : "bar",
+      reason: `Compiled from ${scene.visualFamily}/${scene.preset} with provenance-backed blocks${scene.knowledgeEvidence?.length ? ` and ${scene.knowledgeEvidence.length} approved RAG evidence item(s)` : ""}.`,
     };
   });
   const durationSec = scenes.reduce((sum, scene) => sum + scene.durationSec, 0);

@@ -1,4 +1,5 @@
 const clean = (text) => (text ?? "").replace(/\s+/g, " ").trim();
+const titleFor = (event, fallback) => clean(event?.text?.split(/\r?\n/, 1)[0]) || fallback;
 
 const makeBlock = (event, at = 0) => ({
   kind:
@@ -23,9 +24,21 @@ const makeBlock = (event, at = 0) => ({
   sourceEventIds: [event.id],
 });
 
-const familyFor = (event, config) => {
+const selectionFor = (event, knowledgeSelection) =>
+  knowledgeSelection?.selections?.find((selection) => selection.eventId === event.id);
+
+const evidenceFor = (events, knowledgeSelection) => [
+  ...new Set(events.flatMap((event) =>
+    selectionFor(event, knowledgeSelection)?.evidence?.map((item) => item.id) ?? [])),
+];
+
+const familyFor = (event, config, knowledgeSelection) => {
   const requested = event.data?.family ?? event.data?.visualFamily;
   if (config.mapping.allowedFamilies.includes(requested)) return requested;
+  const recommended = selectionFor(event, knowledgeSelection)?.recommendedFamily;
+  if (config.mapping.allowedFamilies.includes(recommended)) return recommended;
+  if (event.kind === "narrative" && config.mapping.allowedFamilies.includes("editorial"))
+    return "editorial";
   if (event.kind === "code" && config.mapping.allowedFamilies.includes("code"))
     return "code";
   if (
@@ -56,7 +69,7 @@ const presetFor = (family, config) => {
   return config.mapping.defaultPreset;
 };
 
-export const mapVisualScenes = (normalized, config) => {
+export const mapVisualScenes = (normalized, config, knowledgeSelection = null) => {
   if (normalized.schemaVersion !== "normalized-visual-input/v1") {
     throw new Error(
       `Unsupported normalized schema: ${normalized.schemaVersion}`,
@@ -89,23 +102,21 @@ export const mapVisualScenes = (normalized, config) => {
 
   for (let index = 0; index < narratives.length; index += maxItems) {
     const group = narratives.slice(index, index + maxItems);
+    const visualFamily = familyFor(group[0], config, knowledgeSelection);
     scenes.push({
-      sceneId: `editorial-${String(scenes.length + 1).padStart(2, "0")}`,
-      visualFamily: config.mapping.allowedFamilies.includes("editorial")
-        ? "editorial"
-        : config.mapping.defaultFamily,
-      preset: config.mapping.allowedPresets.includes("headline-stat-grid")
-        ? "headline-stat-grid"
-        : config.mapping.defaultPreset,
+      sceneId: `${visualFamily}-${String(scenes.length + 1).padStart(2, "0")}`,
+      visualFamily,
+      preset: presetFor(visualFamily, config),
       themeId: config.themeId,
       durationInFrames: Math.max(
         minFrames,
         Math.min(maxFrames, fps * (3 + group.length)),
       ),
-      title: clean(group[0]?.text) || "Visual story",
+      title: titleFor(group[0], "Visual story"),
       blocks: group.map((event, blockIndex) =>
         makeBlock(event, blockIndex * Math.round(fps * 0.7)),
       ),
+      knowledgeEvidence: evidenceFor(group, knowledgeSelection),
     });
   }
 
@@ -138,12 +149,13 @@ export const mapVisualScenes = (normalized, config) => {
             Math.max(0, (event.frame ?? firstFrame) - firstFrame),
           ),
         ),
+      knowledgeEvidence: evidenceFor(operational.slice(0, maxItems), knowledgeSelection),
     });
   }
 
   const referencesByFamily = new Map();
   for (const event of references) {
-    const family = familyFor(event, config);
+    const family = familyFor(event, config, knowledgeSelection);
     referencesByFamily.set(family, [
       ...(referencesByFamily.get(family) ?? []),
       event,
@@ -161,10 +173,11 @@ export const mapVisualScenes = (normalized, config) => {
           minFrames,
           Math.min(maxFrames, fps * (3 + group.length * 0.6)),
         ),
-        title: clean(group[0]?.text) || "Visual references",
+        title: titleFor(group[0], "Visual references"),
         blocks: group.map((event, blockIndex) =>
           makeBlock(event, blockIndex * Math.round(fps * 0.45)),
         ),
+        knowledgeEvidence: evidenceFor(group, knowledgeSelection),
       });
     }
   }
@@ -176,6 +189,14 @@ export const mapVisualScenes = (normalized, config) => {
     generatedAt: new Date().toISOString(),
     fps,
     themeId: config.themeId,
+    knowledge: knowledgeSelection
+      ? {
+          enabled: knowledgeSelection.enabled,
+          repository: knowledgeSelection.repository,
+          manifestHash: knowledgeSelection.manifestHash,
+          summary: knowledgeSelection.summary,
+        }
+      : null,
     scenes,
   };
 };

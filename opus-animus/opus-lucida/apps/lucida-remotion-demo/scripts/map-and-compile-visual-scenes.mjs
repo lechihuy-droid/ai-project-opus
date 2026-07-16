@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { mapVisualScenes } from "../pipeline/mappers/map-scenes.mjs";
 import { compileVideoMap } from "../pipeline/compilers/video-map.mjs";
+import { selectVisualKnowledge } from "../pipeline/retrieval/select-visual-knowledge.mjs";
 
 const args = process.argv.slice(2);
 const valueAfter = (flag) => {
@@ -22,8 +23,13 @@ const config = JSON.parse(
 );
 const normalized = JSON.parse(fs.readFileSync(inputPath, "utf8"));
 const outDir = path.dirname(inputPath);
-const mapped = mapVisualScenes(normalized, config);
+const knowledgeSelection = selectVisualKnowledge({ normalized, config, appRoot: root });
+const mapped = mapVisualScenes(normalized, config, knowledgeSelection);
 const videoMap = compileVideoMap(mapped, config);
+fs.writeFileSync(
+  path.join(outDir, "03-knowledge-selection.json"),
+  JSON.stringify(knowledgeSelection, null, 2) + "\n",
+);
 fs.writeFileSync(
   path.join(outDir, "04-visual-scenes.json"),
   JSON.stringify(mapped, null, 2) + "\n",

@@ -10,13 +10,15 @@ const valueAfter = (flag) => {
 const config = valueAfter("--config");
 if (!config)
   throw new Error(
-    "Usage: npm run visual-flow -- --config <config.json> [--run-id <id>] [--no-preview] [--no-render]",
+    "Usage: npm run visual-flow -- --config <config.json> [--run-id <id>] [--no-preview] [--no-render] [--no-knowledge-refresh]",
   );
 const root = process.cwd();
+const configDefinition = JSON.parse(fs.readFileSync(path.resolve(root, config), "utf8"));
 const runId = valueAfter("--run-id") ?? `visual-${Date.now()}`;
 const runDir = `pipeline/runs/${runId}`;
 const noPreview = args.includes("--no-preview");
 const noRender = args.includes("--no-render");
+const noKnowledgeRefresh = args.includes("--no-knowledge-refresh");
 
 const run = (script, scriptArgs) => {
   const result = spawnSync(process.execPath, [script, ...scriptArgs], {
@@ -35,6 +37,16 @@ run("scripts/process-visual-inputs.mjs", [
   "--config",
   config,
 ]);
+const knowledgeEnabled = configDefinition.knowledge?.enabled === true;
+const refreshKnowledge = knowledgeEnabled
+  && configDefinition.knowledge?.refreshProjection !== false
+  && !noKnowledgeRefresh;
+if (refreshKnowledge) {
+  run("scripts/knowledge/compile.mjs", []);
+  if ((configDefinition.knowledge?.repository ?? "sqlite") === "sqlite") {
+    run("scripts/knowledge/build-sqlite.mjs", []);
+  }
+}
 run("scripts/map-and-compile-visual-scenes.mjs", [
   "--input",
   `${runDir}/03-normalized-input.json`,
@@ -66,6 +78,11 @@ const report = {
     collect: "completed",
     sanitize: "completed",
     normalize: "completed",
+    knowledgeCompile: refreshKnowledge ? "completed" : "skipped",
+    knowledgeBuild: refreshKnowledge && (configDefinition.knowledge?.repository ?? "sqlite") === "sqlite"
+      ? "completed"
+      : "skipped",
+    knowledgeRetrieve: knowledgeEnabled ? "completed" : "skipped",
     map: "completed",
     compile: "completed",
     validate: "completed",

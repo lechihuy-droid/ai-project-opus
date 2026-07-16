@@ -20,7 +20,7 @@ const output = path.join(outDir, "video.mp4");
 fs.mkdirSync(outDir, { recursive: true });
 const result = spawnSync(
   "npx",
-  ["remotion", "render", "LucidaMotionDemo", output, `--props=${propsPath}`],
+  ["remotion", "render", "LucidaMotionDemo", output, `--props=${propsPath}`, "--concurrency=1"],
   {
     cwd: root,
     stdio: "inherit",
