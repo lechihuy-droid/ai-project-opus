@@ -18,6 +18,9 @@ const chatState = {
   modelCatalog: [],
   defaultModel: "",
   model: "",
+  provider: "nvidia",
+  providers: [],
+  sessionId: null,
   selectedCategory: "All",
   searchQuery: "",
   modelPickerOpen: false,
@@ -175,10 +178,12 @@ async function getText(path) {
   return response.text();
 }
 
+const HUB_CLIENT_HEADERS = { "Content-Type": "application/json", "X-Hub-Client": "harness-hub" };
+
 async function postJson(path, body) {
   const response = await fetch(path, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: HUB_CLIENT_HEADERS,
     body: JSON.stringify(body),
   });
   if (!response.ok) {
@@ -1238,16 +1243,51 @@ function wireSuiteRunButtons() {
   });
 }
 
+function renderCockpit(cockpit) {
+  if (!cockpit || !cockpit.today) return "";
+  const online = Array.isArray(cockpit.providers_online) ? cockpit.providers_online : [];
+  const quota = Number(cockpit.quota_warn_per_day || 0) || 200;
+  const byProvider = Array.isArray(cockpit.today.by_provider) ? cockpit.today.by_provider : [];
+  const leds = online
+    .map((p) => `<span class="cockpit-led ${p.available ? "on" : "off"}" title="${escapeHtml(String(p.id))}">${escapeHtml(PROVIDER_LABELS[p.id] || p.id)}</span>`)
+    .join("");
+  const gauges = byProvider.length
+    ? byProvider
+        .map((row) => {
+          const svg = window.HubCharts && window.HubCharts.gauge
+            ? window.HubCharts.gauge(Number(row.calls || 0), quota)
+            : "";
+          return `<div class="cockpit-gauge">${svg}<div class="cockpit-gauge-label">${escapeHtml(PROVIDER_LABELS[row.provider] || row.provider)}</div>
+            <div class="cockpit-gauge-sub">${formatNumber(row.total_tokens || 0)} tok</div></div>`;
+        })
+        .join("")
+    : '<p class="muted">No usage today</p>';
+  const counter = window.HubCharts && window.HubCharts.counter
+    ? window.HubCharts.counter(Number(cockpit.today.calls || 0))
+    : `<div class="cockpit-counter-value">${formatNumber(cockpit.today.calls || 0)}</div>`;
+  return `
+    <section class="cockpit-row ${cockpit.warn ? "warn" : ""}">
+      <div class="cockpit-main">
+        <span class="badge navy">Cockpit — today</span>
+        <div class="cockpit-counter">${counter}<span class="cockpit-counter-cap">calls / ${escapeHtml(quota)}</span></div>
+        <div class="cockpit-total muted">${formatNumber(cockpit.today.total_tokens || 0)} tokens · 7d ${formatNumber(cockpit.week7d ? cockpit.week7d.calls : 0)} calls</div>
+        <div class="cockpit-leds">${leds}</div>
+      </div>
+      <div class="cockpit-gauges">${gauges}</div>
+    </section>`;
+}
+
 async function renderDashboard() {
   setActiveNav("/");
   setLoading("Dashboard");
   const renderToken = ++dashboardRenderToken;
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-  const [runs, suites, board, governance] = await Promise.all([
+  const [runs, suites, board, governance, cockpit] = await Promise.all([
     getJson("/api/runs"),
     getJson("/api/suites"),
     getJson("/api/board").catch(() => null),
     getJson("/api/governance").catch(() => null),
+    getJson("/api/usage/cockpit").catch(() => null),
   ]);
   if (renderToken !== dashboardRenderToken || (location.hash || "#/") !== "#/") return;
   const recentViolations = runs.slice(0, 8).reduce((sum, run) => sum + violationTotal(run), 0);
@@ -1257,6 +1297,7 @@ async function renderDashboard() {
       <p class="lead">Local control plane for suite runs, reports, suite definitions, and AI usage.</p>
     </div>
     <div class="hub-actions"><button class="link-button" type="button" id="dashboard-refresh">Refresh</button></div>
+    ${renderCockpit(cockpit)}
     <div class="card-grid dashboard-grid">
       <div class="card" id="dash-runs-card">${dashRunsCardInner(runs)}</div>
       <div class="card">
@@ -1750,6 +1791,28 @@ function renderChatModelPickerContent() {
   `;
 }
 
+const PROVIDER_LABELS = { nvidia: "NVIDIA", claude: "Claude", codex: "Codex", gemini: "Gemini" };
+
+function renderChatProviderSelect() {
+  const rows = chatState.providers.length
+    ? chatState.providers
+    : [{ id: "nvidia", available: true, version: null, capabilities: {} }];
+  const options = rows
+    .map((row) => {
+      const id = String(row.id || "");
+      const label = PROVIDER_LABELS[id] || id;
+      const ver = row.version ? ` ${row.version}` : "";
+      const off = row.available ? "" : " (offline)";
+      const selected = id === chatState.provider ? "selected" : "";
+      const disabled = row.available ? "" : "disabled";
+      return `<option value="${escapeHtml(id)}" ${selected} ${disabled}>${escapeHtml(label + ver + off)}</option>`;
+    })
+    .join("");
+  const current = rows.find((row) => String(row.id) === chatState.provider);
+  const readonly = current && current.id !== "nvidia" ? '<span class="chat-provider-badge">read-only</span>' : "";
+  return `<select id="chat-provider" class="chat-provider-select" ${chatState.sending ? "disabled" : ""}>${options}</select>${readonly}`;
+}
+
 function renderChatModelPicker() {
   return `
     <div class="chat-model-picker" id="chat-model-picker">
@@ -1922,6 +1985,8 @@ function loadChatPersistence() {
       chatState.messages = Array.isArray(parsed.messages)
         ? parsed.messages.map(normalizeStoredChatMessage).filter(Boolean)
         : [];
+      if (parsed.provider) chatState.provider = String(parsed.provider);
+      chatState.sessionId = parsed.sessionId ? String(parsed.sessionId) : null;
     }
   } catch (_error) {
     try {
@@ -1940,6 +2005,8 @@ function saveChatPersistence() {
     window.localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify({
       model: chatState.model,
       selectedModelId: chatState.model,
+      provider: chatState.provider,
+      sessionId: chatState.sessionId,
       messages,
     }));
   } catch (_error) {
@@ -2240,6 +2307,7 @@ function handleChatSseBlock(block, assistantIndex, requestModel) {
     message.done = true;
     message.usage = payload.usage || null;
     message.model = payload.model || chatState.model;
+    if (payload.session_id) chatState.sessionId = String(payload.session_id);
   } else if (parsed.eventName === "error") {
     message.streaming = false;
     message.done = false;
@@ -2256,10 +2324,14 @@ async function streamChatResponse(requestMessages, assistantIndex) {
   chatAbortController = new AbortController();
   const requestModel = chatState.model;
   try {
+    const provider = chatState.provider || "nvidia";
+    const body = { provider, messages: requestMessages };
+    if (provider === "nvidia") body.model = requestModel;
+    if (chatState.sessionId) body.session_id = chatState.sessionId;
     const response = await fetch("/api/chat", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: requestMessages, model: requestModel }),
+      headers: HUB_CLIENT_HEADERS,
+      body: JSON.stringify(body),
       signal: chatAbortController.signal,
     });
     if (!response.ok) {
@@ -2553,12 +2625,25 @@ function wireChat() {
     if (chatState.sending) return;
     clearChatStream();
     chatState.messages = [];
+    chatState.sessionId = null;
     chatState.sending = false;
     chatState.userNearBottom = true;
     clearChatPersistence();
     setChatNotice("");
     updateChatMessages({ forceScroll: true });
     updateChatControls();
+  });
+  document.getElementById("chat-provider")?.addEventListener("change", (event) => {
+    if (chatState.sending) return;
+    const next = String(event.target.value || "nvidia");
+    if (next === chatState.provider) return;
+    chatState.provider = next;
+    chatState.sessionId = null;
+    chatState.messages = [];
+    clearChatStream();
+    clearChatPersistence();
+    saveChatPersistence();
+    renderChat();
   });
   exportToggle?.addEventListener("click", (event) => {
     event.preventDefault();
@@ -2646,6 +2731,8 @@ async function renderChat() {
   if (!chatState.model || !chatState.models.includes(chatState.model)) {
     chatState.model = chatState.defaultModel || chatState.models[0] || "";
   }
+  chatState.providers = await getJson("/api/providers").catch(() => []);
+  if (!Array.isArray(chatState.providers)) chatState.providers = [];
   app.innerHTML = `
     <div class="chat-page">
       <div class="page-hero chat-page-hero">
@@ -2654,7 +2741,11 @@ async function renderChat() {
       </div>
       <section class="card chat-panel">
         <div class="chat-toolbar">
-          <div class="chat-model-field">
+          <div class="chat-provider-field">
+            <span class="sr-only">Provider</span>
+            ${renderChatProviderSelect()}
+          </div>
+          <div class="chat-model-field" ${chatState.provider === "nvidia" ? "" : "hidden"}>
             <span class="sr-only">Model</span>
             ${renderChatModelPicker()}
           </div>
@@ -3162,6 +3253,81 @@ function wireArtifactButtons(runId) {
   });
 }
 
+function skillCoverageChips(coverage) {
+  const list = Array.isArray(coverage) ? coverage : [];
+  return list.map((src) => `<span class="badge navy">${escapeHtml(src)}</span>`).join(" ");
+}
+
+async function renderSkillLibrary() {
+  setActiveNav("/skills-lib");
+  setLoading("Skills");
+  const [skills, drift] = await Promise.all([
+    getJson("/api/skill-library"),
+    getJson("/api/skill-library/drift").catch(() => []),
+  ]);
+  if ((location.hash || "#/") !== "#/skills-lib") return;
+  const driftNames = new Set((Array.isArray(drift) ? drift : []).filter((d) => !d.in_sync).map((d) => d.name));
+  const rows = (Array.isArray(skills) ? skills : [])
+    .map((s) => {
+      const drifted = driftNames.has(s.name) ? '<span class="badge red">drift</span>' : "";
+      const used = s.last_used ? escapeHtml(String(s.last_used).slice(0, 10)) : "—";
+      return `<tr>
+        <td><a href="#/skills-lib/${encodeURIComponent(s.id)}">${escapeHtml(s.name)}</a> ${drifted}</td>
+        <td>${escapeHtml(s.source)}</td>
+        <td>${skillCoverageChips(s.coverage)}</td>
+        <td>${used}</td>
+        <td>${escapeHtml(s.use_count_30d != null ? s.use_count_30d : 0)}</td>
+      </tr>`;
+    })
+    .join("");
+  app.innerHTML = `
+    <div class="page-hero"><h1>Skill Library</h1>
+      <p class="lead">Skills across Claude and Codex — coverage, drift, deploy.</p></div>
+    <section class="card">
+      <table class="hub-table">
+        <thead><tr><th>Name</th><th>Source</th><th>Coverage</th><th>Last used</th><th>30d</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="5" class="muted">No skills found</td></tr>'}</tbody>
+      </table>
+    </section>`;
+}
+
+async function renderSkillDetail(skillId) {
+  setActiveNav("/skills-lib");
+  setLoading("Skill");
+  let detail;
+  try {
+    detail = await getJson(`/api/skill-library/${skillId.split("/").map(encodeURIComponent).join("/")}`);
+  } catch (error) {
+    setError(error);
+    return;
+  }
+  if (!(location.hash || "").startsWith("#/skills-lib/")) return;
+  const targets = ["claude_user", "claude_project", "codex_user"].filter((t) => t !== detail.source);
+  const deployBtns = targets
+    .map((t) => `<button class="link-button" type="button" data-deploy-target="${escapeHtml(t)}">Deploy → ${escapeHtml(t)}</button>`)
+    .join(" ");
+  const files = Array.isArray(detail.files) ? detail.files : [];
+  app.innerHTML = `
+    <div class="hub-actions"><a class="link-button" href="#/skills-lib">← Skills</a></div>
+    <div class="page-hero"><h1>${escapeHtml(detail.name || skillId)}</h1>
+      <p class="lead">${escapeHtml(detail.source || "")} · ${escapeHtml(files.length)} file(s)</p></div>
+    <div class="hub-actions" id="skill-deploy-actions">${deployBtns}
+      <span class="chat-copy-status" id="skill-deploy-status" aria-live="polite"></span></div>
+    <section class="card">${renderMarkdown(detail.content || detail.readme || "")}</section>`;
+  document.querySelectorAll("#skill-deploy-actions [data-deploy-target]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const target = btn.getAttribute("data-deploy-target");
+      const status = document.getElementById("skill-deploy-status");
+      try {
+        await postJson(`/api/skill-library/${skillId.split("/").map(encodeURIComponent).join("/")}/deploy`, { target });
+        if (status) status.textContent = `Deployed → ${target}`;
+      } catch (error) {
+        if (status) status.textContent = error.message || "Deploy failed";
+      }
+    });
+  });
+}
+
 async function route() {
   clearAutoRefresh();
   clearJobStream();
@@ -3188,6 +3354,10 @@ async function route() {
       await renderSuites();
     } else if (parts[0] === "chat") {
       await renderChat();
+    } else if (parts[0] === "skills-lib" && parts[1]) {
+      await renderSkillDetail(parts.slice(1).join("/"));
+    } else if (parts[0] === "skills-lib") {
+      await renderSkillLibrary();
     } else if (parts[0] === "workspace") {
       setActiveNav("/workspace");
       app.innerHTML = "";

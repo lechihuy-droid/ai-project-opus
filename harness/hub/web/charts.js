@@ -46,5 +46,33 @@
     `;
   }
 
-  window.HubCharts = { barChart };
+  function gauge(value, max) {
+    const safeMax = max > 0 ? max : 1;
+    const ratio = Math.max(0, Math.min(1.15, value / safeMax));
+    const startAngle = Math.PI;
+    const endAngle = startAngle + Math.PI * Math.min(ratio, 1);
+    const cx = 50;
+    const cy = 50;
+    const r = 40;
+    const arc = (a) => `${cx + r * Math.cos(a)} ${cy + r * Math.sin(a)}`;
+    const largeArc = endAngle - startAngle > Math.PI ? 1 : 0;
+    let state = "ok";
+    if (ratio > 1) state = "danger";
+    else if (ratio > 0.8) state = "warn";
+    const track = `M ${arc(startAngle)} A ${r} ${r} 0 1 1 ${arc(startAngle + Math.PI)}`;
+    const fill = `M ${arc(startAngle)} A ${r} ${r} 0 ${largeArc} 1 ${arc(endAngle)}`;
+    return `
+      <svg class="hub-gauge state-${state}" viewBox="0 0 100 62" role="img" aria-label="Usage gauge">
+        <path d="${track}" class="gauge-track" fill="none" stroke-width="8" stroke-linecap="round"></path>
+        <path d="${fill}" class="gauge-fill" fill="none" stroke-width="8" stroke-linecap="round"></path>
+        <text x="50" y="48" class="gauge-text" text-anchor="middle">${Math.round(value)}</text>
+      </svg>`;
+  }
+
+  function counter(value) {
+    const text = String(Math.max(0, Math.round(value)));
+    return `<span class="hub-counter" aria-label="${text}">${text}</span>`;
+  }
+
+  window.HubCharts = { barChart, gauge, counter };
 })();
