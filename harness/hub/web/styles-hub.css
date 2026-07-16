@@ -2109,3 +2109,19 @@ body {
   flex-wrap: wrap;
   gap: .5rem;
 }
+
+/* Workflow run view */
+.workflow-timeline { display: flex; flex-wrap: wrap; gap: .5rem; }
+.workflow-node { border: 1px solid transparent; font-family: var(--font-mono); }
+.workflow-node-done { background: var(--gray-50); border-color: var(--green); color: var(--green); }
+.workflow-node-running { background: var(--hud-accent-bg); border-color: var(--hud-accent); color: var(--navy); }
+.workflow-node-interrupted { background: var(--gray-50); border-color: var(--status-warn); color: var(--status-warn); }
+.workflow-node-pending { background: var(--gray-100); border-color: var(--gray-200); color: var(--gray-500); }
+.workflow-output-list { display: grid; gap: .75rem; }
+.workflow-output h3 { font-family: var(--font-mono); font-size: .9rem; margin: 0 0 .25rem; }
+.workflow-output pre, .workflow-gate-prompt { background: var(--gray-50); border: 1px solid var(--gray-200); margin: 0; max-height: 18rem; overflow: auto; padding: .75rem; white-space: pre-wrap; word-break: break-word; }
+.workflow-gate { border-left: 4px solid var(--status-warn); }
+.workflow-gate label { display: grid; gap: .4rem; font-weight: 700; margin: .75rem 0; }
+.workflow-gate textarea { font-family: var(--font-mono); }
+.workflow-reject { border-color: var(--red); color: var(--red); }
+.workflow-artifacts code { font-family: var(--font-mono); }

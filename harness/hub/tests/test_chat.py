@@ -169,6 +169,29 @@ def test_chat_streams_delta_done_and_records_usage(
     assert event["calls"] == 1
 
 
+@pytest.mark.parametrize(
+    "model",
+    [
+        config.CHAT_DEFAULT_MODEL,
+        "deepseek-ai/deepseek-v4-flash",
+        "openai/gpt-oss-120b",
+    ],
+)
+def test_chat_always_sends_configured_max_tokens_across_model_branches(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+    model: str,
+) -> None:
+    calls: list[dict[str, object]] = []
+    _install_fake_openai(monkeypatch, calls)
+
+    response = client.post("/api/chat", json={"messages": _messages(), "model": model})
+
+    assert response.status_code == 200
+    assert calls
+    assert all(call["max_tokens"] == config.CHAT_MAX_TOKENS for call in calls)
+
+
 def test_chat_deepseek_uses_thinking_extra_body(
     client: TestClient,
     monkeypatch: pytest.MonkeyPatch,

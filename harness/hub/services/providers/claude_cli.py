@@ -26,7 +26,7 @@ def _base_cmd() -> list[str]:
     return ["claude"]
 
 
-def _build_cmd(prompt: str, session_id: str | None) -> list[str]:
+def _build_cmd(prompt: str, session_id: str | None, model: str | None = None) -> list[str]:
     cmd = _base_cmd()
     cmd += [
         "-p",
@@ -43,6 +43,8 @@ def _build_cmd(prompt: str, session_id: str | None) -> list[str]:
         "--disallowed-tools",
         "Bash",
     ]
+    if model:
+        cmd += ["--model", model]
     if session_id:
         cmd += ["-r", session_id]
     return cmd
@@ -165,7 +167,7 @@ def stream_chat(
     model: str | None = None,
 ) -> Iterator[ChatEvent]:
     prompt = _latest_user_prompt(messages)
-    cmd = _build_cmd(prompt, session_id)
+    cmd = _build_cmd(prompt, session_id, model=model)
     env = os.environ.copy()
     env.setdefault("PYTHONIOENCODING", "utf-8")
     timeout = float(getattr(config, "CHAT_CLI_TIMEOUT", 300))

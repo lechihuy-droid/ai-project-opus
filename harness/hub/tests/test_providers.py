@@ -116,6 +116,14 @@ def test_claude_cli_build_cmd_includes_disallowed_tools_and_resume() -> None:
     assert "-r" in cmd and "sess-1" in cmd
 
 
+def test_claude_cli_build_cmd_passes_model_alias_when_given() -> None:
+    with_model = claude_cli._build_cmd("hello", "sess-1", model="opus")
+    without_model = claude_cli._build_cmd("hello", "sess-1")
+
+    assert "--model" in with_model and "opus" in with_model
+    assert "--model" not in without_model
+
+
 def test_claude_cli_second_turn_passes_session_id_to_fake_cli(fake_claude_cli: Path, tmp_path: Path) -> None:
     list(claude_cli.stream_chat([{"role": "user", "content": "first"}]))
     list(claude_cli.stream_chat([{"role": "user", "content": "second"}], session_id="sess-abc123"))
@@ -171,6 +179,18 @@ def test_codex_cli_build_cmd_has_fresh_start_preamble_and_flags() -> None:
     assert "--json" in cmd
     assert cmd[-1].startswith("FRESH START\n\n")
     assert cmd[-1].endswith("do the thing")
+
+
+def test_codex_cli_build_cmd_passes_model_alias_before_positionals() -> None:
+    fresh_cmd = codex_cli._build_cmd("do the thing", None, model="gpt-5")
+    resume_cmd = codex_cli._build_cmd("do the thing", "sess-1", model="gpt-5")
+    no_model_cmd = codex_cli._build_cmd("do the thing", None)
+
+    assert fresh_cmd[fresh_cmd.index("-m"):fresh_cmd.index("-m") + 2] == ["-m", "gpt-5"]
+    assert fresh_cmd.index("-m") < fresh_cmd.index("FRESH START\n\ndo the thing")
+    assert resume_cmd[resume_cmd.index("-m"):resume_cmd.index("-m") + 2] == ["-m", "gpt-5"]
+    assert resume_cmd.index("-m") < resume_cmd.index("resume")
+    assert "-m" not in no_model_cmd
 
 
 def test_codex_cli_second_turn_resumes_session_in_fake_cli(fake_codex_cli: Path, tmp_path: Path) -> None:

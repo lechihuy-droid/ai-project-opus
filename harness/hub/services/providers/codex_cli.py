@@ -26,15 +26,18 @@ def _base_cmd() -> list[str]:
     return ["codex"]
 
 
-def _build_cmd(prompt: str, session_id: str | None) -> list[str]:
+def _build_cmd(prompt: str, session_id: str | None, model: str | None = None) -> list[str]:
     full_prompt = f"FRESH START\n\n{prompt}"
     base = _base_cmd()
+    options = ["-s", "read-only", "--skip-git-repo-check", "--json"]
+    if model:
+        options += ["-m", model]
     if session_id:
         # Resume path — verified against real Codex CLI 0.144.3 (B3 gate):
         # exec options must precede the `resume` subcommand per clap grammar
         # `codex exec [OPTIONS] resume [SESSION_ID] [PROMPT]`.
-        return base + ["exec", "-s", "read-only", "--skip-git-repo-check", "--json", "resume", session_id, full_prompt]
-    return base + ["exec", "-s", "read-only", "--skip-git-repo-check", "--json", full_prompt]
+        return base + ["exec", *options, "resume", session_id, full_prompt]
+    return base + ["exec", *options, full_prompt]
 
 
 def status() -> ProviderStatus:
@@ -164,7 +167,7 @@ def stream_chat(
     model: str | None = None,
 ) -> Iterator[ChatEvent]:
     prompt = _latest_user_prompt(messages)
-    cmd = _build_cmd(prompt, session_id)
+    cmd = _build_cmd(prompt, session_id, model=model)
     env = os.environ.copy()
     env.setdefault("PYTHONIOENCODING", "utf-8")
     timeout = float(getattr(config, "CHAT_CLI_TIMEOUT", 300))

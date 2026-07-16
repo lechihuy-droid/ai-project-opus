@@ -119,3 +119,10 @@ Roles:
   token usage per turn, and localStorage persistence of the conversation.
 - Bind 127.0.0.1. Never hard-code or log an API key. Avoid non-ASCII
   punctuation in source.
+
+## 8. Workflow Run View
+
+- `#/workflows` lists declared workflows; `#/workflows/runs/{run_id}` is the live run surface.
+- Node timeline badges use done, running, interrupted, and pending states. Use the workflow node order and run metadata as the source of truth.
+- Approval gates show the rendered provider prompt, objective, and optional JSON payload before resume or reject.
+- Reuse the existing budget bar twice: workflow steps and elapsed workflow time. Token caps stay hidden because workflow limits are per agent.

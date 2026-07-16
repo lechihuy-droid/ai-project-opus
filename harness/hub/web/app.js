@@ -34,6 +34,8 @@ const chatState = {
 let autoRefreshTimer = null;
 let jobEventSource = null;
 let chatAbortController = null;
+let workflowRunAbortController = null;
+const workflowRunState = { runId: null, workflow: null, state: null, outputs: {}, artifacts: [], interrupt: null, error: "" };
 let shellChromeReady = false;
 let shellStatusTimer = null;
 let skillLibraryTab = "skills";
@@ -1342,6 +1344,312 @@ async function renderDashboard() {
     .then((entropy) => {
       patchDashboardSlowCard(renderToken, "dash-entropy-card", dashEntropyCardInner(entropy));
     });
+}
+
+function workflowNodeBadgeClass(status) {
+  return `workflow-node-${status}`;
+}
+
+function workflowMetadata() {
+  const metadata = workflowRunState.state?.metadata;
+  return metadata && typeof metadata === "object" ? metadata : {};
+}
+
+function workflowElapsedSeconds(metadata) {
+  const started = Date.parse(metadata.run_started_at || "");
+  return Number.isFinite(started) ? Math.max(0, Math.floor((Date.now() - started) / 1000)) : 0;
+}
+
+function workflowPendingInterrupt(nodeId) {
+  const interrupts = Array.isArray(workflowRunState.state?.interrupts) ? workflowRunState.state.interrupts : [];
+  return interrupts.some((item) => item?.node === nodeId && item?.status !== "resolved")
+    || workflowRunState.interrupt?.node === nodeId;
+}
+
+function workflowNodeStatus(node, index, metadata) {
+  const completed = Array.isArray(metadata.completed_nodes) ? metadata.completed_nodes : [];
+  if (completed.includes(node.id)) return "done";
+  if (workflowPendingInterrupt(node.id)) return "interrupted";
+  if (Number(metadata.node_index) === index) return "running";
+  return "pending";
+}
+
+function renderWorkflowTimeline() {
+  const nodes = Array.isArray(workflowRunState.workflow?.nodes) ? workflowRunState.workflow.nodes : [];
+  const metadata = workflowMetadata();
+  if (!nodes.length) return '<p class="muted">Workflow definition unavailable.</p>';
+  return `<div class="workflow-timeline">${nodes.map((node, index) => {
+    const status = workflowNodeStatus(node, index, metadata);
+    return `<span class="badge workflow-node ${workflowNodeBadgeClass(status)}">${escapeHtml(node.id)}: ${escapeHtml(status)}</span>`;
+  }).join("")}</div>`;
+}
+
+function renderWorkflowOutputs() {
+  const nodes = Array.isArray(workflowRunState.workflow?.nodes) ? workflowRunState.workflow.nodes : [];
+  const outputs = workflowRunState.outputs;
+  if (!nodes.length) return '<p class="muted">Waiting for workflow nodes.</p>';
+  return `<div class="workflow-output-list">${nodes.map((node) => `
+    <section class="workflow-output"><h3>${escapeHtml(node.id)}</h3><pre data-workflow-output="${escapeHtml(node.id)}">${escapeHtml(outputs[node.id] || "")}</pre></section>
+  `).join("")}</div>`;
+}
+
+function workflowArtifactLink(path) {
+  const value = String(path || "");
+  const isRelativePath = /^(?!.*(?:^|\/)\.\.(?:\/|$))[A-Za-z0-9._/-]+$/.test(value);
+  if (!isRelativePath && !isSafeMarkdownHref(value)) return `<code>${escapeHtml(value)}</code>`;
+  return `<a href="${escapeHtml(value)}" target="_blank" rel="noopener noreferrer"><code>${escapeHtml(value)}</code></a>`;
+}
+
+function renderWorkflowArtifacts() {
+  if (!workflowRunState.artifacts.length) return '<p class="muted">No artifacts emitted.</p>';
+  return `<ul class="workflow-artifacts">${workflowRunState.artifacts.map((artifact) => {
+    const label = artifact.title || artifact.id || artifact.path || "artifact";
+    const path = String(artifact.path || "");
+    return `<li>${path ? `${workflowArtifactLink(path)} ` : ""}${escapeHtml(label)}</li>`;
+  }).join("")}</ul>`;
+}
+
+function renderWorkflowGate() {
+  const gate = workflowRunState.interrupt;
+  if (!gate) return "";
+  const payload = gate.payload && typeof gate.payload === "object" ? gate.payload : {};
+  return `
+    <section class="card workflow-gate" id="workflow-gate">
+      <span class="badge workflow-node workflow-node-interrupted">Approval required</span>
+      <h2>Review node ${escapeHtml(payload.node || gate.node || "")}</h2>
+      <p><strong>Objective:</strong> ${escapeHtml(payload.objective || "")}</p>
+      <label>Provider prompt<pre class="workflow-gate-prompt">${escapeHtml(payload.prompt || "")}</pre></label>
+      <label for="workflow-resume-payload">Edited payload (optional JSON object)</label>
+      <textarea id="workflow-resume-payload" rows="4" placeholder='{"field":"value"}'></textarea>
+      <div class="hub-actions"><button class="link-button" type="button" id="workflow-approve">Approve</button><button class="link-button workflow-reject" type="button" id="workflow-reject">Reject</button></div>
+      <div id="workflow-gate-error" class="error-text" aria-live="polite"></div>
+    </section>
+  `;
+}
+
+function workflowBudgetViews() {
+  const metadata = workflowMetadata();
+  const stop = workflowRunState.workflow?.stop || {};
+  const completed = Array.isArray(metadata.completed_nodes) ? metadata.completed_nodes.length : 0;
+  const elapsed = workflowElapsedSeconds(metadata);
+  return `${renderBudget({ steps_total: stop.max_nodes, steps_done: completed, step_cap: stop.max_nodes, kind: "steps", warn: completed >= Number(stop.max_nodes || Infinity), tokens_used: null, token_cap: null })}
+    ${renderBudget({ steps_total: stop.max_seconds, steps_done: elapsed, step_cap: stop.max_seconds, kind: "time", warn: elapsed >= Number(stop.max_seconds || Infinity), tokens_used: null, token_cap: null })}`;
+}
+
+function renderWorkflowRunView() {
+  const runId = workflowRunState.runId;
+  if (!runId) return;
+  const status = workflowRunState.state?.status || "running";
+  app.innerHTML = `
+    <div class="hub-actions"><a class="link-button" href="#/workflows">Back to workflows</a></div>
+    <div class="card"><span class="badge gray">${escapeHtml(status)}</span><h1>Workflow run <code>${escapeHtml(runId)}</code></h1><div id="workflow-budget-view">${workflowBudgetViews()}</div>${workflowRunState.error ? `<p class="error-text">${escapeHtml(workflowRunState.error)}</p>` : ""}</div>
+    <section class="card"><h2>Node timeline</h2>${renderWorkflowTimeline()}</section>
+    ${renderWorkflowGate()}
+    <section class="card"><h2>Streaming output</h2>${renderWorkflowOutputs()}</section>
+    <section class="card"><h2>Artifacts and claims</h2>${renderWorkflowArtifacts()}</section>
+  `;
+  wireWorkflowGate();
+}
+
+function appendWorkflowOutput(node, text) {
+  if (!node || !text) return;
+  workflowRunState.outputs[node] = `${workflowRunState.outputs[node] || ""}${text}`;
+  const target = app.querySelector(`[data-workflow-output="${CSS.escape(node)}"]`);
+  if (!target) {
+    renderWorkflowRunView();
+    return;
+  }
+  target.textContent = workflowRunState.outputs[node];
+  target.scrollTop = target.scrollHeight;
+}
+
+function handleWorkflowRunSseBlock(block) {
+  if (!String(block || "").trim()) return;
+  let parsed;
+  let payload;
+  try {
+    parsed = parseSseBlock(block);
+    payload = parsed.data ? JSON.parse(parsed.data) : {};
+  } catch (error) {
+    workflowRunState.error = error.message || String(error);
+    renderWorkflowRunView();
+    return;
+  }
+  const runId = payload.run_id || payload.state?.run_id;
+  if (runId) workflowRunState.runId = String(runId);
+  if (parsed.eventName === "assistant_delta") {
+    appendWorkflowOutput(String(payload.node || ""), String(payload.text || ""));
+  } else if (parsed.eventName === "state_snapshot") {
+    workflowRunState.state = payload.state || workflowRunState.state;
+    renderWorkflowRunView();
+  } else if (parsed.eventName === "interrupt") {
+    workflowRunState.interrupt = payload;
+    renderWorkflowRunView();
+  } else if (parsed.eventName === "artifact" && payload.artifact) {
+    workflowRunState.artifacts.push(payload.artifact);
+    renderWorkflowRunView();
+  } else if (parsed.eventName === "done") {
+    workflowRunState.state = payload.state || workflowRunState.state;
+    workflowRunState.interrupt = null;
+    renderWorkflowRunView();
+  } else if (parsed.eventName === "error") {
+    workflowRunState.state = payload.state || workflowRunState.state;
+    workflowRunState.error = String(payload.message || "Workflow run failed");
+    renderWorkflowRunView();
+  }
+  if (workflowRunState.runId && location.hash !== `#/workflows/runs/${encodeURIComponent(workflowRunState.runId)}`) {
+    location.hash = `#/workflows/runs/${encodeURIComponent(workflowRunState.runId)}`;
+  }
+}
+
+async function consumeWorkflowRunStream(response) {
+  if (!response.body) throw new Error("Empty workflow stream");
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const blocks = buffer.split(/\r?\n\r?\n/);
+    buffer = blocks.pop() || "";
+    blocks.forEach(handleWorkflowRunSseBlock);
+  }
+  buffer += decoder.decode();
+  handleWorkflowRunSseBlock(buffer);
+}
+
+async function startWorkflowRunStream(path, body) {
+  workflowRunAbortController?.abort();
+  workflowRunAbortController = new AbortController();
+  const response = await fetch(path, { method: "POST", headers: HUB_CLIENT_HEADERS, body: JSON.stringify(body), signal: workflowRunAbortController.signal });
+  if (!response.ok) {
+    const raw = await response.text();
+    let message = raw || `${response.status} ${response.statusText}`;
+    try {
+      const parsed = JSON.parse(raw);
+      message = Array.isArray(parsed.errors) ? parsed.errors.join("; ") : (parsed.detail || message);
+    } catch (_error) { /* retain response text */ }
+    throw new Error(String(message));
+  }
+  try {
+    await consumeWorkflowRunStream(response);
+  } finally {
+    workflowRunAbortController = null;
+  }
+}
+
+async function renderWorkflows() {
+  setActiveNav("/workflows");
+  setLoading("Workflows");
+  const workflows = await getJson("/api/workflows");
+  app.innerHTML = `
+    <div class="page-hero"><h1>Workflows</h1><p class="lead">Run declared agent workflows with approval gates.</p></div>
+    <div id="workflow-list-error" class="error-text" aria-live="polite"></div>
+    <div class="card table-scroll"><table><thead><tr><th>Workflow</th><th>Nodes</th><th>Action</th></tr></thead><tbody>${workflows.length ? workflows.map((workflow) => `<tr><td><code>${escapeHtml(workflow.id)}</code></td><td>${formatNumber(workflow.nodes?.length || 0)}</td><td><button class="link-button" type="button" data-workflow-run="${escapeHtml(workflow.id)}">Run</button></td></tr>`).join("") : '<tr><td colspan="3" class="muted">No workflows found.</td></tr>'}</tbody></table></div>
+  `;
+  app.querySelectorAll("[data-workflow-run]").forEach((button) => button.addEventListener("click", async () => {
+    const workflowId = button.dataset.workflowRun;
+    const objective = window.prompt("Objective for this workflow:");
+    if (objective === null) return;
+    const target = document.getElementById("workflow-list-error");
+    if (!objective.trim()) {
+      target.textContent = "Objective is required.";
+      return;
+    }
+    target.textContent = "";
+    button.disabled = true;
+    try {
+      workflowRunState.runId = null;
+      workflowRunState.workflow = workflows.find((workflow) => workflow.id === workflowId) || null;
+      workflowRunState.state = null;
+      workflowRunState.outputs = {};
+      workflowRunState.artifacts = [];
+      workflowRunState.interrupt = null;
+      workflowRunState.error = "";
+      await startWorkflowRunStream(`/api/workflows/${encodeURIComponent(workflowId)}/runs`, { objective: objective.trim() });
+    } catch (error) {
+      target.textContent = error.message || String(error);
+    } finally {
+      button.disabled = false;
+    }
+  }));
+}
+
+let workflowRunPollTimer = null;
+
+async function renderWorkflowRun(runId) {
+  setActiveNav("/workflows");
+  setLoading(runId);
+  if (workflowRunPollTimer) {
+    clearTimeout(workflowRunPollTimer);
+    workflowRunPollTimer = null;
+  }
+  const liveStreaming = Boolean(workflowRunAbortController) && workflowRunState.runId === runId;
+  const run = await getJson(`/api/agent/runs/${encodeURIComponent(runId)}`);
+  const workflowId = run?.metadata?.workflow_id;
+  const workflows = await getJson("/api/workflows");
+  workflowRunState.runId = runId;
+  workflowRunState.workflow = workflows.find((workflow) => workflow.id === workflowId) || workflowRunState.workflow;
+  // When the live SSE reader from the Run button is still feeding state for
+  // this run, skip the events backfill entirely — replaying recorded events
+  // alongside the live stream double-processes deltas/artifacts.
+  if (!liveStreaming && (!workflowRunState.state || workflowRunState.state.run_id !== runId)) {
+    workflowRunState.state = run;
+    workflowRunState.outputs = { ...(run?.metadata?.node_outputs || {}) };
+    workflowRunState.artifacts = [];
+    workflowRunState.interrupt = null;
+    const events = await getJson(`/api/agent/runs/${encodeURIComponent(runId)}/events`);
+    events.forEach((event) => handleWorkflowRunSseBlock(`event: ${event.type}\ndata: ${JSON.stringify(event)}`));
+  }
+  renderWorkflowRunView();
+  // Direct URL / refresh on a still-running run has no live stream to attach
+  // to (runs stream only from their creating POST) — poll until terminal.
+  const status = workflowRunState.state?.status || run?.status;
+  if (!liveStreaming && status === "running") {
+    workflowRunPollTimer = setTimeout(() => {
+      workflowRunPollTimer = null;
+      if ((location.hash || "") === `#/workflows/runs/${runId}`) {
+        workflowRunState.state = null;
+        renderWorkflowRun(runId).catch(() => {});
+      }
+    }, 3000);
+  }
+}
+
+function wireWorkflowGate() {
+  const approve = document.getElementById("workflow-approve");
+  const reject = document.getElementById("workflow-reject");
+  const submit = async (action) => {
+    const gate = workflowRunState.interrupt;
+    const errorTarget = document.getElementById("workflow-gate-error");
+    if (!gate?.interrupt_id) return;
+    if (action === "reject" && !window.confirm("Reject will stop this workflow run at the gate. Continue?")) return;
+    let payload = {};
+    const raw = document.getElementById("workflow-resume-payload")?.value.trim();
+    if (raw) {
+      try {
+        payload = JSON.parse(raw);
+        if (!payload || Array.isArray(payload) || typeof payload !== "object") throw new Error("Payload must be a JSON object.");
+      } catch (error) {
+        errorTarget.textContent = error.message || "Invalid JSON payload.";
+        return;
+      }
+    }
+    approve.disabled = true;
+    reject.disabled = true;
+    errorTarget.textContent = "";
+    try {
+      workflowRunState.interrupt = null;
+      renderWorkflowRunView();
+      await startWorkflowRunStream(`/api/workflows/runs/${encodeURIComponent(workflowRunState.runId)}/interrupts/${encodeURIComponent(gate.interrupt_id)}/resume`, { action, payload });
+    } catch (error) {
+      workflowRunState.error = error.message || String(error);
+      renderWorkflowRunView();
+    }
+  };
+  approve?.addEventListener("click", () => submit("resume"));
+  reject?.addEventListener("click", () => submit("reject"));
 }
 
 async function renderRuns() {
@@ -3259,6 +3567,18 @@ function skillCoverageChips(coverage) {
   return list.map((src) => `<span class="badge navy">${escapeHtml(src)}</span>`).join(" ");
 }
 
+function clearWorkflowRunStream() {
+  const activeHash = workflowRunState.runId ? `#/workflows/runs/${encodeURIComponent(workflowRunState.runId)}` : "";
+  if (workflowRunAbortController && location.hash !== activeHash) {
+    workflowRunAbortController.abort();
+    workflowRunAbortController = null;
+  }
+  if (workflowRunPollTimer && location.hash !== activeHash) {
+    clearTimeout(workflowRunPollTimer);
+    workflowRunPollTimer = null;
+  }
+}
+
 function skillLibraryTabs() {
   const tabs = [
     ["skills", "Skills"],
@@ -3466,13 +3786,16 @@ async function renderSettings() {
   if ((location.hash || "#/") !== "#/settings") return;
   const rows = (Array.isArray(providers) ? providers : []).map((provider) => {
     const available = Boolean(provider.available);
+    const modelAliasHint = provider.id === "claude" || provider.id === "codex"
+      ? '<span class="muted">Model alias supported &mdash; set in chat request.</span>'
+      : "";
     const detail = available ? (provider.detail || "ok") : `${provider.detail || "offline"} — ${providerHint(provider)}`;
     return `<tr>
       <td>${escapeHtml(provider.id || "—")}</td>
       <td><span class="badge ${available ? "green" : "red"}">${available ? "available" : "offline"}</span></td>
       <td>${escapeHtml(provider.version || "—")}</td>
       <td>${escapeHtml(detail)}</td>
-      <td>${escapeHtml(providerCapabilities(provider.capabilities))}</td>
+      <td>${escapeHtml(providerCapabilities(provider.capabilities))}${modelAliasHint ? `<br>${modelAliasHint}` : ""}</td>
     </tr>`;
   }).join("");
   app.innerHTML = `
@@ -3489,6 +3812,7 @@ async function route() {
   clearAutoRefresh();
   clearJobStream();
   clearChatStream();
+  clearWorkflowRunStream();
   window.HubWorkspace?.unmount?.();
   const hash = location.hash || "#/";
   const parts = hash.slice(1).split("/").filter(Boolean).map(decodeURIComponent);
@@ -3505,6 +3829,10 @@ async function route() {
       await renderJob(parts[1]);
     } else if (parts[0] === "jobs") {
       await renderJobs();
+    } else if (parts[0] === "workflows" && parts[1] === "runs" && parts[2]) {
+      await renderWorkflowRun(parts[2]);
+    } else if (parts[0] === "workflows") {
+      await renderWorkflows();
     } else if (parts[0] === "suites" && parts[1]) {
       await renderSuite(parts[1]);
     } else if (parts[0] === "suites") {
