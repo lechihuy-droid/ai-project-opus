@@ -18,6 +18,7 @@ export type TemplateRole =
 export type SceneIntent =
   | "hook"
   | "problem"
+  | "explain"
   | "comparison"
   | "process"
   | "system_architecture"

@@ -173,3 +173,30 @@ Quy tắc rút từ thực chiến:
 - Spec north star: `design/workflow/create/G00–G12`, `contracts/`, `governance/`, `validation/`.
 - Thiết kế caption sync: `design/history/workflow/CREATE_FLOW_v1.02_CAPTION_SYNC_EXTENSION.md`.
 - Scripts: `package.json` (`validate:videomap`, `render`, `qa:stills`, `visual-flow`), `scripts/run-whisperx.ps1`.
+
+## 7. Lane contract (W1)
+
+New visual configs use `visual-flow/v2` with a `RunEnvelope` (`lucida-run/v1`): `lane`, `styleMode`, `publicationStatus`, and `approvalRefs`.
+
+- `rapid-visual-pilot` is always `non_publishable`; it is an exploration preview, not a publish handoff.
+- Only `production` may be `publishable`, and its contract requires approval references. W2 will enforce promotion and artifact/hash checks in orchestration.
+- `styleMode: auto` leaves family selection to the Director. Source `family` and `mapping.defaultFamily` are invalid.
+- `styleMode: locked` requires `lockedStyle.family`, `lockedBy`, and `reason`.
+- `visual-flow/v1` remains readable through the compatibility adapter. One legacy source family is retained as locked style; otherwise `mapping.defaultFamily` is used. The adapter emits a deprecation warning.
+
+## 8. Production dataflow proof (approved 2026-07-17)
+
+These rules apply to every `production` run. A run that misses any required gate is non-publishable and must not advance to handoff.
+
+- Promote collector output only through the approved canonical-source path. Record the promoted source revision; mapper/compiler inputs must not read raw collector artifacts.
+- The reference approval writer must persist approval date plus rights/usage status with each approved source. Final-video approval is a separate hash-bound record. Missing source rights block knowledge compile; missing final-video approval blocks publish.
+- Rebuild the canonical DB before compilation when promoted inputs, schema, or source revisions changed. Compilation may start only after the rebuild reports the expected revision.
+- Compiler output must carry the approved brand metadata and use the current language schema. Reject payloads whose brand block or language fields cannot validate together.
+- Build comparison payloads from capacity-safe summaries and bounded evidence references; do not embed unbounded source bodies in mapper/compiler payloads.
+- On Windows, invoke Chrome through the configured executable path from the direct Node CLI. Do not depend on shell/browser discovery for production rendering or QA.
+- Assign an immutable run ID at first attempt. Every retry creates a new run ID and links `retryOf`; never overwrite prior reports, approvals, or artifacts.
+- Size runner timeouts for the full render/QA budget, including Chrome startup and bounded retries. Timeout is a failed run, not permission to continue from partial output.
+- When speech has no usable scene segment bindings, derive contiguous scene timing proportionally from the existing scene durations, end exactly at `TimedScript.durationMs`, emit an explicit fallback warning, and require normal timing/QA checks before render.
+- Support alignment interpolation for sparse timestamps. Permit `--reuse-transcript` only with the same approved script, voice bytes, and voice-track checksum; otherwise realign.
+- Run QA before render on compiled inputs and after render on the final media/report. Final approval remains mandatory and must reference the final-video hash; source or map approval cannot substitute for it.
+- Generate final approval only after the reviewer explicitly accepts the rendered bytes. Use `flow:prepare-final-approval` to append the exact video hash into a new, project-contained approval artifact, then pass that artifact to `flow:finalize`; neither command may overwrite an earlier approval artifact.

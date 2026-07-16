@@ -147,3 +147,25 @@ Corpus hiện còn nhỏ. Flow đã nối end-to-end, nhưng chất lượng rec
 ## 8. Pilot reports
 
 - [`../reports/AI_WEEKLY_GPT_5_6_RAG_FLOW_REPORT_2026-07-16.md`](../reports/AI_WEEKLY_GPT_5_6_RAG_FLOW_REPORT_2026-07-16.md) - pilot 20 giây, SQLite RAG 5/5 match, render PASS, publish NO-GO do audio silence và thiếu visual diversity.
+
+## 9. Lane and style contract (W1)
+
+For `visual-flow/v2`, retrieval supplies evidence but does not silently choose a family:
+
+- `styleMode: locked` uses only `run.lockedStyle.family`; `lockedBy` and `reason` make the decision auditable.
+- `styleMode: auto` leaves selection to the Director. Source `family` and `mapping.defaultFamily` are invalid, so RAG evidence cannot override the Director implicitly.
+- During the v1 rollout, the compatibility adapter preserves one legacy source family as locked style, falling back to `mapping.defaultFamily`, and emits a deprecation warning.
+
+## 10. Evidence domains (W6)
+
+Every canonical source, document, compiled chunk, search record, query, and selected evidence item declares `factual` or `visual-style`. Visual ingestion/retrieval always uses `visual-style`; factual retrieval always uses `factual`. Domain filtering happens before ranking, and a domain mismatch is traceable without exposing unsafe evidence. The renderer continues to consume only compiled artifacts. See `../../docs/W6-evidence-domains.md` for ingest, migration and query ownership.
+
+## 11. Dual-domain selection binding (W9)
+
+`map-and-compile-visual-scenes.mjs` performs two isolated queries before mapping:
+
+1. `selectVisualKnowledge()` queries `visual-style` and supplies package evidence to the Director.
+2. `selectFactualKnowledge()` queries `factual`, then resolves each `ContentBrief.beats[].factRefs` against canonical `provenance.sourceId` values.
+3. `mergeKnowledgeSelections()` writes `lucida-knowledge-selection/v2` with both domains in one event-indexed artifact while preserving the domain on every evidence item.
+
+The Director receives only `visual-style` evidence. The mapper rejects every unresolved `factRef` and every reference bound to non-factual evidence. Chunk IDs remain in the trace as retrieval evidence, while the canonical source ID is the stable fact reference used by ContentBrief. Remotion still receives only compiled `video-map.json` and never queries either repository.

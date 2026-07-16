@@ -1,0 +1,29 @@
+{
+  "contentChecksum": "d2aaddd576a92ab279d2e0ebdcbeb6ecb56763196787b0ac66502b22f2cd7603",
+  "domain": "visual-style",
+  "mediaType": "repository",
+  "observations": [
+    {
+      "definition": {
+        "packageId": "technical-editorial",
+        "tags": [
+          "technical-editorial",
+          "w8-candidate",
+          "link-only"
+        ]
+      },
+      "kind": "layout_reference",
+      "reviewStatus": "approved"
+    }
+  ],
+  "rawText": "# Primer primitives technical editorial review note\n\nSource: https://github.com/primer/primitives\nTarget package: technical-editorial\n\nReviewer-authored concepts:\n- explicit design tokens\n- technical hierarchy\n- inspectable typography and spacing roles\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts.",
+  "schemaVersion": "lucida-reference-document/v1",
+  "sourceRef": "https://github.com/primer/primitives",
+  "tags": [
+    "link-only",
+    "repository",
+    "technical-editorial",
+    "w8-candidate"
+  ],
+  "title": "w8-technical-primer-primitives record 0001"
+}

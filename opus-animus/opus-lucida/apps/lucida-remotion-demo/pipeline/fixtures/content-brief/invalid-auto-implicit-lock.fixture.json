@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "lucida-content-brief/v1",
+  "title": "Auto must not lock",
+  "audience": "test",
+  "intent": "explain",
+  "styleMode": "auto",
+  "factualSourceIds": [],
+  "visualConstraints": { "requiredFamilies": ["editorial"] },
+  "beats": [{ "id": "beat-1", "title": "Title", "body": "Body", "role": "hook", "actors": [], "factRefs": [] }]
+}

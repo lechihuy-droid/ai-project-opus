@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "visual-flow/v2",
+  "run": {
+    "schemaVersion": "lucida-run/v1",
+    "runId": "w9-ai-weekly-locked-20260716",
+    "lane": "rapid-visual-pilot",
+    "styleMode": "locked",
+    "lockedStyle": {
+      "family": "terminal-command-center",
+      "lockedBy": "W9 control fixture",
+      "reason": "Compare an explicit terminal treatment against auto selection on identical beats."
+    },
+    "publicationStatus": "non_publishable",
+    "approvalRefs": []
+  },
+  "projectId": "w9-ai-weekly-locked-20260716",
+  "fps": 30,
+  "themeId": "lucida-operating-model/v1",
+  "knowledge": {
+    "enabled": true,
+    "repository": "sqlite",
+    "refreshProjection": false,
+    "limit": 3,
+    "maxQueryCharacters": 600
+  },
+  "sources": [
+    { "id": "w9-locked-brief", "type": "content_brief", "path": "pipeline/fixtures/w9/content-brief-locked.json", "required": true, "family": "terminal" }
+  ],
+  "mapping": {
+    "allowedFamilies": ["terminal", "dashboard", "editorial", "infographic", "code", "data_visualization", "product_demo", "cinematic_typography"],
+    "allowedPresets": ["command", "headline-stat-grid", "progress-steps", "split-screen", "cinematic-title-intro"],
+    "defaultFamily": "terminal",
+    "defaultPreset": "command",
+    "minSceneSeconds": 3,
+    "maxSceneSeconds": 6,
+    "maxItemsPerScene": 1
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "source": {
+    "sourceId": "source:test:owned-factual-evidence",
+    "snapshotId": "snapshot:test:owned-factual-evidence",
+    "snapshotChecksum": "4c0624e1a2c316a8a0e761e76bbf8cae11d3994f2d559e836ea36b1a60c113c1",
+    "sourceType": "repository",
+    "domain": "factual",
+    "sourceRef": "pipeline/fixtures/knowledge/factual/owned-factual-evidence.fixture.json",
+    "sourceRevision": "w6-test-fixture",
+    "collectorVersion": "w6-test",
+    "packagePath": "design/knowledge/reference-library/repository/test-owned-factual-evidence",
+    "rights": { "policy": "project-owned-test-fixture", "status": "approved" },
+    "approval": { "status": "approved" }
+  },
+  "document": {
+    "documentId": "doc:test:owned-factual-evidence",
+    "snapshotId": "snapshot:test:owned-factual-evidence",
+    "sourceRef": "pipeline/fixtures/knowledge/factual/owned-factual-evidence.fixture.json#fact",
+    "mediaType": "repository",
+    "domain": "factual"
+  },
+  "chunk": {
+    "chunkId": "chunk:test:owned-factual-evidence",
+    "documentId": "doc:test:owned-factual-evidence",
+    "ordinal": 0,
+    "domain": "factual",
+    "rawText": "Owned factual fixture: Lucida W6 isolates factual claims from visual style evidence.",
+    "title": "Owned factual evidence fixture",
+    "tags": ["factual", "w6", "owned"],
+    "observations": []
+  }
+}

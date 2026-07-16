@@ -9,6 +9,7 @@ const HELP = `Usage: npm run knowledge:query -- [options]
 
 Options:
   --repository json|sqlite  Select the generated JSON repository (default: json) or SQLite projection.
+  --domain factual|visual-style  Required evidence domain.
   --query <text>            Full-text query. Vietnamese accent-folding is supported.
   --intent <value>          Filter template intent.
   --aspect-ratio <value>    Filter aspect ratio, for example 9:16.
@@ -42,7 +43,7 @@ export const parseQueryArguments = (argv) => {
     const name = optionName(argument.slice(2));
     if (![
       "repository", "query", "intent", "aspectRatio", "family", "status", "sourceType", "mediaType",
-      "renderable", "rights", "approval", "limit",
+       "renderable", "rights", "approval", "limit", "domain",
     ].includes(name)) {
       throw new Error(`Unknown option: ${argument}`);
     }
@@ -58,6 +59,7 @@ export const parseQueryArguments = (argv) => {
   if (!["json", "sqlite"].includes(options.repository)) {
     throw new Error("repository must be json or sqlite.");
   }
+  if (!options.domain) throw new Error("--domain is required (factual or visual-style).");
   return options;
 };
 

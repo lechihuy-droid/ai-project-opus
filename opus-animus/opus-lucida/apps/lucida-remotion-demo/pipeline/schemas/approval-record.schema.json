@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "lucida-approval/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "approvalId", "runId", "kind", "status", "artifactHash", "approvedBy", "approvedAt"],
+  "properties": {
+    "schemaVersion": { "const": "lucida-approval/v1" },
+    "approvalId": { "type": "string", "minLength": 1 },
+    "runId": { "type": "string", "minLength": 1 },
+    "kind": { "enum": ["visual-treatment", "video-map", "final-video", "promotion"] },
+    "status": { "enum": ["approved", "rejected"] },
+    "artifactHash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "approvedBy": { "type": "string", "minLength": 1 },
+    "approvedAt": { "type": "string", "format": "date-time" }
+  }
+}

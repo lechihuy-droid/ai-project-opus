@@ -1,0 +1,22 @@
+[
+  {
+    "schemaVersion": "lucida-approval/v1",
+    "approvalId": "treatment-w2",
+    "runId": "production-w2-fixture",
+    "kind": "visual-treatment",
+    "status": "approved",
+    "artifactHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "approvedBy": "reviewer@example.test",
+    "approvedAt": "2026-07-16T10:00:00Z"
+  },
+  {
+    "schemaVersion": "lucida-approval/v1",
+    "approvalId": "map-w2",
+    "runId": "production-w2-fixture",
+    "kind": "video-map",
+    "status": "approved",
+    "artifactHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "approvedBy": "reviewer@example.test",
+    "approvedAt": "2026-07-16T10:00:00Z"
+  }
+]

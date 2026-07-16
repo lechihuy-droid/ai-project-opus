@@ -1,7 +1,4 @@
 {
-  "schemaVersion": "lucida-artifact-manifest/v1",
-  "packageId": "dashboard-data",
-  "generatedAt": "2026-07-12T15:18:00.000Z",
   "artifacts": [
     {
       "id": "style-package",
@@ -123,5 +120,9 @@
       "path": "./artifacts/render-report.json",
       "usage": "validation_report"
     }
-  ]
+  ],
+  "domain": "visual-style",
+  "generatedAt": "2026-07-12T15:18:00.000Z",
+  "packageId": "dashboard-data",
+  "schemaVersion": "lucida-artifact-manifest/v1"
 }

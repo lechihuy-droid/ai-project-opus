@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "visual-flow/v2",
+  "run": {
+    "schemaVersion": "lucida-run/v1",
+    "runId": "w9-ai-weekly-auto-20260716",
+    "lane": "rapid-visual-pilot",
+    "styleMode": "auto",
+    "publicationStatus": "non_publishable",
+    "approvalRefs": []
+  },
+  "projectId": "w9-ai-weekly-auto-20260716",
+  "fps": 30,
+  "themeId": "lucida-operating-model/v1",
+  "knowledge": {
+    "enabled": true,
+    "repository": "sqlite",
+    "refreshProjection": false,
+    "limit": 3,
+    "maxQueryCharacters": 600
+  },
+  "sources": [
+    { "id": "w9-auto-brief", "type": "content_brief", "path": "pipeline/fixtures/w9/content-brief-auto.json", "required": true }
+  ],
+  "mapping": {
+    "allowedFamilies": ["terminal", "dashboard", "editorial", "infographic", "code", "data_visualization", "product_demo", "cinematic_typography"],
+    "allowedPresets": ["command", "headline-stat-grid", "progress-steps", "split-screen", "cinematic-title-intro"],
+    "defaultPreset": "headline-stat-grid",
+    "minSceneSeconds": 3,
+    "maxSceneSeconds": 6,
+    "maxItemsPerScene": 1
+  }
+}

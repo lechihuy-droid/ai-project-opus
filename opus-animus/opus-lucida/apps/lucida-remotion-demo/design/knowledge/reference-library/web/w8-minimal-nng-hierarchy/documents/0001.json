@@ -1,0 +1,29 @@
+{
+  "contentChecksum": "8541e5e284eb44489002c97c1da2c2787ef3bd6c648f1422827f2af30614b838",
+  "domain": "visual-style",
+  "mediaType": "web",
+  "observations": [
+    {
+      "definition": {
+        "packageId": "minimal-education",
+        "tags": [
+          "minimal-education",
+          "w8-candidate",
+          "link-only"
+        ]
+      },
+      "kind": "layout_reference",
+      "reviewStatus": "approved"
+    }
+  ],
+  "rawText": "# Visual hierarchy education review note\n\nSource: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/\nTarget package: minimal-education\n\nReviewer-authored concepts:\n- spacing-driven grouping\n- clear reading order\n- single-concept emphasis\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts.",
+  "schemaVersion": "lucida-reference-document/v1",
+  "sourceRef": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/",
+  "tags": [
+    "link-only",
+    "minimal-education",
+    "w8-candidate",
+    "web"
+  ],
+  "title": "w8-minimal-nng-hierarchy record 0001"
+}

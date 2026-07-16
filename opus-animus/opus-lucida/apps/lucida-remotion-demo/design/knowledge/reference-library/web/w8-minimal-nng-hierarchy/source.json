@@ -1,0 +1,24 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-16",
+    "approvedBy": "HUY",
+    "status": "approved"
+  },
+  "collectorVersion": "w8-link-note-collector/1",
+  "domain": "visual-style",
+  "provenance": {
+    "collectorArtifact": "design/knowledge/reference-approvals/web/w8-minimal-nng-hierarchy.sanitized-approved.json",
+    "sanitizedArtifactChecksum": "c8719603726ab497f4fa8add45f31abf5433b3a3a14a39de06fcad88cb08e703"
+  },
+  "rights": {
+    "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
+  "schemaVersion": "lucida-reference-source/v1",
+  "snapshotChecksum": "8541e5e284eb44489002c97c1da2c2787ef3bd6c648f1422827f2af30614b838",
+  "sourceId": "source:reference:w8-minimal-nng-hierarchy",
+  "sourceRef": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/",
+  "sourceRevision": "link-note:2026-07-16",
+  "sourceType": "web"
+}

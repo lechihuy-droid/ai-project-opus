@@ -5,6 +5,13 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  assertPublishableProductionRun,
+  findRenderedVideo,
+  readApprovalRecords,
+  readJson as readOrchestrationJson,
+  sha256File,
+} from "./operating-model/orchestration.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -17,14 +24,17 @@ const parseArgs = (argv) => {
   const parsed = {};
   for (let index = 0; index < argv.length; index += 1) {
     const flag = argv[index];
-    if (!["--run-id", "--video", "--thumb-at"].includes(flag)) fail(`Unknown argument: ${flag}`);
+    if (!["--run-id", "--video", "--thumb-at", "--envelope", "--approvals"].includes(flag)) fail(`Unknown argument: ${flag}`);
     const value = argv[index + 1];
     if (!value || value.startsWith("--")) fail(`Missing value for ${flag}`);
     parsed[flag.slice(2)] = value;
     index += 1;
   }
-  if (!parsed["run-id"]) fail("Usage: npm run publish:handoff -- --run-id <id> [--video <path>] [--thumb-at <seconds>]");
+  if (!parsed["run-id"]) fail("Usage: npm run publish:handoff -- --run-id <id> [--video <path>] [--thumb-at <seconds>] [--envelope <candidate.json> --approvals <candidate.json>]");
   if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/u.test(parsed["run-id"])) fail("Invalid --run-id");
+  if (Boolean(parsed.envelope) !== Boolean(parsed.approvals)) {
+    fail("--envelope and --approvals must be provided together");
+  }
   const thumbAt = Number(parsed["thumb-at"] ?? 1);
   if (!Number.isFinite(thumbAt) || thumbAt < 0) fail("--thumb-at must be a non-negative number");
   return { ...parsed, thumbAt };
@@ -36,21 +46,6 @@ const readJson = (filePath, fallback = {}) => {
   } catch {
     return fallback;
   }
-};
-
-const findMp4 = (directory) => {
-  if (!fs.existsSync(directory)) return null;
-  const entries = fs.readdirSync(directory, { withFileTypes: true });
-  for (const entry of entries) {
-    const candidate = path.join(directory, entry.name);
-    if (entry.isFile() && path.extname(entry.name).toLowerCase() === ".mp4") return candidate;
-  }
-  for (const entry of entries) {
-    if (!entry.isDirectory()) continue;
-    const candidate = findMp4(path.join(directory, entry.name));
-    if (candidate) return candidate;
-  }
-  return null;
 };
 
 const runCommand = (command, commandArgs, capture = false) => {
@@ -70,8 +65,46 @@ const runCommand = (command, commandArgs, capture = false) => {
 const args = parseArgs(process.argv.slice(2));
 const runId = args["run-id"];
 const runDir = path.join(root, "output", "render", "flow-runs", runId);
-const sourceVideo = args.video ? path.resolve(root, args.video) : findMp4(runDir);
-if (!sourceVideo || !fs.existsSync(sourceVideo)) fail(`No MP4 found for run ${runId}`);
+const runFile = (value, label) => {
+  const filePath = path.resolve(root, value);
+  const relativePath = path.relative(runDir, filePath);
+  if (relativePath === "" || relativePath === ".." || relativePath.startsWith(`..${path.sep}`) || path.isAbsolute(relativePath)) {
+    fail(`${label} must be a file inside this run directory`);
+  }
+  if (!fs.statSync(filePath, { throwIfNoEntry: false })?.isFile()) fail(`${label} does not exist: ${filePath}`);
+  return filePath;
+};
+const envelopePath = args.envelope ? runFile(args.envelope, "--envelope") : path.join(runDir, "run-envelope.json");
+const approvalsPath = args.approvals ? runFile(args.approvals, "--approvals") : path.join(runDir, "approvals.json");
+const renderedVideo = findRenderedVideo(runDir);
+if (!renderedVideo) fail(`No rendered video found for run ${runId}`);
+const sourceVideo = args.video ? path.resolve(root, args.video) : renderedVideo;
+if (!fs.existsSync(sourceVideo)) fail(`No MP4 found for run ${runId}`);
+if (sha256File(sourceVideo) !== sha256File(renderedVideo)) {
+  fail("--video must exactly match this run's rendered video");
+}
+try {
+  assertPublishableProductionRun({
+    envelope: readOrchestrationJson(envelopePath),
+    approvals: readApprovalRecords(approvalsPath),
+    scriptPath: path.join(runDir, "approved-script.json"),
+    videoMapPath: path.join(runDir, "video-map.source.json"),
+    videoPath: renderedVideo,
+    qaReportPath: path.join(runDir, "qa-report.json"),
+    qaInputPaths: {
+      approvedScript: path.join(runDir, "approved-script.json"),
+      sourceVideoMap: path.join(runDir, "video-map.source.json"),
+      timedVideoMap: path.join(runDir, "video-map.json"),
+      renderProps: path.join(runDir, "render-props.json"),
+      timedScript: path.join(root, "public", "runs", runId, "audio", "timed-script.json"),
+      audio: path.join(root, "public", "runs", runId, "audio", "voice.wav"),
+      normalizedInput: path.join(runDir, "normalized-input.json"),
+      contentBrief: path.join(runDir, "content-brief.json"),
+    },
+  });
+} catch (error) {
+  fail(error instanceof Error ? error.message : String(error));
+}
 
 const publishDir = path.join(root, "output", "publish", runId);
 const outputVideo = path.join(publishDir, "video.mp4");

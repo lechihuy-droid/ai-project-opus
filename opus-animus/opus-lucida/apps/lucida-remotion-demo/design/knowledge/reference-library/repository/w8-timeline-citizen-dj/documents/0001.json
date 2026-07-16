@@ -1,0 +1,29 @@
+{
+  "contentChecksum": "b44e01ceca38a2b2009a87e00c52513f9bf2596e7090bbeed249d5d7b010a789",
+  "domain": "visual-style",
+  "mediaType": "repository",
+  "observations": [
+    {
+      "definition": {
+        "packageId": "timeline-documentary",
+        "tags": [
+          "timeline-documentary",
+          "w8-candidate",
+          "link-only"
+        ]
+      },
+      "kind": "layout_reference",
+      "reviewStatus": "approved"
+    }
+  ],
+  "rawText": "# Library of Congress chronology interface review note\n\nSource: https://github.com/LibraryOfCongress/citizen-dj\nTarget package: timeline-documentary\n\nReviewer-authored concepts:\n- source-forward chronology\n- archival metadata\n- dated record navigation\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts.",
+  "schemaVersion": "lucida-reference-document/v1",
+  "sourceRef": "https://github.com/LibraryOfCongress/citizen-dj",
+  "tags": [
+    "link-only",
+    "repository",
+    "timeline-documentary",
+    "w8-candidate"
+  ],
+  "title": "w8-timeline-citizen-dj record 0001"
+}

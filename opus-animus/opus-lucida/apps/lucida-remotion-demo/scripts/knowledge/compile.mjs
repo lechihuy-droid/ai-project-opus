@@ -21,6 +21,7 @@ import {
   writeStableJson,
 } from "./index-utils.mjs";
 import { compileReferences } from "./compile-references.mjs";
+import { domainCounts } from "./evidence-domain.mjs";
 
 const appRoot = process.cwd();
 const templatesDir = path.join(appRoot, "design", "template-library");
@@ -52,6 +53,7 @@ const templateEntries = fs
     const adapterPath = resolveProjectPath(appRoot, template.adapter.path, `template ${template.id} adapter`);
     const familyPath = resolveProjectPath(appRoot, template.familyRef, `template ${template.id} family`);
     const entryWithoutHash = {
+      domain: "visual-style",
       id: template.id,
       logicalId: template.logicalId,
       version: template.version,
@@ -158,6 +160,18 @@ try {
       referenceDocuments: referenceIndex.documents.length,
       referenceSources: referenceIndex.sources.length,
       templates: templateEntries.length,
+    },
+    domainCounts: {
+      templates: domainCounts(templateEntries, "template"),
+      referenceSources: referenceIndex.domainCounts.sources,
+      referenceDocuments: referenceIndex.domainCounts.documents,
+      referenceChunks: referenceIndex.domainCounts.chunks,
+    },
+    domainHashes: {
+      templates: sha256(stableJson(templateEntries.map(({ id, domain }) => ({ id, domain })))),
+      referenceSources: sha256(stableJson(referenceIndex.sources.map(({ sourceId, domain }) => ({ id: sourceId, domain })))),
+      referenceDocuments: sha256(stableJson(referenceIndex.documents.map(({ documentId, domain }) => ({ id: documentId, domain })))),
+      referenceChunks: sha256(stableJson(referenceIndex.chunks.map(({ chunkId, domain }) => ({ id: chunkId, domain })))),
     },
   };
   writeStableJson(path.join(stagingDir, "manifest.json"), {

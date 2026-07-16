@@ -39,6 +39,7 @@ from services import (
     trigger,
     usage,
     workflow,
+    workflow_exec,
 )
 from services.providers import get_provider, list_providers
 
@@ -625,6 +626,38 @@ def api_workflow_validate(payload: dict[str, object]) -> dict[str, object]:
 
 
 # --- end C2a workflow routes ---
+
+
+# --- C2b workflow run routes ---
+@app.post("/api/workflows/{workflow_id}/runs", response_model=None)
+def api_workflow_run(workflow_id: str, payload: dict[str, object]):
+    objective = payload.get("objective")
+    if not isinstance(objective, str):
+        raise HTTPException(status_code=400, detail="objective must be a string")
+    try:
+        source = (workflow.WORKFLOWS_DIR / f"{workflow_id}.workflow.yaml").read_text(encoding="utf-8")
+        errors = workflow.validate_workflow(workflow.parse_workflow(source))
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+    except ValueError as exc:
+        return JSONResponse(status_code=400, content={"errors": [str(exc)]})
+    if errors:
+        return JSONResponse(status_code=400, content={"errors": errors})
+    return StreamingResponse(workflow_exec.create_workflow_run_stream(workflow_id, objective), media_type="text/event-stream")
+
+
+@app.post("/api/workflows/runs/{run_id}/interrupts/{interrupt_id}/resume")
+def api_workflow_run_interrupt_resume(run_id: str, interrupt_id: str, payload: dict[str, object]) -> StreamingResponse:
+    try:
+        runtime_state.read_run(run_id)
+        runtime_interrupts.get_interrupt(run_id, interrupt_id)
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+    return StreamingResponse(
+        workflow_exec.resume_workflow_run_stream(run_id, interrupt_id, payload),
+        media_type="text/event-stream",
+    )
+# --- end C2b workflow run routes ---
 
 
 @app.get("/api/board")

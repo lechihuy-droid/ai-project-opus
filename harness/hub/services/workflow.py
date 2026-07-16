@@ -113,6 +113,20 @@ def validate_workflow(data: dict[str, Any]) -> list[str]:
         agent_id = node.get("agent")
         if agent_id not in available_agents:
             errors.append(f"Node {node.get('id', '?')} references unknown agent: {agent_id}")
+        spawn = node.get("spawn", [])
+        if not isinstance(spawn, list):
+            errors.append(f"Node {node.get('id', '?')} spawn must be a list")
+            continue
+        for index, item in enumerate(spawn):
+            if not isinstance(item, dict):
+                errors.append(f"Node {node.get('id', '?')} spawn {index} must be a mapping")
+                continue
+            spawn_agent = item.get("agent")
+            if spawn_agent not in available_agents:
+                errors.append(f"Node {node.get('id', '?')} spawn {index} references unknown agent: {spawn_agent}")
+            spawn_objective = item.get("objective")
+            if not isinstance(spawn_objective, str) or not spawn_objective.strip():
+                errors.append(f"Node {node.get('id', '?')} spawn {index} objective must be a non-empty string")
 
     if not isinstance(edges_value, list):
         errors.append("edges must be a list")
@@ -147,15 +161,26 @@ def validate_workflow(data: dict[str, Any]) -> list[str]:
         for node in normalized_nodes:
             node_id = node.get("id")
             prompt = node.get("prompt")
-            if not isinstance(prompt, str) or not isinstance(node_id, str):
+            if not isinstance(node_id, str):
                 continue
-            for token in _TEMPLATE_REF.findall(prompt):
-                if token == "objective":
+            templates: list[tuple[str, str]] = [("prompt", prompt)] if isinstance(prompt, str) else []
+            spawn = node.get("spawn", [])
+            if not isinstance(spawn, list):
+                continue
+            for index, item in enumerate(spawn):
+                if not isinstance(item, dict):
                     continue
-                match = re.fullmatch(r"(.+)_output", token)
-                if match and match.group(1) in walk_position and walk_position[match.group(1)] < walk_position[node_id]:
-                    continue
-                errors.append(f"Node {node_id} has invalid template reference: {{{{{token}}}}}")
+                spawn_objective = item.get("objective")
+                if isinstance(spawn_objective, str) and spawn_objective.strip():
+                    templates.append((f"spawn {index} objective", spawn_objective))
+            for _label, template in templates:
+                for token in _TEMPLATE_REF.findall(template):
+                    if token == "objective":
+                        continue
+                    match = re.fullmatch(r"(.+)_(output|claims)", token)
+                    if match and match.group(1) in walk_position and walk_position[match.group(1)] < walk_position[node_id]:
+                        continue
+                    errors.append(f"Node {node_id} has invalid template reference: {{{{{token}}}}}")
     else:
         errors.append("Template validation skipped because the workflow chain is invalid")
 
@@ -171,16 +196,21 @@ def build_ir(data: dict[str, Any]) -> list[dict[str, Any]]:
         raise ValueError("Cannot build IR for an invalid workflow chain")
     nodes_by_id = {node["id"]: node for node in nodes}
     agents_by_id = {agent["id"]: agent for agent in runtime_agents.list_agents()}
-    return [
-        {
+    result: list[dict[str, Any]] = []
+    for order, node_id in enumerate(walk):
+        node = nodes_by_id[node_id]
+        result.append({
             "id": node_id,
-            "agent": dict(agents_by_id[nodes_by_id[node_id]["agent"]]),
-            "prompt": nodes_by_id[node_id]["prompt"],
-            "gate": nodes_by_id[node_id]["gate"],
+            "agent": dict(agents_by_id[node["agent"]]),
+            "prompt": node["prompt"],
+            "gate": node["gate"],
+            "spawn": [
+                {"agent": dict(agents_by_id[item["agent"]]), "objective": item["objective"]}
+                for item in node.get("spawn", [])
+            ],
             "order": order,
-        }
-        for order, node_id in enumerate(walk)
-    ]
+        })
+    return result
 
 
 def list_workflows() -> list[dict[str, Any]]:

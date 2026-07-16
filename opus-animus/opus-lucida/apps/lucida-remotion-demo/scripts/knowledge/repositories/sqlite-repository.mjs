@@ -22,7 +22,7 @@ const ftsExpression = (tokens) => tokens.map((token) => `search_folded : ${token
 
 const readRecords = (database) => {
   const templateRows = database.prepare(`
-    SELECT ce.definition_json, pr.source_id, pr.snapshot_id, pr.source_path, pr.review_status,
+    SELECT ce.definition_json, ce.domain, pr.source_id, pr.snapshot_id, pr.source_path, pr.review_status,
            ss.revision AS source_revision, ss.collector_version
     FROM canonical_entities ce
     JOIN provenance_records pr ON pr.entity_id = ce.entity_id
@@ -30,7 +30,7 @@ const readRecords = (database) => {
     WHERE ce.entity_type = 'template'
     ORDER BY ce.entity_id
   `).all();
-  const templates = templateRows.map((row) => createTemplateRecord(parseJson(row.definition_json, "template definition"), {
+  const templates = templateRows.map((row) => createTemplateRecord({ ...parseJson(row.definition_json, "template definition"), domain: row.domain }, {
     sourceId: row.source_id,
     snapshotId: row.snapshot_id,
     sourcePath: row.source_path,
@@ -47,9 +47,10 @@ const readRecords = (database) => {
   }
   const referenceRows = database.prepare(`
     SELECT c.chunk_id, c.ordinal, c.raw_text, c.search_text, c.search_folded, c.content_hash,
-           d.document_id, d.source_ref, d.media_type,
+           d.document_id, d.source_ref, d.media_type, d.domain AS document_domain,
            ss.snapshot_id, ss.revision AS source_revision, ss.collector_version,
-           s.source_id, s.source_type, s.rights_policy,
+           s.source_id, s.source_type, s.rights_policy, s.domain AS source_domain,
+           c.domain AS chunk_domain,
            sd.title, sd.tags
     FROM chunks c
     JOIN documents d ON d.document_id = c.document_id
@@ -63,15 +64,17 @@ const readRecords = (database) => {
       sourceId: row.source_id,
       snapshotId: row.snapshot_id,
       sourceType: row.source_type,
+      domain: row.source_domain,
       sourceRevision: row.source_revision,
       collectorVersion: row.collector_version,
       // Only approved references are eligible to enter the SQLite projection.
       rights: { policy: row.rights_policy, status: "approved" },
       approval: { status: "approved" },
     },
-    document: { documentId: row.document_id, sourceRef: row.source_ref, mediaType: row.media_type },
+    document: { documentId: row.document_id, sourceRef: row.source_ref, mediaType: row.media_type, domain: row.document_domain },
     chunk: {
       chunkId: row.chunk_id,
+      domain: row.chunk_domain,
       ordinal: row.ordinal,
       rawText: row.raw_text,
       searchText: row.search_text,
@@ -141,3 +144,7 @@ export class SqliteKnowledgeRepository {
 }
 
 export const createSqliteRepository = (options) => new SqliteKnowledgeRepository(options);
+
+export const createLegacyVisualSqliteRepository = (options) => ({
+  query: (input = {}) => new SqliteKnowledgeRepository(options).query({ ...input, domain: "visual-style" }),
+});

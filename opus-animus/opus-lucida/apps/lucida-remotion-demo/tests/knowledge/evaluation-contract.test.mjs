@@ -200,7 +200,7 @@ test("evaluator report is deterministic, complete, and independently recomputabl
   assert.equal(firstReport.queries.length, firstReport.gold.queryCount);
   assert.ok(firstReport.queries.every((entry) => entry.failures.length === 0));
 
-  const allRecords = createJsonRepository({ appRoot: root }).query({ limit: 100 }).results;
+  const allRecords = createJsonRepository({ appRoot: root }).query({ limit: 100, domain: "visual-style" }).results;
   assert.equal(firstReport.corpus.templateCount, allRecords.filter((item) => item.kind === "template").length);
   assert.equal(firstReport.corpus.approvedReferenceCount, allRecords.filter((item) => item.kind === "reference").length);
   assert.equal(firstReport.gold.accentPairCount, new Set(
@@ -303,7 +303,7 @@ test("report corpus counts are derived from the temp corpus rather than constant
 
   assert.throws(() => evaluateKnowledge({ appRoot: root }), /Retrieval evaluation failed/u);
   const report = readJson(path.join(root, "design", "knowledge", "reports", "retrieval-v0.1.json"));
-  const records = createJsonRepository({ appRoot: root }).query({ limit: 100 }).results;
+  const records = createJsonRepository({ appRoot: root }).query({ limit: 100, domain: "visual-style" }).results;
   assert.equal(report.corpus.templateCount, records.filter((item) => item.kind === "template").length);
   assert.equal(report.corpus.approvedReferenceCount, records.filter((item) => item.kind === "reference").length);
 });

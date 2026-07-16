@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "visual-flow/v2",
+  "run": {
+    "schemaVersion": "lucida-run/v1",
+    "runId": "rapid-locked-contract",
+    "lane": "rapid-visual-pilot",
+    "styleMode": "locked",
+    "lockedStyle": {
+      "family": "terminal",
+      "lockedBy": "designer@example.test",
+      "reason": "Evaluate the approved terminal treatment."
+    },
+    "publicationStatus": "non_publishable",
+    "approvalRefs": []
+  },
+  "projectId": "rapid-locked-contract",
+  "fps": 30,
+  "themeId": "lucida-terminal/v1",
+  "sources": [{ "id": "script", "type": "script", "family": "terminal" }],
+  "mapping": {
+    "allowedFamilies": ["terminal", "editorial"],
+    "allowedPresets": ["command"],
+    "defaultFamily": "terminal",
+    "defaultPreset": "command",
+    "minSceneSeconds": 3,
+    "maxSceneSeconds": 8,
+    "maxItemsPerScene": 10
+  }
+}

@@ -1,27 +1,128 @@
 {
-  "schemaVersion": "lucida-artifact-manifest/v1",
-  "packageId": "product-showcase",
-  "generatedAt": "2026-07-13T00:00:00.000Z",
   "artifacts": [
-    { "id": "style-package", "kind": "style_spec", "path": "./style-package.json", "usage": "library_record" },
-    { "id": "artifact-manifest", "kind": "artifact_manifest", "path": "./artifact-manifest.json", "usage": "audit" },
-    { "id": "visual", "kind": "visual_spec", "path": "./visual.json", "usage": "package_contract" },
-    { "id": "tokens", "kind": "tokens", "path": "./tokens.json", "usage": "package_contract" },
-    { "id": "component-map", "kind": "component_map", "path": "./component-map.json", "usage": "package_contract" },
-    { "id": "provenance", "kind": "provenance", "path": "./provenance.md", "usage": "audit" },
-    { "id": "normal-fixture", "kind": "fixture", "path": "pipeline/fixtures/styles/product-showcase/normal.fixture.ts", "usage": "validation_input" },
-    { "id": "dense-fixture", "kind": "fixture", "path": "pipeline/fixtures/styles/product-showcase/dense.fixture.ts", "usage": "validation_input" },
-    { "id": "edge-fixture", "kind": "fixture", "path": "pipeline/fixtures/styles/product-showcase/edge.fixture.ts", "usage": "validation_input" },
-    { "id": "review-scenes", "kind": "normalized_events", "path": "./artifacts/review-scenes.json", "usage": "source_evidence" },
-    { "id": "source-review", "kind": "review_report", "path": "./artifacts/source-review-report.json", "usage": "source_review" },
-    { "id": "family-renderer", "kind": "source_code", "path": "src/styles/families/product-showcase/ProductShowcaseScene.tsx", "usage": "renderer" },
-    { "id": "family-preview", "kind": "source_code", "path": "src/styles/families/product-showcase/ProductShowcasePreview.tsx", "usage": "renderer" },
-    { "id": "family-render-root", "kind": "source_code", "path": "src/styles/families/product-showcase/render-root.tsx", "usage": "renderer" },
-    { "id": "family-render-entry", "kind": "source_code", "path": "src/styles/families/product-showcase/render-entry.tsx", "usage": "renderer" },
-    { "id": "family-render-review", "kind": "source_code", "path": "src/styles/families/product-showcase/render-review.mjs", "usage": "rerender" },
-    { "id": "render-props", "kind": "render_props", "path": "./artifacts/render-props.json", "usage": "validation_spec" },
-    { "id": "demo-video-map", "kind": "video_map", "path": "./artifacts/demo-video-map.json", "usage": "validation_spec" },
-    { "id": "preview-frames", "kind": "preview_frames", "path": "./artifacts/frames/", "usage": "visual_validation" },
-    { "id": "render-report", "kind": "render_report", "path": "./artifacts/render-report.json", "usage": "validation_report" }
-  ]
+    {
+      "id": "style-package",
+      "kind": "style_spec",
+      "path": "./style-package.json",
+      "usage": "library_record"
+    },
+    {
+      "id": "artifact-manifest",
+      "kind": "artifact_manifest",
+      "path": "./artifact-manifest.json",
+      "usage": "audit"
+    },
+    {
+      "id": "visual",
+      "kind": "visual_spec",
+      "path": "./visual.json",
+      "usage": "package_contract"
+    },
+    {
+      "id": "tokens",
+      "kind": "tokens",
+      "path": "./tokens.json",
+      "usage": "package_contract"
+    },
+    {
+      "id": "component-map",
+      "kind": "component_map",
+      "path": "./component-map.json",
+      "usage": "package_contract"
+    },
+    {
+      "id": "provenance",
+      "kind": "provenance",
+      "path": "./provenance.md",
+      "usage": "audit"
+    },
+    {
+      "id": "normal-fixture",
+      "kind": "fixture",
+      "path": "pipeline/fixtures/styles/product-showcase/normal.fixture.ts",
+      "usage": "validation_input"
+    },
+    {
+      "id": "dense-fixture",
+      "kind": "fixture",
+      "path": "pipeline/fixtures/styles/product-showcase/dense.fixture.ts",
+      "usage": "validation_input"
+    },
+    {
+      "id": "edge-fixture",
+      "kind": "fixture",
+      "path": "pipeline/fixtures/styles/product-showcase/edge.fixture.ts",
+      "usage": "validation_input"
+    },
+    {
+      "id": "review-scenes",
+      "kind": "normalized_events",
+      "path": "./artifacts/review-scenes.json",
+      "usage": "source_evidence"
+    },
+    {
+      "id": "source-review",
+      "kind": "review_report",
+      "path": "./artifacts/source-review-report.json",
+      "usage": "source_review"
+    },
+    {
+      "id": "family-renderer",
+      "kind": "source_code",
+      "path": "src/styles/families/product-showcase/ProductShowcaseScene.tsx",
+      "usage": "renderer"
+    },
+    {
+      "id": "family-preview",
+      "kind": "source_code",
+      "path": "src/styles/families/product-showcase/ProductShowcasePreview.tsx",
+      "usage": "renderer"
+    },
+    {
+      "id": "family-render-root",
+      "kind": "source_code",
+      "path": "src/styles/families/product-showcase/render-root.tsx",
+      "usage": "renderer"
+    },
+    {
+      "id": "family-render-entry",
+      "kind": "source_code",
+      "path": "src/styles/families/product-showcase/render-entry.tsx",
+      "usage": "renderer"
+    },
+    {
+      "id": "family-render-review",
+      "kind": "source_code",
+      "path": "src/styles/families/product-showcase/render-review.mjs",
+      "usage": "rerender"
+    },
+    {
+      "id": "render-props",
+      "kind": "render_props",
+      "path": "./artifacts/render-props.json",
+      "usage": "validation_spec"
+    },
+    {
+      "id": "demo-video-map",
+      "kind": "video_map",
+      "path": "./artifacts/demo-video-map.json",
+      "usage": "validation_spec"
+    },
+    {
+      "id": "preview-frames",
+      "kind": "preview_frames",
+      "path": "./artifacts/frames/",
+      "usage": "visual_validation"
+    },
+    {
+      "id": "render-report",
+      "kind": "render_report",
+      "path": "./artifacts/render-report.json",
+      "usage": "validation_report"
+    }
+  ],
+  "domain": "visual-style",
+  "generatedAt": "2026-07-13T00:00:00.000Z",
+  "packageId": "product-showcase",
+  "schemaVersion": "lucida-artifact-manifest/v1"
 }

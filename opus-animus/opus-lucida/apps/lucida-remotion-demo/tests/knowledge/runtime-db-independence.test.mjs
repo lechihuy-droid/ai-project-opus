@@ -58,12 +58,12 @@ test("JSON remains usable without SQLite and SQLite reports a clear absent proje
   afterRoot(t, root);
   assert.equal(fs.existsSync(databasePath(root)), false);
 
-  const jsonResult = createJsonRepository({ appRoot: root }).query({ query: "terminal" });
+  const jsonResult = createJsonRepository({ appRoot: root }).query({ query: "terminal", domain: "visual-style" });
   assert.equal(jsonResult.repository, "json");
   assert.ok(jsonResult.results.length > 0);
 
   assert.throws(
-    () => createSqliteRepository({ appRoot: root }).query({ query: "terminal" }),
+    () => createSqliteRepository({ appRoot: root }).query({ query: "terminal", domain: "visual-style" }),
     (error) => error instanceof Error
       && error.message.includes("SQLite repository requested but projection is absent")
       && error.message.includes(databasePath(root))
@@ -92,7 +92,7 @@ test("CLI emits valid JSON by defaulting to JSON repository and honors query/fil
 
   const jsonRun = runCli(root, [
     "--json",
-    "--query",
+    "--domain", "visual-style", "--query",
     "\"Terminal\", dashboard!",
     "--aspect-ratio",
     "9:16",
@@ -115,7 +115,7 @@ test("CLI emits valid JSON by defaulting to JSON repository and honors query/fil
   assert.ok(Array.isArray(result.rejectedCandidates));
   assert.ok(result.results.every((item) => item.id && item.score && item.explanation));
 
-  const textRun = runCli(root, ["--query", "terminal"]);
+  const textRun = runCli(root, ["--domain", "visual-style", "--query", "terminal"]);
   assert.equal(textRun.status, 0, textRun.stderr);
   assert.match(textRun.stdout, /^Repository: json\r?\nResults: /u);
 });
@@ -124,13 +124,13 @@ test("CLI rejects invalid repository, filters, and limits with non-zero exit", (
   const root = createTempRoot();
   afterRoot(t, root);
   const cases = [
-    [["--repository", "postgres"], "repository must be json or sqlite."],
+    [["--domain", "visual-style", "--repository", "postgres"], "repository must be json or sqlite."],
     [["--renderable", "maybe"], "renderable must be true or false."],
     [["--limit", "0"], "limit must be an integer between 1 and 100."],
     [["--unknown"], "Unknown option: --unknown"],
   ];
   for (const [args, message] of cases) {
-    const result = runCli(root, args);
+    const result = runCli(root, args.includes("--domain") ? args : ["--domain", "visual-style", ...args]);
     assert.equal(result.status, 1, args.join(" "));
     assert.match(result.stderr, new RegExp(message.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), args.join(" "));
     assert.equal(result.stdout, "", args.join(" "));

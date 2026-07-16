@@ -1,0 +1,17 @@
+{
+  "changed": [
+    "design/knowledge/reference-library/image/technical-editorial-frame/documents/frame-note.json",
+    "design/knowledge/reference-library/repository/fixture-terminal-repo/documents/overview.json",
+    "design/knowledge/reference-library/theme/local-reference-theme/documents/tokens-note.json",
+    "design/knowledge/reference-library/web/terminalcss-catalog-link/documents/review-note.json"
+  ],
+  "check": false,
+  "corpusHash": "576b3d2b5e424f8a04449b5e8d9e30de987ee3c7fef60bdc039d0829a467f469",
+  "counts": {
+    "documents": 4,
+    "sources": 4,
+    "stylePackages": 9
+  },
+  "domain": "visual-style",
+  "schemaVersion": "lucida-evidence-domain-migration/v1"
+}

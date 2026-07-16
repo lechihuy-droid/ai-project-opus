@@ -26,6 +26,7 @@ test("explicit approval promotes one sanitized collector source", () => {
       sources: [{
         sourceId: "repo-terminal",
         sourceType: "repository",
+        domain: "visual-style",
         collectorVersion: "repository-collector/1",
         checksum: `sha256:${checksum}`,
         metadata: { url: "https://example.com/terminal" },
@@ -107,13 +108,13 @@ test("SQLite query rejects projection built from a different manifest", () => {
     fs.copyFileSync(path.join(APP_ROOT, "src", "template-registry-map.json"), path.join(root, "src", "template-registry-map.json"));
     buildSqliteProjection({ appRoot: root });
     const repository = createSqliteRepository({ appRoot: root });
-    assert.ok(repository.query({ limit: 1 }).results.length > 0);
+    assert.ok(repository.query({ limit: 1, domain: "visual-style" }).results.length > 0);
     const manifestPath = path.join(root, ".generated", "knowledge", "manifest.json");
     const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
     manifest.manifestHash = "f".repeat(64);
     writeStableJson(manifestPath, manifest);
     assert.throws(
-      () => repository.query({ limit: 1 }),
+      () => repository.query({ limit: 1, domain: "visual-style" }),
       /SQLite projection is stale for the current generated manifest/,
     );
   } finally {

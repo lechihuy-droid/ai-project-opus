@@ -13,6 +13,7 @@ import {
   sha256File,
   stableJson,
 } from "./index-utils.mjs";
+import { assertEvidenceDomain, domainCounts } from "./evidence-domain.mjs";
 
 export const REFERENCE_INDEX_SCHEMA = "lucida-reference-index/v1";
 export const CHUNKER_VERSION = "structural-v1";
@@ -283,6 +284,7 @@ export const compileReferences = ({ appRoot = process.cwd() } = {}) => {
       continue;
     }
     if (!validateSource(source)) errors.push(validationErrors(`${label}/source.json`, validateSource));
+    try { assertEvidenceDomain(source.domain, `${label}/source.json domain`); } catch (error) { errors.push(error.message); }
     if (source.sourceType !== path.basename(path.dirname(packageDir))) {
       errors.push(`${label}: sourceType must match its library directory`);
     }
@@ -303,6 +305,8 @@ export const compileReferences = ({ appRoot = process.cwd() } = {}) => {
         continue;
       }
       if (!validateDocument(document)) errors.push(validationErrors(documentLabel, validateDocument));
+      try { assertEvidenceDomain(document.domain, `${documentLabel} domain`); } catch (error) { errors.push(error.message); }
+      if (document.domain !== source.domain) errors.push(`${documentLabel}: domain must equal source domain`);
       if (document.mediaType !== source.sourceType) errors.push(`${documentLabel}: mediaType must equal sourceType`);
       if (document.rawText !== document.rawText.normalize("NFC")) errors.push(`${documentLabel}: rawText must be NFC`);
       if (sha256(document.rawText.normalize("NFC")) !== document.contentChecksum) {
@@ -317,6 +321,7 @@ export const compileReferences = ({ appRoot = process.cwd() } = {}) => {
         snapshotId,
         sourceRef: document.sourceRef,
         mediaType: document.mediaType,
+        domain: document.domain,
         title: document.title.normalize("NFC"),
         tags: [...document.tags].sort((left, right) => left.localeCompare(right, "en")),
         contentHash: document.contentChecksum,
@@ -333,6 +338,7 @@ export const compileReferences = ({ appRoot = process.cwd() } = {}) => {
         chunks.push({
           chunkId: idForChunk,
           documentId: compiledDocument.documentId,
+          domain: compiledDocument.domain,
           ordinal,
           rawText: normalizedRaw,
           searchText: normalizeSearchText(normalizedRaw),
@@ -366,6 +372,11 @@ export const compileReferences = ({ appRoot = process.cwd() } = {}) => {
     documents,
     chunks,
     counts: { sources: sources.length, documents: documents.length, chunks: chunks.length },
+    domainCounts: {
+      sources: domainCounts(sources, "reference source"),
+      documents: domainCounts(documents, "reference document"),
+      chunks: domainCounts(chunks, "reference chunk"),
+    },
   };
 };
 

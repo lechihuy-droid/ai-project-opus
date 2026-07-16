@@ -8,7 +8,7 @@ import { PaperNotebookScene } from "../families/paper-notebook";
 import { ProductShowcaseScene } from "../families/product-showcase";
 import { EditorialCollageScene } from "../families/editorial-collage";
 import { TimelineDocumentaryScene } from "../families/timeline-documentary";
-import { buildMinimalEducationScene } from "./adapters";
+import { buildMinimalEducationScene, buildTechnicalEditorialScene } from "./adapters";
 import type { StyleRuntimeChoice } from "./types";
 
 type RuntimeStyleRendererProps = TemplateAdapterProps & {
@@ -28,9 +28,7 @@ export const RuntimeStyleRenderer = ({
   if (choice.selectedFamily === "technical-editorial") {
     return (
       <TechnicalEditorialScene
-        sceneKey={
-          (choice.familySceneKey ?? "normal") as "normal" | "dense" | "edge"
-        }
+        fixture={buildTechnicalEditorialScene(scene)}
       />
     );
   }

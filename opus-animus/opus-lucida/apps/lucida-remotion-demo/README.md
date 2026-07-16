@@ -85,7 +85,9 @@ Import `n8n/workflows/lucida-flow.json`, activate the workflow, then POST a requ
 curl -X POST http://127.0.0.1:5678/webhook/lucida-flow -H "Content-Type: application/json" --data @pipeline/fixtures/flow/request.fixture.json
 ```
 
-The workflow calls `http://host.docker.internal:8790/run`, polls `/status/<runId>` every 30 seconds, and returns the completed or failed flow summary. Keep `npm run flow:server` running while n8n jobs are active.
+The workflow calls `http://host.docker.internal:8790/run`, polls `/status/<runId>` every 30 seconds, and returns the completed or failed flow summary. `/run` requires `contentBrief`, `script`, `videoMap`, `normalizedInput`, `runEnvelope`, `approvals`, and `runId`; the sample request includes all seven. Render stops at final approval. Use `flow:finalize` (or `POST /finalize`) with a final-video approval before any publish handoff. Keep `npm run flow:server` running while n8n jobs are active.
+
+Production visual selection uses a local JSON `ContentBrief`; see [W5 ContentBrief](docs/W5-content-brief.md). Production `visual-flow/v2` has exactly one `content_brief` source, while legacy script-only rapid runs are marked compatibility/deprecated.
 
 ## Docs
 

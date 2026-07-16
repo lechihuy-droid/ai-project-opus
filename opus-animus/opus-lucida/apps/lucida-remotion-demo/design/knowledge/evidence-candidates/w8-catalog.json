@@ -1,0 +1,115 @@
+{
+  "schemaVersion": "lucida-evidence-candidate-catalog/v1",
+  "preparedAt": "2026-07-16",
+  "policy": "Store reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts.",
+  "candidates": [
+    {
+      "sourceId": "w8-dashboard-primer-react",
+      "packageId": "dashboard-data",
+      "sourceType": "repository",
+      "sourceRef": "https://github.com/primer/react",
+      "sourceRevision": "git:4045abea621d0940edcd1120fc70e6ed5f797205",
+      "title": "Primer React dashboard hierarchy review note",
+      "concepts": ["compact component hierarchy", "semantic status surfaces", "accessible operational controls"]
+    },
+    {
+      "sourceId": "w8-dashboard-primer-docs",
+      "packageId": "dashboard-data",
+      "sourceType": "web_reference",
+      "sourceRef": "https://primer.style/",
+      "sourceRevision": "link-note:2026-07-16",
+      "title": "Primer design system dashboard review note",
+      "concepts": ["information hierarchy", "semantic color roles", "dense but inspectable UI"]
+    },
+    {
+      "sourceId": "w8-dashboard-remotion-animation",
+      "packageId": "dashboard-data",
+      "sourceType": "web_reference",
+      "sourceRef": "https://www.remotion.dev/docs/animating-properties",
+      "sourceRevision": "link-note:2026-07-16",
+      "title": "Remotion deterministic dashboard motion note",
+      "concepts": ["frame-driven motion", "deterministic interpolation", "render-stable transitions"]
+    },
+    {
+      "sourceId": "w8-technical-primer-primitives",
+      "packageId": "technical-editorial",
+      "sourceType": "repository",
+      "sourceRef": "https://github.com/primer/primitives",
+      "sourceRevision": "git:b447200fa097165c956c5833031c15608dbe6094",
+      "title": "Primer primitives technical editorial review note",
+      "concepts": ["explicit design tokens", "technical hierarchy", "inspectable typography and spacing roles"]
+    },
+    {
+      "sourceId": "w8-technical-primer-foundations",
+      "packageId": "technical-editorial",
+      "sourceType": "web_reference",
+      "sourceRef": "https://primer.style/foundations/",
+      "sourceRevision": "link-note:2026-07-16",
+      "title": "Primer foundations technical composition note",
+      "concepts": ["systematic foundations", "clear labels", "structured evidence surfaces"]
+    },
+    {
+      "sourceId": "w8-technical-reveal-code",
+      "packageId": "technical-editorial",
+      "sourceType": "web_reference",
+      "sourceRef": "https://revealjs.com/code/",
+      "sourceRevision": "link-note:2026-07-16",
+      "title": "Reveal.js code presentation review note",
+      "concepts": ["progressive code focus", "line-level evidence", "presentation-safe technical density"]
+    },
+    {
+      "sourceId": "w8-minimal-material-web",
+      "packageId": "minimal-education",
+      "sourceType": "repository",
+      "sourceRef": "https://github.com/material-components/material-web",
+      "sourceRevision": "git:b4de401eb665ec63474f39319a4ba8f2145974cc",
+      "title": "Material Web minimal education review note",
+      "concepts": ["semantic component roles", "accessible teaching controls", "systematic spacing"]
+    },
+    {
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "packageId": "minimal-education",
+      "sourceType": "web_reference",
+      "sourceRef": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/",
+      "sourceRevision": "link-note:2026-07-16",
+      "title": "Visual hierarchy education review note",
+      "concepts": ["spacing-driven grouping", "clear reading order", "single-concept emphasis"]
+    },
+    {
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "packageId": "minimal-education",
+      "sourceType": "web_reference",
+      "sourceRef": "https://www.nngroup.com/articles/aesthetic-minimalist-design/",
+      "sourceRevision": "link-note:2026-07-16",
+      "title": "Aesthetic minimalist education review note",
+      "concepts": ["noise reduction", "task-first restraint", "content-led whitespace"]
+    },
+    {
+      "sourceId": "w8-timeline-citizen-dj",
+      "packageId": "timeline-documentary",
+      "sourceType": "repository",
+      "sourceRef": "https://github.com/LibraryOfCongress/citizen-dj",
+      "sourceRevision": "git:216bda2dc80b4ec53b3d279d67923eea020dcce7",
+      "title": "Library of Congress chronology interface review note",
+      "concepts": ["source-forward chronology", "archival metadata", "dated record navigation"]
+    },
+    {
+      "sourceId": "w8-timeline-loc-pictures",
+      "packageId": "timeline-documentary",
+      "sourceType": "web_reference",
+      "sourceRef": "https://www.loc.gov/pictures/",
+      "sourceRevision": "link-note:2026-07-16",
+      "title": "Library of Congress picture catalog review note",
+      "concepts": ["visible source context", "catalog identifiers", "date-forward evidence"]
+    },
+    {
+      "sourceId": "w8-timeline-national-archives",
+      "packageId": "timeline-documentary",
+      "sourceType": "web_reference",
+      "sourceRef": "https://catalog.archives.gov/",
+      "sourceRevision": "link-note:2026-07-16",
+      "title": "US National Archives catalog review note",
+      "concepts": ["record provenance", "chronological context", "missing-record transparency"]
+    }
+  ]
+}

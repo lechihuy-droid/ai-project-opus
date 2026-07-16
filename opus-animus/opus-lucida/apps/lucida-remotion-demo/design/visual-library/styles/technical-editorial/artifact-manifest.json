@@ -1,91 +1,92 @@
 {
-    "schemaVersion":  "lucida-artifact-manifest/v1",
-    "packageId":  "technical-editorial",
-    "generatedAt":  "2026-07-12T14:49:46.8489251Z",
-    "artifacts":  [
-                      {
-                          "id":  "style-package",
-                          "kind":  "style_spec",
-                          "path":  "./style-package.json",
-                          "usage":  "library_record"
-                      },
-                      {
-                          "id":  "artifact-manifest",
-                          "kind":  "artifact_manifest",
-                          "path":  "./artifact-manifest.json",
-                          "usage":  "audit"
-                      },
-                      {
-                          "id":  "visual",
-                          "kind":  "visual_spec",
-                          "path":  "./visual.json",
-                          "usage":  "package_contract"
-                      },
-                      {
-                          "id":  "tokens",
-                          "kind":  "tokens",
-                          "path":  "./tokens.json",
-                          "usage":  "package_contract"
-                      },
-                      {
-                          "id":  "component-map",
-                          "kind":  "component_map",
-                          "path":  "./component-map.json",
-                          "usage":  "package_contract"
-                      },
-                      {
-                          "id":  "provenance",
-                          "kind":  "provenance",
-                          "path":  "./provenance.md",
-                          "usage":  "audit"
-                      },
-                      {
-                          "id":  "review-scenes",
-                          "kind":  "normalized_events",
-                          "path":  "./artifacts/review-scenes.json",
-                          "usage":  "source_evidence"
-                      },
-                      {
-                          "id":  "source-review",
-                          "kind":  "review_report",
-                          "path":  "./artifacts/source-review-report.json",
-                          "usage":  "source_review"
-                      },
-                      {
-                          "id":  "demo-video-map",
-                          "kind":  "video_map",
-                          "path":  "./artifacts/demo-video-map.json",
-                          "usage":  "validation_spec"
-                      },
-                      {
-                          "id":  "render-props",
-                          "kind":  "render_props",
-                          "path":  "./artifacts/render-props.json",
-                          "usage":  "validation_spec"
-                      },
-                      {
-                          "id":  "preview-frames",
-                          "kind":  "preview_frames",
-                          "path":  "./artifacts/frames/",
-                          "usage":  "visual_validation"
-                      },
-                      {
-                          "id":  "render-report",
-                          "kind":  "render_report",
-                          "path":  "./artifacts/render-report.json",
-                          "usage":  "validation_report"
-                      },
-                      {
-                          "id":  "renderer-source",
-                          "kind":  "implementation",
-                          "path":  "src/styles/families/technical-editorial/",
-                          "usage":  "source_code"
-                      },
-                      {
-                          "id":  "fixture-source",
-                          "kind":  "fixture",
-                          "path":  "pipeline/fixtures/styles/technical-editorial/",
-                          "usage":  "test_input"
-                      }
-                  ]
+  "artifacts": [
+    {
+      "id": "style-package",
+      "kind": "style_spec",
+      "path": "./style-package.json",
+      "usage": "library_record"
+    },
+    {
+      "id": "artifact-manifest",
+      "kind": "artifact_manifest",
+      "path": "./artifact-manifest.json",
+      "usage": "audit"
+    },
+    {
+      "id": "visual",
+      "kind": "visual_spec",
+      "path": "./visual.json",
+      "usage": "package_contract"
+    },
+    {
+      "id": "tokens",
+      "kind": "tokens",
+      "path": "./tokens.json",
+      "usage": "package_contract"
+    },
+    {
+      "id": "component-map",
+      "kind": "component_map",
+      "path": "./component-map.json",
+      "usage": "package_contract"
+    },
+    {
+      "id": "provenance",
+      "kind": "provenance",
+      "path": "./provenance.md",
+      "usage": "audit"
+    },
+    {
+      "id": "review-scenes",
+      "kind": "normalized_events",
+      "path": "./artifacts/review-scenes.json",
+      "usage": "source_evidence"
+    },
+    {
+      "id": "source-review",
+      "kind": "review_report",
+      "path": "./artifacts/source-review-report.json",
+      "usage": "source_review"
+    },
+    {
+      "id": "demo-video-map",
+      "kind": "video_map",
+      "path": "./artifacts/demo-video-map.json",
+      "usage": "validation_spec"
+    },
+    {
+      "id": "render-props",
+      "kind": "render_props",
+      "path": "./artifacts/render-props.json",
+      "usage": "validation_spec"
+    },
+    {
+      "id": "preview-frames",
+      "kind": "preview_frames",
+      "path": "./artifacts/frames/",
+      "usage": "visual_validation"
+    },
+    {
+      "id": "render-report",
+      "kind": "render_report",
+      "path": "./artifacts/render-report.json",
+      "usage": "validation_report"
+    },
+    {
+      "id": "renderer-source",
+      "kind": "implementation",
+      "path": "src/styles/families/technical-editorial/",
+      "usage": "source_code"
+    },
+    {
+      "id": "fixture-source",
+      "kind": "fixture",
+      "path": "pipeline/fixtures/styles/technical-editorial/",
+      "usage": "test_input"
+    }
+  ],
+  "domain": "visual-style",
+  "generatedAt": "2026-07-12T14:49:46.8489251Z",
+  "packageId": "technical-editorial",
+  "schemaVersion": "lucida-artifact-manifest/v1"
 }

@@ -1,0 +1,22 @@
+[
+  {
+    "schemaVersion": "lucida-approval/v1",
+    "approvalId": "w9-production-treatment-huy-r6",
+    "runId": "w9-gpt-5-6-production-20260717-r6",
+    "kind": "visual-treatment",
+    "status": "approved",
+    "artifactHash": "sha256:87f9cff8d56d88a644affe530c3957a9eb25fde749432e56698af0e835402021",
+    "approvedBy": "HUY",
+    "approvedAt": "2026-07-17T00:00:00+09:00"
+  },
+  {
+    "schemaVersion": "lucida-approval/v1",
+    "approvalId": "w9-production-map-huy-r6",
+    "runId": "w9-gpt-5-6-production-20260717-r6",
+    "kind": "video-map",
+    "status": "approved",
+    "artifactHash": "sha256:b8f35031985ae94575880067ff45361607a4a097100d8359e891094545154af4",
+    "approvedBy": "HUY",
+    "approvedAt": "2026-07-17T00:00:00+09:00"
+  }
+]

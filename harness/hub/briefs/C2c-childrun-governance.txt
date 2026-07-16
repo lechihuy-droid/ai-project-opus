@@ -186,3 +186,14 @@ ended up touching runtime_children.py and why (if you did), the exact
 claims.jsonl line schema you wrote, and confirmation that a denied spawn and
 a failed child both leave the parent run status "succeeded" (isolation
 requirement).
+
+ADDENDUM (orchestra, 2026-07-17) — REAL REJECT SEMANTICS (required):
+C3's HITL panel sends action "reject" to the workflow resume route. Current
+C2b spec only logs the action and re-enters the node (audit-only) — that is
+NOT acceptable for a governance gate. In workflow_exec.py resume path:
+- action == "approve" (or "resume"): re-enter gated node as specced.
+- action == "reject": do NOT execute the node. Mark run status
+  "failed" with metadata.error "rejected at gate:<node_id>", write checkpoint,
+  emit SSE error event {message: "rejected at gate:<node_id>"}, end stream.
+Test: gate node -> resolve with action reject -> run failed, provider NOT
+called (fake provider records zero calls for that node).

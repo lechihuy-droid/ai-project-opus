@@ -162,6 +162,7 @@
             "enum": [
               "hook",
               "problem",
+              "explain",
               "comparison",
               "process",
               "system_architecture",

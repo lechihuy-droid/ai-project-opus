@@ -1,12 +1,24 @@
 {
+  "approval": {
+    "approvedAt": "2026-07-14",
+    "approvedBy": "Lucida reference review",
+    "status": "approved"
+  },
+  "collectorVersion": "image-reference-collector/1",
+  "domain": "visual-style",
+  "provenance": {
+    "collectorArtifact": "design/knowledge/reference-approvals/image/technical-editorial-frame.sanitized-approved.json",
+    "sanitizedArtifactChecksum": "d903235145d3e4d8451392f09a0a09e01ac1f45b7dc7115ae3ba2bf51c1d7f46"
+  },
+  "rights": {
+    "evidence": "Project-owned visual validation fixture.",
+    "policy": "internal-fixture",
+    "status": "approved"
+  },
   "schemaVersion": "lucida-reference-source/v1",
+  "snapshotChecksum": "ca7b33d28dbdb796e8033ef038768a9ecb3918560f0f64576f3a9471885982a6",
   "sourceId": "source:reference:technical-editorial-frame",
-  "sourceType": "image",
   "sourceRef": "pipeline/fixtures/styles/package-valid/technical-editorial/artifacts/frames/scene-01.png",
   "sourceRevision": "technical-editorial-fixture-2026-07-14",
-  "snapshotChecksum": "ca7b33d28dbdb796e8033ef038768a9ecb3918560f0f64576f3a9471885982a6",
-  "collectorVersion": "image-reference-collector/1",
-  "rights": { "policy": "internal-fixture", "status": "approved", "evidence": "Project-owned visual validation fixture." },
-  "approval": { "status": "approved", "approvedBy": "Lucida reference review", "approvedAt": "2026-07-14" },
-  "provenance": { "sanitizedArtifactChecksum": "d903235145d3e4d8451392f09a0a09e01ac1f45b7dc7115ae3ba2bf51c1d7f46", "collectorArtifact": "design/knowledge/reference-approvals/image/technical-editorial-frame.sanitized-approved.json" }
+  "sourceType": "image"
 }

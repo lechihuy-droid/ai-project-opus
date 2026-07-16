@@ -1,0 +1,60 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-16",
+    "approvedBy": "HUY",
+    "status": "approved"
+  },
+  "generatedAt": "2026-07-16T00:00:00.000Z",
+  "projectId": "lucida-remotion-demo-w8-evidence",
+  "rights": {
+    "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
+  "sanitization": {
+    "findings": [
+      "Link-only reviewer notes; no third-party source body or media is stored."
+    ],
+    "redactions": 0,
+    "status": "passed"
+  },
+  "schemaVersion": "sanitized-visual-input/v1",
+  "sources": [
+    {
+      "checksum": "b44e01ceca38a2b2009a87e00c52513f9bf2596e7090bbeed249d5d7b010a789",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "timeline-documentary",
+        "url": "https://github.com/LibraryOfCongress/citizen-dj"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "timeline-documentary",
+            "tags": [
+              "timeline-documentary",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "b44e01ceca38a2b2009a87e00c52513f9bf2596e7090bbeed249d5d7b010a789",
+            "sourceRef": "https://github.com/LibraryOfCongress/citizen-dj"
+          },
+          "text": "# Library of Congress chronology interface review note\n\nSource: https://github.com/LibraryOfCongress/citizen-dj\nTarget package: timeline-documentary\n\nReviewer-authored concepts:\n- source-forward chronology\n- archival metadata\n- dated record navigation\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "rights": {
+        "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+        "policy": "link-and-review-note-only",
+        "status": "approved"
+      },
+      "sourceId": "source:reference:w8-timeline-citizen-dj",
+      "sourceRevision": "git:216bda2dc80b4ec53b3d279d67923eea020dcce7",
+      "sourceType": "repository"
+    }
+  ]
+}

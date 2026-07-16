@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
+import { validateVisualFlow } from "../pipeline/contracts/visual-flow-contracts.mjs";
+import { writeJson } from "./operating-model/orchestration.mjs";
 
 const args = process.argv.slice(2);
 const valueAfter = (flag) => {
@@ -14,11 +16,33 @@ if (!config)
   );
 const root = process.cwd();
 const configDefinition = JSON.parse(fs.readFileSync(path.resolve(root, config), "utf8"));
-const runId = valueAfter("--run-id") ?? `visual-${Date.now()}`;
+const validation = validateVisualFlow(configDefinition, {
+  onWarning: (warning) => console.warn(`WARNING: ${warning}`),
+});
+if (validation.errors.length) throw new Error(`Invalid visual flow: ${validation.errors.join("; ")}`);
+const effectiveConfig = validation.adapted ?? configDefinition;
+if (effectiveConfig.run.lane !== "rapid-visual-pilot") {
+  throw new Error("visual-flow only runs rapid-visual-pilot configs; use flow:promote and flow:run for production");
+}
+const runId = valueAfter("--run-id") ?? effectiveConfig.run.runId;
+if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/u.test(runId)) {
+  throw new Error("--run-id and run.runId may contain only letters, numbers, dot, underscore, and hyphen");
+}
 const runDir = `pipeline/runs/${runId}`;
 const noPreview = args.includes("--no-preview");
 const noRender = args.includes("--no-render");
 const noKnowledgeRefresh = args.includes("--no-knowledge-refresh");
+const effectiveEnvelope = {
+  ...effectiveConfig.run,
+  runId,
+  lane: "rapid-visual-pilot",
+  publicationStatus: "non_publishable",
+  approvalRefs: [],
+};
+const effectiveConfigPath = path.resolve(root, runDir, "visual-flow.effective.json");
+fs.mkdirSync(path.resolve(root, runDir), { recursive: true });
+writeJson(path.resolve(root, runDir, "run-envelope.json"), effectiveEnvelope);
+writeJson(effectiveConfigPath, { ...effectiveConfig, run: effectiveEnvelope });
 
 const run = (script, scriptArgs) => {
   const result = spawnSync(process.execPath, [script, ...scriptArgs], {
@@ -30,16 +54,16 @@ const run = (script, scriptArgs) => {
 };
 
 const startedAt = new Date().toISOString();
-run("scripts/collect-visual-inputs.mjs", ["--config", config, "--out", runDir]);
+run("scripts/collect-visual-inputs.mjs", ["--config", path.relative(root, effectiveConfigPath), "--out", runDir]);
 run("scripts/process-visual-inputs.mjs", [
   "--input",
   `${runDir}/01-raw-input.json`,
   "--config",
-  config,
+  path.relative(root, effectiveConfigPath),
 ]);
-const knowledgeEnabled = configDefinition.knowledge?.enabled === true;
+const knowledgeEnabled = effectiveConfig.knowledge?.enabled === true;
 const refreshKnowledge = knowledgeEnabled
-  && configDefinition.knowledge?.refreshProjection !== false
+  && effectiveConfig.knowledge?.refreshProjection !== false
   && !noKnowledgeRefresh;
 if (refreshKnowledge) {
   run("scripts/knowledge/compile.mjs", []);
@@ -51,7 +75,7 @@ run("scripts/map-and-compile-visual-scenes.mjs", [
   "--input",
   `${runDir}/03-normalized-input.json`,
   "--config",
-  config,
+  path.relative(root, effectiveConfigPath),
 ]);
 run("scripts/validate-generated-video-map.mjs", [
   "--input",
@@ -74,6 +98,7 @@ const report = {
   startedAt,
   completedAt: new Date().toISOString(),
   config,
+  effectiveEnvelope,
   stages: {
     collect: "completed",
     sanitize: "completed",

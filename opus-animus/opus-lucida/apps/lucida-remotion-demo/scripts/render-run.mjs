@@ -2,7 +2,21 @@ import crypto from "node:crypto";
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { acquireRenderLock } from "./operating-model/render-lock.mjs";
 
+export const buildRemotionInvocation = ({ appRoot, output, propsPath, browserExecutable }) => {
+  const renderArgs = ["render", "LucidaMotionDemo", output];
+  if (propsPath) renderArgs.push(`--props=${propsPath}`);
+  if (browserExecutable) renderArgs.push(`--browser-executable=${browserExecutable}`);
+
+  return {
+    command: process.execPath,
+    args: [path.join(appRoot, "node_modules", "@remotion", "cli", "remotion-cli.js"), ...renderArgs],
+  };
+};
+
+const main = () => {
 const appRoot = process.cwd();
 const fail = (message) => {
   console.error(`render preflight: ${message}`);
@@ -76,13 +90,33 @@ const outDir = path.resolve(appRoot, "output/render/flow-runs", runId);
 const output = path.join(outDir, "video.mp4");
 fs.mkdirSync(outDir, { recursive: true });
 
-const renderArgs = ["remotion", "render", "LucidaMotionDemo", output];
-if (propsValue) renderArgs.push(`--props=${propsPath}`);
-const result = spawnSync("npx", renderArgs, {
-  cwd: appRoot,
-  stdio: "inherit",
-  shell: process.platform === "win32",
+const browserExecutable = process.env.LUCIDA_BROWSER_EXECUTABLE;
+if (browserExecutable) {
+  if (!fs.statSync(browserExecutable, { throwIfNoEntry: false })?.isFile()) {
+    fail(`LUCIDA_BROWSER_EXECUTABLE is not a file: ${browserExecutable}`);
+  }
+}
+const remotionInvocation = buildRemotionInvocation({
+  appRoot,
+  output,
+  propsPath: propsValue ? propsPath : undefined,
+  browserExecutable,
 });
+let result;
+let renderLock;
+try {
+  renderLock = acquireRenderLock({
+    approvedRoot: path.resolve(appRoot, "output", "render", "flow-runs"),
+    runRoot: outDir,
+    runId,
+  });
+  result = spawnSync(remotionInvocation.command, remotionInvocation.args, {
+    cwd: appRoot,
+    stdio: "inherit",
+  });
+} finally {
+  renderLock?.release();
+}
 if (result.error) {
   console.error(result.error);
   process.exit(1);
@@ -137,3 +171,8 @@ const serializedReport = `${JSON.stringify(report, null, 2)}\n`;
 fs.writeFileSync(path.join(outDir, "render-report.json"), serializedReport);
 fs.writeFileSync(path.join(outDir, "render-output.json"), serializedReport);
 console.log(`Rendered ${path.relative(appRoot, output)}`);
+};
+
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main();
+}

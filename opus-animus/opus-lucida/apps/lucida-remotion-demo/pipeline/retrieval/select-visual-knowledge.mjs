@@ -22,6 +22,7 @@ const evidenceFor = (result) => {
     : [result.capabilities.family].filter(Boolean);
   return {
     id: result.id,
+    domain: result.domain,
     title: result.title,
     family: families[0] ?? null,
     sourceType: result.sourceType,
@@ -43,11 +44,12 @@ export const selectVisualKnowledge = ({ normalized, config, appRoot = process.cw
   if (!enabled) {
     return {
       schemaVersion: "visual-knowledge-selection/v1",
+      domain: "visual-style",
       enabled: false,
       repository: null,
       manifestHash,
       selections: [],
-      summary: { queried: 0, matched: 0, evidence: 0 },
+      summary: { queried: 0, matched: 0, evidence: 0, domain: "visual-style" },
     };
   }
 
@@ -58,7 +60,11 @@ export const selectVisualKnowledge = ({ normalized, config, appRoot = process.cw
   for (const event of normalized.events) {
     const requestedFamily = event.data?.family ?? event.data?.visualFamily;
     const text = clean([
-      event.text,
+      event.title,
+      event.body ?? event.text,
+      event.intent,
+      event.beatRole,
+      ...(event.actors ?? []),
       requestedFamily,
       ...(event.data?.tags ?? []),
     ].filter(Boolean).join(" ")).slice(0, settings.maxQueryCharacters ?? 600);
@@ -67,6 +73,7 @@ export const selectVisualKnowledge = ({ normalized, config, appRoot = process.cw
       ? [requestedFamily]
       : config.mapping.allowedFamilies;
     const query = {
+      domain: "visual-style",
       text,
       family: families,
       rights: "approved",
@@ -85,6 +92,7 @@ export const selectVisualKnowledge = ({ normalized, config, appRoot = process.cw
 
   return {
     schemaVersion: "visual-knowledge-selection/v1",
+    domain: "visual-style",
     enabled: true,
     repository: repositoryName,
     manifestHash,
@@ -93,6 +101,7 @@ export const selectVisualKnowledge = ({ normalized, config, appRoot = process.cw
       queried: selections.length,
       matched: selections.filter((selection) => selection.recommendedFamily).length,
       evidence: selections.reduce((count, selection) => count + selection.evidence.length, 0),
+      domain: "visual-style",
     },
   };
 };

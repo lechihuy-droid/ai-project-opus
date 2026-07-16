@@ -1,0 +1,60 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-16",
+    "approvedBy": "HUY",
+    "status": "approved"
+  },
+  "generatedAt": "2026-07-16T00:00:00.000Z",
+  "projectId": "lucida-remotion-demo-w8-evidence",
+  "rights": {
+    "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
+  "sanitization": {
+    "findings": [
+      "Link-only reviewer notes; no third-party source body or media is stored."
+    ],
+    "redactions": 0,
+    "status": "passed"
+  },
+  "schemaVersion": "sanitized-visual-input/v1",
+  "sources": [
+    {
+      "checksum": "d2aaddd576a92ab279d2e0ebdcbeb6ecb56763196787b0ac66502b22f2cd7603",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "technical-editorial",
+        "url": "https://github.com/primer/primitives"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "technical-editorial",
+            "tags": [
+              "technical-editorial",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "d2aaddd576a92ab279d2e0ebdcbeb6ecb56763196787b0ac66502b22f2cd7603",
+            "sourceRef": "https://github.com/primer/primitives"
+          },
+          "text": "# Primer primitives technical editorial review note\n\nSource: https://github.com/primer/primitives\nTarget package: technical-editorial\n\nReviewer-authored concepts:\n- explicit design tokens\n- technical hierarchy\n- inspectable typography and spacing roles\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "rights": {
+        "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+        "policy": "link-and-review-note-only",
+        "status": "approved"
+      },
+      "sourceId": "source:reference:w8-technical-primer-primitives",
+      "sourceRevision": "git:b447200fa097165c956c5833031c15608dbe6094",
+      "sourceType": "repository"
+    }
+  ]
+}

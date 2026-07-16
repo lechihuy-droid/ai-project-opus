@@ -113,7 +113,12 @@ check(
   `Banned templateId used by scene(s): ${bannedScenes.map((scene) => `${scene.id}:${scene.templateId}`).join(", ")}.`,
 );
 
-check(videoMap.video?.language === "vi", `video.language must be "vi"; got ${JSON.stringify(videoMap.video?.language)}.`);
+const validLanguages = ["vi", "en"];
+const hasSupportedLanguage = validLanguages.includes(videoMap.video?.language);
+check(
+  hasSupportedLanguage,
+  `video.language must be one of ${validLanguages.join(", ")}; got ${JSON.stringify(videoMap.video?.language)}.`,
+);
 
 const validSeries = Object.keys(seriesIntents);
 check(
@@ -164,4 +169,5 @@ warnings.forEach((warning) => console.warn(`WARNING: ${warning}`));
 console.log(`Brand check score: ${score.toFixed(2)}. Report: ${reportPath}`);
 
 if (score < config.thresholds.normalize) process.exit(1);
+if (!hasSupportedLanguage) process.exit(1);
 if (score < config.thresholds.pass) console.warn("WARNING: normalize and revalidate");

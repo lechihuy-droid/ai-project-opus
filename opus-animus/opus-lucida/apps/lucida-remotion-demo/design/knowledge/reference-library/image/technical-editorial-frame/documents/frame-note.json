@@ -1,10 +1,28 @@
 {
+  "contentChecksum": "026ec38e2546f8c0639b5ffc334bca3212accc93cedbc5fb688d99645b8630b1",
+  "domain": "visual-style",
+  "mediaType": "image",
+  "observations": [
+    {
+      "definition": {
+        "family": "technical-editorial",
+        "traits": [
+          "hierarchy",
+          "restrained contrast",
+          "information grouping"
+        ]
+      },
+      "kind": "image_composition",
+      "reviewStatus": "approved"
+    }
+  ],
+  "rawText": "# Technical editorial frame\n\nProject-owned render fixture reviewed as image evidence. The observation is intentionally descriptive: use technical editorial hierarchy, restrained contrast, and structured information grouping. The bitmap remains evidence only and is not a production asset selection.",
   "schemaVersion": "lucida-reference-document/v1",
   "sourceRef": "pipeline/fixtures/styles/package-valid/technical-editorial/artifacts/frames/scene-01.png#review-note",
-  "title": "Technical editorial fixture frame note",
-  "mediaType": "image",
-  "rawText": "# Technical editorial frame\n\nProject-owned render fixture reviewed as image evidence. The observation is intentionally descriptive: use technical editorial hierarchy, restrained contrast, and structured information grouping. The bitmap remains evidence only and is not a production asset selection.",
-  "contentChecksum": "026ec38e2546f8c0639b5ffc334bca3212accc93cedbc5fb688d99645b8630b1",
-  "tags": ["image", "technical-editorial", "fixture"],
-  "observations": [{ "kind": "image_composition", "reviewStatus": "approved", "definition": { "family": "technical-editorial", "traits": ["hierarchy", "restrained contrast", "information grouping"] } }]
+  "tags": [
+    "image",
+    "technical-editorial",
+    "fixture"
+  ],
+  "title": "Technical editorial fixture frame note"
 }

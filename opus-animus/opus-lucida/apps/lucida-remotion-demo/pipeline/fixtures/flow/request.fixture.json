@@ -1,5 +1,9 @@
 {
+  "contentBrief": "pipeline/fixtures/content-brief/valid-auto.fixture.json",
   "script": "pipeline/fixtures/audio/approved-script.fixture.json",
   "videoMap": "pipeline/fixtures/audio/video-map.fixture.json",
+  "normalizedInput": "pipeline/fixtures/content-brief/normalized-auto.fixture.json",
+  "runEnvelope": "pipeline/fixtures/flow/production-envelope.fixture.json",
+  "approvals": "pipeline/fixtures/flow/production-approvals.fixture.json",
   "runId": "flow-fixture"
 }

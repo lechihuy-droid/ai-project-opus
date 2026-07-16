@@ -1,0 +1,29 @@
+{
+  "contentChecksum": "03bf2b417c0270f5a713099490bcb3cc99a9d76549bac14f1cf73bd9382a6593",
+  "domain": "visual-style",
+  "mediaType": "web",
+  "observations": [
+    {
+      "definition": {
+        "packageId": "minimal-education",
+        "tags": [
+          "minimal-education",
+          "w8-candidate",
+          "link-only"
+        ]
+      },
+      "kind": "layout_reference",
+      "reviewStatus": "approved"
+    }
+  ],
+  "rawText": "# Aesthetic minimalist education review note\n\nSource: https://www.nngroup.com/articles/aesthetic-minimalist-design/\nTarget package: minimal-education\n\nReviewer-authored concepts:\n- noise reduction\n- task-first restraint\n- content-led whitespace\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts.",
+  "schemaVersion": "lucida-reference-document/v1",
+  "sourceRef": "https://www.nngroup.com/articles/aesthetic-minimalist-design/",
+  "tags": [
+    "link-only",
+    "minimal-education",
+    "w8-candidate",
+    "web"
+  ],
+  "title": "w8-minimal-nng-aesthetic record 0001"
+}

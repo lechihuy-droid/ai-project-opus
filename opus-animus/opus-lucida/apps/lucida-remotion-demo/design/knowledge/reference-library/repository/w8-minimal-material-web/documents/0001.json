@@ -1,0 +1,29 @@
+{
+  "contentChecksum": "f83f54910bda206ffd70ca0d83357ba161e6101255aebf24bc5f75faa21e51b5",
+  "domain": "visual-style",
+  "mediaType": "repository",
+  "observations": [
+    {
+      "definition": {
+        "packageId": "minimal-education",
+        "tags": [
+          "minimal-education",
+          "w8-candidate",
+          "link-only"
+        ]
+      },
+      "kind": "layout_reference",
+      "reviewStatus": "approved"
+    }
+  ],
+  "rawText": "# Material Web minimal education review note\n\nSource: https://github.com/material-components/material-web\nTarget package: minimal-education\n\nReviewer-authored concepts:\n- semantic component roles\n- accessible teaching controls\n- systematic spacing\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts.",
+  "schemaVersion": "lucida-reference-document/v1",
+  "sourceRef": "https://github.com/material-components/material-web",
+  "tags": [
+    "link-only",
+    "minimal-education",
+    "repository",
+    "w8-candidate"
+  ],
+  "title": "w8-minimal-material-web record 0001"
+}

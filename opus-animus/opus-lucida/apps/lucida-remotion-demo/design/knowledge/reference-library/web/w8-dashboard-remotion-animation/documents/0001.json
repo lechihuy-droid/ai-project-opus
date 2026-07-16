@@ -1,0 +1,29 @@
+{
+  "contentChecksum": "2594651d67e204312d55ef0763fcc2dfff3500331393e6b916bc187ec0a78a63",
+  "domain": "visual-style",
+  "mediaType": "web",
+  "observations": [
+    {
+      "definition": {
+        "packageId": "dashboard-data",
+        "tags": [
+          "dashboard-data",
+          "w8-candidate",
+          "link-only"
+        ]
+      },
+      "kind": "layout_reference",
+      "reviewStatus": "approved"
+    }
+  ],
+  "rawText": "# Remotion deterministic dashboard motion note\n\nSource: https://www.remotion.dev/docs/animating-properties\nTarget package: dashboard-data\n\nReviewer-authored concepts:\n- frame-driven motion\n- deterministic interpolation\n- render-stable transitions\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts.",
+  "schemaVersion": "lucida-reference-document/v1",
+  "sourceRef": "https://www.remotion.dev/docs/animating-properties",
+  "tags": [
+    "dashboard-data",
+    "link-only",
+    "w8-candidate",
+    "web"
+  ],
+  "title": "w8-dashboard-remotion-animation record 0001"
+}

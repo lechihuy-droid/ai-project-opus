@@ -1,0 +1,23 @@
+{
+  "fixtureId": "no-match",
+  "cases": [
+    {
+      "id": "unknown-intent-uses-deterministic-fallback",
+      "scene": {
+        "intent": "unmapped-intent",
+        "content": {
+          "headlineChars": 20,
+          "bodyChars": 40,
+          "bulletItems": 1,
+          "codeLines": 0,
+          "dataSeries": 0,
+          "assetClassifications": [],
+          "hasStructuredNumericData": false,
+          "datedEvents": 0,
+          "hasSourcedChronology": false
+        }
+      },
+      "expect": { "selected": "technical-editorial" }
+    }
+  ]
+}

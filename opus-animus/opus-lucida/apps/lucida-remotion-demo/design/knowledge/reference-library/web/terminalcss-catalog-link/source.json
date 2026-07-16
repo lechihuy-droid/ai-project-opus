@@ -1,12 +1,24 @@
 {
+  "approval": {
+    "approvedAt": "2026-07-14",
+    "approvedBy": "Lucida reference review",
+    "status": "approved"
+  },
+  "collectorVersion": "web-reference-collector/1",
+  "domain": "visual-style",
+  "provenance": {
+    "collectorArtifact": "design/knowledge/reference-approvals/web/terminalcss-catalog-link.sanitized-approved.json",
+    "sanitizedArtifactChecksum": "702242970274dcdb8816682d4dfd2d5ece8dcb3dc79d5774ebe02fed867909fc"
+  },
+  "rights": {
+    "evidence": "The canonical package retains a reviewer-authored note and source URL only; no page content or assets are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
   "schemaVersion": "lucida-reference-source/v1",
+  "snapshotChecksum": "d27f65691ab147d03040435d5ce510bdf557e0a901f393c006f480fd342e54bf",
   "sourceId": "source:reference:terminalcss-catalog-link",
-  "sourceType": "web",
   "sourceRef": "https://terminalcss.xyz/",
   "sourceRevision": "visual-reference-flow-2026-07-14",
-  "snapshotChecksum": "d27f65691ab147d03040435d5ce510bdf557e0a901f393c006f480fd342e54bf",
-  "collectorVersion": "web-reference-collector/1",
-  "rights": { "policy": "link-and-review-note-only", "status": "approved", "evidence": "The canonical package retains a reviewer-authored note and source URL only; no page content or assets are vendored." },
-  "approval": { "status": "approved", "approvedBy": "Lucida reference review", "approvedAt": "2026-07-14" },
-  "provenance": { "sanitizedArtifactChecksum": "702242970274dcdb8816682d4dfd2d5ece8dcb3dc79d5774ebe02fed867909fc", "collectorArtifact": "design/knowledge/reference-approvals/web/terminalcss-catalog-link.sanitized-approved.json" }
+  "sourceType": "web"
 }

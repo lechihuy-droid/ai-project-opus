@@ -1,0 +1,24 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-16",
+    "approvedBy": "HUY",
+    "status": "approved"
+  },
+  "collectorVersion": "w8-link-note-collector/1",
+  "domain": "visual-style",
+  "provenance": {
+    "collectorArtifact": "design/knowledge/reference-approvals/web/w8-dashboard-primer-docs.sanitized-approved.json",
+    "sanitizedArtifactChecksum": "40ee6039d7e2d956a928038a7ed72c53f0a9a2acf323bdef4aee41fb9a337903"
+  },
+  "rights": {
+    "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
+  "schemaVersion": "lucida-reference-source/v1",
+  "snapshotChecksum": "ed0c08224248380a66b0719ab741744642d04ef638c05ac9f1091c5847a52681",
+  "sourceId": "source:reference:w8-dashboard-primer-docs",
+  "sourceRef": "https://primer.style/",
+  "sourceRevision": "link-note:2026-07-16",
+  "sourceType": "web"
+}

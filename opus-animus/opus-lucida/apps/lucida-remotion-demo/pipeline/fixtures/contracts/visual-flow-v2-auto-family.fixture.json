@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "visual-flow/v2",
+  "run": {
+    "schemaVersion": "lucida-run/v1",
+    "runId": "invalid-auto-family",
+    "lane": "rapid-visual-pilot",
+    "styleMode": "auto",
+    "publicationStatus": "non_publishable",
+    "approvalRefs": []
+  },
+  "projectId": "invalid-auto-family",
+  "fps": 30,
+  "themeId": "lucida-editorial/v1",
+  "sources": [{ "id": "script", "type": "script", "family": "terminal" }],
+  "mapping": {
+    "allowedFamilies": ["terminal", "editorial"],
+    "allowedPresets": ["headline-stat-grid"],
+    "defaultFamily": "editorial",
+    "defaultPreset": "headline-stat-grid",
+    "minSceneSeconds": 3,
+    "maxSceneSeconds": 8,
+    "maxItemsPerScene": 10
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "contentChecksum": "e5256d08f1c37969d87efffc3d6dc1923f310432950d65c9ea5af132ed5194d3",
+  "domain": "visual-style",
+  "mediaType": "web",
+  "observations": [
+    {
+      "definition": {
+        "packageId": "technical-editorial",
+        "tags": [
+          "technical-editorial",
+          "w8-candidate",
+          "link-only"
+        ]
+      },
+      "kind": "layout_reference",
+      "reviewStatus": "approved"
+    }
+  ],
+  "rawText": "# Primer foundations technical composition note\n\nSource: https://primer.style/foundations/\nTarget package: technical-editorial\n\nReviewer-authored concepts:\n- systematic foundations\n- clear labels\n- structured evidence surfaces\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts.",
+  "schemaVersion": "lucida-reference-document/v1",
+  "sourceRef": "https://primer.style/foundations/",
+  "tags": [
+    "link-only",
+    "technical-editorial",
+    "w8-candidate",
+    "web"
+  ],
+  "title": "w8-technical-primer-foundations record 0001"
+}

@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { writeStableJson } from "./index-utils.mjs";
+import { assertEvidenceDomain } from "./evidence-domain.mjs";
 
 const USAGE = "Usage: npm run knowledge:approve -- --input <02-sanitized-input.json> --source <source-id> --revision <immutable-revision> --rights-policy <policy> --rights-evidence <evidence> --approved-by <reviewer> [--approved-at <ISO-8601>] --out <approved.json>";
 
@@ -36,6 +37,7 @@ export const approveReference = ({
   }
   const source = raw.sources?.find((candidate) => candidate.sourceId === required(sourceId, "--source"));
   if (!source) throw new Error(`Source ${sourceId} was not found in sanitized input.`);
+  assertEvidenceDomain(source.domain, `Source ${sourceId} domain`);
   if (fs.existsSync(output)) throw new Error(`Approval output already exists: ${output}`);
   if (Number.isNaN(Date.parse(approvedAt))) throw new Error("--approved-at must be an ISO-8601 timestamp.");
 
@@ -44,7 +46,7 @@ export const approveReference = ({
     approval: {
       status: "approved",
       approvedBy: required(approvedBy, "--approved-by"),
-      approvedAt: new Date(approvedAt).toISOString(),
+      approvedAt: new Date(approvedAt).toISOString().slice(0, 10),
     },
     rights: {
       status: "approved",
@@ -80,4 +82,3 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     process.exitCode = 1;
   }
 }
-
