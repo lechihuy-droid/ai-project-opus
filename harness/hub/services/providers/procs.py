@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+import shutil
 import subprocess
 import threading
 import time
@@ -8,6 +10,25 @@ from pathlib import Path
 import uuid
 
 import config
+
+
+def resolve_cmd(cmd: list[str]) -> list[str]:
+    """Make cmd[0] runnable on Windows: resolve via PATH and wrap .cmd/.bat shims
+    (e.g. npm/pnpm `claude`, `codex`) with `cmd /c`, since CreateProcess cannot
+    execute a batch shim directly with shell=False. Also upgrades an extension-less
+    shim path (pnpm drops a bare `codex` next to `codex.CMD`) to its .cmd/.exe sibling."""
+    if not cmd:
+        return cmd
+    exe = str(cmd[0])
+    resolved = shutil.which(exe) or exe
+    if os.name == "nt" and not resolved.lower().endswith((".cmd", ".bat", ".exe")):
+        for ext in (".cmd", ".exe", ".bat"):
+            if os.path.exists(resolved + ext):
+                resolved = resolved + ext
+                break
+    if resolved.lower().endswith((".cmd", ".bat")):
+        return ["cmd", "/c", resolved, *cmd[1:]]
+    return [resolved, *cmd[1:]]
 
 
 class BusyError(RuntimeError):
@@ -59,7 +80,7 @@ class ProcessRegistry:
             if self._live_count_locked() >= max_concurrent:
                 raise BusyError(f"max concurrent CLI processes reached ({max_concurrent})")
             process = subprocess.Popen(
-                cmd,
+                resolve_cmd(cmd),
                 cwd=str(cwd) if cwd else None,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,

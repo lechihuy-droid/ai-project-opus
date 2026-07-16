@@ -59,7 +59,7 @@ def status() -> ProviderStatus:
     detail = "not_installed"
     try:
         result = subprocess.run(
-            [*_base_cmd(), "--version"],
+            procs.resolve_cmd([*_base_cmd(), "--version"]),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
