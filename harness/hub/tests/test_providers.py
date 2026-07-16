@@ -153,6 +153,43 @@ def test_codex_cli_build_cmd_has_fresh_start_preamble_and_flags() -> None:
     assert cmd[-1].endswith("do the thing")
 
 
+def test_codex_status_reports_stderr_on_failure(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    script = tmp_path / "fake_codex_error.py"
+    script.write_text('import sys\nsys.stderr.write("codex config is invalid")\nraise SystemExit(2)\n', encoding="utf-8")
+    monkeypatch.setitem(config.PROVIDERS, "codex", {"cmd": [sys.executable, str(script)]})
+    monkeypatch.setitem(codex_cli._status_cache, "value", None)
+
+    status = codex_cli.status()
+
+    assert status["available"] is False
+    assert "codex config is invalid" in status["detail"]
+
+
+def test_codex_status_reports_not_installed_for_missing_executable(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setitem(config.PROVIDERS, "codex", {"cmd": [str(tmp_path / "missing-codex")]})
+    monkeypatch.setitem(codex_cli._status_cache, "value", None)
+
+    status = codex_cli.status()
+
+    assert status["available"] is False
+    assert status["detail"] == "not_installed"
+
+
+def test_codex_status_parses_version(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    script = tmp_path / "fake_codex_version.py"
+    script.write_text('print("codex-cli 0.144.3")\n', encoding="utf-8")
+    monkeypatch.setitem(config.PROVIDERS, "codex", {"cmd": [sys.executable, str(script)]})
+    monkeypatch.setitem(codex_cli._status_cache, "value", None)
+
+    status = codex_cli.status()
+
+    assert status["available"] is True
+    assert status["version"] == "codex-cli 0.144.3"
+    assert status["detail"] == "ok"
+
+
 # ---------------------------------------------------------------------------
 # gemini_cli — stub
 # ---------------------------------------------------------------------------

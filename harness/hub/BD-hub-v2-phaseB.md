@@ -12,15 +12,16 @@
 | **Coder** | **Codex** (`codex exec`) | Mọi step gắn nhãn `[CODEX]` — code + test đi kèm |
 | **Tester/Reviewer** | **Sonnet subagent** | Sau mỗi step `[CODEX]`: (1) chạy full pytest + báo kết quả, (2) review diff đối chiếu BD, một dòng/finding |
 
-**⚠️ Cách chạy Codex (bắt buộc — lesson 2026-07-16):** KHÔNG spawn `codex exec` từ Bash tool của Claude (nested sandbox → treo toàn bộ terminal của Codex, 0 file sửa). Quy trình đúng:
-1. Claude viết brief ra file `harness/hub/briefs/<step>.txt` + in lệnh paste-ready.
-2. **User dán lệnh vào terminal thật** (Windows Terminal / PowerShell):
+**⚠️ Cách chạy Codex (cập nhật 2026-07-16, user chốt):** Claude giao Codex **trực tiếp qua Bash tool**, KHÔNG bắt user dán lệnh. Điều kiện để không treo (lesson nested-sandbox): Bash tool phải chạy với sandbox ngoài TẮT (Codex tự có sandbox riêng — hai lớp sandbox lồng nhau là nguyên nhân treo lần trước). Quy trình:
+1. Claude viết brief ra `harness/hub/briefs/<step>.txt`.
+2. Claude chạy (Bash, no outer sandbox, background):
+   ```bash
+   export PATH="/c/Users/HUY/AppData/Local/pnpm:$PATH" && cd <repo> && \
+   codex exec --skip-git-repo-check -m gpt-5.6-sol \
+     "FRESH START, don't ask. Follow harness/hub/briefs/<step>.txt exactly." </dev/null
    ```
-   set PATH=C:\Users\HUY\AppData\Local\pnpm;%PATH%
-   cd C:\Users\HUY\workspace\ai-project-opus
-   codex exec --skip-git-repo-check -m gpt-5.6-sol "FRESH START, don't ask. Follow harness/hub/briefs/<step>.txt exactly." < NUL
-   ```
-3. Codex xong → user báo Claude → Claude spawn Sonnet test/review → pass thì commit, fail thì Claude viết brief sửa (lặp).
+3. Nếu vẫn treo (log codex báo terminal hang): kill, fallback = đưa lệnh cho user dán terminal thật.
+4. Codex xong → Sonnet test/review → pass thì Claude commit, fail thì brief sửa (lặp).
 
 **Test gate mỗi step:** `.ih\Scripts\python.exe -m pytest harness/hub/tests -q` xanh 100% (117+ test). Sonnet chạy, không phải Codex tự khai.
 **Fake CLI rule giữ nguyên:** test không gọi claude/codex/NVIDIA thật.
