@@ -6,6 +6,7 @@ from typing import Any
 
 import pytest
 
+import config
 from parsers import claude_sessions, codex_sessions, inspect_eval
 from services import usage
 
@@ -65,6 +66,7 @@ def fake_usage_sources(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> tuple
 
     monkeypatch.setattr(usage, "_DISK_CACHE", tmp_path / "usage_files.json")
     usage._USAGE_CACHE.update({"expires": 0.0, "events": [], "warnings": [], "fingerprint": None})
+    monkeypatch.setattr(config, "CHAT_USAGE_FILE", tmp_path / "chat_usage_absent.jsonl")
     monkeypatch.setattr(claude_sessions, "paths", lambda: sorted(root.glob("*.jsonl")))
     monkeypatch.setattr(claude_sessions, "parse_file", parse_file)
     monkeypatch.setattr(codex_sessions, "paths", lambda: [])

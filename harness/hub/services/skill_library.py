@@ -347,6 +347,7 @@ def drift() -> list[dict[str, Any]]:
             mtime = dt.datetime.fromtimestamp(mtime_ns / 1e9, tz=dt.UTC).isoformat() if mtime_ns else None
             variants.append(
                 {
+                    "id": entry["id"],
                     "source": entry["source"],
                     "path": entry["path"],
                     "content_hash": entry["content_hash"],
@@ -358,6 +359,32 @@ def drift() -> list[dict[str, Any]]:
 
     results.sort(key=lambda item: (item["in_sync"], str(item["name"])))
     return results
+
+
+def deploy_log(limit: int = 50) -> list[dict[str, Any]]:
+    if limit <= 0:
+        return []
+
+    try:
+        lines = _deploy_log_path().read_text(encoding="utf-8").splitlines()
+    except FileNotFoundError:
+        return []
+    except OSError:
+        return []
+
+    rows: list[dict[str, Any]] = []
+    for line in reversed(lines):
+        if not line.strip():
+            continue
+        try:
+            row = json.loads(line)
+        except (json.JSONDecodeError, TypeError):
+            continue
+        if isinstance(row, dict):
+            rows.append(row)
+        if len(rows) >= limit:
+            break
+    return rows
 
 
 def deploy(skill_id: str, target: str) -> dict[str, Any]:

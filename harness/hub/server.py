@@ -545,6 +545,11 @@ def api_skill_library_drift() -> list[dict[str, object]]:
     return skill_library.drift()
 
 
+@app.get("/api/skill-library/deploy-log")
+def api_skill_library_deploy_log() -> list[dict[str, object]]:
+    return skill_library.deploy_log()
+
+
 @app.get("/api/skill-library/{skill_id:path}")
 def api_skill_library_detail(skill_id: str) -> dict[str, object]:
     try:

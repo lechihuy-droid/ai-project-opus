@@ -122,6 +122,7 @@
       this.streamController = null;
       this.runtimeStreamController = null;
       this.modelController = null;
+      this.providerController = null;
       this.handleClick = this.handleClick.bind(this);
       this.handleInput = this.handleInput.bind(this);
       this.handleChange = this.handleChange.bind(this);
@@ -133,7 +134,7 @@
     initialState() {
       return {
         leftTab: "chats",
-        chats: [{ id: "c1", title: "New Chat", messages: [] }],
+        chats: [{ id: "c1", title: "New Chat", messages: [], provider: "nvidia", sessionId: null }],
         activeChatId: "c1",
         nextChatNum: 2,
         files: [],
@@ -148,6 +149,9 @@
         modelIds: [],
         modelLoading: true,
         modelError: "",
+        providers: [{ id: "nvidia", available: true, version: null, detail: "", capabilities: {} }],
+        providerLoading: true,
+        providerError: "",
         showModelPopover: false,
         showContextDrawer: false,
         showVersionHistory: false,
@@ -187,6 +191,7 @@
       this.root.addEventListener("submit", this.handleSubmit);
       this.render({ scrollMessagesBottom: true });
       this.loadModels();
+      this.loadProviders();
       this.loadRuntimeRuns();
     }
 
@@ -196,6 +201,10 @@
       if (this.modelController) {
         this.modelController.abort();
         this.modelController = null;
+      }
+      if (this.providerController) {
+        this.providerController.abort();
+        this.providerController = null;
       }
       this.timers.forEach((timer) => window.clearTimeout(timer));
       this.timers.clear();
@@ -311,6 +320,28 @@
       }
     }
 
+    async loadProviders() {
+      this.providerController = new AbortController();
+      try {
+        const response = await fetch("/api/providers", { signal: this.providerController.signal });
+        if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+        const data = await response.json();
+        const providers = Array.isArray(data) ? data.map((row) => ({
+          id: String(row?.id || ""),
+          available: Boolean(row?.available),
+          version: row?.version ? String(row.version) : null,
+          detail: String(row?.detail || ""),
+          capabilities: row?.capabilities && typeof row.capabilities === "object" ? row.capabilities : {},
+        })).filter((row) => row.id) : [];
+        this.setState({ providers, providerLoading: false, providerError: "" });
+      } catch (error) {
+        if (error.name === "AbortError") return;
+        this.setState({ providerLoading: false, providerError: error.message || String(error) });
+      } finally {
+        this.providerController = null;
+      }
+    }
+
     async loadRuntimeRuns() {
       this.setState({ runtimeLoading: true, runtimeError: "" });
       try {
@@ -380,7 +411,7 @@
       try {
         const response = await fetch(path, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "X-Hub-Client": "harness-hub" },
           body: JSON.stringify(body),
           signal: this.runtimeStreamController.signal,
         });
@@ -452,6 +483,17 @@
       return "Select model";
     }
 
+    getActiveProvider() {
+      const providerId = this.getActiveChat()?.provider || "nvidia";
+      return this.state.providers.find((row) => row.id === providerId) || {
+        id: providerId,
+        available: providerId === "nvidia",
+        version: null,
+        detail: "",
+        capabilities: {},
+      };
+    }
+
     statusMeta(kind, status) {
       const map = {
         file: {
@@ -497,6 +539,15 @@
     }
 
     renderTopbar(art) {
+      const chat = this.getActiveChat();
+      const provider = this.getActiveProvider();
+      const providerLocked = Boolean(chat?.messages.length);
+      const providerLabels = { nvidia: "NVIDIA", claude: "Claude", codex: "Codex", gemini: "Gemini" };
+      const providerOptions = this.state.providers.map((row) => {
+        const label = providerLabels[row.id] || row.id;
+        const offline = row.available ? "" : " (offline)";
+        return `<option value="${html(row.id)}" ${row.id === provider.id ? "selected" : ""} ${row.available ? "" : "disabled"}>${html(label + offline)}</option>`;
+      }).join("");
       return `
         <div class="ws-topbar">
           <div class="ws-brand">
@@ -505,14 +556,22 @@
             <div class="ws-status-pill"><span class="ws-status-dot"></span>Active</div>
           </div>
           <div class="ws-top-actions">
-            <div class="ws-model-wrap">
-              <button class="ws-model-button" type="button" data-ws-action="toggle-model-popover" aria-haspopup="true" aria-expanded="${this.state.showModelPopover ? "true" : "false"}">
-                <span class="ws-model-dot"></span>
-                <span>${html(this.selectedModelName())}</span>
-                <span class="ws-caret">&#9662;</span>
-              </button>
-              ${this.state.showModelPopover ? this.renderModelPopover() : ""}
+            <div class="ws-provider-wrap">
+              <select class="ws-provider-select" data-ws-provider aria-label="Provider" ${providerLocked ? 'disabled title="provider locked after first message"' : ""}>
+                ${providerOptions || `<option value="nvidia">${this.state.providerLoading ? "Loading providers..." : "NVIDIA"}</option>`}
+              </select>
+              ${provider.id !== "nvidia" ? `<span class="ws-provider-badge">read-only</span>${provider.version ? `<span class="ws-provider-version">${html(provider.version)}</span>` : ""}` : ""}
             </div>
+            ${provider.id === "nvidia" ? `
+              <div class="ws-model-wrap">
+                <button class="ws-model-button" type="button" data-ws-action="toggle-model-popover" aria-haspopup="true" aria-expanded="${this.state.showModelPopover ? "true" : "false"}">
+                  <span class="ws-model-dot"></span>
+                  <span>${html(this.selectedModelName())}</span>
+                  <span class="ws-caret">&#9662;</span>
+                </button>
+                ${this.state.showModelPopover ? this.renderModelPopover() : ""}
+              </div>
+            ` : ""}
             <div class="ws-divider"></div>
             <button class="ws-secondary-button" type="button" data-ws-action="open-export" ${art ? "" : "disabled"}>Export</button>
             <button class="ws-icon-button" type="button" data-ws-action="settings" title="Settings" aria-label="Settings">&#9881;</button>
@@ -831,7 +890,7 @@
             <div class="ws-composer-box">
               <textarea class="ws-prompt" data-ws-prompt rows="1" placeholder="Ask AI anything..." ${this.state.sending ? "disabled" : ""}>${html(this.state.promptText)}</textarea>
               <button class="ws-attach" type="button" title="Attach file" aria-label="Attach file" data-ws-action="attach-file">&#128206;</button>
-              <button class="ws-send" type="submit" title="Send" aria-label="Send" ${this.state.sending || !this.state.selectedModel ? "disabled" : ""}>&#10148;</button>
+              <button class="ws-send" type="submit" title="Send" aria-label="Send" ${this.state.sending || (chat.provider === "nvidia" && !this.state.selectedModel) ? "disabled" : ""}>&#10148;</button>
             </div>
           </form>
         </main>
@@ -1318,6 +1377,10 @@
 
     handleChange(event) {
       const target = event.target;
+      if (target instanceof HTMLSelectElement && target.matches("[data-ws-provider]")) {
+        this.selectProvider(target.value);
+        return;
+      }
       if (!(target instanceof HTMLInputElement)) return;
       const fileId = target.getAttribute("data-context-file-id");
       if (fileId) {
@@ -1379,10 +1442,20 @@
       this.showToast(`${model.shortName} selected.`);
     }
 
+    selectProvider(id) {
+      const chat = this.getActiveChat();
+      const provider = this.state.providers.find((row) => row.id === id);
+      if (!chat || chat.messages.length || !provider?.available) return;
+      this.setState((state) => ({
+        chats: state.chats.map((item) => item.id === chat.id ? { ...item, provider: id, sessionId: null } : item),
+        showModelPopover: false,
+      }));
+    }
+
     newChat() {
       if (this.state.sending) this.abortStream();
       const id = genId("chat");
-      const chat = { id, title: "New Chat", messages: [] };
+      const chat = { id, title: "New Chat", messages: [], provider: "nvidia", sessionId: null };
       this.setState((state) => ({
         chats: [chat, ...state.chats],
         activeChatId: id,
@@ -1396,7 +1469,7 @@
     switchChat(id) {
       if (!this.state.chats.some((chat) => chat.id === id)) return;
       if (this.state.sending) this.abortStream();
-      this.setState({ activeChatId: id, leftTab: "chats", promptText: "", aiThinking: false, taskStatus: null }, { scrollMessagesBottom: true });
+      this.setState({ activeChatId: id, leftTab: "chats", promptText: "", aiThinking: false, taskStatus: null, showModelPopover: false }, { scrollMessagesBottom: true });
     }
 
     focusChatCta() {
@@ -1451,7 +1524,8 @@
     sendMessage(text) {
       const chat = this.getActiveChat();
       if (!chat) return;
-      if (!this.state.selectedModel) {
+      const provider = chat.provider || "nvidia";
+      if (provider === "nvidia" && !this.state.selectedModel) {
         this.showToast(this.state.modelLoading ? "Models are still loading." : "Select a model first.");
         return;
       }
@@ -1470,7 +1544,7 @@
         sending: true,
         showModelPopover: false,
       }), { scrollMessagesBottom: true });
-      this.streamChatResponse(chat.id, assistantMessage.id, requestMessages, this.state.selectedModel);
+      this.streamChatResponse(chat.id, assistantMessage.id, requestMessages, provider, this.state.selectedModel, chat.sessionId);
     }
 
     abortStream() {
@@ -1483,13 +1557,16 @@
       }
     }
 
-    async streamChatResponse(chatId, messageId, requestMessages, requestModel) {
+    async streamChatResponse(chatId, messageId, requestMessages, requestProvider, requestModel, sessionId) {
       this.streamController = new AbortController();
       try {
+        const body = { provider: requestProvider, messages: requestMessages };
+        if (requestProvider === "nvidia") body.model = requestModel;
+        if (sessionId) body.session_id = sessionId;
         const response = await fetch("/api/chat", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ model: requestModel, messages: requestMessages }),
+          headers: { "Content-Type": "application/json", "X-Hub-Client": "harness-hub" },
+          body: JSON.stringify(body),
           signal: this.streamController.signal,
         });
         if (!response.ok) {
@@ -1558,6 +1635,11 @@
       } else if (parsed.eventName === "reasoning") {
         this.appendAssistantReasoning(chatId, messageId, String(payload.text || ""));
       } else if (parsed.eventName === "done") {
+        if (payload.session_id) {
+          this.setState((state) => ({
+            chats: state.chats.map((chat) => chat.id === chatId ? { ...chat, sessionId: String(payload.session_id) } : chat),
+          }));
+        }
         this.updateAssistantMessage(chatId, messageId, {
           streaming: false,
           done: true,

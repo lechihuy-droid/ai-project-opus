@@ -2069,3 +2069,43 @@ body {
   .cockpit-row { grid-template-columns: 1fr; }
   .cockpit-gauges { justify-content: flex-start; }
 }
+
+.skill-tabs {
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  gap: .25rem;
+  margin-bottom: 1rem;
+}
+
+.skill-tabs button {
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--gray-500);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: .6rem .85rem;
+}
+
+.skill-tabs button:hover,
+.skill-tabs button:focus-visible,
+.skill-tabs button.active {
+  border-bottom-color: var(--blue);
+  color: var(--blue);
+}
+
+.skill-variants {
+  display: grid;
+  gap: .5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.skill-variants li {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}

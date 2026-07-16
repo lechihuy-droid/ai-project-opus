@@ -36,6 +36,7 @@ let jobEventSource = null;
 let chatAbortController = null;
 let shellChromeReady = false;
 let shellStatusTimer = null;
+let skillLibraryTab = "skills";
 
 window.addEventListener("hashchange", route);
 window.addEventListener("DOMContentLoaded", () => {
@@ -3258,14 +3259,42 @@ function skillCoverageChips(coverage) {
   return list.map((src) => `<span class="badge navy">${escapeHtml(src)}</span>`).join(" ");
 }
 
-async function renderSkillLibrary() {
-  setActiveNav("/skills-lib");
-  setLoading("Skills");
+function skillLibraryTabs() {
+  const tabs = [
+    ["skills", "Skills"],
+    ["drift", "Drift"],
+    ["deploy-log", "Deploy log"],
+  ];
+  return `<div class="skill-tabs" role="tablist" aria-label="Skill Library views">
+    ${tabs.map(([id, label]) => `<button type="button" role="tab" data-skill-tab="${id}" aria-selected="${skillLibraryTab === id ? "true" : "false"}" class="${skillLibraryTab === id ? "active" : ""}">${label}</button>`).join("")}
+  </div>`;
+}
+
+function skillLibraryShell(content) {
+  return `
+    <div class="page-hero"><h1>Skill Library</h1>
+      <p class="lead">Skills across Claude and Codex — coverage, drift, deploy.</p></div>
+    ${skillLibraryTabs()}
+    <div class="chat-copy-status" id="skill-library-status" aria-live="polite"></div>
+    ${content}`;
+}
+
+function wireSkillLibraryTabs() {
+  document.querySelectorAll("[data-skill-tab]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const nextTab = button.getAttribute("data-skill-tab");
+      if (!nextTab || nextTab === skillLibraryTab) return;
+      skillLibraryTab = nextTab;
+      renderSkillLibrary().catch(setError);
+    });
+  });
+}
+
+async function renderSkillTable() {
   const [skills, drift] = await Promise.all([
     getJson("/api/skill-library"),
     getJson("/api/skill-library/drift").catch(() => []),
   ]);
-  if ((location.hash || "#/") !== "#/skills-lib") return;
   const driftNames = new Set((Array.isArray(drift) ? drift : []).filter((d) => !d.in_sync).map((d) => d.name));
   const rows = (Array.isArray(skills) ? skills : [])
     .map((s) => {
@@ -3280,15 +3309,105 @@ async function renderSkillLibrary() {
       </tr>`;
     })
     .join("");
-  app.innerHTML = `
-    <div class="page-hero"><h1>Skill Library</h1>
-      <p class="lead">Skills across Claude and Codex — coverage, drift, deploy.</p></div>
-    <section class="card">
+  return `<section class="card">
       <table class="hub-table">
         <thead><tr><th>Name</th><th>Source</th><th>Coverage</th><th>Last used</th><th>30d</th></tr></thead>
         <tbody>${rows || '<tr><td colspan="5" class="muted">No skills found</td></tr>'}</tbody>
       </table>
     </section>`;
+}
+
+function skillApiId(skillId) {
+  return String(skillId || "").split("/").map(encodeURIComponent).join("/");
+}
+
+async function deploySkillVariant(button) {
+  const skillId = button.getAttribute("data-skill-id") || "";
+  const name = button.getAttribute("data-skill-name") || skillId;
+  const source = button.getAttribute("data-skill-source") || "";
+  const targets = ["claude_user", "claude_project", "codex_user"].filter((target) => target !== source);
+  const selected = window.prompt(`Choose target source: ${targets.join(", ")}`, targets[0]);
+  if (selected === null) return;
+  const target = selected.trim();
+  const status = document.getElementById("skill-library-status");
+  if (!targets.includes(target)) {
+    if (status) status.textContent = `Invalid target. Choose one of: ${targets.join(", ")}`;
+    return;
+  }
+  if (!window.confirm(`Deploy ${name} from ${source} to ${target}? Existing target will be backed up.`)) return;
+  try {
+    if (status) status.textContent = `Deploying ${name} → ${target}...`;
+    await postJson(`/api/skill-library/${skillApiId(skillId)}/deploy`, { target });
+    await renderSkillLibrary();
+    const nextStatus = document.getElementById("skill-library-status");
+    if (nextStatus) nextStatus.textContent = `Deployed ${name} from ${source} → ${target}`;
+  } catch (error) {
+    if (status) status.textContent = error.message || "Deploy failed";
+  }
+}
+
+async function renderSkillDrift() {
+  const drift = await getJson("/api/skill-library/drift");
+  const rows = (Array.isArray(drift) ? drift : []).map((item) => {
+    const variants = (Array.isArray(item.variants) ? item.variants : []).map((variant) => {
+      const shortHash = String(variant.content_hash || "").replace(/^sha256:/, "").slice(0, 8);
+      return `<li>
+        <span class="badge navy">${escapeHtml(variant.source)}</span>
+        <code>${escapeHtml(shortHash)}</code>
+        <span class="muted">${escapeHtml(variant.mtime || "—")}</span>
+        <button class="link-button" type="button" data-deploy-variant data-skill-id="${escapeHtml(variant.id)}" data-skill-name="${escapeHtml(item.name)}" data-skill-source="${escapeHtml(variant.source)}">Deploy this version →</button>
+      </li>`;
+    }).join("");
+    const syncBadge = item.in_sync
+      ? '<span class="badge green">in-sync</span>'
+      : '<span class="badge red">drift</span>';
+    return `<tr>
+      <td>${escapeHtml(item.name)}</td>
+      <td>${syncBadge}</td>
+      <td><ul class="skill-variants">${variants}</ul></td>
+    </tr>`;
+  }).join("");
+  return `<section class="card">
+    <table class="hub-table">
+      <thead><tr><th>Name</th><th>Status</th><th>Variants</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="3" class="muted">No skill variants found</td></tr>'}</tbody>
+    </table>
+  </section>`;
+}
+
+async function renderSkillDeployLog() {
+  const deployLog = await getJson("/api/skill-library/deploy-log");
+  const rows = (Array.isArray(deployLog) ? deployLog : []).map((entry) => `<tr>
+    <td>${escapeHtml(entry.ts || "—")}</td>
+    <td>${escapeHtml(entry.id || entry.skill_id || "—")}</td>
+    <td>${escapeHtml(entry.target || "—")}</td>
+  </tr>`).join("");
+  return `<section class="card">
+    <table class="hub-table">
+      <thead><tr><th>Timestamp</th><th>Skill id</th><th>Target</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="3" class="muted">No deployments recorded</td></tr>'}</tbody>
+    </table>
+  </section>`;
+}
+
+async function renderSkillLibrary() {
+  setActiveNav("/skills-lib");
+  setLoading("Skills");
+  const requestedTab = skillLibraryTab;
+  let content;
+  if (requestedTab === "drift") {
+    content = await renderSkillDrift();
+  } else if (requestedTab === "deploy-log") {
+    content = await renderSkillDeployLog();
+  } else {
+    content = await renderSkillTable();
+  }
+  if ((location.hash || "#/") !== "#/skills-lib" || requestedTab !== skillLibraryTab) return;
+  app.innerHTML = skillLibraryShell(content);
+  wireSkillLibraryTabs();
+  document.querySelectorAll("[data-deploy-variant]").forEach((button) => {
+    button.addEventListener("click", () => deploySkillVariant(button));
+  });
 }
 
 async function renderSkillDetail(skillId) {

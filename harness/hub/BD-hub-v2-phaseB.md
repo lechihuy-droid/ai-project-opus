@@ -51,17 +51,20 @@
 **Test:** fake codex script + 1 test mới: status detail chứa stderr khi returncode≠0.
 **DoD:** `/api/providers` → codex `available:true, version:"codex-cli 0.144.3"` trên máy thật (Claude main verify bằng curl).
 
-## Step B1 — Chat multi-pane grid `[CODEX]` (L)
+## Step B1 — Provider chat trong Workspace UI `[CODEX]` (M) — ĐỔI HƯỚNG 2026-07-16
 
-**Việc (SD §6, hoàn thành FR-133 full):** trong `web/app.js`:
-- Refactor `chatState` → `chatPanes: [paneState]` (paneState = shape hiện tại + `provider`, `sessionId`, `id`). Mọi hàm chat nhận `pane` param thay vì global (send/stream/render/export/persistence per-pane).
-- localStorage: key mới `harness-hub-chat-v2` `{panes:[...]}`; migration từ key cũ (`harness-hub-chat` → panes[0]) rồi xoá key cũ.
-- Layout: grid `repeat(auto-fit,minmax(360px,1fr))`, nút `+ Pane` (max 3), nút đóng pane; mobile 1 cột. CSS vào `styles-hub.css` (KHÔNG đụng `styles.css`).
-- Provider selector + model picker + read-only badge: per-pane (tái dùng component sẵn — đã hoạt động single-pane).
-- Giữ nguyên per-pane: markdown render, export MD/JSON, copy/regenerate, stop (AbortController per-pane), thinking toggle, autoscroll.
-**Ràng buộc:** chỉ sửa `web/` + thêm test JS-free (backend không đổi). KHÔNG đổi contract SSE.
-**Test:** backend không đổi → suite hiện có xanh; Codex thêm smoke: `node --check app.js`.
-**DoD:** Claude main mở browser: 2 pane nvidia+claude chat song song, đóng/mở pane, reload giữ state, mobile stack.
+**Quyết định user:** KHÔNG làm multi-pane ở `#/chat` (bản Codex multi-pane đầu tiên đã revert, không commit). Thay vào đó gắn provider chat vào **Workspace UI có sẵn** (`web/workspace.js`, trang `#/workspace`) — nơi đã có chat window hoàn chỉnh: sidebar Chats list + New Chat + switch chat + artifacts. Mỗi chat trong list = 1 hội thoại độc lập → "nhiều LLM song song" = nhiều chat, tự nhiên hơn pane.
+
+**Việc (trong `workspace.js` + `styles-workspace.css` nếu cần):**
+- State mỗi chat thêm `provider` (default "nvidia") + `sessionId` (null).
+- Top-bar: thêm provider selector cạnh model selector hiện có (đọc `GET /api/providers`); model selector chỉ hiện khi provider = nvidia; provider CLI hiện badge `read-only` + version.
+- New Chat → chọn provider cho chat đó (hoặc dropdown đổi provider khi chat còn rỗng; chat đã có message thì khoá provider).
+- Send: `POST /api/chat` body `{provider, messages, model? (nvidia), session_id?}` + header `X-Hub-Client`; `done.session_id` → lưu vào chat đó.
+- Persistence workspace hiện có (nếu lưu localStorage) mang theo provider/sessionId.
+- `#/chat` cũ giữ nguyên (single-pane provider select đã hoạt động, commit f132c39).
+**Ràng buộc:** chỉ sửa `web/workspace.js` (+ styles-workspace.css, docs/workspace.md); KHÔNG đụng app.js/backend/SSE contract.
+**Test:** `node --check workspace.js`; backend suite xanh (không đổi backend).
+**DoD:** browser-verify: New Chat → chọn Claude → chat thật trả lời + session resume lượt 2; chat khác chạy NVIDIA; switch qua lại không lẫn state.
 
 ## Step B2 — Broadcast mode `[CODEX]` (M, sau B1)
 

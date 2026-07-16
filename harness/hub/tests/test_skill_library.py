@@ -5,8 +5,10 @@ import shutil
 from pathlib import Path
 
 import pytest
+from fastapi.testclient import TestClient
 
 import config
+import server
 from services import skill_library as sl
 
 
@@ -111,3 +113,26 @@ def test_deploy_rejects_target_outside_skill_sources(fixture_sources: dict[str, 
 def test_deploy_rejects_unknown_skill_id(fixture_sources: dict[str, Path]) -> None:
     with pytest.raises(FileNotFoundError):
         sl.deploy("claude_user/does_not_exist", "codex_user")
+
+
+def test_deploy_log_endpoint_returns_newest_rows_first() -> None:
+    records = [
+        {"ts": "2026-01-01T00:00:00+00:00", "skill_id": "claude_user/old", "target": "codex_user", "path": "old"},
+        {"ts": "2026-01-02T00:00:00+00:00", "skill_id": "codex_user/new", "target": "claude_user", "path": "new"},
+    ]
+    config.SKILL_DEPLOY_LOG.write_text(
+        "\n".join(json.dumps(record) for record in records) + "\n",
+        encoding="utf-8",
+    )
+
+    response = TestClient(server.app).get("/api/skill-library/deploy-log")
+
+    assert response.status_code == 200
+    assert response.json() == list(reversed(records))
+
+
+def test_deploy_log_endpoint_returns_empty_list_when_file_missing() -> None:
+    response = TestClient(server.app).get("/api/skill-library/deploy-log")
+
+    assert response.status_code == 200
+    assert response.json() == []
