@@ -38,6 +38,7 @@ from services import (
     suites,
     trigger,
     usage,
+    workflow,
 )
 from services.providers import get_provider, list_providers
 
@@ -182,9 +183,28 @@ def api_chat(payload: dict[str, object]) -> StreamingResponse:
     return StreamingResponse(events(), media_type="text/event-stream")
 
 
+# --- C1 agent profile routes ---
 @app.get("/api/agents")
 def api_agents() -> list[dict[str, object]]:
     return runtime_agents.list_agents()
+
+
+@app.post("/api/agents")
+def api_agents_create_or_update(payload: dict[str, object]) -> dict[str, object]:
+    try:
+        return runtime_agents.create_or_update_agent(payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.delete("/api/agents/{agent_id}")
+def api_agents_delete(agent_id: str) -> dict[str, bool]:
+    try:
+        runtime_agents.delete_agent(agent_id)
+    except FileNotFoundError as exc:
+        raise _http_error(exc) from exc
+    return {"ok": True}
+# --- end C1 agent profile routes ---
 
 
 @app.get("/api/agent/runs")
@@ -574,6 +594,37 @@ def api_skill_library_deploy(skill_id: str, payload: dict[str, object]) -> dict[
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except (FileNotFoundError, PermissionError) as exc:
         raise _http_error(exc) from exc
+
+
+# --- C2a workflow routes ---
+@app.get("/api/workflows")
+def api_workflows() -> list[dict[str, object]]:
+    return workflow.list_workflows()
+
+
+@app.post("/api/workflows/validate")
+def api_workflow_validate(payload: dict[str, object]) -> dict[str, object]:
+    yaml_text = payload.get("yaml_text")
+    workflow_id = payload.get("id")
+    if isinstance(yaml_text, str):
+        source = yaml_text
+    elif isinstance(workflow_id, str):
+        try:
+            source = (workflow.WORKFLOWS_DIR / f"{workflow_id}.workflow.yaml").read_text(encoding="utf-8")
+        except FileNotFoundError as exc:
+            raise _http_error(exc) from exc
+    else:
+        raise HTTPException(status_code=400, detail="yaml_text or id is required")
+
+    try:
+        data = workflow.parse_workflow(source)
+    except ValueError as exc:
+        return {"ok": False, "errors": [str(exc)], "ir": None}
+    errors = workflow.validate_workflow(data)
+    return {"ok": not errors, "errors": errors, "ir": workflow.build_ir(data) if not errors else None}
+
+
+# --- end C2a workflow routes ---
 
 
 @app.get("/api/board")

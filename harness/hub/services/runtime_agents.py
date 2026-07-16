@@ -1,50 +1,103 @@
 from __future__ import annotations
 
+import logging
+from pathlib import Path
 from typing import Any
 
+import yaml
 
-AGENTS: list[dict[str, Any]] = [
-    {
-        "id": "lead",
-        "name": "Lead Super Agent",
-        "role": "orchestrator",
-        "description": "Coordinates context preparation, planning, action, review, and finalization.",
-        "can_spawn": True,
-        "status": "available",
-    },
-    {
-        "id": "researcher",
-        "name": "Research Worker",
-        "role": "child",
-        "description": "Scoped worker profile for gathering local context and producing structured artifacts.",
-        "can_spawn": False,
-        "status": "available",
-    },
-    {
-        "id": "tester",
-        "name": "Test Worker",
-        "role": "child",
-        "description": "Scoped worker profile for verification tasks.",
-        "can_spawn": False,
-        "status": "available",
-    },
-    {
-        "id": "reviewer",
-        "name": "Review Worker",
-        "role": "child",
-        "description": "Scoped worker profile for risk and correctness review.",
-        "can_spawn": False,
-        "status": "available",
-    },
-]
+import config
+from services import skill_library
+from services.providers import registry
+
+
+LOGGER = logging.getLogger(__name__)
+AGENTS_DIR = config.HUB_DIR / "agents"
+REQUIRED_FIELDS = ("id", "provider", "system_prompt", "skills", "permission", "budget", "risk_tier")
+PERMISSIONS = {"read_only", "workspace_write"}
+
+
+def _validate_agent_id(agent_id: object) -> str:
+    if not isinstance(agent_id, str) or not agent_id or "/" in agent_id or "\\" in agent_id or ".." in agent_id:
+        raise ValueError(f"Invalid agent id: {agent_id}")
+    return agent_id
+
+
+def validate_agent_profile(data: dict[str, Any]) -> None:
+    if not isinstance(data, dict):
+        raise ValueError("Agent profile must be a mapping")
+
+    for field in REQUIRED_FIELDS:
+        if field not in data:
+            raise ValueError(f"Missing required field: {field}")
+
+    _validate_agent_id(data["id"])
+
+    provider = data["provider"]
+    if provider not in registry:
+        raise ValueError(f"Unknown provider: {provider}")
+
+    skills = data["skills"]
+    if not isinstance(skills, list):
+        raise ValueError("skills must be a list")
+    known_skills = {str(skill.get("name")) for skill in skill_library.list_skills() if skill.get("name")}
+    for skill in skills:
+        if skill not in known_skills:
+            raise ValueError(f"Unknown skill: {skill}")
+
+    permission = data["permission"]
+    if permission not in PERMISSIONS:
+        raise ValueError(f"Invalid permission: {permission}")
+
+    budget = data["budget"]
+    if not isinstance(budget, dict):
+        raise ValueError("budget must be a mapping")
+    if not isinstance(budget.get("seconds"), int) or isinstance(budget["seconds"], bool) or budget["seconds"] <= 0:
+        raise ValueError("budget.seconds must be a positive integer")
+    if not isinstance(budget.get("max_calls"), int) or isinstance(budget["max_calls"], bool) or budget["max_calls"] <= 0:
+        raise ValueError("budget.max_calls must be a positive integer")
 
 
 def list_agents() -> list[dict[str, Any]]:
-    return [dict(agent) for agent in AGENTS]
+    if not AGENTS_DIR.exists():
+        return []
+
+    agents: list[dict[str, Any]] = []
+    seen_ids: set[str] = set()
+    for path in sorted(AGENTS_DIR.glob("*.agent.yaml"), key=lambda item: item.name.lower()):
+        try:
+            data = yaml.safe_load(path.read_text(encoding="utf-8"))
+            validate_agent_profile(data)
+            agent_id = str(data["id"])
+            if agent_id in seen_ids:
+                LOGGER.warning("Skipping duplicate agent profile id %r in %s", agent_id, path)
+                continue
+        except (OSError, ValueError, yaml.YAMLError) as exc:
+            LOGGER.warning("Skipping invalid agent profile %s: %s", path, exc)
+            continue
+        seen_ids.add(agent_id)
+        agents.append(data)
+    return agents
 
 
 def get_agent(agent_id: str) -> dict[str, Any]:
-    for agent in AGENTS:
+    for agent in list_agents():
         if agent["id"] == agent_id:
             return dict(agent)
     raise FileNotFoundError(f"Agent not found: {agent_id}")
+
+
+def create_or_update_agent(data: dict[str, Any]) -> dict[str, Any]:
+    validate_agent_profile(data)
+    AGENTS_DIR.mkdir(parents=True, exist_ok=True)
+    path = AGENTS_DIR / f"{data['id']}.agent.yaml"
+    path.write_text(yaml.safe_dump(data, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    return data
+
+
+def delete_agent(agent_id: str) -> None:
+    _validate_agent_id(agent_id)
+    path = AGENTS_DIR / f"{agent_id}.agent.yaml"
+    if not path.is_file():
+        raise FileNotFoundError(f"Agent not found: {agent_id}")
+    path.unlink()
