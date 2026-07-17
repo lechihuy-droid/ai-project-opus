@@ -203,6 +203,26 @@ async function postJson(path, body) {
   return response.json();
 }
 
+async function putJson(path, body) {
+  const response = await fetch(path, {
+    method: "PUT",
+    headers: HUB_CLIENT_HEADERS,
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    const raw = await response.text();
+    let message = raw;
+    try {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.detail) message = String(parsed.detail);
+    } catch (_error) {
+      /* keep raw response text */
+    }
+    throw new Error(`${response.status} ${response.statusText}: ${message}`);
+  }
+  return response.json();
+}
+
 function setSidebarOpen(open) {
   if (!hubShell || !sidebarToggle) return;
   hubShell.classList.toggle("sidebar-open", open);
@@ -1539,6 +1559,31 @@ async function startWorkflowRunStream(path, body) {
   }
 }
 
+async function startWorkflowRun(workflowId, workflow, errorTarget, button) {
+  const objective = window.prompt("Objective for this workflow:");
+  if (objective === null) return;
+  if (!objective.trim()) {
+    errorTarget.textContent = "Objective is required.";
+    return;
+  }
+  errorTarget.textContent = "";
+  button.disabled = true;
+  try {
+    workflowRunState.runId = null;
+    workflowRunState.workflow = workflow;
+    workflowRunState.state = null;
+    workflowRunState.outputs = {};
+    workflowRunState.artifacts = [];
+    workflowRunState.interrupt = null;
+    workflowRunState.error = "";
+    await startWorkflowRunStream(`/api/workflows/${encodeURIComponent(workflowId)}/runs`, { objective: objective.trim() });
+  } catch (error) {
+    errorTarget.textContent = error.message || String(error);
+  } finally {
+    button.disabled = false;
+  }
+}
+
 async function renderWorkflows() {
   setActiveNav("/workflows");
   setLoading("Workflows");
@@ -1546,34 +1591,104 @@ async function renderWorkflows() {
   app.innerHTML = `
     <div class="page-hero"><h1>Workflows</h1><p class="lead">Run declared agent workflows with approval gates.</p></div>
     <div id="workflow-list-error" class="error-text" aria-live="polite"></div>
-    <div class="card table-scroll"><table><thead><tr><th>Workflow</th><th>Nodes</th><th>Action</th></tr></thead><tbody>${workflows.length ? workflows.map((workflow) => `<tr><td><code>${escapeHtml(workflow.id)}</code></td><td>${formatNumber(workflow.nodes?.length || 0)}</td><td><button class="link-button" type="button" data-workflow-run="${escapeHtml(workflow.id)}">Run</button></td></tr>`).join("") : '<tr><td colspan="3" class="muted">No workflows found.</td></tr>'}</tbody></table></div>
+    <div class="card table-scroll"><table><thead><tr><th>Workflow</th><th>Nodes</th><th>Action</th></tr></thead><tbody>${workflows.length ? workflows.map((workflow) => `<tr><td><code>${escapeHtml(workflow.id)}</code></td><td>${formatNumber(workflow.nodes?.length || 0)}</td><td><button class="link-button" type="button" data-workflow-run="${escapeHtml(workflow.id)}">Run</button> <a class="link-button" href="#/workflows/${encodeURIComponent(workflow.id)}/edit">Edit</a></td></tr>`).join("") : '<tr><td colspan="3" class="muted">No workflows found.</td></tr>'}</tbody></table></div>
   `;
   app.querySelectorAll("[data-workflow-run]").forEach((button) => button.addEventListener("click", async () => {
     const workflowId = button.dataset.workflowRun;
-    const objective = window.prompt("Objective for this workflow:");
-    if (objective === null) return;
     const target = document.getElementById("workflow-list-error");
-    if (!objective.trim()) {
-      target.textContent = "Objective is required.";
-      return;
-    }
-    target.textContent = "";
-    button.disabled = true;
-    try {
-      workflowRunState.runId = null;
-      workflowRunState.workflow = workflows.find((workflow) => workflow.id === workflowId) || null;
-      workflowRunState.state = null;
-      workflowRunState.outputs = {};
-      workflowRunState.artifacts = [];
-      workflowRunState.interrupt = null;
-      workflowRunState.error = "";
-      await startWorkflowRunStream(`/api/workflows/${encodeURIComponent(workflowId)}/runs`, { objective: objective.trim() });
-    } catch (error) {
-      target.textContent = error.message || String(error);
-    } finally {
-      button.disabled = false;
-    }
+    await startWorkflowRun(workflowId, workflows.find((workflow) => workflow.id === workflowId) || null, target, button);
   }));
+}
+
+function emitWorkflowYaml(model) {
+  const quote = (value) => JSON.stringify(String(value ?? ""));
+  const lines = [`id: ${quote(model.id)}`, "nodes:"];
+  model.nodes.forEach((node) => lines.push(`  - id: ${quote(node.id)}`, `    agent: ${quote(node.agent)}`, `    prompt: ${quote(node.prompt)}`, `    gate: ${quote(node.gate)}`));
+  if (model.edges.length) {
+    lines.push("edges:");
+    model.edges.forEach((edge) => lines.push(`  - [${quote(edge[0])}, ${quote(edge[1])}]`));
+  } else {
+    lines.push("edges: []");
+  }
+  lines.push("stop:", `  max_nodes: ${Number(model.stop?.max_nodes)}`, `  max_seconds: ${Number(model.stop?.max_seconds)}`);
+  const uiNodes = model.ui?.nodes || {};
+  const visible = model.nodes.filter((node) => uiNodes[node.id] && Number.isFinite(Number(uiNodes[node.id].x)) && Number.isFinite(Number(uiNodes[node.id].y)));
+  if (visible.length) {
+    lines.push("ui:", "  nodes:");
+    visible.forEach((node) => lines.push(`    ${quote(node.id)}: {x: ${Number(uiNodes[node.id].x)}, y: ${Number(uiNodes[node.id].y)}}`));
+  }
+  return `${lines.join("\n")}\n`;
+}
+
+function renderWorkflowYamlDiff(oldText, newText) {
+  const oldLines = oldText.split(/\r?\n/);
+  const newLines = newText.split(/\r?\n/);
+  const count = Math.max(oldLines.length, newLines.length);
+  const rows = [];
+  for (let index = 0; index < count; index += 1) {
+    if (oldLines[index] === newLines[index]) rows.push(` ${escapeHtml(oldLines[index] || "")}`);
+    else {
+      if (oldLines[index] !== undefined) rows.push(`<span class="diff-del">- ${escapeHtml(oldLines[index])}</span>`);
+      if (newLines[index] !== undefined) rows.push(`<span class="diff-add">+ ${escapeHtml(newLines[index])}</span>`);
+    }
+  }
+  return `<pre class="workflow-yaml-diff">${rows.join("\n")}</pre>`;
+}
+
+async function renderWorkflowEditor(id) {
+  setActiveNav("/workflows");
+  setLoading(id);
+  const [workflows, agents] = await Promise.all([getJson("/api/workflows"), getJson("/api/agents")]);
+  const workflow = workflows.find((item) => item.id === id);
+  if (!workflow) throw new Error(`Workflow not found: ${id}`);
+  const model = JSON.parse(JSON.stringify(workflow));
+  let savedText = emitWorkflowYaml(model);
+  let pendingText = "";
+  app.innerHTML = `
+    <div class="page-hero"><h1>Edit workflow <code>${escapeHtml(id)}</code></h1><p class="lead">Canvas edits generate YAML; saving requires validation and confirmation.</p></div>
+    <div class="hub-actions"><a class="link-button" href="#/workflows">Back to workflows</a><button class="link-button" type="button" id="workflow-editor-run">Run</button><button class="link-button" type="button" id="workflow-editor-save">Validate and diff</button></div>
+    <div id="workflow-editor-error" class="error-text" aria-live="polite"></div>
+    <section class="card"><div id="workflow-canvas-root"></div></section>
+    <section class="card" id="workflow-editor-diff" hidden></section>`;
+  const canvas = window.HubCanvas.mount(document.getElementById("workflow-canvas-root"), model, agents);
+  const errorTarget = document.getElementById("workflow-editor-error");
+  const saveButton = document.getElementById("workflow-editor-save");
+  document.getElementById("workflow-editor-run").addEventListener("click", () => startWorkflowRun(id, canvas.getModel(), errorTarget, document.getElementById("workflow-editor-run")));
+  saveButton.addEventListener("click", async () => {
+    pendingText = emitWorkflowYaml(canvas.getModel());
+    errorTarget.textContent = "";
+    saveButton.disabled = true;
+    try {
+      const result = await postJson("/api/workflows/validate", { yaml_text: pendingText });
+      if (!result.ok) {
+        errorTarget.textContent = (result.errors || ["Workflow validation failed."]).join("; ");
+        return;
+      }
+      const diff = document.getElementById("workflow-editor-diff");
+      diff.hidden = false;
+      diff.innerHTML = `<h2>YAML diff</h2>${renderWorkflowYamlDiff(savedText, pendingText)}<div class="hub-actions"><button class="link-button" type="button" id="workflow-editor-confirm">Confirm save</button></div>`;
+      document.getElementById("workflow-editor-confirm").addEventListener("click", async (event) => {
+        const confirmButton = event.currentTarget;
+        confirmButton.disabled = true;
+        try {
+          const saved = await putJson(`/api/workflows/${encodeURIComponent(id)}`, { yaml_text: pendingText });
+          Object.keys(model).forEach((key) => delete model[key]);
+          Object.assign(model, saved);
+          savedText = pendingText;
+          diff.hidden = true;
+          errorTarget.textContent = "Saved.";
+          window.HubCanvas.mount(document.getElementById("workflow-canvas-root"), model, agents);
+        } catch (error) {
+          errorTarget.textContent = error.message || String(error);
+          confirmButton.disabled = false;
+        }
+      });
+    } catch (error) {
+      errorTarget.textContent = error.message || String(error);
+    } finally {
+      saveButton.disabled = false;
+    }
+  });
 }
 
 let workflowRunPollTimer = null;
@@ -3831,6 +3946,8 @@ async function route() {
       await renderJobs();
     } else if (parts[0] === "workflows" && parts[1] === "runs" && parts[2]) {
       await renderWorkflowRun(parts[2]);
+    } else if (parts[0] === "workflows" && parts[1] && parts[2] === "edit") {
+      await renderWorkflowEditor(parts[1]);
     } else if (parts[0] === "workflows") {
       await renderWorkflows();
     } else if (parts[0] === "suites" && parts[1]) {

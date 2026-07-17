@@ -10,11 +10,11 @@
       "value": 1
     },
     "autoStyleOverrideRate": {
-      "denominator": 5,
+      "denominator": 0,
       "numerator": 0,
-      "status": "PASS",
+      "status": "NO_DATA",
       "target": "<0.20",
-      "value": 0
+      "value": null
     },
     "firstPassStillQa": {
       "denominator": 1,
@@ -31,8 +31,8 @@
       "value": 1
     },
     "provenanceCompleteness": {
-      "denominator": 15,
-      "numerator": 15,
+      "denominator": 5,
+      "numerator": 5,
       "status": "PASS",
       "target": "1.0",
       "value": 1
@@ -45,8 +45,8 @@
       "value": 0
     },
     "ragEvidenceCoverage": {
-      "denominator": 15,
-      "numerator": 15,
+      "denominator": 5,
+      "numerator": 5,
       "status": "PASS",
       "target": ">=0.95",
       "value": 1
@@ -54,44 +54,6 @@
   },
   "overallStatus": "FAIL",
   "runs": [
-    {
-      "lane": "rapid-visual-pilot",
-      "layouts": [
-        "center-stage",
-        "top-title",
-        "bottom-statement",
-        "center-stage",
-        "bottom-statement"
-      ],
-      "maxConsecutiveLayout": 1,
-      "packageIds": [
-        "terminal-command-center",
-        "technical-editorial",
-        "minimal-education"
-      ],
-      "publicationStatus": "non_publishable",
-      "runId": "w9-ai-weekly-auto-20260716",
-      "sceneCount": 5,
-      "styleMode": "auto"
-    },
-    {
-      "lane": "rapid-visual-pilot",
-      "layouts": [
-        "center-stage",
-        "top-title",
-        "bottom-statement",
-        "center-stage",
-        "bottom-statement"
-      ],
-      "maxConsecutiveLayout": 1,
-      "packageIds": [
-        "terminal-command-center"
-      ],
-      "publicationStatus": "non_publishable",
-      "runId": "w9-ai-weekly-locked-20260716",
-      "sceneCount": 5,
-      "styleMode": "locked"
-    },
     {
       "lane": "production",
       "layouts": [
@@ -116,10 +78,8 @@
   "schemaVersion": "lucida-operating-kpi-report/v1",
   "scope": {
     "productionRuns": 1,
-    "rapidRuns": 2,
+    "rapidRuns": 0,
     "runIds": [
-      "w9-ai-weekly-auto-20260716",
-      "w9-ai-weekly-locked-20260716",
       "w9-gpt-5-6-production-20260717-r6"
     ]
   }

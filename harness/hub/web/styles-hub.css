@@ -2125,3 +2125,26 @@ body {
 .workflow-gate textarea { font-family: var(--font-mono); }
 .workflow-reject { border-color: var(--red); color: var(--red); }
 .workflow-artifacts code { font-family: var(--font-mono); }
+
+/* Workflow canvas editor */
+.workflow-canvas-layout { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr) minmax(230px, 320px); }
+.workflow-canvas-wrap { min-width: 0; overflow: auto; }
+.workflow-canvas { background: var(--gray-50); border: 1px solid var(--gray-200); display: block; min-width: 460px; width: 100%; }
+.workflow-canvas-edge { fill: none; stroke: var(--gray-500); stroke-width: 2; }
+.workflow-canvas marker path { fill: var(--gray-500); }
+.workflow-canvas-node { cursor: grab; }
+.workflow-canvas-node rect { fill: var(--white); stroke: var(--gray-200); stroke-width: 1.5; }
+.workflow-canvas-node.selected rect { stroke: var(--hud-accent); stroke-width: 3; }
+.workflow-canvas-node-id, .workflow-canvas-agent, .workflow-canvas-gate { font-family: var(--font-mono); }
+.workflow-canvas-node-id { fill: var(--navy); font-size: 15px; font-weight: 700; }
+.workflow-canvas-agent { fill: var(--gray-500); font-size: 12px; }
+.workflow-canvas-gate-bg { fill: var(--blue-light); }
+.workflow-canvas-gate { fill: var(--blue); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.workflow-node-panel { border-left: 1px solid var(--gray-200); display: grid; align-content: start; gap: .75rem; min-width: 0; padding-left: 1rem; }
+.workflow-node-panel h2 { font-size: 1rem; margin: 0; }
+.workflow-node-panel label { color: var(--gray-500); display: grid; font-size: .85rem; gap: .3rem; }
+.workflow-node-panel textarea, .workflow-node-panel select { border: 1px solid var(--gray-200); border-radius: var(--radius); color: var(--navy); font: inherit; padding: .5rem; }
+.workflow-yaml-diff { background: var(--gray-50); border: 1px solid var(--gray-200); margin: .75rem 0; max-height: 28rem; overflow: auto; padding: .75rem; white-space: pre-wrap; }
+.workflow-yaml-diff .diff-add { background: #DCFCE7; display: block; }
+.workflow-yaml-diff .diff-del { background: #FEE2E2; display: block; }
+@media (max-width: 800px) { .workflow-canvas-layout { grid-template-columns: 1fr; } .workflow-node-panel { border-left: 0; border-top: 1px solid var(--gray-200); padding: 1rem 0 0; } }

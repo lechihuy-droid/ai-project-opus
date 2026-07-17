@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import re
+import time
 from typing import Any
 
 import yaml
@@ -230,3 +231,20 @@ def list_workflows() -> list[dict[str, Any]]:
         except (OSError, ValueError) as exc:
             logger.warning("Skipping invalid workflow %s: %s", path, exc)
     return workflows
+
+
+def save_workflow(workflow_id: str, yaml_text: str) -> dict[str, Any]:
+    """Validate and replace an existing workflow, retaining one timestamped backup."""
+    data = parse_workflow(yaml_text)
+    errors = validate_workflow(data)
+    if errors:
+        raise ValueError("; ".join(errors))
+    if data["id"] != workflow_id:
+        raise ValueError("Workflow id must match the path id")
+
+    path = WORKFLOWS_DIR / f"{workflow_id}.workflow.yaml"
+    old_bytes = path.read_bytes()
+    backup = WORKFLOWS_DIR / f"{workflow_id}.workflow.yaml.bak-{int(time.time())}"
+    backup.write_bytes(old_bytes)
+    path.write_text(yaml_text, encoding="utf-8")
+    return data

@@ -97,3 +97,59 @@ def test_validate_endpoint_requires_yaml_text_or_id() -> None:
     response = client.post("/api/workflows/validate", json={})
     assert response.status_code == 400
     assert response.json()["detail"] == "yaml_text or id is required"
+
+
+def test_save_workflow_writes_valid_yaml_and_backup(
+    monkeypatch: pytest.MonkeyPatch, tmp_path, review_ui: dict[str, object]
+) -> None:
+    monkeypatch.setattr(workflow, "WORKFLOWS_DIR", tmp_path)
+    path = tmp_path / "review-ui.workflow.yaml"
+    old_text = yaml.safe_dump(review_ui)
+    path.write_text(old_text, encoding="utf-8")
+    updated = deepcopy(review_ui)
+    updated["nodes"][0]["prompt"] = "Updated: {{objective}}"
+    new_text = yaml.safe_dump(updated)
+
+    result = workflow.save_workflow("review-ui", new_text)
+
+    assert result["nodes"][0]["prompt"] == "Updated: {{objective}}"
+    assert path.read_text(encoding="utf-8") == new_text
+    backups = list(tmp_path.glob("review-ui.workflow.yaml.bak-*"))
+    assert len(backups) == 1
+    assert backups[0].read_text(encoding="utf-8") == old_text
+
+
+def test_save_workflow_rejects_invalid_yaml_without_changes(
+    monkeypatch: pytest.MonkeyPatch, tmp_path, review_ui: dict[str, object]
+) -> None:
+    monkeypatch.setattr(workflow, "WORKFLOWS_DIR", tmp_path)
+    path = tmp_path / "review-ui.workflow.yaml"
+    old_text = yaml.safe_dump(review_ui)
+    path.write_text(old_text, encoding="utf-8")
+    invalid = deepcopy(review_ui)
+    invalid["nodes"][0]["gate"] = "invalid"
+
+    with pytest.raises(ValueError, match="invalid gate"):
+        workflow.save_workflow("review-ui", yaml.safe_dump(invalid))
+
+    assert path.read_text(encoding="utf-8") == old_text
+    assert list(tmp_path.glob("review-ui.workflow.yaml.bak-*")) == []
+
+
+def test_save_workflow_rejects_mismatched_id(
+    monkeypatch: pytest.MonkeyPatch, tmp_path, review_ui: dict[str, object]
+) -> None:
+    monkeypatch.setattr(workflow, "WORKFLOWS_DIR", tmp_path)
+    (tmp_path / "review-ui.workflow.yaml").write_text(yaml.safe_dump(review_ui), encoding="utf-8")
+    changed = deepcopy(review_ui)
+    changed["id"] = "other"
+
+    with pytest.raises(ValueError, match="must match"):
+        workflow.save_workflow("review-ui", yaml.safe_dump(changed))
+
+
+def test_save_workflow_requires_existing_file(monkeypatch: pytest.MonkeyPatch, tmp_path, review_ui: dict[str, object]) -> None:
+    monkeypatch.setattr(workflow, "WORKFLOWS_DIR", tmp_path)
+
+    with pytest.raises(FileNotFoundError):
+        workflow.save_workflow("review-ui", yaml.safe_dump(review_ui))

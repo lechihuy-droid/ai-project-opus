@@ -6,7 +6,7 @@ Audited against `design/planning/REMOTION_RAG_OPERATING_MODEL_IMPLEMENTATION_PLA
 
 Current execution evidence, run outside the sandbox because these suites spawn child processes:
 
-- `npm run test:operating-model`: 77/77 pass.
+- `npm run test:operating-model`: 81/81 pass.
 - `npm run test:semantic`: 23/23 pass.
 - `npm run knowledge:test`: 75/75 pass.
 - `npm run validate:visual-contracts`, `npm run test:visual-mapper`, `npm run validate:director`, and `npm run test:director`: pass.
@@ -42,7 +42,7 @@ Sandbox-only `EPERM` spawn failures are not treated as product failures: the sam
 | Renderer is independent of SQLite/source repositories. | **PROVEN** | `design/workflow/RAG_INGEST_AND_RETRIEVAL.md:10,92,171`; current `runtime-db-independence` knowledge test passes. |
 | Five scenes use at least three layouts with no more than two repeats. | **PROVEN** | r6 `05-video-map.json`; W7 diversity test passes. |
 | At least five packages have sufficient approved evidence. | **PROVEN** | `design/knowledge/reports/evidence-breadth-v1.json`; W8 tests pass. |
-| E2E tests cover rapid auto/locked, promotion, Production, blocked publishing. | **PROVEN** | Current 77/77 operating-model suite includes W2/W4/W5/W7/W9 coverage. |
+| E2E tests cover rapid auto/locked, promotion, Production, blocked publishing. | **PROVEN** | Current 81/81 operating-model suite includes W2/W4/W5/W7/W9 coverage. |
 | GPT-5.6 pilot has auto, locked, promoted Production modes; final Production has audible voice and passed handoff. | **INCOMPLETE** | Auto/locked/promoted r6 artifacts exist. R6 audio/render QA and 5/5 technical sampled-still checks are proven. The exact hash-bound final approval and `flow:finalize`/publish handoff have not occurred. Style review is deferred by the user and no visual approval is claimed. |
 
 ## W9 R6 Evidence
@@ -62,8 +62,8 @@ Sandbox-only `EPERM` spawn failures are not treated as product failures: the sam
 | `design/workflow/FLOW_V1.md` | **PROVEN** for lane/final-approval rules and the r6 technical still-QA instance. | It requires rapid `non_publishable`, hash-bound final approval, and timed-map still QA (`:177-202`, `:61-86`). R6 has five technically passing timed-map samples; style review remains user-deferred and is not claimed as approval. |
 | `design/workflow/RAG_INGEST_AND_RETRIEVAL.md` | **PROVEN** | Its canonical approval, projection, dual-domain, and renderer-boundary rules match current compiler/repository code and passing W6 tests. |
 | `design/reports/W9_AUTOMATED_DATA_FLOW_REPORT_2026-07-17.md` | **PROVEN** | It accurately limits its claim to automated r6 evidence and correctly says final approval is pending; its r6 hash matches the media file. |
-| `design/reports/W9_OPERATING_KPI_REPORT.json` | **CONTRADICTED** | It correctly records r6 as `promotion_pending` and publish readiness `FAIL`, but its `firstPassStillQa.status: "NO_DATA"` predates the persisted r6 sampled-stills report with 5/5 technical passes. |
-| `docs/W9-e2e-kpi-pilot.md` | **CONTRADICTED** | The current file says audio/caption and first-pass production still QA remain `NO_DATA` and production still QA is unproven. R6 directly proves audio/caption/render QA and 5/5 technical sampled stills. This document is being reconciled concurrently; its current content is recorded here without making documentation reconciliation a W9 implementation or dataflow gate. |
+| `design/reports/W9_OPERATING_KPI_REPORT.json` | **PROVEN** | It correctly records r6 as `promotion_pending`, publish readiness `FAIL`, and `firstPassStillQa.status: "NO_DATA"` because no human visual approval exists. The persisted r6 sampled-stills report proves 5/5 technical passes only; technical still checks are not visual approval. |
+| `docs/W9-e2e-kpi-pilot.md` | **PROVEN** | It correctly distinguishes R6 audio/caption/render QA and 5/5 technical sampled-still passes from first-pass still visual approval, which remains `NO_DATA`. It makes no production visual or style-approval claim. |
 
 ## Final Approval And Handoff
 

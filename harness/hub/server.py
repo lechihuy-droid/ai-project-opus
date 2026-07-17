@@ -625,6 +625,19 @@ def api_workflow_validate(payload: dict[str, object]) -> dict[str, object]:
     return {"ok": not errors, "errors": errors, "ir": workflow.build_ir(data) if not errors else None}
 
 
+@app.put("/api/workflows/{workflow_id}")
+def api_workflow_save(workflow_id: str, payload: dict[str, object]) -> dict[str, object]:
+    yaml_text = payload.get("yaml_text")
+    if not isinstance(yaml_text, str):
+        raise HTTPException(status_code=400, detail="yaml_text must be a string")
+    try:
+        return workflow.save_workflow(workflow_id, yaml_text)
+    except FileNotFoundError as exc:
+        raise _http_error(exc) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
 # --- end C2a workflow routes ---
 
 
