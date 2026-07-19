@@ -4,19 +4,23 @@
   "label": "Cinematic Type",
   "status": "experimental",
   "visualFamily": "cinematic-type",
-  "summary": "Oversized type-led package for hooks, quotes, and chapter resets with one restrained texture field.",
-  "description": "Original Lucida family for title-card beats, quote scenes, and chapter transitions that need scale, pause, and a controlled photographic placeholder rather than dense structured modules.",
+  "summary": "Oversized type-led package for kinetic hooks, quotes, chapter resets, manifestos, and outros with one restrained texture field.",
+  "description": "Original Lucida family for kinetic hook beats, quote scenes, chapter resets, manifesto statements, and outros that need scale, pause, and a controlled photographic placeholder rather than dense structured modules.",
   "tags": [
     "cinematic",
     "type",
-    "hook",
+    "kinetic-hook",
     "quote",
-    "transition"
+    "chapter-reset",
+    "manifesto",
+    "outro"
   ],
   "recommendedIntents": [
     "hook",
     "quote",
-    "takeaway"
+    "chapter-reset",
+    "manifesto",
+    "outro"
   ],
   "avoidFor": [
     "dashboard or metric-heavy scenes",
@@ -24,9 +28,11 @@
     "copied branded texture treatments"
   ],
   "supportedSceneTypes": [
-    "hook",
+    "kinetic-hook",
     "quote",
-    "transition"
+    "chapter-reset",
+    "manifesto",
+    "outro"
   ],
   "supportedTemplateRoles": [
     "scene"
@@ -69,6 +75,6 @@
   },
   "notes": [
     "Built to stay visually original even when no embeddable imagery is available.",
-    "Long-headline edge coverage is carried by the transition fixture rather than extra panels."
+    "Long-headline edge coverage is carried by the chapter-reset fixture rather than extra panels."
   ]
 }

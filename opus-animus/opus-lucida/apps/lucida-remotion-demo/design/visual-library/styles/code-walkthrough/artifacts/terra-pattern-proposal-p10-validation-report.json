@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "terra-pattern-proposal-validation/v1",
+  "proposalId": "terra-pattern-proposal-p10",
+  "packageId": "code-walkthrough",
+  "scope": {
+    "patterns": "design/visual-library/styles/code-walkthrough/visual-patterns.json",
+    "ownership": "package-local only",
+    "rendererEdited": false,
+    "globalEdited": false,
+    "collectionEdited": false
+  },
+  "checks": {
+    "schemaValid": true,
+    "referenceValid": true,
+    "uniquePatternIds": true,
+    "uniqueRenderableRecipes": true,
+    "patternCount": 30,
+    "expectedPatternCount": 30,
+    "patternsPerVariant": {
+      "code-focus": 6,
+      "diff-review": 6,
+      "api-sequence": 6,
+      "debugging-trace": 6,
+      "terminal-code-split": 6
+    },
+    "expectedPatternsPerVariant": 6,
+    "patternTypesPerVariant": {
+      "code-focus": [
+        "component",
+        "composition",
+        "layout",
+        "motion",
+        "palette",
+        "typography"
+      ],
+      "diff-review": [
+        "component",
+        "composition",
+        "layout",
+        "motion",
+        "palette",
+        "typography"
+      ],
+      "api-sequence": [
+        "component",
+        "composition",
+        "layout",
+        "motion",
+        "palette",
+        "typography"
+      ],
+      "debugging-trace": [
+        "component",
+        "composition",
+        "layout",
+        "motion",
+        "palette",
+        "typography"
+      ],
+      "terminal-code-split": [
+        "component",
+        "composition",
+        "layout",
+        "motion",
+        "palette",
+        "typography"
+      ]
+    },
+    "sourceUsage": {
+      "fixture-terminal-repo": 2,
+      "local-reference-theme": 4,
+      "technical-editorial-frame": 2,
+      "terminalcss-catalog-link": 2,
+      "w8-dashboard-primer-docs": 2,
+      "w8-dashboard-primer-react": 2,
+      "w8-dashboard-remotion-animation": 4,
+      "w8-minimal-nng-aesthetic": 1,
+      "w8-minimal-nng-hierarchy": 2,
+      "w8-technical-primer-foundations": 3,
+      "w8-technical-primer-primitives": 3,
+      "w8-technical-reveal-code": 3
+    },
+    "allReviewStatusesProposed": true
+  },
+  "compilerEligibility": {
+    "eligible": false,
+    "reason": "Patterns are proposed and pending human approval; this validator performs no approval, promotion, renderer registration, or collection update."
+  },
+  "approvalState": {
+    "status": "pending-human-review",
+    "claimedApprovedPatterns": 0,
+    "claimedPromotedPatterns": 0,
+    "approvalAction": "none"
+  },
+  "result": "PASS",
+  "errors": []
+}

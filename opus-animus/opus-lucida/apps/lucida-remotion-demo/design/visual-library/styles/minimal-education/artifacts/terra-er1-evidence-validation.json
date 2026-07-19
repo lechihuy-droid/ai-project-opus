@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "terra-er1-package-evidence-validation/v1",
+  "packageId": "minimal-education",
+  "lunaEvidenceRule": "canonical visual-style source with approved approval and rights, or exact LUNA_VERIFIED_REVIEW_ELIGIBLE queue source ID.",
+  "status": "PASS",
+  "variantCount": 5,
+  "patternCount": 30,
+  "proposedVariantCount": 5,
+  "proposedPatternCount": 30,
+  "records": [
+    {
+      "recordType": "sourceReference",
+      "recordId": "w8-minimal-nng-hierarchy",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "sourceReference",
+      "recordId": "w8-minimal-nng-aesthetic",
+      "sourceEvidenceId": "w8-minimal-nng-aesthetic",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "sourceReference",
+      "recordId": "w8-minimal-material-web",
+      "sourceEvidenceId": "w8-minimal-material-web",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "single-concept",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "step-sequence",
+      "sourceEvidenceId": "w8-minimal-material-web",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "comparison-cards",
+      "sourceEvidenceId": "w8-minimal-material-web",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "checklist",
+      "sourceEvidenceId": "w8-minimal-nng-aesthetic",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "takeaway",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-definition-spotlight-term-meaning-split",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-definition-spotlight-term-weight-ladder",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-definition-spotlight-blue-meaning-anchor",
+      "sourceEvidenceId": "w8-minimal-material-web",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-definition-spotlight-meaning-then-cues-reveal",
+      "sourceEvidenceId": "w8-minimal-nng-aesthetic",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-definition-spotlight-one-sentence-callout",
+      "sourceEvidenceId": "w8-minimal-material-web",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-definition-spotlight-cue-rail-summary",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-cue-action-loop-three-phase-loop",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-cue-action-loop-signal-action-contrast",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-cue-action-loop-teal-state-key",
+      "sourceEvidenceId": "w8-minimal-material-web",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-cue-action-loop-row-by-row-cycle-reveal",
+      "sourceEvidenceId": "w8-minimal-nng-aesthetic",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-cue-action-loop-completion-token",
+      "sourceEvidenceId": "w8-minimal-material-web",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-cue-action-loop-smallest-action-first",
+      "sourceEvidenceId": "w8-minimal-nng-aesthetic",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-guided-routine-numbered-action-rail",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-guided-routine-active-step-hierarchy",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-guided-routine-gold-progress-marker",
+      "sourceEvidenceId": "w8-minimal-material-web",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-guided-routine-advance-on-settle",
+      "sourceEvidenceId": "w8-minimal-nng-aesthetic",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-guided-routine-step-number-pills",
+      "sourceEvidenceId": "w8-minimal-material-web",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-guided-routine-one-next-action",
+      "sourceEvidenceId": "w8-minimal-nng-aesthetic",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-progress-check-checkpoint-observation-rail",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-progress-check-observation-action-contrast",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-progress-check-coral-checkpoint-state",
+      "sourceEvidenceId": "w8-minimal-material-web",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-progress-check-observation-settle",
+      "sourceEvidenceId": "w8-minimal-nng-aesthetic",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-progress-check-next-action-callout",
+      "sourceEvidenceId": "w8-minimal-material-web",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-progress-check-evidence-before-advice",
+      "sourceEvidenceId": "w8-minimal-nng-aesthetic",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-aligned-tradeoff-matched-criteria-grid",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-aligned-tradeoff-criterion-value-hierarchy",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-aligned-tradeoff-blue-gold-choice-key",
+      "sourceEvidenceId": "w8-minimal-material-web",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-aligned-tradeoff-row-pair-reveal",
+      "sourceEvidenceId": "w8-minimal-nng-aesthetic",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-aligned-tradeoff-criterion-row-component",
+      "sourceEvidenceId": "w8-minimal-material-web",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "me-aligned-tradeoff-decision-rule-close",
+      "sourceEvidenceId": "w8-minimal-nng-aesthetic",
+      "resolvedBy": "canonical-approved"
+    }
+  ],
+  "failures": [],
+  "approvalOrPromotionPerformed": false,
+  "compilerEligibility": false
+}

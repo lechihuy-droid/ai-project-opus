@@ -1,0 +1,287 @@
+[
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "source-montage",
+    "packageId": "editorial-collage",
+    "label": "Source montage",
+    "description": "Deterministic source montage variant preserving its existing renderer layout.",
+    "intentTags": [
+      "summarize",
+      "narrative"
+    ],
+    "beatRoles": [
+      "setup"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "layered-crops",
+      "captioned-evidence"
+    ],
+    "typographyTraits": [
+      "compact-source-labels",
+      "bounded-editorial-deck"
+    ],
+    "paletteTraits": [
+      "cream-and-ink",
+      "coral-accent"
+    ],
+    "motionTraits": [
+      "collage-layer-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "editorial-deck"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "multi-source cultural opening"
+    ],
+    "antiPatterns": [
+      "unlabelled media overlap"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Deterministic source-montage fixture with verified frame-animation evidence; the variant remains proposed with no approved or promoted pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "culture-recap",
+    "packageId": "editorial-collage",
+    "label": "Culture recap",
+    "description": "Deterministic culture recap variant preserving its existing renderer layout.",
+    "intentTags": [
+      "takeaway",
+      "narrative"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "layered-crops",
+      "recap-rail"
+    ],
+    "typographyTraits": [
+      "compact-source-labels",
+      "bounded-recap-copy"
+    ],
+    "paletteTraits": [
+      "cream-and-ink",
+      "blue-and-green-accents"
+    ],
+    "motionTraits": [
+      "reduced-motion-fade",
+      "deterministic-review"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "recap-thread"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "multi-signal narrative recap"
+    ],
+    "antiPatterns": [
+      "closing without an ordered recap"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Deterministic culture-recap fixture with verified frame-animation evidence; the variant remains proposed with no approved or promoted pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "visual-essay",
+    "packageId": "editorial-collage",
+    "label": "Visual essay",
+    "description": "Deterministic visual essay variant preserving its existing renderer layout.",
+    "intentTags": [
+      "evidence",
+      "compare"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "layered-crops",
+      "captioned-evidence"
+    ],
+    "typographyTraits": [
+      "compact-source-labels",
+      "dense-caption-hierarchy"
+    ],
+    "paletteTraits": [
+      "cream-and-ink",
+      "amber-evidence-accent"
+    ],
+    "motionTraits": [
+      "collage-layer-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "evidence-callout"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "archive-led evidence explanation"
+    ],
+    "antiPatterns": [
+      "document crop without a source-role caption"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Deterministic visual-essay fixture with verified frame-animation evidence; the variant remains proposed with no approved or promoted pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "quote-collage",
+    "packageId": "editorial-collage",
+    "label": "Quote collage",
+    "description": "Deterministic quote collage variant preserving its existing renderer layout.",
+    "intentTags": [
+      "takeaway",
+      "evidence"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "captioned-evidence",
+      "recap-rail"
+    ],
+    "typographyTraits": [
+      "explicit-placeholder-labels",
+      "bounded-recap-copy"
+    ],
+    "paletteTraits": [
+      "cream-and-ink",
+      "warning-and-danger-accents"
+    ],
+    "motionTraits": [
+      "static-review",
+      "deterministic-review"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "recap-thread"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "truthful missing or rejected asset recap"
+    ],
+    "antiPatterns": [
+      "silently dropping unavailable media"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Deterministic quote-collage fixture with verified frame-animation evidence; the variant remains proposed with no approved or promoted pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "multi-source-evidence",
+    "packageId": "editorial-collage",
+    "label": "Multi-source evidence",
+    "description": "Deterministic multi-source evidence variant preserving its existing renderer layout.",
+    "intentTags": [
+      "evidence",
+      "summarize"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "layered-crops",
+      "recap-rail"
+    ],
+    "typographyTraits": [
+      "compact-source-labels",
+      "dense-caption-hierarchy"
+    ],
+    "paletteTraits": [
+      "cream-and-ink",
+      "green-evidence-accent"
+    ],
+    "motionTraits": [
+      "reduced-motion-fade",
+      "deterministic-review"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "evidence-callout"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "caption-dense evidence comparison"
+    ],
+    "antiPatterns": [
+      "hiding provenance to fit more copy"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Deterministic multi-source-evidence fixture with verified frame-animation evidence; the variant remains proposed with no approved or promoted pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  }
+]

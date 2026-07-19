@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "lucida-interface-walkthrough-demo/v1",
+  "packageId": "interface-walkthrough",
+  "compositionId": "InterfaceWalkthroughFamilyReview",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "scenes": [
+    {"id":"scene-01","sceneKey":"annotated-screen","frame":42,"output":"frames/scene-01.png"},
+    {"id":"scene-02","sceneKey":"step-flow","frame":42,"output":"frames/scene-02.png"},
+    {"id":"scene-03","sceneKey":"feature-tour","frame":42,"output":"frames/scene-03.png"},
+    {"id":"scene-04","sceneKey":"before-after-ui","frame":42,"output":"frames/scene-04.png"},
+    {"id":"scene-05","sceneKey":"state-transition","frame":42,"output":"frames/scene-05.png"}
+  ]
+}

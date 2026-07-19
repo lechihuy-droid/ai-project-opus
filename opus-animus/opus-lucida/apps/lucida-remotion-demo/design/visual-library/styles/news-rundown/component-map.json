@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "lucida-component-map/v1",
+  "id": "news-rundown",
+  "primitives": [
+    {"id": "news-header", "role": "content", "notes": "Section, timestamp, and headline hierarchy."},
+    {"id": "news-list", "role": "support", "notes": "Ranked, live, or contextual news units."},
+    {"id": "caption-safe-panel", "role": "caption", "notes": "Reserved safe-area explanatory caption."}
+  ],
+  "templates": [
+    {"templateId": "breaking-update", "supportedLayouts": ["hero-stack"], "backgroundEffects": ["quiet-news-rule"], "motionPreset": "news-entrance", "primitives": ["news-header", "caption-safe-panel"], "notes": "Urgent single-headline briefing."},
+    {"templateId": "headline-stack", "supportedLayouts": ["ranked-list"], "backgroundEffects": ["quiet-news-rule"], "motionPreset": "news-entrance", "primitives": ["news-header", "news-list", "caption-safe-panel"], "notes": "Ranked multi-headline summary."},
+    {"templateId": "top-stories", "supportedLayouts": ["live-rail"], "backgroundEffects": ["quiet-news-rule"], "motionPreset": "news-entrance", "primitives": ["news-header", "news-list", "caption-safe-panel"], "notes": "Timestamped update sequence."},
+    {"templateId": "bulletin-grid", "supportedLayouts": ["bulletin-grid"], "backgroundEffects": ["quiet-news-rule"], "motionPreset": "news-entrance", "primitives": ["news-header", "news-list", "caption-safe-panel"], "notes": "Two-axis contextual explanation."},
+    {"templateId": "weekly-roundup", "supportedLayouts": ["metric-led"], "backgroundEffects": ["quiet-news-rule"], "motionPreset": "news-entrance", "primitives": ["news-header", "news-list", "caption-safe-panel"], "notes": "Metric-led signal watch."}
+  ]
+}

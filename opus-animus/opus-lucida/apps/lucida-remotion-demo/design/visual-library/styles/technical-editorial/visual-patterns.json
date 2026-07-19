@@ -1,0 +1,1949 @@
+[
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-mechanism-flow-three-stage-rail-layout",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "annotated-explainer"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "explain",
+      "system-architecture"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "title-span-columns-1-9",
+      "left-annotation-rail-columns-1-2",
+      "three-stage-main-panel-columns-3-10",
+      "right-code-rail-columns-11-12"
+    ],
+    "typographyTraits": [
+      "54px-stage-title",
+      "18px-rail-metadata",
+      "24px-node-label"
+    ],
+    "paletteTraits": [
+      "deep-neutral-canvas",
+      "blue-handoff-lines",
+      "amber-caveat-marker"
+    ],
+    "motionTraits": [
+      "stage-reveal-left-to-right-180ms",
+      "reduced-motion-fade-groups"
+    ],
+    "componentTraits": [
+      "diagram-panel",
+      "annotation-rail",
+      "code-data-callout"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "maxItems": 3,
+      "maxPanels": 4,
+      "maxCodeLines": 3
+    },
+    "positiveUseCases": [
+      "render a named input-transform-output mechanism with one caveat rail"
+    ],
+    "antiPatterns": [
+      "more than three unlabeled handoff stages"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Proposal translates the verified presentation-hierarchy evidence into an original fixed-grid mechanism recipe; source remains unapproved and noncanonical. Classification: annotated-explainer."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-mechanism-flow-handoff-label-hierarchy",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "annotated-explainer"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "three-stage-main-panel",
+      "connector-label-above-arrow",
+      "rail-note-aligned-to-stage"
+    ],
+    "typographyTraits": [
+      "stage-name-24px-semibold",
+      "connector-verb-16px-uppercase",
+      "rail-note-18px-regular"
+    ],
+    "paletteTraits": [
+      "high-contrast-stage-names",
+      "muted-connector-verbs",
+      "blue-active-handoff"
+    ],
+    "motionTraits": [
+      "labels-appear-with-stage",
+      "reduced-motion-static-labels"
+    ],
+    "componentTraits": [
+      "diagram-panel",
+      "annotation-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "bodyChars": 120,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "make each transformation verb inspectable before the next stage appears"
+    ],
+    "antiPatterns": [
+      "connector arrows without named transformations"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Proposal uses verified slide-hierarchy evidence to define readable text roles for an original mechanism panel; source remains unapproved and noncanonical. Classification: annotated-explainer."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-mechanism-flow-semantic-handoff-palette",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "annotated-explainer"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "explain",
+      "system-architecture"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "one-dominant-mechanism-panel",
+      "thin-evidence-rails"
+    ],
+    "typographyTraits": [
+      "light-text-on-panel",
+      "muted-rail-metadata"
+    ],
+    "paletteTraits": [
+      "graphite-base",
+      "blue-for-normal-handoff",
+      "amber-for-caveat-only",
+      "red-reserved-for-failure"
+    ],
+    "motionTraits": [
+      "color-change-only-on-state-transition",
+      "reduced-motion-static-state"
+    ],
+    "componentTraits": [
+      "diagram-panel",
+      "annotation-rail",
+      "status-marker"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 4,
+      "maxMetrics": 1
+    },
+    "positiveUseCases": [
+      "separate normal flow from a single material guardrail without decorative color"
+    ],
+    "antiPatterns": [
+      "assigning a unique accent color to every node"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-observable-plot"
+    ],
+    "classificationReasons": [
+      "Proposal adapts verified restrained data-emphasis evidence into semantic state colors for an original technical flow; source remains unapproved and noncanonical. Classification: annotated-explainer."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-mechanism-flow-segmented-build-motion",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "annotated-explainer"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "explain",
+      "system-architecture"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "stable-three-stage-grid",
+      "persistent-annotation-rail"
+    ],
+    "typographyTraits": [
+      "stable-stage-labels",
+      "no-moving-body-copy"
+    ],
+    "paletteTraits": [
+      "blue-active-stage",
+      "muted-pending-stage",
+      "amber-caveat-marker"
+    ],
+    "motionTraits": [
+      "stage-one-fade-0ms",
+      "connector-draw-180ms",
+      "next-stage-fade-180ms",
+      "reduced-motion-all-stages-visible"
+    ],
+    "componentTraits": [
+      "diagram-panel",
+      "annotation-rail",
+      "labeled-connector"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 4,
+      "maxCodeLines": 2
+    },
+    "positiveUseCases": [
+      "reveal a causal sequence without changing the grid footprint"
+    ],
+    "antiPatterns": [
+      "continuous connector animation after the stage is explained"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Proposal bounds progressive presentation motion into a deterministic technical sequence; source remains unapproved and noncanonical. Classification: annotated-explainer."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-mechanism-flow-stage-card-contract",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "annotated-explainer"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "explain",
+      "system-architecture"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "equal-width-stage-cards",
+      "one-input-and-one-output-port-per-card"
+    ],
+    "typographyTraits": [
+      "stage-title-top-aligned",
+      "one-line-contract-label"
+    ],
+    "paletteTraits": [
+      "panel-elevated-surface",
+      "blue-port-marker",
+      "neutral-card-border"
+    ],
+    "motionTraits": [
+      "card-fade-up-160ms",
+      "reduced-motion-static-card"
+    ],
+    "componentTraits": [
+      "stage-card",
+      "labeled-connector",
+      "annotation-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 36,
+      "bodyChars": 72,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "show a compact stage contract with one responsibility and one output"
+    ],
+    "antiPatterns": [
+      "stage cards containing multiple unrelated responsibilities"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-observable-plot"
+    ],
+    "classificationReasons": [
+      "Proposal derives a bounded data-surface contract from verified evidence without copying source UI; source remains unapproved and noncanonical. Classification: annotated-explainer."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-mechanism-flow-input-output-evidence-composition",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "annotated-explainer"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "explain",
+      "system-architecture"
+    ],
+    "beatRoles": [
+      "context",
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "input-chip-top-left",
+      "mechanism-panel-center",
+      "output-verdict-bottom-right",
+      "caveat-rail-left"
+    ],
+    "typographyTraits": [
+      "input-output-labels-16px-uppercase",
+      "mechanism-title-48px"
+    ],
+    "paletteTraits": [
+      "blue-input-marker",
+      "green-output-marker",
+      "amber-caveat-marker"
+    ],
+    "motionTraits": [
+      "input-before-mechanism-before-output",
+      "reduced-motion-sequential-fades"
+    ],
+    "componentTraits": [
+      "input-chip",
+      "diagram-panel",
+      "output-verdict-row",
+      "annotation-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "maxItems": 3,
+      "maxPanels": 4,
+      "maxMetrics": 1
+    },
+    "positiveUseCases": [
+      "connect an initial condition to an inspectable mechanism and bounded outcome"
+    ],
+    "antiPatterns": [
+      "showing an outcome without a visible transformation path"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-observable-plot"
+    ],
+    "classificationReasons": [
+      "Proposal applies verified explanatory reading order to an original input-to-outcome composition; source remains unapproved and noncanonical. Classification: annotated-explainer."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-evidence-ledger-claim-check-limit-layout",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "evidence-grid"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "explain",
+      "summarize"
+    ],
+    "beatRoles": [
+      "evidence",
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "three-ledger-rows",
+      "claim-column-45-percent",
+      "check-column-35-percent",
+      "limit-column-20-percent"
+    ],
+    "typographyTraits": [
+      "ledger-header-16px-uppercase",
+      "claim-text-22px",
+      "limit-text-18px"
+    ],
+    "paletteTraits": [
+      "neutral-ledger-grid",
+      "blue-check-label",
+      "amber-limit-label"
+    ],
+    "motionTraits": [
+      "row-reveal-top-to-bottom-140ms",
+      "reduced-motion-static-ledger"
+    ],
+    "componentTraits": [
+      "ledger-row",
+      "annotation-rail",
+      "status-marker"
+    ],
+    "contentCapacity": {
+      "headlineChars": 50,
+      "bodyChars": 210,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "compare three bounded claims with their local checks and limitations"
+    ],
+    "antiPatterns": [
+      "a conclusion row without a visible limitation column"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-observable-plot"
+    ],
+    "classificationReasons": [
+      "Proposal uses verified structured evidence-surface principles for an original claim ledger; source remains unapproved and noncanonical. Classification: evidence-grid."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-evidence-ledger-qualified-verdict-typography",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "evidence-grid"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "summarize",
+      "explain"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "ledger-above-verdict-row",
+      "verdict-uses-full-width-bottom-band"
+    ],
+    "typographyTraits": [
+      "verdict-32px-semibold",
+      "evidence-18px-regular",
+      "limitation-prefix-16px-uppercase"
+    ],
+    "paletteTraits": [
+      "white-verdict-text",
+      "blue-evidence-prefix",
+      "amber-limitation-prefix"
+    ],
+    "motionTraits": [
+      "verdict-after-ledger",
+      "reduced-motion-verdict-visible"
+    ],
+    "componentTraits": [
+      "ledger-row",
+      "qualified-verdict-row",
+      "annotation-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 46,
+      "bodyChars": 160,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "state a decision while retaining the condition that limits it"
+    ],
+    "antiPatterns": [
+      "oversized verdict text that omits its qualifying condition"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Proposal applies verified technical hierarchy to an original evidence-first verdict treatment; source remains unapproved and noncanonical. Classification: evidence-grid."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-evidence-ledger-status-role-palette",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "evidence-grid"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "explain",
+      "summarize"
+    ],
+    "beatRoles": [
+      "evidence"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "repeated-ledger-rows",
+      "one-status-marker-per-row"
+    ],
+    "typographyTraits": [
+      "neutral-row-text",
+      "status-label-16px-uppercase"
+    ],
+    "paletteTraits": [
+      "blue-for-observed",
+      "amber-for-limited",
+      "red-for-failed-check-only",
+      "neutral-for-unreviewed"
+    ],
+    "motionTraits": [
+      "status-marker-fade-only",
+      "reduced-motion-static-status"
+    ],
+    "componentTraits": [
+      "ledger-row",
+      "status-marker",
+      "qualified-verdict-row"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 3,
+      "maxMetrics": 3
+    },
+    "positiveUseCases": [
+      "give evidence states consistent semantic meaning across a technical ledger"
+    ],
+    "antiPatterns": [
+      "using green as a generic decoration or status without a defined check"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-observable-plot"
+    ],
+    "classificationReasons": [
+      "Proposal constrains evidence color roles using verified restrained-emphasis concepts; source remains unapproved and noncanonical. Classification: evidence-grid."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-evidence-ledger-proof-before-verdict-motion",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "evidence-grid"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "explain",
+      "summarize"
+    ],
+    "beatRoles": [
+      "evidence",
+      "takeaway"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "stable-ledger-grid",
+      "bottom-verdict-row"
+    ],
+    "typographyTraits": [
+      "fixed-row-baselines",
+      "no-scrolling-body-copy"
+    ],
+    "paletteTraits": [
+      "blue-evidence-state",
+      "amber-limit-state"
+    ],
+    "motionTraits": [
+      "claim-row-then-check-then-limit-120ms",
+      "verdict-after-all-rows",
+      "reduced-motion-crossfade"
+    ],
+    "componentTraits": [
+      "ledger-row",
+      "qualified-verdict-row",
+      "status-marker"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 4,
+      "bodyChars": 180
+    },
+    "positiveUseCases": [
+      "make the basis for a conclusion visible before presenting the conclusion"
+    ],
+    "antiPatterns": [
+      "animating the final recommendation before its evidence rows"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Proposal turns verified progressive disclosure into a deterministic evidence ordering; source remains unapproved and noncanonical. Classification: evidence-grid."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-evidence-ledger-bounded-check-row-component",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "evidence-grid"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "explain"
+    ],
+    "beatRoles": [
+      "evidence"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "fixed-row-height-112px",
+      "three-cell-row-grid",
+      "left-edge-status-tick"
+    ],
+    "typographyTraits": [
+      "one-line-claim",
+      "two-line-check-note",
+      "one-line-limit"
+    ],
+    "paletteTraits": [
+      "panel-elevated-row",
+      "neutral-border",
+      "semantic-status-tick"
+    ],
+    "motionTraits": [
+      "row-fade-up-120ms",
+      "reduced-motion-static-row"
+    ],
+    "componentTraits": [
+      "ledger-row",
+      "status-marker",
+      "inline-evidence-note"
+    ],
+    "contentCapacity": {
+      "headlineChars": 36,
+      "bodyChars": 96,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "render a repeatable row with claim, local check, and a bounded limitation"
+    ],
+    "antiPatterns": [
+      "unbounded prose paragraphs inside a ledger cell"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-observable-plot"
+    ],
+    "classificationReasons": [
+      "Proposal defines an original compact evidence component informed by verified data-surface constraints; source remains unapproved and noncanonical. Classification: evidence-grid."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-evidence-ledger-uncertainty-first-composition",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "evidence-grid"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "explain",
+      "summarize"
+    ],
+    "beatRoles": [
+      "context",
+      "evidence",
+      "takeaway"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "decision-prompt-top",
+      "evidence-ledger-center",
+      "uncertainty-band-bottom"
+    ],
+    "typographyTraits": [
+      "prompt-40px-semibold",
+      "ledger-text-20px",
+      "uncertainty-band-18px"
+    ],
+    "paletteTraits": [
+      "neutral-prompt",
+      "blue-evidence",
+      "amber-uncertainty-band"
+    ],
+    "motionTraits": [
+      "prompt-static",
+      "ledger-rows-build",
+      "uncertainty-band-final",
+      "reduced-motion-fade"
+    ],
+    "componentTraits": [
+      "decision-prompt",
+      "ledger-row",
+      "uncertainty-band"
+    ],
+    "contentCapacity": {
+      "headlineChars": 44,
+      "bodyChars": 180,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "summarize evidence while preserving the unresolved condition at scene end"
+    ],
+    "antiPatterns": [
+      "hiding material uncertainty below the safe area"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Proposal uses verified technical briefing order for an original uncertainty-visible summary; source remains unapproved and noncanonical. Classification: evidence-grid."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-code-contract-input-guard-output-layout",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "technical-brief"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "code-explanation",
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "code-rail-columns-1-5",
+      "contract-flow-columns-6-12",
+      "input-top-output-bottom",
+      "guardrail-between-flow-nodes"
+    ],
+    "typographyTraits": [
+      "code-20px-monospace",
+      "contract-title-28px",
+      "guardrail-label-16px-uppercase"
+    ],
+    "paletteTraits": [
+      "dark-code-surface",
+      "blue-contract-lines",
+      "amber-guardrail-marker"
+    ],
+    "motionTraits": [
+      "code-highlight-before-flow",
+      "reduced-motion-static-highlight"
+    ],
+    "componentTraits": [
+      "code-data-callout",
+      "diagram-panel",
+      "annotation-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "maxCodeLines": 4,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "map a short code excerpt to input validation and rendered output behavior"
+    ],
+    "antiPatterns": [
+      "placing code beside a flow with no mapped contract labels"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Proposal translates verified code-presentation hierarchy into an original code-to-contract layout; source remains unapproved and noncanonical. Classification: technical-brief."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-code-contract-line-to-behavior-typography",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "technical-brief"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "line-number-code-rail",
+      "behavior-label-aligned-to-code-line"
+    ],
+    "typographyTraits": [
+      "code-20px-monospace",
+      "line-number-16px-muted",
+      "behavior-label-18px-sans"
+    ],
+    "paletteTraits": [
+      "off-white-code-text",
+      "blue-selected-line",
+      "muted-line-numbers"
+    ],
+    "motionTraits": [
+      "selected-line-and-label-enter-together",
+      "reduced-motion-visible-selection"
+    ],
+    "componentTraits": [
+      "code-data-callout",
+      "line-link-label",
+      "diagram-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 5,
+      "bodyChars": 100,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "bind one visible implementation line to one observable system behavior"
+    ],
+    "antiPatterns": [
+      "highlighting several code lines with one ambiguous explanation"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Proposal sets original line-level technical text roles informed by verified presentation evidence; source remains unapproved and noncanonical. Classification: technical-brief."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-code-contract-syntax-to-status-palette",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "technical-brief"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "code-explanation",
+      "explain"
+    ],
+    "beatRoles": [
+      "evidence",
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "code-rail-with-status-gutter",
+      "contract-flow-adjacent"
+    ],
+    "typographyTraits": [
+      "monospace-code",
+      "sans-status-labels"
+    ],
+    "paletteTraits": [
+      "neutral-syntax-base",
+      "blue-selected-symbol",
+      "amber-validation-warning",
+      "red-compile-failure-only"
+    ],
+    "motionTraits": [
+      "one-symbol-highlight",
+      "reduced-motion-static-color"
+    ],
+    "componentTraits": [
+      "code-data-callout",
+      "status-marker",
+      "annotation-rail"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 4,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "distinguish active code, validation warning, and hard failure without rainbow syntax decoration"
+    ],
+    "antiPatterns": [
+      "use a bright color for every syntax token"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-observable-plot"
+    ],
+    "classificationReasons": [
+      "Proposal adapts verified semantic emphasis constraints into a restrained original code-status palette; source remains unapproved and noncanonical. Classification: technical-brief."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-code-contract-line-focus-motion",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "technical-brief"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "stable-code-rail",
+      "stable-contract-diagram",
+      "one-active-line"
+    ],
+    "typographyTraits": [
+      "fixed-code-baseline",
+      "no-typing-animation"
+    ],
+    "paletteTraits": [
+      "blue-active-line",
+      "muted-inactive-lines",
+      "amber-guardrail"
+    ],
+    "motionTraits": [
+      "highlight-moves-once-per-beat-160ms",
+      "diagram-node-fade-160ms",
+      "reduced-motion-cut-between-states"
+    ],
+    "componentTraits": [
+      "code-data-callout",
+      "line-link-label",
+      "diagram-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 5,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "step through a short contract without simulated terminal typing"
+    ],
+    "antiPatterns": [
+      "scrolling code during a portrait explanation"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Proposal bounds verified progressive code focus into deterministic line-level motion; source remains unapproved and noncanonical. Classification: technical-brief."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-code-contract-guardrail-callout-component",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "technical-brief"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "code-explanation",
+      "explain"
+    ],
+    "beatRoles": [
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "guardrail-callout-attached-to-flow-edge",
+      "max-two-callouts"
+    ],
+    "typographyTraits": [
+      "guardrail-prefix-15px-uppercase",
+      "guardrail-copy-18px"
+    ],
+    "paletteTraits": [
+      "amber-left-rule",
+      "panel-elevated-callout",
+      "high-contrast-copy"
+    ],
+    "motionTraits": [
+      "callout-fade-after-linked-line",
+      "reduced-motion-static-callout"
+    ],
+    "componentTraits": [
+      "guardrail-callout",
+      "labeled-connector",
+      "code-data-callout"
+    ],
+    "contentCapacity": {
+      "bodyChars": 80,
+      "maxItems": 2,
+      "maxPanels": 3,
+      "maxCodeLines": 4
+    },
+    "positiveUseCases": [
+      "attach a concrete validation rule to the point where it constrains behavior"
+    ],
+    "antiPatterns": [
+      "a warning callout floating without a target node or code line"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-observable-plot"
+    ],
+    "classificationReasons": [
+      "Proposal specifies an original bounded annotation component using verified explicit-evidence principles; source remains unapproved and noncanonical. Classification: technical-brief."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-code-contract-excerpt-to-outcome-composition",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "technical-brief"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "code-explanation",
+      "explain"
+    ],
+    "beatRoles": [
+      "context",
+      "explain",
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "excerpt-top-left",
+      "validation-node-center",
+      "render-outcome-bottom-right",
+      "limit-note-bottom-left"
+    ],
+    "typographyTraits": [
+      "excerpt-20px-monospace",
+      "outcome-title-30px",
+      "limit-note-16px"
+    ],
+    "paletteTraits": [
+      "blue-excerpt-focus",
+      "amber-validation",
+      "green-success-outcome"
+    ],
+    "motionTraits": [
+      "excerpt-then-validation-then-outcome",
+      "reduced-motion-fade-sequence"
+    ],
+    "componentTraits": [
+      "code-data-callout",
+      "diagram-panel",
+      "output-verdict-row",
+      "annotation-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 42,
+      "maxCodeLines": 3,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "explain how one implementation excerpt reaches a verified render outcome"
+    ],
+    "antiPatterns": [
+      "claim a successful output with no shown validation boundary"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Proposal uses verified technical explanation sequencing for an original excerpt-to-outcome scene; source remains unapproved and noncanonical. Classification: technical-brief."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-risk-register-risk-control-residual-layout",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "data-essay"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "summarize",
+      "explain"
+    ],
+    "beatRoles": [
+      "evidence",
+      "takeaway"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "three-horizontal-register-rows",
+      "risk-column-40-percent",
+      "control-column-40-percent",
+      "residual-column-20-percent"
+    ],
+    "typographyTraits": [
+      "risk-title-22px",
+      "control-copy-18px",
+      "residual-label-16px-uppercase"
+    ],
+    "paletteTraits": [
+      "dark-register-surface",
+      "amber-risk-label",
+      "blue-control-label",
+      "muted-residual-label"
+    ],
+    "motionTraits": [
+      "rows-enter-top-to-bottom-140ms",
+      "reduced-motion-static-register"
+    ],
+    "componentTraits": [
+      "risk-row",
+      "control-callout",
+      "residual-status"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 180,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "show a bounded operational risk alongside one concrete control and remaining exposure"
+    ],
+    "antiPatterns": [
+      "a risk list that omits residual exposure"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-observable-plot"
+    ],
+    "classificationReasons": [
+      "Proposal uses verified structured comparison concepts for an original risk-control-residual register; source remains unapproved and noncanonical. Classification: data-essay."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-risk-register-control-verdict-typography",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "data-essay"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "summarize",
+      "explain"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "register-above-next-action-band",
+      "one-next-action-per-scene"
+    ],
+    "typographyTraits": [
+      "risk-title-22px-semibold",
+      "control-text-18px",
+      "next-action-30px-semibold"
+    ],
+    "paletteTraits": [
+      "amber-risk-prefix",
+      "blue-control-prefix",
+      "white-next-action"
+    ],
+    "motionTraits": [
+      "action-band-after-register",
+      "reduced-motion-action-visible"
+    ],
+    "componentTraits": [
+      "risk-row",
+      "next-action-band",
+      "residual-status"
+    ],
+    "contentCapacity": {
+      "headlineChars": 44,
+      "bodyChars": 144,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "turn a completed risk review into a single scoped next action"
+    ],
+    "antiPatterns": [
+      "multiple competing next actions in the bottom band"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Proposal applies verified technical presentation hierarchy to an original risk-action reading order; source remains unapproved and noncanonical. Classification: data-essay."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-risk-register-severity-control-palette",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "data-essay"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "summarize",
+      "explain"
+    ],
+    "beatRoles": [
+      "evidence"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "repeated-risk-rows",
+      "one-severity-marker-and-one-control-marker-per-row"
+    ],
+    "typographyTraits": [
+      "neutral-register-copy",
+      "severity-label-16px-uppercase"
+    ],
+    "paletteTraits": [
+      "amber-for-open-risk",
+      "red-for-blocking-risk",
+      "blue-for-implemented-control",
+      "gray-for-residual-unknown"
+    ],
+    "motionTraits": [
+      "static-semantic-markers",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "risk-row",
+      "severity-marker",
+      "control-callout"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 3,
+      "maxMetrics": 3
+    },
+    "positiveUseCases": [
+      "make severity and control state scannable without converting the register into a heatmap"
+    ],
+    "antiPatterns": [
+      "using red for all risk text regardless of severity"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-observable-plot"
+    ],
+    "classificationReasons": [
+      "Proposal turns verified semantic color restraint into an original operational-state palette; source remains unapproved and noncanonical. Classification: data-essay."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-risk-register-control-reveal-motion",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "data-essay"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "explain",
+      "summarize"
+    ],
+    "beatRoles": [
+      "evidence",
+      "takeaway"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "stable-three-column-register",
+      "persistent-next-action-band"
+    ],
+    "typographyTraits": [
+      "fixed-row-baselines",
+      "no-list-scrolling"
+    ],
+    "paletteTraits": [
+      "amber-risk-before-control",
+      "blue-control-reveal",
+      "muted-residual"
+    ],
+    "motionTraits": [
+      "risk-then-control-then-residual-140ms",
+      "one-row-at-a-time",
+      "reduced-motion-crossfade"
+    ],
+    "componentTraits": [
+      "risk-row",
+      "control-callout",
+      "residual-status"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 4,
+      "bodyChars": 180
+    },
+    "positiveUseCases": [
+      "show how a control changes, but does not erase, a named risk"
+    ],
+    "antiPatterns": [
+      "animating all status markers continuously"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Proposal bounds verified progressive reveal into a readable risk-control sequence; source remains unapproved and noncanonical. Classification: data-essay."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-risk-register-residual-status-component",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "data-essay"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "summarize",
+      "explain"
+    ],
+    "beatRoles": [
+      "evidence"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "right-aligned-residual-cell",
+      "fixed-72px-status-cell"
+    ],
+    "typographyTraits": [
+      "residual-label-15px-uppercase",
+      "residual-value-18px-semibold"
+    ],
+    "paletteTraits": [
+      "neutral-status-cell",
+      "amber-open-state",
+      "blue-controlled-state"
+    ],
+    "motionTraits": [
+      "status-fade-on-row-entry",
+      "reduced-motion-static-status"
+    ],
+    "componentTraits": [
+      "residual-status",
+      "risk-row",
+      "severity-marker"
+    ],
+    "contentCapacity": {
+      "headlineChars": 24,
+      "bodyChars": 40,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "make the residual exposure visible as a compact field rather than a hidden footnote"
+    ],
+    "antiPatterns": [
+      "encode residual state only by color with no text label"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-observable-plot"
+    ],
+    "classificationReasons": [
+      "Proposal defines an original inspectable status component under verified data-labeling constraints; source remains unapproved and noncanonical. Classification: data-essay."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-risk-register-escalation-boundary-composition",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "data-essay"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "summarize",
+      "explain"
+    ],
+    "beatRoles": [
+      "context",
+      "evidence",
+      "takeaway"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "risk-register-center",
+      "escalation-threshold-band-bottom",
+      "owner-rail-left"
+    ],
+    "typographyTraits": [
+      "threshold-28px-semibold",
+      "owner-label-16px-uppercase",
+      "risk-row-20px"
+    ],
+    "paletteTraits": [
+      "amber-threshold",
+      "red-blocker-only",
+      "blue-owner-label"
+    ],
+    "motionTraits": [
+      "register-before-threshold",
+      "reduced-motion-fade-sequence"
+    ],
+    "componentTraits": [
+      "risk-row",
+      "escalation-band",
+      "annotation-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 42,
+      "bodyChars": 160,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "end a risk explanation with a stated escalation boundary and accountable owner"
+    ],
+    "antiPatterns": [
+      "an escalation rule that is not linked to a visible residual state"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Proposal applies verified technical reading order to an original escalation-boundary composition; source remains unapproved and noncanonical. Classification: data-essay."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-decision-recap-decision-evidence-boundary-layout",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "research-digest"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "summarize",
+      "explain"
+    ],
+    "beatRoles": [
+      "takeaway",
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "decision-panel-top-60-percent",
+      "evidence-strip-middle",
+      "follow-up-boundary-bottom-20-percent",
+      "annotation-rail-left"
+    ],
+    "typographyTraits": [
+      "decision-42px-semibold",
+      "evidence-18px",
+      "boundary-18px"
+    ],
+    "paletteTraits": [
+      "deep-neutral-canvas",
+      "blue-evidence-strip",
+      "amber-boundary-strip"
+    ],
+    "motionTraits": [
+      "decision-before-evidence-before-boundary",
+      "reduced-motion-fades"
+    ],
+    "componentTraits": [
+      "decision-panel",
+      "evidence-strip",
+      "follow-up-boundary",
+      "annotation-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 54,
+      "bodyChars": 160,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "close a technical scene with an explicit decision, basis, and next verification boundary"
+    ],
+    "antiPatterns": [
+      "a decision recap that adds new unexamined evidence in the final band"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Proposal uses verified technical presentation hierarchy for an original recap layout; source remains unapproved and noncanonical. Classification: research-digest."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-decision-recap-claim-basis-boundary-typography",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "research-digest"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "summarize"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "stacked-decision-basis-boundary-rows",
+      "one-sentence-per-row"
+    ],
+    "typographyTraits": [
+      "decision-38px-semibold",
+      "basis-20px-regular",
+      "boundary-18px-regular",
+      "role-prefix-16px-uppercase"
+    ],
+    "paletteTraits": [
+      "white-decision",
+      "blue-basis-prefix",
+      "amber-boundary-prefix"
+    ],
+    "motionTraits": [
+      "role-rows-fade-120ms",
+      "reduced-motion-static-rows"
+    ],
+    "componentTraits": [
+      "decision-panel",
+      "evidence-strip",
+      "follow-up-boundary"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "bodyChars": 140,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "make the difference between the conclusion, its basis, and its limitation readable at a glance"
+    ],
+    "antiPatterns": [
+      "style the boundary note like a decorative footer"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Proposal defines original recap text roles using verified inspectable hierarchy concepts; source remains unapproved and noncanonical. Classification: research-digest."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-decision-recap-confidence-boundary-palette",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "research-digest"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "summarize",
+      "explain"
+    ],
+    "beatRoles": [
+      "takeaway",
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "decision-panel",
+      "evidence-strip",
+      "boundary-strip"
+    ],
+    "typographyTraits": [
+      "high-contrast-decision",
+      "compact-role-labels"
+    ],
+    "paletteTraits": [
+      "white-decision-text",
+      "blue-for-observed-basis",
+      "amber-for-open-boundary",
+      "red-for-rejected-option-only"
+    ],
+    "motionTraits": [
+      "semantic-color-static",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "decision-panel",
+      "evidence-strip",
+      "follow-up-boundary"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 4,
+      "bodyChars": 144
+    },
+    "positiveUseCases": [
+      "keep confidence cues semantic while preserving one neutral decision surface"
+    ],
+    "antiPatterns": [
+      "rendering a qualified decision as a full-screen green success state"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-observable-plot"
+    ],
+    "classificationReasons": [
+      "Proposal derives restrained evidence emphasis from verified review artifacts for an original decision palette; source remains unapproved and noncanonical. Classification: research-digest."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-decision-recap-evidence-lock-motion",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "research-digest"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "summarize",
+      "explain"
+    ],
+    "beatRoles": [
+      "evidence",
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "decision-panel-fixed",
+      "evidence-strip-fixed",
+      "boundary-strip-fixed"
+    ],
+    "typographyTraits": [
+      "no-reflow-on-reveal",
+      "stable-decision-baseline"
+    ],
+    "paletteTraits": [
+      "blue-evidence-state",
+      "amber-boundary-state"
+    ],
+    "motionTraits": [
+      "evidence-strip-reveal-160ms",
+      "decision-lock-after-evidence",
+      "boundary-fade-160ms",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "decision-panel",
+      "evidence-strip",
+      "follow-up-boundary"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 4,
+      "bodyChars": 150
+    },
+    "positiveUseCases": [
+      "hold the decision statement stable while its supporting evidence becomes visible"
+    ],
+    "antiPatterns": [
+      "moving or resizing the decision after it appears"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Proposal adapts verified bounded transition vocabulary into an original stable-recap motion sequence; source remains unapproved and noncanonical. Classification: research-digest."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-decision-recap-evidence-strip-component",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "research-digest"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "summarize",
+      "explain"
+    ],
+    "beatRoles": [
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "full-width-evidence-strip",
+      "max-three-evidence-cells",
+      "fixed-120px-strip-height"
+    ],
+    "typographyTraits": [
+      "evidence-label-15px-uppercase",
+      "evidence-value-20px"
+    ],
+    "paletteTraits": [
+      "panel-elevated-strip",
+      "blue-left-rule",
+      "neutral-cell-dividers"
+    ],
+    "motionTraits": [
+      "strip-fade-up-140ms",
+      "reduced-motion-static-strip"
+    ],
+    "componentTraits": [
+      "evidence-strip",
+      "evidence-cell",
+      "status-marker"
+    ],
+    "contentCapacity": {
+      "bodyChars": 90,
+      "maxItems": 3,
+      "maxPanels": 3,
+      "maxMetrics": 3
+    },
+    "positiveUseCases": [
+      "show up to three decision inputs as compact inspectable cells"
+    ],
+    "antiPatterns": [
+      "use an evidence strip as an unbounded paragraph container"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-observable-plot"
+    ],
+    "classificationReasons": [
+      "Proposal defines an original evidence-cell component using verified bounded data-surface principles; source remains unapproved and noncanonical. Classification: research-digest."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "te-decision-recap-decision-to-follow-up-composition",
+    "packageId": "technical-editorial",
+    "variantIds": [
+      "research-digest"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "summarize",
+      "explain"
+    ],
+    "beatRoles": [
+      "context",
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "decision-statement-center",
+      "evidence-strip-below",
+      "single-follow-up-card-bottom-right",
+      "scope-note-rail-left"
+    ],
+    "typographyTraits": [
+      "decision-44px",
+      "follow-up-24px-semibold",
+      "scope-note-16px"
+    ],
+    "paletteTraits": [
+      "white-decision",
+      "blue-evidence",
+      "amber-follow-up-boundary"
+    ],
+    "motionTraits": [
+      "decision-then-basis-then-follow-up",
+      "reduced-motion-fade-sequence"
+    ],
+    "componentTraits": [
+      "decision-panel",
+      "evidence-strip",
+      "follow-up-card",
+      "annotation-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 54,
+      "bodyChars": 140,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "close a technical explanation with one scoped decision and one verification-oriented follow-up"
+    ],
+    "antiPatterns": [
+      "a recap that turns into a feature list or generic outro"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Proposal applies verified technical briefing progression to an original decision-to-follow-up composition; source remains unapproved and noncanonical. Classification: research-digest."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p2/1.0",
+    "reviewStatus": "proposed"
+  }
+]

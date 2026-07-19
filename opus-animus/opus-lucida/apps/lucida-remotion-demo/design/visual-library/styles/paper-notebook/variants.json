@@ -1,0 +1,293 @@
+[
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "research-notes",
+    "packageId": "paper-notebook",
+    "label": "Research notes",
+    "description": "A balanced ruled-page research note frame for three evidence-backed claims, supporting context, and margin annotations.",
+    "intentTags": [
+      "explain",
+      "summarize"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "ruled-page",
+      "margin-rail",
+      "numbered-note-blocks"
+    ],
+    "typographyTraits": [
+      "ink-hierarchy",
+      "readable-notes"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "navy-ink",
+      "sparse-red-corrections"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "paper-field",
+      "note-row",
+      "annotation-rail"
+    ],
+    "contentCapacity": {
+      "maxItems": 3
+    },
+    "positiveUseCases": [
+      "research notes with visible reasoning"
+    ],
+    "antiPatterns": [
+      "unstructured long-form prose"
+    ],
+    "sourceEvidenceIds": [
+      "web-excalidraw"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound proposed variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "derivation",
+    "packageId": "paper-notebook",
+    "label": "Worked derivation",
+    "description": "A dense ruled-page calculation sequence with explicit terms, compact proof notes, and fixed baselines.",
+    "intentTags": [
+      "explain",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "ruled-page",
+      "equation-sequence",
+      "margin-rail"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "ink-hierarchy"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "navy-ink",
+      "red-term-labels"
+    ],
+    "motionTraits": [
+      "reduced-motion",
+      "deterministic-review"
+    ],
+    "componentTraits": [
+      "paper-field",
+      "equation-row",
+      "annotation-rail"
+    ],
+    "contentCapacity": {
+      "maxItems": 5,
+      "maxCodeLines": 5
+    },
+    "positiveUseCases": [
+      "compact geometry or implementation derivation"
+    ],
+    "antiPatterns": [
+      "equations without explanatory notes"
+    ],
+    "sourceEvidenceIds": [
+      "web-katex"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound proposed variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "annotated-paper",
+    "packageId": "paper-notebook",
+    "label": "Annotated paper",
+    "description": "A balanced annotated-paper frame that keeps corrected assumptions, replacement language, and review cues visible.",
+    "intentTags": [
+      "summarize",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "correct"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "ruled-page",
+      "annotation-pass",
+      "margin-rail"
+    ],
+    "typographyTraits": [
+      "ink-hierarchy",
+      "emphasized-annotations"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "navy-ink",
+      "red-annotation-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "paper-field",
+      "note-row",
+      "annotation-rail"
+    ],
+    "contentCapacity": {
+      "maxItems": 3
+    },
+    "positiveUseCases": [
+      "bounded annotations or correction review"
+    ],
+    "antiPatterns": [
+      "decorative annotations without a visible replacement"
+    ],
+    "sourceEvidenceIds": [
+      "web-excalidraw"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound proposed variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "checklist",
+    "packageId": "paper-notebook",
+    "label": "Review checklist",
+    "description": "A static notebook checklist that distinguishes completed controls from one deliberately visible open gate.",
+    "intentTags": [
+      "summarize",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "ruled-page",
+      "checklist-sequence",
+      "open-review-gate"
+    ],
+    "typographyTraits": [
+      "ink-hierarchy",
+      "readable-checklist-labels"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "green-checks",
+      "sparse-red-open-gate"
+    ],
+    "motionTraits": [
+      "static-review",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "paper-field",
+      "checklist-row",
+      "annotation-rail"
+    ],
+    "contentCapacity": {
+      "maxItems": 5
+    },
+    "positiveUseCases": [
+      "truthful quality or promotion review"
+    ],
+    "antiPatterns": [
+      "claiming an unchecked gate has passed"
+    ],
+    "sourceEvidenceIds": [
+      "repo-excalidraw"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound proposed variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "lab-log",
+    "packageId": "paper-notebook",
+    "label": "Lab log",
+    "description": "A sparse notebook log that records ordered observations, method cues, and correction boundaries in a stable margin rail.",
+    "intentTags": [
+      "explain",
+      "process"
+    ],
+    "beatRoles": [
+      "setup"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "ruled-page",
+      "ordered-observation-log",
+      "margin-rail"
+    ],
+    "typographyTraits": [
+      "ink-hierarchy",
+      "scannable-log-headings"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "blue-structure",
+      "sparse-red-corrections"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "paper-field",
+      "note-row",
+      "annotation-rail"
+    ],
+    "contentCapacity": {
+      "maxItems": 3
+    },
+    "positiveUseCases": [
+      "lab run setup with ordered observations"
+    ],
+    "antiPatterns": [
+      "dense multi-column reference material"
+    ],
+    "sourceEvidenceIds": [
+      "repo-marp"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound proposed variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  }
+]

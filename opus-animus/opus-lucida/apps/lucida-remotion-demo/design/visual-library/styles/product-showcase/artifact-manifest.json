@@ -55,6 +55,36 @@
       "usage": "validation_input"
     },
     {
+      "id": "product-hero-fixture",
+      "kind": "fixture",
+      "path": "pipeline/fixtures/styles/product-showcase/product-hero.fixture.ts",
+      "usage": "validation_input"
+    },
+    {
+      "id": "feature-reveal-fixture",
+      "kind": "fixture",
+      "path": "pipeline/fixtures/styles/product-showcase/feature-reveal.fixture.ts",
+      "usage": "validation_input"
+    },
+    {
+      "id": "before-after-fixture",
+      "kind": "fixture",
+      "path": "pipeline/fixtures/styles/product-showcase/before-after.fixture.ts",
+      "usage": "validation_input"
+    },
+    {
+      "id": "capability-grid-fixture",
+      "kind": "fixture",
+      "path": "pipeline/fixtures/styles/product-showcase/capability-grid.fixture.ts",
+      "usage": "validation_input"
+    },
+    {
+      "id": "launch-summary-fixture",
+      "kind": "fixture",
+      "path": "pipeline/fixtures/styles/product-showcase/launch-summary.fixture.ts",
+      "usage": "validation_input"
+    },
+    {
       "id": "review-scenes",
       "kind": "normalized_events",
       "path": "./artifacts/review-scenes.json",

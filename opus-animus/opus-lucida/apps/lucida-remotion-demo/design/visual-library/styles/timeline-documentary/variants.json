@@ -1,0 +1,292 @@
+[
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "chronology",
+    "packageId": "timeline-documentary",
+    "label": "Chronology",
+    "description": "Deterministic chronology variant preserving its existing renderer layout.",
+    "intentTags": [
+      "process",
+      "case-study"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "alternating-origin-records",
+      "dated-spine"
+    ],
+    "typographyTraits": [
+      "serif-record-headlines",
+      "mono-date-labels"
+    ],
+    "paletteTraits": [
+      "archival-paper-contrast",
+      "amber-evidence-accent"
+    ],
+    "motionTraits": [
+      "chronology-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "archival-frame",
+      "source-label"
+    ],
+    "contentCapacity": {
+      "maxItems": 4,
+      "maxPanels": 4,
+      "maxEvents": 4
+    },
+    "positiveUseCases": [
+      "sourced origin chronology"
+    ],
+    "antiPatterns": [
+      "undated origin claims"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-citizen-dj"
+    ],
+    "classificationReasons": [
+      "Deterministic chronology fixture with verified source evidence; the variant remains proposed with no approved or promoted pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "milestones",
+    "packageId": "timeline-documentary",
+    "label": "Milestones",
+    "description": "Deterministic milestones variant preserving its existing renderer layout.",
+    "intentTags": [
+      "evidence",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "explicit-missing-records",
+      "dated-evidence-spine"
+    ],
+    "typographyTraits": [
+      "serif-evidence-headlines",
+      "missing-record-captions"
+    ],
+    "paletteTraits": [
+      "dark-archive-canvas",
+      "amber-provenance-accent"
+    ],
+    "motionTraits": [
+      "reduced-motion-fade",
+      "deterministic-review"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "missing-image-record",
+      "source-label"
+    ],
+    "contentCapacity": {
+      "maxItems": 5,
+      "maxPanels": 5,
+      "maxEvents": 5
+    },
+    "positiveUseCases": [
+      "chronology with documented archive gaps"
+    ],
+    "antiPatterns": [
+      "fabricated visual reconstruction"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-national-archives"
+    ],
+    "classificationReasons": [
+      "Deterministic milestones fixture with verified source evidence; the variant remains proposed with no approved or promoted pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "case-study",
+    "packageId": "timeline-documentary",
+    "label": "Case study",
+    "description": "Deterministic case study variant preserving its existing renderer layout.",
+    "intentTags": [
+      "case-study",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "turning-point"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "emphasized-decision-marker",
+      "alternating-archive"
+    ],
+    "typographyTraits": [
+      "serif-decision-headlines",
+      "persistent-source-captions"
+    ],
+    "paletteTraits": [
+      "dark-archive-canvas",
+      "amber-decision-accent"
+    ],
+    "motionTraits": [
+      "staggered-record-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "archival-frame",
+      "documentary-thesis"
+    ],
+    "contentCapacity": {
+      "maxItems": 5,
+      "maxPanels": 5,
+      "maxEvents": 5
+    },
+    "positiveUseCases": [
+      "sourced decision chronology"
+    ],
+    "antiPatterns": [
+      "single-cause conclusions without dated records"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-citizen-dj"
+    ],
+    "classificationReasons": [
+      "Deterministic case-study fixture with verified source evidence; the variant remains proposed with no approved or promoted pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "evolution",
+    "packageId": "timeline-documentary",
+    "label": "Evolution",
+    "description": "Deterministic evolution variant preserving its existing renderer layout.",
+    "intentTags": [
+      "process",
+      "summarize"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "interleaved-workstream-records",
+      "dated-spine"
+    ],
+    "typographyTraits": [
+      "compact-serf-event-titles",
+      "source-forward-captions"
+    ],
+    "paletteTraits": [
+      "archive-neutral-canvas",
+      "muted-workstream-contrast"
+    ],
+    "motionTraits": [
+      "chronology-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "archival-frame",
+      "source-label"
+    ],
+    "contentCapacity": {
+      "maxItems": 6,
+      "maxPanels": 6,
+      "maxEvents": 6
+    },
+    "positiveUseCases": [
+      "parallel sourced workstreams"
+    ],
+    "antiPatterns": [
+      "unordered comparison lists"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-loc-pictures"
+    ],
+    "classificationReasons": [
+      "Deterministic evolution fixture with verified source evidence; the variant remains proposed with no approved or promoted pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "roadmap",
+    "packageId": "timeline-documentary",
+    "label": "Roadmap",
+    "description": "Deterministic roadmap variant preserving its existing renderer layout.",
+    "intentTags": [
+      "summarize",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "thesis-footer",
+      "compact-dated-spine"
+    ],
+    "typographyTraits": [
+      "serif-conclusion-headline",
+      "source-forward-captions"
+    ],
+    "paletteTraits": [
+      "paper-on-charcoal",
+      "restrained-amber-accent"
+    ],
+    "motionTraits": [
+      "static-review",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "source-label",
+      "documentary-thesis"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 3,
+      "maxEvents": 3
+    },
+    "positiveUseCases": [
+      "sourced chronology conclusion"
+    ],
+    "antiPatterns": [
+      "conclusion without separated evidence and interpretation"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-national-archives"
+    ],
+    "classificationReasons": [
+      "Deterministic roadmap fixture with verified source evidence; the variant remains proposed with no approved or promoted pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "packageId": "claim-evidence",
+  "registration": "pending",
+  "scenes": [
+    {"sceneKey":"claim-proof","fixture":"pipeline/fixtures/styles/claim-evidence/claim-proof.fixture.ts"},
+    {"sceneKey":"pro-con","fixture":"pipeline/fixtures/styles/claim-evidence/pro-con.fixture.ts"},
+    {"sceneKey":"benchmark-audit","fixture":"pipeline/fixtures/styles/claim-evidence/benchmark-audit.fixture.ts"},
+    {"sceneKey":"myth-reality","fixture":"pipeline/fixtures/styles/claim-evidence/myth-reality.fixture.ts"},
+    {"sceneKey":"source-triangulation","fixture":"pipeline/fixtures/styles/claim-evidence/source-triangulation.fixture.ts"}
+  ]
+}

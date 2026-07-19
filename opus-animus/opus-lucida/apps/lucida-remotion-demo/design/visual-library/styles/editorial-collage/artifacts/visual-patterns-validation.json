@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "terra-pattern-proposal-p9-validation/v1",
+  "packageId": "editorial-collage",
+  "proposalBatch": "terra-pattern-proposal-p9",
+  "status": "passed",
+  "scope": {
+    "patterns": "design/visual-library/styles/editorial-collage/visual-patterns.json",
+    "validationScript": "design/visual-library/styles/editorial-collage/artifacts/validate-visual-patterns.mjs",
+    "collectionEdited": false,
+    "rendererEdited": false,
+    "globalEdited": false
+  },
+  "checks": {
+    "schemaValid": true,
+    "exactPatternCount": 30,
+    "uniquePatternIds": true,
+    "variants": [
+      "culture-recap",
+      "multi-source-evidence",
+      "quote-collage",
+      "source-montage",
+      "visual-essay"
+    ],
+    "patternsPerVariant": {
+      "culture-recap": 6,
+      "multi-source-evidence": 6,
+      "quote-collage": 6,
+      "source-montage": 6,
+      "visual-essay": 6
+    },
+    "expectedPatternsPerVariant": 6,
+    "allReviewStatusesProposed": true,
+    "sourceReferencesResolve": true,
+    "verifiedSourceReferences": [
+      {
+        "id": "w8-dashboard-remotion-animation",
+        "url": "https://www.remotion.dev/docs/animating-properties",
+        "declaredInStylePackage": true,
+        "declaredInSourceReview": true
+      }
+    ]
+  },
+  "approvalState": {
+    "patternStatus": "proposed",
+    "sourceReviewStatus": "pending-human-review",
+    "approvedPatterns": 0,
+    "promotedPatterns": 0
+  },
+  "compilerEligibility": {
+    "eligible": false,
+    "reason": "All records remain proposed; human approval and promotion are required before compiler eligibility."
+  },
+  "errors": []
+}

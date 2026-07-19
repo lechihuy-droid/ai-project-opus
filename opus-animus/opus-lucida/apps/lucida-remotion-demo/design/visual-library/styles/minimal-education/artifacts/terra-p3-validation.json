@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "terra-pattern-proposal-p3-validation/v1",
+  "packageId": "minimal-education",
+  "proposalStatus": "proposed",
+  "humanPatternReview": "pending",
+  "compilerEligibility": false,
+  "canonicalEligibility": false,
+  "patternCount": 30,
+  "uniquePatternIdCount": 30,
+  "patternStatuses": {
+    "proposed": 30
+  },
+  "patternsPerVariant": {
+    "single-concept": 6,
+    "step-sequence": 6,
+    "comparison-cards": 6,
+    "checklist": 6,
+    "takeaway": 6
+  },
+  "referencedSourceEvidenceIds": [
+    "w8-minimal-material-web",
+    "w8-minimal-nng-aesthetic",
+    "w8-minimal-nng-hierarchy"
+  ],
+  "validation": {
+    "schemaValid": true,
+    "referencesValid": true,
+    "idsUnique": true,
+    "sixPatternsPerVariant": true,
+    "passed": true,
+    "failures": []
+  },
+  "notes": [
+    "This report records a non-canonical Terra proposal set only.",
+    "Compiler eligibility remains false until the separate human review and promotion workflow completes."
+  ]
+}

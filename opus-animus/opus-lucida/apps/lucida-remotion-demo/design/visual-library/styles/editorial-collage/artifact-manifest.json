@@ -37,21 +37,33 @@
       "usage": "audit"
     },
     {
-      "id": "normal-fixture",
+      "id": "source-montage-fixture",
       "kind": "fixture",
-      "path": "pipeline/fixtures/styles/editorial-collage/normal.fixture.ts",
+      "path": "pipeline/fixtures/styles/editorial-collage/source-montage.fixture.ts",
       "usage": "validation_input"
     },
     {
-      "id": "dense-fixture",
+      "id": "multi-source-evidence-fixture",
       "kind": "fixture",
-      "path": "pipeline/fixtures/styles/editorial-collage/dense.fixture.ts",
+      "path": "pipeline/fixtures/styles/editorial-collage/multi-source-evidence.fixture.ts",
       "usage": "validation_input"
     },
     {
-      "id": "edge-fixture",
+      "id": "quote-collage-fixture",
       "kind": "fixture",
-      "path": "pipeline/fixtures/styles/editorial-collage/edge.fixture.ts",
+      "path": "pipeline/fixtures/styles/editorial-collage/quote-collage.fixture.ts",
+      "usage": "validation_input"
+    },
+    {
+      "id": "visual-essay-fixture",
+      "kind": "fixture",
+      "path": "pipeline/fixtures/styles/editorial-collage/visual-essay.fixture.ts",
+      "usage": "validation_input"
+    },
+    {
+      "id": "culture-recap-fixture",
+      "kind": "fixture",
+      "path": "pipeline/fixtures/styles/editorial-collage/culture-recap.fixture.ts",
       "usage": "validation_input"
     },
     {

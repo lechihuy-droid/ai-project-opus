@@ -1,0 +1,320 @@
+{
+  "schemaVersion": "terra-evidence-validation/v1",
+  "packageId": "cinematic-type",
+  "rule": "Every sourceEvidenceId and sourceReferences id must resolve to an approved canonical visual-style source or an exact source ID from a PASS Luna visual-style audit.",
+  "status": "PASS",
+  "counts": {
+    "variants": 5,
+    "patterns": 30,
+    "sourceReferences": 3,
+    "referencesChecked": 38,
+    "invalid": 0
+  },
+  "resolutions": [
+    {
+      "kind": "variant",
+      "recordId": "kinetic-hook",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "variant",
+      "recordId": "quote",
+      "sourceId": "w8-technical-primer-foundations",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-technical-primer-foundations"
+    },
+    {
+      "kind": "variant",
+      "recordId": "chapter-reset",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "variant",
+      "recordId": "manifesto",
+      "sourceId": "w8-technical-primer-foundations",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-technical-primer-foundations"
+    },
+    {
+      "kind": "variant",
+      "recordId": "outro",
+      "sourceId": "w8-minimal-material-web",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-material-web"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-hook-left-headline-field",
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-hook-display-contrast",
+      "sourceId": "w8-technical-primer-foundations",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-technical-primer-foundations"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-hook-two-stage-rise",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-hook-chapter-rail",
+      "sourceId": "w8-technical-primer-primitives",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-technical-primer-primitives"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-hook-one-support-budget",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-hook-copper-rule-field",
+      "sourceId": "w8-minimal-material-web",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-material-web"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-quote-attribution-copy-split",
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-quote-mark-and-voice-contrast",
+      "sourceId": "w8-technical-primer-foundations",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-technical-primer-foundations"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-quote-voice-then-statement",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-quote-source-rail",
+      "sourceId": "w8-technical-primer-primitives",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-technical-primer-primitives"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-quote-single-voice-budget",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-quote-side-field-pause",
+      "sourceId": "w8-minimal-material-web",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-material-web"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-transition-full-width-reset",
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-transition-long-line-fit",
+      "sourceId": "w8-technical-primer-foundations",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-technical-primer-foundations"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-transition-strip-settle",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-transition-chapter-counter",
+      "sourceId": "w8-technical-primer-primitives",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-technical-primer-primitives"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-transition-reset-budget",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-transition-horizon-strip",
+      "sourceId": "w8-minimal-material-web",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-material-web"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-takeaway-bottom-conclusion",
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-takeaway-conclusion-contrast",
+      "sourceId": "w8-technical-primer-foundations",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-technical-primer-foundations"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-takeaway-band-then-land",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-takeaway-verdict-rail",
+      "sourceId": "w8-technical-primer-primitives",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-technical-primer-primitives"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-takeaway-one-lesson-budget",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-takeaway-top-band-quiet-close",
+      "sourceId": "w8-minimal-material-web",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-material-web"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-cta-centered-next-move",
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-cta-imperative-contrast",
+      "sourceId": "w8-technical-primer-foundations",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-technical-primer-foundations"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-cta-final-settle",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-cta-action-rail",
+      "sourceId": "w8-technical-primer-primitives",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-technical-primer-primitives"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-cta-one-action-budget",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "ct-cta-low-band-close",
+      "sourceId": "w8-minimal-material-web",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-material-web"
+    },
+    {
+      "kind": "sourceReference",
+      "recordId": "w8-dashboard-remotion-animation",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "sourceReference",
+      "recordId": "w8-technical-primer-foundations",
+      "sourceId": "w8-technical-primer-foundations",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-technical-primer-foundations"
+    },
+    {
+      "kind": "sourceReference",
+      "recordId": "w8-minimal-material-web",
+      "sourceId": "w8-minimal-material-web",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-material-web"
+    }
+  ],
+  "invalid": []
+}

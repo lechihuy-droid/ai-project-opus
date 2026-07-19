@@ -1,6 +1,6 @@
 import type { MotionPolicy, TextDensity } from "../../core";
 
-export type PaperNotebookFixtureKey = "notes" | "derivation" | "checklist";
+export type PaperNotebookFixtureKey = "research-notes" | "derivation" | "annotated-paper" | "checklist" | "lab-log";
 
 export type PaperNotebookSceneType = PaperNotebookFixtureKey;
 

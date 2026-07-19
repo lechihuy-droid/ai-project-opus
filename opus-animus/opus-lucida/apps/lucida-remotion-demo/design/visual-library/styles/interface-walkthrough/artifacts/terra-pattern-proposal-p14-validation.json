@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "terra-pattern-proposal-validation/v1",
+  "proposalId": "terra-pattern-proposal-p14",
+  "packageId": "interface-walkthrough",
+  "patternPath": "../visual-patterns.json",
+  "proposalStatus": "pending-human-approval",
+  "compilerEligibility": "ineligible",
+  "approvalAction": "none",
+  "canonicalPromotion": "none",
+  "expectedPatternCount": 30,
+  "expectedPerVariant": 6,
+  "expectedVariantIds": [
+    "annotated-screen",
+    "step-flow",
+    "feature-tour",
+    "before-after-ui",
+    "state-transition"
+  ],
+  "expectedPatternTypes": [
+    "layout",
+    "typography",
+    "palette",
+    "motion",
+    "component",
+    "composition"
+  ],
+  "canonicalEvidenceIds": [
+    "w8-dashboard-primer-react",
+    "w8-dashboard-primer-docs",
+    "w8-dashboard-remotion-animation",
+    "w8-minimal-nng-aesthetic",
+    "w8-minimal-nng-hierarchy",
+    "w8-technical-primer-primitives"
+  ],
+  "validationScope": [
+    "schema",
+    "canonical-approved-reference",
+    "uniqueness",
+    "recipe-uniqueness",
+    "variant-distribution",
+    "pending-compiler-gate"
+  ],
+  "generatedBy": "design/visual-library/styles/interface-walkthrough/artifacts/validate-terra-pattern-proposal-p14.mjs"
+}

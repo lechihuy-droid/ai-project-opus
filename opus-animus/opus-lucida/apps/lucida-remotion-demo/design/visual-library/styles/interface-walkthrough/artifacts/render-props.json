@@ -1,0 +1,7 @@
+{
+  "packageId": "interface-walkthrough",
+  "compositionId": "InterfaceWalkthroughFamilyReview",
+  "entryPoint": "src/styles/families/interface-walkthrough/renderRoot.tsx",
+  "imageFormat": "png",
+  "qualityChecks": ["dimensions", "five-scenes", "fail-closed-render-report"]
+}

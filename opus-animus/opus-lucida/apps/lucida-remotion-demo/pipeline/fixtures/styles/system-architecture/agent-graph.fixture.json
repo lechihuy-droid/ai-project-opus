@@ -1,0 +1,24 @@
+{
+  "key": "agent-graph",
+  "label": "Agent graph",
+  "eyebrow": "System architecture / agent coordination",
+  "title": "Name the coordinating agent before following the work it delegates",
+  "summary": "The graph keeps orchestration, specialist work, tool use, and durable memory as separate inspectable responsibilities.",
+  "density": "dense",
+  "motionPolicy": "full",
+  "nodes": [
+    {"id": "orchestrator", "label": "Orchestrator", "detail": "Plans and routes work", "x": 50, "y": 25, "tone": "accent"},
+    {"id": "researcher", "label": "Researcher", "detail": "Finds evidence", "x": 19, "y": 51, "tone": "success"},
+    {"id": "builder", "label": "Builder", "detail": "Creates output", "x": 81, "y": 51, "tone": "accent"},
+    {"id": "tools", "label": "Tools", "detail": "Calls services", "x": 19, "y": 78, "tone": "warning"},
+    {"id": "memory", "label": "Memory", "detail": "Stores context", "x": 81, "y": 78, "tone": "neutral"}
+  ],
+  "edges": [
+    {"from": "orchestrator", "to": "researcher", "label": "delegate"},
+    {"from": "orchestrator", "to": "builder", "label": "delegate"},
+    {"from": "researcher", "to": "tools", "label": "query"},
+    {"from": "builder", "to": "memory", "label": "record"},
+    {"from": "memory", "to": "orchestrator", "label": "context"}
+  ],
+  "caption": "The orchestrator remains accountable for routing while workers, tools, and memory keep explicit roles."
+}

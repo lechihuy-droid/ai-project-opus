@@ -1,5 +1,5 @@
 import { Composition } from "remotion";
-import definitionScene from "../../../../pipeline/fixtures/styles/minimal-education/definition-scene.json";
+import singleConceptScene from "../../../../pipeline/fixtures/styles/minimal-education/single-concept.scene.json";
 import { MinimalEducationFamilyComposition } from "./renderer";
 import type {
   MinimalEducationCompositionProps,
@@ -18,7 +18,7 @@ const calculateMetadata = ({
 });
 
 export const MinimalEducationRemotionRoot = () => {
-  const defaultScene = definitionScene as MinimalEducationScene;
+  const defaultScene = singleConceptScene as MinimalEducationScene;
 
   return (
     <Composition

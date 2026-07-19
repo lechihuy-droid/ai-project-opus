@@ -37,21 +37,33 @@
       "usage": "audit"
     },
     {
-      "id": "milestone-fixture",
+      "id": "chronology-fixture",
       "kind": "fixture",
-      "path": "pipeline/fixtures/styles/timeline-documentary/milestone.fixture.ts",
+      "path": "pipeline/fixtures/styles/timeline-documentary/chronology.fixture.ts",
       "usage": "validation_input"
     },
     {
-      "id": "era-change-fixture",
+      "id": "milestones-fixture",
       "kind": "fixture",
-      "path": "pipeline/fixtures/styles/timeline-documentary/era-change.fixture.ts",
+      "path": "pipeline/fixtures/styles/timeline-documentary/milestones.fixture.ts",
       "usage": "validation_input"
     },
     {
-      "id": "conclusion-fixture",
+      "id": "case-study-fixture",
       "kind": "fixture",
-      "path": "pipeline/fixtures/styles/timeline-documentary/conclusion.fixture.ts",
+      "path": "pipeline/fixtures/styles/timeline-documentary/case-study.fixture.ts",
+      "usage": "validation_input"
+    },
+    {
+      "id": "evolution-fixture",
+      "kind": "fixture",
+      "path": "pipeline/fixtures/styles/timeline-documentary/evolution.fixture.ts",
+      "usage": "validation_input"
+    },
+    {
+      "id": "roadmap-fixture",
+      "kind": "fixture",
+      "path": "pipeline/fixtures/styles/timeline-documentary/roadmap.fixture.ts",
       "usage": "validation_input"
     },
     {

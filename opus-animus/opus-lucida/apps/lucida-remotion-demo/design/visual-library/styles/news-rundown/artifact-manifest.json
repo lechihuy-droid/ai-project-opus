@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "lucida-artifact-manifest/v1",
+  "packageId": "news-rundown",
+  "domain": "visual-style",
+  "generatedAt": "2026-07-18T00:00:00.000Z",
+  "artifacts": [{"id": "package-root", "kind": "draft-package", "path": "./", "usage": "package-local draft implementation and review artifacts"}]
+}

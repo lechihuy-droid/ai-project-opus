@@ -9,6 +9,12 @@ import { ProductShowcaseScene } from "../families/product-showcase";
 import { EditorialCollageScene } from "../families/editorial-collage";
 import { TimelineDocumentaryScene } from "../families/timeline-documentary";
 import { buildMinimalEducationScene, buildTechnicalEditorialScene } from "./adapters";
+import {
+  cinematicTypeSceneKey,
+  editorialCollageSceneKey,
+  paperNotebookSceneKey,
+  timelineDocumentarySceneKey,
+} from "./family-scene-keys";
 import type { StyleRuntimeChoice } from "./types";
 
 type RuntimeStyleRendererProps = TemplateAdapterProps & {
@@ -40,12 +46,7 @@ export const RuntimeStyleRenderer = ({
   if (choice.selectedFamily === "cinematic-type") {
     return (
       <CinematicTypeScene
-        sceneKey={
-          (choice.familySceneKey ?? "transition") as
-            | "hook"
-            | "quote"
-            | "transition"
-        }
+        sceneKey={cinematicTypeSceneKey(choice.familySceneKey)}
       />
     );
   }
@@ -61,12 +62,7 @@ export const RuntimeStyleRenderer = ({
   if (choice.selectedFamily === "paper-notebook") {
     return (
       <PaperNotebookScene
-        sceneKey={
-          (choice.familySceneKey ?? "notes") as
-            | "notes"
-            | "derivation"
-            | "checklist"
-        }
+        sceneKey={paperNotebookSceneKey(choice.familySceneKey)}
       />
     );
   }
@@ -82,7 +78,7 @@ export const RuntimeStyleRenderer = ({
   if (choice.selectedFamily === "editorial-collage") {
     return (
       <EditorialCollageScene
-        sceneKey={(choice.familySceneKey ?? "normal") as "normal" | "dense" | "edge"}
+        sceneKey={editorialCollageSceneKey(choice.familySceneKey)}
       />
     );
   }
@@ -90,12 +86,7 @@ export const RuntimeStyleRenderer = ({
   if (choice.selectedFamily === "timeline-documentary") {
     return (
       <TimelineDocumentaryScene
-        sceneKey={
-          (choice.familySceneKey ?? "milestone") as
-            | "milestone"
-            | "era-change"
-            | "conclusion"
-        }
+        sceneKey={timelineDocumentarySceneKey(choice.familySceneKey)}
       />
     );
   }

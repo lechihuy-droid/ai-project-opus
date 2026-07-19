@@ -65,6 +65,7 @@
     "voice:generate": "node scripts/voice-generate.mjs",
     "preflight": "npm run check:node && npm run knowledge:preflight && npm run validate:videomap && npm run validate:director && npm run validate:style-registry && npm run validate:registry && npx remotion compositions",
     "qa:stills": "node scripts/render-scene-stills.mjs",
+    "review:style-variant-stills": "node scripts/render-style-variant-stills.mjs",
     "qa:production": "node scripts/qa-production.mjs",
     "test:qa-gates": "node --test tests/operating-model/qa-gates.test.mjs",
     "validate:videomap": "node scripts/validate-video-map.mjs",

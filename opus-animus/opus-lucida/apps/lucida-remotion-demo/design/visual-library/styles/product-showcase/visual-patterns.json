@@ -1,0 +1,1856 @@
+[
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-product-hero-device-stage",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "product-hero"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "use-case",
+      "product-intro"
+    ],
+    "beatRoles": [
+      "hook"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "device-framed-product-stage",
+      "product-first-reveal",
+      "single-media-stage"
+    ],
+    "typographyTraits": [
+      "compact-product-label",
+      "fitted-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-product-accent"
+    ],
+    "motionTraits": [
+      "stage-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "device-chrome",
+      "asset-policy-badge",
+      "feature-marker-row"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 160,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "open with one embeddable product interface occupying the primary stage"
+    ],
+    "antiPatterns": [
+      "copy-first opening with the product screen reduced to a thumbnail"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material product-surface evidence for an original single-device product-hero frame; human pattern review remains pending. This pattern is scoped to the product-hero contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-product-hero-headline-media-scale",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "product-hero"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "use-case",
+      "product-intro"
+    ],
+    "beatRoles": [
+      "hook"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "device-framed-product-stage",
+      "product-first-reveal"
+    ],
+    "typographyTraits": [
+      "compact-product-label",
+      "fitted-headline",
+      "media-dominant-scale"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-product-accent"
+    ],
+    "motionTraits": [
+      "stage-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "device-chrome",
+      "asset-policy-badge"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "bodyChars": 120,
+      "maxItems": 2,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "name a launch benefit while preserving a larger readable product screen"
+    ],
+    "antiPatterns": [
+      "headline wrapping into more visual area than the product media"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material hierarchy evidence for a compact label and fitted headline around an original media-first product-hero recipe; human pattern review remains pending. This pattern is scoped to the product-hero contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-product-hero-teal-focus-role",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "product-hero"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "use-case",
+      "product-intro"
+    ],
+    "beatRoles": [
+      "hook"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "device-framed-product-stage",
+      "single-media-stage"
+    ],
+    "typographyTraits": [
+      "compact-product-label",
+      "fitted-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-product-accent",
+      "neutral-supporting-copy"
+    ],
+    "motionTraits": [
+      "stage-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "device-chrome",
+      "feature-marker-row"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 140,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "reserve teal for the one visible product interaction or feature marker"
+    ],
+    "antiPatterns": [
+      "multiple competing accent colors around the launch interface"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material semantic-color evidence to constrain an original product-hero accent role; human pattern review remains pending. This pattern is scoped to the product-hero contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-product-hero-stage-then-copy",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "product-hero"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "use-case",
+      "product-intro"
+    ],
+    "beatRoles": [
+      "hook"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "device-framed-product-stage",
+      "stable-media-bounds"
+    ],
+    "typographyTraits": [
+      "compact-product-label",
+      "fitted-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-product-accent"
+    ],
+    "motionTraits": [
+      "media-fade-in",
+      "copy-fade-in-after-media",
+      "static-after-settle",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "device-chrome",
+      "asset-policy-badge"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "bodyChars": 120,
+      "maxItems": 2,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "reveal the product interface before its short launch framing"
+    ],
+    "antiPatterns": [
+      "continuous device travel while the interface is being inspected"
+    ],
+    "sourceEvidenceIds": [
+      "web-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Remotion frame-driven motion evidence for a bounded product-hero reveal with a stable inspection state; human pattern review remains pending. This pattern is scoped to the product-hero contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-product-hero-device-policy-contract",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "product-hero"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "use-case",
+      "product-intro"
+    ],
+    "beatRoles": [
+      "hook"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "device-framed-product-stage",
+      "product-first-reveal"
+    ],
+    "typographyTraits": [
+      "compact-product-label",
+      "fitted-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-product-accent"
+    ],
+    "motionTraits": [
+      "stage-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "device-chrome",
+      "asset-policy-badge",
+      "feature-marker-row"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 120,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "frame an embeddable interface with visible media status and up to three feature markers"
+    ],
+    "antiPatterns": [
+      "unlabelled media substituted for a product asset"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material component-state evidence for a bounded original device and asset-status contract; human pattern review remains pending. This pattern is scoped to the product-hero contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-product-hero-product-first-hook",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "product-hero"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "use-case",
+      "product-intro"
+    ],
+    "beatRoles": [
+      "hook"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "top-product-stage",
+      "bottom-feature-marker-row",
+      "one-primary-signal"
+    ],
+    "typographyTraits": [
+      "compact-product-label",
+      "fitted-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-product-accent"
+    ],
+    "motionTraits": [
+      "stage-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "device-chrome",
+      "feature-marker-row",
+      "asset-policy-badge"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 140,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "compose a launch hook with one product state above three short observable cues"
+    ],
+    "antiPatterns": [
+      "separate marketing panels competing with the product state"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material surface hierarchy evidence for an original product-first portrait hook; human pattern review remains pending. This pattern is scoped to the product-hero contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-feature-reveal-screen-grid",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "feature-reveal"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "use-case",
+      "feature"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "portrait-product-stage",
+      "four-feature-grid",
+      "screen-above-markers"
+    ],
+    "typographyTraits": [
+      "compact-feature-labels",
+      "fitted-product-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-and-green-statuses"
+    ],
+    "motionTraits": [
+      "staggered-feature-entrance",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "product-media-frame",
+      "feature-marker-grid",
+      "asset-policy-badge"
+    ],
+    "contentCapacity": {
+      "headlineChars": 64,
+      "bodyChars": 180,
+      "maxItems": 4,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "explain one mobile workflow with a readable portrait screen above four named markers"
+    ],
+    "antiPatterns": [
+      "annotations covering controls on the active mobile screen"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material feature-reveal surface evidence for an original screen-plus-four-marker layout; human pattern review remains pending. This pattern is scoped to the feature-reveal contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-feature-reveal-marker-hierarchy",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "feature-reveal"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "use-case",
+      "feature"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "portrait-product-stage",
+      "four-feature-grid"
+    ],
+    "typographyTraits": [
+      "fitted-product-headline",
+      "feature-title-weight-700",
+      "feature-detail-weight-500"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-and-green-statuses"
+    ],
+    "motionTraits": [
+      "staggered-feature-entrance",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "product-media-frame",
+      "feature-marker-grid"
+    ],
+    "contentCapacity": {
+      "headlineChars": 60,
+      "bodyChars": 160,
+      "maxItems": 4,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "make each feature name scan before its one-line explanation"
+    ],
+    "antiPatterns": [
+      "equal text weight for screen title, marker title, and marker detail"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material hierarchy evidence for fixed feature-label roles in an original feature-reveal recipe; human pattern review remains pending. This pattern is scoped to the feature-reveal contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-feature-reveal-status-color-key",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "feature-reveal"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "use-case",
+      "feature"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "portrait-product-stage",
+      "four-feature-grid"
+    ],
+    "typographyTraits": [
+      "compact-feature-labels",
+      "fitted-product-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-active-feature",
+      "green-confirmed-state",
+      "neutral-supporting-copy"
+    ],
+    "motionTraits": [
+      "staggered-feature-entrance",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "product-media-frame",
+      "feature-marker-grid",
+      "asset-policy-badge"
+    ],
+    "contentCapacity": {
+      "headlineChars": 60,
+      "bodyChars": 160,
+      "maxItems": 4,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "distinguish the active feature from a confirmed product state with text labels retained"
+    ],
+    "antiPatterns": [
+      "encoding feature meaning in color without a visible label"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material semantic-state evidence for restrained active and confirmed marker roles; human pattern review remains pending. This pattern is scoped to the feature-reveal contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-feature-reveal-screen-then-markers",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "feature-reveal"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "use-case",
+      "feature"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "portrait-product-stage",
+      "stable-marker-grid"
+    ],
+    "typographyTraits": [
+      "compact-feature-labels",
+      "fitted-product-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-and-green-statuses"
+    ],
+    "motionTraits": [
+      "screen-fade-in",
+      "marker-row-stagger-120ms",
+      "static-after-settle",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "product-media-frame",
+      "feature-marker-grid"
+    ],
+    "contentCapacity": {
+      "headlineChars": 60,
+      "bodyChars": 160,
+      "maxItems": 4,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "let viewers inspect the mobile screen before feature markers appear in reading order"
+    ],
+    "antiPatterns": [
+      "markers animating across the screen while controls are being read"
+    ],
+    "sourceEvidenceIds": [
+      "web-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Remotion deterministic-timing evidence for a stable screen followed by bounded marker entrances; human pattern review remains pending. This pattern is scoped to the feature-reveal contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-feature-reveal-four-marker-contract",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "feature-reveal"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "use-case",
+      "feature"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "portrait-product-stage",
+      "four-feature-grid"
+    ],
+    "typographyTraits": [
+      "compact-feature-labels",
+      "fitted-product-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-and-green-statuses"
+    ],
+    "motionTraits": [
+      "staggered-feature-entrance",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "product-media-frame",
+      "feature-marker-grid",
+      "asset-policy-badge"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 160,
+      "maxItems": 4,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "bind four concise feature markers to a single embeddable mobile media frame"
+    ],
+    "antiPatterns": [
+      "more than four markers or a marker without a named product behavior"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material component-boundary evidence for an original four-marker feature-reveal contract; human pattern review remains pending. This pattern is scoped to the feature-reveal contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-feature-reveal-workflow-sequence",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "feature-reveal"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "use-case",
+      "feature"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "top-mobile-screen",
+      "bottom-two-by-two-marker-grid",
+      "single-workflow-state"
+    ],
+    "typographyTraits": [
+      "compact-feature-labels",
+      "fitted-product-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-and-green-statuses"
+    ],
+    "motionTraits": [
+      "staggered-feature-entrance",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "product-media-frame",
+      "feature-marker-grid",
+      "asset-policy-badge"
+    ],
+    "contentCapacity": {
+      "headlineChars": 64,
+      "bodyChars": 180,
+      "maxItems": 4,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "compose one visible mobile workflow with four supporting capability cues"
+    ],
+    "antiPatterns": [
+      "four unrelated product claims disconnected from the displayed workflow"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material product-flow evidence for an original single-workflow portrait composition; human pattern review remains pending. This pattern is scoped to the feature-reveal contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-before-after-paired-state-gutter",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "before-after"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "comparison",
+      "process"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "paired-product-states",
+      "before-after-note",
+      "equal-state-gutter"
+    ],
+    "typographyTraits": [
+      "state-labels",
+      "fitted-comparison-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-improvement-accent"
+    ],
+    "motionTraits": [
+      "sequenced-state-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "paired-media-frame",
+      "state-label-pill",
+      "comparison-note"
+    ],
+    "contentCapacity": {
+      "headlineChars": 68,
+      "bodyChars": 180,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "compare two embeddable workflow states with a fixed readable gap between them"
+    ],
+    "antiPatterns": [
+      "before and after screens with mismatched crops or unlabeled order"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material surface-comparison evidence for an original two-state portrait layout; human pattern review remains pending. This pattern is scoped to the before-after contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-before-after-before-after-type",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "before-after"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "comparison",
+      "process"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "paired-product-states",
+      "before-after-note"
+    ],
+    "typographyTraits": [
+      "state-label-weight-700",
+      "delta-summary-weight-700",
+      "supporting-note-weight-500"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-improvement-accent"
+    ],
+    "motionTraits": [
+      "sequenced-state-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "paired-media-frame",
+      "state-label-pill",
+      "comparison-note"
+    ],
+    "contentCapacity": {
+      "headlineChars": 64,
+      "bodyChars": 160,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "separate before, after, and the observed workflow delta through stable text roles"
+    ],
+    "antiPatterns": [
+      "long narrative copy treated as a third product state"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material information-hierarchy evidence for an original before-after type scale; human pattern review remains pending. This pattern is scoped to the before-after contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-before-after-neutral-to-teal",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "before-after"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "comparison",
+      "process"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "paired-product-states",
+      "before-after-note"
+    ],
+    "typographyTraits": [
+      "state-labels",
+      "fitted-comparison-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "neutral-before-state",
+      "teal-after-state",
+      "textual-state-labels"
+    ],
+    "motionTraits": [
+      "sequenced-state-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "paired-media-frame",
+      "state-label-pill",
+      "comparison-note"
+    ],
+    "contentCapacity": {
+      "headlineChars": 64,
+      "bodyChars": 160,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "mark the after state with teal while retaining explicit before and after labels"
+    ],
+    "antiPatterns": [
+      "using color alone to establish the comparison direction"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material semantic-color evidence for labelled before and after state roles; human pattern review remains pending. This pattern is scoped to the before-after contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-before-after-before-then-after",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "before-after"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "comparison",
+      "process"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "paired-product-states",
+      "stable-state-bounds"
+    ],
+    "typographyTraits": [
+      "state-labels",
+      "fitted-comparison-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-improvement-accent"
+    ],
+    "motionTraits": [
+      "before-fade-in",
+      "after-fade-in",
+      "comparison-note-settle",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "paired-media-frame",
+      "state-label-pill",
+      "comparison-note"
+    ],
+    "contentCapacity": {
+      "headlineChars": 64,
+      "bodyChars": 160,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "show the prior state before the improved state without moving either frame"
+    ],
+    "antiPatterns": [
+      "crossfading two different crops that obscure the workflow change"
+    ],
+    "sourceEvidenceIds": [
+      "web-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Remotion frame-driven timing evidence for a deterministic before-then-after reveal; human pattern review remains pending. This pattern is scoped to the before-after contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-before-after-paired-frame-contract",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "before-after"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "comparison",
+      "process"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "paired-product-states",
+      "before-after-note"
+    ],
+    "typographyTraits": [
+      "state-labels",
+      "fitted-comparison-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-improvement-accent"
+    ],
+    "motionTraits": [
+      "sequenced-state-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "paired-media-frame",
+      "state-label-pill",
+      "comparison-note"
+    ],
+    "contentCapacity": {
+      "headlineChars": 60,
+      "bodyChars": 160,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "bind paired embeddable media frames to visible state labels and one comparison note"
+    ],
+    "antiPatterns": [
+      "a comparison frame using an unrenderable reference asset"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material component-state evidence for an original labelled paired-media contract; human pattern review remains pending. This pattern is scoped to the before-after contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-before-after-visible-delta-note",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "before-after"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "comparison",
+      "process"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "paired-product-states",
+      "bottom-comparison-note",
+      "one-observed-delta"
+    ],
+    "typographyTraits": [
+      "state-labels",
+      "fitted-comparison-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-improvement-accent"
+    ],
+    "motionTraits": [
+      "sequenced-state-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "paired-media-frame",
+      "state-label-pill",
+      "comparison-note"
+    ],
+    "contentCapacity": {
+      "headlineChars": 68,
+      "bodyChars": 160,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "compose two visible product states above one bounded observed workflow delta"
+    ],
+    "antiPatterns": [
+      "claiming an improvement not demonstrated by the displayed states"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material comparison hierarchy evidence for an original evidence-first delta-note composition; human pattern review remains pending. This pattern is scoped to the before-after contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-capability-grid-landscape-crop-stage",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "capability-grid"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "use-case",
+      "process"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "landscape-product-crop",
+      "guided-inspection-grid",
+      "fixed-crop-stage"
+    ],
+    "typographyTraits": [
+      "compact-control-labels",
+      "fitted-product-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-control-accent"
+    ],
+    "motionTraits": [
+      "guided-feature-entrance",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "product-media-frame",
+      "feature-marker-grid",
+      "asset-policy-badge"
+    ],
+    "contentCapacity": {
+      "headlineChars": 72,
+      "bodyChars": 200,
+      "maxItems": 4,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "inspect one desktop control surface through a fixed landscape crop and four markers"
+    ],
+    "antiPatterns": [
+      "shrinking an entire desktop dashboard until controls are unreadable"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material product-surface evidence for an original fixed-crop capability-grid inspection layout; human pattern review remains pending. This pattern is scoped to the capability-grid contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-capability-grid-control-label-scale",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "capability-grid"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "use-case",
+      "process"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "landscape-product-crop",
+      "guided-inspection-grid"
+    ],
+    "typographyTraits": [
+      "fitted-product-headline",
+      "control-label-weight-700",
+      "marker-detail-weight-500"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-control-accent"
+    ],
+    "motionTraits": [
+      "guided-feature-entrance",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "product-media-frame",
+      "feature-marker-grid"
+    ],
+    "contentCapacity": {
+      "headlineChars": 68,
+      "bodyChars": 180,
+      "maxItems": 4,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "keep named desktop controls scannable above one concise inspection detail"
+    ],
+    "antiPatterns": [
+      "tiny annotations used as the only explanation of a dense desktop surface"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material hierarchy evidence for an original compact control-label scale; human pattern review remains pending. This pattern is scoped to the capability-grid contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-capability-grid-teal-control-role",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "capability-grid"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "use-case",
+      "process"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "landscape-product-crop",
+      "guided-inspection-grid"
+    ],
+    "typographyTraits": [
+      "compact-control-labels",
+      "fitted-product-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-active-control",
+      "neutral-uninspected-controls"
+    ],
+    "motionTraits": [
+      "guided-feature-entrance",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "product-media-frame",
+      "feature-marker-grid",
+      "asset-policy-badge"
+    ],
+    "contentCapacity": {
+      "headlineChars": 68,
+      "bodyChars": 180,
+      "maxItems": 4,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "focus one active desktop control while leaving other inspected controls neutral"
+    ],
+    "antiPatterns": [
+      "assigning a separate decorative color to every desktop marker"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material semantic-state evidence to reserve teal for the inspected control in an original capability-grid; human pattern review remains pending. This pattern is scoped to the capability-grid contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-capability-grid-fixed-crop-marker-reveal",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "capability-grid"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "use-case",
+      "process"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "landscape-product-crop",
+      "stable-crop-bounds"
+    ],
+    "typographyTraits": [
+      "compact-control-labels",
+      "fitted-product-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-control-accent"
+    ],
+    "motionTraits": [
+      "crop-static",
+      "marker-stagger-120ms",
+      "static-after-settle",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "product-media-frame",
+      "feature-marker-grid"
+    ],
+    "contentCapacity": {
+      "headlineChars": 68,
+      "bodyChars": 180,
+      "maxItems": 4,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "reveal inspection markers without panning or zooming the desktop crop"
+    ],
+    "antiPatterns": [
+      "camera movement that changes which controls the marker labels describe"
+    ],
+    "sourceEvidenceIds": [
+      "web-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Remotion deterministic still-review evidence for a static crop with bounded marker reveals; human pattern review remains pending. This pattern is scoped to the capability-grid contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-capability-grid-media-marker-contract",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "capability-grid"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "use-case",
+      "process"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "landscape-product-crop",
+      "guided-inspection-grid"
+    ],
+    "typographyTraits": [
+      "compact-control-labels",
+      "fitted-product-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-control-accent"
+    ],
+    "motionTraits": [
+      "guided-feature-entrance",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "product-media-frame",
+      "feature-marker-grid",
+      "asset-policy-badge"
+    ],
+    "contentCapacity": {
+      "headlineChars": 64,
+      "bodyChars": 180,
+      "maxItems": 4,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "bind one desktop crop to four named controls and an explicit asset-status badge"
+    ],
+    "antiPatterns": [
+      "more than four markers or marker labels detached from the visible crop"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material component-boundary evidence for an original capability-grid media-and-marker contract; human pattern review remains pending. This pattern is scoped to the capability-grid contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-capability-grid-guided-inspection-flow",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "capability-grid"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "use-case",
+      "process"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "top-landscape-product-crop",
+      "bottom-guided-inspection-grid",
+      "left-to-right-control-order"
+    ],
+    "typographyTraits": [
+      "compact-control-labels",
+      "fitted-product-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-control-accent"
+    ],
+    "motionTraits": [
+      "guided-feature-entrance",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "product-media-frame",
+      "feature-marker-grid",
+      "asset-policy-badge"
+    ],
+    "contentCapacity": {
+      "headlineChars": 72,
+      "bodyChars": 200,
+      "maxItems": 4,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "compose a desktop tour where the visible crop establishes context before four ordered inspection cues"
+    ],
+    "antiPatterns": [
+      "a dashboard-like side rail that competes with the desktop product view"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material product-flow evidence for an original crop-led guided inspection composition; human pattern review remains pending. This pattern is scoped to the capability-grid contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-launch-summary-result-footer-stage",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "launch-summary"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "takeaway",
+      "product-outcome"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "result-state-stage",
+      "outcome-marker-row",
+      "product-above-outcomes"
+    ],
+    "typographyTraits": [
+      "compact-outcome-labels",
+      "fitted-recap-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-and-green-outcome-accent"
+    ],
+    "motionTraits": [
+      "stage-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "device-chrome",
+      "asset-policy-badge",
+      "feature-marker-row"
+    ],
+    "contentCapacity": {
+      "headlineChars": 60,
+      "bodyChars": 160,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "close with one visible result state above three concrete outcome markers"
+    ],
+    "antiPatterns": [
+      "an outcome list that displaces the product result from the primary stage"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material product-surface evidence for an original result-state and launch-summary footer layout; human pattern review remains pending. This pattern is scoped to the launch-summary contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-launch-summary-result-marker-scale",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "launch-summary"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "takeaway",
+      "product-outcome"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "result-state-stage",
+      "outcome-marker-row"
+    ],
+    "typographyTraits": [
+      "fitted-recap-headline",
+      "outcome-title-weight-700",
+      "outcome-detail-weight-500"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-and-green-outcome-accent"
+    ],
+    "motionTraits": [
+      "stage-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "device-chrome",
+      "feature-marker-row"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 140,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "make the named outcome scan before its compact product-state evidence"
+    ],
+    "antiPatterns": [
+      "equal emphasis for recap headline, outcome title, and supporting detail"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material hierarchy evidence for an original launch-summary result-and-outcome type scale; human pattern review remains pending. This pattern is scoped to the launch-summary contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-launch-summary-confirmed-green-role",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "launch-summary"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "takeaway",
+      "product-outcome"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "result-state-stage",
+      "outcome-marker-row"
+    ],
+    "typographyTraits": [
+      "compact-outcome-labels",
+      "fitted-recap-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-product-context",
+      "green-confirmed-outcome",
+      "textual-outcome-labels"
+    ],
+    "motionTraits": [
+      "stage-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "device-chrome",
+      "feature-marker-row",
+      "asset-policy-badge"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 140,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "reserve green for an outcome visible in the displayed product result state"
+    ],
+    "antiPatterns": [
+      "green success treatments for outcomes not evidenced by the interface"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material semantic-state evidence for a labelled confirmed-outcome role; human pattern review remains pending. This pattern is scoped to the launch-summary contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-launch-summary-result-then-outcomes",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "launch-summary"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "takeaway",
+      "product-outcome"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "result-state-stage",
+      "stable-outcome-row"
+    ],
+    "typographyTraits": [
+      "compact-outcome-labels",
+      "fitted-recap-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-and-green-outcome-accent"
+    ],
+    "motionTraits": [
+      "result-state-fade-in",
+      "outcome-row-stagger-120ms",
+      "static-after-settle",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "device-chrome",
+      "feature-marker-row"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 140,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "establish the visible product result before its three outcome cues appear"
+    ],
+    "antiPatterns": [
+      "outcome markers arriving before the result state they summarize"
+    ],
+    "sourceEvidenceIds": [
+      "web-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Remotion frame-driven motion evidence for a bounded result-then-outcomes recap sequence; human pattern review remains pending. This pattern is scoped to the launch-summary contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-launch-summary-three-outcome-contract",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "launch-summary"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "takeaway",
+      "product-outcome"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "result-state-stage",
+      "outcome-marker-row"
+    ],
+    "typographyTraits": [
+      "compact-outcome-labels",
+      "fitted-recap-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-and-green-outcome-accent"
+    ],
+    "motionTraits": [
+      "stage-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "device-chrome",
+      "asset-policy-badge",
+      "feature-marker-row"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "bodyChars": 140,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "bind a visible result interface to no more than three labelled outcome markers"
+    ],
+    "antiPatterns": [
+      "generic success badges with no observable product outcome"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material component-state evidence for an original three-launch summary contract; human pattern review remains pending. This pattern is scoped to the launch-summary contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ps-launch-summary-evidence-led-close",
+    "packageId": "product-showcase",
+    "variantIds": [
+      "launch-summary"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "takeaway",
+      "product-outcome"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "top-result-state",
+      "bottom-three-outcome-row",
+      "one-evidence-led-close"
+    ],
+    "typographyTraits": [
+      "compact-outcome-labels",
+      "fitted-recap-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-and-green-outcome-accent"
+    ],
+    "motionTraits": [
+      "stage-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "device-chrome",
+      "feature-marker-row",
+      "asset-policy-badge"
+    ],
+    "contentCapacity": {
+      "headlineChars": 60,
+      "bodyChars": 160,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "close a product walkthrough with a visible result and three evidenced outcome cues"
+    ],
+    "antiPatterns": [
+      "an unsupported performance-claim card detached from the result interface"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Uses verified Material product-state evidence for an original evidence-led launch-summary close; human pattern review remains pending. This pattern is scoped to the launch-summary contract."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p7/1.0",
+    "reviewStatus": "proposed"
+  }
+]

@@ -1,0 +1,320 @@
+{
+  "schemaVersion": "terra-evidence-validation/v1",
+  "packageId": "news-rundown",
+  "rule": "Every sourceEvidenceId and sourceReferences id must resolve to an approved canonical visual-style source or an exact source ID from a PASS Luna visual-style audit.",
+  "status": "PASS",
+  "counts": {
+    "variants": 5,
+    "patterns": 30,
+    "sourceReferences": 3,
+    "referencesChecked": 38,
+    "invalid": 0
+  },
+  "resolutions": [
+    {
+      "kind": "variant",
+      "recordId": "breaking-update",
+      "sourceId": "source:reference:w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "variant",
+      "recordId": "headline-stack",
+      "sourceId": "source:reference:w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "variant",
+      "recordId": "top-stories",
+      "sourceId": "source:reference:w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "variant",
+      "recordId": "bulletin-grid",
+      "sourceId": "source:reference:w8-dashboard-primer-docs",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-docs"
+    },
+    {
+      "kind": "variant",
+      "recordId": "weekly-roundup",
+      "sourceId": "source:reference:w8-dashboard-primer-docs",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-docs"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-breaking-update-signal-band-layout",
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-breaking-update-alert-source-typography",
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-breaking-update-severity-palette",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-breaking-update-stable-alert-entrance",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-breaking-update-verified-update-component",
+      "sourceId": "w8-dashboard-primer-docs",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-docs"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-breaking-update-single-story-density-budget",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-headline-stack-ranked-list-layout",
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-headline-stack-lead-rank-typography",
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-headline-stack-rank-palette",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-headline-stack-ranked-entrance",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-headline-stack-ranked-story-row-component",
+      "sourceId": "w8-dashboard-primer-docs",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-docs"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-headline-stack-four-story-density-budget",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-top-stories-timestamp-rail-layout",
+      "sourceId": "w8-dashboard-primer-docs",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-docs"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-top-stories-time-event-source-typography",
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-top-stories-status-palette",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-top-stories-chronological-reveal-motion",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-top-stories-timestamped-update-row-component",
+      "sourceId": "w8-dashboard-primer-docs",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-docs"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-top-stories-four-event-density-budget",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-bulletin-grid-change-meaning-watch-layout",
+      "sourceId": "w8-dashboard-primer-docs",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-docs"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-bulletin-grid-question-label-typography",
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-bulletin-grid-evidence-caveat-palette",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-bulletin-grid-reading-order-motion",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-bulletin-grid-claim-context-cell-component",
+      "sourceId": "w8-dashboard-primer-docs",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-docs"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-bulletin-grid-four-claim-density-budget",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-weekly-roundup-metric-signal-layout",
+      "sourceId": "w8-dashboard-primer-docs",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-docs"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-weekly-roundup-metric-basis-typography",
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-weekly-roundup-trend-status-palette",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-weekly-roundup-metric-first-motion",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-weekly-roundup-sourced-metric-card-component",
+      "sourceId": "w8-dashboard-primer-docs",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-docs"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "nr-weekly-roundup-two-metric-density-budget",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "sourceReference",
+      "recordId": "source:reference:w8-minimal-nng-hierarchy",
+      "sourceId": "source:reference:w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "sourceReference",
+      "recordId": "source:reference:w8-dashboard-remotion-animation",
+      "sourceId": "source:reference:w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "sourceReference",
+      "recordId": "source:reference:w8-dashboard-primer-docs",
+      "sourceId": "source:reference:w8-dashboard-primer-docs",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-docs"
+    }
+  ],
+  "invalid": []
+}

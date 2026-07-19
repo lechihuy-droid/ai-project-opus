@@ -1,0 +1,1953 @@
+[
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-layered-stack-boundary-band-layout",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "layered-stack"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "explain",
+      "system-architecture"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "headline-top-160px",
+      "four-fixed-horizontal-boundary-bands",
+      "centered-node-per-band",
+      "caption-safe-panel-bottom-300px"
+    ],
+    "typographyTraits": [
+      "band-title-22px",
+      "node-title-26px",
+      "boundary-label-14px"
+    ],
+    "paletteTraits": [
+      "graphite-canvas",
+      "cyan-system-focus",
+      "neutral-boundary-lines"
+    ],
+    "motionTraits": [
+      "bands-fade-top-to-bottom-140ms",
+      "reduced-motion-static-bands"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "render four named platform layers with one inspectable node per boundary band"
+    ],
+    "antiPatterns": [
+      "multiple nodes competing inside one layer band"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer foundation hierarchy evidence for an original fixed four-band architecture recipe; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-layered-stack-layer-title-hierarchy",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "layered-stack"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "explain",
+      "system-architecture"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "four-fixed-horizontal-boundary-bands",
+      "left-aligned-band-labels",
+      "centered-node-titles"
+    ],
+    "typographyTraits": [
+      "scene-headline-46px",
+      "band-title-22px",
+      "node-role-16px",
+      "connector-verb-14px"
+    ],
+    "paletteTraits": [
+      "high-contrast-node-titles",
+      "muted-band-metadata",
+      "cyan-active-layer"
+    ],
+    "motionTraits": [
+      "labels-arrive-with-band",
+      "reduced-motion-static-labels"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 112,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "separate platform layer, system node, and connector verb into fixed readable roles"
+    ],
+    "antiPatterns": [
+      "equal-weight labels for layer names and node metadata"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer primitives evidence for an original architecture type hierarchy; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-layered-stack-boundary-state-palette",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "layered-stack"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "explain",
+      "system-architecture"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "four-fixed-horizontal-boundary-bands",
+      "single-highlighted-layer",
+      "caption-safe-panel-bottom-300px"
+    ],
+    "typographyTraits": [
+      "neutral-layer-labels",
+      "high-contrast-node-title"
+    ],
+    "paletteTraits": [
+      "graphite-default-layers",
+      "cyan-selected-boundary",
+      "amber-review-boundary",
+      "coral-blocked-boundary-only"
+    ],
+    "motionTraits": [
+      "state-color-fade-120ms",
+      "reduced-motion-static-state"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 4,
+      "maxPanels": 2,
+      "maxMetrics": 1
+    },
+    "positiveUseCases": [
+      "make one selected or constrained platform boundary distinguishable without recoloring every layer"
+    ],
+    "antiPatterns": [
+      "a different accent color assigned to every architecture band"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer foundation color-role evidence for an original boundary-state palette; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-layered-stack-stable-band-reveal",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "layered-stack"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "explain",
+      "process"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-four-band-grid",
+      "fixed-node-coordinates",
+      "persistent-caption-safe-panel"
+    ],
+    "typographyTraits": [
+      "fixed-band-baselines",
+      "no-moving-body-copy"
+    ],
+    "paletteTraits": [
+      "cyan-active-layer",
+      "muted-unrevealed-layers"
+    ],
+    "motionTraits": [
+      "top-band-fade-0ms",
+      "next-band-fade-140ms",
+      "connector-draw-140ms",
+      "reduced-motion-all-bands-visible"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "reveal platform layers in dependency order without changing geometry"
+    ],
+    "antiPatterns": [
+      "sliding or resizing layer bands after their labels appear"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Uses approved Remotion frame-driven animation evidence for a deterministic layer reveal; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-layered-stack-boundary-node-contract",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "layered-stack"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "explain",
+      "system-architecture"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "one-node-centered-in-each-band",
+      "fixed-16px-band-gutter",
+      "explicit-up-down-ports"
+    ],
+    "typographyTraits": [
+      "node-title-26px",
+      "node-role-16px",
+      "port-verb-14px"
+    ],
+    "paletteTraits": [
+      "panel-elevated-node",
+      "neutral-border",
+      "cyan-port-marker"
+    ],
+    "motionTraits": [
+      "node-fade-up-120ms",
+      "reduced-motion-static-node"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 34,
+      "bodyChars": 72,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "render one named responsibility and vertical handoff port inside each architecture layer"
+    ],
+    "antiPatterns": [
+      "node cards containing unrelated responsibilities or unlabeled ports"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer primitive evidence for an original bounded system-node contract; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-layered-stack-boundary-to-capability-composition",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "layered-stack"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "explain",
+      "system-architecture"
+    ],
+    "beatRoles": [
+      "context",
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "headline-top-160px",
+      "four-boundary-bands-center",
+      "single-capability-caption-bottom"
+    ],
+    "typographyTraits": [
+      "headline-46px",
+      "band-title-22px",
+      "caption-18px"
+    ],
+    "paletteTraits": [
+      "graphite-canvas",
+      "cyan-handoff-line",
+      "amber-caveat-marker"
+    ],
+    "motionTraits": [
+      "bands-before-caption",
+      "reduced-motion-sequential-fades"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "bodyChars": 120,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "connect a named platform capability to the boundaries that enable it"
+    ],
+    "antiPatterns": [
+      "a bottom takeaway with no visible supporting layer path"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-reveal-code"
+    ],
+    "classificationReasons": [
+      "Uses approved Reveal code presentation evidence for an original bounded architecture reading order; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-request-flow-gated-lane-layout",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "request-flow"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "process",
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "request-source-top",
+      "four-fixed-vertical-flow-nodes",
+      "labeled-directional-connectors",
+      "response-caption-bottom"
+    ],
+    "typographyTraits": [
+      "endpoint-title-24px",
+      "connector-verb-14px",
+      "boundary-note-16px"
+    ],
+    "paletteTraits": [
+      "graphite-canvas",
+      "cyan-request-line",
+      "green-response-line"
+    ],
+    "motionTraits": [
+      "source-to-response-reveal-150ms",
+      "reduced-motion-static-flow"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 54,
+      "maxItems": 5,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "render client, gateway, service, store, and response as a fixed vertical request lane"
+    ],
+    "antiPatterns": [
+      "request arrows whose direction or boundary crossing is ambiguous"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer foundation hierarchy evidence for an original gated request-lane recipe; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-request-flow-verb-first-label-hierarchy",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "request-flow"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "process",
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "four-fixed-vertical-flow-nodes",
+      "connector-label-above-arrow",
+      "right-edge-boundary-notes"
+    ],
+    "typographyTraits": [
+      "endpoint-title-24px",
+      "connector-verb-14px-uppercase",
+      "boundary-note-16px",
+      "caption-18px"
+    ],
+    "paletteTraits": [
+      "high-contrast-endpoint-names",
+      "muted-boundary-notes",
+      "cyan-connector-verbs"
+    ],
+    "motionTraits": [
+      "verb-before-target-fade",
+      "reduced-motion-static-labels"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 46,
+      "bodyChars": 108,
+      "maxItems": 5,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "make each request transformation legible before the receiving system node"
+    ],
+    "antiPatterns": [
+      "connector labels that repeat node names instead of naming the handoff"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer primitives evidence for an original flow label hierarchy; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-request-flow-normal-guard-failure-palette",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "request-flow"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "process",
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "single-vertical-request-lane",
+      "one-guard-node",
+      "response-caption-bottom"
+    ],
+    "typographyTraits": [
+      "neutral-node-text",
+      "status-verb-14px"
+    ],
+    "paletteTraits": [
+      "cyan-normal-request",
+      "amber-validation-guard",
+      "coral-terminal-failure-only",
+      "green-success-response"
+    ],
+    "motionTraits": [
+      "status-color-fade-120ms",
+      "reduced-motion-static-status"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 5,
+      "maxPanels": 2,
+      "maxMetrics": 1
+    },
+    "positiveUseCases": [
+      "separate normal request travel, validation, failure, and successful response semantics"
+    ],
+    "antiPatterns": [
+      "using red on a normal request connector or green on an unvalidated request"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer foundation semantic-color evidence for an original request-state palette; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-request-flow-connector-before-node-motion",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "request-flow"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "process",
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-vertical-flow-grid",
+      "fixed-connector-lengths",
+      "persistent-response-caption"
+    ],
+    "typographyTraits": [
+      "stable-endpoint-labels",
+      "no-scrolling-request-copy"
+    ],
+    "paletteTraits": [
+      "cyan-active-connector",
+      "muted-pending-node"
+    ],
+    "motionTraits": [
+      "source-fade-0ms",
+      "connector-draw-120ms",
+      "target-fade-120ms",
+      "reduced-motion-all-flow-visible"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 5,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "show a request crossing one boundary at a time without moving nodes"
+    ],
+    "antiPatterns": [
+      "a continuous traveling particle that obscures labels or invents traffic volume"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Uses approved Remotion frame-driven animation evidence for deterministic connector-first motion; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-request-flow-boundary-gate-node-contract",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "request-flow"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "process",
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "fixed-gateway-node-between-source-and-service",
+      "one-input-port",
+      "one-output-port",
+      "guard-note-under-title"
+    ],
+    "typographyTraits": [
+      "node-title-24px",
+      "guard-note-16px",
+      "port-verb-14px"
+    ],
+    "paletteTraits": [
+      "panel-elevated-node",
+      "amber-guard-edge",
+      "cyan-port-marker"
+    ],
+    "motionTraits": [
+      "gate-fade-up-120ms",
+      "reduced-motion-static-gate"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 34,
+      "bodyChars": 64,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "render a request gate with one stated check and named inbound and outbound handoffs"
+    ],
+    "antiPatterns": [
+      "a gateway node with several unexplained bypass connectors"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer primitive evidence for an original request-gate component contract; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-request-flow-happy-path-with-guard-composition",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "request-flow"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "process",
+      "explain"
+    ],
+    "beatRoles": [
+      "context",
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "request-source-top",
+      "centered-four-node-flow",
+      "single-guard-annotation-right",
+      "response-caption-bottom"
+    ],
+    "typographyTraits": [
+      "headline-44px",
+      "node-title-24px",
+      "guard-annotation-16px"
+    ],
+    "paletteTraits": [
+      "cyan-happy-path",
+      "amber-guard-annotation",
+      "green-response-marker"
+    ],
+    "motionTraits": [
+      "happy-path-build-then-guard",
+      "reduced-motion-sequential-fades"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 50,
+      "bodyChars": 118,
+      "maxItems": 5,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "explain a normal request path while retaining one material validation condition"
+    ],
+    "antiPatterns": [
+      "showing a happy path that hides the gate or offers multiple competing exceptions"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-reveal-code"
+    ],
+    "classificationReasons": [
+      "Uses approved Reveal code evidence for an original staged request explanation composition; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-agent-graph-orchestrator-spoke-layout",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "agent-graph"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "explain",
+      "process",
+      "agents"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "orchestrator-center-420px",
+      "four-role-nodes-at-cardinal-points",
+      "tool-memory-rail-bottom",
+      "caption-safe-panel-bottom"
+    ],
+    "typographyTraits": [
+      "orchestrator-title-26px",
+      "worker-title-20px",
+      "edge-verb-14px"
+    ],
+    "paletteTraits": [
+      "graphite-canvas",
+      "cyan-orchestrator-focus",
+      "green-complete-handoff"
+    ],
+    "motionTraits": [
+      "center-first-spoke-reveal-140ms",
+      "reduced-motion-static-graph"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "maxItems": 6,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "render one orchestrator coordinating four named workers with explicit tool and memory attachments"
+    ],
+    "antiPatterns": [
+      "anonymous agents or cross-graph edges with no stated owner"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer foundation hierarchy evidence for an original cardinal-spoke agent graph; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-agent-graph-role-and-handoff-type",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "agent-graph"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "explain",
+      "process",
+      "agents"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "typographyTraits": [
+      "orchestrator-title-26px",
+      "worker-role-20px",
+      "handoff-verb-14px-uppercase",
+      "attachment-label-14px"
+    ],
+    "paletteTraits": [
+      "high-contrast-role-names",
+      "muted-attachment-labels",
+      "cyan-handoff-verbs"
+    ],
+    "motionTraits": [
+      "center-label-before-spokes",
+      "reduced-motion-static-labels"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 46,
+      "bodyChars": 108,
+      "maxItems": 6,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "make command role, worker role, handoff verb, and shared attachment visually distinct"
+    ],
+    "antiPatterns": [
+      "using the same text weight for orchestrator, worker, and tool labels"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer primitives evidence for an original agent-role typography recipe; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed",
+    "layoutTraits": [
+      "orchestrator-center-420px",
+      "worker-nodes-cardinal-points",
+      "tool-memory-rail-bottom"
+    ]
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-agent-graph-control-data-memory-palette",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "agent-graph"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "explain",
+      "process",
+      "agents"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "typographyTraits": [
+      "neutral-role-labels",
+      "edge-verb-14px"
+    ],
+    "paletteTraits": [
+      "cyan-control-handoff",
+      "green-result-return",
+      "amber-tool-call",
+      "neutral-memory-link",
+      "coral-blocked-worker-only"
+    ],
+    "motionTraits": [
+      "edge-color-fade-120ms",
+      "reduced-motion-static-edges"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 6,
+      "maxPanels": 2,
+      "maxMetrics": 1
+    },
+    "positiveUseCases": [
+      "distinguish orchestration, result return, tool calls, and memory links in one compact agent graph"
+    ],
+    "antiPatterns": [
+      "using semantic colors as decoration or assigning a unique color to every worker"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer foundation semantic-color evidence for an original agent-graph palette; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed",
+    "layoutTraits": [
+      "orchestrator-center-420px",
+      "cardinal-worker-nodes",
+      "shared-attachment-rail"
+    ]
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-agent-graph-command-fanout-return-motion",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "agent-graph"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "explain",
+      "process",
+      "agents"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "typographyTraits": [
+      "stable-role-labels",
+      "no-moving-graph-copy"
+    ],
+    "paletteTraits": [
+      "cyan-command-edge",
+      "green-result-edge",
+      "muted-pending-worker"
+    ],
+    "motionTraits": [
+      "orchestrator-fade-0ms",
+      "fanout-draw-140ms",
+      "worker-fade-140ms",
+      "return-draw-140ms",
+      "reduced-motion-all-edges-visible"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 6,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "show an orchestrator issuing one bounded fanout and receiving named results without node movement"
+    ],
+    "antiPatterns": [
+      "continuous circulating particles that imply unverified autonomous activity"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Uses approved Remotion frame-driven animation evidence for deterministic agent fanout motion; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed",
+    "layoutTraits": [
+      "stable-center-and-cardinal-nodes",
+      "fixed-spoke-geometry",
+      "persistent-bottom-attachments"
+    ]
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-agent-graph-worker-contract-node",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "agent-graph"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "explain",
+      "process",
+      "agents"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "typographyTraits": [
+      "worker-title-20px",
+      "responsibility-16px",
+      "port-verb-14px"
+    ],
+    "paletteTraits": [
+      "panel-elevated-worker",
+      "neutral-border",
+      "cyan-command-port",
+      "green-result-port"
+    ],
+    "motionTraits": [
+      "worker-fade-up-120ms",
+      "reduced-motion-static-worker"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 30,
+      "bodyChars": 68,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "render a worker with one bounded responsibility, one command input, and one result output"
+    ],
+    "antiPatterns": [
+      "workers that hide multiple tools, outputs, or ownership roles inside one card"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer primitives evidence for an original bounded agent-worker component contract; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed",
+    "layoutTraits": [
+      "cardinal-worker-node",
+      "single-input-command-port",
+      "single-output-result-port",
+      "shared-attachment-marker"
+    ]
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-agent-graph-plan-execute-return-composition",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "agent-graph"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "explain",
+      "process",
+      "agents"
+    ],
+    "beatRoles": [
+      "context",
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "typographyTraits": [
+      "headline-44px",
+      "role-title-20px",
+      "edge-verb-14px"
+    ],
+    "paletteTraits": [
+      "cyan-plan-and-command",
+      "amber-tool-call",
+      "green-result-return"
+    ],
+    "motionTraits": [
+      "plan-then-command-then-return",
+      "reduced-motion-sequential-fades"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 50,
+      "bodyChars": 118,
+      "maxItems": 6,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "explain a bounded plan-to-work-to-result coordination loop with visible shared attachments"
+    ],
+    "antiPatterns": [
+      "claiming a closed agent loop while memory or tool dependencies are omitted"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-reveal-code"
+    ],
+    "classificationReasons": [
+      "Uses approved Reveal code evidence for an original plan-execute-return graph composition; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed",
+    "layoutTraits": [
+      "orchestrator-center",
+      "worker-spokes",
+      "tool-memory-rail-bottom",
+      "single-result-caption"
+    ]
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-data-pipeline-staged-quality-gate-layout",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "data-pipeline"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "process",
+      "explain",
+      "data-flow"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "input-top-120px",
+      "five-fixed-pipeline-stages",
+      "validation-stage-offset-right",
+      "delivery-caption-bottom"
+    ],
+    "typographyTraits": [
+      "stage-title-22px",
+      "stage-output-16px",
+      "connector-verb-14px"
+    ],
+    "paletteTraits": [
+      "graphite-canvas",
+      "cyan-data-flow",
+      "amber-validation-stage"
+    ],
+    "motionTraits": [
+      "stage-reveal-top-to-bottom-140ms",
+      "reduced-motion-static-pipeline"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "maxItems": 5,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "render input, normalize, validate, enrich, store, and deliver stages with a visible quality gate"
+    ],
+    "antiPatterns": [
+      "a data pipeline that skips validation or has arrows without named outputs"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer foundation hierarchy evidence for an original fixed-stage pipeline recipe; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-data-pipeline-stage-output-type-hierarchy",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "data-pipeline"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "process",
+      "explain",
+      "data-flow"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "typographyTraits": [
+      "stage-title-22px",
+      "output-contract-16px",
+      "connector-verb-14px-uppercase",
+      "validation-note-14px"
+    ],
+    "paletteTraits": [
+      "high-contrast-stage-names",
+      "muted-output-contracts",
+      "amber-validation-note"
+    ],
+    "motionTraits": [
+      "stage-title-before-output",
+      "reduced-motion-static-labels"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 44,
+      "bodyChars": 112,
+      "maxItems": 6,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "make each pipeline transformation and resulting data contract separately scannable"
+    ],
+    "antiPatterns": [
+      "labels that name only a technology while hiding the produced data state"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer primitives evidence for an original pipeline text-role hierarchy; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed",
+    "layoutTraits": [
+      "five-fixed-pipeline-stages",
+      "validation-stage-offset-right",
+      "delivery-caption-bottom"
+    ]
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-data-pipeline-data-quality-state-palette",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "data-pipeline"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "process",
+      "explain",
+      "data-flow"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "typographyTraits": [
+      "neutral-stage-text",
+      "status-verb-14px"
+    ],
+    "paletteTraits": [
+      "cyan-in-transit-data",
+      "amber-validation-review",
+      "green-accepted-output",
+      "coral-quarantined-records-only"
+    ],
+    "motionTraits": [
+      "state-color-fade-120ms",
+      "reduced-motion-static-state"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 6,
+      "maxPanels": 2,
+      "maxMetrics": 1
+    },
+    "positiveUseCases": [
+      "separate in-transit, under-review, accepted, and quarantined data states within one pipeline"
+    ],
+    "antiPatterns": [
+      "using green before validation completes or coloring every stage differently"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer foundation semantic-state evidence for an original data-quality palette; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed",
+    "layoutTraits": [
+      "five-fixed-pipeline-stages",
+      "one-offset-validation-stage",
+      "delivery-caption-bottom"
+    ]
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-data-pipeline-gate-then-deliver-motion",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "data-pipeline"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "process",
+      "explain",
+      "data-flow"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "typographyTraits": [
+      "stable-stage-baselines",
+      "no-moving-pipeline-copy"
+    ],
+    "paletteTraits": [
+      "cyan-active-stage",
+      "amber-active-validation",
+      "muted-pending-stage"
+    ],
+    "motionTraits": [
+      "input-fade-0ms",
+      "stage-fade-120ms",
+      "connector-draw-120ms",
+      "validation-hold-180ms",
+      "reduced-motion-all-stages-visible"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 6,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "show data advancing only after a named validation gate without layout shifts"
+    ],
+    "antiPatterns": [
+      "data appearing at delivery before the validation stage is shown"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Uses approved Remotion frame-driven animation evidence for a deterministic gate-before-delivery sequence; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed",
+    "layoutTraits": [
+      "stable-five-stage-pipeline",
+      "fixed-validation-offset",
+      "persistent-delivery-caption"
+    ]
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-data-pipeline-validation-stage-contract",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "data-pipeline"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "process",
+      "explain",
+      "data-flow"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "typographyTraits": [
+      "stage-title-22px",
+      "check-name-16px",
+      "port-verb-14px"
+    ],
+    "paletteTraits": [
+      "panel-elevated-node",
+      "amber-validation-edge",
+      "green-accepted-port",
+      "coral-quarantine-port"
+    ],
+    "motionTraits": [
+      "validation-node-fade-up-120ms",
+      "reduced-motion-static-node"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 34,
+      "bodyChars": 68,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "render one validation stage with named input, one check, and explicit accepted or quarantined output"
+    ],
+    "antiPatterns": [
+      "a validation card that produces only an unexplained pass state"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer primitives evidence for an original validation-stage component contract; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed",
+    "layoutTraits": [
+      "offset-validation-node",
+      "one-input-port",
+      "accepted-and-quarantine-output-ports",
+      "fixed-annotation-space"
+    ]
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-data-pipeline-source-to-delivery-composition",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "data-pipeline"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "process",
+      "explain",
+      "data-flow"
+    ],
+    "beatRoles": [
+      "context",
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "typographyTraits": [
+      "headline-44px",
+      "stage-title-22px",
+      "delivery-caption-18px"
+    ],
+    "paletteTraits": [
+      "cyan-data-path",
+      "amber-quality-gate",
+      "green-delivery-marker"
+    ],
+    "motionTraits": [
+      "source-before-transform-before-delivery",
+      "reduced-motion-sequential-fades"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "bodyChars": 120,
+      "maxItems": 6,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "connect a source data condition to inspectable processing stages and one bounded delivery outcome"
+    ],
+    "antiPatterns": [
+      "a delivery claim disconnected from visible transforms or quality checks"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-reveal-code"
+    ],
+    "classificationReasons": [
+      "Uses approved Reveal code evidence for an original source-to-delivery pipeline composition; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed",
+    "layoutTraits": [
+      "input-top",
+      "five-stage-pipeline-center",
+      "validation-callout-right",
+      "delivery-caption-bottom"
+    ]
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-dependency-map-core-ring-layout",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "dependency-map"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "explain",
+      "compare",
+      "dependencies"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "central-service-node-420px",
+      "four-dependency-nodes-in-corner-ring",
+      "labeled-inbound-outbound-connectors",
+      "risk-caption-bottom"
+    ],
+    "typographyTraits": [
+      "core-title-28px",
+      "dependency-title-20px",
+      "edge-verb-14px"
+    ],
+    "paletteTraits": [
+      "graphite-canvas",
+      "cyan-core-service",
+      "neutral-dependency-lines"
+    ],
+    "motionTraits": [
+      "core-then-ring-reveal-140ms",
+      "reduced-motion-static-map"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "maxItems": 5,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "render a central service with four direct dependencies and inspectable directional ownership"
+    ],
+    "antiPatterns": [
+      "a dependency map with indirect clutter or unlabeled lines crossing the core"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer foundation hierarchy evidence for an original central-service dependency-map recipe; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-dependency-map-core-edge-type-hierarchy",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "dependency-map"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "explain",
+      "compare",
+      "dependencies"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "typographyTraits": [
+      "core-title-28px",
+      "dependency-title-20px",
+      "edge-verb-14px-uppercase",
+      "risk-note-14px"
+    ],
+    "paletteTraits": [
+      "high-contrast-core-title",
+      "muted-dependency-metadata",
+      "coral-risk-note"
+    ],
+    "motionTraits": [
+      "core-label-before-edge-label",
+      "reduced-motion-static-labels"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 46,
+      "bodyChars": 106,
+      "maxItems": 5,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "separate core ownership, dependency identity, edge direction, and risk note into a fixed scan order"
+    ],
+    "antiPatterns": [
+      "dependency names and risk labels rendered at the same emphasis as the core service"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer primitives evidence for an original dependency-map type hierarchy; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed",
+    "layoutTraits": [
+      "central-service-node-420px",
+      "corner-ring-dependencies",
+      "right-edge-risk-notes"
+    ]
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-dependency-map-contract-risk-palette",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "dependency-map"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "explain",
+      "compare",
+      "dependencies"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "typographyTraits": [
+      "neutral-service-labels",
+      "status-verb-14px"
+    ],
+    "paletteTraits": [
+      "cyan-required-contract",
+      "green-healthy-dependency",
+      "amber-review-dependency",
+      "coral-blocked-dependency-only"
+    ],
+    "motionTraits": [
+      "dependency-state-fade-120ms",
+      "reduced-motion-static-state"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 5,
+      "maxPanels": 2,
+      "maxMetrics": 1
+    },
+    "positiveUseCases": [
+      "compare required, healthy, review, and blocked direct dependencies with explicit semantics"
+    ],
+    "antiPatterns": [
+      "a red dependency node with no named failure condition or a multicolor decorative ring"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer foundation semantic-state evidence for an original dependency-risk palette; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed",
+    "layoutTraits": [
+      "central-service-node",
+      "four-ring-dependencies",
+      "single-risk-caption"
+    ]
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-dependency-map-core-first-edge-reveal",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "dependency-map"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "explain",
+      "compare",
+      "dependencies"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "typographyTraits": [
+      "stable-node-labels",
+      "no-moving-risk-copy"
+    ],
+    "paletteTraits": [
+      "cyan-active-contract",
+      "muted-pending-dependency",
+      "coral-blocked-state"
+    ],
+    "motionTraits": [
+      "core-fade-0ms",
+      "dependency-fade-120ms",
+      "edge-draw-120ms",
+      "risk-note-final",
+      "reduced-motion-all-nodes-visible"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 5,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "introduce direct dependencies from the core outward without moving nodes or changing edge length"
+    ],
+    "antiPatterns": [
+      "rotating dependency rings or pulsing all risk states at once"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Uses approved Remotion frame-driven animation evidence for deterministic core-first dependency motion; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed",
+    "layoutTraits": [
+      "stable-core-and-ring-grid",
+      "fixed-connector-geometry",
+      "persistent-risk-caption"
+    ]
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-dependency-map-contract-node-component",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "dependency-map"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "explain",
+      "compare",
+      "dependencies"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "typographyTraits": [
+      "dependency-title-20px",
+      "owner-line-16px",
+      "contract-verb-14px"
+    ],
+    "paletteTraits": [
+      "panel-elevated-node",
+      "neutral-border",
+      "cyan-contract-port",
+      "coral-risk-marker"
+    ],
+    "motionTraits": [
+      "dependency-node-fade-up-120ms",
+      "reduced-motion-static-node"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 32,
+      "bodyChars": 68,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "render one direct dependency with a named owner, contract verb, and bounded health state"
+    ],
+    "antiPatterns": [
+      "a dependency node that omits ownership or mixes several contracts in one card"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Uses approved Primer primitives evidence for an original dependency-contract component; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed",
+    "layoutTraits": [
+      "corner-ring-node",
+      "one-contract-port",
+      "owner-and-state-lines",
+      "fixed-risk-marker"
+    ]
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "sa-dependency-map-service-risk-composition",
+    "packageId": "system-architecture",
+    "variantIds": [
+      "dependency-map"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "explain",
+      "compare",
+      "dependencies"
+    ],
+    "beatRoles": [
+      "context",
+      "compare"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "typographyTraits": [
+      "headline-44px",
+      "core-title-28px",
+      "risk-caption-18px"
+    ],
+    "paletteTraits": [
+      "cyan-required-contract",
+      "amber-review-state",
+      "coral-risk-caption"
+    ],
+    "motionTraits": [
+      "core-before-dependencies-before-risk",
+      "reduced-motion-sequential-fades"
+    ],
+    "componentTraits": [
+      "architecture-canvas",
+      "system-node",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 50,
+      "bodyChars": 116,
+      "maxItems": 5,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "compare direct dependencies while preserving one concrete risk or review condition at scene end"
+    ],
+    "antiPatterns": [
+      "a generic service-risk conclusion detached from a visible dependency contract"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-reveal-code"
+    ],
+    "classificationReasons": [
+      "Uses approved Reveal code evidence for an original dependency-to-risk reading composition; human review remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p11/1.0",
+    "reviewStatus": "proposed",
+    "layoutTraits": [
+      "headline-top",
+      "core-service-center",
+      "four-dependency-ring",
+      "single-risk-caption-bottom"
+    ]
+  }
+]

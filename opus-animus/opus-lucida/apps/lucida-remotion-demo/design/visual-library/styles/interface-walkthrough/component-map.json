@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "lucida-component-map/v1",
+  "id": "interface-walkthrough",
+  "primitives": [
+    {"id":"app-shell","role":"content","notes":"Stable navigation, toolbar, and screen canvas."},
+    {"id":"focus-callout","role":"support","notes":"Visible focus boundary plus textual action label."},
+    {"id":"caption-safe-panel","role":"caption","notes":"Reserved lower explanation surface."}
+  ],
+  "templates": [
+    {"templateId":"annotated-screen","supportedLayouts":["application-shell"],"backgroundEffects":["quiet-grid"],"motionPreset":"interface-focus","primitives":["app-shell","focus-callout","caption-safe-panel"],"notes":"Dashboard orientation."},
+    {"templateId":"step-flow","supportedLayouts":["application-shell"],"backgroundEffects":["quiet-grid"],"motionPreset":"interface-focus","primitives":["app-shell","focus-callout","caption-safe-panel"],"notes":"Ordered product task."},
+    {"templateId":"feature-tour","supportedLayouts":["application-shell"],"backgroundEffects":["quiet-grid"],"motionPreset":"interface-focus","primitives":["app-shell","focus-callout","caption-safe-panel"],"notes":"Single setting focus."},
+    {"templateId":"before-after-ui","supportedLayouts":["application-shell"],"backgroundEffects":["quiet-grid"],"motionPreset":"interface-focus","primitives":["app-shell","focus-callout","caption-safe-panel"],"notes":"Selected row inspection."},
+    {"templateId":"state-transition","supportedLayouts":["mobile-preview"],"backgroundEffects":["quiet-grid"],"motionPreset":"interface-focus","primitives":["app-shell","focus-callout","caption-safe-panel"],"notes":"Primary mobile action."}
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "packageId": "claim-evidence",
+  "status": "not-requested",
+  "approvedSourceCount": 0,
+  "approvedPatternCount": 0,
+  "sourceApproval": "not-claimed",
+  "patternClassification": "not-claimed",
+  "registeredMedia": [],
+  "notes": ["This draft uses package-local fixtures and shared Lucida primitives only."]
+}

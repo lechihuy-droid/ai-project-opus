@@ -37,21 +37,33 @@
       "usage": "audit"
     },
     {
-      "id": "normal-fixture",
+      "id": "benchmark-grid-fixture",
       "kind": "fixture",
-      "path": "pipeline/fixtures/styles/dashboard-data/normal.fixture.ts",
+      "path": "pipeline/fixtures/styles/dashboard-data/benchmark-grid.fixture.ts",
       "usage": "validation_input"
     },
     {
-      "id": "dense-fixture",
+      "id": "operations-monitor-fixture",
       "kind": "fixture",
-      "path": "pipeline/fixtures/styles/dashboard-data/dense.fixture.ts",
+      "path": "pipeline/fixtures/styles/dashboard-data/operations-monitor.fixture.ts",
       "usage": "validation_input"
     },
     {
-      "id": "edge-fixture",
+      "id": "comparison-dashboard-fixture",
       "kind": "fixture",
-      "path": "pipeline/fixtures/styles/dashboard-data/edge.fixture.ts",
+      "path": "pipeline/fixtures/styles/dashboard-data/comparison-dashboard.fixture.ts",
+      "usage": "validation_input"
+    },
+    {
+      "id": "trend-panel-fixture",
+      "kind": "fixture",
+      "path": "pipeline/fixtures/styles/dashboard-data/trend-panel.fixture.ts",
+      "usage": "validation_input"
+    },
+    {
+      "id": "scorecard-fixture",
+      "kind": "fixture",
+      "path": "pipeline/fixtures/styles/dashboard-data/scorecard.fixture.ts",
       "usage": "validation_input"
     },
     {

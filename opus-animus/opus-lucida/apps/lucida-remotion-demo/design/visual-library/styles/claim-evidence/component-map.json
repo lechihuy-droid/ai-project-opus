@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "lucida-component-map/v1",
+  "id": "claim-evidence",
+  "primitives": [
+    {"id": "claim-panel", "role": "content", "notes": "Primary claim, correction, or measurement statement."},
+    {"id": "evidence-row", "role": "evidence", "notes": "Visible source label, direction, detail, and strength."},
+    {"id": "verdict-ladder", "role": "caption", "notes": "Stable confidence and bounded verdict surface."}
+  ],
+  "templates": [
+    {"templateId": "claim-proof", "supportedLayouts": ["claim-ledger"], "backgroundEffects": ["quiet-vertical-grid"], "motionPreset": "evidence-entrance", "primitives": ["claim-panel", "evidence-row", "verdict-ladder"], "notes": "Primary claim followed by a proof ledger."},
+    {"templateId": "pro-con", "supportedLayouts": ["balanced-comparison"], "backgroundEffects": ["quiet-vertical-grid"], "motionPreset": "evidence-entrance", "primitives": ["evidence-row", "verdict-ladder"], "notes": "Supporting and weakening evidence have equal space."},
+    {"templateId": "benchmark-audit", "supportedLayouts": ["audit-table"], "backgroundEffects": ["quiet-vertical-grid"], "motionPreset": "evidence-entrance", "primitives": ["claim-panel", "evidence-row", "verdict-ladder"], "notes": "Observed and reference values stay in fixed columns."},
+    {"templateId": "myth-reality", "supportedLayouts": ["correction-stack"], "backgroundEffects": ["quiet-vertical-grid"], "motionPreset": "evidence-entrance", "primitives": ["claim-panel", "evidence-row", "verdict-ladder"], "notes": "Overbroad statement is explicitly replaced by its supported correction."},
+    {"templateId": "source-triangulation", "supportedLayouts": ["source-grid"], "backgroundEffects": ["quiet-vertical-grid"], "motionPreset": "evidence-entrance", "primitives": ["evidence-row", "verdict-ladder"], "notes": "Three sources are visible before the provisional verdict."}
+  ]
+}

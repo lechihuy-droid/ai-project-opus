@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "lucida-component-map/v1",
+  "id": "code-walkthrough",
+  "primitives": [
+    {"id": "code-surface", "role": "content", "notes": "Line-number gutter, textual diff marker, and fixed baseline geometry."},
+    {"id": "trace-rail", "role": "support", "notes": "Stable sequence, review, or diagnostic state list."},
+    {"id": "caption-safe-panel", "role": "caption", "notes": "Reserved safe-area explanatory caption."}
+  ],
+  "templates": [
+    {"templateId": "code-focus", "supportedLayouts": ["code-rail"], "backgroundEffects": ["quiet-line-grid"], "motionPreset": "code-entrance", "primitives": ["code-surface", "trace-rail", "caption-safe-panel"], "notes": "Code-centric explanation."},
+    {"templateId": "terminal-code-split", "supportedLayouts": ["terminal-split"], "backgroundEffects": ["quiet-line-grid"], "motionPreset": "code-entrance", "primitives": ["code-surface", "caption-safe-panel"], "notes": "Command evidence paired with implementation context."}
+  ]
+}

@@ -2,6 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://lucida.local/schemas/visual-package.schema.json",
   "title": "Lucida Visual Package v1",
+  "$comment": "Style RAG migration hooks: when optional variantRefs, visualPatternRefs, or sourceAssociationIds are present, the validator layer must resolve their records; require matching packageId values, unique variantId/patternId/source IDs, approved review status for canonical retrieval, 4-8 variants, 20-40 patterns, at least 7 source associations across 3 source types, no source above 25% of patterns, and renderer registration before selection.",
   "type": "object",
   "required": [
     "schemaVersion",
@@ -45,6 +46,13 @@
       "items": {
         "type": "string",
         "minLength": 1
+      }
+    },
+    "styleRagRefList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/pathRef"
       }
     }
   },
@@ -111,7 +119,7 @@
       "uniqueItems": true,
       "items": {
         "type": "string",
-        "pattern": "^[0-9]+:[0-9]+$"
+        "enum": ["9:16", "16:9", "1:1"]
       }
     },
     "contentCapacity": {
@@ -139,6 +147,22 @@
           "minimum": 0
         },
         "maxCodeLines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxItems": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxPanels": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxMetrics": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxEvents": {
           "type": "integer",
           "minimum": 0
         }
@@ -409,6 +433,7 @@
     "sourceReferences": {
       "type": "array",
       "minItems": 1,
+      "uniqueItems": true,
       "items": {
         "type": "object",
         "required": [
@@ -452,6 +477,29 @@
             "minLength": 1
           }
         }
+      }
+    },
+    "variantRefs": {
+      "description": "Optional during migration; resolved by the validator layer against style-variant.schema.json.",
+      "allOf": [
+        { "$ref": "#/definitions/styleRagRefList" },
+        { "type": "array", "minItems": 4, "maxItems": 8 }
+      ]
+    },
+    "visualPatternRefs": {
+      "description": "Optional during migration; resolved by the validator layer against visual-pattern.schema.json.",
+      "allOf": [
+        { "$ref": "#/definitions/styleRagRefList" },
+        { "type": "array", "minItems": 20, "maxItems": 40 }
+      ]
+    },
+    "sourceAssociationIds": {
+      "description": "Optional during migration; validator layer resolves approved source type and quota coverage.",
+      "type": "array",
+      "minItems": 7,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/slug"
       }
     }
   }

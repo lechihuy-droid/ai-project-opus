@@ -1,0 +1,88 @@
+{
+  "schemaVersion": "lucida-terra-render-review/v1",
+  "actor": "Terra",
+  "packageId": "code-walkthrough",
+  "compositionId": "CodeWalkthroughFamilyReview",
+  "status": "failed",
+  "decision": "no-approval-or-promotion",
+  "generatedAt": "2026-07-18T06:53:37.495Z",
+  "startedAt": "2026-07-18T06:53:22.236Z",
+  "renderer": {
+    "tool": "@remotion/bundler + @remotion/renderer",
+    "entryPoint": "src/styles/families/code-walkthrough/renderRoot.tsx",
+    "browserExecutable": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+    "imageFormat": "png",
+    "strategy": "bundle once, direct documented Chrome executable per Remotion operation after shared-browser EPERM",
+    "usedDirectExecutableFallback": true
+  },
+  "bounds": {
+    "totalMs": 110000,
+    "bundleMs": 30000,
+    "browserMs": 12000,
+    "compositionMs": 10000,
+    "renderMs": 8000,
+    "inspectMs": 3000,
+    "closeMs": 3000
+  },
+  "checks": [
+    "five-png",
+    "1080x1920-dimensions",
+    "decoded-png-nonblank",
+    "repeat-render-sha256-sample"
+  ],
+  "steps": [
+    {
+      "name": "bundle",
+      "timeoutMs": 30000,
+      "startedAt": "2026-07-18T06:53:22.245Z",
+      "status": "ok",
+      "durationMs": 14313
+    },
+    {
+      "name": "open-browser",
+      "timeoutMs": 12000,
+      "startedAt": "2026-07-18T06:53:36.573Z",
+      "status": "failed",
+      "durationMs": 203,
+      "error": {
+        "name": "Error",
+        "code": "EPERM",
+        "message": "spawn EPERM"
+      }
+    },
+    {
+      "name": "fallback:direct-browser-executable",
+      "status": "ok",
+      "reason": "shared Chrome spawn EPERM",
+      "browserExecutable": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe"
+    },
+    {
+      "name": "select-composition",
+      "timeoutMs": 10000,
+      "startedAt": "2026-07-18T06:53:36.762Z",
+      "status": "failed",
+      "durationMs": 732,
+      "error": {
+        "name": "Error",
+        "code": "EPERM",
+        "message": "spawn EPERM"
+      }
+    }
+  ],
+  "frames": [],
+  "summary": {
+    "requestedFrames": 5,
+    "renderedFrames": 0,
+    "nonBlankFrames": 0,
+    "dimensionsValid": false,
+    "repeatSampleValid": false
+  },
+  "failure": {
+    "name": "Error",
+    "code": "EPERM",
+    "message": "spawn EPERM"
+  },
+  "limitations": [
+    "No approval, registration, promotion, renderer behavior, variant metadata, registry, Director, or global documentation was changed."
+  ]
+}

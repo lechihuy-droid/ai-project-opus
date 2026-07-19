@@ -1,0 +1,7 @@
+{
+  "packageId": "code-walkthrough",
+  "compositionId": "CodeWalkthroughFamilyReview",
+  "entryPoint": "src/styles/families/code-walkthrough/renderRoot.tsx",
+  "imageFormat": "png",
+  "qualityChecks": ["dimensions", "repeat-render-sha256", "signalstats-nonblank"]
+}

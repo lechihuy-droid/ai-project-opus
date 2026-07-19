@@ -1,0 +1,79 @@
+{
+  "report": "STYLE_PATTERN_COMPILER_LUNA_REVERIFY",
+  "scope": "final independent compiler and validator reverify",
+  "repo": "C:/Users/HUY/workspace/ai-project-opus/opus-animus/opus-lucida/apps/lucida-remotion-demo",
+  "implementation_edited": false,
+  "approval_or_promotion_run": false,
+  "overall": "PASS_WITH_TEST_ENV_LIMITATION",
+  "invariants": {
+    "explicit_optional_refs": {
+      "status": "PASS",
+      "evidence": "Compiler test resolves 4 explicit variantRefs and 20 explicit visualPatternRefs; default files are invalid JSON in that fixture and are ignored. Validator test accepts optional variant refs with visualPatternRefs omitted."
+    },
+    "default_fallback": {
+      "status": "PASS",
+      "evidence": "Compiler tests using the fixture's variants.json and visual-patterns.json project the eligible records when refs are absent."
+    },
+    "containment_and_realpath": {
+      "status": "PASS_WITH_TEST_ENV_LIMITATION",
+      "evidence": "Compiler code checks real paths for package directories, package files, default files, and explicit refs in scripts/knowledge/compile-references.mjs:51-58, 257-266, 401-420. Validator symlink escape test passes. Compiler realpath suite reaches a Windows file-symlink setup and fails before compiler execution with EPERM; directory junction coverage passes."
+    },
+    "fake_definePackage_in_comment_or_string_rejected": {
+      "status": "PASS",
+      "evidence": "Compiler/runtime and validator contract tests both strip comments and strings before matching registry calls; fake definePackage text produces no renderer registration."
+    },
+    "actual_registry_registration_accepted": {
+      "status": "PASS",
+      "evidence": "Eligible technical-editorial fixture is projected when the actual imported visual.json and definePackage binding are present; validator contract also passes the real registration fixture."
+    },
+    "zero_pattern_draft_omitted": {
+      "status": "PASS",
+      "evidence": "A package with variants but no patterns is omitted from the canonical retrieval pattern index."
+    },
+    "duplicate_rejection": {
+      "status": "PASS",
+      "evidence": "Compiler rejects duplicate variantId and patternId within a package and across packages; validator contract duplicate cases pass."
+    },
+    "tamper_detection": {
+      "status": "PASS",
+      "evidence": "Stale generated style index, manifest count, and manifest artifact hash are rejected; source/package/generated-index tamper checks pass."
+    },
+    "source_metadata_leakage": {
+      "status": "PASS",
+      "evidence": "Compiled style index excludes sourceEvidenceIds, classificationReasons, classifierVersion, reviewStatus, and a raw marker string."
+    },
+    "legacy_compatibility_and_determinism": {
+      "status": "PASS",
+      "evidence": "Legacy packages without Style RAG refs validate, and two compiler runs produce byte-identical artifacts with no staging residue."
+    }
+  },
+  "commands": [
+    {
+      "command": "node --test --test-isolation=none tests/knowledge/compiler-runtime-index.test.mjs",
+      "status": "FAIL_TEST_HARNESS_ENVIRONMENT",
+      "exit_code": 1,
+      "evidence": "11 passed, 1 failed. Failure at compiler-runtime-index.test.mjs:373: fs.symlinkSync(...): EPERM on Windows file symlink creation. The compiler was not reached for that case."
+    },
+    {
+      "command": "node --test --test-isolation=none tests/knowledge/style-pattern-contract.test.mjs",
+      "status": "PASS",
+      "exit_code": 0,
+      "evidence": "9 passed, 0 failed, including optional refs, legacy package, realpath escape, fake registry text, actual registry, duplicate IDs, and adversarial declarations."
+    },
+    {
+      "command": "npm run knowledge:preflight",
+      "status": "PASS",
+      "exit_code": 0,
+      "evidence": "knowledge:compile and knowledge:validate-index passed. Output: 1 template, 1 adapter, 17 approved reference sources, 0 eligible style patterns."
+    }
+  ],
+  "classification": {
+    "compiler_defects": [],
+    "package_data_or_preflight_failures": [],
+    "test_environment_limitations": [
+      "Windows file-symlink creation is denied with EPERM in compiler-runtime-index.test.mjs; this is a test setup failure, not a compiler assertion failure."
+    ],
+    "package_data_observation": "The live preflight is green but currently produces zero eligible style patterns; this is an eligibility/data-state observation, not a compiler failure."
+  },
+  "conclusion": "Compiler and validator behavior satisfies the requested Luna reverify invariants. No approval, promotion, or implementation change was performed."
+}

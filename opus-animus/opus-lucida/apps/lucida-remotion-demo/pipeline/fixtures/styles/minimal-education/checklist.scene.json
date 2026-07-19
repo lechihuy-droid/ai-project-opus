@@ -1,0 +1,39 @@
+{
+  "sceneId": "checklist-scene",
+  "sceneType": "steps",
+  "durationInFrames": 180,
+  "motionPolicy": "reduce",
+  "density": "balanced",
+  "accentTone": "coral",
+  "eyebrow": "Use the checklist",
+  "title": "A learning checklist should turn one completed attempt into a specific next action, not a vague score.",
+  "summary": "Three short observations keep a review useful for the learner and give the next adult enough context to continue the same routine.",
+  "footer": "Use the last observation to choose tomorrow's smallest useful practice move.",
+  "callout": {
+    "label": "Review rule",
+    "value": "Describe what happened before deciding what happens next."
+  },
+  "steps": {
+    "headline": "Three observations after one attempt",
+    "items": [
+      {
+        "index": "01",
+        "title": "Find the completed move",
+        "detail": "Point to the part the learner finished without replacing it with a general compliment.",
+        "state": "ready"
+      },
+      {
+        "index": "02",
+        "title": "Name the current edge",
+        "detail": "State the one detail that still needs support in language the learner can act on.",
+        "state": "active"
+      },
+      {
+        "index": "03",
+        "title": "Set one next try",
+        "detail": "Choose a small repeatable action for the next practice moment instead of adding a new task.",
+        "state": "ready"
+      }
+    ]
+  }
+}

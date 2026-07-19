@@ -20,8 +20,8 @@ export const EditorialCollageRemotionRoot = () => (
     width={1080}
     height={1920}
     fps={30}
-    durationInFrames={editorialCollageFixtures.normal.durationInFrames}
-    defaultProps={{ sceneKey: "normal" }}
+    durationInFrames={editorialCollageFixtures["source-montage"].durationInFrames}
+    defaultProps={{ sceneKey: "source-montage" }}
     calculateMetadata={calculateMetadata}
   />
 );

@@ -1,0 +1,1887 @@
+[
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-source-montage-place-document-route-layout",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "source-montage"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "summarize",
+      "narrative"
+    ],
+    "beatRoles": [
+      "setup"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "plaza-x3-y7-w58-h52-rot-neg2-4",
+      "archive-x45-y2-w48-h36-rot-2-2",
+      "transit-x30-y46-w64-h47-rot-1-2"
+    ],
+    "typographyTraits": [
+      "deck-above-crop-stack",
+      "crop-caption-attached"
+    ],
+    "paletteTraits": [
+      "paper-fff7e5",
+      "accent-red-e84a3c",
+      "success-green-4fa86b"
+    ],
+    "motionTraits": [
+      "frame-driven-layer-reveal",
+      "reduced-motion-final-positions"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "editorial-deck"
+    ],
+    "contentCapacity": {
+      "headlineChars": 88,
+      "bodyChars": 260,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "open a culture narrative with a place crop, document crop, and route crop in that order"
+    ],
+    "antiPatterns": [
+      "overlap a crop caption with another crop"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete source-montage recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-source-montage-deck-caption-type-hierarchy",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "source-montage"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "summarize",
+      "narrative"
+    ],
+    "beatRoles": [
+      "setup"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "eyebrow-top",
+      "title-before-collage",
+      "caption-below-each-crop"
+    ],
+    "typographyTraits": [
+      "display-georgia-58-to-82px-800",
+      "body-18-to-34px-560",
+      "metadata-mono-12-to-19px-650"
+    ],
+    "paletteTraits": [
+      "ink-fff7e5",
+      "muted-d8c8a8"
+    ],
+    "motionTraits": [
+      "text-static-after-reveal",
+      "reduced-motion-no-copy-reflow"
+    ],
+    "componentTraits": [
+      "editorial-deck",
+      "source-caption"
+    ],
+    "contentCapacity": {
+      "headlineChars": 88,
+      "bodyChars": 260,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "state the reading order with a compact deck and keep source-role labels legible"
+    ],
+    "antiPatterns": [
+      "replace source captions with unlabelled mood copy"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete source-montage recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-source-montage-three-role-semantic-palette",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "source-montage"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "summarize",
+      "narrative"
+    ],
+    "beatRoles": [
+      "setup"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "three-role-crop-stack",
+      "caption-safe-exterior-rail"
+    ],
+    "typographyTraits": [
+      "light-ink-on-dark-canvas",
+      "muted-source-metadata"
+    ],
+    "paletteTraits": [
+      "canvas-11100d",
+      "place-red-e84a3c",
+      "evidence-gold-f0b341",
+      "movement-green-4fa86b"
+    ],
+    "motionTraits": [
+      "semantic-colors-persist-after-entry",
+      "reduced-motion-static-colors"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "differentiate place, evidence, and movement without adding decorative color"
+    ],
+    "antiPatterns": [
+      "assign a new accent color to every caption sentence"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete source-montage recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-source-montage-three-layer-frame-motion",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "source-montage"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "summarize",
+      "narrative"
+    ],
+    "beatRoles": [
+      "setup"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "fixed-plaza-archive-transit-footprint",
+      "captions-outside-collision-zone"
+    ],
+    "typographyTraits": [
+      "stable-title-baseline",
+      "captions-follow-own-crop"
+    ],
+    "paletteTraits": [
+      "role-accents-unchanged-during-motion"
+    ],
+    "motionTraits": [
+      "plaza-fade-frame-0-18",
+      "archive-fade-frame-12-30",
+      "transit-fade-frame-24-42",
+      "reduced-motion-all-layers-fade"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "editorial-deck"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "reveal the three source roles in narrative order without moving the final grid"
+    ],
+    "antiPatterns": [
+      "css-transition-or-randomized-crop-drift"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete source-montage recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-source-montage-captioned-crop-component-contract",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "source-montage"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "summarize",
+      "narrative"
+    ],
+    "beatRoles": [
+      "setup"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "crop-inset-12px",
+      "caption-attached-to-lower-crop-edge"
+    ],
+    "typographyTraits": [
+      "kicker-metadata-size",
+      "caption-body-18px-minimum"
+    ],
+    "paletteTraits": [
+      "paper-caption-surface",
+      "ink-caption-text",
+      "rule-rgba-18-percent"
+    ],
+    "motionTraits": [
+      "crop-and-caption-reveal-together",
+      "reduced-motion-static-component"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption"
+    ],
+    "contentCapacity": {
+      "bodyChars": 120,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "render each crop with a source role, evidence sentence, and source classification label"
+    ],
+    "antiPatterns": [
+      "detach provenance text from its media crop"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete source-montage recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-source-montage-context-trace-route-composition",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "source-montage"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "summarize",
+      "narrative"
+    ],
+    "beatRoles": [
+      "setup"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "place-dominant-upper-left",
+      "document-upper-right",
+      "route-wide-lower-band",
+      "recap-outside-overlap"
+    ],
+    "typographyTraits": [
+      "deck-states-order",
+      "three-crop-role-kickers"
+    ],
+    "paletteTraits": [
+      "dark-canvas-paper-ink",
+      "red-gold-green-role-accents"
+    ],
+    "motionTraits": [
+      "place-before-document-before-route",
+      "reduced-motion-preserves-order"
+    ],
+    "componentTraits": [
+      "editorial-deck",
+      "modular-crop-frame",
+      "source-caption",
+      "recap-thread"
+    ],
+    "contentCapacity": {
+      "headlineChars": 88,
+      "bodyChars": 260,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "compose a place context, documentary trace, and movement conclusion as one accountable opening"
+    ],
+    "antiPatterns": [
+      "present three equal unsequenced media crops"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete source-montage recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-multi-source-evidence-wall-survey-route-layout",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "multi-source-evidence"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "evidence",
+      "summarize"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "wall-x4-y5-w55-h42-rot-neg1-4",
+      "survey-x52-y10-w42-h54-rot-1-8",
+      "night-x10-y47-w63-h47-rot-neg0-6"
+    ],
+    "typographyTraits": [
+      "caption-rail-for-long-evidence",
+      "compact-source-labels"
+    ],
+    "paletteTraits": [
+      "archive-red-e84a3c",
+      "measure-green-4fa86b",
+      "trace-gold-f0b341"
+    ],
+    "motionTraits": [
+      "reduced-travel-stack-entry",
+      "no-random-drift"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "evidence-callout"
+    ],
+    "contentCapacity": {
+      "headlineChars": 82,
+      "bodyChars": 360,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "compare archive, fixture-authored measure, and movement trace with dense captions"
+    ],
+    "antiPatterns": [
+      "add a fourth evidence crop to the existing stack"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete multi-source-evidence recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-multi-source-evidence-source-audit-type-hierarchy",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "multi-source-evidence"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "evidence",
+      "summarize"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "headline-top-safe-area",
+      "caption-per-crop",
+      "audit-rail-outside-media"
+    ],
+    "typographyTraits": [
+      "display-georgia-58px",
+      "caption-body-18px",
+      "source-label-mono-12px",
+      "callout-detail-18px"
+    ],
+    "paletteTraits": [
+      "paper-text-on-canvas",
+      "muted-audit-metadata"
+    ],
+    "motionTraits": [
+      "text-does-not-resize-on-entry",
+      "reduced-motion-static-copy"
+    ],
+    "componentTraits": [
+      "source-caption",
+      "evidence-callout"
+    ],
+    "contentCapacity": {
+      "headlineChars": 82,
+      "bodyChars": 360,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "keep long evidence captions inspectable without hiding their source-role labels"
+    ],
+    "antiPatterns": [
+      "compress audit copy below the readable metadata size"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete multi-source-evidence recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-multi-source-evidence-evidence-role-palette",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "multi-source-evidence"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "evidence",
+      "summarize"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "three-crop-evidence-stack",
+      "audit-rail-separate-from-crops"
+    ],
+    "typographyTraits": [
+      "high-contrast-source-captions",
+      "muted-secondary-copy"
+    ],
+    "paletteTraits": [
+      "canvas-11100d",
+      "archive-red-e84a3c",
+      "measure-green-4fa86b",
+      "trace-gold-f0b341"
+    ],
+    "motionTraits": [
+      "color-is-semantic-not-animated-state",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "evidence-callout"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "give archive, measure, and trace separate persistent color meanings"
+    ],
+    "antiPatterns": [
+      "use color to imply a metric that the fixture does not contain"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete multi-source-evidence recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-multi-source-evidence-reduced-stack-motion",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "multi-source-evidence"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "evidence",
+      "summarize"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "fixed-wall-survey-night-stack",
+      "fixed-audit-rail"
+    ],
+    "typographyTraits": [
+      "captions-remain-in-final-position",
+      "stable-audit-baseline"
+    ],
+    "paletteTraits": [
+      "role-accents-static"
+    ],
+    "motionTraits": [
+      "wall-fade-frame-0-14",
+      "survey-fade-frame-10-24",
+      "night-fade-frame-20-34",
+      "reduced-motion-opacity-only"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "evidence-callout"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "introduce dense evidence progressively while retaining every caption and audit rail"
+    ],
+    "antiPatterns": [
+      "move the audit rail while a reader is scanning it"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete multi-source-evidence recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-multi-source-evidence-evidence-callout-component",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "multi-source-evidence"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "evidence",
+      "summarize"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "three-callouts-in-exterior-rail",
+      "callout-does-not-cover-media"
+    ],
+    "typographyTraits": [
+      "callout-label-metadata-size",
+      "callout-detail-18px-minimum"
+    ],
+    "paletteTraits": [
+      "paper-callout-text",
+      "accent-rule-per-callout"
+    ],
+    "motionTraits": [
+      "callouts-fade-after-own-crop",
+      "reduced-motion-static-callouts"
+    ],
+    "componentTraits": [
+      "evidence-callout",
+      "source-caption",
+      "modular-crop-frame"
+    ],
+    "contentCapacity": {
+      "bodyChars": 220,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "render crop, caption, policy, and motion checks as three bounded audit callouts"
+    ],
+    "antiPatterns": [
+      "put an unbounded paragraph into a callout rail"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete multi-source-evidence recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-multi-source-evidence-archive-measure-trace-composition",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "multi-source-evidence"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "evidence",
+      "summarize"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "archive-upper-left",
+      "measure-upper-right-tall",
+      "trace-lower-wide",
+      "audit-rail-outside-overlap"
+    ],
+    "typographyTraits": [
+      "archive-measure-trace-kickers",
+      "recap-three-short-lines"
+    ],
+    "paletteTraits": [
+      "red-archive",
+      "green-measure",
+      "gold-trace"
+    ],
+    "motionTraits": [
+      "archive-before-measure-before-trace",
+      "reduced-motion-fade-sequence"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "evidence-callout",
+      "recap-thread"
+    ],
+    "contentCapacity": {
+      "headlineChars": 82,
+      "bodyChars": 360,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "explain a dense claim as archive context, bounded measure, then movement trace"
+    ],
+    "antiPatterns": [
+      "merge the three source roles into one unsupported conclusion"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete multi-source-evidence recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-quote-collage-truthful-placeholder-layout",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "quote-collage"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "takeaway",
+      "evidence"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "recap-x4-y7-w58-h58-rot-neg1-1",
+      "rejected-x51-y8-w42-h38-rot-2",
+      "missing-x29-y55-w62-h38-rot-0-7"
+    ],
+    "typographyTraits": [
+      "placeholder-reason-visible",
+      "caption-states-asset-classification"
+    ],
+    "paletteTraits": [
+      "valid-green-4fa86b",
+      "rejected-gold-f0b341",
+      "missing-red-e84a3c"
+    ],
+    "motionTraits": [
+      "static-review-frame",
+      "no-placeholder-animation"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "recap-thread"
+    ],
+    "contentCapacity": {
+      "headlineChars": 86,
+      "bodyChars": 260,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "show one valid crop, one context-only rejection, and one missing source without silently removing either failure"
+    ],
+    "antiPatterns": [
+      "collapse missing or rejected slots out of the recap layout"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete quote-collage recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-quote-collage-placeholder-type-contract",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "quote-collage"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "takeaway",
+      "evidence"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "three-slot-recap-stack",
+      "reason-copy-under-placeholder"
+    ],
+    "typographyTraits": [
+      "recap-title-georgia-58px",
+      "status-kicker-mono-12px",
+      "placeholder-reason-body-18px"
+    ],
+    "paletteTraits": [
+      "paper-on-canvas",
+      "status-color-on-kicker-only"
+    ],
+    "motionTraits": [
+      "static-text-no-reflow",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "source-caption",
+      "recap-thread"
+    ],
+    "contentCapacity": {
+      "headlineChars": 86,
+      "bodyChars": 260,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "distinguish valid, context-only, and missing states in words a reviewer can inspect"
+    ],
+    "antiPatterns": [
+      "use a generic broken-image icon without reason text"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete quote-collage recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-quote-collage-asset-policy-palette",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "quote-collage"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "takeaway",
+      "evidence"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "valid-rejected-missing-three-slot-composition",
+      "status-captions-attached"
+    ],
+    "typographyTraits": [
+      "high-contrast-reason-copy",
+      "compact-state-labels"
+    ],
+    "paletteTraits": [
+      "valid-green-4fa86b",
+      "policy-warning-gold-f0b341",
+      "missing-danger-red-e84a3c",
+      "canvas-11100d"
+    ],
+    "motionTraits": [
+      "semantic-colors-static",
+      "no-flashing-error-state"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "make asset policy outcomes distinguishable while retaining a neutral editorial canvas"
+    ],
+    "antiPatterns": [
+      "make a context-only source look identical to an embeddable source"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete quote-collage recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-quote-collage-static-audit-motion",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "quote-collage"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "takeaway",
+      "evidence"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "fixed-valid-and-placeholder-slots",
+      "fixed-recap-rail"
+    ],
+    "typographyTraits": [
+      "status-copy-visible-at-frame-zero",
+      "no-moving-placeholder-labels"
+    ],
+    "paletteTraits": [
+      "status-accents-static"
+    ],
+    "motionTraits": [
+      "all-slots-visible-frame-0",
+      "static-policy",
+      "reduced-motion-identical-to-static"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "recap-thread"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "hold a failure-state recap still so policy outcomes can be reviewed deterministically"
+    ],
+    "antiPatterns": [
+      "animate missing assets as though they are loading"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete quote-collage recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-quote-collage-explicit-placeholder-component",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "quote-collage"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "takeaway",
+      "evidence"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "placeholder-retains-crop-frame-bounds",
+      "caption-in-same-slot"
+    ],
+    "typographyTraits": [
+      "status-kicker-above-reason",
+      "reason-copy-18px-minimum"
+    ],
+    "paletteTraits": [
+      "warning-or-danger-slot-rule",
+      "paper-reason-text"
+    ],
+    "motionTraits": [
+      "placeholder-static",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "recap-thread"
+    ],
+    "contentCapacity": {
+      "bodyChars": 110,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "render a bounded placeholder that explains context-only or missing-source status"
+    ],
+    "antiPatterns": [
+      "replace a rejected media slot with decorative empty space"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete quote-collage recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-quote-collage-valid-rejected-missing-composition",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "quote-collage"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "takeaway",
+      "evidence"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "valid-recap-upper-left",
+      "rejected-context-upper-right",
+      "missing-source-lower-band",
+      "three-line-recap-rail"
+    ],
+    "typographyTraits": [
+      "status-kicker-before-reason",
+      "recap-items-numbered"
+    ],
+    "paletteTraits": [
+      "green-valid",
+      "gold-rejected",
+      "red-missing"
+    ],
+    "motionTraits": [
+      "static-all-policy-states",
+      "no-state-transition"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "recap-thread"
+    ],
+    "contentCapacity": {
+      "headlineChars": 86,
+      "bodyChars": 260,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "close with an accountable audit of rendered, rejected, and unavailable media"
+    ],
+    "antiPatterns": [
+      "treat an unavailable asset as narrative decoration rather than an explicit state"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete quote-collage recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-visual-essay-document-poster-index-layout",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "visual-essay"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "evidence",
+      "compare"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "ledger-x4-y5-w57-h57-rot-neg1-6",
+      "poster-x49-y8-w44-h40-rot-2-3",
+      "index-x27-y54-w65-h39-rot-0-8"
+    ],
+    "typographyTraits": [
+      "document-first-deck",
+      "source-role-captions"
+    ],
+    "paletteTraits": [
+      "archive-gold-f0b341",
+      "signal-red-e84a3c",
+      "index-green-4fa86b"
+    ],
+    "motionTraits": [
+      "document-led-layer-reveal",
+      "reduced-motion-final-stack"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "evidence-callout"
+    ],
+    "contentCapacity": {
+      "headlineChars": 94,
+      "bodyChars": 320,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "make a document crop dominant while retaining poster and index signals as separate captioned evidence"
+    ],
+    "antiPatterns": [
+      "allow supporting signals to obscure the document crop's reading order"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete visual-essay recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-visual-essay-source-role-type-hierarchy",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "visual-essay"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "evidence",
+      "compare"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "document-caption-near-dominant-crop",
+      "supporting-captions-near-own-crops",
+      "audit-rail-exterior"
+    ],
+    "typographyTraits": [
+      "archive-kicker-mono-12px",
+      "caption-body-18px",
+      "deck-georgia-58px",
+      "audit-detail-18px"
+    ],
+    "paletteTraits": [
+      "paper-ink-high-contrast",
+      "muted-source-labels"
+    ],
+    "motionTraits": [
+      "captions-appear-with-source",
+      "reduced-motion-static-copy"
+    ],
+    "componentTraits": [
+      "source-caption",
+      "editorial-deck",
+      "evidence-callout"
+    ],
+    "contentCapacity": {
+      "headlineChars": 94,
+      "bodyChars": 320,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "separate archive, signal, and index language so the evidence roles remain inspectable"
+    ],
+    "antiPatterns": [
+      "describe all three evidence sources with the same generic caption"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete visual-essay recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-visual-essay-evidence-role-palette",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "visual-essay"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "evidence",
+      "compare"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "document-dominant-stack",
+      "supporting-crops-visible"
+    ],
+    "typographyTraits": [
+      "high-contrast-document-caption",
+      "compact-source-metadata"
+    ],
+    "paletteTraits": [
+      "archive-gold-f0b341",
+      "poster-red-e84a3c",
+      "index-green-4fa86b",
+      "paper-f1e7d0"
+    ],
+    "motionTraits": [
+      "persistent-role-colors",
+      "reduced-motion-static-colors"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "distinguish a primary archive from two supporting local signals without copying external visual identity"
+    ],
+    "antiPatterns": [
+      "apply a brand-like color system to the local abstract assets"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete visual-essay recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-visual-essay-document-led-motion",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "visual-essay"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "evidence",
+      "compare"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "stable-ledger-poster-index-footprint",
+      "fixed-exterior-audit-rail"
+    ],
+    "typographyTraits": [
+      "document-label-locks-after-entry",
+      "no-caption-reflow"
+    ],
+    "paletteTraits": [
+      "archive-then-signal-then-index-accents"
+    ],
+    "motionTraits": [
+      "ledger-fade-frame-0-18",
+      "poster-fade-frame-14-30",
+      "index-fade-frame-26-42",
+      "reduced-motion-opacity-only"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "evidence-callout"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "establish a document before testing it against two bounded supporting signals"
+    ],
+    "antiPatterns": [
+      "reveal supporting signals before the archive's role is visible"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete visual-essay recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-visual-essay-evidence-callout-component",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "visual-essay"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "evidence",
+      "compare"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "three-callouts-outside-dominant-document",
+      "callout-order-document-policy-density"
+    ],
+    "typographyTraits": [
+      "callout-label-mono-12px",
+      "callout-detail-18px"
+    ],
+    "paletteTraits": [
+      "gold-order-rule",
+      "green-policy-rule",
+      "red-density-rule"
+    ],
+    "motionTraits": [
+      "callouts-fade-after-corresponding-source",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "evidence-callout",
+      "source-caption",
+      "modular-crop-frame"
+    ],
+    "contentCapacity": {
+      "bodyChars": 210,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "render three audit notes for reading order, asset policy, and dense-caption constraint"
+    ],
+    "antiPatterns": [
+      "add more than three audit callouts to this composition"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete visual-essay recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-visual-essay-document-signal-index-composition",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "visual-essay"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "evidence",
+      "compare"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "archive-upper-left-dominant",
+      "poster-upper-right-support",
+      "index-lower-wide-comparison",
+      "recap-outside-media-overlap"
+    ],
+    "typographyTraits": [
+      "archive-signal-index-kickers",
+      "three-item-recap"
+    ],
+    "paletteTraits": [
+      "gold-archive",
+      "red-signal",
+      "green-index"
+    ],
+    "motionTraits": [
+      "archive-before-poster-before-index",
+      "reduced-motion-fade-order"
+    ],
+    "componentTraits": [
+      "editorial-deck",
+      "modular-crop-frame",
+      "source-caption",
+      "evidence-callout",
+      "recap-thread"
+    ],
+    "contentCapacity": {
+      "headlineChars": 94,
+      "bodyChars": 320,
+      "maxItems": 3,
+      "maxPanels": 5
+    },
+    "positiveUseCases": [
+      "explain an archive-led claim while preserving the difference between document, public signal, and index trace"
+    ],
+    "antiPatterns": [
+      "flatten all source roles into one implied provenance claim"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete visual-essay recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-culture-recap-broadcast-note-route-layout",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "culture-recap"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "takeaway",
+      "narrative"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "broadcast-x4-y7-w54-h48-rot-neg2-1",
+      "field-note-x52-y5-w41-h50-rot-2-1",
+      "route-x22-y54-w69-h39-rot-0-6"
+    ],
+    "typographyTraits": [
+      "role-caption-attached",
+      "fixed-three-line-recap"
+    ],
+    "paletteTraits": [
+      "broadcast-gold-f0b341",
+      "note-red-e84a3c",
+      "route-green-4fa86b"
+    ],
+    "motionTraits": [
+      "reduced-motion-stack-entry",
+      "deterministic-final-positions"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "recap-thread"
+    ],
+    "contentCapacity": {
+      "headlineChars": 92,
+      "bodyChars": 270,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "close a narrative by connecting broadcast cue, field observation, and route trace"
+    ],
+    "antiPatterns": [
+      "show the three signals without a fixed recap sequence"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete culture-recap recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-culture-recap-sequence-type-hierarchy",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "culture-recap"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "takeaway",
+      "narrative"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "deck-top",
+      "crop-kickers-adjacent",
+      "numbered-recap-rail-bottom"
+    ],
+    "typographyTraits": [
+      "title-georgia-58px",
+      "role-kicker-mono-12px",
+      "caption-body-18px",
+      "recap-body-18px"
+    ],
+    "paletteTraits": [
+      "paper-ink",
+      "muted-metadata"
+    ],
+    "motionTraits": [
+      "text-baselines-fixed",
+      "reduced-motion-static-copy"
+    ],
+    "componentTraits": [
+      "editorial-deck",
+      "source-caption",
+      "recap-thread"
+    ],
+    "contentCapacity": {
+      "headlineChars": 92,
+      "bodyChars": 270,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "state a closing thread in readable broadcast, field-note, route order"
+    ],
+    "antiPatterns": [
+      "make the recap rail look like an unrelated footer"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete culture-recap recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-culture-recap-role-palette",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "culture-recap"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "takeaway",
+      "narrative"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "three-source-thread-stack",
+      "recap-rail-separate-from-media"
+    ],
+    "typographyTraits": [
+      "high-contrast-role-kickers",
+      "paper-recap-copy"
+    ],
+    "paletteTraits": [
+      "broadcast-gold-f0b341",
+      "field-note-red-e84a3c",
+      "route-green-4fa86b",
+      "canvas-11100d"
+    ],
+    "motionTraits": [
+      "role-colors-stable-after-entry",
+      "reduced-motion-static-color"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "recap-thread"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "maintain signal-role meaning across three crops and the recap thread"
+    ],
+    "antiPatterns": [
+      "reuse a status color for a different narrative source role"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete culture-recap recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-culture-recap-reduced-sequence-motion",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "culture-recap"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "takeaway",
+      "narrative"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "stable-broadcast-note-route-stack",
+      "fixed-recap-rail"
+    ],
+    "typographyTraits": [
+      "recap-visible-without-reflow",
+      "source-captions-lock-after-entry"
+    ],
+    "paletteTraits": [
+      "gold-red-green-role-accents-static"
+    ],
+    "motionTraits": [
+      "broadcast-fade-frame-0-16",
+      "note-fade-frame-12-28",
+      "route-fade-frame-24-40",
+      "reduced-motion-opacity-only"
+    ],
+    "componentTraits": [
+      "modular-crop-frame",
+      "source-caption",
+      "recap-thread"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "reveal a closing thread in order while preserving the same final collage geometry"
+    ],
+    "antiPatterns": [
+      "use CSS transitions or move the recap after it becomes readable"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete culture-recap recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-culture-recap-recap-component",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "culture-recap"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "takeaway",
+      "narrative"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "three-numbered-items-in-exterior-rail",
+      "recap-rail-does-not-cover-route-crop"
+    ],
+    "typographyTraits": [
+      "recap-number-metadata-size",
+      "recap-statement-18px-minimum"
+    ],
+    "paletteTraits": [
+      "paper-thread-copy",
+      "green-thread-rule",
+      "muted-item-dividers"
+    ],
+    "motionTraits": [
+      "recap-items-fade-after-route",
+      "reduced-motion-static-thread"
+    ],
+    "componentTraits": [
+      "recap-thread",
+      "source-caption",
+      "modular-crop-frame"
+    ],
+    "contentCapacity": {
+      "bodyChars": 150,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "render a three-item closing thread that names cue, observation, and movement connection"
+    ],
+    "antiPatterns": [
+      "allow more than three recap statements in this fixed rail"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete culture-recap recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ec-culture-recap-cue-observation-route-composition",
+    "packageId": "editorial-collage",
+    "variantIds": [
+      "culture-recap"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "takeaway",
+      "narrative"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16",
+      "16:9"
+    ],
+    "layoutTraits": [
+      "broadcast-upper-left",
+      "field-note-upper-right",
+      "route-lower-wide",
+      "recap-thread-outside-overlap"
+    ],
+    "typographyTraits": [
+      "cue-observation-route-kickers",
+      "numbered-summary-thread"
+    ],
+    "paletteTraits": [
+      "gold-cue",
+      "red-observation",
+      "green-route"
+    ],
+    "motionTraits": [
+      "cue-before-observation-before-route-before-recap",
+      "reduced-motion-fades"
+    ],
+    "componentTraits": [
+      "editorial-deck",
+      "modular-crop-frame",
+      "source-caption",
+      "recap-thread"
+    ],
+    "contentCapacity": {
+      "headlineChars": 92,
+      "bodyChars": 270,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "close a culture narrative with an explicit cue-to-observation-to-route sequence"
+    ],
+    "antiPatterns": [
+      "end on an atmospheric collage without a stated relationship between the sources"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Concrete culture-recap recipe is grounded in its deterministic local fixture and verified frame-animation evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p9/1.0",
+    "reviewStatus": "proposed"
+  }
+]

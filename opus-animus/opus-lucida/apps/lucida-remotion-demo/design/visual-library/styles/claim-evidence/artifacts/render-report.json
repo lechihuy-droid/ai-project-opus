@@ -1,0 +1,194 @@
+{
+  "schemaVersion": "lucida-terra-render-review/v1",
+  "actor": "Terra",
+  "packageId": "claim-evidence",
+  "compositionId": "ClaimEvidenceFamilyReview",
+  "status": "ok",
+  "decision": "no-approval-or-promotion",
+  "failureMode": "none",
+  "generatedAt": "2026-07-18T07:11:02.756Z",
+  "renderer": {
+    "tool": "authoritative-rendered-still artifact sync",
+    "entryPoint": "src/styles/families/claim-evidence/renderRoot.tsx",
+    "imageFormat": "png",
+    "strategy": "verify manifest record, SHA256, decoded PNG dimensions and nonblank data; byte-for-byte copy",
+    "usedDirectExecutableFallback": false
+  },
+  "checks": [
+    "five-png",
+    "1080x1920-dimensions",
+    "decoded-png-nonblank",
+    "authoritative-manifest-sha256",
+    "deterministic-byte-for-byte-copy"
+  ],
+  "validation": {
+    "deterministicArtifactSync": true,
+    "sourceManifestRecordCount": 70,
+    "sourceManifest": "design/reports/style-rag-phase1-stills/manifest.json"
+  },
+  "frames": [
+    {
+      "id": "scene-01",
+      "sceneKey": "claim-proof",
+      "frame": 42,
+      "output": "design/visual-library/styles/claim-evidence/artifacts/frames/scene-01.png",
+      "source": {
+        "manifest": "design/reports/style-rag-phase1-stills/manifest.json",
+        "key": "claim-evidence:claim-proof",
+        "output": "design/reports/style-rag-phase1-stills/stills/claim-evidence/claim-proof.png",
+        "sha256": "55ebf44494b1f6b7f08bcc399f9b27231f9d5fbdc25bcc8953721f5e37800630"
+      },
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "55ebf44494b1f6b7f08bcc399f9b27231f9d5fbdc25bcc8953721f5e37800630",
+      "fileBytes": 178987,
+      "nonBlank": {
+        "width": 1080,
+        "height": 1920,
+        "dynamicRange": 229,
+        "saturationAverage": 8.94682,
+        "passed": true,
+        "heuristic": "decoded PNG luminance range or RGB saturation threshold"
+      },
+      "deterministic": {
+        "passed": true,
+        "method": "authoritative-manifest-sha256-and-byte-for-byte-copy"
+      }
+    },
+    {
+      "id": "scene-02",
+      "sceneKey": "pro-con",
+      "frame": 42,
+      "output": "design/visual-library/styles/claim-evidence/artifacts/frames/scene-02.png",
+      "source": {
+        "manifest": "design/reports/style-rag-phase1-stills/manifest.json",
+        "key": "claim-evidence:pro-con",
+        "output": "design/reports/style-rag-phase1-stills/stills/claim-evidence/pro-con.png",
+        "sha256": "630f9f183ba60a6f920fd406f42c7db845c257b22e0bd96de17a643bf542a21b"
+      },
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "630f9f183ba60a6f920fd406f42c7db845c257b22e0bd96de17a643bf542a21b",
+      "fileBytes": 153966,
+      "nonBlank": {
+        "width": 1080,
+        "height": 1920,
+        "dynamicRange": 228,
+        "saturationAverage": 8.53749,
+        "passed": true,
+        "heuristic": "decoded PNG luminance range or RGB saturation threshold"
+      },
+      "deterministic": {
+        "passed": true,
+        "method": "authoritative-manifest-sha256-and-byte-for-byte-copy"
+      }
+    },
+    {
+      "id": "scene-03",
+      "sceneKey": "benchmark-audit",
+      "frame": 42,
+      "output": "design/visual-library/styles/claim-evidence/artifacts/frames/scene-03.png",
+      "source": {
+        "manifest": "design/reports/style-rag-phase1-stills/manifest.json",
+        "key": "claim-evidence:benchmark-audit",
+        "output": "design/reports/style-rag-phase1-stills/stills/claim-evidence/benchmark-audit.png",
+        "sha256": "7397b7fcd1184aa11f4f01d97d5aa986788bc7151c7ef876c6eb1abaef64844e"
+      },
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "7397b7fcd1184aa11f4f01d97d5aa986788bc7151c7ef876c6eb1abaef64844e",
+      "fileBytes": 148153,
+      "nonBlank": {
+        "width": 1080,
+        "height": 1920,
+        "dynamicRange": 227,
+        "saturationAverage": 8.53657,
+        "passed": true,
+        "heuristic": "decoded PNG luminance range or RGB saturation threshold"
+      },
+      "deterministic": {
+        "passed": true,
+        "method": "authoritative-manifest-sha256-and-byte-for-byte-copy"
+      }
+    },
+    {
+      "id": "scene-04",
+      "sceneKey": "myth-reality",
+      "frame": 42,
+      "output": "design/visual-library/styles/claim-evidence/artifacts/frames/scene-04.png",
+      "source": {
+        "manifest": "design/reports/style-rag-phase1-stills/manifest.json",
+        "key": "claim-evidence:myth-reality",
+        "output": "design/reports/style-rag-phase1-stills/stills/claim-evidence/myth-reality.png",
+        "sha256": "f35e946ad6a33057c4f742298e202bfd8200e85afa84ec047ce763c5118860e4"
+      },
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "f35e946ad6a33057c4f742298e202bfd8200e85afa84ec047ce763c5118860e4",
+      "fileBytes": 196277,
+      "nonBlank": {
+        "width": 1080,
+        "height": 1920,
+        "dynamicRange": 229,
+        "saturationAverage": 7.87379,
+        "passed": true,
+        "heuristic": "decoded PNG luminance range or RGB saturation threshold"
+      },
+      "deterministic": {
+        "passed": true,
+        "method": "authoritative-manifest-sha256-and-byte-for-byte-copy"
+      }
+    },
+    {
+      "id": "scene-05",
+      "sceneKey": "source-triangulation",
+      "frame": 42,
+      "output": "design/visual-library/styles/claim-evidence/artifacts/frames/scene-05.png",
+      "source": {
+        "manifest": "design/reports/style-rag-phase1-stills/manifest.json",
+        "key": "claim-evidence:source-triangulation",
+        "output": "design/reports/style-rag-phase1-stills/stills/claim-evidence/source-triangulation.png",
+        "sha256": "14cc529efbebb122a9531713b215ff7a80ce046d608602031d158511086eeb62"
+      },
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "14cc529efbebb122a9531713b215ff7a80ce046d608602031d158511086eeb62",
+      "fileBytes": 186810,
+      "nonBlank": {
+        "width": 1080,
+        "height": 1920,
+        "dynamicRange": 229,
+        "saturationAverage": 9.03243,
+        "passed": true,
+        "heuristic": "decoded PNG luminance range or RGB saturation threshold"
+      },
+      "deterministic": {
+        "passed": true,
+        "method": "authoritative-manifest-sha256-and-byte-for-byte-copy"
+      }
+    }
+  ],
+  "summary": {
+    "requestedFrames": 5,
+    "renderedFrames": 5,
+    "nonBlankFrames": 5,
+    "dimensionsValid": true,
+    "deterministicFrames": 5,
+    "sourceManifestSha256Valid": true
+  },
+  "failure": null,
+  "limitations": [
+    "Frames are synchronized from existing authoritative rendered PNG artifacts; this operation does not render scenes.",
+    "No approval, promotion, registration, variant metadata, patterns, renderer behavior, Director, or global manifest was changed."
+  ]
+}

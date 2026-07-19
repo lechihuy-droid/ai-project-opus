@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "lucida-terra-render-manifest/v1",
+  "actor": "Terra",
+  "packageId": "code-walkthrough",
+  "status": "failed",
+  "report": "design/visual-library/styles/code-walkthrough/artifacts/terra-render-report.json",
+  "files": [],
+  "repeatSample": null,
+  "failure": {
+    "name": "Error",
+    "code": "EPERM",
+    "message": "spawn EPERM"
+  }
+}

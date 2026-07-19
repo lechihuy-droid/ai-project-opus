@@ -1,6 +1,21 @@
 import type { MotionPolicy, SemanticTone, TextDensity } from "../../core";
 
-export type DashboardDataFixtureKey = "normal" | "dense" | "edge";
+export const dashboardDataVariantIds = [
+  "benchmark-grid",
+  "operations-monitor",
+  "comparison-dashboard",
+  "trend-panel",
+  "scorecard",
+] as const;
+
+export type DashboardDataVariantId =
+  (typeof dashboardDataVariantIds)[number];
+
+export type DashboardDataFixtureKey =
+  | "normal"
+  | "dense"
+  | "edge"
+  | DashboardDataVariantId;
 
 export type DashboardDataSceneType = "kpi" | "chart" | "operations";
 

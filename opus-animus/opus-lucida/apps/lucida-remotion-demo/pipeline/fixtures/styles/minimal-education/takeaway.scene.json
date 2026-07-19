@@ -1,0 +1,35 @@
+{
+  "sceneId": "takeaway-scene",
+  "sceneType": "definition",
+  "durationInFrames": 150,
+  "motionPolicy": "reduce",
+  "density": "balanced",
+  "accentTone": "teal",
+  "eyebrow": "Keep the takeaway",
+  "title": "A practical takeaway makes a routine easier to repeat because each part answers one simple question.",
+  "summary": "The same visual grammar can explain a classroom routine, study habit, or parent prompt without adding decorative steps that compete with the instruction.",
+  "footer": "Keep the cue visible until the learner begins the action.",
+  "callout": {
+    "label": "Repeatable rule",
+    "value": "One signal, one action, one calm confirmation."
+  },
+  "definition": {
+    "term": "Cue action loop",
+    "phonetic": "signal -> move -> confirm",
+    "meaning": "A short routine where a consistent signal starts one small action and a clear confirmation closes the cycle.",
+    "keyPoints": [
+      {
+        "label": "Signal",
+        "detail": "Use the same visible or spoken cue each time the routine begins."
+      },
+      {
+        "label": "Move",
+        "detail": "Describe only the smallest action that proves the learner has started."
+      },
+      {
+        "label": "Confirm",
+        "detail": "End with a short acknowledgement so the next cue has a clean starting point."
+      }
+    ]
+  }
+}

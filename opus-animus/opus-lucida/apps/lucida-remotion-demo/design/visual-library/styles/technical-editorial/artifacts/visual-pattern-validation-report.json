@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "terra-pattern-proposal-validation/v1",
+  "packageId": "technical-editorial",
+  "proposalBatch": "terra-pattern-proposal-p2",
+  "inputs": {
+    "patternFile": "../visual-patterns.json",
+    "variantFile": "../variants.json",
+    "patternSchema": "../../../../schemas/visual-pattern.schema.json",
+    "verifiedReviewProposal": "../../../../../pipeline/runs/p1-03/03-terra-classification-proposal.json",
+    "verifiedReviewReport": "../../../../../pipeline/runs/p1-03/06-luna-verification.json"
+  },
+  "checks": {
+    "schemaValid": true,
+    "patternCount": 30,
+    "expectedPatternCount": 30,
+    "uniquePatternIds": true,
+    "variantIds": [
+      "annotated-explainer",
+      "data-essay",
+      "evidence-grid",
+      "research-digest",
+      "technical-brief"
+    ],
+    "patternsPerVariant": {
+      "annotated-explainer": 6,
+      "data-essay": 6,
+      "evidence-grid": 6,
+      "research-digest": 6,
+      "technical-brief": 6
+    },
+    "expectedPatternsPerVariant": 6,
+    "allReviewStatusesProposed": true,
+    "sourceEvidenceIds": [
+      {
+        "sourceEvidenceId": "p1-03-repo-observable-plot",
+        "sourceId": "p1-03-repo-observable-plot",
+        "reviewStatus": "unapproved",
+        "reviewEligibility": "eligible-pending-human-rights-and-visual-review",
+        "canonicalEligibility": false,
+        "rendererAvailability": false
+      },
+      {
+        "sourceEvidenceId": "p1-03-repo-revealjs",
+        "sourceId": "p1-03-repo-revealjs",
+        "reviewStatus": "unapproved",
+        "reviewEligibility": "eligible-pending-human-rights-and-visual-review",
+        "canonicalEligibility": false,
+        "rendererAvailability": false
+      },
+      {
+        "sourceEvidenceId": "source-evidence-p1-03-repo-observable-plot",
+        "sourceId": "p1-03-repo-observable-plot",
+        "reviewStatus": "unapproved",
+        "reviewEligibility": "eligible-pending-human-rights-and-visual-review",
+        "canonicalEligibility": false,
+        "rendererAvailability": false
+      },
+      {
+        "sourceEvidenceId": "source-evidence-p1-03-repo-revealjs",
+        "sourceId": "p1-03-repo-revealjs",
+        "reviewStatus": "unapproved",
+        "reviewEligibility": "eligible-pending-human-rights-and-visual-review",
+        "canonicalEligibility": false,
+        "rendererAvailability": false
+      }
+    ],
+    "referencesResolveToRealReviewArtifacts": true
+  },
+  "compilerEligibility": {
+    "eligible": false,
+    "reason": "false: all linked P1-03 sources are review-eligible only; human approval, canonical promotion, and renderer availability are absent."
+  },
+  "approvalState": {
+    "claimedApprovedSources": 0,
+    "claimedApprovedPatterns": 0,
+    "claimedPromotedPatterns": 0,
+    "status": "pending-human-review"
+  },
+  "result": "PASS",
+  "errors": []
+}

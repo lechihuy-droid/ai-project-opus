@@ -1,0 +1,212 @@
+{
+  "schemaVersion": "lucida-terra-render-review/v1",
+  "actor": "Terra",
+  "packageId": "system-architecture",
+  "compositionId": "SystemArchitectureFamilyReview",
+  "generatedAt": "2026-07-18T05:32:20.607Z",
+  "status": "ok",
+  "decision": "no-approval-or-promotion",
+  "failureMode": "none",
+  "registration": "pending",
+  "renderer": {
+    "entryPoint": "src/styles/families/system-architecture/renderRoot.tsx",
+    "browserExecutable": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+    "imageFormat": "png"
+  },
+  "checks": [
+    "dimensions",
+    "repeat-render-sha256",
+    "signalstats-nonblank"
+  ],
+  "remediation": {
+    "attempt": 2,
+    "reviewedScenes": [
+      "scene-02",
+      "scene-04"
+    ],
+    "rootCause": "No black-canvas pixel condition was reproducible in the 1080x1920 RGB PNG evidence. The prior review-scene map named absent TypeScript fixtures, and renderer containment plus settled capture state were implicit rather than enforced.",
+    "fixes": [
+      "bounded canvas and node-card sizing",
+      "explicit text wrapping and canvas overflow containment",
+      "fixture references aligned to JSON inputs",
+      "settled reduced-motion and static capture frames"
+    ]
+  },
+  "frames": [
+    {
+      "id": "scene-01",
+      "sceneKey": "layered-stack",
+      "frame": 42,
+      "capture": {
+        "mode": "full-motion-settled",
+        "minimumFrame": 42,
+        "settled": true
+      },
+      "output": "design/visual-library/styles/system-architecture/artifacts/frames/scene-01.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 90,
+      "sha256": "e2b1ed09b8045dbe82fbf252527c26312a21dd0dec365995a2c5ea44d2d139af",
+      "fileBytes": 122387,
+      "signalStats": {
+        "yAverage": 29.3926,
+        "yLow": 21,
+        "yHigh": 31,
+        "saturationAverage": 6.44784
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 10
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "e2b1ed09b8045dbe82fbf252527c26312a21dd0dec365995a2c5ea44d2d139af"
+      }
+    },
+    {
+      "id": "scene-02",
+      "sceneKey": "request-flow",
+      "frame": 30,
+      "capture": {
+        "mode": "reduced-motion-settled",
+        "minimumFrame": 30,
+        "settled": true
+      },
+      "output": "design/visual-library/styles/system-architecture/artifacts/frames/scene-02.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 90,
+      "sha256": "481373cc120fb3b70908cd9b8a6f7a6dbb2e505a12b433571b313bebc9e09adf",
+      "fileBytes": 125881,
+      "signalStats": {
+        "yAverage": 29.2737,
+        "yLow": 21,
+        "yHigh": 31,
+        "saturationAverage": 6.47258
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 10
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "481373cc120fb3b70908cd9b8a6f7a6dbb2e505a12b433571b313bebc9e09adf"
+      }
+    },
+    {
+      "id": "scene-03",
+      "sceneKey": "agent-graph",
+      "frame": 42,
+      "capture": {
+        "mode": "full-motion-settled",
+        "minimumFrame": 42,
+        "settled": true
+      },
+      "output": "design/visual-library/styles/system-architecture/artifacts/frames/scene-03.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 90,
+      "sha256": "6ec75a11c885c5ab3cf69fb243e08d3872e7d820f35621702f7596728d2f52c4",
+      "fileBytes": 137502,
+      "signalStats": {
+        "yAverage": 29.7335,
+        "yLow": 21,
+        "yHigh": 31,
+        "saturationAverage": 6.49281
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 10
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "6ec75a11c885c5ab3cf69fb243e08d3872e7d820f35621702f7596728d2f52c4"
+      }
+    },
+    {
+      "id": "scene-04",
+      "sceneKey": "data-pipeline",
+      "frame": 30,
+      "capture": {
+        "mode": "reduced-motion-settled",
+        "minimumFrame": 30,
+        "settled": true
+      },
+      "output": "design/visual-library/styles/system-architecture/artifacts/frames/scene-04.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 90,
+      "sha256": "7af4f6d8283ee77154bb7c156ac0eae6256a27ca73bc3cb3ffcd8763cda6ba9d",
+      "fileBytes": 145028,
+      "signalStats": {
+        "yAverage": 29.8272,
+        "yLow": 21,
+        "yHigh": 31,
+        "saturationAverage": 6.50231
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 10
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "7af4f6d8283ee77154bb7c156ac0eae6256a27ca73bc3cb3ffcd8763cda6ba9d"
+      }
+    },
+    {
+      "id": "scene-05",
+      "sceneKey": "dependency-map",
+      "frame": 0,
+      "capture": {
+        "mode": "static-complete",
+        "minimumFrame": 0,
+        "settled": true
+      },
+      "output": "design/visual-library/styles/system-architecture/artifacts/frames/scene-05.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "durationInFrames": 60,
+      "sha256": "1639afcf58a0d6a6baa3bc046242f98f2ef4c11b3611e25034f498e20871d645",
+      "fileBytes": 112981,
+      "signalStats": {
+        "yAverage": 27.604,
+        "yLow": 21,
+        "yHigh": 31,
+        "saturationAverage": 6.18288
+      },
+      "nonBlank": {
+        "passed": true,
+        "heuristic": "signalstats dynamic range or saturation threshold",
+        "dynamicRange": 10
+      },
+      "deterministic": {
+        "passed": true,
+        "repeatedSha256": "1639afcf58a0d6a6baa3bc046242f98f2ef4c11b3611e25034f498e20871d645"
+      }
+    }
+  ],
+  "summary": {
+    "renderedFrameCount": 5,
+    "nonBlankFrames": 5,
+    "deterministicFrames": 5,
+    "settledCaptureFrames": 5,
+    "dimensionsValid": true
+  },
+  "limitations": [
+    "No approval, promotion, registration, registry, Director, or global documentation was changed."
+  ]
+}

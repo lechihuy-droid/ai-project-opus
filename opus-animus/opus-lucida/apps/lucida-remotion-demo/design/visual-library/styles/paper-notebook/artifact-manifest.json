@@ -37,9 +37,9 @@
       "usage": "audit"
     },
     {
-      "id": "notes-fixture",
+      "id": "research-notes-fixture",
       "kind": "fixture",
-      "path": "pipeline/fixtures/styles/paper-notebook/notes.fixture.ts",
+      "path": "pipeline/fixtures/styles/paper-notebook/research-notes.fixture.ts",
       "usage": "validation_input"
     },
     {
@@ -49,9 +49,21 @@
       "usage": "validation_input"
     },
     {
+      "id": "annotated-paper-fixture",
+      "kind": "fixture",
+      "path": "pipeline/fixtures/styles/paper-notebook/annotated-paper.fixture.ts",
+      "usage": "validation_input"
+    },
+    {
       "id": "checklist-fixture",
       "kind": "fixture",
       "path": "pipeline/fixtures/styles/paper-notebook/checklist.fixture.ts",
+      "usage": "validation_input"
+    },
+    {
+      "id": "lab-log-fixture",
+      "kind": "fixture",
+      "path": "pipeline/fixtures/styles/paper-notebook/lab-log.fixture.ts",
       "usage": "validation_input"
     },
     {

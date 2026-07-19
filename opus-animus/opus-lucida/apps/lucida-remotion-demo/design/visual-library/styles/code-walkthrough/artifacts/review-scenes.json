@@ -1,0 +1,11 @@
+{
+  "packageId": "code-walkthrough",
+  "registration": "pending",
+  "scenes": [
+    {"sceneKey":"code-focus","fixture":"pipeline/fixtures/styles/code-walkthrough/code-focus.fixture.ts"},
+    {"sceneKey":"diff-review","fixture":"pipeline/fixtures/styles/code-walkthrough/diff-review.fixture.ts"},
+    {"sceneKey":"api-sequence","fixture":"pipeline/fixtures/styles/code-walkthrough/api-sequence.fixture.ts"},
+    {"sceneKey":"debugging-trace","fixture":"pipeline/fixtures/styles/code-walkthrough/debugging-trace.fixture.ts"},
+    {"sceneKey":"terminal-code-split","fixture":"pipeline/fixtures/styles/code-walkthrough/terminal-code-split.fixture.ts"}
+  ]
+}

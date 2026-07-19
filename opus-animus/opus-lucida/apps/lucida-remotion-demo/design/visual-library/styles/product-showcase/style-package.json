@@ -6,15 +6,33 @@
   "status": "experimental",
   "visualFamily": "product-showcase",
   "description": "Production package for asset-led product walkthrough scenes where embeddable UI media is the first-viewport signal and non-embeddable assets are represented truthfully.",
-  "tags": ["product", "showcase", "ui", "walkthrough", "assets"],
-  "supportedIntents": ["use-case", "comparison", "process", "takeaway"],
-  "recommendedIntents": ["use-case", "comparison", "takeaway"],
+  "tags": [
+    "product",
+    "showcase",
+    "ui",
+    "walkthrough",
+    "assets"
+  ],
+  "supportedIntents": [
+    "use-case",
+    "comparison",
+    "process",
+    "takeaway"
+  ],
+  "recommendedIntents": [
+    "use-case",
+    "comparison",
+    "takeaway"
+  ],
   "avoidFor": [
     "scenes without embeddable product or UI assets",
     "pure brand marketing pages where copy is the subject",
     "metric-heavy dashboards that need dense tables rather than product media"
   ],
-  "aspectRatios": ["9:16", "16:9"],
+  "aspectRatios": [
+    "9:16",
+    "16:9"
+  ],
   "contentCapacity": {
     "headlineChars": 88,
     "bodyChars": 360,
@@ -37,8 +55,15 @@
   },
   "directorCompatibility": {
     "selectionReason": "Choose when narration depends on showing an actual embeddable product/UI asset, a focused feature callout, or a truthful before-after comparison.",
-    "preferredNeighborFamilies": ["minimal-education", "technical-editorial", "dashboard-data"],
-    "bridgeFamilies": ["minimal-education", "technical-editorial"],
+    "preferredNeighborFamilies": [
+      "minimal-education",
+      "technical-editorial",
+      "dashboard-data"
+    ],
+    "bridgeFamilies": [
+      "minimal-education",
+      "technical-editorial"
+    ],
     "hardBlocks": [
       "no embed_asset product media available",
       "requested asset is style_reference only",
@@ -76,19 +101,40 @@
   },
   "sourceReferences": [
     {
-      "id": "material-design",
+      "id": "repo-mui",
       "url": "https://m3.material.io/",
-      "selectedConcepts": ["product surface clarity", "stateful components", "accessible hierarchy"]
+      "selectedConcepts": [
+        "product surface clarity",
+        "stateful components",
+        "accessible hierarchy"
+      ]
     },
     {
-      "id": "apple-human-interface",
+      "id": "image-openmoji-mobile",
       "url": "https://developer.apple.com/design/human-interface-guidelines",
-      "selectedConcepts": ["product-first presentation", "focused screenshots", "clear feature affordances"]
+      "selectedConcepts": [
+        "product-first presentation",
+        "focused screenshots",
+        "clear feature affordances"
+      ]
     },
     {
-      "id": "remotion-still-rendering",
+      "id": "web-material-web",
       "url": "https://www.remotion.dev/docs/renderer/render-still",
-      "selectedConcepts": ["deterministic still output", "frame-specific review", "local render artifacts"]
+      "selectedConcepts": [
+        "deterministic still output",
+        "frame-specific review",
+        "local render artifacts"
+      ]
+    },
+    {
+      "id": "repo-fluentui",
+      "url": "https://m3.material.io/",
+      "selectedConcepts": [
+        "product surface clarity",
+        "stateful components",
+        "accessible hierarchy"
+      ]
     }
   ],
   "qualityGate": {

@@ -1,0 +1,194 @@
+{
+  "schemaVersion": "lucida-terra-render-review/v1",
+  "actor": "Terra",
+  "packageId": "interface-walkthrough",
+  "compositionId": "InterfaceWalkthroughFamilyReview",
+  "status": "ok",
+  "decision": "no-approval-or-promotion",
+  "failureMode": "none",
+  "generatedAt": "2026-07-18T07:14:43.973Z",
+  "renderer": {
+    "tool": "authoritative-rendered-still artifact sync",
+    "entryPoint": "src/styles/families/interface-walkthrough/renderRoot.tsx",
+    "imageFormat": "png",
+    "strategy": "verify manifest record, SHA256, decoded PNG dimensions and nonblank data; byte-for-byte copy",
+    "usedDirectExecutableFallback": false
+  },
+  "checks": [
+    "five-png",
+    "1080x1920-dimensions",
+    "decoded-png-nonblank",
+    "authoritative-manifest-sha256",
+    "deterministic-byte-for-byte-copy"
+  ],
+  "validation": {
+    "deterministicArtifactSync": true,
+    "sourceManifestRecordCount": 70,
+    "sourceManifest": "design/reports/style-rag-phase1-stills/manifest.json"
+  },
+  "frames": [
+    {
+      "id": "scene-01",
+      "sceneKey": "annotated-screen",
+      "frame": 42,
+      "output": "design/visual-library/styles/interface-walkthrough/artifacts/frames/scene-01.png",
+      "source": {
+        "manifest": "design/reports/style-rag-phase1-stills/manifest.json",
+        "key": "interface-walkthrough:annotated-screen",
+        "output": "design/reports/style-rag-phase1-stills/stills/interface-walkthrough/annotated-screen.png",
+        "sha256": "1e15eb54c6a9587fe406c8886ffc2441a5a272aa0253ecb45da70ecc219d54da"
+      },
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "1e15eb54c6a9587fe406c8886ffc2441a5a272aa0253ecb45da70ecc219d54da",
+      "fileBytes": 108757,
+      "nonBlank": {
+        "width": 1080,
+        "height": 1920,
+        "dynamicRange": 222,
+        "saturationAverage": 22.14594,
+        "passed": true,
+        "heuristic": "decoded PNG luminance range or RGB saturation threshold"
+      },
+      "deterministic": {
+        "passed": true,
+        "method": "authoritative-manifest-sha256-and-byte-for-byte-copy"
+      }
+    },
+    {
+      "id": "scene-02",
+      "sceneKey": "step-flow",
+      "frame": 42,
+      "output": "design/visual-library/styles/interface-walkthrough/artifacts/frames/scene-02.png",
+      "source": {
+        "manifest": "design/reports/style-rag-phase1-stills/manifest.json",
+        "key": "interface-walkthrough:step-flow",
+        "output": "design/reports/style-rag-phase1-stills/stills/interface-walkthrough/step-flow.png",
+        "sha256": "398bd9bc0861a6a9ca514ca4165d55fc0b74c1354b879eedd56e68622870c725"
+      },
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "398bd9bc0861a6a9ca514ca4165d55fc0b74c1354b879eedd56e68622870c725",
+      "fileBytes": 117105,
+      "nonBlank": {
+        "width": 1080,
+        "height": 1920,
+        "dynamicRange": 222,
+        "saturationAverage": 22.56599,
+        "passed": true,
+        "heuristic": "decoded PNG luminance range or RGB saturation threshold"
+      },
+      "deterministic": {
+        "passed": true,
+        "method": "authoritative-manifest-sha256-and-byte-for-byte-copy"
+      }
+    },
+    {
+      "id": "scene-03",
+      "sceneKey": "feature-tour",
+      "frame": 42,
+      "output": "design/visual-library/styles/interface-walkthrough/artifacts/frames/scene-03.png",
+      "source": {
+        "manifest": "design/reports/style-rag-phase1-stills/manifest.json",
+        "key": "interface-walkthrough:feature-tour",
+        "output": "design/reports/style-rag-phase1-stills/stills/interface-walkthrough/feature-tour.png",
+        "sha256": "9afec47f90c95cb7ce4216b23304f6dc8968f225d5f2f14011b55a9329643742"
+      },
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "9afec47f90c95cb7ce4216b23304f6dc8968f225d5f2f14011b55a9329643742",
+      "fileBytes": 113861,
+      "nonBlank": {
+        "width": 1080,
+        "height": 1920,
+        "dynamicRange": 222,
+        "saturationAverage": 22.2141,
+        "passed": true,
+        "heuristic": "decoded PNG luminance range or RGB saturation threshold"
+      },
+      "deterministic": {
+        "passed": true,
+        "method": "authoritative-manifest-sha256-and-byte-for-byte-copy"
+      }
+    },
+    {
+      "id": "scene-04",
+      "sceneKey": "before-after-ui",
+      "frame": 42,
+      "output": "design/visual-library/styles/interface-walkthrough/artifacts/frames/scene-04.png",
+      "source": {
+        "manifest": "design/reports/style-rag-phase1-stills/manifest.json",
+        "key": "interface-walkthrough:before-after-ui",
+        "output": "design/reports/style-rag-phase1-stills/stills/interface-walkthrough/before-after-ui.png",
+        "sha256": "2baac891964ec29df41387e5c15e3b02ac91bb2ce410e923c9f4dc964943f1ad"
+      },
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "2baac891964ec29df41387e5c15e3b02ac91bb2ce410e923c9f4dc964943f1ad",
+      "fileBytes": 114229,
+      "nonBlank": {
+        "width": 1080,
+        "height": 1920,
+        "dynamicRange": 222,
+        "saturationAverage": 22.37969,
+        "passed": true,
+        "heuristic": "decoded PNG luminance range or RGB saturation threshold"
+      },
+      "deterministic": {
+        "passed": true,
+        "method": "authoritative-manifest-sha256-and-byte-for-byte-copy"
+      }
+    },
+    {
+      "id": "scene-05",
+      "sceneKey": "state-transition",
+      "frame": 42,
+      "output": "design/visual-library/styles/interface-walkthrough/artifacts/frames/scene-05.png",
+      "source": {
+        "manifest": "design/reports/style-rag-phase1-stills/manifest.json",
+        "key": "interface-walkthrough:state-transition",
+        "output": "design/reports/style-rag-phase1-stills/stills/interface-walkthrough/state-transition.png",
+        "sha256": "4a957f1624f74808f697de14ca90b9eb60b8399828d2a1f48f02e5e05e22ccf8"
+      },
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "4a957f1624f74808f697de14ca90b9eb60b8399828d2a1f48f02e5e05e22ccf8",
+      "fileBytes": 111801,
+      "nonBlank": {
+        "width": 1080,
+        "height": 1920,
+        "dynamicRange": 228,
+        "saturationAverage": 21.76625,
+        "passed": true,
+        "heuristic": "decoded PNG luminance range or RGB saturation threshold"
+      },
+      "deterministic": {
+        "passed": true,
+        "method": "authoritative-manifest-sha256-and-byte-for-byte-copy"
+      }
+    }
+  ],
+  "summary": {
+    "requestedFrames": 5,
+    "renderedFrames": 5,
+    "nonBlankFrames": 5,
+    "dimensionsValid": true,
+    "deterministicFrames": 5,
+    "sourceManifestSha256Valid": true
+  },
+  "failure": null,
+  "limitations": [
+    "Frames are synchronized from existing authoritative rendered PNG artifacts; this operation does not render scenes.",
+    "No approval, promotion, registration, variant metadata, patterns, renderer behavior, Director, or global manifest was changed."
+  ]
+}

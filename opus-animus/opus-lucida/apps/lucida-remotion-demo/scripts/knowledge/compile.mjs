@@ -20,7 +20,7 @@ import {
   stableJson,
   writeStableJson,
 } from "./index-utils.mjs";
-import { compileReferences } from "./compile-references.mjs";
+import { compileReferences, compileStylePatterns } from "./compile-references.mjs";
 import { domainCounts } from "./evidence-domain.mjs";
 
 const appRoot = process.cwd();
@@ -41,6 +41,7 @@ if (validation.status !== 0) {
 }
 
 const referenceIndex = compileReferences({ appRoot });
+const stylePatternIndex = compileStylePatterns({ appRoot });
 
 const templateEntries = fs
   .readdirSync(templatesDir, { withFileTypes: true })
@@ -143,6 +144,7 @@ try {
     "director-index.json": directorIndex,
     "compatibility-index.json": compatibilityIndex,
     "reference-index.json": referenceIndex,
+    "style-pattern-index.json": stylePatternIndex,
   };
   for (const [file, value] of Object.entries(artifacts)) {
     writeStableJson(path.join(stagingDir, file), value);
@@ -159,6 +161,9 @@ try {
       referenceChunks: referenceIndex.chunks.length,
       referenceDocuments: referenceIndex.documents.length,
       referenceSources: referenceIndex.sources.length,
+      stylePatternPackages: stylePatternIndex.packages.length,
+      stylePatternVariants: stylePatternIndex.variants.length,
+      stylePatterns: stylePatternIndex.patterns.length,
       templates: templateEntries.length,
     },
     domainCounts: {
@@ -184,4 +189,4 @@ try {
   throw error;
 }
 
-console.log(`Knowledge compile passed: ${templateEntries.length} template(s), ${adapterEntries.length} adapter(s), ${referenceIndex.sources.length} approved reference source(s).`);
+console.log(`Knowledge compile passed: ${templateEntries.length} template(s), ${adapterEntries.length} adapter(s), ${referenceIndex.sources.length} approved reference source(s), ${stylePatternIndex.patterns.length} eligible style pattern(s).`);

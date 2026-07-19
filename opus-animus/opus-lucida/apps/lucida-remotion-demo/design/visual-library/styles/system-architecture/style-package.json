@@ -1,0 +1,194 @@
+{
+  "schemaVersion": "lucida-style-package/v1",
+  "id": "system-architecture",
+  "label": "System Architecture",
+  "version": "0.1.0",
+  "status": "draft",
+  "visualFamily": "system-architecture",
+  "description": "Draft portrait package for inspectable system boundaries, agent coordination, dependencies, and data movement.",
+  "tags": [
+    "systems",
+    "architecture",
+    "agents",
+    "dependencies",
+    "data-flow"
+  ],
+  "supportedIntents": [
+    "explain",
+    "process",
+    "compare"
+  ],
+  "recommendedIntents": [
+    "explain",
+    "process"
+  ],
+  "avoidFor": [
+    "image-led product reveals",
+    "unstructured lifestyle montage",
+    "long-form code review"
+  ],
+  "aspectRatios": [
+    "9:16"
+  ],
+  "contentCapacity": {
+    "headlineChars": 86,
+    "bodyChars": 220,
+    "bulletsMaxItems": 3,
+    "maxItems": 9,
+    "maxPanels": 2
+  },
+  "renderCost": {
+    "tier": "medium",
+    "estimatedSceneComplexity": 6,
+    "notes": "Fixed diagram coordinates with lightweight entrance motion."
+  },
+  "reducedMotion": {
+    "strategy": "simplified-motion",
+    "notes": "Reduce and static policies preserve node positions and connector geometry."
+  },
+  "accessibility": {
+    "contrast": "AA",
+    "notes": "Nodes use textual labels, connector labels are supplemental, and caption space remains reserved."
+  },
+  "directorCompatibility": {
+    "selectionReason": "Use when components, boundaries, dependencies, or movement between named system parts are the primary evidence.",
+    "hardBlocks": [
+      "Registration remains pending outside this package ownership."
+    ]
+  },
+  "files": {
+    "visual": "./visual.json",
+    "tokens": "./tokens.json",
+    "componentMap": "./component-map.json",
+    "provenance": "./provenance.md",
+    "artifactManifest": "./artifact-manifest.json"
+  },
+  "sourcePolicy": {
+    "copyStatus": "not-assessed",
+    "registeredMedia": "none",
+    "notes": "Draft implementation uses local fixtures and Lucida shared primitives. No source approval or pattern claim is made."
+  },
+  "tokens": {
+    "palette": "graphite canvas with cyan system focus, green healthy flow, amber warning, and coral blocked state",
+    "typography": "UI sans for labels and compact system metadata",
+    "surface": "fixed low-radius node cards and explicit connector lines"
+  },
+  "layoutGrammar": [
+    "Keep named system nodes readable before decorative effects.",
+    "Use fixed connector geometry and textual node states.",
+    "Preserve an uncluttered lower caption-safe surface.",
+    "Do not animate node positions or connector dimensions."
+  ],
+  "componentPrimitives": [
+    {
+      "id": "architecture-canvas",
+      "role": "content",
+      "notes": "Fixed-coordinate nodes and directional connectors."
+    },
+    {
+      "id": "system-node",
+      "role": "content",
+      "notes": "Named component with role and state."
+    },
+    {
+      "id": "caption-safe-panel",
+      "role": "caption",
+      "notes": "Lower safe-area explanation panel."
+    }
+  ],
+  "templateBindings": {
+    "preferredTemplates": [
+      "layered-stack",
+      "request-flow",
+      "agent-graph",
+      "data-pipeline",
+      "dependency-map"
+    ],
+    "layouts": [
+      "layered",
+      "flow",
+      "graph",
+      "pipeline",
+      "dependency"
+    ],
+    "backgroundEffects": [
+      "quiet-dot-grid"
+    ],
+    "motionPreset": "architecture-entrance"
+  },
+  "sourceArtifacts": {
+    "sourceReviewReport": "./artifacts/source-review-report.json"
+  },
+  "validationArtifacts": {
+    "demoVideoMap": "./artifacts/demo-video-map.json",
+    "renderProps": "./artifacts/render-props.json",
+    "previewFrames": [
+      "./artifacts/frames/scene-01.png",
+      "./artifacts/frames/scene-02.png",
+      "./artifacts/frames/scene-03.png",
+      "./artifacts/frames/scene-04.png",
+      "./artifacts/frames/scene-05.png"
+    ],
+    "renderReport": "./artifacts/render-report.json",
+    "videoBinaryRegistered": false
+  },
+  "sourceReferences": [
+    {
+      "id": "web-mermaid-architecture",
+      "url": "https://lucida.local/design/visual-library/styles/system-architecture/provenance.md",
+      "selectedConcepts": [
+        "package-local ownership",
+        "draft status",
+        "no source approval or visual-pattern claim"
+      ]
+    },
+    {
+      "id": "web-diagrams",
+      "url": "https://lucida.local/design/visual-library/styles/system-architecture/artifacts/source-review-report.json",
+      "selectedConcepts": [
+        "local fixtures and shared primitives",
+        "no registered media",
+        "source approval not claimed"
+      ]
+    },
+    {
+      "id": "repo-diagrams",
+      "url": "https://lucida.local/design/visual-library/styles/system-architecture/provenance.md",
+      "selectedConcepts": [
+        "package-local ownership",
+        "draft status",
+        "no source approval or visual-pattern claim"
+      ]
+    },
+    {
+      "id": "web-structurizr-diagrams",
+      "url": "https://lucida.local/design/visual-library/styles/system-architecture/artifacts/source-review-report.json",
+      "selectedConcepts": [
+        "local fixtures and shared primitives",
+        "no registered media",
+        "source approval not claimed"
+      ]
+    },
+    {
+      "id": "repo-mermaid",
+      "url": "https://lucida.local/design/visual-library/styles/system-architecture/provenance.md",
+      "selectedConcepts": [
+        "package-local ownership",
+        "draft status",
+        "no source approval or visual-pattern claim"
+      ]
+    }
+  ],
+  "qualityGate": {
+    "validated": false,
+    "checks": [
+      "targeted TypeScript check pending",
+      "local still render pending",
+      "registration intentionally pending"
+    ],
+    "knownLimitations": [
+      "This draft is not registered for runtime selection.",
+      "No source approval or visual-pattern claim is included."
+    ]
+  }
+}

@@ -1,0 +1,194 @@
+{
+  "schemaVersion": "lucida-terra-render-review/v1",
+  "actor": "Terra",
+  "packageId": "code-walkthrough",
+  "compositionId": "CodeWalkthroughFamilyReview",
+  "status": "ok",
+  "decision": "no-approval-or-promotion",
+  "failureMode": "none",
+  "generatedAt": "2026-07-18T07:11:05.009Z",
+  "renderer": {
+    "tool": "authoritative-rendered-still artifact sync",
+    "entryPoint": "src/styles/families/code-walkthrough/renderRoot.tsx",
+    "imageFormat": "png",
+    "strategy": "verify manifest record, SHA256, decoded PNG dimensions and nonblank data; byte-for-byte copy",
+    "usedDirectExecutableFallback": false
+  },
+  "checks": [
+    "five-png",
+    "1080x1920-dimensions",
+    "decoded-png-nonblank",
+    "authoritative-manifest-sha256",
+    "deterministic-byte-for-byte-copy"
+  ],
+  "validation": {
+    "deterministicArtifactSync": true,
+    "sourceManifestRecordCount": 70,
+    "sourceManifest": "design/reports/style-rag-phase1-stills/manifest.json"
+  },
+  "frames": [
+    {
+      "id": "scene-01",
+      "sceneKey": "code-focus",
+      "frame": 42,
+      "output": "design/visual-library/styles/code-walkthrough/artifacts/frames/scene-01.png",
+      "source": {
+        "manifest": "design/reports/style-rag-phase1-stills/manifest.json",
+        "key": "code-walkthrough:code-focus",
+        "output": "design/reports/style-rag-phase1-stills/stills/code-walkthrough/code-focus.png",
+        "sha256": "631d38a1b45173ff3be3c92f55da03acfde48105c8df8787eedd6c3af3b274b7"
+      },
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "631d38a1b45173ff3be3c92f55da03acfde48105c8df8787eedd6c3af3b274b7",
+      "fileBytes": 168744,
+      "nonBlank": {
+        "width": 1080,
+        "height": 1920,
+        "dynamicRange": 230,
+        "saturationAverage": 10.15914,
+        "passed": true,
+        "heuristic": "decoded PNG luminance range or RGB saturation threshold"
+      },
+      "deterministic": {
+        "passed": true,
+        "method": "authoritative-manifest-sha256-and-byte-for-byte-copy"
+      }
+    },
+    {
+      "id": "scene-02",
+      "sceneKey": "diff-review",
+      "frame": 42,
+      "output": "design/visual-library/styles/code-walkthrough/artifacts/frames/scene-02.png",
+      "source": {
+        "manifest": "design/reports/style-rag-phase1-stills/manifest.json",
+        "key": "code-walkthrough:diff-review",
+        "output": "design/reports/style-rag-phase1-stills/stills/code-walkthrough/diff-review.png",
+        "sha256": "e704051e39efcff4cd1b61ba316f54d348fef208a7fedd9906adb98c3dd8f56f"
+      },
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "e704051e39efcff4cd1b61ba316f54d348fef208a7fedd9906adb98c3dd8f56f",
+      "fileBytes": 172869,
+      "nonBlank": {
+        "width": 1080,
+        "height": 1920,
+        "dynamicRange": 230,
+        "saturationAverage": 10.18871,
+        "passed": true,
+        "heuristic": "decoded PNG luminance range or RGB saturation threshold"
+      },
+      "deterministic": {
+        "passed": true,
+        "method": "authoritative-manifest-sha256-and-byte-for-byte-copy"
+      }
+    },
+    {
+      "id": "scene-03",
+      "sceneKey": "api-sequence",
+      "frame": 42,
+      "output": "design/visual-library/styles/code-walkthrough/artifacts/frames/scene-03.png",
+      "source": {
+        "manifest": "design/reports/style-rag-phase1-stills/manifest.json",
+        "key": "code-walkthrough:api-sequence",
+        "output": "design/reports/style-rag-phase1-stills/stills/code-walkthrough/api-sequence.png",
+        "sha256": "0eab1e64dd1af7cc1dfd5cd92c82bdc170396c0b068d7a8d47220ca0e1e27e2a"
+      },
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "0eab1e64dd1af7cc1dfd5cd92c82bdc170396c0b068d7a8d47220ca0e1e27e2a",
+      "fileBytes": 171980,
+      "nonBlank": {
+        "width": 1080,
+        "height": 1920,
+        "dynamicRange": 230,
+        "saturationAverage": 10.02637,
+        "passed": true,
+        "heuristic": "decoded PNG luminance range or RGB saturation threshold"
+      },
+      "deterministic": {
+        "passed": true,
+        "method": "authoritative-manifest-sha256-and-byte-for-byte-copy"
+      }
+    },
+    {
+      "id": "scene-04",
+      "sceneKey": "debugging-trace",
+      "frame": 42,
+      "output": "design/visual-library/styles/code-walkthrough/artifacts/frames/scene-04.png",
+      "source": {
+        "manifest": "design/reports/style-rag-phase1-stills/manifest.json",
+        "key": "code-walkthrough:debugging-trace",
+        "output": "design/reports/style-rag-phase1-stills/stills/code-walkthrough/debugging-trace.png",
+        "sha256": "15bc1273c02d74544a656755e317318fd6d684a04c52bca77229176e4f3ef034"
+      },
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "15bc1273c02d74544a656755e317318fd6d684a04c52bca77229176e4f3ef034",
+      "fileBytes": 166676,
+      "nonBlank": {
+        "width": 1080,
+        "height": 1920,
+        "dynamicRange": 230,
+        "saturationAverage": 9.95007,
+        "passed": true,
+        "heuristic": "decoded PNG luminance range or RGB saturation threshold"
+      },
+      "deterministic": {
+        "passed": true,
+        "method": "authoritative-manifest-sha256-and-byte-for-byte-copy"
+      }
+    },
+    {
+      "id": "scene-05",
+      "sceneKey": "terminal-code-split",
+      "frame": 42,
+      "output": "design/visual-library/styles/code-walkthrough/artifacts/frames/scene-05.png",
+      "source": {
+        "manifest": "design/reports/style-rag-phase1-stills/manifest.json",
+        "key": "code-walkthrough:terminal-code-split",
+        "output": "design/reports/style-rag-phase1-stills/stills/code-walkthrough/terminal-code-split.png",
+        "sha256": "99def2714fd1859ab06b72d162346abf90370d693c7b5eb9314d681a6b1409fe"
+      },
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "99def2714fd1859ab06b72d162346abf90370d693c7b5eb9314d681a6b1409fe",
+      "fileBytes": 137554,
+      "nonBlank": {
+        "width": 1080,
+        "height": 1920,
+        "dynamicRange": 233,
+        "saturationAverage": 9.17858,
+        "passed": true,
+        "heuristic": "decoded PNG luminance range or RGB saturation threshold"
+      },
+      "deterministic": {
+        "passed": true,
+        "method": "authoritative-manifest-sha256-and-byte-for-byte-copy"
+      }
+    }
+  ],
+  "summary": {
+    "requestedFrames": 5,
+    "renderedFrames": 5,
+    "nonBlankFrames": 5,
+    "dimensionsValid": true,
+    "deterministicFrames": 5,
+    "sourceManifestSha256Valid": true
+  },
+  "failure": null,
+  "limitations": [
+    "Frames are synchronized from existing authoritative rendered PNG artifacts; this operation does not render scenes.",
+    "No approval, promotion, registration, variant metadata, patterns, renderer behavior, Director, or global manifest was changed."
+  ]
+}

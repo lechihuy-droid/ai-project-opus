@@ -169,3 +169,28 @@ Every canonical source, document, compiled chunk, search record, query, and sele
 3. `mergeKnowledgeSelections()` writes `lucida-knowledge-selection/v2` with both domains in one event-indexed artifact while preserving the domain on every evidence item.
 
 The Director receives only `visual-style` evidence. The mapper rejects every unresolved `factRef` and every reference bound to non-factual evidence. Chunk IDs remain in the trace as retrieval evidence, while the canonical source ID is the stable fact reference used by ContentBrief. Remotion still receives only compiled `video-map.json` and never queries either repository.
+
+## 12. Style RAG Phase 1 execution boundary
+
+Phase 1 follows the approved [14-package implementation standard](../planning/STYLE_RAG_PHASE1_14_PACKAGE_STANDARD.md) and is tracked in the [execution ledger](../planning/STYLE_RAG_PHASE1_EXECUTION_LEDGER.md). Its scope is **visual-style only**. The existing `factual` corpus, factual query path, and `factRefs` binding remain separate and unchanged.
+
+Phase 1 targets, not completion claims:
+
+- 100 unique **approved** `visual-style` sources;
+- 14 renderable style packages;
+- 5 target variants per package (70 total);
+- 300-600 approved visual patterns, with 420 as the operating target.
+
+Each source and proposed pattern must follow this controlled path:
+
+```text
+raw snapshot -> sanitize/normalize -> Terra classification proposal
+-> human source/pattern approval -> canonical promotion
+-> compile and SQLite projection -> Luna independent verification
+```
+
+Raw candidates and Terra proposals are not production evidence. Promotion requires an approved immutable revision or snapshot checksum, rights evidence, and reviewer record. Luna independently verifies source counts, package/type coverage, pattern evidence, retrieval-domain isolation, renderer availability, and renderability before a batch can be credited toward the Phase 1 targets.
+
+Sol is standards-only: Sol may define contracts, quotas, gates, and final acceptance findings, but may not collect, classify, assign, or approve sources/patterns. Terra owns bounded collection, sanitization, classification proposals, implementation, and remediation; human reviewers own approval and visual judgment.
+
+The corpus is not currently claimed complete. A package, variant, source, or pattern counts only when its canonical artifact and applicable human/Luna gate evidence are recorded in the execution ledger.
