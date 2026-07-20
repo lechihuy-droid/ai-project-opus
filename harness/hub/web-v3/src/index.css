@@ -39,6 +39,12 @@ button { font: inherit; color: inherit; }
 .main > header span { color: #8B92A3; }
 .main > header b { color: #E8EAF0; }
 .content > div { padding: 28px; }
+.content:has(.chat-grid) { overflow: hidden; }
+.chat-grid.panes-1 { grid-template-columns: 1fr; }
+.chat-grid.panes-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.chat-grid.panes-3, .chat-grid.panes-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); }
+.message a { color: #5B9CF5; }
+@media (max-width: 900px) { .chat-grid.panes-2, .chat-grid.panes-3, .chat-grid.panes-4 { grid-template-columns: 1fr; grid-template-rows: none; overflow-y: auto; } .chat-grid .pane { min-height: 360px; } }
 .content h1 { color: #E8EAF0; font-size: 24px; margin: 0; }
 .content p { color: #8B92A3; margin-top: 8px; }
 @media (max-width: 700px) { .app { grid-template-columns: 190px 1fr; } }
