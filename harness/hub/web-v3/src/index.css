@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #14161B;
+  --color-panel: #1B1E25;
+  --color-panel2: #20242D;
+  --color-line: #2B303B;
+  --color-text: #E8EAF0;
+  --color-dim: #8B92A3;
+  --color-faint: #5A6172;
+  --color-claude: #D97757;
+  --color-codex: #A78BFA;
+  --color-nvidia: #76B900;
+  --color-gemini: #5B9CF5;
+  --color-gate: #E4B15E;
+  --color-ok: #5FBF77;
+  --color-err: #E06C75;
+  --font-sans: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Cascadia Code", "Consolas", monospace;
+}
+
+:root { font-family: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif; color: #E8EAF0; background: #14161B; font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body { background: #14161B; color: #E8EAF0; font-size: 14px; line-height: 1.5; }
+button { font: inherit; color: inherit; }
+.app { display: grid; grid-template-columns: 236px 1fr; height: 100vh; }
+.main { display: flex; flex-direction: column; min-width: 0; }
+.content { flex: 1; overflow: auto; }
+.nav-item:focus-visible { outline: 2px solid #5B9CF5; outline-offset: 2px; }
+.app > aside { background: #1B1E25; border-right: 1px solid #2B303B; display: flex; flex-direction: column; padding: 14px 10px; }
+.app > aside > div:first-child { display: flex; align-items: center; gap: 10px; padding: 8px 10px 16px; }
+.app > aside a { color: #8B92A3; display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-radius: 8px; text-decoration: none; }
+.app > aside a:hover, .app > aside a.active { background: #20242D; color: #E8EAF0; }
+.app > aside > div:not(:first-child) > div { color: #5A6172; font-size: 10px; font-weight: 600; letter-spacing: .14em; padding: 14px 10px 5px; }
+.app > aside > div:last-child { margin-top: auto; border-top: 1px solid #2B303B; color: #5A6172; font-size: 11px; padding: 12px 10px 4px; }
+.main > header { display: flex; align-items: center; padding: 10px 18px; background: #1B1E25; border-bottom: 1px solid #2B303B; }
+.main > header > div { margin-left: auto; display: flex; gap: 8px; }
+.main > header span { color: #8B92A3; }
+.main > header b { color: #E8EAF0; }
+.content > div { padding: 28px; }
+.content h1 { color: #E8EAF0; font-size: 24px; margin: 0; }
+.content p { color: #8B92A3; margin-top: 8px; }
+@media (max-width: 700px) { .app { grid-template-columns: 190px 1fr; } }

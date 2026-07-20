@@ -72,3 +72,6 @@ Thumbs.db
 .obsidian/workspace-mobile.json
 .obsidian/cache
 .obsidian/graph.json
+
+# pnpm content-addressable store (side effect of codex pnpm install)
+.pnpm-store/

@@ -63,7 +63,10 @@ async def lifespan(_app: FastAPI):
 
 app = FastAPI(title="Harness Hub", lifespan=lifespan)
 WEB_DIR = config.HUB_DIR / "web"
+WEB_V3_DIST = HUB_DIR / "web-v3" / "dist"
 app.mount("/static", StaticFiles(directory=WEB_DIR), name="static")
+if WEB_V3_DIST.exists():
+    app.mount("/assets", StaticFiles(directory=str(WEB_V3_DIST / "assets")), name="assets-v3")
 
 _CSRF_SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
 
@@ -117,6 +120,14 @@ def _chat_messages(value: object) -> list[dict[str, str]]:
 
 @app.get("/")
 def index() -> FileResponse:
+    v3_index = WEB_V3_DIST / "index.html"
+    if v3_index.exists():
+        return FileResponse(v3_index)
+    return FileResponse(WEB_DIR / "index.html")
+
+
+@app.get("/legacy")
+def legacy_index() -> FileResponse:
     return FileResponse(WEB_DIR / "index.html")
 
 
