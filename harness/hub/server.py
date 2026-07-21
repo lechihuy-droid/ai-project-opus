@@ -27,6 +27,7 @@ from services import (
     replay,
     runs,
     runtime_agents,
+    runtime_artifacts,
     runtime_events,
     runtime_interrupts,
     runtime_memory,
@@ -668,6 +669,22 @@ def api_workflow_run(workflow_id: str, payload: dict[str, object]):
     if errors:
         return JSONResponse(status_code=400, content={"errors": errors})
     return StreamingResponse(workflow_exec.create_workflow_run_stream(workflow_id, objective), media_type="text/event-stream")
+
+
+@app.get("/api/workflows/runs/{run_id}/artifacts")
+def api_workflow_run_artifacts(run_id: str) -> dict[str, object]:
+    try:
+        return {"artifacts": runtime_artifacts.list_artifacts(run_id)}
+    except (FileNotFoundError, PermissionError) as exc:
+        raise HTTPException(status_code=404) from exc
+
+
+@app.get("/api/workflows/runs/{run_id}/artifacts/{name}")
+def api_workflow_run_artifact(run_id: str, name: str) -> dict[str, str]:
+    try:
+        return {"name": name, "text": runtime_artifacts.read_artifact(run_id, name)}
+    except (FileNotFoundError, PermissionError) as exc:
+        raise HTTPException(status_code=404) from exc
 
 
 @app.post("/api/workflows/runs/{run_id}/interrupts/{interrupt_id}/resume")

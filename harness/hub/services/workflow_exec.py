@@ -6,7 +6,7 @@ import json
 import re
 from typing import Any
 
-from services import governance, runtime_checkpoint, runtime_children, runtime_events, runtime_interrupts, runtime_state, workflow
+from services import governance, runtime_artifacts, runtime_checkpoint, runtime_children, runtime_events, runtime_interrupts, runtime_state, workflow
 from services.providers import get_provider
 
 
@@ -232,6 +232,9 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
 
             node_id = str(node["id"])
             node_outputs[node_id] = "".join(output)
+            full = node_outputs[node_id]
+            rel = runtime_artifacts.write_node_artifact(run_id, node_id, full)
+            _event(run_id, "artifact_written", node=node_id, path=rel, chars=len(full))
             for spawn in node.get("spawn", []):
                 spawn_agent = spawn["agent"]
                 spawn_agent_id = str(spawn_agent["id"])
