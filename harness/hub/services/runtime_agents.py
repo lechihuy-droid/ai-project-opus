@@ -23,7 +23,7 @@ def _validate_agent_id(agent_id: object) -> str:
     return agent_id
 
 
-def validate_agent_profile(data: dict[str, Any]) -> None:
+def validate_agent_profile(data: dict[str, Any], known_skills: set[str] | None = None) -> None:
     if not isinstance(data, dict):
         raise ValueError("Agent profile must be a mapping")
 
@@ -41,7 +41,8 @@ def validate_agent_profile(data: dict[str, Any]) -> None:
     skills = data["skills"]
     if not isinstance(skills, list):
         raise ValueError("skills must be a list")
-    known_skills = {str(skill.get("name")) for skill in skill_library.list_skills() if skill.get("name")}
+    if known_skills is None:
+        known_skills = skill_library.list_skill_names()
     for skill in skills:
         if skill not in known_skills:
             raise ValueError(f"Unknown skill: {skill}")
@@ -78,12 +79,13 @@ def list_agents() -> list[dict[str, Any]]:
     if not AGENTS_DIR.exists():
         return []
 
+    known_skills = skill_library.list_skill_names()
     agents: list[dict[str, Any]] = []
     seen_ids: set[str] = set()
     for path in sorted(AGENTS_DIR.glob("*.agent.yaml"), key=lambda item: item.name.lower()):
         try:
             data = yaml.safe_load(path.read_text(encoding="utf-8"))
-            validate_agent_profile(data)
+            validate_agent_profile(data, known_skills)
             agent_id = str(data["id"])
             if agent_id in seen_ids:
                 LOGGER.warning("Skipping duplicate agent profile id %r in %s", agent_id, path)

@@ -76,7 +76,7 @@ def _walk_chain(nodes: list[dict[str, Any]], edges: list[Any]) -> tuple[list[str
     return walk, True
 
 
-def validate_workflow(data: dict[str, Any]) -> list[str]:
+def validate_workflow(data: dict[str, Any], available_agents: set[str] | None = None) -> list[str]:
     """Return every content-validation error for a parsed workflow."""
     errors: list[str] = []
     nodes_value = data.get("nodes")
@@ -143,7 +143,8 @@ def validate_workflow(data: dict[str, Any]) -> list[str]:
             if node.get("on_fail") not in {"interrupt", "fail"}:
                 errors.append(f"Node {node.get('id', index)} has invalid on_fail: {node.get('on_fail')}")
 
-    available_agents = {agent["id"] for agent in runtime_agents.list_agents()}
+    if available_agents is None:
+        available_agents = {agent["id"] for agent in runtime_agents.list_agents()}
     for node in normalized_nodes:
         if node.get("type", "agent") != "agent":
             continue
@@ -274,11 +275,12 @@ def list_workflows() -> list[dict[str, Any]]:
     workflows: list[dict[str, Any]] = []
     if not WORKFLOWS_DIR.exists():
         return workflows
+    available_agents = {agent["id"] for agent in runtime_agents.list_agents()}
     logger = logging.getLogger(__name__)
     for path in WORKFLOWS_DIR.glob("*.workflow.yaml"):
         try:
             data = parse_workflow(path.read_text(encoding="utf-8"))
-            errors = validate_workflow(data)
+            errors = validate_workflow(data, available_agents)
             if errors:
                 logger.warning("Skipping invalid workflow %s: %s", path, "; ".join(errors))
                 continue

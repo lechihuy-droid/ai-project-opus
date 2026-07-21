@@ -32,6 +32,7 @@ _DEFAULT_SKILL_SOURCES: dict[str, Path] = {
 }
 
 _INDEX_CACHE: dict[str, Any] = {"expires": 0.0, "fingerprint": None, "entries": []}
+_SKILL_NAMES_CACHE: dict[str, Any] = {"expires": 0.0, "fingerprint": None, "names": set()}
 _LOCK = threading.RLock()
 
 
@@ -196,6 +197,23 @@ def _scan_all_sources() -> list[dict[str, Any]]:
 
         _INDEX_CACHE.update({"expires": now + CACHE_TTL_SECONDS, "fingerprint": fingerprint, "entries": entries})
         return list(entries)
+
+
+def list_skill_names() -> set[str]:
+    """Return discovered skill names without collecting session-log telemetry."""
+    now = time.monotonic()
+    with _LOCK:
+        fingerprint = _fingerprint_sources()
+        if _SKILL_NAMES_CACHE["expires"] > now and _SKILL_NAMES_CACHE["fingerprint"] == fingerprint:
+            return set(_SKILL_NAMES_CACHE["names"])
+
+        names: set[str] = set()
+        for source, root in _sources().items():
+            for dirname, path in _iter_skill_dirs(root):
+                names.add(_read_frontmatter(path).get("name") or dirname)
+
+        _SKILL_NAMES_CACHE.update({"expires": now + CACHE_TTL_SECONDS, "fingerprint": fingerprint, "names": names})
+        return set(names)
 
 
 # --------------------------------------------------------------------------
