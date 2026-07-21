@@ -6,7 +6,7 @@ import json
 import re
 from typing import Any
 
-from services import governance, runtime_artifacts, runtime_checkpoint, runtime_children, runtime_events, runtime_interrupts, runtime_state, workflow
+from services import governance, runtime_artifacts, runtime_checkpoint, runtime_children, runtime_events, runtime_interrupts, runtime_state, runtime_validate, workflow
 from services.providers import get_provider
 
 
@@ -172,6 +172,56 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
                 return
 
             node = ir[node_index]
+            if node.get("type") == "validate":
+                node_id = str(node["id"])
+                target = str(node["target"])
+                try:
+                    text = runtime_artifacts.read_artifact(run_id, f"{target}.md")
+                except FileNotFoundError:
+                    text = str(node_outputs.get(target, ""))
+                state = runtime_state.update_run_state(
+                    run_id, {"metadata": {"current_node": node_id, "node_index": node_index}}
+                )
+                if _has_resolved_interrupt(state, node_id):
+                    if _resolved_interrupt_action(state, node_id) == "reject":
+                        yield from _fail(run_id, f"rejected at validate:{node_id}")
+                        return
+                    violations: list[dict[str, Any]] = []
+                else:
+                    violations = runtime_validate.run_checks(text, node["checks"])
+                    if violations:
+                        _event(run_id, "validation_fail", node=node_id, target=target, violations=violations)
+                        if node["on_fail"] == "fail":
+                            yield from _fail(run_id, f"validation failed at {node_id}")
+                            return
+                        runtime_interrupts.create_interrupt(
+                            run_id,
+                            reason="validation_failed",
+                            payload={"node": node_id, "target": target, "violations": violations},
+                            node=node_id,
+                        )
+                        yield runtime_events.to_sse(runtime_events.read_events(run_id)[-1])
+                        yield from _snapshot(run_id)
+                        return
+                    _event(run_id, "validation_pass", node=node_id, target=target)
+                completed_nodes.append(node_id)
+                next_index = node_index + 1
+                next_node = ir[next_index]["id"] if next_index < len(ir) else None
+                state = runtime_state.update_run_state(
+                    run_id,
+                    {"metadata": {
+                        "node_index": next_index,
+                        "completed_nodes": completed_nodes,
+                        "node_outputs": node_outputs,
+                        "agent_calls": agent_calls,
+                        "agent_elapsed_seconds": agent_elapsed,
+                        "current_node": node_id,
+                    }},
+                )
+                runtime_checkpoint.write_checkpoint(run_id, state=state, reason=f"node:{node_id}")
+                yield from _yield_event(run_id, "node_update", node=node_id, goto=next_node)
+                yield from _snapshot(run_id)
+                continue
             agent = node["agent"]
             agent_id = str(agent["id"])
             agent_budget = agent["budget"]

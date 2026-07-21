@@ -94,9 +94,17 @@ def validate_workflow(data: dict[str, Any]) -> list[str]:
             errors.append(f"Node {index} must be a mapping")
             continue
         normalized_nodes.append(node)
-        for field in ("id", "agent", "prompt", "gate"):
-            if field not in node:
-                errors.append(f"Node {index} missing required field: {field}")
+        node_type = node.get("type", "agent")
+        if node_type not in {"agent", "validate"}:
+            errors.append(f"Node {node.get('id', index)} has unknown type: {node_type}")
+        elif node_type == "agent":
+            for field in ("id", "agent", "prompt", "gate"):
+                if field not in node:
+                    errors.append(f"Node {index} missing required field: {field}")
+        else:
+            for field in ("id", "target", "checks", "on_fail"):
+                if field not in node:
+                    errors.append(f"Node {index} missing required field: {field}")
         node_id = node.get("id")
         if not isinstance(node_id, str) or not node_id:
             errors.append(f"Node {index} id must be a non-empty string")
@@ -104,13 +112,41 @@ def validate_workflow(data: dict[str, Any]) -> list[str]:
             errors.append(f"Duplicate node id: {node_id}")
         else:
             node_ids.add(node_id)
-        if node.get("gate") not in {"none", "approval"}:
-            errors.append(f"Node {node.get('id', index)} has invalid gate: {node.get('gate')}")
-        if not isinstance(node.get("prompt"), str):
-            errors.append(f"Node {node.get('id', index)} prompt must be a string")
+        if node_type == "agent":
+            if node.get("gate") not in {"none", "approval"}:
+                errors.append(f"Node {node.get('id', index)} has invalid gate: {node.get('gate')}")
+            if not isinstance(node.get("prompt"), str):
+                errors.append(f"Node {node.get('id', index)} prompt must be a string")
+        elif node_type == "validate":
+            target = node.get("target")
+            if not isinstance(target, str) or not target:
+                errors.append(f"Node {node.get('id', index)} target must be a non-empty string")
+            checks = node.get("checks")
+            if not isinstance(checks, list) or not checks:
+                errors.append(f"Node {node.get('id', index)} checks must be a non-empty list")
+            else:
+                for check_index, check in enumerate(checks):
+                    if not isinstance(check, dict):
+                        errors.append(f"Node {node.get('id', index)} check {check_index} must be a mapping")
+                        continue
+                    kind = check.get("kind")
+                    if kind not in {"min_length", "must_include", "must_not_include", "json_parseable"}:
+                        errors.append(f"Node {node.get('id', index)} check {check_index} has unknown kind: {kind}")
+                    elif kind == "min_length":
+                        value = check.get("value")
+                        if not isinstance(value, int) or isinstance(value, bool):
+                            errors.append(f"Node {node.get('id', index)} check {check_index} min_length value must be an integer")
+                    elif kind in {"must_include", "must_not_include"}:
+                        values = check.get("values")
+                        if not isinstance(values, list) or not values or not all(isinstance(value, str) for value in values):
+                            errors.append(f"Node {node.get('id', index)} check {check_index} values must be a non-empty list of strings")
+            if node.get("on_fail") not in {"interrupt", "fail"}:
+                errors.append(f"Node {node.get('id', index)} has invalid on_fail: {node.get('on_fail')}")
 
     available_agents = {agent["id"] for agent in runtime_agents.list_agents()}
     for node in normalized_nodes:
+        if node.get("type", "agent") != "agent":
+            continue
         agent_id = node.get("agent")
         if agent_id not in available_agents:
             errors.append(f"Node {node.get('id', '?')} references unknown agent: {agent_id}")
@@ -161,6 +197,15 @@ def validate_workflow(data: dict[str, Any]) -> list[str]:
         walk_position = {node_id: position for position, node_id in enumerate(walk)}
         for node in normalized_nodes:
             node_id = node.get("id")
+            if node.get("type", "agent") == "validate":
+                target = node.get("target")
+                if target not in node_ids:
+                    errors.append(f"Node {node_id} references unknown target: {target}")
+                elif target == node_id:
+                    errors.append(f"Node {node_id} cannot target itself")
+                elif isinstance(node_id, str) and walk_position.get(target, -1) >= walk_position.get(node_id, 0):
+                    errors.append(f"Node {node_id} target must be an earlier node: {target}")
+                continue
             prompt = node.get("prompt")
             if not isinstance(node_id, str):
                 continue
@@ -200,6 +245,16 @@ def build_ir(data: dict[str, Any]) -> list[dict[str, Any]]:
     result: list[dict[str, Any]] = []
     for order, node_id in enumerate(walk):
         node = nodes_by_id[node_id]
+        if node.get("type", "agent") == "validate":
+            result.append({
+                "id": node_id,
+                "type": "validate",
+                "target": node["target"],
+                "checks": [dict(check) for check in node["checks"]],
+                "on_fail": node["on_fail"],
+                "order": order,
+            })
+            continue
         result.append({
             "id": node_id,
             "agent": dict(agents_by_id[node["agent"]]),
