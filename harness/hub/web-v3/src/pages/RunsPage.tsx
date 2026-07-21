@@ -26,7 +26,9 @@ export default function RunsPage() {
 
   useEffect(() => {
     void Promise.all([listWorkflows(), listRuns()]).then(([items, runs]) => {
-      setWorkflows(items); setWorkflowId(items[0]?.id ?? ''); setRecent(runs)
+      const hashQuery = window.location.hash.split('?')[1] ?? ''
+      const requested = new URLSearchParams(hashQuery).get('wf') ?? ''
+      setWorkflows(items); setWorkflowId(items.some(item => item.id === requested) ? requested : items[0]?.id ?? ''); setRecent(runs)
     }).catch(e => setError(e instanceof ApiError ? e.message : 'Không thể tải workflow'))
   }, [])
 
