@@ -6,7 +6,7 @@ from typing import Any, Iterator
 import pytest
 
 import config
-from services import runtime_checkpoint, runtime_interrupts, runtime_state, workflow_exec
+from services import runtime_agents, runtime_checkpoint, runtime_interrupts, runtime_state, workflow_exec
 from services.providers import registry
 
 
@@ -65,6 +65,21 @@ def test_two_node_chain_renders_output_and_checkpoints(runtime_tmp: Path, monkey
     assert any("event: done" in event for event in events)
     checkpoints = runtime_checkpoint.list_checkpoints(state["thread_id"])
     assert {item["reason"] for item in checkpoints} >= {"node:a", "node:b"}
+
+
+def test_model_class_routes_to_fake_provider_without_changing_budget(runtime_tmp: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    fake = FakeProvider([[{"type": "delta", "text": "routed"}, {"type": "done", "usage": {}}]])
+    monkeypatch.setitem(registry, "fake", fake)
+    monkeypatch.setitem(config.MODEL_CLASS_ROUTING, "cheap", {"provider": "fake", "model": None})
+    ir = [{"id": "a", "agent": _agent() | {"provider": "cheap"}, "prompt": "A", "gate": "none", "order": 0}]
+    run_id = _run()
+
+    list(workflow_exec.run_workflow(ir, stop={"max_nodes": 1, "max_seconds": 60}, objective="ship", run_id=run_id))
+
+    state = runtime_state.read_run(run_id)
+    assert state["status"] == "succeeded"
+    assert state["metadata"]["agent_calls"] == {"reviewer": 1}
+    assert fake.messages
 
 
 def test_approval_gate_reenters_same_node(runtime_tmp: Path, monkeypatch: pytest.MonkeyPatch) -> None:

@@ -347,6 +347,12 @@ PROVIDERS: dict[str, Any] = {
     "gemini": {"cmd": ["gemini"]},
 }
 
+MODEL_CLASS_ROUTING: dict[str, dict[str, Any]] = {
+    "cheap": {"provider": "nvidia", "model": None},
+    "code": {"provider": "codex", "model": None},
+    "smart": {"provider": "claude", "model": None},
+}
+
 # Skill library sources (read + deploy targets)
 SKILL_SOURCES: dict[str, Path] = {
     "claude_user": Path.home() / ".claude" / "skills",

@@ -156,6 +156,11 @@ def api_providers() -> list[dict[str, object]]:
     return list_providers()
 
 
+@app.get("/api/model-classes")
+def api_model_classes() -> dict[str, dict[str, object]]:
+    return config.MODEL_CLASS_ROUTING
+
+
 @app.post("/api/chat")
 def api_chat(payload: dict[str, object]) -> StreamingResponse:
     provider_id = payload.get("provider") or "nvidia"

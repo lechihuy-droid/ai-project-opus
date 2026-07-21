@@ -137,6 +137,29 @@ def test_validate_happy_path_counts_node_and_emits_pass(runtime_tmp: Path, monke
     assert any(event["type"] == "validation_pass" for event in _events(run_id))
 
 
+def test_validate_uses_metadata_output_when_artifact_is_missing(runtime_tmp: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    fake = FakeProvider("fallback text")
+    monkeypatch.setitem(registry, "fake", fake)
+    monkeypatch.setattr(runtime_artifacts, "read_artifact", lambda *_args: (_ for _ in ()).throw(FileNotFoundError()))
+    checked: list[str] = []
+    original_run_checks = runtime_validate.run_checks
+
+    def capture(text: str, checks: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        checked.append(text)
+        return original_run_checks(text, checks)
+
+    monkeypatch.setattr(runtime_validate, "run_checks", capture)
+    run_id = _run()
+    ir = [
+        {"id": "draft", "agent": _agent(), "prompt": "Draft", "gate": "none", "order": 0},
+        {"id": "check", "type": "validate", "target": "draft", "checks": [{"kind": "must_include", "values": ["fallback"]}], "on_fail": "fail", "order": 1},
+    ]
+
+    list(workflow_exec.run_workflow(ir, stop={"max_nodes": 5, "max_seconds": 60}, objective="ship", run_id=run_id))
+
+    assert checked == ["fallback text"]
+
+
 def _events(run_id: str) -> list[dict[str, Any]]:
     return [json.loads(line) for line in (runtime_state.run_dir(run_id) / "events.jsonl").read_text(encoding="utf-8").splitlines()]
 

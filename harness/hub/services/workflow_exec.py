@@ -6,7 +6,7 @@ import json
 import re
 from typing import Any
 
-from services import governance, runtime_artifacts, runtime_checkpoint, runtime_children, runtime_events, runtime_interrupts, runtime_state, runtime_validate, workflow
+from services import governance, runtime_agents, runtime_artifacts, runtime_checkpoint, runtime_children, runtime_events, runtime_interrupts, runtime_state, runtime_validate, workflow
 from services.providers import get_provider
 
 
@@ -97,10 +97,11 @@ def _run_child(
             {"role": "user", "content": f"SYSTEM INSTRUCTIONS:\n{agent['system_prompt']}"},
             {"role": "user", "content": objective},
         ]
-        provider = get_provider(str(agent["provider"]))
+        routed = runtime_agents.resolve_provider(agent)
+        provider = get_provider(routed["provider"])
         call_started_at = runtime_state.now_iso()
         output: list[str] = []
-        for item in provider.stream_chat(messages, session_id=None, model=agent.get("model")):
+        for item in provider.stream_chat(messages, session_id=None, model=routed["model"]):
             item_type = item.get("type")
             if item_type == "delta":
                 text = str(item.get("text") or "")
@@ -261,10 +262,11 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
                 {"role": "user", "content": f"SYSTEM INSTRUCTIONS:\n{agent['system_prompt']}"},
                 {"role": "user", "content": rendered_prompt},
             ]
-            provider = get_provider(str(agent["provider"]))
+            routed = runtime_agents.resolve_provider(agent)
+            provider = get_provider(routed["provider"])
             call_started_at = runtime_state.now_iso()
             output: list[str] = []
-            for item in provider.stream_chat(messages, session_id=None, model=agent.get("model")):
+            for item in provider.stream_chat(messages, session_id=None, model=routed["model"]):
                 item_type = item.get("type")
                 if item_type == "delta":
                     text = str(item.get("text") or "")

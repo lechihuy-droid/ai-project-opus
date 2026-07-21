@@ -38,6 +38,37 @@ def test_list_agents_loads_valid_yaml(agents_tmp: Path) -> None:
     assert agents == [valid_profile()]
 
 
+@pytest.mark.parametrize(
+    ("model_class", "provider"),
+    [("cheap", "nvidia"), ("code", "codex"), ("smart", "claude")],
+)
+def test_resolve_provider_maps_model_classes(model_class: str, provider: str) -> None:
+    agent = valid_profile() | {"provider": model_class, "model": "explicit-model"}
+
+    assert runtime_agents.resolve_provider(agent) == {
+        "provider": provider,
+        "model": "explicit-model",
+        "class": model_class,
+    }
+
+
+def test_resolve_provider_preserves_real_provider() -> None:
+    agent = valid_profile()
+
+    assert runtime_agents.resolve_provider(agent) == {"provider": "claude", "model": None, "class": None}
+
+
+def test_validate_agent_profile_accepts_model_class(agents_tmp: Path) -> None:
+    runtime_agents.validate_agent_profile(valid_profile() | {"provider": "cheap"})
+
+
+def test_list_agents_preserves_authored_model_class(agents_tmp: Path) -> None:
+    profile = valid_profile() | {"provider": "cheap"}
+    runtime_agents.create_or_update_agent(profile)
+
+    assert runtime_agents.list_agents() == [profile]
+
+
 def test_list_agents_skips_invalid_yaml(agents_tmp: Path) -> None:
     invalid = valid_profile() | {"provider": "unknown"}
     agents_tmp.mkdir()
@@ -80,7 +111,7 @@ def test_agent_profile_api_crud(agents_tmp: Path) -> None:
 
     invalid = client.post("/api/agents", json=profile | {"provider": "unknown"})
     assert invalid.status_code == 400
-    assert invalid.json()["detail"] == "Unknown provider: unknown"
+    assert invalid.json()["detail"] == "Unknown provider: unknown; valid providers or model classes: cheap, code, smart"
 
     deleted = client.delete("/api/agents/reviewer")
     assert deleted.status_code == 200
@@ -89,3 +120,16 @@ def test_agent_profile_api_crud(agents_tmp: Path) -> None:
 
     missing = client.delete("/api/agents/missing")
     assert missing.status_code == 404
+
+
+def test_model_classes_api() -> None:
+    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+
+    response = client.get("/api/model-classes")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "cheap": {"provider": "nvidia", "model": None},
+        "code": {"provider": "codex", "model": None},
+        "smart": {"provider": "claude", "model": None},
+    }

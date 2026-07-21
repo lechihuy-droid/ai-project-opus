@@ -34,8 +34,9 @@ def validate_agent_profile(data: dict[str, Any]) -> None:
     _validate_agent_id(data["id"])
 
     provider = data["provider"]
-    if provider not in registry:
-        raise ValueError(f"Unknown provider: {provider}")
+    if provider not in registry and provider not in config.MODEL_CLASS_ROUTING:
+        classes = ", ".join(sorted(config.MODEL_CLASS_ROUTING))
+        raise ValueError(f"Unknown provider: {provider}; valid providers or model classes: {classes}")
 
     skills = data["skills"]
     if not isinstance(skills, list):
@@ -56,6 +57,21 @@ def validate_agent_profile(data: dict[str, Any]) -> None:
         raise ValueError("budget.seconds must be a positive integer")
     if not isinstance(budget.get("max_calls"), int) or isinstance(budget["max_calls"], bool) or budget["max_calls"] <= 0:
         raise ValueError("budget.max_calls must be a positive integer")
+
+
+def resolve_provider(agent: dict[str, Any]) -> dict[str, Any]:
+    authored_provider = agent["provider"]
+    route = config.MODEL_CLASS_ROUTING.get(authored_provider)
+    if route is None:
+        if authored_provider not in registry:
+            classes = ", ".join(sorted(config.MODEL_CLASS_ROUTING))
+            raise ValueError(f"Unknown provider: {authored_provider}; valid providers or model classes: {classes}")
+        return {"provider": authored_provider, "model": agent.get("model"), "class": None}
+    return {
+        "provider": route["provider"],
+        "model": agent.get("model") if agent.get("model") is not None else route.get("model"),
+        "class": authored_provider,
+    }
 
 
 def list_agents() -> list[dict[str, Any]]:
