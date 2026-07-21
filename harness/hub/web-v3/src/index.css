@@ -44,6 +44,9 @@ button { font: inherit; color: inherit; }
 .chat-grid.panes-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .chat-grid.panes-3, .chat-grid.panes-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); }
 .message a { color: #5B9CF5; }
+.node-pulse { animation: run-pulse 1.4s ease-in-out infinite; }
+@keyframes run-pulse { 0%,100% { opacity: .45; transform: scale(.92); } 50% { opacity: 1; transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .node-pulse { animation: none; } }
 @media (max-width: 900px) { .chat-grid.panes-2, .chat-grid.panes-3, .chat-grid.panes-4 { grid-template-columns: 1fr; grid-template-rows: none; overflow-y: auto; } .chat-grid .pane { min-height: 360px; } }
 .content h1 { color: #E8EAF0; font-size: 24px; margin: 0; }
 .content p { color: #8B92A3; margin-top: 8px; }

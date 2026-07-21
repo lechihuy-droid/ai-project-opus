@@ -5,11 +5,6 @@ export class ApiError extends Error {
 
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   const response = await apiRequest(path, init)
-  if (!response.ok) {
-    let message = `Request failed (${response.status})`
-    try { const body = await response.json() as { detail?: string; message?: string }; message = body.detail ?? body.message ?? message } catch { /* plain error response */ }
-    throw new ApiError(response.status, message)
-  }
   return response.json() as Promise<T>
 }
 
