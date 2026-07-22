@@ -25,8 +25,8 @@ html, body, #root { height: 100%; margin: 0; }
 body { background: #14161B; color: #E8EAF0; font-size: 14px; line-height: 1.5; }
 button { font: inherit; color: inherit; }
 .app { display: grid; grid-template-columns: 236px 1fr; height: 100vh; }
-.main { display: flex; flex-direction: column; min-width: 0; }
-.content { flex: 1; overflow: auto; }
+.main { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.content { flex: 1; min-height: 0; overflow: auto; }
 .nav-item:focus-visible { outline: 2px solid #5B9CF5; outline-offset: 2px; }
 .app > aside { background: #1B1E25; border-right: 1px solid #2B303B; display: flex; flex-direction: column; padding: 14px 10px; }
 .app > aside > div:first-child { display: flex; align-items: center; gap: 10px; padding: 8px 10px 16px; }
@@ -43,7 +43,7 @@ button { font: inherit; color: inherit; }
 .chat-grid.panes-1 { grid-template-columns: 1fr; }
 .chat-grid.panes-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .chat-grid.panes-3, .chat-grid.panes-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); }
-.chat-layout { display: grid; min-height: 0; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.chat-layout { display: grid; min-height: 0; overflow: hidden; grid-template-columns: minmax(0, 1fr); gap: 12px; }
 .chat-layout.has-artifact { grid-template-columns: minmax(0, 1fr) minmax(320px, 40%); }
 .chat-layout > .chat-grid { min-width: 0; min-height: 0; }
 .artifact-panel { min-height: 320px; }
