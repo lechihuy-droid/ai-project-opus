@@ -19,7 +19,6 @@ import config
 from services import (
     behavior,
     board,
-    boundary,
     chat,
     gitjobs,
     governance,
@@ -624,10 +623,7 @@ def api_workflows() -> list[dict[str, object]]:
 @app.get("/api/workflows/{workflow_id}/source")
 def api_workflow_source(workflow_id: str) -> dict[str, str]:
     try:
-        path = boundary.resolve_in_root(
-            f"{workflow_id}.workflow.yaml",
-            base=workflow.WORKFLOWS_DIR,
-        )
+        path = workflow.workflow_path(workflow_id)
         return {"id": workflow_id, "yaml_text": path.read_text(encoding="utf-8")}
     except (FileNotFoundError, PermissionError) as exc:
         raise _http_error(exc) from exc
@@ -641,8 +637,8 @@ def api_workflow_validate(payload: dict[str, object]) -> dict[str, object]:
         source = yaml_text
     elif isinstance(workflow_id, str):
         try:
-            source = (workflow.WORKFLOWS_DIR / f"{workflow_id}.workflow.yaml").read_text(encoding="utf-8")
-        except FileNotFoundError as exc:
+            source = workflow.workflow_path(workflow_id).read_text(encoding="utf-8")
+        except (FileNotFoundError, PermissionError) as exc:
             raise _http_error(exc) from exc
     else:
         raise HTTPException(status_code=400, detail="yaml_text or id is required")
@@ -662,7 +658,7 @@ def api_workflow_save(workflow_id: str, payload: dict[str, object]) -> dict[str,
         raise HTTPException(status_code=400, detail="yaml_text must be a string")
     try:
         return workflow.save_workflow(workflow_id, yaml_text)
-    except FileNotFoundError as exc:
+    except (FileNotFoundError, PermissionError) as exc:
         raise _http_error(exc) from exc
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -678,7 +674,7 @@ def api_workflow_run(workflow_id: str, payload: dict[str, object]):
     if not isinstance(objective, str):
         raise HTTPException(status_code=400, detail="objective must be a string")
     try:
-        source = (workflow.WORKFLOWS_DIR / f"{workflow_id}.workflow.yaml").read_text(encoding="utf-8")
+        source = workflow.workflow_path(workflow_id).read_text(encoding="utf-8")
         errors = workflow.validate_workflow(workflow.parse_workflow(source))
     except (FileNotFoundError, PermissionError) as exc:
         raise _http_error(exc) from exc

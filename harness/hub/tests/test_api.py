@@ -4,6 +4,7 @@ import io
 from pathlib import Path
 
 import pytest
+import yaml
 from fastapi.testclient import TestClient
 
 import config
@@ -68,6 +69,69 @@ def test_workflow_source_reads_raw_file_and_rejects_traversal(
     assert client.get("/api/workflows/missing/source").status_code == 404
     traversal = "/api/workflows/..%5C..%5C..%5CWindows%5Cwin/source"
     assert client.get(traversal).status_code == 403
+
+
+@pytest.fixture()
+def sandboxed_workflows(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
+    """WORKFLOWS_DIR one level below the boundary root, so `..` escapes but stays readable."""
+    workflows_dir = tmp_path / "workflows"
+    workflows_dir.mkdir()
+    monkeypatch.setattr(workflow, "WORKFLOWS_DIR", workflows_dir)
+    monkeypatch.setattr(boundary, "ROOT_RESOLVED", tmp_path.resolve())
+    monkeypatch.setattr(
+        workflow.runtime_agents,
+        "list_agents",
+        lambda: [{"id": "reviewer", "name": "Review Worker"}],
+    )
+    return tmp_path
+
+
+def _outside_workflow(prompt: str) -> str:
+    return yaml.safe_dump({
+        "id": "..\\outside",
+        "nodes": [
+            {"id": "plan", "agent": "reviewer", "prompt": prompt, "gate": "none"},
+            {"id": "act", "agent": "reviewer", "prompt": "Execute: {{plan_output}}", "gate": "none"},
+        ],
+        "edges": [["plan", "act"]],
+        "stop": {"max_nodes": 10, "max_seconds": 1800},
+    })
+
+
+def test_workflow_validate_by_id_rejects_traversal(client: TestClient, sandboxed_workflows: Path) -> None:
+    # Unguarded this reads the file above WORKFLOWS_DIR and answers 200 with its contents validated.
+    (sandboxed_workflows / "outside.workflow.yaml").write_text(
+        _outside_workflow("Plan: {{objective}}"), encoding="utf-8"
+    )
+
+    response = client.post("/api/workflows/validate", json={"id": "..\\outside"})
+
+    assert response.status_code == 403
+
+
+def test_workflow_run_rejects_traversal(client: TestClient, sandboxed_workflows: Path) -> None:
+    # Unguarded this reads the file above WORKFLOWS_DIR and answers 400 for its malformed YAML.
+    (sandboxed_workflows / "notes.workflow.yaml").write_text("not: [a workflow", encoding="utf-8")
+
+    response = client.post("/api/workflows/..%5Cnotes/runs", json={"objective": "leak"})
+
+    assert response.status_code == 403
+
+
+def test_workflow_save_rejects_traversal(client: TestClient, sandboxed_workflows: Path) -> None:
+    # Unguarded this backs up and overwrites the file above WORKFLOWS_DIR.
+    outside = sandboxed_workflows / "outside.workflow.yaml"
+    original = _outside_workflow("Plan: {{objective}}")
+    outside.write_text(original, encoding="utf-8")
+
+    response = client.put(
+        "/api/workflows/..%5Coutside",
+        json={"yaml_text": _outside_workflow("Overwritten: {{objective}}")},
+    )
+
+    assert response.status_code == 403
+    assert outside.read_text(encoding="utf-8") == original
+    assert list(sandboxed_workflows.glob("outside.workflow.yaml.bak-*")) == []
 
 
 def test_runs_endpoints(client: TestClient) -> None:

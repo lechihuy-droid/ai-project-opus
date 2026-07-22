@@ -334,7 +334,7 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
 
 
 def _load_workflow(workflow_id: str) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    path = workflow.WORKFLOWS_DIR / f"{workflow_id}.workflow.yaml"
+    path = workflow.workflow_path(workflow_id)
     source = path.read_text(encoding="utf-8")
     data = workflow.parse_workflow(source)
     errors = workflow.validate_workflow(data)

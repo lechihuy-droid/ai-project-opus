@@ -7,7 +7,7 @@ import yaml
 from fastapi.testclient import TestClient
 
 import server
-from services import workflow
+from services import boundary, workflow
 
 
 @pytest.fixture(autouse=True)
@@ -17,6 +17,12 @@ def fake_agents(monkeypatch: pytest.MonkeyPatch) -> None:
         "list_agents",
         lambda: [{"id": "reviewer", "name": "Review Worker"}],
     )
+
+
+def _use_workflows_dir(monkeypatch: pytest.MonkeyPatch, path) -> None:
+    """Point WORKFLOWS_DIR at a tmp dir and treat it as the boundary root."""
+    monkeypatch.setattr(workflow, "WORKFLOWS_DIR", path)
+    monkeypatch.setattr(boundary, "ROOT_RESOLVED", path.resolve())
 
 
 @pytest.fixture()
@@ -102,7 +108,7 @@ def test_validate_endpoint_requires_yaml_text_or_id() -> None:
 def test_save_workflow_writes_valid_yaml_and_backup(
     monkeypatch: pytest.MonkeyPatch, tmp_path, review_ui: dict[str, object]
 ) -> None:
-    monkeypatch.setattr(workflow, "WORKFLOWS_DIR", tmp_path)
+    _use_workflows_dir(monkeypatch, tmp_path)
     path = tmp_path / "review-ui.workflow.yaml"
     old_text = yaml.safe_dump(review_ui)
     path.write_text(old_text, encoding="utf-8")
@@ -122,7 +128,7 @@ def test_save_workflow_writes_valid_yaml_and_backup(
 def test_save_workflow_rejects_invalid_yaml_without_changes(
     monkeypatch: pytest.MonkeyPatch, tmp_path, review_ui: dict[str, object]
 ) -> None:
-    monkeypatch.setattr(workflow, "WORKFLOWS_DIR", tmp_path)
+    _use_workflows_dir(monkeypatch, tmp_path)
     path = tmp_path / "review-ui.workflow.yaml"
     old_text = yaml.safe_dump(review_ui)
     path.write_text(old_text, encoding="utf-8")
@@ -139,7 +145,7 @@ def test_save_workflow_rejects_invalid_yaml_without_changes(
 def test_save_workflow_rejects_mismatched_id(
     monkeypatch: pytest.MonkeyPatch, tmp_path, review_ui: dict[str, object]
 ) -> None:
-    monkeypatch.setattr(workflow, "WORKFLOWS_DIR", tmp_path)
+    _use_workflows_dir(monkeypatch, tmp_path)
     (tmp_path / "review-ui.workflow.yaml").write_text(yaml.safe_dump(review_ui), encoding="utf-8")
     changed = deepcopy(review_ui)
     changed["id"] = "other"
@@ -149,7 +155,7 @@ def test_save_workflow_rejects_mismatched_id(
 
 
 def test_save_workflow_requires_existing_file(monkeypatch: pytest.MonkeyPatch, tmp_path, review_ui: dict[str, object]) -> None:
-    monkeypatch.setattr(workflow, "WORKFLOWS_DIR", tmp_path)
+    _use_workflows_dir(monkeypatch, tmp_path)
 
     with pytest.raises(FileNotFoundError):
         workflow.save_workflow("review-ui", yaml.safe_dump(review_ui))
