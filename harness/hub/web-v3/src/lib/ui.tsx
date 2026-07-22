@@ -38,7 +38,7 @@ const buttonBase = cx(
 )
 
 const buttonVariants: Record<ButtonVariant, string> = {
-  primary: '!bg-accent text-app hover:!bg-accent-hover',
+  primary: 'bg-accent text-app hover:bg-accent-hover',
   secondary: cx(
     'border border-border-strong bg-elevated',
     'text-primary hover:bg-hover',
@@ -78,12 +78,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 
 export type IconButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
   icon: ReactNode
+  variant?: 'default' | 'handle'
   /** Required Ã¢â‚¬â€ icon-only controls must always expose an accessible name. */
   'aria-label': string
 }
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(
-  { icon, className, type = 'button', ...rest },
+  { icon, variant = 'default', className, type = 'button', ...rest },
   ref,
 ) {
   return (
@@ -91,11 +92,15 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
       ref={ref}
       type={type}
       className={cx(
-        'inline-flex h-8 w-8 min-h-[32px] min-w-[32px] items-center justify-center',
-        'rounded-md text-secondary transition-colors',
-        'hover:bg-hover hover:text-primary',
-        'disabled:cursor-not-allowed disabled:opacity-40',
-        focusRing,
+        variant === 'handle'
+          ? 'inline-flex h-4 w-4 min-h-4 min-w-4 items-center justify-center rounded-full border border-accent bg-app'
+          : cx(
+            'inline-flex h-8 w-8 min-h-[32px] min-w-[32px] items-center justify-center',
+            'rounded-md text-secondary transition-colors',
+            'hover:bg-hover hover:text-primary',
+            'disabled:cursor-not-allowed disabled:opacity-40',
+            focusRing,
+          ),
         className,
       )}
       {...rest}
@@ -340,5 +345,4 @@ export function EmptyState({ icon, title, description, actions = [], className }
     </div>
   )
 }
-
 
