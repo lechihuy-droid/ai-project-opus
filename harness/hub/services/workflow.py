@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import logging
+import json
+import math
 import re
 import time
 from pathlib import Path
@@ -20,6 +22,54 @@ _TEMPLATE_REF = re.compile(r"{{(.*?)}}")
 def workflow_path(workflow_id: str) -> Path:
     """Resolve the file for a caller-supplied workflow id, rejecting traversal outside WORKFLOWS_DIR."""
     return boundary.resolve_in_root(f"{workflow_id}.workflow.yaml", base=WORKFLOWS_DIR)
+
+
+def workflow_layout_path(workflow_id: str) -> Path:
+    """Resolve the layout sidecar through the same workflow-id boundary guard."""
+    path = workflow_path(workflow_id)
+    return path.with_name(f"{workflow_id}.layout.json")
+
+
+def read_layout(workflow_id: str) -> dict[str, dict[str, float]]:
+    """Read valid coordinates for nodes currently present in a workflow."""
+    path = workflow_layout_path(workflow_id)
+    workflow_data = parse_workflow(workflow_path(workflow_id).read_text(encoding="utf-8"))
+    node_ids = {node.get("id") for node in workflow_data.get("nodes", []) if isinstance(node, dict)}
+    try:
+        raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return {}
+    except (OSError, ValueError, yaml.YAMLError):
+        return {}
+    if not isinstance(raw, dict) or not isinstance(raw.get("nodes"), dict):
+        return {}
+    result: dict[str, dict[str, float]] = {}
+    for node_id, position in raw["nodes"].items():
+        if node_id not in node_ids or not isinstance(position, dict):
+            continue
+        x, y = position.get("x"), position.get("y")
+        if all(isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value) for value in (x, y)):
+            result[node_id] = {"x": x, "y": y}
+    return result
+
+
+def save_layout(workflow_id: str, layout: dict[str, Any]) -> dict[str, dict[str, float]]:
+    """Filter and persist node coordinates without touching workflow YAML."""
+    path = workflow_layout_path(workflow_id)
+    workflow_data = parse_workflow(workflow_path(workflow_id).read_text(encoding="utf-8"))
+    node_ids = {node.get("id") for node in workflow_data.get("nodes", []) if isinstance(node, dict)}
+    raw_nodes = layout.get("nodes") if isinstance(layout, dict) else None
+    if not isinstance(raw_nodes, dict):
+        raise ValueError("layout.nodes must be a mapping")
+    filtered: dict[str, dict[str, float]] = {}
+    for node_id, position in raw_nodes.items():
+        if node_id not in node_ids or not isinstance(position, dict):
+            continue
+        x, y = position.get("x"), position.get("y")
+        if all(isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value) for value in (x, y)):
+            filtered[node_id] = {"x": x, "y": y}
+    path.write_text(json.dumps({"nodes": filtered}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return filtered
 
 
 def parse_workflow(yaml_text: str) -> dict[str, Any]:
@@ -311,3 +361,17 @@ def save_workflow(workflow_id: str, yaml_text: str) -> dict[str, Any]:
     backup.write_bytes(old_bytes)
     path.write_text(yaml_text, encoding="utf-8")
     return data
+
+
+def model_yaml_text(workflow_id: str, model: dict[str, Any]) -> str:
+    """Serialize a model while retaining the existing leading comment block."""
+    source = workflow_path(workflow_id).read_text(encoding="utf-8")
+    lines: list[str] = []
+    for line in source.splitlines(keepends=True):
+        if line.strip() == "" or line.lstrip().startswith("#"):
+            lines.append(line)
+            continue
+        break
+    header = "".join(lines)
+    dumped = yaml.safe_dump(model, sort_keys=False, allow_unicode=True, default_flow_style=False)
+    return header + dumped

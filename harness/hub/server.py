@@ -689,6 +689,40 @@ def api_workflows() -> list[dict[str, object]]:
     return workflow.list_workflows()
 
 
+@app.get("/api/workflows/{workflow_id}/layout")
+def api_workflow_layout(workflow_id: str) -> dict[str, object]:
+    try:
+        return {"nodes": workflow.read_layout(workflow_id)}
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.put("/api/workflows/{workflow_id}/layout")
+def api_workflow_layout_save(workflow_id: str, payload: dict[str, object]) -> dict[str, object]:
+    try:
+        return {"nodes": workflow.save_layout(workflow_id, payload)}
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.put("/api/workflows/{workflow_id}/model")
+def api_workflow_model_save(workflow_id: str, payload: dict[str, object]) -> dict[str, object]:
+    model = payload.get("model")
+    if not isinstance(model, dict):
+        raise HTTPException(status_code=400, detail="model must be a mapping")
+    try:
+        yaml_text = workflow.model_yaml_text(workflow_id, model)
+        return workflow.save_workflow(workflow_id, yaml_text)
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
 @app.get("/api/workflows/{workflow_id}/source")
 def api_workflow_source(workflow_id: str) -> dict[str, str]:
     try:

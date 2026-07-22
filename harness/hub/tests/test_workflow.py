@@ -159,3 +159,26 @@ def test_save_workflow_requires_existing_file(monkeypatch: pytest.MonkeyPatch, t
 
     with pytest.raises(FileNotFoundError):
         workflow.save_workflow("review-ui", yaml.safe_dump(review_ui))
+
+
+def test_model_save_preserves_vietnamese_header_and_rejects_branch(
+    monkeypatch: pytest.MonkeyPatch, tmp_path, review_ui: dict[str, object]
+) -> None:
+    _use_workflows_dir(monkeypatch, tmp_path)
+    header = "# code-task\n# Bốn dòng tiếng Việt\n# Giữ nguyên\n# Kết thúc\n"
+    path = tmp_path / "review-ui.workflow.yaml"
+    path.write_text(header + yaml.safe_dump(review_ui, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    model = deepcopy(review_ui)
+    model["nodes"][0]["prompt"] = "Mục tiêu: {{objective}}"
+    saved = workflow.save_workflow("review-ui", workflow.model_yaml_text("review-ui", model))
+    assert saved["nodes"][0]["prompt"] == "Mục tiêu: {{objective}}"
+    written = path.read_text(encoding="utf-8")
+    assert written.startswith(header)
+    assert "Mục tiêu" in written
+
+    before = written
+    branched = deepcopy(model)
+    branched["edges"] = [["plan", "act"], ["plan", "act"]]
+    with pytest.raises(ValueError, match="linear chain"):
+        workflow.save_workflow("review-ui", workflow.model_yaml_text("review-ui", branched))
+    assert path.read_text(encoding="utf-8") == before
