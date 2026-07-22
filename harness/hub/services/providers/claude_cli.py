@@ -194,6 +194,10 @@ def stream_chat(
     usage = {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0}
     result_session_id: str | None = session_id
     timed_out = False
+    saw_assistant_or_result = False
+    result_error: dict[str, Any] | None = None
+    stderr = ""
+    returncode: int | None = None
     try:
         for raw_line in process.stdout:
             line = raw_line.strip()
@@ -207,20 +211,42 @@ def stream_chat(
                 continue
             data_type = data.get("type")
             if data_type == "assistant":
+                saw_assistant_or_result = True
                 text = _text_from_assistant(data)
                 if text:
                     yield {"type": "delta", "text": text}
             elif data_type == "result":
+                saw_assistant_or_result = True
                 usage = _usage_from_result(data)
                 sid = data.get("session_id")
                 if isinstance(sid, str) and sid:
                     result_session_id = sid
+                subtype = str(data.get("subtype") or "").lower()
+                if data.get("is_error") is True or subtype in {"error", "failed", "failure"}:
+                    result_error = data
     finally:
         timed_out = procs.registry.is_timed_out(proc_id)
+        returncode = process.returncode
+        if process.stderr is not None:
+            stderr = process.stderr.read().strip()
         procs.registry.unregister(proc_id)
 
     if timed_out:
         yield {"type": "error", "message": f"claude timed out after {int(timeout)}s", "code": None}
+        return
+
+    if result_error is not None:
+        message = result_error.get("result") or result_error.get("error") or result_error.get("message")
+        if not isinstance(message, str) or not message:
+            message = "claude reported an error"
+        code = result_error.get("api_error_status")
+        yield {"type": "error", "message": message, "code": code if isinstance(code, int) else None}
+        return
+    if returncode not in (None, 0):
+        yield {"type": "error", "message": stderr or f"claude exited with code {returncode}", "code": None}
+        return
+    if stderr and not saw_assistant_or_result:
+        yield {"type": "error", "message": stderr, "code": None}
         return
 
     _append_usage_event(usage)

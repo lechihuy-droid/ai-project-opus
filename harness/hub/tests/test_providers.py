@@ -5,6 +5,7 @@ import sys
 import time
 from pathlib import Path
 from typing import Any, Iterator
+from unittest.mock import Mock
 
 import pytest
 
@@ -109,6 +110,41 @@ def test_claude_cli_parses_delta_done_session_usage(fake_claude_cli: Path) -> No
     assert logged["total_tokens"] == 33
 
 
+def test_claude_cli_result_error_emits_error_without_usage(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    script = tmp_path / "fake_claude_error.py"
+    script.write_text(
+        'import json\n'
+        'print(json.dumps({"type":"assistant","message":{"content":[{"type":"text","text":"Failed to authenticate"}]}}))\n'
+        'print(json.dumps({"type":"result","subtype":"success","is_error":True,"result":"OAuth session expired","usage":{"input_tokens":0,"output_tokens":0}}))\n'
+        'raise SystemExit(1)\n',
+        encoding="utf-8",
+    )
+    monkeypatch.setitem(config.PROVIDERS, "claude", {"cmd": [sys.executable, str(script)]})
+    monkeypatch.setattr(config, "CHAT_USAGE_FILE", tmp_path / "chat_usage.jsonl")
+    append = Mock()
+    monkeypatch.setattr(claude_cli, "_append_usage_event", append)
+
+    events = list(claude_cli.stream_chat([{"role": "user", "content": "hi"}]))
+
+    assert events[-1] == {"type": "error", "message": "OAuth session expired", "code": None}
+    assert not any(event["type"] == "done" for event in events)
+    append.assert_not_called()
+
+
+def test_claude_cli_nonzero_returncode_emits_error_without_usage(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    script = tmp_path / "fake_claude_exit.py"
+    script.write_text('import sys\nsys.stderr.write("CLI crashed")\nraise SystemExit(7)\n', encoding="utf-8")
+    monkeypatch.setitem(config.PROVIDERS, "claude", {"cmd": [sys.executable, str(script)]})
+    monkeypatch.setattr(config, "CHAT_USAGE_FILE", tmp_path / "chat_usage.jsonl")
+    append = Mock()
+    monkeypatch.setattr(claude_cli, "_append_usage_event", append)
+
+    events = list(claude_cli.stream_chat([{"role": "user", "content": "hi"}]))
+
+    assert events == [{"type": "error", "message": "CLI crashed", "code": None}]
+    append.assert_not_called()
+
+
 def test_claude_cli_build_cmd_includes_disallowed_tools_and_resume() -> None:
     cmd = claude_cli._build_cmd("hello", "sess-1")
     assert "-p" in cmd and "hello" in cmd
@@ -169,6 +205,20 @@ def test_codex_cli_parses_delta_and_done(fake_codex_cli: Path) -> None:
     assert done["type"] == "done"
     assert done["session_id"] == "codex-sess-1"
     assert done["usage"] == {"input_tokens": 4, "output_tokens": 6, "total_tokens": 10}
+
+
+def test_codex_cli_nonzero_returncode_emits_error_without_usage(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    script = tmp_path / "fake_codex_error.py"
+    script.write_text('import sys\nsys.stderr.write("codex auth failed")\nraise SystemExit(3)\n', encoding="utf-8")
+    monkeypatch.setitem(config.PROVIDERS, "codex", {"cmd": [sys.executable, str(script)]})
+    monkeypatch.setattr(config, "CHAT_USAGE_FILE", tmp_path / "chat_usage.jsonl")
+    append = Mock()
+    monkeypatch.setattr(codex_cli, "_append_usage_event", append)
+
+    events = list(codex_cli.stream_chat([{"role": "user", "content": "hi"}]))
+
+    assert events == [{"type": "error", "message": "codex auth failed", "code": None}]
+    append.assert_not_called()
 
 
 def test_codex_cli_build_cmd_has_fresh_start_preamble_and_flags() -> None:
@@ -278,6 +328,20 @@ def test_gemini_stream_chat_yields_delta_done_and_transcript(fake_gemini_cli: Pa
     assert events[-1] == {"type": "done", "usage": {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0}, "session_id": None}
     prompt = gemini_cli._build_cmd(messages)[-1]
     assert "prior question" in prompt and "prior answer" in prompt and "new question" in prompt
+
+
+def test_gemini_cli_nonzero_returncode_emits_error_without_usage(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    script = tmp_path / "fake_gemini_error.py"
+    script.write_text('import sys\nsys.stderr.write("gemini auth failed")\nraise SystemExit(4)\n', encoding="utf-8")
+    monkeypatch.setitem(config.PROVIDERS, "gemini", {"cmd": [sys.executable, str(script)]})
+    monkeypatch.setattr(config, "CHAT_USAGE_FILE", tmp_path / "chat_usage.jsonl")
+
+    append = Mock()
+    monkeypatch.setattr(gemini_cli, "_append_usage_event", append)
+    events = list(gemini_cli.stream_chat([{"role": "user", "content": "hi"}]))
+
+    assert events == [{"type": "error", "message": "gemini auth failed", "code": None}]
+    append.assert_not_called()
 
 
 # ---------------------------------------------------------------------------

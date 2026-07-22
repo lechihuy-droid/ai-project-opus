@@ -105,16 +105,29 @@ def stream_chat(messages: list[dict[str, str]], session_id: str | None = None, m
         return
 
     timed_out = False
+    stdout_lines: list[str] = []
+    stderr = ""
+    returncode: int | None = None
     try:
         for raw_line in process.stdout:
             text = raw_line.strip()
             if text:
+                stdout_lines.append(text)
                 yield {"type": "delta", "text": text}
     finally:
         timed_out = procs.registry.is_timed_out(proc_id)
+        returncode = process.returncode
+        if process.stderr is not None:
+            stderr = process.stderr.read().strip()
         procs.registry.unregister(proc_id)
     if timed_out:
         yield {"type": "error", "message": f"gemini timed out after {int(timeout)}s", "code": None}
+        return
+    if returncode not in (None, 0):
+        yield {"type": "error", "message": stderr or f"gemini exited with code {returncode}", "code": None}
+        return
+    if stderr and not stdout_lines:
+        yield {"type": "error", "message": stderr, "code": None}
         return
 
     usage = {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0}

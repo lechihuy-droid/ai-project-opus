@@ -194,6 +194,10 @@ def stream_chat(
     usage = {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0}
     result_session_id: str | None = session_id
     timed_out = False
+    saw_success_event = False
+    stream_error: str | None = None
+    stderr = ""
+    returncode: int | None = None
     try:
         for raw_line in process.stdout:
             line = raw_line.strip()
@@ -206,8 +210,17 @@ def stream_chat(
             if not isinstance(data, dict):
                 continue
 
+            data_type = str(data.get("type") or "")
+            if data_type in {"error", "turn.failed", "task.failed", "session.failed"} or isinstance(data.get("error"), (str, dict)):
+                error = data.get("error")
+                if isinstance(error, dict):
+                    error = error.get("message") or error.get("detail") or error.get("error")
+                stream_error = str(error or data.get("message") or "codex reported an error")
+                continue
+
             text = _text_from_line(data)
             if text:
+                saw_success_event = True
                 yield {"type": "delta", "text": text}
 
             line_usage = _usage_from_line(data)
@@ -219,13 +232,25 @@ def stream_chat(
                 result_session_id = sid
 
             if _is_end_event(data):
-                break
+                saw_success_event = True
     finally:
         timed_out = procs.registry.is_timed_out(proc_id)
+        returncode = process.returncode
+        if process.stderr is not None:
+            stderr = process.stderr.read().strip()
         procs.registry.unregister(proc_id)
 
     if timed_out:
         yield {"type": "error", "message": f"codex timed out after {int(timeout)}s", "code": None}
+        return
+    if stream_error is not None:
+        yield {"type": "error", "message": stream_error, "code": None}
+        return
+    if returncode not in (None, 0):
+        yield {"type": "error", "message": stderr or f"codex exited with code {returncode}", "code": None}
+        return
+    if stderr and not saw_success_event:
+        yield {"type": "error", "message": stderr, "code": None}
         return
 
     _append_usage_event(usage)
