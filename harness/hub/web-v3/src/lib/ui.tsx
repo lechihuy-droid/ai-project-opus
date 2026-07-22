@@ -1,8 +1,8 @@
 /**
- * ui.tsx Ã¢â‚¬â€ dependency-free React primitives built on the tokens defined in
+ * ui.tsx — dependency-free React primitives built on the tokens defined in
  * `src/styles/tokens.css`. Styling approach: Tailwind arbitrary-value
  * utilities referencing CSS custom properties (e.g. `bg-[var(--hub-accent)]`)
- * Ã¢â‚¬â€ chosen over inline `style` objects so variants stay declarative,
+ * — chosen over inline `style` objects so variants stay declarative,
  * greppable, and easy to diff. Inline `style` is not used anywhere in this
  * file; keep it that way when extending these components.
  *
@@ -80,7 +80,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 export type IconButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
   icon: ReactNode
   variant?: 'default' | 'handle'
-  /** Required Ã¢â‚¬â€ icon-only controls must always expose an accessible name. */
+  /** Required — icon-only controls must always expose an accessible name. */
   'aria-label': string
 }
 
@@ -174,14 +174,14 @@ export type ChipProps = {
   children: ReactNode
   selected?: boolean
   muted?: boolean
-  /** Presence enables the removable variant and renders an Ãƒâ€” affordance. */
+  /** Presence enables the removable variant and renders an × affordance. */
   onRemove?: () => void
-  /** Accessible label for the remove button. Defaults to "XoÃƒÂ¡". */
+  /** Accessible label for the remove button. Defaults to "Xoá". */
   removeLabel?: string
   className?: string
 }
 
-export function Chip({ children, selected = false, muted = false, onRemove, removeLabel = 'XoÃƒÂ¡', className }: ChipProps) {
+export function Chip({ children, selected = false, muted = false, onRemove, removeLabel = 'Xoá', className }: ChipProps) {
   return (
     <span
       className={cx(
@@ -204,7 +204,7 @@ export function Chip({ children, selected = false, muted = false, onRemove, remo
             focusRing,
           )}
         >
-          Ãƒâ€”
+          ×
         </button>
       ) : null}
     </span>
@@ -227,7 +227,7 @@ export type StatusKind =
 
 export type StatusProps = {
   kind: StatusKind
-  /** Override the default Vietnamese label. The label is always rendered Ã¢â‚¬â€ colour is never the only signal. */
+  /** Override the default Vietnamese label. The label is always rendered — colour is never the only signal. */
   label?: string
   className?: string
 }
@@ -244,14 +244,14 @@ const statusDotClass: Record<StatusKind, string> = {
 }
 
 const statusLabels: Record<StatusKind, string> = {
-  ready: 'SÃ¡ÂºÂµn sÃƒÂ ng',
-  running: 'Ã„Âang chÃ¡ÂºÂ¡y',
-  paused: 'TÃ¡ÂºÂ¡m dÃ¡Â»Â«ng',
-  'setup-required': 'CÃ¡ÂºÂ§n cÃ¡ÂºÂ¥u hÃƒÂ¬nh',
-  'not-installed': 'ChÃ†Â°a cÃƒÂ i',
-  'rate-limited': 'GiÃ¡Â»â€ºi hÃ¡ÂºÂ¡n tÃ¡Â»â€˜c Ã„â€˜Ã¡Â»â„¢',
-  error: 'LÃ¡Â»â€”i',
-  offline: 'NgoÃ¡ÂºÂ¡i tuyÃ¡ÂºÂ¿n',
+  ready: 'Sẵn sàng',
+  running: 'Đang chạy',
+  paused: 'Tạm dừng',
+  'setup-required': 'Cần cấu hình',
+  'not-installed': 'Chưa cài',
+  'rate-limited': 'Giới hạn tốc độ',
+  error: 'Lỗi',
+  offline: 'Ngoại tuyến',
 }
 
 export function Status({ kind, label, className }: StatusProps) {
@@ -280,7 +280,7 @@ export type ProviderDotProps = {
 }
 
 // Reuses the existing --color-claude/codex/nvidia/gemini tokens from
-// index.css's @theme block via their Tailwind bg-* utilities Ã¢â‚¬â€ provider
+// index.css's @theme block via their Tailwind bg-* utilities — provider
 // colour usage is restricted to this 6-8px identity dot everywhere else.
 const providerDotClass: Record<ProviderId, string> = {
   claude: 'bg-claude',

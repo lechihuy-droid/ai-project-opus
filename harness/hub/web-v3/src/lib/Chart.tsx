@@ -17,13 +17,13 @@ export default function Chart<T extends Record<string, unknown>>({ rows, labelKe
   const barWidth = Math.max(8, Math.min(22, width / Math.max(rows.length, 1) - 10))
 
   return <div className="overflow-x-auto">
-    <svg role="img" aria-label="Biá»ƒu Ä‘á»“ xu hÆ°á»›ng theo ngÃ y" width={width} height={height} className="min-w-full">
+    <svg role="img" aria-label="Biểu đồ xu hướng theo ngày" width={width} height={height} className="min-w-full">
       <line x1="0" y1={chartHeight} x2={width} y2={chartHeight} stroke="var(--color-line)" />
       {rows.map((row, index) => {
         const value = values[index]
         const barHeight = value ? Math.max(2, value / max * (chartHeight - 12)) : 0
         const x = index * (width / Math.max(rows.length, 1)) + (width / Math.max(rows.length, 1) - barWidth) / 2
-        const label = String(row[labelKey] ?? 'â€”')
+        const label = String(row[labelKey] ?? '—')
         return <g key={`${label}-${index}`}>
           <title>{`${label}: ${value}`}</title>
           <rect x={x} y={chartHeight - barHeight} width={barWidth} height={barHeight} rx="2" fill="var(--color-codex)" aria-label={`${label}: ${value}`} />
@@ -34,5 +34,5 @@ export default function Chart<T extends Record<string, unknown>>({ rows, labelKe
   </div>
 }
 
-export function ChartEmpty(): ReactNode { return <div className="flex h-28 items-center justify-center text-xs text-muted">ChÆ°a cÃ³ dá»¯ liá»‡u.</div> }
+export function ChartEmpty(): ReactNode { return <div className="flex h-28 items-center justify-center text-xs text-muted">Chưa có dữ liệu.</div> }
 
