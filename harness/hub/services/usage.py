@@ -10,6 +10,7 @@ from typing import Any
 import config
 from parsers import claude_sessions, codex_sessions, inspect_eval
 from parsers.common import as_int, normalize_ts, usage_total
+from services import pricing
 
 
 CACHE_TTL_SECONDS = 30.0
@@ -284,14 +285,24 @@ def _empty_totals() -> dict[str, int]:
     return {"calls": 0, "input_tokens": 0, "output_tokens": 0, "total_tokens": 0}
 
 
-def _empty_rollup_totals() -> dict[str, int]:
-    return {**_empty_totals(), "cache_tokens": 0, "non_cache_tokens": 0}
+def _empty_rollup_totals() -> dict[str, int | float]:
+    return {
+        **_empty_totals(),
+        "cache_tokens": 0,
+        "cache_read_tokens": 0,
+        "cache_creation_tokens": 0,
+        "non_cache_tokens": 0,
+        "estimated_cost_usd": 0.0,
+        "unpriced_tokens": 0,
+    }
 
 
 def _add_tokens(target: dict[str, Any], event: dict[str, Any]) -> None:
     input_tokens = int(event.get("input_tokens") or 0)
     output_tokens = int(event.get("output_tokens") or 0)
-    cache_tokens = int(event.get("cache_read_tokens") or 0) + int(event.get("cache_creation_tokens") or 0)
+    cache_read_tokens = int(event.get("cache_read_tokens") or 0)
+    cache_creation_tokens = int(event.get("cache_creation_tokens") or 0)
+    cache_tokens = cache_read_tokens + cache_creation_tokens
 
     target["calls"] += int(event.get("calls") or 0)
     target["input_tokens"] += input_tokens
@@ -299,6 +310,10 @@ def _add_tokens(target: dict[str, Any], event: dict[str, Any]) -> None:
     target["total_tokens"] += int(event.get("total_tokens") or 0)
     if "cache_tokens" in target:
         target["cache_tokens"] += cache_tokens
+    if "cache_read_tokens" in target:
+        target["cache_read_tokens"] += cache_read_tokens
+    if "cache_creation_tokens" in target:
+        target["cache_creation_tokens"] += cache_creation_tokens
     if "non_cache_tokens" in target:
         target["non_cache_tokens"] += input_tokens + output_tokens
 
@@ -314,15 +329,23 @@ def rollup(events: list[dict[str, Any]]) -> dict[str, Any]:
         day = str(usage_event.get("ts") or "")[:10] or "unknown"
         source = str(usage_event.get("source") or "unknown")
 
-        model_row = by_model.setdefault("model:" + model, {"model": model, **_empty_totals()})
-        day_row = by_day.setdefault("day:" + day, {"day": day, **_empty_totals()})
-        source_row = by_source.setdefault("source:" + source, {"source": source, "calls": 0, "total_tokens": 0})
+        model_row = by_model.setdefault("model:" + model, {"model": model, **_empty_rollup_totals(), "estimated_cost_usd": 0.0, "unpriced_tokens": 0})
+        day_row = by_day.setdefault("day:" + day, {"day": day, **_empty_rollup_totals(), "estimated_cost_usd": 0.0})
+        source_row = by_source.setdefault("source:" + source, {"source": source, "calls": 0, "total_tokens": 0, "estimated_cost_usd": 0.0})
+
+        event_cost = pricing.estimate_cost({"model": model, **usage_event})
 
         _add_tokens(model_row, usage_event)
         _add_tokens(day_row, usage_event)
+        model_row["estimated_cost_usd"] += event_cost["estimated_cost_usd"]
+        model_row["unpriced_tokens"] += event_cost["unpriced_tokens"]
+        day_row["estimated_cost_usd"] += event_cost["estimated_cost_usd"]
         source_row["calls"] += int(usage_event.get("calls") or 0)
         source_row["total_tokens"] += int(usage_event.get("total_tokens") or 0)
+        source_row["estimated_cost_usd"] += event_cost["estimated_cost_usd"]
         _add_tokens(totals, usage_event)
+        totals["estimated_cost_usd"] += event_cost["estimated_cost_usd"]
+        totals["unpriced_tokens"] += event_cost["unpriced_tokens"]
 
     return {
         "by_model": sorted(by_model.values(), key=lambda item: item["total_tokens"], reverse=True),
@@ -380,6 +403,12 @@ def cockpit_stats() -> dict[str, Any]:
     today_stats = _provider_rollup(today_events)
     week_stats = _provider_rollup(week_events)
     quota_warn_per_day = int(getattr(config, "QUOTA_WARN_PER_DAY", 200))
+    for row in today_stats["by_provider"]:
+        row["quota_pct"] = (
+            round(row["calls"] / quota_warn_per_day * 100, 1)
+            if quota_warn_per_day > 0
+            else None
+        )
 
     return {
         "today": today_stats,

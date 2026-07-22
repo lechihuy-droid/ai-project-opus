@@ -340,6 +340,25 @@ SKILL_DEPLOY_LOG = HUB_DIR / ".cache" / "skill_deploy_log.jsonl"
 MAX_CONCURRENT_CLI = 3
 CHAT_CLI_TIMEOUT = 300
 QUOTA_WARN_PER_DAY = 200
+
+# User-editable shadow estimates, not official billing rates or invoices.
+# Exact model ids are preferred; services.pricing.py also supports prefixes.
+PRICING_USD_PER_MTOK: dict[str, dict[str, float]] = {
+    # Anthropic public API pricing (standard global, 5-minute cache writes).
+    "claude-opus-4-8": {
+        "input": 5.0,
+        "output": 25.0,
+        "cache_read": 0.5,
+        "cache_write": 6.25,
+    },
+    # Introductory public API pricing through 2026-08-31.
+    "claude-sonnet-5": {
+        "input": 2.0,
+        "output": 10.0,
+        "cache_read": 0.2,
+        "cache_write": 2.5,
+    },
+}
 PROVIDERS: dict[str, Any] = {
     "claude": {"cmd": ["claude"]},
     "codex": {"cmd": [str(Path.home() / "AppData" / "Local" / "pnpm" / "codex")]},
