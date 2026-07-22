@@ -19,6 +19,7 @@ import config
 from services import (
     behavior,
     board,
+    boundary,
     chat,
     gitjobs,
     governance,
@@ -618,6 +619,18 @@ def api_skill_library_deploy(skill_id: str, payload: dict[str, object]) -> dict[
 @app.get("/api/workflows")
 def api_workflows() -> list[dict[str, object]]:
     return workflow.list_workflows()
+
+
+@app.get("/api/workflows/{workflow_id}/source")
+def api_workflow_source(workflow_id: str) -> dict[str, str]:
+    try:
+        path = boundary.resolve_in_root(
+            f"{workflow_id}.workflow.yaml",
+            base=workflow.WORKFLOWS_DIR,
+        )
+        return {"id": workflow_id, "yaml_text": path.read_text(encoding="utf-8")}
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
 
 
 @app.post("/api/workflows/validate")

@@ -8,7 +8,7 @@ from fastapi.testclient import TestClient
 
 import config
 import server
-from services import behavior, gitjobs, runs, trigger
+from services import behavior, boundary, gitjobs, runs, trigger, workflow
 
 
 FIXTURE_RUNS_DIR = Path(__file__).resolve().parent / "fixtures" / "runs"
@@ -50,6 +50,24 @@ def test_health(client: TestClient) -> None:
     data = response.json()
     assert data["ok"] is True
     assert data["port"] == 8799
+
+
+def test_workflow_source_reads_raw_file_and_rejects_traversal(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    workflows_dir = tmp_path / "workflows"
+    workflows_dir.mkdir()
+    source = "id: demo\nnodes: []\nedges: []\nstop: {}\n"
+    (workflows_dir / "demo.workflow.yaml").write_text(source, encoding="utf-8")
+    monkeypatch.setattr(workflow, "WORKFLOWS_DIR", workflows_dir)
+    monkeypatch.setattr(boundary, "ROOT_RESOLVED", tmp_path.resolve())
+
+    response = client.get("/api/workflows/demo/source")
+    assert response.status_code == 200
+    assert response.json() == {"id": "demo", "yaml_text": source}
+    assert client.get("/api/workflows/missing/source").status_code == 404
+    traversal = "/api/workflows/..%5C..%5C..%5CWindows%5Cwin/source"
+    assert client.get(traversal).status_code == 403
 
 
 def test_runs_endpoints(client: TestClient) -> None:
