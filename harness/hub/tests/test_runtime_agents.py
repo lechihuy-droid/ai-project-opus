@@ -6,7 +6,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 import server
-from services import runtime_agents
+from services import risk, runtime_agents
 
 
 @pytest.fixture()
@@ -120,6 +120,31 @@ def test_agent_profile_api_crud(agents_tmp: Path) -> None:
 
     missing = client.delete("/api/agents/missing")
     assert missing.status_code == 404
+
+
+def test_agent_profile_api_rejects_tier_outside_blocklist_vocabulary(agents_tmp: Path) -> None:
+    """Spawn gating matches risk_tier by exact string, so a tier that is not in
+    risk.TIERS can never be blocked and would bypass every governance level."""
+    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+
+    rejected = client.post("/api/agents", json=valid_profile() | {"risk_tier": "low"})
+    assert rejected.status_code == 400
+    assert rejected.json()["detail"] == (
+        "Invalid risk_tier: low; valid tiers: read_only, write, execute, network, destructive"
+    )
+    assert not (agents_tmp / "reviewer.agent.yaml").exists()
+
+    accepted = client.post("/api/agents", json=valid_profile() | {"risk_tier": "destructive"})
+    assert accepted.status_code == 200
+    assert accepted.json()["risk_tier"] == "destructive"
+
+
+def test_risk_tiers_endpoint_serves_the_canonical_list() -> None:
+    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+
+    response = client.get("/api/risk-tiers")
+    assert response.status_code == 200
+    assert response.json() == risk.TIERS
 
 
 def test_model_classes_api() -> None:

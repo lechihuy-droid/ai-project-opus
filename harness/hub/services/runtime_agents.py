@@ -7,7 +7,7 @@ from typing import Any
 import yaml
 
 import config
-from services import skill_library
+from services import risk, skill_library
 from services.providers import registry
 
 
@@ -50,6 +50,14 @@ def validate_agent_profile(data: dict[str, Any], known_skills: set[str] | None =
     permission = data["permission"]
     if permission not in PERMISSIONS:
         raise ValueError(f"Invalid permission: {permission}")
+
+    # Spawn gating matches the tier by exact string (workflow_exec), so a tier
+    # outside risk.TIERS can never appear in a blocklist and would silently
+    # bypass every governance level.
+    risk_tier = data["risk_tier"]
+    if risk_tier not in risk.TIERS:
+        valid = ", ".join(risk.TIERS)
+        raise ValueError(f"Invalid risk_tier: {risk_tier}; valid tiers: {valid}")
 
     budget = data["budget"]
     if not isinstance(budget, dict):

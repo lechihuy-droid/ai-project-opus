@@ -25,6 +25,7 @@ from services import (
     inspect_evals,
     integrity,
     replay,
+    risk,
     runs,
     runtime_agents,
     runtime_artifacts,
@@ -269,6 +270,11 @@ def api_chat(payload: dict[str, object]) -> StreamingResponse:
 @app.get("/api/agents")
 def api_agents() -> list[dict[str, object]]:
     return runtime_agents.list_agents()
+
+
+@app.get("/api/risk-tiers")
+def api_risk_tiers() -> list[str]:
+    return list(risk.TIERS)
 
 
 @app.post("/api/agents")
