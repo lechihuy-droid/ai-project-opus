@@ -2,9 +2,10 @@ STEP E4 — Canvas kéo-thả SỬA ĐƯỢC (SD-usage-cost-canvas.md §4-bis, �
 Backend nhỏ + frontend. KHÔNG thêm npm dep. Không chạy pnpm build. Không commit.
 (Lệnh "không build / không commit" áp cho Codex; kiến trúc sư lo build và commit.)
 
-⚠️ ĐIỀU KIỆN TIÊN QUYẾT: chỉ chạy brief này SAU KHI task "guard workflow path building" đã xong và
-services/boundary.py + server.py đã sạch. Endpoint mới ở mục A PHẢI dùng helper guard mà task đó tạo ra,
-KHÔNG tự viết cách chặn đường dẫn riêng.
+✅ ĐIỀU KIỆN TIÊN QUYẾT ĐÃ XONG (commit 819d79f). Helper guard đã tồn tại:
+    services/workflow.py::workflow_path(workflow_id) -> boundary.resolve_in_root(..., base=WORKFLOWS_DIR)
+Mọi đường dẫn file workflow trong brief này PHẢI đi qua `workflow_path()`.
+TUYỆT ĐỐI KHÔNG ghép `WORKFLOWS_DIR / f"{id}..."` bằng tay — đó chính là lỗi 819d79f vừa vá.
 
 ════ NHẮC LẠI RÀNG BUỘC LÕI ════
 services/workflow.py:181 -> "Edges must form exactly one linear chain covering every node once".

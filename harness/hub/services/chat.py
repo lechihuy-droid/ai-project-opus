@@ -171,7 +171,12 @@ def _create_completion_with_reasoning_fallback(
         return client.chat.completions.create(**retry_request)
 
 
-def stream_chat(messages: list[dict[str, str]], model: str, max_tokens: int) -> Generator[dict[str, Any], None, None]:
+def stream_chat(
+    messages: list[dict[str, str]],
+    model: str,
+    max_tokens: int,
+    system_prompt: str | None = None,
+) -> Generator[dict[str, Any], None, None]:
     if model not in config.CHAT_MODELS:
         raise ValueError(f"Unsupported chat model: {model}")
     api_key = os.environ.get("NVIDIA_API_KEY")
@@ -184,6 +189,7 @@ def stream_chat(messages: list[dict[str, str]], model: str, max_tokens: int) -> 
         reasoning_plan = _reasoning_for_model(model)
         reasoning_params = reasoning_plan["params"] if isinstance(reasoning_plan["params"], dict) else {}
         messages_with_reasoning = _messages_with_reasoning_system(messages, reasoning_plan["system"])
+        messages_with_reasoning = _messages_with_reasoning_system(messages_with_reasoning, system_prompt)
         request: dict[str, Any] = {
             "model": model,
             "messages": messages_with_reasoning,

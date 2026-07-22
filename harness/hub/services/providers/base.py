@@ -30,4 +30,5 @@ class Provider(Protocol):
         messages: list[dict[str, str]],
         session_id: str | None = None,
         model: str | None = None,
+        system_prompt: str | None = None,
     ) -> Iterator[ChatEvent]: ...

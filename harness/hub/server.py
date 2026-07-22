@@ -163,7 +163,17 @@ def api_model_classes() -> dict[str, dict[str, object]]:
 
 @app.post("/api/chat")
 def api_chat(payload: dict[str, object]) -> StreamingResponse:
-    provider_id = payload.get("provider") or "nvidia"
+    agent_id = payload.get("agent_id")
+    if agent_id is not None and not isinstance(agent_id, str):
+        raise HTTPException(status_code=400, detail="agent_id must be a string")
+    agent: dict[str, object] | None = None
+    if agent_id:
+        try:
+            agent = runtime_agents.get_agent(agent_id)
+        except FileNotFoundError as exc:
+            raise HTTPException(status_code=400, detail=f"Unknown agent: {agent_id}") from exc
+
+    provider_id = (runtime_agents.resolve_provider(agent)["provider"] if agent else payload.get("provider")) or "nvidia"
     if not isinstance(provider_id, str):
         raise HTTPException(status_code=400, detail="provider must be a string")
     try:
@@ -172,16 +182,24 @@ def api_chat(payload: dict[str, object]) -> StreamingResponse:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     messages = _chat_messages(payload.get("messages"))
-    model = payload.get("model")
+    model = runtime_agents.resolve_provider(agent)["model"] if agent else payload.get("model")
+    if agent and model is None:
+        model = payload.get("model")
     if model is not None and not isinstance(model, str):
         raise HTTPException(status_code=400, detail="model must be a string")
     session_id = payload.get("session_id")
     if session_id is not None and not isinstance(session_id, str):
         raise HTTPException(status_code=400, detail="session_id must be a string")
+    system_prompt = agent.get("system_prompt") if agent else None
+    if system_prompt is not None and not isinstance(system_prompt, str):
+        raise HTTPException(status_code=400, detail="agent system_prompt must be a string")
 
     def events():
         try:
-            for item in provider.stream_chat(messages, session_id=session_id, model=model):
+            stream_kwargs: dict[str, object] = {"session_id": session_id, "model": model}
+            if agent:
+                stream_kwargs["system_prompt"] = system_prompt
+            for item in provider.stream_chat(messages, **stream_kwargs):
                 item_type = item.get("type")
                 if item_type == "reasoning":
                     yield _sse("reasoning", {"text": item.get("text", "")})

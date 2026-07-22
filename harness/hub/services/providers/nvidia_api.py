@@ -25,11 +25,16 @@ def stream_chat(
     messages: list[dict[str, str]],
     session_id: str | None = None,
     model: str | None = None,
+    system_prompt: str | None = None,
 ) -> Iterator[ChatEvent]:
     """Thin adapter over the existing services/chat.py NVIDIA client — does not modify it."""
     chat_model = model or config.CHAT_DEFAULT_MODEL
     try:
-        for item in chat.stream_chat(messages, chat_model, config.CHAT_MAX_TOKENS):
+        if system_prompt:
+            stream = chat.stream_chat(messages, chat_model, config.CHAT_MAX_TOKENS, system_prompt=system_prompt)
+        else:
+            stream = chat.stream_chat(messages, chat_model, config.CHAT_MAX_TOKENS)
+        for item in stream:
             item_type = item.get("type")
             if item_type == "reasoning":
                 yield {"type": "reasoning", "text": item.get("text", "")}

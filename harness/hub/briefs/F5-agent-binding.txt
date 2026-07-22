@@ -53,7 +53,20 @@ B2. Header pane hiện đủ tầng, đúng ý review §5.1:
 B3. Đổi agent giữa chừng -> bỏ `cliSessionId` của pane đó (session cũ mang system prompt cũ, resume tiếp
     là trộn hai nhân cách). Báo cho người dùng biết là hội thoại sẽ bắt đầu phiên mới.
 
-RÀNG BUỘC: không đụng `send()` (chỉ thêm trường vào body), parseSse, `patchMessage`, lược đồ localStorage
+B4. SỬA KÈM (F4-fix-1) — dấu vân tay shared context bị ghi cả khi lượt gọi HỎNG.
+    ĐO TRÊN MÁY THẬT: gửi cùng một prompt tới 4 pane, rồi gửi lượt thứ hai.
+      - claude, codex: lượt 2 chỉ có "lan hai" -> KHÔNG chèn lại. ĐÚNG.
+      - nvidia (chưa cấu hình, hỏng ngay): lượt 2 VẪN kèm nguyên khối bối cảnh.
+      - claude cũng hỏng (hết hạn OAuth) NHƯNG vẫn ghi dấu vân tay.
+    Hai provider cùng hỏng mà hành xử khác nhau -> logic đang bám vào giai đoạn hỏng, không bám vào
+    kết quả. Ghi dấu vân tay khi lượt hỏng là SAI: model chưa hề nhận được bối cảnh, nhưng pane đã bị
+    đánh dấu là "đã gửi rồi" -> lượt sau mất bối cảnh vĩnh viễn.
+    SỬA: chỉ ghi dấu vân tay khi lượt gọi THÀNH CÔNG (đường `done`). Lượt kết thúc bằng sự kiện `error`,
+    bằng exception, hoặc bị người dùng bấm Dừng -> KHÔNG ghi, để lượt sau chèn lại.
+    Áp dụng thống nhất cho mọi provider.
+
+RÀNG BUỘC: không đụng `send()` (chỉ thêm trường vào body và chỗ ghi dấu vân tay ở mục B4), parseSse,
+`patchMessage`, lược đồ localStorage
 `hub-v3-chat` (nếu cần nhớ agent thì thêm trường vào Pane — Pane được phép, Message thì KHÔNG),
 giới hạn 4 pane, panel artifact, F1/F2/F3/F4. Nhãn tiếng Việt, không thêm dep.
 

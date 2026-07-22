@@ -26,7 +26,9 @@ def _base_cmd() -> list[str]:
     return ["codex"]
 
 
-def _build_cmd(prompt: str, session_id: str | None, model: str | None = None) -> list[str]:
+def _build_cmd(prompt: str, session_id: str | None, model: str | None = None, system_prompt: str | None = None) -> list[str]:
+    if system_prompt and not session_id:
+        prompt = f"[Agent system prompt]\n{system_prompt}\n\n[User request]\n{prompt}"
     full_prompt = f"FRESH START\n\n{prompt}"
     base = _base_cmd()
     options = ["-s", "read-only", "--skip-git-repo-check", "--json"]
@@ -165,9 +167,10 @@ def stream_chat(
     messages: list[dict[str, str]],
     session_id: str | None = None,
     model: str | None = None,
+    system_prompt: str | None = None,
 ) -> Iterator[ChatEvent]:
     prompt = _latest_user_prompt(messages)
-    cmd = _build_cmd(prompt, session_id, model=model)
+    cmd = _build_cmd(prompt, session_id, model=model, system_prompt=system_prompt)
     env = os.environ.copy()
     env.setdefault("PYTHONIOENCODING", "utf-8")
     timeout = float(getattr(config, "CHAT_CLI_TIMEOUT", 300))

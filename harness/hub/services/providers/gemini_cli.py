@@ -67,8 +67,11 @@ def _transcript(messages: list[dict[str, str]]) -> str:
     return text[-4000:]
 
 
-def _build_cmd(messages: list[dict[str, str]]) -> list[str]:
-    return [*_base_cmd(), "-p", _transcript(messages)]
+def _build_cmd(messages: list[dict[str, str]], system_prompt: str | None = None) -> list[str]:
+    transcript = _transcript(messages)
+    if system_prompt:
+        transcript = f"[Agent system prompt]\n{system_prompt}\n\n[User request]\n{transcript}"
+    return [*_base_cmd(), "-p", transcript]
 
 
 def _usage_file() -> Path:
@@ -88,12 +91,12 @@ def _append_usage_event(usage: dict[str, int]) -> None:
         pass
 
 
-def stream_chat(messages: list[dict[str, str]], session_id: str | None = None, model: str | None = None) -> Iterator[ChatEvent]:
+def stream_chat(messages: list[dict[str, str]], session_id: str | None = None, model: str | None = None, system_prompt: str | None = None) -> Iterator[ChatEvent]:
     env = os.environ.copy()
     env.setdefault("PYTHONIOENCODING", "utf-8")
     timeout = float(getattr(config, "CHAT_CLI_TIMEOUT", 300))
     try:
-        proc_id = procs.registry.spawn(_build_cmd(messages), cwd=getattr(config, "ROOT", None), env=env, timeout=timeout, provider=PROVIDER_ID, stdin=subprocess.DEVNULL)
+        proc_id = procs.registry.spawn(_build_cmd(messages, system_prompt=system_prompt), cwd=getattr(config, "ROOT", None), env=env, timeout=timeout, provider=PROVIDER_ID, stdin=subprocess.DEVNULL)
     except procs.BusyError as exc:
         yield {"type": "error", "message": str(exc), "code": 429}
         return

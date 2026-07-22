@@ -114,6 +114,63 @@ def test_chat_rejects_unknown_model(client: TestClient) -> None:
     assert "not-a-model" in str(events[0][1]["message"])
 
 
+def test_chat_rejects_unknown_agent(client: TestClient) -> None:
+    response = client.post("/api/chat", json={"agent_id": "missing", "messages": _messages()})
+
+    assert response.status_code == 400
+    assert "missing" in response.json()["detail"]
+
+
+def test_chat_agent_overrides_provider_model_and_delivers_system_prompt(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[dict[str, object]] = []
+    _install_fake_openai(monkeypatch, calls)
+    monkeypatch.setattr(server.runtime_agents, "get_agent", lambda _agent_id: {
+        "id": "reviewer", "provider": "nvidia", "model": "deepseek-ai/deepseek-v4-flash",
+        "system_prompt": "Review strictly.", "skills": [], "permission": "read_only",
+        "budget": {"seconds": 60, "max_calls": 1}, "risk_tier": "read_only",
+    })
+
+    response = client.post("/api/chat", json={
+        "agent_id": "reviewer", "provider": "claude", "model": config.CHAT_DEFAULT_MODEL,
+        "messages": _messages(),
+    })
+
+    assert response.status_code == 200
+    assert calls[0]["model"] == "deepseek-ai/deepseek-v4-flash"
+    assert calls[0]["messages"] == [{"role": "system", "content": "Review strictly."}, *_messages()]
+
+
+def test_chat_agent_with_null_model_uses_client_model(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[dict[str, object]] = []
+    _install_fake_openai(monkeypatch, calls)
+    monkeypatch.setattr(server.runtime_agents, "get_agent", lambda _agent_id: {
+        "id": "reviewer", "provider": "nvidia", "model": None, "system_prompt": "Review.",
+        "skills": [], "permission": "read_only", "budget": {"seconds": 60, "max_calls": 1},
+        "risk_tier": "read_only",
+    })
+
+    response = client.post("/api/chat", json={
+        "agent_id": "reviewer", "provider": "nvidia", "model": config.CHAT_DEFAULT_MODEL,
+        "messages": _messages(),
+    })
+
+    assert response.status_code == 200
+    assert calls[0]["model"] == config.CHAT_DEFAULT_MODEL
+    assert calls[0]["messages"][0] == {"role": "system", "content": "Review."}
+
+
+def test_chat_rejects_client_system_message(client: TestClient) -> None:
+    response = client.post("/api/chat", json={"messages": [{"role": "system", "content": "spoof"}]})
+
+    assert response.status_code == 400
+
+
 def test_chat_streams_delta_done_and_records_usage(
     client: TestClient,
     monkeypatch: pytest.MonkeyPatch,
