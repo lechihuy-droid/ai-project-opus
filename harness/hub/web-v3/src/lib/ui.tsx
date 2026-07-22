@@ -25,6 +25,7 @@ export type ButtonSize = 'sm' | 'md'
 export type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
   variant?: ButtonVariant
   size?: ButtonSize
+  selected?: boolean
   /** Optional leading icon slot, rendered before the label and marked decorative. */
   icon?: ReactNode
   children: ReactNode
@@ -56,14 +57,14 @@ const buttonSizes: Record<ButtonSize, string> = {
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant = 'secondary', size = 'md', icon, className, children, type = 'button', ...rest },
+  { variant = 'secondary', size = 'md', selected = false, icon, className, children, type = 'button', ...rest },
   ref,
 ) {
   return (
     <button
       ref={ref}
       type={type}
-      className={cx(buttonBase, buttonVariants[variant], buttonSizes[size], className)}
+      className={cx(buttonBase, selected ? 'border border-accent bg-accent-subtle text-primary' : buttonVariants[variant], buttonSizes[size], className)}
       {...rest}
     >
       {icon ? <span aria-hidden="true" className="inline-flex shrink-0 items-center">{icon}</span> : null}
@@ -171,6 +172,8 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
 
 export type ChipProps = {
   children: ReactNode
+  selected?: boolean
+  muted?: boolean
   /** Presence enables the removable variant and renders an Ãƒâ€” affordance. */
   onRemove?: () => void
   /** Accessible label for the remove button. Defaults to "XoÃƒÂ¡". */
@@ -178,13 +181,14 @@ export type ChipProps = {
   className?: string
 }
 
-export function Chip({ children, onRemove, removeLabel = 'XoÃƒÂ¡', className }: ChipProps) {
+export function Chip({ children, selected = false, muted = false, onRemove, removeLabel = 'XoÃƒÂ¡', className }: ChipProps) {
   return (
     <span
       className={cx(
         'inline-flex items-center gap-space-1 rounded-full',
-        'border border-border-subtle bg-elevated',
-        'px-space-3 py-[3px] text-caption text-secondary',
+        selected ? 'border border-accent bg-accent-subtle text-primary' : 'border border-border-subtle bg-elevated',
+        'px-space-3 py-[3px] text-caption',
+        !selected && (muted ? 'text-muted opacity-60' : 'text-secondary'),
         className,
       )}
     >
@@ -345,4 +349,3 @@ export function EmptyState({ icon, title, description, actions = [], className }
     </div>
   )
 }
-
