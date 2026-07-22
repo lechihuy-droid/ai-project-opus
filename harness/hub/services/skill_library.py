@@ -23,7 +23,8 @@ except ImportError:  # pragma: no cover - optional dependency not installed
 CACHE_TTL_SECONDS = 30.0
 _SKILL_TOOL_NAME = "Skill"
 _TELEMETRY_WINDOW_DAYS = 30
-_FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?\n)---\s*\n?", re.DOTALL)
+_BOM = "\ufeff"
+_FRONTMATTER_RE = re.compile(rf"^{_BOM}?---\s*\n(.*?\n)---\s*\n?", re.DOTALL)
 
 _DEFAULT_SKILL_SOURCES: dict[str, Path] = {
     "claude_user": Path.home() / ".claude" / "skills",
@@ -123,11 +124,22 @@ def _dir_mtime_ns(path: Path) -> int:
     return latest
 
 
-def _parse_frontmatter(text: str) -> dict[str, str]:
+def split_frontmatter(text: str) -> tuple[dict[str, str], str]:
+    """Split a SKILL.md document into its frontmatter mapping and its body.
+
+    Returns ({}, text) when the document has no parsable frontmatter block.
+    """
     match = _FRONTMATTER_RE.match(text)
     if not match:
-        return {}
-    block = match.group(1)
+        return {}, text
+    return _parse_block(match.group(1)), text[match.end():]
+
+
+def _parse_frontmatter(text: str) -> dict[str, str]:
+    return split_frontmatter(text)[0]
+
+
+def _parse_block(block: str) -> dict[str, str]:
     if yaml is not None:
         try:
             data = yaml.safe_load(block)
