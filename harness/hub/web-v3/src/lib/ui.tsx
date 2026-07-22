@@ -13,7 +13,7 @@ import { forwardRef, type ButtonHTMLAttributes, type InputHTMLAttributes, type R
 
 const cx = (...parts: Array<string | false | undefined>) => parts.filter(Boolean).join(' ')
 
-const focusRing = 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--hub-accent)]'
+const focusRing = 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent'
 
 // ---------------------------------------------------------------------------
 // Button
@@ -31,28 +31,28 @@ export type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'childre
 }
 
 const buttonBase = cx(
-  'inline-flex items-center justify-center gap-[var(--hub-space-2)]',
-  'rounded-[var(--hub-radius-md)] font-medium whitespace-nowrap transition-colors',
+  'inline-flex items-center justify-center gap-space-2',
+  'rounded-md font-medium whitespace-nowrap transition-colors',
   'disabled:cursor-not-allowed disabled:opacity-40',
   focusRing,
 )
 
 const buttonVariants: Record<ButtonVariant, string> = {
-  primary: 'bg-[var(--hub-accent)] text-[var(--hub-bg-app)] hover:bg-[var(--hub-accent-hover)]',
+  primary: '!bg-accent text-app hover:!bg-accent-hover',
   secondary: cx(
-    'border border-[var(--hub-border-strong)] bg-[var(--hub-bg-elevated)]',
-    'text-[var(--hub-text-primary)] hover:bg-[var(--hub-bg-hover)]',
+    'border border-border-strong bg-elevated',
+    'text-primary hover:bg-hover',
   ),
-  ghost: 'text-[var(--hub-text-secondary)] hover:bg-[var(--hub-bg-hover)] hover:text-[var(--hub-text-primary)]',
+  ghost: 'text-secondary hover:bg-hover hover:text-primary',
   destructive: cx(
-    'border border-[var(--hub-error)] text-[var(--hub-error)]',
-    'hover:bg-[var(--hub-error-subtle)]',
+    'border border-error text-error',
+    'hover:bg-error-subtle',
   ),
 }
 
 const buttonSizes: Record<ButtonSize, string> = {
-  sm: 'h-8 px-[var(--hub-space-3)] text-[length:var(--hub-caption-size)] leading-[var(--hub-caption-line)]',
-  md: 'h-10 px-[var(--hub-space-4)] text-[length:var(--hub-label-size)] leading-[var(--hub-label-line)]',
+  sm: 'h-8 px-space-3 text-caption leading-caption',
+  md: 'h-10 px-space-4 text-label leading-label',
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
@@ -92,8 +92,8 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
       type={type}
       className={cx(
         'inline-flex h-8 w-8 min-h-[32px] min-w-[32px] items-center justify-center',
-        'rounded-[var(--hub-radius-md)] text-[var(--hub-text-secondary)] transition-colors',
-        'hover:bg-[var(--hub-bg-hover)] hover:text-[var(--hub-text-primary)]',
+        'rounded-md text-secondary transition-colors',
+        'hover:bg-hover hover:text-primary',
         'disabled:cursor-not-allowed disabled:opacity-40',
         focusRing,
         className,
@@ -110,11 +110,11 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
 // ---------------------------------------------------------------------------
 
 const controlBase = cx(
-  'w-full rounded-[var(--hub-radius-md)] border border-[var(--hub-border-subtle)]',
-  'bg-[var(--hub-bg-elevated)] text-[var(--hub-text-primary)]',
-  'text-[length:var(--hub-body-size)] leading-[var(--hub-body-line)]',
-  'placeholder:text-[var(--hub-text-muted)]',
-  'focus:outline-none focus:ring-2 focus:ring-[var(--hub-accent)] focus:border-[var(--hub-accent)]',
+  'w-full rounded-md border border-border-subtle',
+  'bg-elevated text-primary',
+  'text-body leading-body',
+  'placeholder:text-muted',
+  'focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent',
   'disabled:cursor-not-allowed disabled:opacity-40',
 )
 
@@ -124,7 +124,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({ c
   return (
     <input
       ref={ref}
-      className={cx(controlBase, 'h-[var(--hub-size-input)] px-[var(--hub-space-3)]', className)}
+      className={cx(controlBase, 'h-input px-space-3', className)}
       {...rest}
     />
   )
@@ -136,7 +136,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
   return (
     <select
       ref={ref}
-      className={cx(controlBase, 'h-[var(--hub-size-input)] px-[var(--hub-space-3)]', className)}
+      className={cx(controlBase, 'h-input px-space-3', className)}
       {...rest}
     >
       {children}
@@ -152,7 +152,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
       ref={ref}
       className={cx(
         controlBase,
-        'min-h-[var(--hub-size-composer-min)] px-[var(--hub-space-3)] py-[var(--hub-space-2)]',
+        'min-h-composer-min px-space-3 py-space-2',
         className,
       )}
       {...rest}
@@ -177,9 +177,9 @@ export function Chip({ children, onRemove, removeLabel = 'Xoá', className }: Ch
   return (
     <span
       className={cx(
-        'inline-flex items-center gap-[var(--hub-space-1)] rounded-[var(--hub-radius-full)]',
-        'border border-[var(--hub-border-subtle)] bg-[var(--hub-bg-elevated)]',
-        'px-[var(--hub-space-3)] py-[3px] text-[length:var(--hub-caption-size)] text-[var(--hub-text-secondary)]',
+        'inline-flex items-center gap-space-1 rounded-full',
+        'border border-border-subtle bg-elevated',
+        'px-space-3 py-[3px] text-caption text-secondary',
         className,
       )}
     >
@@ -191,7 +191,7 @@ export function Chip({ children, onRemove, removeLabel = 'Xoá', className }: Ch
           aria-label={removeLabel}
           className={cx(
             'ml-[2px] inline-flex h-4 w-4 items-center justify-center rounded-full leading-none',
-            'text-[var(--hub-text-muted)] hover:bg-[var(--hub-bg-hover)] hover:text-[var(--hub-text-primary)]',
+            'text-muted hover:bg-hover hover:text-primary',
             focusRing,
           )}
         >
@@ -224,14 +224,14 @@ export type StatusProps = {
 }
 
 const statusDotClass: Record<StatusKind, string> = {
-  ready: 'bg-[var(--hub-success)]',
-  running: 'bg-[var(--hub-accent)]',
-  paused: 'bg-[var(--hub-text-muted)]',
-  'setup-required': 'bg-[var(--hub-warning)]',
-  'not-installed': 'bg-[var(--hub-text-muted)]',
-  'rate-limited': 'bg-[var(--hub-warning)]',
-  error: 'bg-[var(--hub-error)]',
-  offline: 'bg-[var(--hub-text-muted)]',
+  ready: 'bg-success',
+  running: 'bg-accent',
+  paused: 'bg-muted',
+  'setup-required': 'bg-warning',
+  'not-installed': 'bg-muted',
+  'rate-limited': 'bg-warning',
+  error: 'bg-error',
+  offline: 'bg-muted',
 }
 
 const statusLabels: Record<StatusKind, string> = {
@@ -249,7 +249,7 @@ export function Status({ kind, label, className }: StatusProps) {
   return (
     <span
       className={cx(
-        'inline-flex items-center gap-[6px] text-[length:var(--hub-caption-size)] text-[var(--hub-text-secondary)]',
+        'inline-flex items-center gap-[6px] text-caption text-secondary',
         className,
       )}
     >
@@ -313,23 +313,23 @@ export function EmptyState({ icon, title, description, actions = [], className }
   return (
     <div
       className={cx(
-        'flex flex-col items-center justify-center gap-[var(--hub-space-2)] text-center',
-        'rounded-[var(--hub-radius-lg)] border border-dashed border-[var(--hub-border-subtle)]',
-        'px-[var(--hub-space-4)] py-[var(--hub-space-8)]',
+        'flex flex-col items-center justify-center gap-space-2 text-center',
+        'rounded-lg border border-dashed border-border-subtle',
+        'px-space-4 py-space-8',
         className,
       )}
     >
-      {icon ? <span aria-hidden="true" className="text-[var(--hub-text-muted)]">{icon}</span> : null}
-      <h3 className="text-[length:var(--hub-label-size)] leading-[var(--hub-label-line)] font-semibold text-[var(--hub-text-primary)]">
+      {icon ? <span aria-hidden="true" className="text-muted">{icon}</span> : null}
+      <h3 className="text-label leading-label font-semibold text-primary">
         {title}
       </h3>
       {description ? (
-        <p className="max-w-sm text-[length:var(--hub-caption-size)] leading-[var(--hub-caption-line)] text-[var(--hub-text-secondary)]">
+        <p className="max-w-sm text-caption leading-caption text-secondary">
           {description}
         </p>
       ) : null}
       {visibleActions.length > 0 ? (
-        <div className="mt-[var(--hub-space-2)] flex flex-wrap justify-center gap-[var(--hub-space-2)]">
+        <div className="mt-space-2 flex flex-wrap justify-center gap-space-2">
           {visibleActions.map(action => (
             <Button key={action.label} variant="ghost" size="sm" icon={action.icon} onClick={action.onClick}>
               {action.label}
