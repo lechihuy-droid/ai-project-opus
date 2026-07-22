@@ -9,7 +9,7 @@
  * See DESIGN.md for the full component contract, when-to-use rules, and
  * the migration checklist that points existing pages at these primitives.
  */
-import { forwardRef, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
+import { forwardRef, useEffect, useRef, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
 
 const cx = (...parts: Array<string | false | undefined>) => parts.filter(Boolean).join(' ')
 
@@ -344,6 +344,66 @@ export function EmptyState({ icon, title, description, actions = [], className }
               {action.label}
             </Button>
           ))}
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Popover
+// ---------------------------------------------------------------------------
+
+type PopoverProps = {
+  /** Rendered as the trigger. Receives the current open state so it can show a caret. */
+  label: ReactNode
+  children: ReactNode | ((close: () => void) => ReactNode)
+  align?: 'start' | 'end'
+  triggerClassName?: string
+  className?: string
+  'aria-label'?: string
+}
+
+/**
+ * Click-to-open disclosure anchored to its trigger. Use it to keep secondary
+ * controls — model pickers, provider health, pane settings — out of the layout
+ * until asked for, instead of stacking them permanently above the content.
+ */
+export function Popover({ label, children, align = 'start', triggerClassName, className, ...rest }: PopoverProps) {
+  const [open, setOpen] = useState(false)
+  const root = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const onPointerDown = (event: MouseEvent) => { if (!root.current?.contains(event.target as Node)) setOpen(false) }
+    const onKeyDown = (event: KeyboardEvent) => { if (event.key === 'Escape') setOpen(false) }
+    document.addEventListener('mousedown', onPointerDown)
+    document.addEventListener('keydown', onKeyDown)
+    return () => { document.removeEventListener('mousedown', onPointerDown); document.removeEventListener('keydown', onKeyDown) }
+  }, [open])
+
+  return (
+    <div ref={root} className="relative">
+      <Button
+        variant="ghost"
+        size="sm"
+        aria-expanded={open}
+        aria-haspopup="dialog"
+        aria-label={rest['aria-label']}
+        onClick={() => setOpen(current => !current)}
+        className={triggerClassName}
+      >
+        {label}
+      </Button>
+      {open ? (
+        <div
+          className={cx(
+            'absolute z-20 mt-space-1 min-w-[220px] rounded-[var(--hub-radius-lg)] border border-border-subtle bg-surface p-space-3 shadow-lg',
+            align === 'end' ? 'right-0' : 'left-0',
+            className,
+          )}
+        >
+          {typeof children === 'function' ? children(() => setOpen(false)) : children}
         </div>
       ) : null}
     </div>

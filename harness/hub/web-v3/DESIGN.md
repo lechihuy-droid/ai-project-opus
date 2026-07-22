@@ -66,7 +66,22 @@ Không còn giá trị 3/4/9/10px tuỳ tiện (xem mục 5).
 
 ### Kích thước cố định
 
-`--hub-size-sidebar-item` 40px · `--hub-size-pane-header` 44px · `--hub-size-toolbar` 56px · `--hub-size-input` 40px · `--hub-size-composer-min` 48px · `--hub-card-padding` 16px · `--hub-pane-gap` 12px.
+`--hub-size-sidebar-item` 40px · `--hub-size-context-strip` 32px · `--hub-size-pane-header` 52px · `--hub-size-toolbar` 48px · `--hub-size-input` 40px · `--hub-size-composer-min` 56px · `--hub-size-drawer` 360px · `--hub-card-padding` 16px · `--hub-pane-gap` 12px.
+
+### Progressive disclosure
+
+Chức năng phụ **không** được chiếm chỗ cố định trên màn hình chính. Bối cảnh chung, tình
+trạng provider, chọn agent/model đều nằm sau một `Popover` hoặc drawer 360px; trên mặt
+tiền chỉ còn một dòng tóm tắt.
+
+Mỗi dữ liệu có **một nơi sở hữu duy nhất**: `ProviderDot` giữ provider, nhãn giữ model,
+`Status` giữ trạng thái chạy, `Chip` giữ quyền tool. Không lặp cùng một thông tin dưới
+hai hình thức khác nhau.
+
+### Quyền sở hữu scroll
+
+Mỗi pane là ba vùng: header, thân hội thoại, composer — và **chỉ thân hội thoại được
+cuộn**. Header với composer đứng yên; trang không bao giờ có thanh cuộn riêng.
 
 ### Typography
 
@@ -120,6 +135,7 @@ Cách style: **Tailwind arbitrary-value class tham chiếu CSS variable** (`bg-[
 | `Status` | `kind` (8 giá trị: ready/running/paused/setup-required/not-installed/rate-limited/error/offline), `label?` | Mọi hiển thị trạng thái provider/pane/run. Label luôn hiện — màu chỉ là tín hiệu phụ. |
 | `ProviderDot` | `provider: claude\|codex\|nvidia\|gemini` | Chấm nhận diện 7px. Đây là **CÁCH DUY NHẤT HỢP LỆ** để hiện màu provider. |
 | `EmptyState` | `icon?`, `title`, `description?`, `actions?` (tối đa 4, dư bị cắt) | Danh sách rỗng (chưa có workflow, chưa có run, v.v.) |
+| `Popover` | `label`, `children` (hoặc `close => children`), `align: start\|end`, `aria-label` | Mọi control phụ: đổi model/agent, tình trạng provider, menu pane. Tự đóng khi click ra ngoài hoặc bấm Escape. Dùng thay cho việc xếp thêm một hàng control cố định. |
 
 ### 4b. Luật "1 primary button / region"
 
