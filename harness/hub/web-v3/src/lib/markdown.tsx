@@ -5,9 +5,9 @@ function inline(text: string): ReactNode[] {
   return parts.map((part, index) => {
     if (part.startsWith('**') && part.endsWith('**')) return <strong key={index}>{part.slice(2, -2)}</strong>
     if (part.startsWith('*') && part.endsWith('*')) return <em key={index}>{part.slice(1, -1)}</em>
-    if (part.startsWith('`') && part.endsWith('`')) return <code key={index} className="rounded bg-panel2 px-1 py-px font-mono text-codex">{part.slice(1, -1)}</code>
+    if (part.startsWith('`') && part.endsWith('`')) return <code key={index} className="rounded-[var(--hub-radius-sm)] bg-panel2 px-1 py-px font-mono text-[var(--hub-accent)]">{part.slice(1, -1)}</code>
     const link = part.match(/^\[([^\]]+)\]\((https?:\/\/[^)]+)\)$/)
-    if (link) return <a key={index} href={link[2]} target="_blank" rel="noopener noreferrer" className="text-gemini underline">{link[1]}</a>
+    if (link) return <a key={index} href={link[2]} target="_blank" rel="noopener noreferrer" className="text-[var(--hub-info)] underline">{link[1]}</a>
     return part
   })
 }
@@ -35,4 +35,3 @@ function CodeBlock({ text }: { text: string }) {
   const copy = () => void navigator.clipboard?.writeText(text)
   return <div className="relative my-2 rounded-lg border border-line bg-panel2 p-3"><button onClick={copy} className="absolute right-2 top-2 rounded border border-line px-2 py-1 text-[10px] text-dim">Copy</button><pre className="overflow-x-auto whitespace-pre-wrap pr-12 font-mono text-xs text-text">{text}</pre></div>
 }
-

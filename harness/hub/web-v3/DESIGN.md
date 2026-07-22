@@ -177,3 +177,8 @@ Các vị trí **ĐÚNG** cần giữ nguyên làm mẫu (không phải lỗi): 
 - `src/styles/tokens.css` — mới, không import ở đâu (theo constraint không được sửa `main.tsx`/`index.css`). Khi migrate, thêm `import './styles/tokens.css'` sau `import './index.css'` trong entrypoint.
 - `src/lib/ui.tsx` — mới, không được page nào import (theo constraint không sửa `src/pages/*`). Khi migrate từng page, import các component cần từ `../lib/ui`.
 - Không file nào đang tồn tại bị sửa. Mọi thay đổi mô tả ở mục 5 là việc cần làm **sau** khi constraint tách file được gỡ.
+## 7. Quyết định G1
+
+- Nút **Duyệt** = `Button variant="primary"` violet; **Từ chối** = `Button variant="destructive"`.
+- Amber chỉ dành cho trạng thái gate (`Status kind="setup-required"`), không dùng cho action.
+- Pane có agent hiển thị quyền agent; không hiển thị badge provider `READ-ONLY` song song.

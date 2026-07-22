@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createHashRouter, Navigate, RouterProvider } from 'react-router-dom'
 import './index.css'
+import './styles/tokens.css'
 import Layout from './components/Layout'
 import { pages } from './pages'
 
