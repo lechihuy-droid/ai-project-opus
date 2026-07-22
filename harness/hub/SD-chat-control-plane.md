@@ -91,6 +91,30 @@ Xếp theo rẻ-mà-đau trước. F1+F2 gần như miễn phí và sửa đúng
 
 **Sửa vặt kèm F1**: preamble `FRESH START` cho chat provider codex, nếu không pane codex vẫn vô dụng.
 
+## 4-bis. Phase G — hợp nhất design system (review round 2, user chuyển 2026-07-22)
+
+Review thứ hai kết luận: UI hiện giống nhiều nhóm component ghép lại hơn là một sản phẩm chạy trên một
+design system. Vấn đề không ở bố cục mà ở **màu, radius, border, typography, trạng thái, hierarchy**
+mỗi chỗ một kiểu. Yêu cầu: dừng thêm component mới một vòng, đi hợp nhất lớp nền.
+
+Tách làm hai để chạy song song an toàn với F4–F6 (đang sửa `ChatPage.tsx`):
+
+| | Nội dung | Đụng file đang chạy? |
+|---|---|---|
+| **G0** | Chốt token (màu, radius 6/8/12/999, spacing lưới 4px, type scale) + dựng primitive `Button/IconButton/Input/Select/Textarea/Chip/Status/ProviderDot/EmptyState` + `DESIGN.md` | **không** — chỉ tạo file mới |
+| **G1** | Áp dụng vào từng trang, thay hết giá trị tự phát bằng token | có — làm SAU F6 |
+
+**Quyết định đã chốt theo review:** hướng "dark technical workbench"; một brand accent duy nhất
+(violet `#8b7cf6`) dùng cho selection/focus/primary; **màu provider tụt xuống chỉ còn một chấm 6–8px**,
+cấm dùng cho button, navigation active hay selection; bốn cấp surface có khoảng cách nhìn thấy được;
+mono chỉ dành cho model id, version CLI, số token, command.
+
+⚠️ **Một mâu thuẫn giữa hai review, phải xử khi làm G1:** review round 2 đề xuất pane có
+`min-height: 420px`. Nhưng F3-fix-1 vừa ghim trang chat theo chiều cao viewport để composer không bị
+đẩy khuất (đo thật: trước khi sửa, 3 pane cho `scrollHeight 1373` trên viewport `720`, composer nằm ở
+`1331`). Đặt min-height cứng 420px cho pane sẽ **làm sống lại đúng lỗi đó** khi có 4 pane.
+Giữ ưu tiên: composer luôn nhìn thấy > pane cao tối thiểu. Pane co được, và cuộn bên trong.
+
 ## 5. Không làm (chốt lại)
 
 - Không nén context tự động khi chưa đo được context window thật.
