@@ -173,9 +173,13 @@ comment đầu file khi ghi đè, hoặc cảnh báo rõ trước khi lưu. Khô
 
 1. **Mô hình chi phí = C — cả hai.** Quota burn là số chính; shadow cost là số phụ, **luôn kèm nhãn "ước tính —
    không thực trả"**. Không bao giờ trình bày như tiền đã tiêu.
-2. **Canvas = thêm React Flow.** Quyết định này **cố ý ghi đè luật "không thêm npm dep"** của v3 (SD-ui-v3 §6) —
-   đổi lấy zoom/pan/minimap/snap có sẵn. Ghi nhận: bundle tăng ~50–100kb.
-   → Trước khi cài **bắt buộc chạy skill `dependency-vetting`** (supply-chain / postinstall / typosquat) rồi mới `pnpm add`.
+2. ~~**Canvas = thêm React Flow.**~~ **HUỶ 2026-07-22** — xem §4-bis. Schema ép chuỗi thẳng nên giá trị của
+   React Flow (nối cạnh tự do) là thứ phải khoá. Quay lại luật "không thêm dep".
+3. **Canvas = phương án A: tự do vị trí, một luồng chạy** *(user chốt 2026-07-22)*.
+   Node đặt được ở toạ độ bất kỳ và toạ độ được lưu; `edges` vẫn phải là một chuỗi thẳng duy nhất.
+   Nối thành nhánh bị chặn NGAY lúc nối, không đợi tới lúc bấm Lưu.
+4. **Phương án B (DAG có nhánh + chạy song song) = hoãn, không huỷ** *(user 2026-07-22: "B lưu lại để sau
+   này cần triển khai")*. Hồ sơ điều tra ở §8 — đọc trước khi khởi động lại, đừng điều tra lại từ đầu.
 
 ## 6. Phân pha (đã sắp lại theo quyết định §5)
 
@@ -191,6 +195,38 @@ chi phí — thay vì sửa UsagePage hai lượt.
 | E5 | Chat: panel artifact bên phải — tách output dài/code block khỏi bong bóng, render markdown + mục lục + copy + xuất .md (nội dung THẬT từ stream, khác mockup `workspace.js`) | [CODEX] | M | |
 
 Mỗi phase: Codex code → Sonnet test/review → Claude build dist + browser-verify → commit.
+
+## 8. Phương án B — DAG có nhánh & chạy song song (HOÃN, hồ sơ giữ lại)
+
+Ghi ngày 2026-07-22 sau khi đọc engine. Khi nào cần B thì bắt đầu từ đây.
+
+**Phát hiện quan trọng nhất: fan-out ĐÃ CÓ SẴN, chưa ai dùng.**
+`workflow_exec.py:290` — mỗi node đã có thể `spawn` nhiều agent con, mỗi con mang agent/objective/budget/
+skills riêng, chạy qua `runtime_children.create_child_run` với sandbox là **tập con** của cha
+(`_ensure_subset` chặn con mở rộng quyền hơn cha). Governance chặn theo `risk_tier`. Output con đổ vào
+`{{<node>_claims}}`. **Không workflow YAML nào đang dùng `spawn`.**
+→ Lý do phổ biến nhất người ta muốn DAG ("một node gọi nhiều agent") **không cần DAG**. Trước khi mổ
+engine, hãy dùng thử `spawn` đã.
+→ Nhưng `spawn` hiện chạy **tuần tự** (`_run_child_provider` đồng bộ) và có lỗi: nhiều spawn thì
+`node_outputs[f"{node_id}_claims"]` bị ghi đè, **chỉ con cuối sống sót**. Sửa cái này rẻ hơn làm DAG rất nhiều.
+
+**Nếu vẫn làm B, đây là danh sách chỗ phải sửa (đã truy vết, không phải phỏng đoán):**
+
+| Chỗ | Hiện tại | B đòi hỏi |
+|---|---|---|
+| `workflow.py:34 _walk_chain` | ép in/out-degree ≤ 1, 1 start 1 end | sắp xếp tô-pô, phát hiện chu trình |
+| `workflow.py:181` | lỗi "must form exactly one linear chain" | bỏ, thay bằng luật DAG |
+| `workflow.py:225-229` | `{{X_output}}` hợp lệ nếu X đứng trước trong walk | X phải là **tổ tiên** trong đồ thị |
+| `workflow.py:207` | `validate.target` đứng trước trong walk | target phải là tổ tiên |
+| `workflow.py:237 build_ir` | trả danh sách phẳng theo walk | trả đồ thị + tập node sẵn sàng |
+| `workflow_exec.py:158` | `while True` + một con trỏ `node_index` | vòng lặp theo **frontier**, nhiều node cùng chạy |
+| `workflow_exec.py:322` | checkpoint lưu `node_index` (một số) | lưu **tập** node xong/đang chạy; resume phải dựng lại frontier |
+| `workflow_exec.py:250` | gate dừng node hiện tại | nhánh nào dừng? anh em có bị chặn theo không? **quyết định trước khi code** |
+| `RunsPage.tsx` spine | danh sách dọc tuyến tính | vẽ đồ thị |
+| tests | 206 test dựng trên giả định chuỗi | phần lớn phải viết lại |
+
+**Rủi ro lớn nhất:** gate + checkpoint là hai thứ giữ cho agent `workspace_write` không chạy khi chưa ai
+duyệt. B đụng thẳng vào cả hai. Đừng làm B chung phase với việc khác.
 
 ## 7. Không làm
 
