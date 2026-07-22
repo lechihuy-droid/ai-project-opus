@@ -121,6 +121,74 @@ def test_chat_rejects_unknown_agent(client: TestClient) -> None:
     assert "missing" in response.json()["detail"]
 
 
+def test_chat_rejects_unknown_skill(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(server.skill_library, "list_skill_names", lambda: {"known-skill"})
+
+    response = client.post("/api/chat", json={"skills": ["missing-skill"], "messages": _messages()})
+
+    assert response.status_code == 400
+    assert "missing-skill" in response.json()["detail"]
+
+
+def test_skill_names_endpoint_matches_chat_validator(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    names = {"caveman", "skillspector"}
+    monkeypatch.setattr(server.skill_library, "list_skill_names", lambda: names)
+    monkeypatch.setattr(server.skill_library, "read_skill_content", lambda name: f"content for {name}")
+
+    response = client.get("/api/skills/names")
+
+    assert response.status_code == 200
+    assert response.json() == sorted(names)
+    for name in response.json():
+        assert server._chat_skills([name])[0] == [f"content for {name}"]
+
+
+def test_chat_loads_skill_after_agent_prompt(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[dict[str, object]] = []
+    _install_fake_openai(monkeypatch, calls)
+    monkeypatch.setattr(server.skill_library, "list_skill_names", lambda: {"known-skill"})
+    monkeypatch.setattr(server.skill_library, "read_skill_content", lambda _name: "Follow skill rules.")
+    monkeypatch.setattr(server.runtime_agents, "get_agent", lambda _agent_id: {
+        "id": "reviewer", "provider": "nvidia", "model": config.CHAT_DEFAULT_MODEL,
+        "system_prompt": "Agent role.", "skills": [], "permission": "read_only",
+        "budget": {"seconds": 60, "max_calls": 1}, "risk_tier": "read_only",
+    })
+
+    response = client.post("/api/chat", json={
+        "agent_id": "reviewer", "skills": ["known-skill"], "messages": _messages(),
+    })
+
+    assert response.status_code == 200
+    sent_messages = calls[0]["messages"]
+    assert isinstance(sent_messages, list)
+    agent_skill_index = next(index for index, message in enumerate(sent_messages) if message["content"] == "Agent role.\n\n[Activated skills]\nFollow skill rules.")
+    user_index = next(index for index, message in enumerate(sent_messages) if message["role"] == "user")
+    assert agent_skill_index < user_index
+
+
+def test_chat_without_skills_never_collects_telemetry(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[dict[str, object]] = []
+    _install_fake_openai(monkeypatch, calls)
+    monkeypatch.setattr(server.skill_library, "list_skills", lambda: (_ for _ in ()).throw(AssertionError("telemetry")))
+
+    response = client.post("/api/chat", json={"messages": _messages(), "model": config.CHAT_DEFAULT_MODEL})
+
+    assert response.status_code == 200
+    assert calls
+
+
+def test_chat_reports_skill_prompt_truncation(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    _install_fake_openai(monkeypatch, [])
+    monkeypatch.setattr(server.skill_library, "list_skill_names", lambda: {"large-skill"})
+    monkeypatch.setattr(server.skill_library, "read_skill_content", lambda _name: "x" * (server.CHAT_SKILL_MAX_CHARS + 1))
+
+    response = client.post("/api/chat", json={"skills": ["large-skill"], "messages": _messages()})
+    events = _sse_events(response.text)
+
+    assert response.status_code == 200
+    assert "cắt" in str(events[-1][1]["skill_notice"])
+
+
 def test_chat_agent_overrides_provider_model_and_delivers_system_prompt(
     client: TestClient,
     monkeypatch: pytest.MonkeyPatch,

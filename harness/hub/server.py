@@ -119,6 +119,46 @@ def _chat_messages(value: object) -> list[dict[str, str]]:
     return messages
 
 
+CHAT_SKILL_MAX_CHARS = 12000
+
+
+def _chat_skills(value: object) -> tuple[list[str], bool]:
+    if value is None:
+        return [], False
+    if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+        raise HTTPException(status_code=400, detail="skills must be a list of skill names")
+
+    requested = [item for item in value if item]
+    known = skill_library.list_skill_names()
+    unknown = next((name for name in requested if name not in known), None)
+    if unknown is not None:
+        raise HTTPException(status_code=400, detail=f"Unknown skill: {unknown}")
+
+    contents: list[str] = []
+    used = 0
+    truncated = False
+    for name in requested:
+        content = skill_library.read_skill_content(name)
+        remaining = CHAT_SKILL_MAX_CHARS - used
+        if remaining <= 0:
+            truncated = True
+            break
+        if len(content) > remaining:
+            contents.append(content[:remaining])
+            truncated = True
+            break
+        contents.append(content)
+        used += len(content)
+    return contents, truncated
+
+
+def _system_prompt_with_skills(system_prompt: str | None, contents: list[str]) -> str | None:
+    if not contents:
+        return system_prompt
+    skills_prompt = "\n\n[Activated skills]\n" + "\n\n---\n\n".join(contents)
+    return f"{system_prompt}{skills_prompt}" if system_prompt else skills_prompt.removeprefix("\n\n")
+
+
 @app.get("/")
 def index() -> FileResponse:
     v3_index = WEB_V3_DIST / "index.html"
@@ -193,11 +233,14 @@ def api_chat(payload: dict[str, object]) -> StreamingResponse:
     system_prompt = agent.get("system_prompt") if agent else None
     if system_prompt is not None and not isinstance(system_prompt, str):
         raise HTTPException(status_code=400, detail="agent system_prompt must be a string")
+    skill_contents, skills_truncated = _chat_skills(payload.get("skills"))
+    system_prompt = _system_prompt_with_skills(system_prompt, skill_contents)
+    skill_notice = "Một phần nội dung skill đã bị cắt do giới hạn prompt." if skills_truncated else None
 
     def events():
         try:
             stream_kwargs: dict[str, object] = {"session_id": session_id, "model": model}
-            if agent:
+            if system_prompt:
                 stream_kwargs["system_prompt"] = system_prompt
             for item in provider.stream_chat(messages, **stream_kwargs):
                 item_type = item.get("type")
@@ -206,11 +249,14 @@ def api_chat(payload: dict[str, object]) -> StreamingResponse:
                 elif item_type == "delta":
                     yield _sse("delta", {"text": item.get("text", "")})
                 elif item_type == "done":
-                    yield _sse("done", {
+                    done_payload: dict[str, object] = {
                         "usage": item.get("usage", {}),
                         "model": item.get("model") or model or provider_id,
                         "session_id": item.get("session_id"),
-                    })
+                    }
+                    if skill_notice:
+                        done_payload["skill_notice"] = skill_notice
+                    yield _sse("done", done_payload)
                 elif item_type == "error":
                     yield _sse("error", {"message": item.get("message", ""), "code": item.get("code")})
         except Exception:
@@ -285,6 +331,11 @@ def api_agent_run_interrupt_resume(run_id: str, interrupt_id: str, payload: dict
 @app.get("/api/skills")
 def api_skills() -> list[dict[str, object]]:
     return runtime_skills.list_skills()
+
+
+@app.get("/api/skills/names")
+def api_skill_names() -> list[str]:
+    return sorted(skill_library.list_skill_names())
 
 
 @app.get("/api/skills/{skill_id}/usage")

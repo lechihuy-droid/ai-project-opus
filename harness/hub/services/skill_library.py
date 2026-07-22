@@ -352,6 +352,20 @@ def get_skill(skill_id: str) -> dict[str, Any]:
     }
 
 
+def read_skill_content(skill_name: str) -> str:
+    """Read SKILL.md for a validated skill name without accepting a raw path."""
+    for source, root in _sources().items():
+        for dirname, path in _iter_skill_dirs(root):
+            name = _read_frontmatter(path).get("name") or dirname
+            if name != skill_name:
+                continue
+            try:
+                return _skill_md_path(path).read_text(encoding="utf-8", errors="replace")
+            except OSError as exc:
+                raise FileNotFoundError(f"Skill not readable: {skill_name}") from exc
+    raise FileNotFoundError(f"Skill not found: {skill_name}")
+
+
 def drift() -> list[dict[str, Any]]:
     by_name: dict[str, list[dict[str, Any]]] = {}
     for entry in _scan_all_sources():
