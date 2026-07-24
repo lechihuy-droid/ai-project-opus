@@ -58,12 +58,20 @@ test("JSON remains usable without SQLite and SQLite reports a clear absent proje
   afterRoot(t, root);
   assert.equal(fs.existsSync(databasePath(root)), false);
 
+<<<<<<< HEAD
   const jsonResult = createJsonRepository({ appRoot: root }).query({ query: "terminal", domain: "visual-style" });
+=======
+  const jsonResult = createJsonRepository({ appRoot: root }).query({ query: "terminal" });
+>>>>>>> origin/main
   assert.equal(jsonResult.repository, "json");
   assert.ok(jsonResult.results.length > 0);
 
   assert.throws(
+<<<<<<< HEAD
     () => createSqliteRepository({ appRoot: root }).query({ query: "terminal", domain: "visual-style" }),
+=======
+    () => createSqliteRepository({ appRoot: root }).query({ query: "terminal" }),
+>>>>>>> origin/main
     (error) => error instanceof Error
       && error.message.includes("SQLite repository requested but projection is absent")
       && error.message.includes(databasePath(root))
@@ -92,7 +100,11 @@ test("CLI emits valid JSON by defaulting to JSON repository and honors query/fil
 
   const jsonRun = runCli(root, [
     "--json",
+<<<<<<< HEAD
     "--domain", "visual-style", "--query",
+=======
+    "--query",
+>>>>>>> origin/main
     "\"Terminal\", dashboard!",
     "--aspect-ratio",
     "9:16",
@@ -115,7 +127,11 @@ test("CLI emits valid JSON by defaulting to JSON repository and honors query/fil
   assert.ok(Array.isArray(result.rejectedCandidates));
   assert.ok(result.results.every((item) => item.id && item.score && item.explanation));
 
+<<<<<<< HEAD
   const textRun = runCli(root, ["--domain", "visual-style", "--query", "terminal"]);
+=======
+  const textRun = runCli(root, ["--query", "terminal"]);
+>>>>>>> origin/main
   assert.equal(textRun.status, 0, textRun.stderr);
   assert.match(textRun.stdout, /^Repository: json\r?\nResults: /u);
 });
@@ -124,13 +140,21 @@ test("CLI rejects invalid repository, filters, and limits with non-zero exit", (
   const root = createTempRoot();
   afterRoot(t, root);
   const cases = [
+<<<<<<< HEAD
     [["--domain", "visual-style", "--repository", "postgres"], "repository must be json or sqlite."],
+=======
+    [["--repository", "postgres"], "repository must be json or sqlite."],
+>>>>>>> origin/main
     [["--renderable", "maybe"], "renderable must be true or false."],
     [["--limit", "0"], "limit must be an integer between 1 and 100."],
     [["--unknown"], "Unknown option: --unknown"],
   ];
   for (const [args, message] of cases) {
+<<<<<<< HEAD
     const result = runCli(root, args.includes("--domain") ? args : ["--domain", "visual-style", ...args]);
+=======
+    const result = runCli(root, args);
+>>>>>>> origin/main
     assert.equal(result.status, 1, args.join(" "));
     assert.match(result.stderr, new RegExp(message.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), args.join(" "));
     assert.equal(result.stdout, "", args.join(" "));

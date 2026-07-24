@@ -106,9 +106,14 @@ const afterRoot = (t, root) => t.after(() => fs.rmSync(root, { recursive: true, 
 const parityPayload = ({ repository: _repository, ...result }) => result;
 
 const queryBoth = (root, input) => {
+<<<<<<< HEAD
   const visualInput = { ...input, domain: input.domain ?? "visual-style" };
   const json = createJsonRepository({ appRoot: root }).query(visualInput);
   const sqlite = createSqliteRepository({ appRoot: root }).query(visualInput);
+=======
+  const json = createJsonRepository({ appRoot: root }).query(input);
+  const sqlite = createSqliteRepository({ appRoot: root }).query(input);
+>>>>>>> origin/main
   assert.deepEqual(parityPayload(sqlite), parityPayload(json), JSON.stringify(input));
   return { json, sqlite };
 };
@@ -197,12 +202,21 @@ test("all hard filters and boolean/limit validation are shared by both repositor
   }
 
   for (const invalidLimit of [0, -1, 1.5, 101, "not-a-number"]) {
+<<<<<<< HEAD
     assert.throws(() => createJsonRepository({ appRoot: root }).query({ limit: invalidLimit, domain: "visual-style" }), /limit must be/);
     assert.throws(() => createSqliteRepository({ appRoot: root }).query({ limit: invalidLimit, domain: "visual-style" }), /limit must be/);
   }
   for (const invalidBoolean of ["yes", "1", 1, "TRUE"]) {
     assert.throws(() => createJsonRepository({ appRoot: root }).query({ renderable: invalidBoolean, domain: "visual-style" }), /renderable must be true or false/);
     assert.throws(() => createSqliteRepository({ appRoot: root }).query({ renderable: invalidBoolean, domain: "visual-style" }), /renderable must be true or false/);
+=======
+    assert.throws(() => createJsonRepository({ appRoot: root }).query({ limit: invalidLimit }), /limit must be/);
+    assert.throws(() => createSqliteRepository({ appRoot: root }).query({ limit: invalidLimit }), /limit must be/);
+  }
+  for (const invalidBoolean of ["yes", "1", 1, "TRUE"]) {
+    assert.throws(() => createJsonRepository({ appRoot: root }).query({ renderable: invalidBoolean }), /renderable must be true or false/);
+    assert.throws(() => createSqliteRepository({ appRoot: root }).query({ renderable: invalidBoolean }), /renderable must be true or false/);
+>>>>>>> origin/main
   }
   assert.equal(queryBoth(root, { renderable: true }).json.query.renderable, true);
   assert.equal(queryBoth(root, { renderable: false }).json.query.renderable, false);
@@ -218,7 +232,10 @@ test("unsafe or unapproved JSON evidence is invisible even from rejected candida
     sourceId: "source:wave5:unapproved-evidence",
     snapshotId: "snapshot:wave5:unapproved-evidence",
     sourceType: "repository",
+<<<<<<< HEAD
     domain: "visual-style",
+=======
+>>>>>>> origin/main
     packagePath: "outside-approved-package",
     sourceRef: "unapproved://wave5",
     sourceRevision: "wave5",
@@ -231,12 +248,18 @@ test("unsafe or unapproved JSON evidence is invisible even from rejected candida
     snapshotId: "snapshot:wave5:unapproved-evidence",
     sourceRef: "unapproved://wave5",
     mediaType: "repository",
+<<<<<<< HEAD
     domain: "visual-style",
+=======
+>>>>>>> origin/main
   });
   index.chunks.push({
     chunkId: "chunk:wave5:unapproved-evidence",
     documentId: "doc:wave5:unapproved-evidence",
+<<<<<<< HEAD
     domain: "visual-style",
+=======
+>>>>>>> origin/main
     ordinal: 0,
     rawText,
     searchText: normalizeSearchText(rawText),
@@ -248,7 +271,11 @@ test("unsafe or unapproved JSON evidence is invisible even from rejected candida
   });
   writeStableJson(filePath, index);
 
+<<<<<<< HEAD
   const result = createJsonRepository({ appRoot: root }).query({ query: "secret terminal", rights: "approved", domain: "visual-style" });
+=======
+  const result = createJsonRepository({ appRoot: root }).query({ query: "secret terminal", rights: "approved" });
+>>>>>>> origin/main
   const allIds = [
     ...result.results.map((item) => item.id),
     ...result.rejectedCandidates.map((item) => item.id),
@@ -261,7 +288,11 @@ test("SQLite lexical retrieval uses the FTS5 index and rebuild restores generate
   const root = setupRoot();
   afterRoot(t, root);
   const dbPath = databasePath(root);
+<<<<<<< HEAD
   assert.deepEqual(createSqliteRepository({ appRoot: root }).query({ query: QUERY_TOKEN, domain: "visual-style" }).results, []);
+=======
+  assert.deepEqual(createSqliteRepository({ appRoot: root }).query({ query: QUERY_TOKEN }).results, []);
+>>>>>>> origin/main
 
   const database = openDatabase(dbPath);
   try {
@@ -277,7 +308,11 @@ test("SQLite lexical retrieval uses the FTS5 index and rebuild restores generate
     database.close();
   }
 
+<<<<<<< HEAD
   const manipulated = createSqliteRepository({ appRoot: root }).query({ query: QUERY_TOKEN, domain: "visual-style" });
+=======
+  const manipulated = createSqliteRepository({ appRoot: root }).query({ query: QUERY_TOKEN });
+>>>>>>> origin/main
   assert.deepEqual(manipulated.results.map((item) => item.id), ["template:glitch-text@1.0.0"]);
   assert.deepEqual(manipulated.results[0].explanation.queryTokens, [QUERY_TOKEN]);
   assert.deepEqual(manipulated.results[0].explanation.matchedTokens, []);
@@ -288,16 +323,26 @@ test("SQLite lexical retrieval uses the FTS5 index and rebuild restores generate
   } finally {
     rebuilt.close();
   }
+<<<<<<< HEAD
   assert.deepEqual(createSqliteRepository({ appRoot: root }).query({ query: QUERY_TOKEN, domain: "visual-style" }).results, []);
+=======
+  assert.deepEqual(createSqliteRepository({ appRoot: root }).query({ query: QUERY_TOKEN }).results, []);
+>>>>>>> origin/main
 });
 
 test("repeated runs and lexical ties remain deterministic", (t) => {
   const root = setupRoot({ vietnamese: true });
   afterRoot(t, root);
   const repository = createJsonRepository({ appRoot: root });
+<<<<<<< HEAD
   const first = repository.query({ query: "terminal", domain: "visual-style" });
   for (let run = 0; run < 5; run += 1) assert.deepEqual(repository.query({ query: "terminal", domain: "visual-style" }), first);
   const ties = repository.query({ domain: "visual-style" });
+=======
+  const first = repository.query({ query: "terminal" });
+  for (let run = 0; run < 5; run += 1) assert.deepEqual(repository.query({ query: "terminal" }), first);
+  const ties = repository.query({});
+>>>>>>> origin/main
   const tiedIds = ties.results
     .filter((item) => item.score.total === ties.results.at(-1).score.total)
     .map((item) => item.id);

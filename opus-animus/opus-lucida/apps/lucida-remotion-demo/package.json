@@ -42,7 +42,10 @@
     "knowledge:build": "node scripts/knowledge/build-sqlite.mjs",
     "knowledge:query": "node scripts/knowledge/query.mjs",
     "knowledge:eval": "node scripts/knowledge/evaluate.mjs",
+<<<<<<< HEAD
     "knowledge:audit-breadth": "node scripts/knowledge/audit-evidence-breadth.mjs",
+=======
+>>>>>>> origin/main
     "knowledge:qa": "npm run knowledge:validate && npm run knowledge:compile && npm run knowledge:build && npm run knowledge:test && npm run knowledge:eval",
     "knowledge:preflight": "npm run knowledge:compile && npm run knowledge:validate-index",
     "knowledge:test": "node --test tests/knowledge/*.test.mjs",

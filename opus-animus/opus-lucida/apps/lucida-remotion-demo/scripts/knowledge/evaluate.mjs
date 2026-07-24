@@ -26,7 +26,11 @@ const THRESHOLDS = {
 const INPUT_FIELDS = new Set([
   "text", "query", "limit", "intent", "aspectRatio", "aspect-ratio", "family", "status",
   "sourceType", "source-type", "mediaType", "media-type", "renderable", "rights", "rightsStatus",
+<<<<<<< HEAD
   "rights-status", "approval", "approvalStatus", "approval-status", "domain",
+=======
+  "rights-status", "approval", "approvalStatus", "approval-status",
+>>>>>>> origin/main
 ]);
 
 const readJson = (filePath, label) => {
@@ -86,9 +90,12 @@ const validateGold = ({ queriesDocument, expectedDocument }) => {
     } else if (Object.keys(query.input).some((field) => !INPUT_FIELDS.has(field))) {
       errors.push(`Query ${query.id} has an unsupported input filter.`);
     }
+<<<<<<< HEAD
     if (!isObject(query.input) || !["factual", "visual-style"].includes(query.input.domain)) {
       errors.push(`Query ${query.id} requires input.domain factual or visual-style.`);
     }
+=======
+>>>>>>> origin/main
     if (!Number.isInteger(query.input?.limit) || query.input.limit < 1 || query.input.limit > 5) {
       errors.push(`Query ${query.id} must set input.limit between 1 and 5.`);
     }
@@ -238,7 +245,11 @@ export const evaluateKnowledge = ({ appRoot = process.cwd() } = {}) => {
 
   const jsonRepository = createJsonRepository({ appRoot });
   const sqliteRepository = createSqliteRepository({ appRoot, dbPath });
+<<<<<<< HEAD
   const corpusRecords = jsonRepository.query({ limit: 100, domain: "visual-style" }).results;
+=======
+  const corpusRecords = jsonRepository.query({ limit: 100 }).results;
+>>>>>>> origin/main
   const corpusIds = new Set(corpusRecords.map((item) => item.id));
   const unknownIds = [];
   for (const expected of gold.expectations.values()) {
@@ -368,11 +379,14 @@ export const evaluateKnowledge = ({ appRoot = process.cwd() } = {}) => {
       approvedReferenceCount: corpusRecords.filter((item) => item.kind === "reference").length,
     },
     gold: { queryCount: gold.queries.length, accentPairCount: totals.accent.total, englishQueryCount: gold.queries.filter((query) => query.category === "english").length, hardNegativeRightsQueryCount: gold.queries.filter((query) => query.category === "hard-negative-rights").length },
+<<<<<<< HEAD
     domainMetrics: Object.fromEntries(["factual", "visual-style"].map((domain) => ({
       domain,
       queryCount: gold.queries.filter((query) => query.input.domain === domain).length,
       resultCount: evidence.filter((entry) => entry.input.domain === domain).reduce((count, entry) => count + entry.json.results.length, 0),
     })).map((entry) => [entry.domain, entry])),
+=======
+>>>>>>> origin/main
     metrics,
     passed: Object.values(metrics).every((entry) => entry.passed) && evidence.every((entry) => entry.failures.length === 0),
     accentPairs,

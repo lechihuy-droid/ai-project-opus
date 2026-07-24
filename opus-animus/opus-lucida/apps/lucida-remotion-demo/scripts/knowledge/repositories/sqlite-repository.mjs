@@ -1,5 +1,8 @@
 import fs from "node:fs";
+<<<<<<< HEAD
 import path from "node:path";
+=======
+>>>>>>> origin/main
 import { databasePath, openDatabase } from "../sqlite-client.mjs";
 import {
   applyHardFilters,
@@ -22,7 +25,11 @@ const ftsExpression = (tokens) => tokens.map((token) => `search_folded : ${token
 
 const readRecords = (database) => {
   const templateRows = database.prepare(`
+<<<<<<< HEAD
     SELECT ce.definition_json, ce.domain, pr.source_id, pr.snapshot_id, pr.source_path, pr.review_status,
+=======
+    SELECT ce.definition_json, pr.source_id, pr.snapshot_id, pr.source_path, pr.review_status,
+>>>>>>> origin/main
            ss.revision AS source_revision, ss.collector_version
     FROM canonical_entities ce
     JOIN provenance_records pr ON pr.entity_id = ce.entity_id
@@ -30,7 +37,11 @@ const readRecords = (database) => {
     WHERE ce.entity_type = 'template'
     ORDER BY ce.entity_id
   `).all();
+<<<<<<< HEAD
   const templates = templateRows.map((row) => createTemplateRecord({ ...parseJson(row.definition_json, "template definition"), domain: row.domain }, {
+=======
+  const templates = templateRows.map((row) => createTemplateRecord(parseJson(row.definition_json, "template definition"), {
+>>>>>>> origin/main
     sourceId: row.source_id,
     snapshotId: row.snapshot_id,
     sourcePath: row.source_path,
@@ -47,10 +58,16 @@ const readRecords = (database) => {
   }
   const referenceRows = database.prepare(`
     SELECT c.chunk_id, c.ordinal, c.raw_text, c.search_text, c.search_folded, c.content_hash,
+<<<<<<< HEAD
            d.document_id, d.source_ref, d.media_type, d.domain AS document_domain,
            ss.snapshot_id, ss.revision AS source_revision, ss.collector_version,
            s.source_id, s.source_type, s.rights_policy, s.domain AS source_domain,
            c.domain AS chunk_domain,
+=======
+           d.document_id, d.source_ref, d.media_type,
+           ss.snapshot_id, ss.revision AS source_revision, ss.collector_version,
+           s.source_id, s.source_type, s.rights_policy,
+>>>>>>> origin/main
            sd.title, sd.tags
     FROM chunks c
     JOIN documents d ON d.document_id = c.document_id
@@ -64,17 +81,26 @@ const readRecords = (database) => {
       sourceId: row.source_id,
       snapshotId: row.snapshot_id,
       sourceType: row.source_type,
+<<<<<<< HEAD
       domain: row.source_domain,
+=======
+>>>>>>> origin/main
       sourceRevision: row.source_revision,
       collectorVersion: row.collector_version,
       // Only approved references are eligible to enter the SQLite projection.
       rights: { policy: row.rights_policy, status: "approved" },
       approval: { status: "approved" },
     },
+<<<<<<< HEAD
     document: { documentId: row.document_id, sourceRef: row.source_ref, mediaType: row.media_type, domain: row.document_domain },
     chunk: {
       chunkId: row.chunk_id,
       domain: row.chunk_domain,
+=======
+    document: { documentId: row.document_id, sourceRef: row.source_ref, mediaType: row.media_type },
+    chunk: {
+      chunkId: row.chunk_id,
+>>>>>>> origin/main
       ordinal: row.ordinal,
       rawText: row.raw_text,
       searchText: row.search_text,
@@ -100,6 +126,7 @@ const retrieveFtsIds = (database, tokens) => {
   return new Set(rows.map((row) => row.owner_id));
 };
 
+<<<<<<< HEAD
 const assertFreshProjection = ({ database, appRoot }) => {
   const manifestPath = path.join(appRoot, ".generated", "knowledge", "manifest.json");
   if (!fs.existsSync(manifestPath)) {
@@ -114,6 +141,8 @@ const assertFreshProjection = ({ database, appRoot }) => {
   }
 };
 
+=======
+>>>>>>> origin/main
 export class SqliteKnowledgeRepository {
   constructor({ appRoot = process.cwd(), dbPath = databasePath(appRoot) } = {}) {
     this.appRoot = appRoot;
@@ -127,7 +156,10 @@ export class SqliteKnowledgeRepository {
     }
     const database = openDatabase(this.dbPath);
     try {
+<<<<<<< HEAD
       assertFreshProjection({ database, appRoot: this.appRoot });
+=======
+>>>>>>> origin/main
       const records = readRecords(database);
       const { eligible, rejected } = applyHardFilters(records, query);
       return rankEligible({
@@ -144,7 +176,10 @@ export class SqliteKnowledgeRepository {
 }
 
 export const createSqliteRepository = (options) => new SqliteKnowledgeRepository(options);
+<<<<<<< HEAD
 
 export const createLegacyVisualSqliteRepository = (options) => ({
   query: (input = {}) => new SqliteKnowledgeRepository(options).query({ ...input, domain: "visual-style" }),
 });
+=======
+>>>>>>> origin/main

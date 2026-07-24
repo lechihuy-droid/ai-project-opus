@@ -133,11 +133,19 @@ test("canonical reference packages validate schemas and cover repository/web/ima
   });
 });
 
+<<<<<<< HEAD
 test("all canonical source provenance checksums match project-owned approval files", () => {
   withRoot((root) => {
     const approvalRoot = path.join(root, "design/knowledge/reference-approvals");
     const packages = referencePackages(root);
     assert.ok(packages.length >= 4);
+=======
+test("all four canonical source provenance checksums match project-owned approval files", () => {
+  withRoot((root) => {
+    const approvalRoot = path.join(root, "design/knowledge/reference-approvals");
+    const packages = referencePackages(root);
+    assert.equal(packages.length, 4);
+>>>>>>> origin/main
     for (const pkg of packages) {
       const sourcePath = path.join(pkg.path, "source.json");
       const source = readJson(sourcePath);

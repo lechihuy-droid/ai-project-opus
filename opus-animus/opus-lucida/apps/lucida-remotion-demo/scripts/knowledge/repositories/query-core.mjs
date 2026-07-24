@@ -1,5 +1,8 @@
 import { foldSearchText, normalizeSearchText } from "../index-utils.mjs";
+<<<<<<< HEAD
 import { assertEvidenceDomain, isEvidenceDomain } from "../evidence-domain.mjs";
+=======
+>>>>>>> origin/main
 
 export const QUERY_SCHEMA_VERSION = "lucida-knowledge-query/v1";
 
@@ -28,7 +31,10 @@ export const normalizeQuery = (input = {}) => {
   }
 
   return {
+<<<<<<< HEAD
     domain: assertEvidenceDomain(input.domain, "query.domain"),
+=======
+>>>>>>> origin/main
     text: normalizeSearchText(input.text ?? input.query ?? ""),
     limit,
     intent: sorted(asList(input.intent)),
@@ -64,7 +70,10 @@ const templateSearch = (template) => {
 };
 
 export const createTemplateRecord = (template, provenance = {}) => {
+<<<<<<< HEAD
   assertEvidenceDomain(template.domain, `template ${template.id} domain`);
+=======
+>>>>>>> origin/main
   const search = templateSearch(template);
   const sourceId = provenance.sourceId ?? `source:template:${template.id}`;
   const snapshotId = provenance.snapshotId ?? `snapshot:${sourceId}:${template.contentHash.slice(0, 16)}`;
@@ -73,7 +82,10 @@ export const createTemplateRecord = (template, provenance = {}) => {
     ownerType: "entity",
     ownerId: `${template.logicalId}@${template.version}`,
     kind: "template",
+<<<<<<< HEAD
     domain: template.domain,
+=======
+>>>>>>> origin/main
     title: search.title,
     body: search.body,
     tags: search.tags.split(" ").filter(Boolean),
@@ -103,19 +115,25 @@ export const createTemplateRecord = (template, provenance = {}) => {
 };
 
 export const createReferenceRecord = ({ source, document, chunk, observations }) => {
+<<<<<<< HEAD
   assertEvidenceDomain(source.domain, `source ${source.sourceId} domain`);
   assertEvidenceDomain(document.domain, `document ${document.documentId} domain`);
   assertEvidenceDomain(chunk.domain, `chunk ${chunk.chunkId} domain`);
   if (source.domain !== document.domain || source.domain !== chunk.domain) {
     throw new Error(`Reference ${chunk.chunkId} has inconsistent evidence domains.`);
   }
+=======
+>>>>>>> origin/main
   const tags = sorted(unique([...chunk.tags, source.sourceType]));
   return {
     id: chunk.chunkId,
     ownerType: "chunk",
     ownerId: chunk.chunkId,
     kind: "reference",
+<<<<<<< HEAD
     domain: chunk.domain,
+=======
+>>>>>>> origin/main
     title: chunk.title,
     body: chunk.rawText,
     tags,
@@ -163,7 +181,10 @@ const reason = (code, detail) => detail === undefined ? { code } : { code, detai
 
 const hardFilterReasons = (record, query) => {
   const reasons = [];
+<<<<<<< HEAD
   if (record.domain !== query.domain) reasons.push(reason("FILTER_DOMAIN_MISMATCH"));
+=======
+>>>>>>> origin/main
   const family = Array.isArray(record.capabilities.family) ? record.capabilities.family : [record.capabilities.family];
   if (!matchesAny(query.intent, record.capabilities.intents)) reasons.push(reason("FILTER_INTENT_MISMATCH"));
   if (!matchesAny(query.aspectRatio, record.capabilities.aspectRatios)) reasons.push(reason("FILTER_ASPECT_RATIO_MISMATCH"));
@@ -189,7 +210,11 @@ export const applyHardFilters = (records, query) => {
   const rejected = [];
   for (const record of records) {
     // Unsafe evidence is intentionally invisible, even as a rejected candidate.
+<<<<<<< HEAD
     if (!isEvidenceDomain(record.domain) || !isSafeCorpusRecord(record)) continue;
+=======
+    if (!isSafeCorpusRecord(record)) continue;
+>>>>>>> origin/main
     const reasons = hardFilterReasons(record, query);
     if (reasons.length === 0) eligible.push(record);
     else rejected.push({ id: record.id, reasons });
@@ -224,7 +249,10 @@ const lexicalScore = (record, corpus, tokens) => {
 const selectedReasons = (record, query, matchedTokens) => {
   const reasons = [reason(record.kind === "template" ? "SAFE_CANONICAL_RENDERABLE" : "SAFE_REFERENCE_APPROVED")];
   if (query.intent.length) reasons.push(reason("MATCH_INTENT", query.intent));
+<<<<<<< HEAD
   reasons.push(reason("MATCH_DOMAIN", query.domain));
+=======
+>>>>>>> origin/main
   if (query.aspectRatio.length) reasons.push(reason("MATCH_ASPECT_RATIO", query.aspectRatio));
   if (query.family.length) reasons.push(reason("MATCH_FAMILY", query.family));
   if (query.status.length) reasons.push(reason("MATCH_STATUS", query.status));
@@ -257,7 +285,10 @@ export const rankEligible = ({ eligible, rejected, query, retrievedIds, reposito
       ownerType: record.ownerType,
       ownerId: record.ownerId,
       kind: record.kind,
+<<<<<<< HEAD
       domain: record.domain,
+=======
+>>>>>>> origin/main
       title: record.title,
       tags: record.tags,
       capabilities: record.capabilities,
