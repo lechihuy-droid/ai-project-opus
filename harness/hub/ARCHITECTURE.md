@@ -130,7 +130,7 @@ Nguồn chân lý cho path và model:
 ## 7. Dữ liệu & bảo mật
 
 - **Append-only, không DB:** trạng thái là file JSON/JSONL log + cache `.cache/*.json` (đều gitignore).
-- **NVIDIA key:** đọc từ env `NVIDIA_API_KEY`. App **không** tự nạp `.env` (không có python-dotenv) — phải set env trước khi chạy server. Key **không bao giờ** log/hardcode.
+- **NVIDIA key:** đọc từ env `NVIDIA_API_KEY`. `config.py` tự `load_dotenv()` từ `.env` gốc repo lúc import (không override nếu env đã set sẵn). Key **không bao giờ** log/hardcode.
 - **Chữ ký suite:** HMAC với `.hmac_key` → `integrity.verify_suites()`.
 - **Git-jobs của Codex:** tách branch riêng `opus-job/<id>`, có approve gate + rollback, chặn tier `destructive`.
 
