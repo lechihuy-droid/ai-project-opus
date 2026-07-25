@@ -2,173 +2,533 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { api, apiRequest } from '../lib/api'
 import { parseSse } from '../lib/sse'
 import { Markdown } from '../lib/markdown'
-import { artifactHeadings, artifactSummary, isArtifact } from '../lib/artifact'
-import { Button, Chip, IconButton, Input, Popover, ProviderDot, Select, Status, Textarea } from '../lib/ui'
+import { artifactSummary, isArtifact } from '../lib/artifact'
+import { Button, Chip, IconButton, Popover, ProviderDot, Textarea } from '../lib/ui'
+
+// ── AI Chat Workspace ─────────────────────────────────────────────────────────
+// Three-panel workspace (imported from the "AI Workspace" design system, mapped to
+// the hub token set): top bar · sidebar (Chats/Files/Artifacts) · chat · artifact.
+// A single active chat is the primary shape; the model picker, context, artifact
+// panel, version history and export all hang off it. Chat, models, providers,
+// agents and skills are wired to the real backend; Files, artifact versioning and
+// PDF/share export have no backend yet and are marked TODO(backend).
 
 type Provider = { id: string; available: boolean; version?: string; detail: string; capabilities?: { stream?: boolean; resume?: boolean; models?: number } }
-type Agent = { id: string; provider: string; model?: string | null; system_prompt: string; permission: string; risk_tier: string }
 type Catalog = { id: string; shortName?: string; category?: string; label?: string }
 type Skill = { id: string; name?: string; title?: string; description?: string }
 type ActiveSkill = { id: string; scope: 'turn' | 'window' }
-type Message = { role: 'user' | 'assistant' | 'system'; content: string; reasoning?: string; thinkingOpen?: boolean; usage?: Record<string, unknown>; streaming?: boolean }
-type Pane = { id: string; provider: string; model: string; title: string; messages: Message[]; agentId?: string; cliSessionId?: string; notice?: string }
-type ClearUndo = { paneId: string; messages: Message[]; count: number }
-type UsageSummary = { input: number; output: number; total: number; calls: number }
+type Message = { role: 'user' | 'assistant' | 'system'; content: string; reasoning?: string; usage?: Record<string, unknown>; streaming?: boolean }
+type Chat = { id: string; title: string; provider: string; model: string; agentId?: string; cliSessionId?: string; messages: Message[]; notice?: string; updatedAt: number }
 type PinnedMessage = { id: string; content: string }
-type SharedContextState = { text: string; pinned: PinnedMessage[] }
+type Instruction = { id: string; label: string; active: boolean }
+type SharedContextState = { text: string; pinned: PinnedMessage[]; instructions: Instruction[] }
+
+const chatsKey = 'hub-v3-chats'
 const sharedContextKey = 'hub-v3-shared-context'
-const agentProvider = (agent: Agent) => ({ cheap: 'nvidia', code: 'codex', smart: 'claude' }[agent.provider] ?? agent.provider)
-const ro = (provider: string) => provider !== 'nvidia'
-const makePane = (provider = 'nvidia', model = ''): Pane => ({ id: crypto.randomUUID(), provider, model, title: provider, messages: [] })
-const usageNumber = (value: unknown) => typeof value === 'number' && Number.isFinite(value) ? value : 0
-const summarizeUsage = (messages: Message[]): UsageSummary => messages.reduce((summary, message) => {
-  if (message.role !== 'assistant' || message.usage == null) return summary
-  const input = usageNumber(message.usage.input_tokens)
-  const output = usageNumber(message.usage.output_tokens)
-  const hasTotal = typeof message.usage.total_tokens === 'number' && Number.isFinite(message.usage.total_tokens)
-  return { input: summary.input + input, output: summary.output + output, total: summary.total + (hasTotal ? usageNumber(message.usage.total_tokens) : input + output), calls: summary.calls + 1 }
-}, { input: 0, output: 0, total: 0, calls: 0 })
-const formatTokens = (value: number) => value < 1000 ? String(value) : value < 1e6 ? `${(value / 1000).toFixed(1).replace(/\.0$/, '')}k` : `${(value / 1e6).toFixed(1).replace(/\.0$/, '')}M`
-const emptyUsage: UsageSummary = { input: 0, output: 0, total: 0, calls: 0 }
-const loadSharedContext = (): SharedContextState => { try { const value = JSON.parse(localStorage.getItem(sharedContextKey) ?? 'null'); return { text: typeof value?.text === 'string' ? value.text : '', pinned: Array.isArray(value?.pinned) ? value.pinned.filter((item: PinnedMessage) => typeof item?.id === 'string' && typeof item?.content === 'string').slice(0, 10) : [] } } catch { return { text: '', pinned: [] } }
+const providerKinds = ['claude', 'codex', 'nvidia', 'gemini'] as const
+type ProviderKind = (typeof providerKinds)[number]
+const asKind = (id: string): ProviderKind => (providerKinds as readonly string[]).includes(id) ? id as ProviderKind : 'nvidia'
+
+// Honest, provider-level capability copy — no fabricated per-model speed/cost ratings.
+const providerRole: Record<string, { role: string; note: string }> = {
+  claude: { role: 'CLI code · tools · artifacts', note: 'Cần Claude Code CLI cài sẵn' },
+  codex: { role: 'CLI code · refactor', note: 'Chạy qua Codex CLI' },
+  nvidia: { role: 'API chat · chọn model cụ thể', note: 'Nhanh, rẻ; không có tool' },
+  gemini: { role: 'CLI đa phương thức', note: 'Chưa cài trên máy này' },
 }
-const sharedText = (context: SharedContextState) => [context.text.trim(), ...context.pinned.map(item => item.content.trim()).filter(Boolean)].filter(Boolean).join('\n\n')
-const promptFor = (context: SharedContextState, text: string, shouldInject: boolean) => shouldInject && sharedText(context) ? `[Bối cảnh chung]\n${sharedText(context)}\n\n[Yêu cầu]\n${text}` : text
+
+const formatTokens = (value: number) => value < 1000 ? String(value) : value < 1e6 ? `${(value / 1000).toFixed(1).replace(/\.0$/, '')}k` : `${(value / 1e6).toFixed(1).replace(/\.0$/, '')}M`
 const estimateTokens = (text: string) => Math.ceil(text.length / 4)
+
+const defaultInstructions: Instruction[] = [{ id: 'i1', label: 'Giữ giọng chuyên nghiệp, ngắn gọn', active: true }]
+const loadSharedContext = (): SharedContextState => {
+  try {
+    const value = JSON.parse(localStorage.getItem(sharedContextKey) ?? 'null')
+    return {
+      text: typeof value?.text === 'string' ? value.text : '',
+      pinned: Array.isArray(value?.pinned) ? value.pinned.filter((i: PinnedMessage) => typeof i?.id === 'string' && typeof i?.content === 'string').slice(0, 10) : [],
+      instructions: Array.isArray(value?.instructions) && value.instructions.length ? value.instructions : defaultInstructions,
+    }
+  } catch { return { text: '', pinned: [], instructions: defaultInstructions } }
+}
+const activeInstructionText = (context: SharedContextState) => context.instructions.filter(i => i.active).map(i => i.label)
+const sharedText = (context: SharedContextState) => [context.text.trim(), ...context.pinned.map(i => i.content.trim()), ...activeInstructionText(context)].filter(Boolean).join('\n\n')
+const promptFor = (context: SharedContextState, text: string, inject: boolean) => inject && sharedText(context) ? `[Bối cảnh chung]\n${sharedText(context)}\n\n[Yêu cầu]\n${text}` : text
+
 const providerState = (provider?: Provider) => {
   if (!provider?.available) {
     const detail = provider?.detail?.toLowerCase() ?? ''
-    if (/not set|not configured|environment|api key|token/.test(detail)) return { label: 'chưa cấu hình', token: 'warning' }
-    if (detail === 'not_installed') return { label: 'chưa cài', token: 'muted' }
-    return { label: 'không khả dụng', token: 'error' }
+    if (/not set|not configured|environment|api key|token/.test(detail)) return { label: 'chưa cấu hình', kind: 'setup-required' as const }
+    if (detail === 'not_installed') return { label: 'chưa cài', kind: 'not-installed' as const }
+    return { label: 'không khả dụng', kind: 'error' as const }
   }
-  return { label: 'sẵn sàng', token: 'success' }
+  return { label: 'sẵn sàng', kind: 'ready' as const }
 }
 
+const makeChat = (provider = 'nvidia', model = ''): Chat => ({ id: crypto.randomUUID(), title: 'Trò chuyện mới', provider, model, messages: [], updatedAt: Date.now() })
+const loadChats = (): Chat[] => { try { const v = JSON.parse(localStorage.getItem(chatsKey) ?? 'null'); return Array.isArray(v) && v.length ? v : [makeChat()] } catch { return [makeChat()] } }
+const chatSubtitle = (chat: Chat) => { const last = [...chat.messages].reverse().find(m => m.content.trim()); return last ? last.content.replace(/\s+/g, ' ').slice(0, 42) : 'Chưa có tin nhắn' }
+const modelShort = (chat: Chat, catalog: Catalog[]) => chat.model ? (catalog.find(m => m.id === chat.model)?.shortName ?? chat.model.split('/').at(-1) ?? chat.model) : 'theo CLI'
+
 export default function ChatPage() {
-  const [panes, setPanes] = useState<Pane[]>(() => { try { return JSON.parse(localStorage.getItem('hub-v3-chat') ?? 'null') ?? [makePane()] } catch { return [makePane()] } })
-  const [providers, setProviders] = useState<Provider[]>([]); const [agents, setAgents] = useState<Agent[]>([]); const [catalog, setCatalog] = useState<Catalog[]>([]); const [skills, setSkills] = useState<Skill[]>([]); const [activeSkills, setActiveSkills] = useState<ActiveSkill[]>([]); const [defaultModel, setDefaultModel] = useState(''); const [sharedContext, setSharedContext] = useState<SharedContextState>(loadSharedContext); const [broadcastText, setBroadcastText] = useState(''); const [injectedContext, setInjectedContext] = useState<Record<string, string>>({}); const [contextOpen, setContextOpen] = useState(false); const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set()); const [broadcastNotice, setBroadcastNotice] = useState('')
-  const selectionInitialized = useRef(false)
-  const [artifact, setArtifact] = useState<{ paneId: string; index: number } | null>(null)
-  const [clearUndo, setClearUndo] = useState<ClearUndo | null>(null)
-  const paneUsage = useMemo(() => new Map(panes.map(pane => [pane.id, summarizeUsage(pane.messages)])), [panes])
-  const conversationUsage = useMemo(() => panes.reduce((total, pane) => { const usage = paneUsage.get(pane.id) ?? emptyUsage; return { input: total.input + usage.input, output: total.output + usage.output, total: total.total + usage.total, calls: total.calls + usage.calls } }, emptyUsage), [panes, paneUsage])
-  useEffect(() => { if (!clearUndo) return; const timer = window.setTimeout(() => setClearUndo(null), 8000); return () => window.clearTimeout(timer) }, [clearUndo])
-  useEffect(() => { setSelectedIds(current => { const next = new Set([...current].filter(id => panes.some(pane => pane.id === id))); if (!selectionInitialized.current) { panes.forEach(pane => next.add(pane.id)); selectionInitialized.current = true } return next }) }, [panes])
-  useEffect(() => { localStorage.setItem('hub-v3-chat', JSON.stringify(panes.map(p => ({ ...p, messages: p.messages.map(({ streaming, ...m }) => m) })))) }, [panes])
+  const [chats, setChats] = useState<Chat[]>(loadChats)
+  const [activeChatId, setActiveChatId] = useState<string>(() => loadChats()[0].id)
+  const [leftTab, setLeftTab] = useState<'chats' | 'files' | 'artifacts'>('chats')
+  const [providers, setProviders] = useState<Provider[]>([])
+  const [catalog, setCatalog] = useState<Catalog[]>([])
+  const [defaultModel, setDefaultModel] = useState('')
+  const [skills, setSkills] = useState<Skill[]>([])
+  const [activeSkills, setActiveSkills] = useState<ActiveSkill[]>([])
+  const [sharedContext, setSharedContext] = useState<SharedContextState>(loadSharedContext)
+  const [injectedContext, setInjectedContext] = useState<Record<string, string>>({})
+  const [promptText, setPromptText] = useState('')
+  const [contextOpen, setContextOpen] = useState(false)
+  const [activeArtifactIndex, setActiveArtifactIndex] = useState<number | null>(null)
+  const [showVersionHistory, setShowVersionHistory] = useState(false)
+  const [showExport, setShowExport] = useState(false)
+  const [toast, setToast] = useState<string | null>(null)
+  const controllers = useRef(new Map<string, AbortController>())
+  const toastTimer = useRef<number | undefined>(undefined)
+
+  const activeChat = chats.find(c => c.id === activeChatId) ?? chats[0]
+  const artifactMessages = useMemo(() => activeChat.messages.map((m, index) => ({ m, index })).filter(({ m }) => isArtifact(m)), [activeChat])
+  const activeArtifact = activeArtifactIndex != null && isArtifact(activeChat.messages[activeArtifactIndex]) ? activeChat.messages[activeArtifactIndex] : null
+  const isEmptyPhase = activeChat.messages.length === 0
+
+  useEffect(() => { localStorage.setItem(chatsKey, JSON.stringify(chats.map(c => ({ ...c, messages: c.messages.map(({ streaming: _s, ...m }) => m) })))) }, [chats])
   useEffect(() => { localStorage.setItem(sharedContextKey, JSON.stringify(sharedContext)) }, [sharedContext])
-  useEffect(() => { void Promise.all([api<Provider[]>('/api/providers'), api<{ catalog: Catalog[]; default: string }>('/api/chat/models'), api<Agent[]>('/api/agents'), api<string[]>('/api/skills/names')]).then(([p, m, a, s]) => { setProviders(p); setCatalog(m.catalog); setDefaultModel(m.default); setAgents(a); setSkills(s.map(id => ({ id }))) ; setPanes(current => current.map(pane => pane.provider === 'nvidia' && !pane.model ? { ...pane, model: m.default } : pane)) }).catch(() => undefined) }, [])
-  const add = (provider: string) => { if (panes.length < 4) { const pane = makePane(provider, provider === 'nvidia' ? defaultModel : ''); setPanes(current => [...current, pane]); setSelectedIds(current => new Set(current).add(pane.id)) } }
-  const update = (id: string, change: Partial<Pane>) => { if (change.messages?.length === 0 && artifact?.paneId === id) setArtifact(null); setPanes(current => current.map(p => p.id === id ? { ...p, ...change } : p)) }
-  const selectAgent = (id: string, agentId: string) => { const agent = agents.find(item => item.id === agentId); if (!agent) { update(id, { agentId: undefined, cliSessionId: undefined, notice: 'Hội thoại không dùng agent; bắt đầu phiên mới.' }); setInjectedContext(current => { const next = { ...current }; delete next[id]; return next }); return }; update(id, { agentId: agent.id, provider: agentProvider(agent), model: agent.model ?? '', cliSessionId: undefined, notice: `Đã chọn agent ${agent.id}; hội thoại bắt đầu phiên mới.` }); setInjectedContext(current => { const next = { ...current }; delete next[id]; return next }) }
+  useEffect(() => { setActiveArtifactIndex(null) }, [activeChatId])
+  useEffect(() => () => window.clearTimeout(toastTimer.current), [])
+  useEffect(() => {
+    void Promise.all([
+      api<Provider[]>('/api/providers'),
+      api<{ catalog: Catalog[]; default: string }>('/api/chat/models'),
+      api<string[]>('/api/skills/names'),
+    ]).then(([p, m, s]) => {
+      setProviders(p); setCatalog(m.catalog); setDefaultModel(m.default); setSkills(s.map(id => ({ id })))
+      setChats(current => current.map(c => c.provider === 'nvidia' && !c.model ? { ...c, model: m.default } : c))
+    }).catch(() => undefined)
+  }, [])
+
+  const showToast = (text: string) => { setToast(text); window.clearTimeout(toastTimer.current); toastTimer.current = window.setTimeout(() => setToast(null), 2400) }
+  const patch = (id: string, change: Partial<Chat>) => setChats(current => current.map(c => c.id === id ? { ...c, ...change, updatedAt: Date.now() } : c))
+  const patchLast = (id: string, change: Partial<Message> | ((m: Message) => Partial<Message>)) => setChats(current => current.map(c => c.id === id ? { ...c, messages: c.messages.map((m, n) => n === c.messages.length - 1 ? { ...m, ...(typeof change === 'function' ? change(m) : change) } : m) } : c))
+
+  const newChat = () => { const chat = makeChat(activeChat.provider, activeChat.provider === 'nvidia' ? (activeChat.model || defaultModel) : ''); setChats(current => [chat, ...current]); setActiveChatId(chat.id); setLeftTab('chats'); setPromptText('') }
+  const selectChat = (id: string) => { setActiveChatId(id); setLeftTab('chats') }
+  const chooseModel = (provider: string, model: string) => { patch(activeChatId, { provider, model, agentId: undefined, cliSessionId: undefined }); setInjectedContext(c => { const n = { ...c }; delete n[activeChatId]; return n }) }
+
   const skillName = (skill: Skill) => skill.name ?? skill.title ?? skill.id
-  const activateSkill = (name: string) => { const skill = skills.find(item => skillName(item).toLowerCase() === name.toLowerCase()); if (!skill || activeSkills.some(item => item.id === skillName(skill))) return false; setActiveSkills(current => [...current, { id: skillName(skill), scope: 'turn' }]); return true }
-  const removeSkill = (id: string) => setActiveSkills(current => current.filter(item => item.id !== id))
-  const skillDraft = broadcastText.startsWith('#') ? broadcastText.slice(1).toLowerCase() : ''
-  const skillMatches = skillDraft ? skills.filter(skill => skillName(skill).toLowerCase().includes(skillDraft)).slice(0, 8) : []
-  const changeBroadcastText = (value: string) => { const match = value.match(/^#([\w-]+)\s$/); if (match && activateSkill(match[1])) { setBroadcastText(''); return }; setBroadcastText(value) }
-  const sendAll = (text: string) => {
-    if (!text.trim()) return
-    const targets = panes.filter(pane => selectedIds.has(pane.id)); const skipped = targets.filter(pane => pane.messages.at(-1)?.streaming).length
-    if (!targets.length) { setBroadcastNotice('Chọn ít nhất một cửa sổ để gửi.'); return }
-    setBroadcastText(''); setBroadcastNotice(skipped ? `Đã bỏ qua ${skipped} cửa sổ đang xử lý.` : '')
-    const selectedSkills = activeSkills; targets.filter(pane => !pane.messages.at(-1)?.streaming).forEach(pane => void send(pane.id, text, selectedSkills)); if (selectedSkills.some(skill => skill.scope === 'turn')) setActiveSkills(current => current.filter(skill => skill.scope !== 'turn'))
-  }
-  const stopAll = () => panes.filter(pane => pane.messages.at(-1)?.streaming).forEach(pane => controllers.current.get(pane.id)?.abort())
-  const send = async (id: string, text: string, selectedSkills = activeSkills) => {
-    const pane = panes.find(p => p.id === id); if (!pane || !text.trim()) return
-    const context = sharedText(sharedContext); const fingerprint = context ? `${sharedContext.text}\n${sharedContext.pinned.map(item => item.id).join('|')}` : ''
-    const shouldInject = Boolean(context) && (!pane.messages.some(message => message.role === 'user') || injectedContext[id] !== fingerprint)
-    const prompt = promptFor(sharedContext, text, shouldInject)
-    const user: Message = { role: 'user', content: prompt }; const assistant: Message = { role: 'assistant', content: '', reasoning: '', streaming: true }
-    const history = [...pane.messages, user]; update(id, { messages: [...history, assistant] })
-    const controller = new AbortController(); controllers.current.set(id, controller)
-    const providerInfo = providers.find(item => item.id === pane.provider)
-    if (providerInfo && !providerInfo.available) { patchMessage(id, { role: 'system', content: providerInfo.detail || 'Provider không khả dụng', streaming: false }); controllers.current.delete(id); return }
-    // NVIDIA receives full history; CLI providers resume with only the new user message when a session exists.
-    const messages = (pane.provider !== 'nvidia' && pane.cliSessionId ? [user] : history).filter(message => message.role !== 'system')
+  const activateSkill = (name: string) => { const skill = skills.find(s => skillName(s).toLowerCase() === name.toLowerCase()); if (!skill || activeSkills.some(s => s.id === skillName(skill))) return false; setActiveSkills(c => [...c, { id: skillName(skill), scope: 'turn' }]); return true }
+  const removeSkill = (id: string) => setActiveSkills(c => c.filter(s => s.id !== id))
+  const skillDraft = promptText.startsWith('#') ? promptText.slice(1).toLowerCase() : ''
+  const skillMatches = skillDraft ? skills.filter(s => skillName(s).toLowerCase().includes(skillDraft)).slice(0, 8) : []
+  const changePrompt = (value: string) => { const match = value.match(/^#([\w-]+)\s$/); if (match && activateSkill(match[1])) { setPromptText(''); return } setPromptText(value) }
+
+  const send = async (text: string, selectedSkills = activeSkills) => {
+    const trimmed = text.trim(); if (!trimmed) return
+    const chat = chats.find(c => c.id === activeChatId); if (!chat) return
+    const fingerprint = `${sharedContext.text}\n${sharedContext.pinned.map(i => i.id).join('|')}\n${activeInstructionText(sharedContext).join('|')}`
+    const shouldInject = Boolean(sharedText(sharedContext)) && (!chat.messages.some(m => m.role === 'user') || injectedContext[chat.id] !== fingerprint)
+    const prompt = promptFor(sharedContext, trimmed, shouldInject)
+    const title = chat.messages.length === 0 ? trimmed.replace(/\s+/g, ' ').slice(0, 40) : chat.title
+    const user: Message = { role: 'user', content: prompt }
+    const assistant: Message = { role: 'assistant', content: '', reasoning: '', streaming: true }
+    const history = [...chat.messages, user]
+    patch(chat.id, { messages: [...history, assistant], title })
+    const controller = new AbortController(); controllers.current.set(chat.id, controller)
+    const providerInfo = providers.find(p => p.id === chat.provider)
+    if (providerInfo && !providerInfo.available) { patchLast(chat.id, { role: 'system', content: providerInfo.detail || 'Provider không khả dụng', streaming: false }); controllers.current.delete(chat.id); return }
+    // NVIDIA gets full history; CLI providers resume with only the new message when a session exists.
+    const messages = (chat.provider !== 'nvidia' && chat.cliSessionId ? [user] : history).filter(m => m.role !== 'system')
     try {
-      const response = await apiRequest('/api/chat', { method: 'POST', body: JSON.stringify({ provider: pane.provider, model: pane.model || undefined, agent_id: pane.agentId, messages, session_id: pane.cliSessionId, skills: selectedSkills.map(skill => skill.id) }), signal: controller.signal })
+      const response = await apiRequest('/api/chat', { method: 'POST', body: JSON.stringify({ provider: chat.provider, model: chat.model || undefined, agent_id: chat.agentId, messages, session_id: chat.cliSessionId, skills: selectedSkills.map(s => s.id) }), signal: controller.signal })
       if (!response.body) throw new Error('Chat stream unavailable')
       for await (const item of parseSse(response.body)) {
         const data = item.data as Record<string, unknown>
-        if (item.event === 'reasoning') patchMessage(id, current => ({ reasoning: `${current.reasoning ?? ''}${String(data.text ?? '')}`, streaming: true }))
-        if (item.event === 'delta') patchMessage(id, current => ({ content: `${current.content}${String(data.text ?? '')}`, streaming: true }))
-        if (item.event === 'done') { if (shouldInject) setInjectedContext(current => ({ ...current, [id]: fingerprint })); patchMessage(id, { streaming: false, usage: data.usage as Record<string, unknown> }); if (typeof data.skill_notice === 'string') update(id, { notice: data.skill_notice }); update(id, { cliSessionId: typeof data.session_id === 'string' ? data.session_id : pane.cliSessionId, model: typeof data.model === 'string' && pane.provider === 'nvidia' ? data.model : pane.model }) }
-        if (item.event === 'error') patchMessage(id, { role: 'system', content: String(data.message ?? 'Chat stream error'), streaming: false })
+        if (item.event === 'reasoning') patchLast(chat.id, cur => ({ reasoning: `${cur.reasoning ?? ''}${String(data.text ?? '')}`, streaming: true }))
+        if (item.event === 'delta') patchLast(chat.id, cur => ({ content: `${cur.content}${String(data.text ?? '')}`, streaming: true }))
+        if (item.event === 'done') {
+          if (shouldInject) setInjectedContext(c => ({ ...c, [chat.id]: fingerprint }))
+          patchLast(chat.id, { streaming: false, usage: data.usage as Record<string, unknown> })
+          patch(chat.id, { cliSessionId: typeof data.session_id === 'string' ? data.session_id : chat.cliSessionId, model: typeof data.model === 'string' && chat.provider === 'nvidia' ? data.model : chat.model, notice: typeof data.skill_notice === 'string' ? data.skill_notice : chat.notice })
+        }
+        if (item.event === 'error') patchLast(chat.id, { role: 'system', content: String(data.message ?? 'Chat stream error'), streaming: false })
       }
-    } catch (error) { if ((error as Error).name !== 'AbortError') patchMessage(id, { role: 'system', content: (error as Error).message, streaming: false }) }
-    finally { patchMessage(id, { streaming: false }); controllers.current.delete(id) }
+    } catch (error) { if ((error as Error).name !== 'AbortError') patchLast(chat.id, { role: 'system', content: (error as Error).message, streaming: false }) }
+    finally { patchLast(chat.id, { streaming: false }); controllers.current.delete(chat.id) }
   }
-  const controllers = useRef(new Map<string, AbortController>())
-  const patchMessage = (id: string, change: Partial<Message> | ((m: Message) => Partial<Message>)) => setPanes(current => current.map(p => p.id === id ? { ...p, messages: p.messages.map((m, n) => n === p.messages.length - 1 ? { ...m, ...(typeof change === 'function' ? change(m) : change) } : m) } : p))
-  const selectedPane = artifact ? panes.find(p => p.id === artifact.paneId) : undefined
-  const selectedMessage = selectedPane && artifact && isArtifact(selectedPane.messages[artifact.index]) ? selectedPane.messages[artifact.index] : undefined
-  const previewPane = panes.find(pane => selectedIds.has(pane.id)) ?? panes[0]
-  const previewFingerprint = previewPane ? `${sharedContext.text}\n${sharedContext.pinned.map(item => item.id).join('|')}` : ''
-  const previewText = previewPane ? promptFor(sharedContext, broadcastText || 'Nội dung tin nhắn', Boolean(sharedText(sharedContext)) && (!previewPane.messages.some(message => message.role === 'user') || injectedContext[previewPane.id] !== previewFingerprint)) : ''
-  const pin = (paneId: string, index: number, content: string) => setSharedContext(current => { if (current.pinned.length >= 10) { setBroadcastNotice('Tối đa 10 tin ghim.'); return current }; const id = `${paneId}:${index}`; return current.pinned.some(item => item.id === id) ? current : { ...current, pinned: [...current.pinned, { id, content }] } })
-  const unpin = (id: string) => setSharedContext(current => ({ ...current, pinned: current.pinned.filter(item => item.id !== id) }))
-  const clear = (pane: Pane) => { setClearUndo({ paneId: pane.id, messages: pane.messages, count: pane.messages.length }); if (artifact?.paneId === pane.id) setArtifact(null); update(pane.id, { messages: [] }) }
-  const undo = () => { if (!clearUndo) return; update(clearUndo.paneId, { messages: clearUndo.messages }); setClearUndo(null) }
-  const readyProviders = providers.filter(item => item.available).length
-  // One conversation is the primary shape: a single centred column with its model picker
-  // in the header. Extra panes are the comparison mode, and only then does the page grow
-  // a pane grid and a broadcast composer.
-  const solo = panes.length === 1
-  const mergeToOne = () => { setPanes(current => current.slice(0, 1)); setArtifact(null) }
-  return <div className="flex h-full min-h-0 flex-col gap-space-3 p-space-4"><ContextStrip context={sharedContext} open={contextOpen} onToggle={() => setContextOpen(current => !current)}  /><div className="flex h-toolbar shrink-0 items-center gap-space-2">{!solo && <><Select aria-label="Provider cho cửa sổ mới" defaultValue="nvidia" className="w-[220px]" id="new-pane-provider">{providers.map(p => { const state = providerState(p); return <option key={p.id} value={p.id} disabled={!p.available}>{p.id} — {state.label}</option> })}</Select><Button variant="secondary" onClick={() => add((document.getElementById('new-pane-provider') as HTMLSelectElement)?.value ?? 'nvidia')} disabled={panes.length >= 4}>+ Cửa sổ</Button><Button variant="ghost" onClick={mergeToOne}>Về một cửa sổ</Button></>}{solo && <Button variant="ghost" onClick={() => add(panes[0]?.provider === 'nvidia' ? 'claude' : 'nvidia')}>So sánh với model khác</Button>}<Popover align="start" label={`Providers: ${readyProviders} sẵn sàng · ${providers.length - readyProviders} không khả dụng`} aria-label="Tình trạng provider" className="w-[280px]"><ul className="space-y-space-2">{providers.map(p => { const state = providerState(p); return <li key={p.id} className="flex items-center gap-space-2 text-caption"><ProviderDot provider={p.id as 'claude' | 'codex' | 'nvidia' | 'gemini'} /><span className="font-mono text-primary">{p.id}</span><span className="ml-auto text-secondary" title={p.detail}>{state.label}{p.version ? ` · ${p.version}` : ''}</span></li> })}</ul></Popover>{conversationUsage.calls > 0 && <span className="ml-auto font-mono text-caption text-muted" title={`${formatTokens(conversationUsage.input)} vào · ${formatTokens(conversationUsage.output)} ra · ${conversationUsage.calls} lượt`}>{formatTokens(conversationUsage.total)} token · {panes.length} cửa sổ</span>}</div><div className={`chat-layout min-h-0 flex-1 ${artifact && selectedMessage ? 'has-artifact' : ''} ${contextOpen ? 'has-drawer' : ''}`}><div className={solo ? 'mx-auto grid min-h-0 w-full max-w-[860px] grid-rows-[minmax(0,1fr)] overflow-hidden rounded-[var(--hub-radius-lg)] border border-border-subtle' : `chat-grid grid min-h-0 gap-px overflow-hidden rounded-[var(--hub-radius-lg)] border border-border-subtle bg-border-subtle panes-${panes.length}`}>{panes.map(p => <PaneView key={p.id} pane={p} solo={solo} agents={agents} usage={paneUsage.get(p.id) ?? emptyUsage} provider={providers.find(x => x.id === p.provider)} catalog={catalog} skills={activeSkills} onUpdate={change => update(p.id, change)} onAgentChange={agentId => selectAgent(p.id, agentId)} onClose={() => { setPanes(current => current.filter(x => x.id !== p.id)); if (artifact?.paneId === p.id) setArtifact(null) }} onSend={text => void send(p.id, text)} onRetry={() => { const prompt = [...p.messages].reverse().find(m => m.role === 'user')?.content; if (prompt) void send(p.id, prompt) }} onStop={() => controllers.current.get(p.id)?.abort()} onClear={() => clear(p)} onUndo={clearUndo?.paneId === p.id ? undo : undefined} undoCount={clearUndo?.paneId === p.id ? clearUndo.count : undefined} onDismissUndo={() => setClearUndo(null)} onOpenArtifact={index => setArtifact({ paneId: p.id, index })} pinnedIds={new Set(sharedContext.pinned.map(item => item.id))} onPin={(index, content) => pin(p.id, index, content)} onUnpin={unpin}  />)}</div>{selectedPane && selectedMessage && <ArtifactPanel pane={selectedPane} message={selectedMessage} onClose={() => setArtifact(null)}  />}{contextOpen && <ContextDrawer context={sharedContext} onChange={setSharedContext} preview={previewText} onClose={() => setContextOpen(false)}  />}</div>{!solo && <div className="mt-space-3 shrink-0 rounded-[var(--hub-radius-lg)] border border-border-subtle bg-surface p-space-3"><div className="mb-space-2 flex flex-wrap items-center gap-space-2"><span className="text-caption text-secondary">Gửi tới</span>{panes.map(pane => { const selected = selectedIds.has(pane.id); const busy = pane.messages.at(-1)?.streaming; const model = pane.model ? (catalog.find(x => x.id === pane.model)?.shortName ?? pane.model.split('/').at(-1)) : 'theo CLI'; return <Button variant="ghost" key={pane.id} type="button" onClick={() => setSelectedIds(current => { const next = new Set(current); if (next.has(pane.id)) next.delete(pane.id); else next.add(pane.id); return next })} selected={selected} className="flex items-center gap-1 px-2 py-1 text-[10px]" title={busy ? 'Đang xử lý — sẽ bỏ qua khi gửi' : undefined}><ProviderDot provider={pane.provider as 'claude' | 'codex' | 'nvidia' | 'gemini'}  />{pane.provider} · {model}{busy && <span className="text-warning">(đang bận)</span>}</Button>})}<Button variant="ghost" size="sm" onClick={() => setSelectedIds(new Set(panes.map(pane => pane.id)))}>Tất cả</Button><Button variant="ghost" size="sm" onClick={() => setSelectedIds(new Set())}>Bỏ chọn</Button><span className="ml-auto text-caption text-secondary">{selectedIds.size}/{panes.length} cửa sổ</span></div><div className="flex flex-wrap gap-1 pb-2">{activeSkills.map(skill => <Chip key={skill.id} onRemove={() => removeSkill(skill.id)} className="flex items-center gap-1 border-[var(--hub-accent)] px-2 py-1 text-[10px] text-primary"><span>#{skill.id}</span><Select aria-label={`Phạm vi skill ${skill.id}`} value={skill.scope} onChange={event => setActiveSkills(current => current.map(item => item.id === skill.id ? { ...item, scope: event.target.value as ActiveSkill['scope'] } : item))} className="bg-transparent text-[10px] text-primary"><option value="turn">Lượt này</option><option value="window">Cả cửa sổ</option></Select></Chip>)}</div><form onSubmit={e => { e.preventDefault(); sendAll(broadcastText) }} className="flex gap-2"><div className="relative min-w-0 flex-1"><Input value={broadcastText} onChange={e => changeBroadcastText(e.target.value)} placeholder="Nhắn tới các cửa sổ đã chọn…" className="w-full rounded-lg border border-border-subtle bg-elevated px-3 py-2 text-xs text-primary"  />{skillMatches.length > 0 && <div className="absolute bottom-full z-10 mb-1 w-full rounded-sm border border-border-subtle bg-surface p-1">{skillMatches.map(skill => <Button variant="ghost" type="button" key={skillName(skill)} onClick={() => { activateSkill(skillName(skill)); setBroadcastText('') }} className="block w-full px-2 py-1 text-left text-[10px] text-secondary hover:bg-elevated">#{skillName(skill)}</Button>)}</div>}</div><Button variant="primary" type="submit" disabled={!selectedIds.size || !broadcastText.trim()} className="disabled:opacity-40">Gửi</Button>{panes.some(pane => pane.messages.at(-1)?.streaming) && <Button variant="destructive" type="button" onClick={stopAll} className="rounded-lg border border-error px-3 py-2 text-xs text-error">Dừng tất cả</Button>}</form>{(broadcastNotice || panes.some(pane => pane.messages.at(-1)?.streaming && selectedIds.has(pane.id))) && <div className="mt-2 text-[10px] text-warning">{broadcastNotice || 'Cửa sổ đang xử lý sẽ được bỏ qua khi gửi.'}</div>}</div>}</div>
-}
+  const submitPrompt = () => { const text = promptText.trim(); if (!text) return; const selected = activeSkills; setPromptText(''); void send(text, selected); if (selected.some(s => s.scope === 'turn')) setActiveSkills(c => c.filter(s => s.scope !== 'turn')) }
+  const stop = () => controllers.current.get(activeChatId)?.abort()
+  const retry = () => { const prompt = [...activeChat.messages].reverse().find(m => m.role === 'user')?.content; if (prompt) void send(prompt) }
+  const streaming = Boolean(activeChat.messages.at(-1)?.streaming)
 
-function PaneView({ pane, solo, agents, usage, provider, catalog, skills, onUpdate, onAgentChange, onClose, onSend, onRetry, onStop, onClear, onUndo, undoCount, onDismissUndo, onOpenArtifact, pinnedIds, onPin, onUnpin }: { pane: Pane; solo: boolean; agents: Agent[]; usage: UsageSummary; provider?: Provider; catalog: Catalog[]; skills: ActiveSkill[]; onUpdate: (c: Partial<Pane>) => void; onAgentChange: (id: string) => void; onClose: () => void; onSend: (s: string) => void; onRetry: () => void; onStop: () => void; onClear: () => void; onUndo?: () => void; undoCount?: number; onDismissUndo: () => void; onOpenArtifact: (index: number) => void; pinnedIds: Set<string>; onPin: (index: number, content: string) => void; onUnpin: (id: string) => void }) {
-  const [text, setText] = useState(''); const grouped = useMemo(() => catalog.reduce<Record<string, Catalog[]>>((all, model) => { const key = model.category ?? 'Models'; (all[key] ??= []).push(model); return all }, {}), [catalog]); const last = pane.messages.at(-1); const activeSkillText = skills.length ? ` · ${skills.map(skill => `#${skill.id}`).join(' ')}` : ''
-  const download = () => { const body = pane.messages.map(m => `## ${m.role}\n\n${m.content}`).join('\n\n'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([body], { type: 'text/markdown' })); a.download = `${pane.provider}-transcript.md`; a.click(); URL.revokeObjectURL(a.href) }
-  const submit = () => { void activeSkillText; if (last?.streaming) onStop(); else { onSend(text); setText('') } }
-  const modelLabel = `${pane.model ? (catalog.find(x => x.id === pane.model)?.shortName ?? pane.model.split('/').at(-1)) : 'theo CLI'}${activeSkillText}`; const selectedAgent = agents.find(agent => agent.id === pane.agentId); const lockedProvider = Boolean(selectedAgent); const lockedModel = Boolean(selectedAgent?.model)
-  // One owner per fact: the dot carries provider, the label carries model, the Status
-  // carries runtime state, and the chip carries tool permission. Nothing is stated twice.
-  // Only claim a tool permission where one exists: an agent carries it, a CLI provider is
-  // read-only, and a plain API provider has no tools to describe at all.
-  const toolsLabel = selectedAgent ? (selectedAgent.permission === 'read_only' ? 'Chỉ đọc' : 'Ghi workspace') : ro(pane.provider) ? 'Chỉ đọc' : ''
-  return <article onMouseDown={event => { if (onUndo && !(event.target as HTMLElement).closest('[data-undo]')) onDismissUndo() }} className="pane min-h-0 min-w-0 bg-app"><header className="flex h-pane-header items-center gap-space-2 border-b border-border-subtle bg-surface px-space-3 text-caption"><ProviderDot provider={pane.provider as 'claude' | 'codex' | 'nvidia' | 'gemini'}  /><Popover align="start" label={`${modelLabel} ▾`} aria-label="Chọn model" triggerClassName="min-w-0 max-w-[280px] truncate font-mono text-label text-primary" className="w-[300px]">{() => <div className="space-y-space-3"><label className="block space-y-space-1 text-caption text-muted">Model{pane.provider === 'nvidia' ? <Select aria-label="Danh sách model" disabled={lockedModel} value={pane.model || catalog[0]?.id || ''} onChange={e => onUpdate({ model: e.target.value })}>{Object.entries(grouped).map(([category, models]) => <optgroup key={category} label={category}>{(models as Catalog[]).map(m => <option key={m.id} value={m.id}>{m.shortName ?? m.label ?? m.id}</option>)}</optgroup>)}</Select> : <Input aria-label="Danh sách model" disabled={lockedModel} value={pane.model} onChange={e => onUpdate({ model: e.target.value })} placeholder="theo CLI"  />}</label><p className="text-caption text-muted">Provider {pane.provider}{provider?.version ? ` · ${provider.version}` : ''}{lockedModel ? ' · agent đã cố định model' : ''}</p></div>}</Popover>{selectedAgent && <Chip className="shrink-0">Agent: {selectedAgent.id}</Chip>}{toolsLabel && <Chip muted={toolsLabel === 'Chỉ đọc'} className="shrink-0">{toolsLabel}</Chip>}<Status kind={last?.streaming ? 'running' : provider && !provider.available ? 'setup-required' : 'ready'} className="ml-auto shrink-0"  />{usage.calls > 0 && <span className="shrink-0 font-mono text-caption text-muted" title={`${formatTokens(usage.input)} vào · ${formatTokens(usage.output)} ra · ${usage.calls} lượt · ước tính theo ký tự`}>{formatTokens(usage.total)}</span>}<Popover align="end" label="⋯" aria-label="Tuỳ chọn cửa sổ" className="w-[260px]">{(close: () => void) => <div className="space-y-space-3"><label className="block space-y-space-1 text-caption text-muted">Agent<Select aria-label="Chọn agent" value={pane.agentId ?? ''} onChange={e => onAgentChange(e.target.value)}><option value="">Không dùng agent</option>{agents.map(agent => <option key={agent.id} value={agent.id}>{agent.id} · {agent.permission}</option>)}</Select></label>{lockedProvider && <p className="text-caption text-muted">Agent cố định provider {pane.provider}.</p>}<div className="flex gap-space-2 border-t border-border-subtle pt-space-3"><Button variant="ghost" size="sm" onClick={() => { download(); close() }}>Xuất .md</Button><Button variant="destructive" size="sm" onClick={() => { onClear(); close() }}>Xoá hội thoại</Button></div></div>}</Popover>{!solo && <IconButton icon="×" onClick={onClose} aria-label="Đóng cửa sổ" />}</header><div className="msgs space-y-space-2 p-space-3">{pane.notice && <p className="text-caption text-muted">{pane.notice}</p>}{onUndo && <div data-undo className="flex items-center gap-space-2 rounded-[var(--hub-radius-md)] border border-border-subtle bg-elevated px-space-3 py-space-2 text-caption text-secondary">Đã xoá {undoCount ?? 0} tin nhắn<Button variant="ghost" size="sm" onClick={onUndo}>Hoàn tác</Button></div>}{pane.messages.map((m, i) => <MessageView key={i} index={i} message={m} onOpenArtifact={onOpenArtifact} error={m === last && m.role === 'system'} onRetry={onRetry} onFocusModel={() => document.querySelector<HTMLInputElement | HTMLSelectElement>('[aria-label="Chọn model"]')?.focus()} pinnedIds={pinnedIds.has(`${pane.id}:${i}`) ? new Set([`${i}`]) : new Set()} onPin={() => onPin(i, m.content)} onUnpin={() => onUnpin(`${pane.id}:${i}`)}  />)}</div><form onSubmit={e => { e.preventDefault(); submit() }} className="flex gap-2 border-t border-border-subtle p-3"><Input value={text} onChange={e => setText(e.target.value)} placeholder={`Nhắn ${pane.provider}…`} className="min-w-0 flex-1 rounded-lg border border-border-subtle bg-elevated px-3 py-2 text-xs text-primary"  /><Button variant="secondary" className="rounded-lg border border-border-subtle bg-elevated px-3 text-xs">{last?.streaming ? 'Dừng' : 'Gửi'}</Button></form></article>
-}
+  const pin = (index: number, content: string) => setSharedContext(cur => { if (cur.pinned.length >= 10) { showToast('Tối đa 10 tin ghim.'); return cur } const id = `${activeChatId}:${index}`; return cur.pinned.some(i => i.id === id) ? cur : { ...cur, pinned: [...cur.pinned, { id, content }] } })
+  const unpin = (id: string) => setSharedContext(cur => ({ ...cur, pinned: cur.pinned.filter(i => i.id !== id) }))
+  const pinnedIds = new Set(sharedContext.pinned.map(i => i.id))
+  // Section-level "edit" is a real backend round-trip: it sends a scoped follow-up prompt.
+  const editSection = (heading: string, action: string) => { void send(`${action} phần "${heading}" trong artifact vừa tạo. Chỉ trả lại phần đó.`); showToast(`${action} · ${heading}`) }
 
-function MessageView({ message, index, onOpenArtifact, error, onRetry, onFocusModel, pinnedIds, onPin, onUnpin }: { message: Message; index: number; onOpenArtifact: (index: number) => void; error?: boolean; onRetry: () => void; onFocusModel: () => void; pinnedIds: Set<string>; onPin: () => void; onUnpin: (id: string) => void }) { const [open, setOpen] = useState(false); const [expanded, setExpanded] = useState(false); const artifact = isArtifact(message); const summary = artifact ? artifactSummary(message.content) : null; const copy = () => void navigator.clipboard?.writeText(message.content); const usage = message.usage ? Object.entries(message.usage).filter(([, v]) => v != null).map(([k, v]) => `${k}: ${String(v)}`).join(' · ') : ''; if (error) return <div className="message max-w-[90%] rounded-lg border border-error bg-surface px-3 py-3 text-xs"><div className="font-semibold text-error">Provider không khả dụng</div><div className="mt-2 whitespace-pre-wrap text-primary">Nguyên nhân: {message.content}</div><div className="mt-3 flex flex-wrap gap-2"><Button variant="ghost" onClick={onRetry} className="rounded-sm border border-border-subtle px-2 py-1 text-[10px] text-primary">Thử lại</Button><Button variant="ghost" onClick={onFocusModel} className="rounded-sm border border-border-subtle px-2 py-1 text-[10px] text-primary">Đổi model</Button><Button variant="ghost" onClick={() => { window.location.hash = '#/settings' }} className="rounded-sm border border-border-subtle px-2 py-1 text-[10px] text-primary">Mở Settings</Button></div></div>; return <div className={`message max-w-[90%] rounded-lg border border-border-subtle px-3 py-2 text-xs ${message.role === 'user' ? 'ml-auto bg-elevated' : 'bg-surface text-secondary'}`}><div className="whitespace-pre-wrap">{artifact && !expanded ? <div className="rounded-sm border border-border-subtle bg-elevated p-3"><div className="mb-2 font-semibold text-primary">{summary?.title}</div><div className="mb-3 grid grid-cols-2 gap-x-3 gap-y-1 font-mono text-[10px] text-muted"><span>{summary?.chars} ký tự</span><span>{summary?.items} mục</span><span>{summary?.codeBlocks} khối code</span></div><Button variant="ghost" onClick={() => onOpenArtifact(index)} className="rounded-sm border border-border-subtle px-2 py-1 text-[10px] text-primary">Mở</Button></div> : message.role === 'assistant' && !message.streaming ? <Markdown source={message.content}  /> : message.content}</div>{artifact && !message.streaming && <Button variant="ghost" onClick={() => setExpanded(!expanded)} className="mt-2 text-[10px] text-muted">{expanded ? 'Thu gọn' : 'Hiện toàn văn'}</Button>}{message.reasoning && <><Button variant="ghost" onClick={() => setOpen(!open)} className="mt-2 text-[10px] text-muted">{open ? 'Ẩn suy nghĩ' : 'Hiện suy nghĩ'}</Button>{open && <div className="mt-1 whitespace-pre-wrap border-l border-border-subtle pl-2 font-mono text-[10px] text-muted">{message.reasoning}</div>}</>}{usage && <div className="mt-2 font-mono text-[10px] text-muted">{usage}</div>}{message.content && <div className="mt-2 flex gap-2"><Button variant="ghost" onClick={copy} className="text-[10px] text-muted">Copy</Button>{message.role === 'assistant' && !message.streaming && <Button variant="ghost" onClick={() => pinnedIds.has(`${index}`) ? onUnpin(`${index}`) : onPin()} className="text-[10px] text-muted">{pinnedIds.has(`${index}`) ? 'Bỏ ghim' : 'Ghim'}</Button>}</div>}</div> }
+  const contextEstimate = estimateTokens(sharedText(sharedContext))
+  const contextTooLarge = contextEstimate > 8000
+  const contextSummary = `Bối cảnh ~${formatTokens(contextEstimate)} token · Ghim ${sharedContext.pinned.length}/10`
 
-/** 32px summary of the shared context. The editable surface lives in the drawer. */
-function ContextStrip({ context, open, onToggle }: { context: SharedContextState; open: boolean; onToggle: () => void }) {
-  return <div className="flex h-context-strip shrink-0 items-center gap-space-3 text-caption text-secondary">
-    <span>Bối cảnh chung</span>
-    <span className="font-mono text-muted" title="Ước tính theo số ký tự, không phải số token thật">~{estimateTokens(sharedText(context))} token</span>
-    <span className="text-muted">·</span>
-    <span>Ghim {context.pinned.length}/10</span>
-    <Button variant="ghost" size="sm" onClick={onToggle} aria-expanded={open} className="ml-auto">{open ? 'Đóng bối cảnh' : 'Xem bối cảnh'}</Button>
+  return <div className="chat-workspace">
+    <TopBar workspace="Harness Hub" chat={activeChat} catalog={catalog} providers={providers} defaultModel={defaultModel}
+      onChooseModel={chooseModel} exportDisabled={!activeArtifact} onExport={() => setShowExport(true)} onSettings={() => { window.location.hash = '#/settings' }} onToast={showToast} />
+    <div className="cw-body">
+      <WorkspaceSidebar tab={leftTab} onTab={setLeftTab} chats={chats} activeChatId={activeChatId} onNewChat={newChat} onSelectChat={selectChat}
+        artifacts={artifactMessages} activeArtifactIndex={activeArtifactIndex} onSelectArtifact={i => setActiveArtifactIndex(i)} onUploadFile={() => showToast('Tải file: backend chưa nối')} />
+
+      <div className="cw-center">
+        {/* Context bar only once a conversation exists; the composer is always present. */}
+        {!isEmptyPhase && <div className="flex items-center gap-space-2 border-b border-border-subtle px-space-4 py-space-2 text-caption text-secondary">
+          <span className="min-w-0 truncate">{contextSummary}</span>
+          <Button variant="ghost" size="sm" className="shrink-0" onClick={() => setContextOpen(true)}>Quản lý</Button>
+        </div>}
+        <div className="cw-msgs">
+          {isEmptyPhase
+            ? <EmptyState onCreate={() => void send('Tạo một kế hoạch ra mắt sản phẩm')} suggestions={skills.slice(0, 6).map(skillName)} onSuggestion={label => void send(label)} />
+            : <div className="space-y-space-4 p-space-4">
+              {activeChat.notice && <p className="text-caption text-muted">{activeChat.notice}</p>}
+              {activeChat.messages.map((m, i) => <MessageView key={i} message={m} last={i === activeChat.messages.length - 1}
+                onOpenArtifact={() => { setActiveArtifactIndex(i); setLeftTab('artifacts') }} onRetry={retry} onCopy={() => { void navigator.clipboard?.writeText(m.content); showToast('Đã copy') }}
+                pinned={pinnedIds.has(`${activeChatId}:${i}`)} onPin={() => pin(i, m.content)} onUnpin={() => unpin(`${activeChatId}:${i}`)} />)}
+              {streaming && !activeChat.messages.at(-1)?.content && <ThinkingDots />}
+            </div>}
+        </div>
+        {activeSkills.length > 0 && <div className="flex flex-wrap gap-space-2 px-space-4 pt-space-2">{activeSkills.map(skill => <Chip key={skill.id} onRemove={() => removeSkill(skill.id)}>#{skill.id}</Chip>)}</div>}
+        {!isEmptyPhase && skills.length > 0 && <div className="flex flex-wrap gap-space-2 px-space-4 pt-space-2">{skills.slice(0, 6).map(s => <button key={skillName(s)} onClick={() => activateSkill(skillName(s))} className="shrink-0 whitespace-nowrap rounded-full border border-border-strong bg-surface px-space-3 py-[6px] text-caption text-secondary transition-colors hover:border-accent hover:text-accent">#{skillName(s)}</button>)}</div>}
+        <Composer value={promptText} onChange={changePrompt} onSubmit={submitPrompt} onStop={stop} streaming={streaming}
+          placeholder={`Nhắn ${activeChat.provider}…`} skillMatches={skillMatches.map(skillName)} onPickSkill={name => { activateSkill(name); setPromptText('') }}
+          onAttach={() => showToast('Đính kèm: backend chưa nối')} />
+      </div>
+
+      <div className="cw-artifact">
+        {activeArtifact
+          ? <ArtifactPanel message={activeArtifact} onHistory={() => setShowVersionHistory(true)} onExport={() => setShowExport(true)} onCopy={() => { void navigator.clipboard?.writeText(activeArtifact.content); showToast('Đã copy') }} onEditSection={editSection} />
+          : <ArtifactEmpty onOpenLibrary={() => setLeftTab('artifacts')} count={artifactMessages.length} />}
+      </div>
+    </div>
+
+    {contextOpen && <ContextDrawer context={sharedContext} onChange={setSharedContext} tooLarge={contextTooLarge} estimate={contextEstimate} onClose={() => setContextOpen(false)} />}
+    {showVersionHistory && activeArtifact && <VersionHistoryModal message={activeArtifact} onClose={() => setShowVersionHistory(false)} />}
+    {showExport && activeArtifact && <ExportModal message={activeArtifact} onClose={() => setShowExport(false)} onToast={showToast} />}
+    {toast && <div role="status" className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded-full bg-elevated px-space-4 py-space-2 text-caption font-medium text-primary shadow-lg ring-1 ring-border-strong">{toast}</div>}
   </div>
 }
 
-function ContextDrawer({ context, onChange, preview, onClose }: { context: SharedContextState; onChange: (next: SharedContextState) => void; preview: string; onClose: () => void }) {
-  return <aside className="flex min-h-0 min-w-0 flex-col rounded-[var(--hub-radius-lg)] border border-border-subtle bg-surface">
-    <header className="flex items-center gap-space-2 border-b border-border-subtle px-space-4 py-space-3">
-      <span className="flex-1 text-label font-semibold text-primary">Bối cảnh chung</span>
-      <IconButton icon="×" onClick={onClose} aria-label="Đóng bối cảnh" />
-    </header>
-    <div className="min-h-0 flex-1 space-y-space-3 overflow-y-auto p-space-4">
-      <Textarea value={context.text} onChange={event => onChange({ ...context, text: event.target.value })} placeholder="Mục tiêu, ràng buộc, quyết định đã chốt…" rows={4} className="resize-y text-body" aria-label="Bối cảnh chung" />
-      {context.pinned.length > 0 && <div className="space-y-space-1">{context.pinned.map(item => <div key={item.id} className="flex items-center gap-space-2 rounded-[var(--hub-radius-md)] border border-border-subtle px-space-3 py-space-1 text-caption text-secondary"><span className="min-w-0 flex-1 truncate">{item.content}</span><Button variant="ghost" size="sm" onClick={() => onChange({ ...context, pinned: context.pinned.filter(pin => pin.id !== item.id) })}>Bỏ ghim</Button></div>)}</div>}
-      <details><summary className="cursor-pointer text-caption text-secondary">Prompt sẽ gửi</summary><pre className="mt-space-2 max-h-48 overflow-auto whitespace-pre-wrap rounded-[var(--hub-radius-md)] border border-border-subtle bg-elevated p-space-3 font-mono text-caption text-secondary">{preview}</pre></details>
+// ── Top bar ───────────────────────────────────────────────────────────────────
+function TopBar({ workspace, chat, catalog, providers, defaultModel, onChooseModel, exportDisabled, onExport, onSettings, onToast }: {
+  workspace: string; chat: Chat; catalog: Catalog[]; providers: Provider[]; defaultModel: string
+  onChooseModel: (provider: string, model: string) => void; exportDisabled: boolean; onExport: () => void; onSettings: () => void; onToast: (t: string) => void
+}) {
+  const label = `${chat.provider} · ${modelShort(chat, catalog)}`
+  return <div className="flex h-full items-center justify-between gap-space-3 border-b border-border-subtle bg-sidebar px-space-4">
+    <div className="flex min-w-0 items-center gap-space-2">
+      <div className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-[7px] bg-accent text-[13px] font-bold text-app">W</div>
+      <div className="truncate text-label font-semibold text-primary">{workspace}</div>
+      <span className="flex shrink-0 items-center gap-[5px] rounded-full bg-[var(--color-success)]/15 px-[9px] py-[3px] text-caption font-semibold text-success"><span className="h-[6px] w-[6px] rounded-full bg-success" />Active</span>
     </div>
-  </aside>
+    <div className="flex shrink-0 items-center gap-space-2">
+      <ModelSelector chat={chat} catalog={catalog} providers={providers} defaultModel={defaultModel} triggerLabel={label} onChoose={onChooseModel} />
+      <div className="h-5 w-px bg-border-subtle" />
+      <Button variant="secondary" size="sm" disabled={exportDisabled} onClick={onExport}>Export</Button>
+      <IconButton icon="⚙" aria-label="Cài đặt" onClick={onSettings} />
+      <button aria-label="Tài khoản" onClick={() => onToast('Tài khoản: chưa nối')} className="flex h-7 w-7 items-center justify-center rounded-full bg-elevated text-caption font-semibold text-secondary">U</button>
+    </div>
+  </div>
 }
-function ArtifactPanel({ pane, message, onClose }: { pane: Pane; message: Message; onClose: () => void }) {
-  const contentRef = useRef<HTMLDivElement>(null); const headings = artifactHeadings(message.content); const summary = artifactSummary(message.content); const [tocOpen, setTocOpen] = useState(false)
-  useEffect(() => setTocOpen(false), [message])
-  const download = () => { const body = message.content; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([body], { type: 'text/markdown' })); a.download = `${summary.title.slice(0, 40) || pane.provider}-artifact.md`; a.click(); URL.revokeObjectURL(a.href) }
-  const copy = () => void navigator.clipboard?.writeText(message.content)
- return <aside className="artifact-panel flex min-h-0 min-w-0 flex-col border border-border-subtle bg-app"><header className="flex items-center gap-2 border-b border-border-subtle bg-surface px-3 py-2 text-xs"><ProviderDot provider={pane.provider as 'claude' | 'codex' | 'nvidia' | 'gemini'}  /><span className="min-w-0 flex-1 truncate font-semibold">{summary.title}</span><span className="font-mono text-[10px] text-muted">{pane.provider} · {pane.title}</span><IconButton icon="×" onClick={onClose} aria-label="Đóng artifact" /></header><div className="flex flex-wrap gap-2 border-b border-border-subtle bg-surface px-3 py-2 text-[10px]">{headings.length >= 2 && <Button variant="ghost" onClick={() => setTocOpen(!tocOpen)} className="rounded-sm border border-border-subtle px-2 py-1">Mục lục</Button>}<Button variant="ghost" onClick={copy} className="rounded-sm border border-border-subtle px-2 py-1">Copy</Button><Button variant="ghost" onClick={download} className="rounded-sm border border-border-subtle px-2 py-1">Xuất .md</Button></div>{tocOpen && <nav className="border-b border-border-subtle px-3 py-2 text-[10px] text-secondary">{headings.map((heading, index) => <Button variant="ghost" key={`${heading}-${index}`} onClick={() => { const node = contentRef.current?.querySelectorAll('h1,h2,h3')[index]; node?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }} className="mr-3 text-left hover:text-primary">{heading}</Button>)}</nav>}<div ref={contentRef} className="min-h-0 flex-1 overflow-y-auto p-4 text-[13px]"><Markdown source={message.content}  /></div></aside>
+
+function ModelSelector({ chat, catalog, providers, defaultModel, triggerLabel, onChoose }: {
+  chat: Chat; catalog: Catalog[]; providers: Provider[]; defaultModel: string; triggerLabel: string; onChoose: (provider: string, model: string) => void
+}) {
+  const grouped = useMemo(() => catalog.reduce<Record<string, Catalog[]>>((all, m) => { const key = m.category ?? 'Models'; (all[key] ??= []).push(m); return all }, {}), [catalog])
+  const cards: Provider[] = providerKinds.map(id => providers.find(p => p.id === id) ?? { id, available: false, detail: 'không khả dụng' })
+  return <Popover align="end" aria-label="Chọn model" triggerClassName="max-w-[260px]" className="w-[340px] max-h-[70vh] overflow-y-auto"
+    label={<span className="flex min-w-0 items-center gap-[7px]"><span className="h-[7px] w-[7px] shrink-0 rounded-full bg-accent" /><span className="truncate text-label">{triggerLabel}</span><span className="shrink-0 text-caption text-muted">▾</span></span>}>
+    {(close: () => void) => <div className="space-y-space-1">
+      <div className="px-space-2 pb-space-1 text-section font-semibold uppercase tracking-section text-muted">Chọn model</div>
+      {cards.map(p => {
+        const state = providerState(p); const role = providerRole[p.id] ?? { role: '', note: '' }; const selected = chat.provider === p.id
+        const caps = p.capabilities
+        return <div key={p.id} className={`rounded-[9px] border p-space-3 ${selected ? 'border-accent bg-accent-subtle' : 'border-transparent'}`}>
+          <button disabled={!p.available} onClick={() => { onChoose(p.id, p.id === 'nvidia' ? (chat.model || defaultModel) : ''); if (p.id !== 'nvidia') close() }}
+            className="block w-full text-left disabled:cursor-not-allowed disabled:opacity-50">
+            <div className="flex items-center justify-between gap-space-2">
+              <span className="flex items-center gap-space-2 text-label font-semibold text-primary"><ProviderDot provider={asKind(p.id)} />{p.id}{selected && <span className="text-accent">✓</span>}</span>
+              <span className={`text-caption ${state.kind === 'ready' ? 'text-success' : state.kind === 'error' ? 'text-error' : 'text-muted'}`}>{state.label}</span>
+            </div>
+            <div className="mt-[2px] text-caption text-secondary">{role.role}</div>
+            <div className="mt-[2px] text-caption text-muted">{role.note}{p.version ? ` · ${p.version}` : ''}</div>
+            {caps && <div className="mt-space-1 flex gap-space-3 text-caption text-muted">{caps.stream != null && <span>Stream: <b className="text-secondary">{caps.stream ? '✓' : '—'}</b></span>}{caps.resume != null && <span>Resume: <b className="text-secondary">{caps.resume ? '✓' : '—'}</b></span>}{caps.models != null && <span>Model: <b className="text-secondary">{caps.models}</b></span>}</div>}
+          </button>
+          {selected && p.id === 'nvidia' && <label className="mt-space-2 block space-y-space-1 text-caption text-muted">Model cụ thể
+            <select value={chat.model || defaultModel} onChange={e => onChoose('nvidia', e.target.value)} className="h-input w-full rounded-md border border-border-subtle bg-elevated px-space-3 text-body text-primary">
+              {Object.entries(grouped).map(([category, models]) => <optgroup key={category} label={category}>{models.map(m => <option key={m.id} value={m.id}>{m.shortName ?? m.label ?? m.id}</option>)}</optgroup>)}
+            </select></label>}
+        </div>
+      })}
+    </div>}
+  </Popover>
 }
 
+// ── Left sidebar ────────────────────────────────────────────────────────────────
+function WorkspaceSidebar({ tab, onTab, chats, activeChatId, onNewChat, onSelectChat, artifacts, activeArtifactIndex, onSelectArtifact, onUploadFile }: {
+  tab: 'chats' | 'files' | 'artifacts'; onTab: (t: 'chats' | 'files' | 'artifacts') => void
+  chats: Chat[]; activeChatId: string; onNewChat: () => void; onSelectChat: (id: string) => void
+  artifacts: { m: Message; index: number }[]; activeArtifactIndex: number | null; onSelectArtifact: (i: number) => void; onUploadFile: () => void
+}) {
+  const tabs: { id: 'chats' | 'files' | 'artifacts'; icon: string; label: string; count: number }[] = [
+    { id: 'chats', icon: '💬', label: 'Chats', count: chats.length },
+    { id: 'files', icon: '📄', label: 'Files', count: 0 },
+    { id: 'artifacts', icon: '▤', label: 'Artifacts', count: artifacts.length },
+  ]
+  return <div className="cw-sidebar">
+    <div className="p-space-3 pb-space-2">
+      <Button variant="secondary" onClick={onNewChat} className="w-full justify-center" icon={<span className="text-[15px] leading-none">+</span>}>Trò chuyện mới</Button>
+    </div>
+    <div className="flex flex-col gap-[2px] px-space-2">
+      {tabs.map(t => <button key={t.id} onClick={() => onTab(t.id)} className={`flex items-center justify-between rounded-[7px] px-space-2 py-space-2 text-label ${tab === t.id ? 'bg-hover font-semibold text-primary' : 'text-secondary hover:bg-hover'}`}>
+        <span className="flex items-center gap-space-2"><span>{t.icon}</span>{t.label}</span><span className="text-caption text-muted">{t.count}</span>
+      </button>)}
+    </div>
+    <div className="min-h-0 flex-1 overflow-y-auto px-space-2 pb-space-3 pt-space-2">
+      {tab === 'chats' && <>
+        <SidebarHeading>Chats</SidebarHeading>
+        {chats.map(c => <button key={c.id} onClick={() => onSelectChat(c.id)} className={`mb-[2px] block w-full rounded-md px-space-2 py-space-2 text-left ${c.id === activeChatId ? 'bg-hover' : 'hover:bg-hover'}`}>
+          <div className={`truncate text-label ${c.id === activeChatId ? 'font-semibold text-primary' : 'text-primary'}`}>{c.title}</div>
+          <div className="truncate text-caption text-muted">{chatSubtitle(c)}</div>
+        </button>)}
+      </>}
+      {tab === 'files' && <>
+        <div className="flex items-center justify-between px-space-1 pb-space-2 pt-space-1"><SidebarHeading inline>Files</SidebarHeading><button onClick={onUploadFile} className="text-caption font-semibold text-accent">+ Tải lên</button></div>
+        <p className="px-space-1 py-space-2 text-caption text-muted">Chưa có file. <span className="text-tertiary">(backend chưa nối)</span></p>
+      </>}
+      {tab === 'artifacts' && <>
+        <SidebarHeading>Artifacts</SidebarHeading>
+        {artifacts.length === 0 && <p className="px-space-1 py-space-2 text-caption text-muted">Artifact do AI tạo sẽ hiện ở đây.</p>}
+        {artifacts.map(({ m, index }) => { const s = artifactSummary(m.content); return <button key={index} onClick={() => onSelectArtifact(index)} className={`mb-[2px] block w-full rounded-md px-space-2 py-space-2 text-left ${index === activeArtifactIndex ? 'bg-hover' : 'hover:bg-hover'}`}>
+          <div className="truncate text-label font-semibold text-primary">{s.title}</div>
+          <div className="mt-[3px] flex items-center gap-space-2"><span className="rounded-full bg-accent-subtle px-space-2 py-[2px] text-caption font-semibold text-accent">Draft</span><span className="text-caption text-muted">{s.chars} ký tự</span></div>
+        </button> })}
+      </>}
+    </div>
+  </div>
+}
+function SidebarHeading({ children, inline }: { children: React.ReactNode; inline?: boolean }) {
+  return <div className={`text-section font-semibold uppercase tracking-section text-muted ${inline ? '' : 'px-space-1 pb-space-2 pt-space-1'}`}>{children}</div>
+}
 
+// ── Center: empty state, messages, composer ────────────────────────────────────
+function EmptyState({ onCreate, suggestions, onSuggestion }: { onCreate: () => void; suggestions: string[]; onSuggestion: (s: string) => void }) {
+  return <div className="flex h-full flex-col items-center justify-center p-space-8">
+    <div className="w-full max-w-[520px] text-center">
+      <div className="mb-space-2 text-[22px] font-bold text-primary">Bạn muốn làm gì hôm nay?</div>
+      <div className="mb-space-6 text-body text-secondary">Nhắn ở ô bên dưới, hoặc tạo artifact đầu tiên.</div>
+      <div className="mb-space-6 flex justify-center"><Button variant="primary" onClick={onCreate}>Tạo Artifact</Button></div>
+      {suggestions.length > 0 && <>
+        <div className="mb-space-2 text-section font-semibold uppercase tracking-section text-muted">Gợi ý</div>
+        <div className="flex flex-wrap justify-center gap-space-2">{suggestions.map(s => <button key={s} onClick={() => onSuggestion(s)} className="whitespace-nowrap rounded-full border border-border-strong bg-surface px-space-4 py-space-2 text-caption text-secondary transition-colors hover:border-accent hover:text-accent">{s}</button>)}</div>
+      </>}
+    </div>
+  </div>
+}
 
+function ThinkingDots() {
+  return <div className="flex justify-start"><div className="flex gap-[4px] rounded-[12px] bg-surface px-space-3 py-space-3">{[0, 0.2, 0.4].map(d => <span key={d} className="h-[6px] w-[6px] rounded-full bg-muted" style={{ animation: `run-pulse 1.2s infinite ease-in-out ${d}s` }} />)}</div></div>
+}
 
+function MessageView({ message, last, onOpenArtifact, onRetry, onCopy, pinned, onPin, onUnpin }: {
+  message: Message; last: boolean; onOpenArtifact: () => void; onRetry: () => void; onCopy: () => void; pinned: boolean; onPin: () => void; onUnpin: () => void
+}) {
+  const [showReasoning, setShowReasoning] = useState(false)
+  const artifact = isArtifact(message); const summary = artifact ? artifactSummary(message.content) : null
+  if (message.role === 'system' && last) return <div className="rounded-[12px] border border-error bg-surface px-space-4 py-space-3 text-label">
+    <div className="font-semibold text-error">Provider không khả dụng</div>
+    <div className="mt-space-2 whitespace-pre-wrap text-primary">Nguyên nhân: {message.content}</div>
+    <div className="mt-space-3 flex flex-wrap gap-space-2"><Button variant="ghost" size="sm" onClick={onRetry}>Thử lại</Button><Button variant="ghost" size="sm" onClick={() => { window.location.hash = '#/settings' }}>Mở Settings</Button></div>
+  </div>
+  const mine = message.role === 'user'
+  return <div className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
+    <div className="max-w-[78%]">
+      <div className={`whitespace-pre-wrap rounded-[12px] px-space-4 py-space-3 text-label ${mine ? 'bg-accent-subtle text-primary' : 'bg-surface text-secondary'}`}>
+        {message.role === 'assistant' && !message.streaming && !artifact ? <Markdown source={message.content} /> : message.content || (message.streaming ? '…' : '')}
+      </div>
+      {artifact && summary && <button onClick={onOpenArtifact} className="mt-space-2 flex w-full max-w-[340px] items-center gap-space-3 rounded-[10px] border border-border-subtle bg-elevated px-space-3 py-space-3 text-left transition-colors hover:border-accent">
+        <span className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[7px] bg-accent-subtle text-accent">▤</span>
+        <span className="min-w-0 flex-1"><span className="block truncate text-label font-semibold text-primary">{summary.title}</span><span className="block text-caption text-muted">{summary.chars} ký tự · {summary.items} mục</span></span>
+        <span className="text-caption text-muted">→</span>
+      </button>}
+      {message.reasoning && <><Button variant="ghost" size="sm" className="mt-space-1" onClick={() => setShowReasoning(v => !v)}>{showReasoning ? 'Ẩn suy nghĩ' : 'Hiện suy nghĩ'}</Button>{showReasoning && <div className="mt-space-1 whitespace-pre-wrap border-l border-border-subtle pl-space-2 font-mono text-caption text-muted">{message.reasoning}</div>}</>}
+      {message.content && !message.streaming && <div className="mt-space-1 flex gap-space-2"><Button variant="ghost" size="sm" onClick={onCopy}>Copy</Button>{message.role === 'assistant' && <Button variant="ghost" size="sm" onClick={pinned ? onUnpin : onPin}>{pinned ? 'Bỏ ghim' : 'Ghim'}</Button>}</div>}
+    </div>
+  </div>
+}
 
+function Composer({ value, onChange, onSubmit, onStop, streaming, placeholder, skillMatches, onPickSkill, onAttach }: {
+  value: string; onChange: (v: string) => void; onSubmit: () => void; onStop: () => void; streaming: boolean; placeholder: string; skillMatches: string[]; onPickSkill: (name: string) => void; onAttach: () => void
+}) {
+  return <div className="p-space-4 pt-space-2">
+    <div className="relative">
+      {skillMatches.length > 0 && <div className="absolute bottom-full left-0 z-10 mb-space-1 w-full max-w-[280px] rounded-md border border-border-subtle bg-surface p-space-1">{skillMatches.map(name => <button key={name} onClick={() => onPickSkill(name)} className="block w-full rounded-sm px-space-2 py-space-1 text-left text-caption text-secondary hover:bg-hover">#{name}</button>)}</div>}
+      <div className="flex items-end gap-space-2 rounded-[12px] border border-border-strong bg-surface py-space-2 pl-space-4 pr-space-2">
+        <textarea aria-label="Nhập tin nhắn" value={value} onChange={e => onChange(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); onSubmit() } }}
+          placeholder={placeholder} rows={1} className="max-h-[120px] flex-1 resize-none border-none bg-transparent py-space-1 text-label text-primary outline-none placeholder:text-muted" />
+        <IconButton icon="📎" aria-label="Đính kèm file" onClick={onAttach} />
+        {streaming
+          ? <button aria-label="Dừng" onClick={onStop} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-error text-error">■</button>
+          : <button aria-label="Gửi" onClick={onSubmit} disabled={!value.trim()} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent text-app disabled:opacity-40">➤</button>}
+      </div>
+    </div>
+  </div>
+}
 
+// ── Right: artifact panel ──────────────────────────────────────────────────────
+function ArtifactEmpty({ onOpenLibrary, count }: { onOpenLibrary: () => void; count: number }) {
+  return <div className="flex flex-1 flex-col items-center justify-center p-space-8 text-center">
+    <div className="mb-space-3 flex h-[44px] w-[44px] items-center justify-center rounded-[11px] bg-surface text-[19px] text-muted">▤</div>
+    <div className="mb-space-1 text-label font-semibold text-primary">Chưa chọn artifact</div>
+    <div className="max-w-[220px] text-caption text-muted">Artifact hiện ra đây khi AI tạo output tái dùng được.</div>
+    {count > 0 && <Button variant="secondary" size="sm" className="mt-space-4" onClick={onOpenLibrary}>Mở thư viện ({count})</Button>}
+  </div>
+}
+
+function ArtifactPanel({ message, onHistory, onExport, onCopy, onEditSection }: { message: Message; onHistory: () => void; onExport: () => void; onCopy: () => void; onEditSection: (heading: string, action: string) => void }) {
+  const summary = artifactSummary(message.content)
+  const sections = useMemo(() => splitSections(message.content), [message.content])
+  return <>
+    <div className="border-b border-border-subtle p-space-4">
+      <div className="flex items-start justify-between gap-space-2">
+        <div className="min-w-0 text-title font-bold text-primary">{summary.title}</div>
+        <div className="flex shrink-0 gap-space-1">
+          <IconButton icon="⏱" aria-label="Lịch sử phiên bản" onClick={onHistory} />
+          <IconButton icon="⭳" aria-label="Xuất" onClick={onExport} />
+          <IconButton icon="⧉" aria-label="Copy" onClick={onCopy} />
+        </div>
+      </div>
+      <div className="mt-space-2 flex flex-wrap items-center gap-space-2">
+        <span className="rounded-full bg-accent-subtle px-space-2 py-[3px] text-caption font-semibold text-accent">Draft</span>
+        <span className="text-caption text-muted">document · v1</span>
+        <span className="text-caption text-muted">· {summary.items} mục</span>
+      </div>
+    </div>
+    <div className="min-h-0 flex-1 overflow-y-auto">
+      {sections.map((sec, i) => <ArtifactSection key={i} heading={sec.heading} body={sec.body} onAction={action => onEditSection(sec.heading, action)} />)}
+    </div>
+  </>
+}
+const sectionActions = ['Viết lại', 'Rút gọn', 'Mở rộng', 'Thêm ví dụ', 'Đổi giọng']
+function ArtifactSection({ heading, body, onAction }: { heading: string; body: string; onAction: (action: string) => void }) {
+  return <div className="border-b border-border-subtle p-space-4">
+    <div className="mb-space-1 flex items-center justify-between">
+      <div className="text-label font-bold text-primary">{heading}</div>
+      <Popover align="end" label="⋯" aria-label={`Sửa phần ${heading}`} triggerClassName="!h-6 !w-6 !px-0" className="w-[180px]">
+        {(close: () => void) => <div>{sectionActions.map(a => <button key={a} onClick={() => { onAction(a); close() }} className="block w-full rounded-sm px-space-2 py-space-1 text-left text-caption text-primary hover:bg-hover">{a}</button>)}</div>}
+      </Popover>
+    </div>
+    <div className="whitespace-pre-wrap text-label text-secondary"><Markdown source={body} /></div>
+  </div>
+}
+// Split an artifact into heading + body sections by markdown headings; the whole thing
+// is one "Nội dung" section if it has none.
+function splitSections(content: string): { heading: string; body: string }[] {
+  const lines = content.split('\n'); const out: { heading: string; body: string[] }[] = []
+  for (const line of lines) {
+    const h = line.match(/^#{1,3}\s+(.*)/)
+    if (h) out.push({ heading: h[1].trim(), body: [] })
+    else if (out.length) out[out.length - 1].body.push(line)
+    else { out.push({ heading: 'Nội dung', body: [line] }) }
+  }
+  return out.map(s => ({ heading: s.heading, body: s.body.join('\n').trim() })).filter(s => s.heading || s.body)
+}
+
+// ── Context drawer ─────────────────────────────────────────────────────────────
+function ContextDrawer({ context, onChange, tooLarge, estimate, onClose }: { context: SharedContextState; onChange: (c: SharedContextState) => void; tooLarge: boolean; estimate: number; onClose: () => void }) {
+  useEffect(() => { const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }; document.addEventListener('keydown', onKey); return () => document.removeEventListener('keydown', onKey) }, [onClose])
+  const toggleInstruction = (id: string) => onChange({ ...context, instructions: context.instructions.map(i => i.id === id ? { ...i, active: !i.active } : i) })
+  return <>
+    <div onClick={onClose} className="fixed inset-0 z-40 bg-black/40" />
+    <aside role="dialog" aria-modal="true" aria-label="Quản lý bối cảnh" className="fixed inset-y-0 right-0 z-50 flex w-[420px] max-w-[92vw] flex-col bg-surface shadow-2xl">
+      <div className="flex items-center justify-between border-b border-border-subtle p-space-4">
+        <div className="text-title font-bold text-primary">Quản lý bối cảnh</div>
+        <IconButton icon="×" aria-label="Đóng" onClick={onClose} />
+      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto p-space-4">
+        {tooLarge && <div className="mb-space-4 rounded-[9px] border border-error bg-error-subtle p-space-3"><div className="mb-space-1 text-caption font-semibold text-error">Bối cảnh quá lớn.</div><div className="text-caption text-error">Bỏ bớt tin ghim hoặc rút gọn phần mô tả.</div></div>}
+        <SidebarHeading>Mô tả chung</SidebarHeading>
+        <Textarea value={context.text} onChange={e => onChange({ ...context, text: e.target.value })} placeholder="Mục tiêu, ràng buộc, quyết định đã chốt…" rows={4} className="resize-y text-body" aria-label="Mô tả bối cảnh" />
+        <div className="mt-space-4"><SidebarHeading>Tin ghim ({context.pinned.length}/10)</SidebarHeading></div>
+        {context.pinned.length === 0 && <p className="text-caption text-muted">Chưa ghim tin nào. Ghim từ tin nhắn của AI.</p>}
+        {context.pinned.map(item => <label key={item.id} className="flex items-center gap-space-2 py-space-2"><input type="checkbox" checked onChange={() => onChange({ ...context, pinned: context.pinned.filter(p => p.id !== item.id) })} className="h-[15px] w-[15px] shrink-0" /><span className="min-w-0 flex-1 truncate text-label text-primary">{item.content}</span></label>)}
+        <div className="mt-space-4"><SidebarHeading>Files</SidebarHeading></div>
+        <p className="text-caption text-muted">Chưa có file. <span className="text-tertiary">(backend chưa nối)</span></p>
+        <div className="mt-space-4"><SidebarHeading>Hướng dẫn</SidebarHeading></div>
+        {context.instructions.map(i => <label key={i.id} className="flex items-center gap-space-2 py-space-2"><input type="checkbox" checked={i.active} onChange={() => toggleInstruction(i.id)} className="h-[15px] w-[15px] shrink-0" /><span className="text-label text-primary">{i.label}</span></label>)}
+        <div className="mt-space-4 flex items-center justify-between rounded-[9px] bg-elevated p-space-3 text-caption text-secondary"><span>Ước tính bối cảnh</span><b className={tooLarge ? 'text-error' : 'text-success'}>~{formatTokens(estimate)} token</b></div>
+      </div>
+      <div className="flex gap-space-2 border-t border-border-subtle p-space-4">
+        <Button variant="secondary" className="flex-1 justify-center" onClick={() => onChange({ ...context, text: '', pinned: [] })}>Xoá</Button>
+        <Button variant="primary" className="flex-1 justify-center" onClick={onClose}>Áp dụng</Button>
+      </div>
+    </aside>
+  </>
+}
+
+// ── Version history (stub: no artifact versioning backend yet) ──────────────────
+function VersionHistoryModal({ message, onClose }: { message: Message; onClose: () => void }) {
+  useEffect(() => { const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }; document.addEventListener('keydown', onKey); return () => document.removeEventListener('keydown', onKey) }, [onClose])
+  const summary = artifactSummary(message.content)
+  return <div onClick={onClose} className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-space-4">
+    <div role="dialog" aria-modal="true" onClick={e => e.stopPropagation()} className="flex h-[520px] max-h-[86vh] w-[880px] max-w-[92vw] flex-col overflow-hidden rounded-[14px] bg-surface shadow-2xl">
+      <div className="flex items-center justify-between border-b border-border-subtle p-space-4"><div className="text-title font-bold text-primary">Lịch sử phiên bản — {summary.title}</div><IconButton icon="×" aria-label="Đóng" onClick={onClose} /></div>
+      <div className="flex min-h-0 flex-1">
+        <div className="w-[280px] shrink-0 overflow-y-auto border-r border-border-subtle p-space-3">
+          <div className="rounded-[9px] bg-hover p-space-3"><div className="flex items-center gap-space-2"><span className="text-label font-bold text-primary">v1</span><span className="rounded-full bg-accent-subtle px-space-2 py-[1px] text-caption font-semibold text-accent">HIỆN TẠI</span></div><div className="mt-[3px] text-caption text-secondary">Bản đầu tiên</div></div>
+        </div>
+        <div className="min-h-0 flex-1 overflow-y-auto p-space-4">
+          <div className="rounded-[9px] border border-border-subtle bg-elevated p-space-4 text-caption text-muted">Chưa có phiên bản trước để so sánh. Versioning artifact chưa nối backend — <span className="text-tertiary">TODO(backend)</span>.</div>
+        </div>
+      </div>
+      <div className="flex justify-end border-t border-border-subtle p-space-4"><Button variant="secondary" onClick={onClose}>Đóng</Button></div>
+    </div>
+  </div>
+}
+
+// ── Export modal (markdown/text/json/html are real; PDF + share are stubs) ──────
+const exportFormats = [{ id: 'markdown', label: 'Markdown' }, { id: 'text', label: 'Text' }, { id: 'json', label: 'JSON' }, { id: 'html', label: 'HTML' }, { id: 'pdf', label: 'PDF (chưa nối)' }]
+function ExportModal({ message, onClose, onToast }: { message: Message; onClose: () => void; onToast: (t: string) => void }) {
+  const [format, setFormat] = useState('markdown')
+  const [withTitle, setWithTitle] = useState(true)
+  const summary = artifactSummary(message.content)
+  useEffect(() => { const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }; document.addEventListener('keydown', onKey); return () => document.removeEventListener('keydown', onKey) }, [onClose])
+  const render = () => {
+    const head = withTitle ? `${summary.title}\n\n` : ''
+    if (format === 'json') return JSON.stringify({ title: summary.title, content: message.content }, null, 2)
+    if (format === 'html') return `${withTitle ? `<h1>${summary.title}</h1>\n` : ''}<pre>${message.content}</pre>`
+    return head + message.content
+  }
+  const mime = format === 'json' ? 'application/json' : format === 'html' ? 'text/html' : 'text/markdown'
+  const ext = format === 'json' ? 'json' : format === 'html' ? 'html' : format === 'text' ? 'txt' : 'md'
+  const download = () => { if (format === 'pdf') { onToast('PDF: backend chưa nối'); return } const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([render()], { type: mime })); a.download = `${summary.title.slice(0, 40) || 'artifact'}.${ext}`; a.click(); URL.revokeObjectURL(a.href); onToast('Đã tải xuống') }
+  return <div onClick={onClose} className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-space-4">
+    <div role="dialog" aria-modal="true" onClick={e => e.stopPropagation()} className="w-[480px] max-w-[92vw] overflow-hidden rounded-[14px] bg-surface shadow-2xl">
+      <div className="flex items-center justify-between border-b border-border-subtle p-space-4"><div className="text-title font-bold text-primary">Xuất artifact</div><IconButton icon="×" aria-label="Đóng" onClick={onClose} /></div>
+      <div className="max-h-[60vh] overflow-y-auto p-space-4">
+        <div className="mb-space-4 text-label text-secondary">{summary.title} · document</div>
+        <SidebarHeading>Định dạng</SidebarHeading>
+        <div className="mb-space-4 grid grid-cols-2 gap-space-2">{exportFormats.map(f => <label key={f.id} className={`flex items-center gap-space-2 rounded-md border px-space-3 py-space-2 ${format === f.id ? 'border-accent bg-accent-subtle' : 'border-border-subtle'}`}><input type="radio" name="fmt" checked={format === f.id} onChange={() => setFormat(f.id)} className="h-[14px] w-[14px]" /><span className="text-caption text-primary">{f.label}</span></label>)}</div>
+        <SidebarHeading>Tuỳ chọn</SidebarHeading>
+        <label className="flex items-center gap-space-2 py-space-1"><input type="checkbox" checked={withTitle} onChange={() => setWithTitle(v => !v)} className="h-[15px] w-[15px]" /><span className="text-label text-primary">Kèm tiêu đề</span></label>
+        <div className="mt-space-4"><SidebarHeading>Xem trước</SidebarHeading></div>
+        <pre className="max-h-[120px] overflow-y-auto whitespace-pre-wrap rounded-md border border-border-subtle bg-elevated p-space-3 font-mono text-caption text-secondary">{render().slice(0, 600)}</pre>
+      </div>
+      <div className="flex gap-space-2 border-t border-border-subtle p-space-4">
+        <Button variant="secondary" onClick={() => { void navigator.clipboard?.writeText(render()); onToast('Đã copy') }}>Copy</Button>
+        <Button variant="secondary" onClick={() => onToast('Share link: backend chưa nối')}>Chia sẻ link</Button>
+        <div className="flex-1" />
+        <Button variant="primary" onClick={download}>Tải xuống</Button>
+      </div>
+    </div>
+  </div>
+}

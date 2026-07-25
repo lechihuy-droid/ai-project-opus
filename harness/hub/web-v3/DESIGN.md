@@ -83,6 +83,28 @@ hai hình thức khác nhau.
 Mỗi pane là ba vùng: header, thân hội thoại, composer — và **chỉ thân hội thoại được
 cuộn**. Header với composer đứng yên; trang không bao giờ có thanh cuộn riêng.
 
+### AI Workspace — bố cục 3-panel (trang Chat)
+
+Trang Chat theo design "AI Chat Workspace" (import từ claude.ai/design, map sang token
+hub — light-theme gốc #3654D6 dịch sang accent violet hub, giữ dark theme-aware). CSS
+đặt trong `index.css` dưới tiền tố `.cw-*`.
+
+- **Top bar 56px**: tên workspace + badge Active · `ModelSelector` (thẻ provider, không
+  hiện raw model ID) · Export · Cài đặt · avatar.
+- **Sidebar 220px**: New chat + tab Chats/Files/Artifacts. Thu về icon-rail rồi ẩn theo
+  breakpoint.
+- **Center (flex, min 280px)**: context bar (chỉ khi có hội thoại) · vùng tin nhắn (cuộn
+  duy nhất) · command chips · composer **luôn hiện** kể cả lúc rỗng.
+- **Artifact panel 380px**: header (status/version/type + history/export/copy) + các section
+  có menu `⋯` sửa theo từng phần. Trống thì hiện empty state.
+- Responsive: `≤1180px` ẩn artifact panel; `≤820px` ẩn sidebar.
+
+`ModelSelector` không bịa speed/cost per-model: mỗi thẻ chỉ nêu vai trò provider + fact thật
+(stream/resume/số model/version) và trạng thái khả dụng. Một dữ liệu vẫn một chủ sở hữu.
+
+Chưa có backend (đánh dấu `TODO(backend)` trong `ChatPage.tsx`): Files, versioning artifact,
+export PDF/share link. Các phần này để UI thật + thông báo trung thực, không giả lập dữ liệu.
+
 ### Typography
 
 | Style | size/line/weight | Token prefix |

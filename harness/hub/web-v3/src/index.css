@@ -75,6 +75,19 @@ button { font: inherit; color: inherit; }
 .main > header b { color: var(--color-primary); }
 .content > div { padding: 28px; }
 .content:has(.chat-grid) { overflow: hidden; }
+
+/* ── AI Workspace: full-bleed 3-panel (top bar / sidebar · chat · artifact) ── */
+.content:has(.chat-workspace) { overflow: hidden; }
+.content > .chat-workspace { padding: 0; }
+.chat-workspace { display: grid; grid-template-rows: 56px minmax(0, 1fr); height: 100%; min-height: 0; background: var(--color-app); }
+.cw-body { display: grid; grid-template-columns: 220px minmax(280px, 1fr) 380px; min-height: 0; min-width: 0; }
+.cw-sidebar { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--color-border-subtle); background: var(--color-sidebar); }
+/* Center is contextbar + messages + chips + composer; only the messages row scrolls. */
+.cw-center { display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; min-height: 0; min-width: 0; border-right: 1px solid var(--color-border-subtle); }
+.cw-msgs { min-height: 0; overflow-y: auto; }
+.cw-artifact { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+@media (max-width: 1180px) { .cw-body { grid-template-columns: 220px minmax(0, 1fr); } .cw-artifact { display: none; } }
+@media (max-width: 820px) { .cw-body { grid-template-columns: minmax(0, 1fr); } .cw-sidebar { display: none; } }
 .chat-grid.panes-1 { grid-template-columns: 1fr; }
 .chat-grid.panes-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .chat-grid.panes-3, .chat-grid.panes-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); }
