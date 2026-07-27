@@ -1,5 +1,5 @@
 # SD — UI v3 Rebuild ("đập đi xây lại")
-**Date:** 2026-07-20 · **Status:** 🟡 Chờ APPROVE (mockup: `mockups/ui-v3-mockup.html`) · **Author:** Claude (Fable 5)
+**Date:** 2026-07-20 · **Status:** 🟢 U0–U3 shipped, U4 chưa làm (chi tiết §5.1) · **Author:** Claude (Fable 5)
 **Quyết định gốc (user, 2026-07-20):** UI hiện tại không đáp ứng → rebuild toàn bộ frontend theo UI/UX của các harness tham chiếu **DeerFlow 2.0** và **OpenClaw Control UI**.
 **Phạm vi:** CHỈ frontend. Backend FastAPI + toàn bộ `/api/*` + SSE contract giữ nguyên 100%.
 
@@ -64,6 +64,14 @@ Topbar: breadcrumb + trạng thái run + **quota chips** (claude 42/100 · codex
 Mỗi phase: Codex code → Sonnet test/review → Claude browser-verify bằng screenshot → commit.
 
 **Ghép với Phase D (BD-hub-v2-phaseD.md):** D1 (artifact workspace) + D3 (routing alias) là backend cho U2 — làm trước hoặc song song U0–U1. D2 (validation) hiện lên spine dạng node check. D5 canvas lùi sau U4.
+
+## 5.1. Trạng thái thật (cập nhật 2026-07-25)
+
+- **U0–U3: shipped**, verify bằng browser + test thật trong phiên làm việc 2026-07-25.
+- **U1 lệch khỏi spec gốc:** "Chat đa cửa sổ" đã build đúng spec ban đầu, sau đó **user yêu cầu đổi hướng** sang một hội thoại chính (single-active-chat) theo layout kiểu Claude/ChatGPT — multi-pane giờ chỉ còn là chế độ "So sánh model" phụ, không phải hình dạng mặc định. Xem commit `aee9a88`.
+- **U2, U3: shipped**, CRUD Agents/Workflows/Skills đã verify round-trip thật qua browser + curl.
+- **U3 đang được mở rộng thêm** ngoài phạm vi gốc: "Workflow Canvas v2" — design import riêng (claude.ai/design), giao Codex code phần canvas nặng (free-edge draw + Run/Log gộp vào trang + honest Contracts/Runs/Alerts). Lần chạy đầu chết giữa chừng vì OpenAI 503 outage, đang chờ retry.
+- **U4: chưa làm** — Chờ duyệt/Usage/Cài đặt còn ở dạng cũ, `/legacy` vẫn sống, chưa cutover.
 
 ## 6. Không làm
 

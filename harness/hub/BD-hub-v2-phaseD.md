@@ -1,5 +1,5 @@
 # BD — Harness ver2 · Phase D (Personal Harness Completion)
-**Date:** 2026-07-20 · **Status:** 🟡 Chờ APPROVE · **Author:** Claude (Fable 5)
+**Date:** 2026-07-20 · **Status:** ✅ D1–D4 shipped (verify 2026-07-25: `runtime_artifacts.py`, `runtime_validate.py`, `MODEL_CLASS_ROUTING` trong `config.py`, 4 workflow mẫu trong `workflows/*.workflow.yaml`) · D5 (canvas) không theo spec SVG cũ nữa — thay bằng "Workflow Canvas v2" (design import riêng, đang giao Codex, xem `WorkflowsPage.tsx`) · **Author:** Claude (Fable 5)
 **Upstream:** Hub v2 đã ship Phase A + B + C1–C3 + Cx (162 tests xanh, verify 2026-07-20).
 **Nguồn thiết kế:** repo `bd-chunk-project` (github lechihuy-droid) — lấy 4 ý tưởng tốt nhất:
 artifact workspace (ai-harness/detail.md), validation layer (architect.md §7),
