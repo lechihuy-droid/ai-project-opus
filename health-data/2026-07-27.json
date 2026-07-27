@@ -1,0 +1,94 @@
+{
+  "date": "2026-07-27",
+  "meals": [
+    {
+      "time": "08:30",
+      "name": "Breakfast",
+      "source": "text",
+      "items": [
+        {
+          "name": "Anpan 1 piece",
+          "grams": 100,
+          "kcal": 300,
+          "protein": 7.0,
+          "carb": 55.0,
+          "fat": 6.0,
+          "sugar": 25.0,
+          "fiber": 2.0,
+          "saturated_fat": 2.0,
+          "sodium_mg": 300,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 300,
+      "total_protein": 7.0,
+      "total_carb": 55.0,
+      "total_fat": 6.0,
+      "total_sugar": 25.0,
+      "total_fiber": 2.0,
+      "total_saturated_fat": 2.0,
+      "total_sodium_mg": 300,
+      "total_alcohol": 0
+    },
+    {
+      "time": "12:30",
+      "name": "Lunch",
+      "source": "text",
+      "items": [
+        {
+          "name": "Beef pork mix steak 200g",
+          "grams": 200,
+          "kcal": 500,
+          "protein": 34.0,
+          "carb": 0.0,
+          "fat": 38.0,
+          "sugar": 0.0,
+          "fiber": 0.0,
+          "saturated_fat": 14.0,
+          "sodium_mg": 350,
+          "alcohol": 0
+        },
+        {
+          "name": "Eggs 2",
+          "grams": 100,
+          "kcal": 156,
+          "protein": 12.6,
+          "carb": 1.2,
+          "fat": 10.6,
+          "sugar": 1.0,
+          "fiber": 0.0,
+          "saturated_fat": 3.2,
+          "sodium_mg": 140,
+          "alcohol": 0
+        },
+        {
+          "name": "White rice medium bowl",
+          "grams": 180,
+          "kcal": 280,
+          "protein": 4.5,
+          "carb": 63.0,
+          "fat": 0.5,
+          "sugar": 0.0,
+          "fiber": 0.7,
+          "saturated_fat": 0.1,
+          "sodium_mg": 0,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 936,
+      "total_protein": 51.1,
+      "total_carb": 64.2,
+      "total_fat": 49.1,
+      "total_sugar": 1.0,
+      "total_fiber": 0.7,
+      "total_saturated_fat": 17.3,
+      "total_sodium_mg": 490,
+      "total_alcohol": 0
+    }
+  ],
+  "water_ml": 0,
+  "steps": 0,
+  "sleep_hours": 0,
+  "weight_kg": 0,
+  "notes": "Breakfast and lunch logged from text. Anpan, beef/pork mix steak, eggs, and rice nutrition values are estimates."
+}
