@@ -7,7 +7,7 @@ export type RunEvent = { ts?: string; type?: string; event?: string; node?: stri
 export type Artifact = { name: string; chars: number }
 
 export const listWorkflows = () => api<Workflow[]>('/api/workflows')
-export const validateWorkflow = (id: string) => api<{ ok: boolean; errors: string[]; ir: IrNode[] | null }>('/api/workflows/validate', { method: 'POST', body: JSON.stringify({ id }) })
+export const validateWorkflow = (target: string | { yaml_text: string }) => api<{ ok: boolean; errors: string[]; ir: IrNode[] | null }>('/api/workflows/validate', { method: 'POST', body: JSON.stringify(typeof target === 'string' ? { id: target } : target) })
 export const startRun = (id: string, objective: string, signal?: AbortSignal) => apiRequest(`/api/workflows/${encodeURIComponent(id)}/runs`, { method: 'POST', body: JSON.stringify({ objective }), signal })
 export const listRuns = () => api<RunState[]>('/api/agent/runs')
 export const getRun = (id: string) => api<RunState>(`/api/agent/runs/${encodeURIComponent(id)}`)
