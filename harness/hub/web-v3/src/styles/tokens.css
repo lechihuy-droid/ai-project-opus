@@ -48,6 +48,12 @@
   --hub-error-subtle: rgba(242, 109, 109, 0.12);
   --hub-info: #63a4ff;
 
+  /* ---- Workflow canvas semantics ---- */
+  --hub-node-agent: #8b7cf6;
+  --hub-node-validate: #63a4ff;
+  --hub-edge-normal: #8b7cf6;
+  --hub-edge-selected: #eef2f8;
+
   /* ---- Radius — four tokens only, nothing else ---- */
   --hub-radius-sm: 6px;   /* small affordances: inline code, checkbox, tight badges */
   --hub-radius-md: 8px;   /* input / button / menu item */

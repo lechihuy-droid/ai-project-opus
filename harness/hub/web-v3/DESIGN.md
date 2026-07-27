@@ -220,3 +220,9 @@ Các vị trí **ĐÚNG** cần giữ nguyên làm mẫu (không phải lỗi): 
 - Nút **Duyệt** = `Button variant="primary"` violet; **Từ chối** = `Button variant="destructive"`.
 - Amber chỉ dành cho trạng thái gate (`Status kind="setup-required"`), không dùng cho action.
 - Pane có agent hiển thị quyền agent; không hiển thị badge provider `READ-ONLY` song song.
+
+### Workflow Canvas
+
+- Canvas dùng token dark workbench hiện có; node agent dùng `--hub-node-agent`, node validate dùng `--hub-node-validate`, edge dùng `--hub-edge-normal` hoặc `--hub-edge-selected`.
+- Canvas dày và vận hành được: lưới chấm, node card gọn, port trái/phải, cạnh cong, inspector bốn tab. Không thêm runtime, role, contract hoặc run-history giả.
+- Trạng thái chạy/lỗi lấy từ backend; node đang chạy dùng accent, node hoàn tất dùng success, lỗi validate/run luôn hiện thành banner có nội dung hành động được.
