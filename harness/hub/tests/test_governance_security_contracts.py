@@ -54,6 +54,14 @@ def test_memory_acceptance_rejects_missing_provenance(runtime_tmp: Path) -> None
         runtime_memory.accept_candidate("memory-candidate-bad", {"accepted_by": "reviewer", "reason": "ok", "expires_at": "2030-01-01T00:00:00Z"})
 
 
+def test_memory_acceptance_requires_real_reviewer_and_rationale(runtime_tmp: Path) -> None:
+    candidate = runtime_memory.create_candidate("needs review")
+    with pytest.raises(ValueError, match="reviewer and rationale"):
+        runtime_memory.accept_candidate(candidate["id"])
+    with pytest.raises(ValueError, match="reviewer and rationale"):
+        runtime_memory.accept_candidate(candidate["id"], {"accepted_by": "reviewer"})
+
+
 def test_memory_acceptance_has_immutable_hash_and_revocation(runtime_tmp: Path) -> None:
     candidate = runtime_memory.create_candidate("record provenance")
     runtime_memory.accept_candidate(candidate["id"], {"accepted_by": "reviewer", "reason": "useful", "expires_at": "2030-01-01T00:00:00Z"})
@@ -61,3 +69,13 @@ def test_memory_acceptance_has_immutable_hash_and_revocation(runtime_tmp: Path) 
     assert memory["content_hash"]
     assert memory["provenance"]["scope"] == "local"
     assert runtime_memory.revoke_memory(memory["id"], "reviewer", "expired")["revoked_at"]
+
+
+def test_revoked_or_expired_memory_is_not_listed(runtime_tmp: Path) -> None:
+    expired = runtime_memory.create_candidate("expired")
+    runtime_memory.accept_candidate(expired["id"], {"accepted_by": "reviewer", "reason": "test", "expires_at": "2000-01-01T00:00:00Z"})
+    active = runtime_memory.create_candidate("active")
+    runtime_memory.accept_candidate(active["id"], {"accepted_by": "reviewer", "reason": "test", "expires_at": "2030-01-01T00:00:00Z"})
+    memory = runtime_memory.list_memory()[0]
+    runtime_memory.revoke_memory(memory["id"], "reviewer", "test")
+    assert runtime_memory.list_memory() == []

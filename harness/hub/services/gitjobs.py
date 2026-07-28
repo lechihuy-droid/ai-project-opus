@@ -76,7 +76,7 @@ def _git_output(cwd: Path, args: list[str]) -> str:
 
 
 def _validate_agent(agent: str) -> None:
-    if agent not in config.JOB_ALLOW_AGENTS:
+    if agent != "hook-shell" and agent not in config.JOB_ALLOW_AGENTS:
         raise ValueError(f"Unsupported agent: {agent}")
 
 
@@ -156,6 +156,11 @@ def _spawn_agent(command: list[str], cwd: Path, env: dict[str, str]) -> subproce
 
 def _agent_command(job: dict[str, Any]) -> list[str]:
     agent = job.get("agent")
+    if agent == "hook-shell":
+        command = job.get("command")
+        if not isinstance(command, list) or not command or not all(isinstance(part, str) and part for part in command):
+            raise ValueError("Invalid hook shell command")
+        return list(command)
     if agent != "codex":
         raise ValueError(f"Unsupported agent: {agent}")
     return [
@@ -415,7 +420,7 @@ def _pump(stream: JobStream) -> None:
     )
 
 
-def create_job(brief: str, agent: str = "codex", allow_override: bool = False) -> dict[str, Any]:
+def create_job(brief: str, agent: str = "codex", allow_override: bool = False, command: list[str] | None = None) -> dict[str, Any]:
     brief, inform_findings = inform.sanitize_text(brief)
     brief = brief.strip()
     if not brief:
@@ -439,6 +444,7 @@ def create_job(brief: str, agent: str = "codex", allow_override: bool = False) -
             "id": job_id,
             "brief": brief,
             "agent": agent,
+            **({"command": list(command)} if agent == "hook-shell" and command is not None else {}),
             "status": "awaiting-approval",
             "worktree": str(worktree.resolve()),
             "branch": branch,
@@ -483,6 +489,23 @@ def create_job(brief: str, agent: str = "codex", allow_override: bool = False) -
         except OSError:
             pass
         raise
+
+
+def create_hook_job(command: list[str], event: dict[str, Any]) -> dict[str, Any]:
+    """Create an event-bound shell job; launch remains exclusively in approve()."""
+    if not command or not all(isinstance(part, str) and part for part in command):
+        raise ValueError("action.command must be a non-empty command array")
+    event_type = str(event.get("type") or "runtime_event")
+    job = create_job(f"Hook shell action for event: {event_type}", agent="hook-shell", command=command)
+    record = _read_job(str(job["id"]))
+    record["hook_event"] = {"type": event_type, "run_id": str(event.get("run_id") or "")}
+    record["approval_receipt"] = {
+        "binding_hash": _binding_hash(record),
+        "expires_at": (datetime.now(UTC) + timedelta(seconds=int(config.JOB_TTL_SECONDS))).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "used_at": None,
+    }
+    _write_job(record)
+    return record
 
 
 def reconcile_orphans() -> list[str]:

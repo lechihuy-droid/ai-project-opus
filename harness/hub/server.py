@@ -43,6 +43,7 @@ from services import (
     runtime_memory,
     runtime_pipeline,
     runtime_policy,
+    retention,
     runtime_skills,
     search,
     runtime_state,
@@ -65,6 +66,10 @@ async def lifespan(_app: FastAPI):
     threading.Thread(target=behavior.warm, name="behavior-warm", daemon=True).start()
     try:
         gitjobs.reconcile_orphans()
+    except Exception:
+        pass
+    try:
+        retention.sweep()
     except Exception:
         pass
     yield
@@ -542,6 +547,21 @@ def api_skill(skill_id: str) -> dict[str, object]:
 @app.get("/api/memory")
 def api_memory() -> list[dict[str, object]]:
     return runtime_memory.list_memory()
+
+
+@app.get("/api/settings/retention")
+def api_retention_settings() -> dict[str, int]:
+    return retention.settings()
+
+
+@app.put("/api/settings/retention")
+def api_retention_update(payload: dict[str, object]) -> dict[str, int]:
+    try:
+        result = retention.update(payload.get("days"))
+        retention.sweep()
+        return result
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 @app.get("/api/memory/candidates")
