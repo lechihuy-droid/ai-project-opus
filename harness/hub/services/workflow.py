@@ -17,6 +17,17 @@ from services import boundary, runtime_agents
 WORKFLOWS_DIR = config.HUB_DIR / "workflows"
 _REQUIRED_TOP_LEVEL_FIELDS = ("id", "nodes", "edges", "stop")
 _TEMPLATE_REF = re.compile(r"{{(.*?)}}")
+_EDGE_KINDS = {"default", "success", "warning", "error"}
+_EDGE_LABEL_MAX_LENGTH = 120
+
+
+def _edge_endpoints(edge: Any) -> tuple[Any, Any] | None:
+    """Extract execution endpoints, intentionally ignoring display-only metadata."""
+    if isinstance(edge, (list, tuple)) and len(edge) == 2:
+        return edge[0], edge[1]
+    if isinstance(edge, dict) and "from" in edge and "to" in edge:
+        return edge["from"], edge["to"]
+    return None
 
 
 def workflow_path(workflow_id: str) -> Path:
@@ -96,10 +107,11 @@ def _walk_chain(nodes: list[dict[str, Any]], edges: list[Any]) -> tuple[list[str
     usable_edges = True
 
     for edge in edges:
-        if not isinstance(edge, (list, tuple)) or len(edge) != 2:
+        endpoints = _edge_endpoints(edge)
+        if endpoints is None:
             usable_edges = False
             continue
-        source, target = edge
+        source, target = endpoints
         if source not in node_id_set or target not in node_id_set:
             usable_edges = False
             continue
@@ -225,10 +237,25 @@ def validate_workflow(data: dict[str, Any], available_agents: set[str] | None = 
     if not isinstance(edges_value, list):
         errors.append("edges must be a list")
     for index, edge in enumerate(edges):
-        if not isinstance(edge, (list, tuple)) or len(edge) != 2:
-            errors.append(f"Edge {index} must contain exactly two node ids")
+        endpoints = _edge_endpoints(edge)
+        if endpoints is None:
+            errors.append(f"Edge {index} must be [from, to] or a mapping with from and to")
             continue
-        for node_id in edge:
+        if isinstance(edge, dict):
+            unexpected = set(edge) - {"from", "to", "kind", "label"}
+            if unexpected:
+                errors.append(f"Edge {index} has unknown fields: {', '.join(sorted(unexpected))}")
+            kind = edge.get("kind")
+            if "kind" in edge and (not isinstance(kind, str) or kind not in _EDGE_KINDS):
+                errors.append(
+                    f"Edge {index} kind must be one of: {', '.join(sorted(_EDGE_KINDS))}"
+                )
+            label = edge.get("label")
+            if "label" in edge and not isinstance(label, str):
+                errors.append(f"Edge {index} label must be a string")
+            elif isinstance(label, str) and len(label) > _EDGE_LABEL_MAX_LENGTH:
+                errors.append(f"Edge {index} label must be at most {_EDGE_LABEL_MAX_LENGTH} characters")
+        for node_id in endpoints:
             if node_id not in node_ids:
                 errors.append(f"Edge {index} references unknown node id: {node_id}")
 
@@ -359,7 +386,7 @@ def save_workflow(workflow_id: str, yaml_text: str) -> dict[str, Any]:
     old_bytes = path.read_bytes()
     backup = path.with_name(f"{path.name}.bak-{int(time.time())}")
     backup.write_bytes(old_bytes)
-    path.write_text(yaml_text, encoding="utf-8")
+    path.write_bytes(yaml_text.encode("utf-8"))
     return data
 
 
