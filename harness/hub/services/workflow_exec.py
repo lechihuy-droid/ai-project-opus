@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
+from copy import deepcopy
 from datetime import datetime
 import json
 import re
 from typing import Any
 
-from services import execution, governance, runtime_artifacts, runtime_checkpoint, runtime_children, runtime_events, runtime_interrupts, runtime_state, runtime_validate, skill_library, workflow
+from services import execution, governance, runtime_agents, runtime_artifacts, runtime_checkpoint, runtime_children, runtime_events, runtime_interrupts, runtime_state, runtime_validate, skill_library, workflow
 
 
 _TEMPLATE_REF = re.compile(r"{{(.*?)}}")
@@ -82,13 +83,66 @@ def _context(objective: str, node_outputs: dict[str, Any]) -> dict[str, str]:
 
 
 def _agent_system_prompt(agent: dict[str, Any]) -> tuple[str, list[str]]:
-    contents, truncated, missing = skill_library.load_skill_prompt_contents(
-        list(agent.get("skills") or []), skip_missing=True
-    )
-    warnings = [f"Skill unavailable and skipped: {name}" for name in missing]
+    pins = agent.get("skill_pins")
+    if isinstance(pins, list):
+        contents, truncated = skill_library.load_pinned_skill_prompt_contents(pins)
+        warnings = []
+    else:
+        contents, truncated, missing = skill_library.load_skill_prompt_contents(
+            list(agent.get("skills") or []), skip_missing=True
+        )
+        warnings = [f"Skill unavailable and skipped: {name}" for name in missing]
     if truncated:
         warnings.append("Skill instructions truncated at shared prompt limit")
     return str(skill_library.system_prompt_with_skills(agent["system_prompt"], contents) or ""), warnings
+
+
+def _snapshot_agent(agent: dict[str, Any]) -> dict[str, Any]:
+    frozen = dict(agent)
+    frozen["resolved_route"] = runtime_agents.resolve_provider(frozen)
+    frozen["skill_pins"] = skill_library.pin_skill_prompt_contents(list(frozen.get("skills") or []))
+    return frozen
+
+
+def _snapshot_ir(ir: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    frozen: list[dict[str, Any]] = []
+    for node in ir:
+        copy = dict(node)
+        if isinstance(copy.get("agent"), dict):
+            copy["agent"] = _snapshot_agent(copy["agent"])
+        copy["spawn"] = [
+            {**dict(spawn), "agent": _snapshot_agent(dict(spawn["agent"]))}
+            for spawn in copy.get("spawn", [])
+        ]
+        frozen.append(copy)
+    return frozen
+
+
+def _workflow_snapshot(data: dict[str, Any], ir: list[dict[str, Any]]) -> dict[str, Any]:
+    frozen_ir = _snapshot_ir(ir)
+    profiles: dict[str, dict[str, Any]] = {}
+    for node in frozen_ir:
+        for agent in [node.get("agent"), *(spawn.get("agent") for spawn in node.get("spawn", []))]:
+            if isinstance(agent, dict):
+                profiles[str(agent["id"])] = dict(agent)
+    return {"definition": deepcopy(data), "ir": frozen_ir, "stop": deepcopy(data["stop"]), "agent_profiles": profiles}
+
+
+def _snapshot_inputs(state: dict[str, Any], ir: list[dict[str, Any]], stop: dict[str, Any], objective: str) -> tuple[list[dict[str, Any]], dict[str, Any], str]:
+    snapshot = _metadata(state).get("workflow_snapshot")
+    if not isinstance(snapshot, dict):
+        runtime_state.update_run_state(str(state["run_id"]), {"metadata": {"snapshot_status": "legacy_live_read"}})
+        return ir, stop, objective
+    frozen_ir = snapshot.get("ir")
+    frozen_stop = snapshot.get("stop")
+    if not isinstance(frozen_ir, list) or not isinstance(frozen_stop, dict):
+        raise ValueError("Invalid workflow snapshot")
+    return frozen_ir, frozen_stop, str(_metadata(state).get("objective") or objective)
+
+
+def _provider_route(agent: dict[str, Any]) -> dict[str, Any]:
+    route = agent.get("resolved_route")
+    return dict(route) if isinstance(route, dict) else runtime_agents.resolve_provider(agent)
 
 
 def _tool_policy(agent: dict[str, Any]) -> dict[str, Any]:
@@ -119,8 +173,9 @@ def _run_child(
         ]
         call_started_at = runtime_state.now_iso()
         output: list[str] = []
+        route = _provider_route(agent)
         request = execution.ExecutionRequest(
-            correlation_id=child_run_id, provider_id=str(agent["provider"]), model=agent.get("model"),
+            correlation_id=child_run_id, provider_id=str(route["provider"]), model=route.get("model"),
             messages=messages, tool_policy=_tool_policy(agent), limits=dict(agent.get("budget") or {}),
         )
         for item in execution.execute(request):
@@ -166,6 +221,7 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
     """Execute a resolved linear workflow against an existing runtime run."""
     run_id = runtime_state.validate_id("run", run_id)
     state = runtime_state.read_run(run_id)
+    ir, stop, objective = _snapshot_inputs(state, ir, stop, objective)
     metadata = _metadata(state)
     initial = {
         "node_index": int(metadata.get("node_index") or 0),
@@ -291,8 +347,9 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
             ]
             call_started_at = runtime_state.now_iso()
             output: list[str] = []
+            route = _provider_route(agent)
             request = execution.ExecutionRequest(
-                correlation_id=run_id, provider_id=str(agent["provider"]), model=agent.get("model"),
+                correlation_id=run_id, provider_id=str(route["provider"]), model=route.get("model"),
                 messages=messages, tool_policy=_tool_policy(agent), limits=dict(agent.get("budget") or {}),
             )
             for item in execution.execute(request):
@@ -377,6 +434,7 @@ def _load_workflow(workflow_id: str) -> tuple[dict[str, Any], list[dict[str, Any
 
 def create_workflow_run_stream(workflow_id: str, objective: str) -> Iterator[str]:
     data, ir = _load_workflow(workflow_id)
+    snapshot = _workflow_snapshot(data, ir)
     run_started_at = runtime_state.now_iso()
     run = runtime_state.create_run(
         agent_id="lead",
@@ -390,6 +448,8 @@ def create_workflow_run_stream(workflow_id: str, objective: str) -> Iterator[str
             "run_started_at": run_started_at,
             "agent_calls": {},
             "agent_elapsed_seconds": {},
+            "workflow_snapshot": snapshot,
+            "snapshot_status": "pinned",
         },
     )
     run_id = str(run["run_id"])
@@ -403,6 +463,10 @@ def resume_workflow_run_stream(run_id: str, interrupt_id: str, payload: dict[str
     yield runtime_events.to_sse(runtime_events.read_events(run_id)[-1])
     state = result["state"]
     metadata = _metadata(state)
+    snapshot = metadata.get("workflow_snapshot")
+    if isinstance(snapshot, dict):
+        yield from run_workflow([], stop={}, objective=str(metadata.get("objective") or ""), run_id=run_id)
+        return
     workflow_id = str(metadata.get("workflow_id") or "")
     data, ir = _load_workflow(workflow_id)
     yield from run_workflow(ir, stop=data["stop"], objective=str(metadata.get("objective") or ""), run_id=run_id)
