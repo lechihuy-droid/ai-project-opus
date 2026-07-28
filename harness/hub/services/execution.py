@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import json
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field
 from services import runtime_agents
 from services.providers import get_provider
 from services.providers.base import ChatEvent, Provider, ToolPolicy
+from services import tools
 
 
 ExecutionEvent = ChatEvent
@@ -15,7 +17,7 @@ class ExecutionRequest:
     correlation_id: str
     provider_id: str
     model: str | None
-    messages: list[dict[str, str]]
+    messages: list[dict[str, object]]
     session_id: str | None = None
     system_prompt: str | None = None
     tool_policy: ToolPolicy | None = None
@@ -75,9 +77,41 @@ def execute(
     kwargs: dict[str, object] = {"session_id": request.session_id, "model": result.route.model}
     if request.system_prompt:
         kwargs["system_prompt"] = request.system_prompt
-    if request.tool_policy is not None:
-        kwargs["tool_policy"] = request.tool_policy
-    yield from result.route.adapter.stream_chat(request.messages, **kwargs)
+    if request.tool_policy is None or not _supports_tools(result.route.adapter):
+        if request.tool_policy is not None:
+            kwargs["tool_policy"] = request.tool_policy
+        yield from result.route.adapter.stream_chat(request.messages, **kwargs)
+        return
+    messages = list(request.messages)
+    for iteration in range(MAX_TOOL_ITERATIONS):
+        events = list(result.route.adapter.stream_chat(messages, **kwargs, tools=tools.schemas()))
+        calls = [event for event in events if event.get("type") == "tool_call"]
+        for event in events:
+            if event.get("type") != "done":
+                yield event
+        if not calls:
+            yield from (event for event in events if event.get("type") == "done")
+            return
+        results = [tools.dispatch(str(event.get("tool_name", "")), event.get("tool_input"), str(event.get("tool_use_id", "")), request.tool_policy) for event in calls]
+        for tool_result in results:
+            yield tool_result
+        if iteration + 1 == MAX_TOOL_ITERATIONS:
+            yield {"type": "error", "message": f"tool loop reached cap ({MAX_TOOL_ITERATIONS})", "code": None}
+            return
+        messages.append({"role": "assistant", "content": None, "tool_calls": [{"id": event["tool_use_id"], "type": "function", "function": {"name": event["tool_name"], "arguments": json.dumps(event.get("tool_input", {}))}} for event in calls]})
+        messages.extend(tools.tool_message(tool_result) for tool_result in results)
+
+
+MAX_TOOL_ITERATIONS = 8
+
+
+def _supports_tools(adapter: Provider) -> bool:
+    try:
+        status = adapter.status()
+    except (AttributeError, TypeError):
+        return False
+    capabilities = status.get("capabilities") if isinstance(status, dict) else None
+    return isinstance(capabilities, dict) and capabilities.get("tools") is True
 
 
 class MockAdapter:
@@ -91,11 +125,11 @@ class MockAdapter:
         return {"id": "mock", "available": True, "version": None, "detail": "ok", "capabilities": {"stream": True}}
 
     def stream_chat(
-        self, messages: list[dict[str, str]], session_id: str | None = None, model: str | None = None,
-        system_prompt: str | None = None, tool_policy: ToolPolicy | None = None,
+        self, messages: list[dict[str, object]], session_id: str | None = None, model: str | None = None,
+        system_prompt: str | None = None, tool_policy: ToolPolicy | None = None, tools: list[dict[str, object]] | None = None,
     ) -> Iterator[ChatEvent]:
         self.calls.append({
             "messages": messages, "session_id": session_id, "model": model,
-            "system_prompt": system_prompt, "tool_policy": tool_policy,
+            "system_prompt": system_prompt, "tool_policy": tool_policy, "tools": tools,
         })
         yield from self.events

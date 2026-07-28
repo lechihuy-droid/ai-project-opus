@@ -37,9 +37,10 @@ class Provider(Protocol):
 
     def stream_chat(
         self,
-        messages: list[dict[str, str]],
+        messages: list[dict[str, object]],
         session_id: str | None = None,
         model: str | None = None,
         system_prompt: str | None = None,
         tool_policy: ToolPolicy | None = None,
+        tools: list[dict[str, object]] | None = None,
     ) -> Iterator[ChatEvent]: ...

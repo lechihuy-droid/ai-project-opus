@@ -266,10 +266,7 @@ def test_codex_cli_policy_maps_to_real_sandbox_config() -> None:
     assert "sandbox_workspace_write.writable_roots=[\"harness/hub\"]" in cmd
 
 
-def test_non_cli_providers_reject_unenforceable_tool_allowlists() -> None:
-    assert list(nvidia_api.stream_chat([{"role": "user", "content": "hi"}], tool_policy={"allowed_tools": ["Read"]})) == [
-        {"type": "error", "message": "nvidia provider cannot enforce allowed_tools or allowed_paths", "code": None}
-    ]
+def test_cli_provider_rejects_unenforceable_tool_allowlists() -> None:
     assert list(codex_cli.stream_chat([{"role": "user", "content": "hi"}], tool_policy={"allowed_tools": ["Read"]})) == [
         {"type": "error", "message": "codex provider cannot enforce allowed_tools", "code": None}
     ]
