@@ -28,6 +28,7 @@ _BOM = "\ufeff"
 _FRONTMATTER_RE = re.compile(rf"^{_BOM}?---\s*\n(.*?\n)---\s*\n?", re.DOTALL)
 
 _DEFAULT_SKILL_SOURCES: dict[str, Path] = {
+    "hub_builtin": config.HUB_DIR / "skills",
     "claude_user": Path.home() / ".claude" / "skills",
     "claude_project": config.ROOT / ".claude" / "skills",
     "codex_user": Path.home() / ".codex" / "skills",
