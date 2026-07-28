@@ -17,6 +17,7 @@ from services import (
     runtime_reducers,
     runtime_skills,
     runtime_state,
+    skill_library,
 )
 
 
@@ -205,16 +206,21 @@ def test_runtime_skills_memory_and_guardrail_apis(runtime_tmp: Path, monkeypatch
     skill_dir = tmp_path / "skills" / "demo"
     skill_dir.mkdir(parents=True)
     (skill_dir / "SKILL.md").write_text("# Demo Skill\n\nUse for runtime tests.\n", encoding="utf-8")
-    monkeypatch.setattr(runtime_skills, "_skill_roots", lambda: [tmp_path / "skills"])
+    monkeypatch.setattr(config, "SKILL_SOURCES", {"local": tmp_path / "skills"}, raising=False)
+    skill_library._clear_cache()
 
     candidate = runtime_memory.create_candidate("Remember explicit approvals only")
     client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
 
     skills = client.get("/api/skills")
     assert skills.status_code == 200
-    skill_id = skills.json()[0]["id"]
-    assert client.get(f"/api/skills/{skill_id}").json()["title"] == "Demo Skill"
-    assert client.get(f"/api/skills/{skill_id}/usage").json()["count"] == 0
+    listed = skills.json()[0]; skill_id = listed["id"]
+    assert set(listed) == {"id", "title", "description", "path", "read_only"}
+    detail = client.get(f"/api/skills/{skill_id}").json()
+    assert set(detail) == {"id", "title", "description", "path", "read_only", "body"}
+    assert detail["title"] == "Demo Skill"
+    usage = client.get(f"/api/skills/{skill_id}/usage").json()
+    assert set(usage) == {"skill_id", "count", "events"} and usage["count"] == 0
 
     candidates = client.get("/api/memory/candidates")
     assert candidates.status_code == 200

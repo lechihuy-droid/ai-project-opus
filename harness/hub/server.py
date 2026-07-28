@@ -39,6 +39,7 @@ from services import (
     runtime_pipeline,
     runtime_policy,
     runtime_skills,
+    search,
     runtime_state,
     skill_library,
     suites,
@@ -354,6 +355,11 @@ def api_agent_run_interrupt_resume(run_id: str, interrupt_id: str, payload: dict
 @app.get("/api/skills")
 def api_skills() -> list[dict[str, object]]:
     return runtime_skills.list_skills()
+
+
+@app.get("/api/search")
+def api_search(q: str = "") -> list[dict[str, str]]:
+    return search.search(q)
 
 
 @app.get("/api/skills/names")
