@@ -35,7 +35,10 @@ def _build_cmd(
 ) -> list[str]:
     if system_prompt and not session_id:
         prompt = f"[Agent system prompt]\n{system_prompt}\n\n[User request]\n{prompt}"
-    full_prompt = f"FRESH START\n\n{prompt}"
+    # No preamble: anything prepended here is read by the model as part of the
+    # user's own message. A "FRESH START" hint used to live here and Codex
+    # answered it literally — replying that it had reset, instead of doing the work.
+    full_prompt = prompt
     base = _base_cmd()
     sandbox = "read-only" if tool_policy is None else (
         "workspace-write" if tool_policy.get("permission") == "workspace_write" else "read-only"

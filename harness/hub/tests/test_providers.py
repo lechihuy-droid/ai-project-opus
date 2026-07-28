@@ -256,8 +256,8 @@ def test_codex_cli_build_cmd_has_fresh_start_preamble_and_flags() -> None:
     assert "-s" in cmd and "read-only" in cmd
     assert "--skip-git-repo-check" in cmd
     assert "--json" in cmd
-    assert cmd[-1].startswith("FRESH START\n\n")
-    assert cmd[-1].endswith("do the thing")
+    # Prompt passes through untouched: a preamble here reads as the user's own words.
+    assert cmd[-1] == "do the thing"
 
 
 def test_codex_cli_policy_maps_to_real_sandbox_config() -> None:
@@ -278,7 +278,7 @@ def test_codex_cli_build_cmd_passes_model_alias_before_positionals() -> None:
     no_model_cmd = codex_cli._build_cmd("do the thing", None)
 
     assert fresh_cmd[fresh_cmd.index("-m"):fresh_cmd.index("-m") + 2] == ["-m", "gpt-5"]
-    assert fresh_cmd.index("-m") < fresh_cmd.index("FRESH START\n\ndo the thing")
+    assert fresh_cmd.index("-m") < fresh_cmd.index("do the thing")
     assert resume_cmd[resume_cmd.index("-m"):resume_cmd.index("-m") + 2] == ["-m", "gpt-5"]
     assert resume_cmd.index("-m") < resume_cmd.index("resume")
     assert "-m" not in no_model_cmd
@@ -289,7 +289,7 @@ def test_codex_cli_second_turn_resumes_session_in_fake_cli(fake_codex_cli: Path,
     list(codex_cli.stream_chat([{"role": "user", "content": "second"}], session_id="codex-sess-1"))
 
     calls = [json.loads(line) for line in (tmp_path / "codex_args.jsonl").read_text(encoding="utf-8").splitlines()]
-    assert calls[1] == ["exec", "-s", "read-only", "--skip-git-repo-check", "--json", "resume", "codex-sess-1", "FRESH START\n\nsecond"]
+    assert calls[1] == ["exec", "-s", "read-only", "--skip-git-repo-check", "--json", "resume", "codex-sess-1", "second"]
 
 
 def test_codex_status_reports_stderr_on_failure(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
