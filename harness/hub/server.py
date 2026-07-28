@@ -811,6 +811,46 @@ def api_workflow_run_interrupt_resume(run_id: str, interrupt_id: str, payload: d
 # --- end C2b workflow run routes ---
 
 
+@app.get("/api/artifacts")
+def api_artifacts() -> dict[str, object]:
+    try:
+        return {"artifacts": runtime_artifacts.list_library_artifacts()}
+    except (PermissionError, ValueError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.get("/api/artifacts/{artifact_id}")
+def api_artifact(artifact_id: str) -> dict[str, object]:
+    try:
+        return runtime_artifacts.read_library_artifact(artifact_id)
+    except (FileNotFoundError, PermissionError) as exc:
+        raise HTTPException(status_code=404) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.post("/api/artifacts")
+def api_artifact_save(payload: dict[str, object]) -> dict[str, object]:
+    artifact_id = payload.get("id")
+    title = payload.get("title")
+    content = payload.get("content")
+    source = payload.get("source")
+    if artifact_id is not None and not isinstance(artifact_id, str):
+        raise HTTPException(status_code=400, detail="id must be a string")
+    if title is not None and not isinstance(title, str):
+        raise HTTPException(status_code=400, detail="title must be a string")
+    if not isinstance(content, str):
+        raise HTTPException(status_code=400, detail="content must be a string")
+    if not isinstance(source, str):
+        raise HTTPException(status_code=400, detail="source must be a string")
+    try:
+        return runtime_artifacts.save_library_artifact(artifact_id, title, content, source)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404) from exc
+    except (PermissionError, ValueError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
 @app.get("/api/board")
 def api_board() -> dict[str, object]:
     return board.task_board()

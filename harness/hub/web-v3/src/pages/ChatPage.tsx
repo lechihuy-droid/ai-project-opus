@@ -87,6 +87,7 @@ export default function ChatPage() {
   const [showVersionHistory, setShowVersionHistory] = useState(false)
   const [showExport, setShowExport] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
+  const [serverArtifactCount, setServerArtifactCount] = useState(0)
   const controllers = useRef(new Map<string, AbortController>())
   const streamingMessageIds = useRef(new Map<string, string>())
   const toastTimer = useRef<number | undefined>(undefined)
@@ -111,6 +112,7 @@ export default function ChatPage() {
       setChats(current => current.map(c => c.provider === 'nvidia' && !c.model ? { ...c, model: m.default } : c))
     }).catch(() => undefined)
   }, [])
+  useEffect(() => { void api<{ artifacts: { id: string }[] }>('/api/artifacts').then(data => { localStorage.setItem('hub-v3-artifacts', JSON.stringify(data.artifacts)); setServerArtifactCount(data.artifacts.length) }).catch(() => undefined) }, [])
 
   const showToast = (text: string) => { setToast(text); window.clearTimeout(toastTimer.current); toastTimer.current = window.setTimeout(() => setToast(null), 2400) }
   const patch = (id: string, change: Partial<Chat>) => setChats(current => current.map(c => c.id === id ? { ...c, ...change, updatedAt: Date.now() } : c))
@@ -138,6 +140,7 @@ export default function ChatPage() {
     const user: Message = { role: 'user', content: prompt }
     const assistantId = crypto.randomUUID()
     const assistant: Message = { id: assistantId, role: 'assistant', content: '', reasoning: '', streaming: true }
+    let assistantContent = ''
     const history = [...chat.messages, user]
     patch(chat.id, { messages: [...history, assistant], title }); streamingMessageIds.current.set(chat.id, assistantId)
     const controller = new AbortController(); controllers.current.set(chat.id, controller)
@@ -151,11 +154,13 @@ export default function ChatPage() {
       for await (const item of parseSse(response.body)) {
         const data = item.data as Record<string, unknown>
         if (item.event === 'reasoning') patchLast(chat.id, cur => ({ reasoning: `${cur.reasoning ?? ''}${String(data.text ?? '')}`, streaming: true }))
-        if (item.event === 'delta') patchLast(chat.id, cur => ({ content: `${cur.content}${String(data.text ?? '')}`, streaming: true }))
+        if (item.event === 'delta') { const delta = String(data.text ?? ''); assistantContent += delta; patchLast(chat.id, cur => ({ content: `${cur.content}${delta}`, streaming: true })) }
         if (item.event === 'done') {
           if (shouldInject) setInjectedContext(c => ({ ...c, [chat.id]: fingerprint }))
           patchLast(chat.id, { streaming: false, usage: data.usage as Record<string, unknown> })
           patch(chat.id, { cliSessionId: typeof data.session_id === 'string' ? data.session_id : chat.cliSessionId, model: typeof data.model === 'string' && chat.provider === 'nvidia' ? data.model : chat.model, notice: typeof data.skill_notice === 'string' ? data.skill_notice : chat.notice })
+          const content = assistantContent
+          if (content && isArtifact({ role: 'assistant', content })) void api<{ id: string }>('/api/artifacts', { method: 'POST', body: JSON.stringify({ title: artifactSummary(content).title, content, source: 'chat' }) }).then(() => api<{ artifacts: { id: string }[] }>('/api/artifacts')).then(data => { localStorage.setItem('hub-v3-artifacts', JSON.stringify(data.artifacts)); setServerArtifactCount(data.artifacts.length) }).catch(() => undefined)
         }
         if (item.event === 'error') patchLast(chat.id, { role: 'system', content: String(data.message ?? 'Chat stream error'), streaming: false })
       }
@@ -212,7 +217,7 @@ export default function ChatPage() {
       <div className="cw-artifact">
         {activeArtifact
           ? <ArtifactPanel message={activeArtifact} focused={artifactFocus} onFocus={() => setArtifactFocus(v => !v)} onPopout={() => showToast('Pop-out: chưa có route độc lập cho artifact — cần thêm sau')} onHistory={() => setShowVersionHistory(true)} onExport={() => setShowExport(true)} onCopy={() => { void navigator.clipboard?.writeText(activeArtifact.content); showToast('Đã copy') }} onEditSection={editSection} onSelection={(text, action) => { if (action === 'Copy') { void navigator.clipboard?.writeText(text); showToast('Đã copy vùng chọn'); return } if (action === 'Comment') { showToast('Comment: chưa nối backend'); return } void send(`${action} đoạn văn bản sau:\n"${text}"`) }} />
-          : <ArtifactEmpty onOpenLibrary={() => setLeftTab('artifacts')} count={artifactMessages.length} />}
+          : <ArtifactEmpty onOpenLibrary={() => setLeftTab('artifacts')} count={Math.max(artifactMessages.length, serverArtifactCount)} />}
       </div>
     </div>
 
