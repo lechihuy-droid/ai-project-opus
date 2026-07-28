@@ -35,6 +35,7 @@ def list_hooks() -> list[dict[str, Any]]: return _read()
 def _validate(payload: dict[str, Any], old: dict[str, Any] | None = None) -> dict[str, Any]:
     row = dict(old or {}) | dict(payload)
     if not isinstance(row.get("name"), str) or not row["name"].strip(): raise ValueError("name is required")
+    if not isinstance(row.get("agent_id"), str) or not row["agent_id"].strip(): raise ValueError("agent_id is required")
     if row.get("event") not in _EVENTS: raise ValueError("event must be a runtime event")
     if not isinstance(row.get("trigger_point"), str): raise ValueError("trigger_point is required")
     if not isinstance(row.get("enabled"), bool): raise ValueError("enabled must be boolean")
@@ -80,7 +81,7 @@ def log(hook_id: str) -> list[dict[str, Any]]:
 
 def fire(event: dict[str, Any]) -> None:
     for hook in _read():
-        if hook.get("enabled") and hook.get("event") == event.get("type"):
+        if hook.get("enabled") and hook.get("event") == event.get("type") and hook.get("agent_id") == event.get("agent_id"):
             threading.Thread(target=_run, args=(hook, event), daemon=True).start()
 
 

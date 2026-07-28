@@ -10,14 +10,16 @@ import { asProviderId, Button, Chip, IconButton, Popover, providerIds, ProviderD
 // the hub token set): top bar · sidebar (Chats/Files/Artifacts) · chat · artifact.
 // A single active chat is the primary shape; the model picker, context, artifact
 // panel, version history and export all hang off it. Chat, models, providers,
-// agents and skills are wired to the real backend; Files, artifact versioning and
-// PDF/share export have no backend yet and are marked TODO(backend).
+// agents, skills and artifact version history are wired to the real backend;
+// Files and PDF/share export have no backend yet and are marked TODO(backend).
 
 type Provider = { id: string; available: boolean; version?: string; detail: string; capabilities?: { stream?: boolean; resume?: boolean; models?: number } }
 type Catalog = { id: string; shortName?: string; category?: string; label?: string }
 type Skill = { id: string; name?: string; title?: string; description?: string }
 type ActiveSkill = { id: string; scope: 'turn' | 'window' }
-type Message = { id?: string; role: 'user' | 'assistant' | 'system'; content: string; reasoning?: string; usage?: Record<string, unknown>; streaming?: boolean }
+type Message = { id?: string; artifactId?: string; role: 'user' | 'assistant' | 'system'; content: string; reasoning?: string; usage?: Record<string, unknown>; streaming?: boolean }
+type ArtifactVersion = { version: string; created_at: string; content: string }
+type StoredArtifact = { id: string; title: string; versions: ArtifactVersion[] }
 type Chat = { id: string; title: string; provider: string; model: string; agentId?: string; cliSessionId?: string; messages: Message[]; notice?: string; updatedAt: number }
 type PinnedMessage = { id: string; content: string }
 type Instruction = { id: string; label: string; active: boolean }
@@ -117,6 +119,7 @@ export default function ChatPage() {
   const showToast = (text: string) => { setToast(text); window.clearTimeout(toastTimer.current); toastTimer.current = window.setTimeout(() => setToast(null), 2400) }
   const patch = (id: string, change: Partial<Chat>) => setChats(current => current.map(c => c.id === id ? { ...c, ...change, updatedAt: Date.now() } : c))
   const patchLast = (id: string, change: Partial<Message> | ((m: Message) => Partial<Message>)) => { const messageId = streamingMessageIds.current.get(id); if (!messageId) return; setChats(current => current.map(c => c.id === id ? { ...c, messages: c.messages.map(m => m.id === messageId ? { ...m, ...(typeof change === 'function' ? change(m) : change) } : m) } : c)) }
+  const patchMessage = (chatId: string, messageId: string, change: Partial<Message>) => setChats(current => current.map(chat => chat.id === chatId ? { ...chat, messages: chat.messages.map(message => message.id === messageId ? { ...message, ...change } : message) } : chat))
 
   const newChat = () => { const chat = makeChat(activeChat.provider, activeChat.provider === 'nvidia' ? (activeChat.model || defaultModel) : ''); setChats(current => [chat, ...current]); setActiveChatId(chat.id); setLeftTab('chats'); setPromptText('') }
   const selectChat = (id: string) => { setActiveChatId(id); setLeftTab('chats') }
@@ -160,7 +163,7 @@ export default function ChatPage() {
           patchLast(chat.id, { streaming: false, usage: data.usage as Record<string, unknown> })
           patch(chat.id, { cliSessionId: typeof data.session_id === 'string' ? data.session_id : chat.cliSessionId, model: typeof data.model === 'string' && chat.provider === 'nvidia' ? data.model : chat.model, notice: typeof data.skill_notice === 'string' ? data.skill_notice : chat.notice })
           const content = assistantContent
-          if (content && isArtifact({ role: 'assistant', content })) void api<{ id: string }>('/api/artifacts', { method: 'POST', body: JSON.stringify({ title: artifactSummary(content).title, content, source: 'chat' }) }).then(() => api<{ artifacts: { id: string }[] }>('/api/artifacts')).then(data => { localStorage.setItem('hub-v3-artifacts', JSON.stringify(data.artifacts)); setServerArtifactCount(data.artifacts.length) }).catch(() => undefined)
+          if (content && isArtifact({ role: 'assistant', content })) void api<{ id: string }>('/api/artifacts', { method: 'POST', body: JSON.stringify({ title: artifactSummary(content).title, content, source: 'chat' }) }).then(saved => { patchMessage(chat.id, assistantId, { artifactId: saved.id }); return api<{ artifacts: { id: string }[] }>('/api/artifacts') }).then(data => { localStorage.setItem('hub-v3-artifacts', JSON.stringify(data.artifacts)); setServerArtifactCount(data.artifacts.length) }).catch(() => undefined)
         }
         if (item.event === 'error') patchLast(chat.id, { role: 'system', content: String(data.message ?? 'Chat stream error'), streaming: false })
       }
@@ -491,19 +494,19 @@ function ContextDrawer({ context, onChange, tooLarge, estimate, onClose }: { con
   </>
 }
 
-// ── Version history (stub: no artifact versioning backend yet) ──────────────────
 function VersionHistoryModal({ message, onClose }: { message: Message; onClose: () => void }) {
   useEffect(() => { const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }; document.addEventListener('keydown', onKey); return () => document.removeEventListener('keydown', onKey) }, [onClose])
   const summary = artifactSummary(message.content)
+  const [artifact, setArtifact] = useState<StoredArtifact | null>(null); const [selectedVersion, setSelectedVersion] = useState<string | null>(null); const [loadError, setLoadError] = useState(false)
+  useEffect(() => { if (!message.artifactId) return; setArtifact(null); setSelectedVersion(null); setLoadError(false); void api<StoredArtifact>(`/api/artifacts/${encodeURIComponent(message.artifactId)}`).then(saved => { setArtifact(saved); setSelectedVersion(saved.versions.at(-1)?.version ?? null) }).catch(() => setLoadError(true)) }, [message.artifactId])
+  const selected = artifact?.versions.find(version => version.version === selectedVersion)
   return <div onClick={onClose} className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-space-4">
     <div role="dialog" aria-modal="true" onClick={e => e.stopPropagation()} className="flex h-[520px] max-h-[86vh] w-[880px] max-w-[92vw] flex-col overflow-hidden rounded-[14px] bg-surface shadow-2xl">
       <div className="flex items-center justify-between border-b border-border-subtle p-space-4"><div className="text-title font-bold text-primary">Lịch sử phiên bản — {summary.title}</div><IconButton icon="×" aria-label="Đóng" onClick={onClose} /></div>
       <div className="flex min-h-0 flex-1">
-        <div className="w-[280px] shrink-0 overflow-y-auto border-r border-border-subtle p-space-3">
-          <div className="rounded-[9px] bg-hover p-space-3"><div className="flex items-center gap-space-2"><span className="text-label font-bold text-primary">v1</span><span className="rounded-full bg-accent-subtle px-space-2 py-[1px] text-caption font-semibold text-accent">HIỆN TẠI</span></div><div className="mt-[3px] text-caption text-secondary">Bản đầu tiên</div></div>
-        </div>
+        <div className="w-[280px] shrink-0 overflow-y-auto border-r border-border-subtle p-space-3">{artifact?.versions.slice().reverse().map(version => <button key={version.version} onClick={() => setSelectedVersion(version.version)} className={`mb-space-2 w-full rounded-[9px] p-space-3 text-left ${version.version === selectedVersion ? 'bg-hover' : 'hover:bg-hover'}`}><div className="flex items-center gap-space-2"><span className="text-label font-bold text-primary">{version.version}</span>{version.version === artifact.versions.at(-1)?.version && <span className="rounded-full bg-accent-subtle px-space-2 py-[1px] text-caption font-semibold text-accent">HIỆN TẠI</span>}</div><div className="mt-[3px] text-caption text-secondary">{new Date(version.created_at).toLocaleString('vi-VN')}</div></button>)}</div>
         <div className="min-h-0 flex-1 overflow-y-auto p-space-4">
-          <div className="rounded-[9px] border border-border-subtle bg-elevated p-space-4 text-caption text-muted">Chưa có phiên bản trước để so sánh. Versioning artifact chưa nối backend — <span className="text-tertiary">TODO(backend)</span>.</div>
+          {!message.artifactId ? <div className="rounded-[9px] border border-border-subtle bg-elevated p-space-4 text-caption text-muted">Artifact này chưa được lưu trên máy chủ nên chưa có lịch sử phiên bản.</div> : loadError ? <div className="rounded-[9px] border border-border-subtle bg-elevated p-space-4 text-caption text-muted">Không thể tải lịch sử phiên bản.</div> : !artifact ? <div className="text-caption text-muted">Đang tải lịch sử phiên bản…</div> : artifact.versions.length === 1 ? <div className="rounded-[9px] border border-border-subtle bg-elevated p-space-4 text-caption text-muted">Artifact này hiện chỉ có một phiên bản.</div> : selected ? <div><div className="mb-space-3 text-label font-semibold text-primary">{selected.version} · {new Date(selected.created_at).toLocaleString('vi-VN')}</div><div className="artifact-panel text-label"><Markdown source={selected.content} /></div></div> : null}
         </div>
       </div>
       <div className="flex justify-end border-t border-border-subtle p-space-4"><Button variant="secondary" onClick={onClose}>Đóng</Button></div>
