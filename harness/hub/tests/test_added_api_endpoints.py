@@ -35,7 +35,7 @@ def hooks_tmp(monkeypatch: pytest.MonkeyPatch, runtime_tmp: Path) -> Path:
 
 
 def hook_payload() -> dict[str, object]:
-    return {"name": "notify", "event": "done", "trigger_point": "after", "enabled": True, "action": {"type": "append_log_file", "path": "hook.log"}}
+    return {"name": "notify", "agent_id": "reviewer", "event": "done", "trigger_point": "after", "enabled": True, "action": {"type": "append_log_file", "path": "hook.log"}}
 
 
 def test_hooks_api_crud_events_and_log(client: TestClient, hooks_tmp: Path) -> None:
@@ -55,6 +55,7 @@ def test_hooks_api_crud_events_and_log(client: TestClient, hooks_tmp: Path) -> N
 
 def test_hooks_api_rejects_invalid_and_missing(client: TestClient, hooks_tmp: Path) -> None:
     assert client.post("/api/hooks", json=hook_payload() | {"event": "invented"}).status_code == 400
+    assert client.post("/api/hooks", json={key: value for key, value in hook_payload().items() if key != "agent_id"}).status_code == 400
     assert client.put("/api/hooks/missing", json=hook_payload()).status_code == 404
     assert client.delete("/api/hooks/missing").status_code == 404
 
@@ -68,6 +69,15 @@ def test_shell_hook_uses_gitjob_path_and_receipt(hooks_tmp: Path, monkeypatch: p
     record = hooks.log(hook["id"])[0]
     assert record["status"] == "succeeded"
     assert "j-20260729-hook" in record["message"] and "receipt" in record["message"]
+
+
+def test_hook_only_fires_for_its_agent(hooks_tmp: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    hook = hooks.create(hook_payload())
+    calls: list[tuple[dict[str, object], dict[str, object]]] = []
+    monkeypatch.setattr(hooks, "_run", lambda saved, event: calls.append((saved, event)))
+    hooks.fire({"type": "done", "agent_id": "other"})
+    hooks.fire({"type": "done", "agent_id": "reviewer"})
+    assert calls == [(hook, {"type": "done", "agent_id": "reviewer"})]
 
 
 def make_run(runtime_tmp: Path, agent_id: str = "agent-a") -> str:
