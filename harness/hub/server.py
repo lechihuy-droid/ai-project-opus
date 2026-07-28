@@ -1,9 +1,13 @@
 from __future__ import annotations
 
 import json
+import hashlib
+import logging
+import re
 import sys
 import threading
 import time
+import uuid
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -13,7 +17,8 @@ if str(HUB_DIR) not in sys.path:
     sys.path.insert(0, str(HUB_DIR))
 
 from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile
-from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, StreamingResponse
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 import config
@@ -77,30 +82,171 @@ if WEB_V3_DIST.exists():
     app.mount("/assets", StaticFiles(directory=str(WEB_V3_DIST / "assets")), name="assets-v3")
 
 _CSRF_SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
+_SCHEMA_VERSION = "1"
+_IDEMPOTENCY_LOCK = threading.Lock()
+_IDEMPOTENCY_RESULTS: dict[tuple[str, str], tuple[int, bytes, str]] = {}
+_IDEMPOTENT_COMMANDS = {
+    ("POST", "/api/jobs"),
+    ("POST", "/api/agent/runs"),
+    ("POST", "/api/runs/trigger"),
+}
+_LOGGER = logging.getLogger(__name__)
+
+
+def _is_idempotent_command(request: Request) -> bool:
+    if (request.method, request.url.path) in _IDEMPOTENT_COMMANDS:
+        return True
+    return request.method == "POST" and bool(re.fullmatch(
+        r"/api/(?:jobs/[^/]+/(?:approve|accept)|memory/candidates/[^/]+/accept|"
+        r"(?:agent|workflows)/runs/[^/]+/interrupts/[^/]+/resume|workflows/[^/]+/runs)",
+        request.url.path,
+    ))
+
+
+def _error_code(status_code: int) -> str:
+    return {
+        400: "INVALID_REQUEST", 403: "FORBIDDEN", 404: "NOT_FOUND", 409: "CONFLICT",
+        422: "VALIDATION_FAILED", 500: "INTERNAL_ERROR",
+    }.get(status_code, "REQUEST_FAILED")
+
+
+def _safe_error_message(value: object, status_code: int) -> str:
+    message = str(value or "Request failed")
+    # Exception strings are not a public contract: never echo paths, tracebacks, or likely secrets.
+    if "\n" in message or "\r" in message or re.search(r"(?:[A-Za-z]:[\\/]|(?:^|\s)/(?:[^\s]+))", message):
+        return {403: "Access denied", 404: "Resource not found"}.get(status_code, "Request failed")
+    if re.search(r"(?:token|secret|password|api[_-]?key)\s*[=:]", message, re.I):
+        return "Request failed"
+    return message[:500]
+
+
+def _http_error(exc: Exception, status_code: int | None = None) -> HTTPException:
+    """Only conversion point from application exceptions to public HTTP errors."""
+    if isinstance(exc, HTTPException):
+        status_code = exc.status_code
+        detail = exc.detail
+    elif status_code is None and isinstance(exc, PermissionError):
+        status_code, detail = 403, exc
+    elif status_code is None and isinstance(exc, FileNotFoundError):
+        status_code, detail = 404, exc
+    else:
+        status_code, detail = status_code or 500, exc
+    if isinstance(detail, dict):
+        code = detail.get("code")
+        message = _safe_error_message(detail.get("message"), status_code)
+        safe_details = detail.get("details") if isinstance(detail.get("details"), dict) else None
+        return HTTPException(status_code=status_code, detail={
+            "code": code if isinstance(code, str) and code else _error_code(status_code),
+            "message": message, "details": safe_details,
+        })
+    return HTTPException(status_code=status_code, detail=_safe_error_message(detail, status_code))
+
+
+def _etag(value: bytes) -> str:
+    return f'"{hashlib.sha256(value).hexdigest()}"'
+
+
+def _check_if_match(request: Request, current: bytes) -> None:
+    expected = request.headers.get("If-Match")
+    actual = _etag(current)
+    # Optional until web-v3 sends preconditions; supplied preconditions are strict.
+    if expected is not None and expected != actual:
+        raise HTTPException(status_code=409, detail={
+            "code": "STALE_DOCUMENT", "message": "Document changed; refresh and retry.",
+            "details": {"current_version": actual},
+        })
 
 
 @app.middleware("http")
 async def _csrf_guard(request: Request, call_next):
+    correlation_id = request.headers.get("X-Correlation-ID") or f"corr-{uuid.uuid4().hex}"
+    request.state.correlation_id = correlation_id
     if request.method not in _CSRF_SAFE_METHODS:
         origin = request.headers.get("origin") or request.headers.get("referer")
         if origin and not any(origin.startswith(allowed) for allowed in config.ALLOWED_ORIGINS):
-            return JSONResponse(status_code=403, content={"detail": "cross-origin blocked"})
+            return await _http_exception(request, _http_error(HTTPException(status_code=403, detail="cross-origin blocked")))
         if request.headers.get(config.HUB_CLIENT_HEADER) != config.HUB_CLIENT_VALUE:
-            return JSONResponse(status_code=403, content={"detail": "missing hub client header"})
+            return await _http_exception(request, _http_error(HTTPException(status_code=403, detail="missing hub client header")))
+    key = request.headers.get("Idempotency-Key")
+    cache_key = (request.url.path, key) if key and _is_idempotent_command(request) else None
+    if cache_key:
+        with _IDEMPOTENCY_LOCK:
+            cached = _IDEMPOTENCY_RESULTS.get(cache_key)
+        if cached:
+            status_code, body, content_type = cached
+            response = Response(content=body, status_code=status_code, media_type=content_type)
+            response.headers["Idempotency-Replayed"] = "true"
+            response.headers["X-Correlation-ID"] = correlation_id
+            response.headers["X-Schema-Version"] = _SCHEMA_VERSION
+            return response
     response = await call_next(request)
+    response.headers["X-Correlation-ID"] = correlation_id
+    response.headers["X-Schema-Version"] = _SCHEMA_VERSION
+    if response.media_type == "text/event-stream":
+        response.body_iterator = _correlated_sse(response.body_iterator, correlation_id)
+    if cache_key and response.status_code < 500:
+        response.body_iterator = _cache_response(response.body_iterator, cache_key, response.status_code, response.media_type or "application/json")
     # SPA assets change on every deploy; force revalidation so the browser
     # never runs stale app.js/workspace.js against a newer backend.
     if request.url.path == "/" or request.url.path.startswith("/static"):
         response.headers["Cache-Control"] = "no-cache"
+    _LOGGER.info("api_request correlation_id=%s method=%s path=%s status=%s", correlation_id, request.method, request.url.path, response.status_code)
     return response
 
 
-def _http_error(exc: Exception) -> HTTPException:
-    if isinstance(exc, PermissionError):
-        return HTTPException(status_code=403, detail=str(exc))
-    if isinstance(exc, FileNotFoundError):
-        return HTTPException(status_code=404, detail=str(exc))
-    return HTTPException(status_code=500, detail=str(exc))
+async def _cache_response(iterator, cache_key: tuple[str, str], status_code: int, content_type: str):
+    body: list[bytes] = []
+    async for chunk in iterator:
+        value = chunk.encode("utf-8") if isinstance(chunk, str) else chunk
+        body.append(value)
+        yield value
+    with _IDEMPOTENCY_LOCK:
+        _IDEMPOTENCY_RESULTS.setdefault(cache_key, (status_code, b"".join(body), content_type))
+
+
+async def _correlated_sse(iterator, correlation_id: str):
+    async for chunk in iterator:
+        text = chunk.decode("utf-8") if isinstance(chunk, bytes) else chunk
+        def decorate(match):
+            try:
+                data = json.loads(match.group(1))
+            except (TypeError, ValueError):
+                return match.group(0)
+            if not isinstance(data, dict):
+                return match.group(0)
+            data.setdefault("schema_version", 1)
+            data.setdefault("correlation_id", correlation_id)
+            return f"data: {json.dumps(data, ensure_ascii=False)}"
+        yield re.sub(r"data: (\{[^\n]*\})", decorate, text)
+
+
+@app.exception_handler(HTTPException)
+async def _http_exception(request: Request, exc: HTTPException) -> JSONResponse:
+    normalized = _http_error(exc)
+    correlation_id = getattr(request.state, "correlation_id", f"corr-{uuid.uuid4().hex}")
+    structured = normalized.detail if isinstance(normalized.detail, dict) else None
+    detail = str(structured["message"] if structured else normalized.detail)
+    error: dict[str, object] = {
+        "code": structured["code"] if structured else _error_code(normalized.status_code),
+        "message": detail, "correlation_id": correlation_id,
+    }
+    if structured and structured.get("details") is not None:
+        error["details"] = structured["details"]
+    return JSONResponse(
+        status_code=normalized.status_code,
+        content={"detail": detail, "schema_version": 1, "error": error},
+        headers={"X-Correlation-ID": correlation_id, "X-Schema-Version": _SCHEMA_VERSION},
+    )
+
+
+@app.exception_handler(Exception)
+async def _unexpected_exception(request: Request, exc: Exception) -> JSONResponse:
+    return await _http_exception(request, _http_error(exc))
+
+
+@app.exception_handler(RequestValidationError)
+async def _validation_exception(request: Request, _exc: RequestValidationError) -> JSONResponse:
+    return await _http_exception(request, _http_error(HTTPException(status_code=422, detail="Invalid request")))
 
 
 def _sse(event: str, data: dict[str, object]) -> str:
@@ -270,9 +416,19 @@ def api_risk_tiers() -> list[str]:
 
 
 @app.post("/api/agents")
-def api_agents_create_or_update(payload: dict[str, object]) -> dict[str, object]:
+def api_agents_create_or_update(payload: dict[str, object], request: Request, response: Response) -> dict[str, object]:
     try:
-        return runtime_agents.create_or_update_agent(payload)
+        agent_id = payload.get("id")
+        if isinstance(agent_id, str):
+            try:
+                current = runtime_agents.get_agent(agent_id)
+                current_path = runtime_agents.AGENTS_DIR / f"{current['id']}.agent.yaml"
+                _check_if_match(request, current_path.read_bytes())
+            except FileNotFoundError:
+                pass
+        result = runtime_agents.create_or_update_agent(payload)
+        response.headers["ETag"] = _etag((runtime_agents.AGENTS_DIR / f"{result['id']}.agent.yaml").read_bytes())
+        return result
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
@@ -798,8 +954,9 @@ def api_workflows() -> list[dict[str, object]]:
 
 
 @app.get("/api/workflows/{workflow_id}/layout")
-def api_workflow_layout(workflow_id: str) -> dict[str, object]:
+def api_workflow_layout(workflow_id: str, response: Response) -> dict[str, object]:
     try:
+        response.headers["ETag"] = _etag(workflow.workflow_layout_path(workflow_id).read_bytes()) if workflow.workflow_layout_path(workflow_id).exists() else '"empty"'
         return {"nodes": workflow.read_layout(workflow_id)}
     except (FileNotFoundError, PermissionError) as exc:
         raise _http_error(exc) from exc
@@ -808,9 +965,13 @@ def api_workflow_layout(workflow_id: str) -> dict[str, object]:
 
 
 @app.put("/api/workflows/{workflow_id}/layout")
-def api_workflow_layout_save(workflow_id: str, payload: dict[str, object]) -> dict[str, object]:
+def api_workflow_layout_save(workflow_id: str, payload: dict[str, object], request: Request, response: Response) -> dict[str, object]:
     try:
-        return {"nodes": workflow.save_layout(workflow_id, payload)}
+        path = workflow.workflow_layout_path(workflow_id)
+        _check_if_match(request, path.read_bytes() if path.exists() else b"")
+        result = {"nodes": workflow.save_layout(workflow_id, payload)}
+        response.headers["ETag"] = _etag(path.read_bytes())
+        return result
     except (FileNotFoundError, PermissionError) as exc:
         raise _http_error(exc) from exc
     except ValueError as exc:
@@ -818,13 +979,16 @@ def api_workflow_layout_save(workflow_id: str, payload: dict[str, object]) -> di
 
 
 @app.put("/api/workflows/{workflow_id}/model")
-def api_workflow_model_save(workflow_id: str, payload: dict[str, object]) -> dict[str, object]:
+def api_workflow_model_save(workflow_id: str, payload: dict[str, object], request: Request, response: Response) -> dict[str, object]:
     model = payload.get("model")
     if not isinstance(model, dict):
         raise HTTPException(status_code=400, detail="model must be a mapping")
     try:
+        _check_if_match(request, workflow.workflow_path(workflow_id).read_bytes())
         yaml_text = workflow.model_yaml_text(workflow_id, model)
-        return workflow.save_workflow(workflow_id, yaml_text)
+        result = workflow.save_workflow(workflow_id, yaml_text)
+        response.headers["ETag"] = _etag(workflow.workflow_path(workflow_id).read_bytes())
+        return result
     except (FileNotFoundError, PermissionError) as exc:
         raise _http_error(exc) from exc
     except ValueError as exc:
@@ -832,9 +996,10 @@ def api_workflow_model_save(workflow_id: str, payload: dict[str, object]) -> dic
 
 
 @app.get("/api/workflows/{workflow_id}/source")
-def api_workflow_source(workflow_id: str) -> dict[str, str]:
+def api_workflow_source(workflow_id: str, response: Response) -> dict[str, str]:
     try:
         path = workflow.workflow_path(workflow_id)
+        response.headers["ETag"] = _etag(path.read_bytes())
         return {"id": workflow_id, "yaml_text": path.read_text(encoding="utf-8")}
     except (FileNotFoundError, PermissionError) as exc:
         raise _http_error(exc) from exc
@@ -863,12 +1028,15 @@ def api_workflow_validate(payload: dict[str, object]) -> dict[str, object]:
 
 
 @app.put("/api/workflows/{workflow_id}")
-def api_workflow_save(workflow_id: str, payload: dict[str, object]) -> dict[str, object]:
+def api_workflow_save(workflow_id: str, payload: dict[str, object], request: Request, response: Response) -> dict[str, object]:
     yaml_text = payload.get("yaml_text")
     if not isinstance(yaml_text, str):
         raise HTTPException(status_code=400, detail="yaml_text must be a string")
     try:
-        return workflow.save_workflow(workflow_id, yaml_text)
+        _check_if_match(request, workflow.workflow_path(workflow_id).read_bytes())
+        result = workflow.save_workflow(workflow_id, yaml_text)
+        response.headers["ETag"] = _etag(workflow.workflow_path(workflow_id).read_bytes())
+        return result
     except (FileNotFoundError, PermissionError) as exc:
         raise _http_error(exc) from exc
     except ValueError as exc:
@@ -890,9 +1058,9 @@ def api_workflow_run(workflow_id: str, payload: dict[str, object]):
     except (FileNotFoundError, PermissionError) as exc:
         raise _http_error(exc) from exc
     except ValueError as exc:
-        return JSONResponse(status_code=400, content={"errors": [str(exc)]})
+        raise _http_error(exc, 400) from exc
     if errors:
-        return JSONResponse(status_code=400, content={"errors": errors})
+        raise _http_error(ValueError("Workflow validation failed"), 422)
     return StreamingResponse(workflow_exec.create_workflow_run_stream(workflow_id, objective), media_type="text/event-stream")
 
 
