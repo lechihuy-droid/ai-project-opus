@@ -6,7 +6,7 @@ import json
 import re
 from typing import Any
 
-from services import governance, runtime_agents, runtime_artifacts, runtime_checkpoint, runtime_children, runtime_events, runtime_interrupts, runtime_state, runtime_validate, workflow
+from services import governance, runtime_agents, runtime_artifacts, runtime_checkpoint, runtime_children, runtime_events, runtime_interrupts, runtime_state, runtime_validate, skill_library, workflow
 from services.providers import get_provider
 
 
@@ -82,6 +82,16 @@ def _context(objective: str, node_outputs: dict[str, Any]) -> dict[str, str]:
     return context
 
 
+def _agent_system_prompt(agent: dict[str, Any]) -> tuple[str, list[str]]:
+    contents, truncated, missing = skill_library.load_skill_prompt_contents(
+        list(agent.get("skills") or []), skip_missing=True
+    )
+    warnings = [f"Skill unavailable and skipped: {name}" for name in missing]
+    if truncated:
+        warnings.append("Skill instructions truncated at shared prompt limit")
+    return str(skill_library.system_prompt_with_skills(agent["system_prompt"], contents) or ""), warnings
+
+
 def _run_child(
     *, parent_run_id: str, node_id: str, objective: str, agent: dict[str, Any], child_run_id: str
 ) -> Iterator[str]:
@@ -93,8 +103,11 @@ def _run_child(
             "status": "running",
             "metadata": {"run_started_at": started_at, "agent_calls": {}, "agent_elapsed_seconds": {}},
         })
+        system_prompt, warnings = _agent_system_prompt(agent)
+        for message in warnings:
+            yield from _yield_event(parent_run_id, "warning", child_run_id=child_run_id, node=node_id, agent_id=agent_id, message=message)
         messages = [
-            {"role": "user", "content": f"SYSTEM INSTRUCTIONS:\n{agent['system_prompt']}"},
+            {"role": "user", "content": f"SYSTEM INSTRUCTIONS:\n{system_prompt}"},
             {"role": "user", "content": objective},
         ]
         routed = runtime_agents.resolve_provider(agent)
@@ -258,8 +271,11 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
                 yield from _snapshot(run_id)
                 return
 
+            system_prompt, warnings = _agent_system_prompt(agent)
+            for message in warnings:
+                yield from _yield_event(run_id, "warning", node=node["id"], agent_id=agent_id, message=message)
             messages = [
-                {"role": "user", "content": f"SYSTEM INSTRUCTIONS:\n{agent['system_prompt']}"},
+                {"role": "user", "content": f"SYSTEM INSTRUCTIONS:\n{system_prompt}"},
                 {"role": "user", "content": rendered_prompt},
             ]
             routed = runtime_agents.resolve_provider(agent)

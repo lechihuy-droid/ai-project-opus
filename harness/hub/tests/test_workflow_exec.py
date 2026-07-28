@@ -6,7 +6,7 @@ from typing import Any, Iterator
 import pytest
 
 import config
-from services import runtime_agents, runtime_checkpoint, runtime_interrupts, runtime_state, workflow_exec
+from services import runtime_agents, runtime_checkpoint, runtime_interrupts, runtime_state, skill_library, workflow_exec
 from services.providers import registry
 
 
@@ -65,6 +65,40 @@ def test_two_node_chain_renders_output_and_checkpoints(runtime_tmp: Path, monkey
     assert any("event: done" in event for event in events)
     checkpoints = runtime_checkpoint.list_checkpoints(state["thread_id"])
     assert {item["reason"] for item in checkpoints} >= {"node:a", "node:b"}
+
+
+def test_agent_skills_are_appended_to_provider_system_instructions(runtime_tmp: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    fake = FakeProvider([[{"type": "done", "usage": {}}]])
+    monkeypatch.setitem(registry, "fake", fake)
+    monkeypatch.setattr(skill_library, "read_skill_content", lambda name: {"first": "First rules.", "second": "Second rules."}[name])
+    ir = [{"id": "a", "agent": _agent() | {"skills": ["first", "second"]}, "prompt": "A", "gate": "none", "order": 0}]
+
+    list(workflow_exec.run_workflow(ir, stop={"max_nodes": 1, "max_seconds": 60}, objective="ship", run_id=_run()))
+
+    assert fake.messages[0][0]["content"] == "SYSTEM INSTRUCTIONS:\nReview carefully.\n\n[Activated skills]\nFirst rules.\n\n---\n\nSecond rules."
+
+
+def test_agent_without_skills_keeps_existing_system_instructions(runtime_tmp: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    fake = FakeProvider([[{"type": "done", "usage": {}}]])
+    monkeypatch.setitem(registry, "fake", fake)
+    monkeypatch.setattr(skill_library, "read_skill_content", lambda _name: (_ for _ in ()).throw(AssertionError("unexpected skill read")))
+    ir = [{"id": "a", "agent": _agent(), "prompt": "A", "gate": "none", "order": 0}]
+
+    list(workflow_exec.run_workflow(ir, stop={"max_nodes": 1, "max_seconds": 60}, objective="ship", run_id=_run()))
+
+    assert fake.messages[0][0]["content"] == "SYSTEM INSTRUCTIONS:\nReview carefully."
+
+
+def test_missing_agent_skill_warns_and_run_continues(runtime_tmp: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    fake = FakeProvider([[{"type": "delta", "text": "ok"}, {"type": "done", "usage": {}}]])
+    monkeypatch.setitem(registry, "fake", fake)
+    monkeypatch.setattr(skill_library, "read_skill_content", lambda _name: (_ for _ in ()).throw(FileNotFoundError("gone")))
+    ir = [{"id": "a", "agent": _agent() | {"skills": ["gone"]}, "prompt": "A", "gate": "none", "order": 0}]
+
+    events = list(workflow_exec.run_workflow(ir, stop={"max_nodes": 1, "max_seconds": 60}, objective="ship", run_id=_run()))
+
+    assert fake.messages[0][0]["content"] == "SYSTEM INSTRUCTIONS:\nReview carefully."
+    assert any("event: warning" in event and "Skill unavailable and skipped: gone" in event for event in events)
 
 
 def test_model_class_routes_to_fake_provider_without_changing_budget(runtime_tmp: Path, monkeypatch: pytest.MonkeyPatch) -> None:
