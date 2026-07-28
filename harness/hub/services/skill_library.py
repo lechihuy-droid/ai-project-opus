@@ -21,6 +21,7 @@ except ImportError:  # pragma: no cover - optional dependency not installed
 
 
 CACHE_TTL_SECONDS = 30.0
+SKILL_PROMPT_MAX_CHARS = 12000
 _SKILL_TOOL_NAME = "Skill"
 _TELEMETRY_WINDOW_DAYS = 30
 _BOM = "\ufeff"
@@ -376,6 +377,48 @@ def read_skill_content(skill_name: str) -> str:
             except OSError as exc:
                 raise FileNotFoundError(f"Skill not readable: {skill_name}") from exc
     raise FileNotFoundError(f"Skill not found: {skill_name}")
+
+
+def load_skill_prompt_contents(
+    skill_names: list[str], *, skip_missing: bool = False
+) -> tuple[list[str], bool, list[str]]:
+    """Load skill instructions within the shared prompt budget.
+
+    Missing skills are returned for callers that can safely continue with a
+    stale profile reference. Interactive chat keeps its existing strict
+    validation before calling this helper.
+    """
+    contents: list[str] = []
+    missing: list[str] = []
+    used = 0
+    truncated = False
+    for name in skill_names:
+        try:
+            content = read_skill_content(name)
+        except FileNotFoundError:
+            if not skip_missing:
+                raise
+            missing.append(name)
+            continue
+        remaining = SKILL_PROMPT_MAX_CHARS - used
+        if remaining <= 0:
+            truncated = True
+            break
+        if len(content) > remaining:
+            contents.append(content[:remaining])
+            truncated = True
+            break
+        contents.append(content)
+        used += len(content)
+    return contents, truncated, missing
+
+
+def system_prompt_with_skills(system_prompt: str | None, contents: list[str]) -> str | None:
+    """Append activated skill instructions in the common chat/workflow format."""
+    if not contents:
+        return system_prompt
+    skills_prompt = "\n\n[Activated skills]\n" + "\n\n---\n\n".join(contents)
+    return f"{system_prompt}{skills_prompt}" if system_prompt else skills_prompt.removeprefix("\n\n")
 
 
 def drift() -> list[dict[str, Any]]:

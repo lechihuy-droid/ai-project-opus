@@ -118,7 +118,7 @@ def _chat_messages(value: object) -> list[dict[str, str]]:
     return messages
 
 
-CHAT_SKILL_MAX_CHARS = 12000
+CHAT_SKILL_MAX_CHARS = skill_library.SKILL_PROMPT_MAX_CHARS
 
 
 def _chat_skills(value: object) -> tuple[list[str], bool]:
@@ -133,29 +133,12 @@ def _chat_skills(value: object) -> tuple[list[str], bool]:
     if unknown is not None:
         raise HTTPException(status_code=400, detail=f"Unknown skill: {unknown}")
 
-    contents: list[str] = []
-    used = 0
-    truncated = False
-    for name in requested:
-        content = skill_library.read_skill_content(name)
-        remaining = CHAT_SKILL_MAX_CHARS - used
-        if remaining <= 0:
-            truncated = True
-            break
-        if len(content) > remaining:
-            contents.append(content[:remaining])
-            truncated = True
-            break
-        contents.append(content)
-        used += len(content)
+    contents, truncated, _missing = skill_library.load_skill_prompt_contents(requested)
     return contents, truncated
 
 
 def _system_prompt_with_skills(system_prompt: str | None, contents: list[str]) -> str | None:
-    if not contents:
-        return system_prompt
-    skills_prompt = "\n\n[Activated skills]\n" + "\n\n---\n\n".join(contents)
-    return f"{system_prompt}{skills_prompt}" if system_prompt else skills_prompt.removeprefix("\n\n")
+    return skill_library.system_prompt_with_skills(system_prompt, contents)
 
 
 @app.get("/")
