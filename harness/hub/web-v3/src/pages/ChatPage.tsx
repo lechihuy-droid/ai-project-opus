@@ -17,7 +17,7 @@ type Provider = { id: string; available: boolean; version?: string; detail: stri
 type Catalog = { id: string; shortName?: string; category?: string; label?: string }
 type Skill = { id: string; name?: string; title?: string; description?: string }
 type ActiveSkill = { id: string; scope: 'turn' | 'window' }
-type Message = { role: 'user' | 'assistant' | 'system'; content: string; reasoning?: string; usage?: Record<string, unknown>; streaming?: boolean }
+type Message = { id?: string; role: 'user' | 'assistant' | 'system'; content: string; reasoning?: string; usage?: Record<string, unknown>; streaming?: boolean }
 type Chat = { id: string; title: string; provider: string; model: string; agentId?: string; cliSessionId?: string; messages: Message[]; notice?: string; updatedAt: number }
 type PinnedMessage = { id: string; content: string }
 type Instruction = { id: string; label: string; active: boolean }
@@ -90,6 +90,7 @@ export default function ChatPage() {
   const [showExport, setShowExport] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const controllers = useRef(new Map<string, AbortController>())
+  const streamingMessageIds = useRef(new Map<string, string>())
   const toastTimer = useRef<number | undefined>(undefined)
 
   const activeChat = chats.find(c => c.id === activeChatId) ?? chats[0]
@@ -115,7 +116,7 @@ export default function ChatPage() {
 
   const showToast = (text: string) => { setToast(text); window.clearTimeout(toastTimer.current); toastTimer.current = window.setTimeout(() => setToast(null), 2400) }
   const patch = (id: string, change: Partial<Chat>) => setChats(current => current.map(c => c.id === id ? { ...c, ...change, updatedAt: Date.now() } : c))
-  const patchLast = (id: string, change: Partial<Message> | ((m: Message) => Partial<Message>)) => setChats(current => current.map(c => c.id === id ? { ...c, messages: c.messages.map((m, n) => n === c.messages.length - 1 ? { ...m, ...(typeof change === 'function' ? change(m) : change) } : m) } : c))
+  const patchLast = (id: string, change: Partial<Message> | ((m: Message) => Partial<Message>)) => { const messageId = streamingMessageIds.current.get(id); if (!messageId) return; setChats(current => current.map(c => c.id === id ? { ...c, messages: c.messages.map(m => m.id === messageId ? { ...m, ...(typeof change === 'function' ? change(m) : change) } : m) } : c)) }
 
   const newChat = () => { const chat = makeChat(activeChat.provider, activeChat.provider === 'nvidia' ? (activeChat.model || defaultModel) : ''); setChats(current => [chat, ...current]); setActiveChatId(chat.id); setLeftTab('chats'); setPromptText('') }
   const selectChat = (id: string) => { setActiveChatId(id); setLeftTab('chats') }
@@ -130,16 +131,17 @@ export default function ChatPage() {
 
   const send = async (text: string, selectedSkills = activeSkills) => {
     const trimmed = text.trim(); if (!trimmed) return
-    const chat = chats.find(c => c.id === activeChatId); if (!chat) return
+    const chat = chats.find(c => c.id === activeChatId); if (!chat || controllers.current.has(activeChatId)) return
     const artifactContext = artifactContextEnabled && activeArtifact ? `[Artifact đang mở]\n${activeArtifact.content}` : ''
     const fingerprint = `${sharedContext.text}\n${sharedContext.pinned.map(i => i.id).join('|')}\n${activeInstructionText(sharedContext).join('|')}\n${artifactContext}`
     const shouldInject = Boolean(sharedText(sharedContext) || artifactContext) && (!chat.messages.some(m => m.role === 'user') || injectedContext[chat.id] !== fingerprint)
     const prompt = promptFor(sharedContext, trimmed, shouldInject, artifactContext)
     const title = chat.messages.length === 0 ? trimmed.replace(/\s+/g, ' ').slice(0, 40) : chat.title
     const user: Message = { role: 'user', content: prompt }
-    const assistant: Message = { role: 'assistant', content: '', reasoning: '', streaming: true }
+    const assistantId = crypto.randomUUID()
+    const assistant: Message = { id: assistantId, role: 'assistant', content: '', reasoning: '', streaming: true }
     const history = [...chat.messages, user]
-    patch(chat.id, { messages: [...history, assistant], title })
+    patch(chat.id, { messages: [...history, assistant], title }); streamingMessageIds.current.set(chat.id, assistantId)
     const controller = new AbortController(); controllers.current.set(chat.id, controller)
     const providerInfo = providers.find(p => p.id === chat.provider)
     if (providerInfo && !providerInfo.available) { patchLast(chat.id, { role: 'system', content: providerInfo.detail || 'Provider không khả dụng', streaming: false }); controllers.current.delete(chat.id); return }
@@ -160,9 +162,9 @@ export default function ChatPage() {
         if (item.event === 'error') patchLast(chat.id, { role: 'system', content: String(data.message ?? 'Chat stream error'), streaming: false })
       }
     } catch (error) { if ((error as Error).name !== 'AbortError') patchLast(chat.id, { role: 'system', content: (error as Error).message, streaming: false }) }
-    finally { patchLast(chat.id, { streaming: false }); controllers.current.delete(chat.id) }
+    finally { patchLast(chat.id, { streaming: false }); controllers.current.delete(chat.id); streamingMessageIds.current.delete(chat.id) }
   }
-  const submitPrompt = () => { const text = promptText.trim(); if (!text) return; const selected = activeSkills; setPromptText(''); void send(text, selected); if (selected.some(s => s.scope === 'turn')) setActiveSkills(c => c.filter(s => s.scope !== 'turn')) }
+  const submitPrompt = () => { const text = promptText.trim(); if (!text || controllers.current.has(activeChatId)) return; const selected = activeSkills; setPromptText(''); void send(text, selected); if (selected.some(s => s.scope === 'turn')) setActiveSkills(c => c.filter(s => s.scope !== 'turn')) }
   const stop = () => controllers.current.get(activeChatId)?.abort()
   const retry = () => { const prompt = [...activeChat.messages].reverse().find(m => m.role === 'user')?.content; if (prompt) void send(prompt) }
   const streaming = Boolean(activeChat.messages.at(-1)?.streaming)
@@ -204,7 +206,7 @@ export default function ChatPage() {
         {activeSkills.length > 0 && <div className="flex flex-wrap gap-space-2 px-space-4 pt-space-2">{activeSkills.map(skill => <Chip key={skill.id} onRemove={() => removeSkill(skill.id)}>#{skill.id}</Chip>)}</div>}
         {!isEmptyPhase && activeArtifact && <div className="flex flex-wrap gap-space-2 px-space-4 pt-space-2">{['Phân tích tài liệu', 'Tóm tắt', 'Rút gọn', 'Viết lại', 'Tạo slide', 'Hỏi về dữ liệu'].map(action => <button key={action} onClick={() => void send(`${action} tài liệu đang mở`)} className="shrink-0 whitespace-nowrap rounded-full border border-border-strong bg-surface px-space-3 py-[6px] text-caption text-secondary transition-colors hover:border-accent hover:text-accent">{action}</button>)}</div>}
         {!isEmptyPhase && skills.length > 0 && <div className="flex flex-wrap gap-space-2 px-space-4 pt-space-2">{skills.slice(0, 6).map(s => <button key={skillName(s)} onClick={() => activateSkill(skillName(s))} className="shrink-0 whitespace-nowrap rounded-full border border-border-strong bg-surface px-space-3 py-[6px] text-caption text-secondary transition-colors hover:border-accent hover:text-accent">#{skillName(s)}</button>)}</div>}
-        <Composer value={promptText} onChange={changePrompt} onSubmit={submitPrompt} onStop={stop} streaming={streaming}
+        <Composer value={promptText} onChange={changePrompt} onSubmit={() => { if (!streaming) submitPrompt() }} onStop={stop} streaming={streaming}
           placeholder={`Nhắn ${activeChat.provider}…`} skillMatches={skillMatches.map(skillName)} onPickSkill={name => { activateSkill(name); setPromptText('') }}
           onAttach={() => showToast('Đính kèm: backend chưa nối')} />
       </div>
