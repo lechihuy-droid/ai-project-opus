@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import hashlib
 import uuid
+from datetime import UTC, datetime
 from typing import Any
 
 from services import audit, runtime_state
@@ -37,7 +38,22 @@ def _write_jsonl(name: str, rows: list[dict[str, Any]]) -> None:
 
 
 def list_memory() -> list[dict[str, Any]]:
-    return _read_jsonl("memory.jsonl")
+    return [row for row in _read_jsonl("memory.jsonl") if _usable(row)]
+
+
+def _usable(row: dict[str, Any]) -> bool:
+    if row.get("revoked_at"):
+        return False
+    value = (row.get("provenance") or {}).get("expires_at")
+    if not isinstance(value, str):
+        return False
+    try:
+        expires_at = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return False
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=UTC)
+    return expires_at.astimezone(UTC) > datetime.now(UTC)
 
 
 def list_candidates() -> list[dict[str, Any]]:
@@ -99,8 +115,9 @@ def _transition_candidate(candidate_id: str, status: str, acceptance: dict[str, 
 
 
 def accept_candidate(candidate_id: str, acceptance: dict[str, Any] | None = None) -> dict[str, Any]:
-    default = {"accepted_by": "local_user", "reason": "accepted through local control plane", "expires_at": "9999-12-31T23:59:59Z"}
-    return _transition_candidate(candidate_id, "accepted", {**default, **(acceptance or {})})
+    if not isinstance(acceptance, dict) or not str(acceptance.get("accepted_by") or "").strip() or not str(acceptance.get("reason") or "").strip():
+        raise ValueError("Memory acceptance requires reviewer and rationale")
+    return _transition_candidate(candidate_id, "accepted", acceptance)
 
 
 def reject_candidate(candidate_id: str) -> dict[str, Any]:

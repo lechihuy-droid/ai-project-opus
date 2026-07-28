@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 
 import config
 import server
-from services import execution, hooks, runtime_agents, runtime_state
+from services import execution, gitjobs, hooks, runtime_agents, runtime_state
 
 
 @pytest.fixture()
@@ -57,6 +57,17 @@ def test_hooks_api_rejects_invalid_and_missing(client: TestClient, hooks_tmp: Pa
     assert client.post("/api/hooks", json=hook_payload() | {"event": "invented"}).status_code == 400
     assert client.put("/api/hooks/missing", json=hook_payload()).status_code == 404
     assert client.delete("/api/hooks/missing").status_code == 404
+
+
+def test_shell_hook_uses_gitjob_path_and_receipt(hooks_tmp: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    hook = hooks.create(hook_payload() | {"action": {"type": "shell", "command": ["echo", "safe"]}})
+    created: dict[str, object] = {"id": "j-20260729-hook", "approval_receipt": {"binding_hash": "receipt"}}
+    monkeypatch.setattr(gitjobs, "create_hook_job", lambda command, event: created | {"command": command, "event": event})
+    monkeypatch.setattr(gitjobs, "approve", lambda job_id: created)
+    hooks._run(hook, {"type": "done", "run_id": "run-test"})
+    record = hooks.log(hook["id"])[0]
+    assert record["status"] == "succeeded"
+    assert "j-20260729-hook" in record["message"] and "receipt" in record["message"]
 
 
 def make_run(runtime_tmp: Path, agent_id: str = "agent-a") -> str:

@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 import config
-from services import runtime_state
+from services import gitjobs, runtime_state
 
 
 _FILE = config.RUNTIME_STORE_DIR / "hooks.json"
@@ -39,7 +39,11 @@ def _validate(payload: dict[str, Any], old: dict[str, Any] | None = None) -> dic
     if not isinstance(row.get("trigger_point"), str): raise ValueError("trigger_point is required")
     if not isinstance(row.get("enabled"), bool): raise ValueError("enabled must be boolean")
     action = row.get("action")
-    if not isinstance(action, dict) or action.get("type") not in {"webhook", "append_log_file"}: raise ValueError("action must be webhook or append_log_file")
+    if not isinstance(action, dict) or action.get("type") not in {"webhook", "append_log_file", "shell"}: raise ValueError("action must be webhook, append_log_file or shell")
+    if action["type"] == "shell":
+        command = action.get("command")
+        if not isinstance(command, list) or not command or not all(isinstance(part, str) and part for part in command): raise ValueError("action.command must be a non-empty command array")
+        return row
     key = "url" if action["type"] == "webhook" else "path"
     if not isinstance(action.get(key), str) or not action[key]: raise ValueError(f"action.{key} is required")
     return row
@@ -87,9 +91,13 @@ def _run(hook: dict[str, Any], event: dict[str, Any]) -> None:
         if action["type"] == "webhook":
             request = urllib.request.Request(action["url"], data=json.dumps(event).encode(), headers={"Content-Type": "application/json"}, method="POST")
             with urllib.request.urlopen(request, timeout=10): pass
-        else:
+        elif action["type"] == "append_log_file":
             path = Path(action["path"]); path.parent.mkdir(parents=True, exist_ok=True)
             with path.open("a", encoding="utf-8") as handle: handle.write(json.dumps(event, ensure_ascii=False) + "\n")
+        else:
+            job = gitjobs.create_hook_job(list(action["command"]), event)
+            launched = gitjobs.approve(str(job["id"]))
+            message = f"job_id={launched['id']}; receipt={launched['approval_receipt']['binding_hash']}"
     except Exception as exc: status, message = "failed", str(exc)
     record = {"hook_id": hook["id"], "event": event.get("type"), "run_id": event.get("run_id"), "ts": runtime_state.now_iso(), "status": status, "message": message}
     with _LOCK:

@@ -284,7 +284,7 @@ def test_runtime_skills_memory_and_guardrail_apis(runtime_tmp: Path, monkeypatch
     candidates = client.get("/api/memory/candidates")
     assert candidates.status_code == 200
     assert candidates.json()[0]["id"] == candidate["id"]
-    accepted = client.post(f"/api/memory/candidates/{candidate['id']}/accept")
+    accepted = client.post(f"/api/memory/candidates/{candidate['id']}/accept", json={"accepted_by": "reviewer", "reason": "useful", "expires_at": "2030-01-01T00:00:00Z"})
     assert accepted.status_code == 200
     assert accepted.json()["status"] == "accepted"
     assert client.get("/api/memory").json()[0]["candidate_id"] == candidate["id"]
