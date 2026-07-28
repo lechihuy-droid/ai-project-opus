@@ -11,7 +11,8 @@ import { asProviderId, Button, Chip, IconButton, Popover, providerIds, ProviderD
 // A single active chat is the primary shape; the model picker, context, artifact
 // panel, version history and export all hang off it. Chat, models, providers,
 // agents, skills and artifact version history are wired to the real backend;
-// Files and PDF/share export have no backend yet and are marked TODO(backend).
+// Files, artifacts and comments are backed by the server too; export offers only
+// the formats it can actually produce.
 
 type Provider = { id: string; available: boolean; version?: string; detail: string; capabilities?: { stream?: boolean; resume?: boolean; models?: number } }
 type Catalog = { id: string; shortName?: string; category?: string; label?: string }
