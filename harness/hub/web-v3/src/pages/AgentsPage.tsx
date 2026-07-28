@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ApiError, api } from '../lib/api'
-import { Button, IconButton, Input, Popover, Select, Status, Textarea } from '../lib/ui'
+import { Button, IconButton, Input, Popover, resolveProvider, Select, Status, Textarea } from '../lib/ui'
 
 type Provider = { id: string; available: boolean; detail: string }
 type Agent = { id: string; provider: string; model?: string; system_prompt: string; skills: string[]; permission: 'read_only' | 'workspace_write'; risk_tier: string; budget: { seconds: number; max_calls: number } }
@@ -12,8 +12,7 @@ export default function AgentsPage() {
   useEffect(load, [])
   const visible = useMemo(() => agents.filter(row => `${row.id} ${row.system_prompt}`.toLowerCase().includes(query.toLowerCase())).filter(row => provider === 'all' || row.provider === provider).sort((a, b) => sort === 'provider' ? a.provider.localeCompare(b.provider) : a.id.localeCompare(b.id)), [agents, query, provider, sort]); const pages = Math.ceil(visible.length / 12); const rows = visible.slice(page * 12, page * 12 + 12)
   useEffect(() => setPage(0), [query, provider, sort]); useEffect(() => setPage(current => Math.min(current, Math.max(0, pages - 1))), [pages])
-  const resolveProvider = (value: string) => classes[value]?.provider ?? value
-  const status = (row: Agent) => { const id = resolveProvider(row.provider); return providers.find(item => item.id === id)?.available ? { kind: 'ready' as const, label: 'Sẵn sàng' } : { kind: 'setup-required' as const, label: providers.some(item => item.id === id) ? 'Chưa cấu hình' : '—' } }
+  const status = (row: Agent) => { const id = resolveProvider(row.provider, classes); return providers.find(item => item.id === id)?.available ? { kind: 'ready' as const, label: 'Sẵn sàng' } : { kind: 'setup-required' as const, label: providers.some(item => item.id === id) ? 'Chưa cấu hình' : '—' } }
   const update = (change: Partial<Agent>) => setAgent(current => ({ ...current, ...change }))
   const choose = (row: Agent) => { setAgent({ ...row, skills: [...row.skills], budget: { ...row.budget } }); setLoadedAgentId(row.id); setTab('Overview'); setNotice('') }
   const save = async () => { setError(''); if (agents.some(row => row.id === agent.id) && loadedAgentId !== agent.id && !window.confirm(`Đã có agent "${agent.id}" — ghi đè?`)) return; try { const result = await api<Agent>('/api/agents', { method: 'POST', body: JSON.stringify(agent) }); setAgents(current => [...current.filter(row => row.id !== result.id), result].sort((a, b) => a.id.localeCompare(b.id))); setAgent(result); setLoadedAgentId(result.id); setNotice('Đã lưu agent.') } catch (e) { setError(e instanceof ApiError ? e.message : 'Không thể lưu agent') } }

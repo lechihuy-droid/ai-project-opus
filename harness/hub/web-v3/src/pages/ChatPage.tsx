@@ -3,7 +3,7 @@ import { api, apiRequest } from '../lib/api'
 import { parseSse } from '../lib/sse'
 import { Markdown } from '../lib/markdown'
 import { artifactSummary, isArtifact } from '../lib/artifact'
-import { Button, Chip, IconButton, Popover, ProviderDot, Textarea } from '../lib/ui'
+import { asProviderId, Button, Chip, IconButton, Popover, providerIds, ProviderDot, Textarea } from '../lib/ui'
 
 // ── AI Chat Workspace ─────────────────────────────────────────────────────────
 // Three-panel workspace (imported from the "AI Workspace" design system, mapped to
@@ -25,9 +25,7 @@ type SharedContextState = { text: string; pinned: PinnedMessage[]; instructions:
 
 const chatsKey = 'hub-v3-chats'
 const sharedContextKey = 'hub-v3-shared-context'
-const providerKinds = ['claude', 'codex', 'nvidia'] as const
-type ProviderKind = (typeof providerKinds)[number]
-const asKind = (id: string): ProviderKind => (providerKinds as readonly string[]).includes(id) ? id as ProviderKind : 'nvidia'
+const asKind = asProviderId
 
 // Honest, provider-level capability copy — no fabricated per-model speed/cost ratings.
 const providerRole: Record<string, { role: string; note: string }> = {
@@ -251,7 +249,7 @@ function ModelSelector({ chat, catalog, providers, defaultModel, triggerLabel, o
   chat: Chat; catalog: Catalog[]; providers: Provider[]; defaultModel: string; triggerLabel: string; onChoose: (provider: string, model: string) => void
 }) {
   const grouped = useMemo(() => catalog.reduce<Record<string, Catalog[]>>((all, m) => { const key = m.category ?? 'Models'; (all[key] ??= []).push(m); return all }, {}), [catalog])
-  const cards: Provider[] = providerKinds.map(id => providers.find(p => p.id === id) ?? { id, available: false, detail: 'không khả dụng' })
+  const cards: Provider[] = providerIds.map(id => providers.find(p => p.id === id) ?? { id, available: false, detail: 'không khả dụng' })
   return <Popover align="end" aria-label="Chọn model" triggerClassName="max-w-[260px]" className="w-[340px] max-h-[70vh] overflow-y-auto"
     label={<span className="flex min-w-0 items-center gap-[7px]"><span className="h-[7px] w-[7px] shrink-0 rounded-full bg-accent" /><span className="truncate text-label">{triggerLabel}</span><span className="shrink-0 text-caption text-muted">▾</span></span>}>
     {(close: () => void) => <div className="space-y-space-1">
