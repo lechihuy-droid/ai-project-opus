@@ -384,6 +384,7 @@ MODEL_CLASS_ROUTING: dict[str, dict[str, Any]] = {
 
 # Skill library sources (read + deploy targets)
 SKILL_SOURCES: dict[str, Path] = {
+    "hub_builtin": HUB_DIR / "skills",
     "claude_user": Path.home() / ".claude" / "skills",
     "claude_project": ROOT / ".claude" / "skills",
     "codex_user": Path.home() / ".codex" / "skills",
