@@ -17,8 +17,10 @@ type Provider = { id: string; available: boolean; version?: string; detail: stri
 type Catalog = { id: string; shortName?: string; category?: string; label?: string }
 type Skill = { id: string; name?: string; title?: string; description?: string }
 type ActiveSkill = { id: string; scope: 'turn' | 'window' }
-type Message = { id?: string; role: 'user' | 'assistant' | 'system'; content: string; reasoning?: string; usage?: Record<string, unknown>; streaming?: boolean }
+type Message = { id?: string; role: 'user' | 'assistant' | 'system'; content: string; reasoning?: string; usage?: Record<string, unknown>; streaming?: boolean; artifactId?: string }
 type Chat = { id: string; title: string; provider: string; model: string; agentId?: string; cliSessionId?: string; messages: Message[]; notice?: string; updatedAt: number }
+type ChatFile = { name: string; size: number; updated_at: number }
+type ArtifactComment = { id: string; quoted_text: string; author: string; body: string; created_at: string; resolved: boolean }
 type PinnedMessage = { id: string; content: string }
 type Instruction = { id: string; label: string; active: boolean }
 type SharedContextState = { text: string; pinned: PinnedMessage[]; instructions: Instruction[] }
@@ -88,6 +90,9 @@ export default function ChatPage() {
   const [showExport, setShowExport] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const [serverArtifactCount, setServerArtifactCount] = useState(0)
+  const [chatFiles, setChatFiles] = useState<ChatFile[]>([])
+  const [comments, setComments] = useState<ArtifactComment[]>([])
+  const fileInput = useRef<HTMLInputElement>(null)
   const controllers = useRef(new Map<string, AbortController>())
   const streamingMessageIds = useRef(new Map<string, string>())
   const toastTimer = useRef<number | undefined>(undefined)
@@ -113,6 +118,8 @@ export default function ChatPage() {
     }).catch(() => undefined)
   }, [])
   useEffect(() => { void api<{ artifacts: { id: string }[] }>('/api/artifacts').then(data => { localStorage.setItem('hub-v3-artifacts', JSON.stringify(data.artifacts)); setServerArtifactCount(data.artifacts.length) }).catch(() => undefined) }, [])
+  useEffect(() => { void api<ChatFile[]>(`/api/chats/${encodeURIComponent(activeChatId)}/files`).then(setChatFiles).catch(() => setChatFiles([])) }, [activeChatId])
+  useEffect(() => { if (!activeArtifact?.artifactId) { setComments([]); return } void api<{ comments: ArtifactComment[] }>(`/api/artifacts/${encodeURIComponent(activeArtifact.artifactId)}/comments`).then(data => setComments(data.comments)).catch(() => setComments([])) }, [activeArtifact?.artifactId])
 
   const showToast = (text: string) => { setToast(text); window.clearTimeout(toastTimer.current); toastTimer.current = window.setTimeout(() => setToast(null), 2400) }
   const patch = (id: string, change: Partial<Chat>) => setChats(current => current.map(c => c.id === id ? { ...c, ...change, updatedAt: Date.now() } : c))
@@ -149,7 +156,7 @@ export default function ChatPage() {
     // NVIDIA gets full history; CLI providers resume with only the new message when a session exists.
     const messages = (chat.provider !== 'nvidia' && chat.cliSessionId ? [user] : history).filter(m => m.role !== 'system')
     try {
-      const response = await apiRequest('/api/chat', { method: 'POST', body: JSON.stringify({ provider: chat.provider, model: chat.model || undefined, agent_id: chat.agentId, messages, session_id: chat.cliSessionId, skills: selectedSkills.map(s => s.id) }), signal: controller.signal })
+      const response = await apiRequest('/api/chat', { method: 'POST', body: JSON.stringify({ provider: chat.provider, model: chat.model || undefined, agent_id: chat.agentId, messages, session_id: chat.cliSessionId, chat_id: chat.id, skills: selectedSkills.map(s => s.id) }), signal: controller.signal })
       if (!response.body) throw new Error('Chat stream unavailable')
       for await (const item of parseSse(response.body)) {
         const data = item.data as Record<string, unknown>
@@ -160,7 +167,7 @@ export default function ChatPage() {
           patchLast(chat.id, { streaming: false, usage: data.usage as Record<string, unknown> })
           patch(chat.id, { cliSessionId: typeof data.session_id === 'string' ? data.session_id : chat.cliSessionId, model: typeof data.model === 'string' && chat.provider === 'nvidia' ? data.model : chat.model, notice: typeof data.skill_notice === 'string' ? data.skill_notice : chat.notice })
           const content = assistantContent
-          if (content && isArtifact({ role: 'assistant', content })) void api<{ id: string }>('/api/artifacts', { method: 'POST', body: JSON.stringify({ title: artifactSummary(content).title, content, source: 'chat' }) }).then(() => api<{ artifacts: { id: string }[] }>('/api/artifacts')).then(data => { localStorage.setItem('hub-v3-artifacts', JSON.stringify(data.artifacts)); setServerArtifactCount(data.artifacts.length) }).catch(() => undefined)
+          if (content && isArtifact({ role: 'assistant', content })) void api<{ id: string }>('/api/artifacts', { method: 'POST', body: JSON.stringify({ title: artifactSummary(content).title, content, source: 'chat' }) }).then(saved => { patchLast(chat.id, { artifactId: saved.id }); return api<{ artifacts: { id: string }[] }>('/api/artifacts') }).then(data => { localStorage.setItem('hub-v3-artifacts', JSON.stringify(data.artifacts)); setServerArtifactCount(data.artifacts.length) }).catch(() => undefined)
         }
         if (item.event === 'error') patchLast(chat.id, { role: 'system', content: String(data.message ?? 'Chat stream error'), streaming: false })
       }
@@ -178,6 +185,13 @@ export default function ChatPage() {
   // Section-level "edit" is a real backend round-trip: it sends a scoped follow-up prompt.
   const editSection = (heading: string, action: string) => { void send(`${action} phần "${heading}" trong artifact vừa tạo. Chỉ trả lại phần đó.`); showToast(`${action} · ${heading}`) }
 
+  const loadFiles = () => void api<ChatFile[]>(`/api/chats/${encodeURIComponent(activeChatId)}/files`).then(setChatFiles).catch(() => setChatFiles([]))
+  const uploadFile = async (file: File) => { const form = new FormData(); form.append('file', file); try { await api(`/api/chats/${encodeURIComponent(activeChatId)}/files`, { method: 'POST', body: form }); loadFiles(); setLeftTab('files'); showToast('Đã tải file lên') } catch (error) { showToast(error instanceof Error ? error.message : 'Không thể tải file lên') } }
+  const ensureArtifact = async (message: Message) => { if (message.artifactId) return message.artifactId; const saved = await api<{ id: string }>('/api/artifacts', { method: 'POST', body: JSON.stringify({ title: artifactSummary(message.content).title, content: message.content, source: 'chat' }) }); setChats(current => current.map(chat => chat.id !== activeChatId ? chat : { ...chat, messages: chat.messages.map(item => item === message ? { ...item, artifactId: saved.id } : item) })); return saved.id }
+  const addComment = async (text: string) => { if (!activeArtifact) return; const body = window.prompt('Nội dung bình luận'); if (!body?.trim()) return; try { const artifactId = await ensureArtifact(activeArtifact); const comment = await api<ArtifactComment>(`/api/artifacts/${encodeURIComponent(artifactId)}/comments`, { method: 'POST', body: JSON.stringify({ quoted_text: text, author: 'Bạn', body }) }); setComments(current => [...current, comment]); showToast('Đã thêm bình luận') } catch (error) { showToast(error instanceof Error ? error.message : 'Không thể thêm bình luận') } }
+  const popoutArtifact = async () => { if (!activeArtifact) return; try { window.location.hash = `#/artifacts/${encodeURIComponent(await ensureArtifact(activeArtifact))}` } catch (error) { showToast(error instanceof Error ? error.message : 'Không thể mở artifact') } }
+  const setCommentResolved = async (comment: ArtifactComment, resolved: boolean) => { if (!activeArtifact?.artifactId) return; try { const saved = await api<ArtifactComment>(`/api/artifacts/${encodeURIComponent(activeArtifact.artifactId)}/comments/${encodeURIComponent(comment.id)}`, { method: 'PATCH', body: JSON.stringify({ resolved }) }); setComments(current => current.map(item => item.id === saved.id ? saved : item)) } catch (error) { showToast(error instanceof Error ? error.message : 'Không thể cập nhật bình luận') } }
+  const deleteComment = async (comment: ArtifactComment) => { if (!activeArtifact?.artifactId) return; try { await api(`/api/artifacts/${encodeURIComponent(activeArtifact.artifactId)}/comments/${encodeURIComponent(comment.id)}`, { method: 'DELETE' }); setComments(current => current.filter(item => item.id !== comment.id)) } catch (error) { showToast(error instanceof Error ? error.message : 'Không thể xóa bình luận') } }
   const contextEstimate = estimateTokens([sharedText(sharedContext), artifactContextEnabled && activeArtifact?.content].filter(Boolean).join('\n\n'))
   const contextTooLarge = contextEstimate > 8000
   const contextSummary = `Bối cảnh ~${formatTokens(contextEstimate)} token · Ghim ${sharedContext.pinned.length}/10`
@@ -187,7 +201,7 @@ export default function ChatPage() {
       onChooseModel={chooseModel} exportDisabled={!activeArtifact} onExport={() => setShowExport(true)} onSettings={() => { window.location.hash = '#/settings' }} onToast={showToast} />
     <div className={`cw-body ${artifactFocus ? 'artifact-focus' : ''}`}>
       <WorkspaceSidebar tab={leftTab} onTab={setLeftTab} chats={chats} activeChatId={activeChatId} onNewChat={newChat} onSelectChat={selectChat}
-        artifacts={artifactMessages} activeArtifactIndex={activeArtifactIndex} onSelectArtifact={i => setActiveArtifactIndex(i)} onUploadFile={() => showToast('Tải file: backend chưa nối')} />
+        artifacts={artifactMessages} activeArtifactIndex={activeArtifactIndex} onSelectArtifact={i => setActiveArtifactIndex(i)} files={chatFiles} onUploadFile={() => fileInput.current?.click()} onDeleteFile={async name => { await api(`/api/chats/${encodeURIComponent(activeChatId)}/files/${encodeURIComponent(name)}`, { method: 'DELETE' }); loadFiles() }} />
 
       <div className="cw-center">
         {/* Context bar only once a conversation exists; the composer is always present. */}
@@ -211,12 +225,12 @@ export default function ChatPage() {
         {!isEmptyPhase && skills.length > 0 && <div className="flex flex-wrap gap-space-2 px-space-4 pt-space-2">{skills.slice(0, 6).map(s => <button key={skillName(s)} onClick={() => activateSkill(skillName(s))} className="shrink-0 whitespace-nowrap rounded-full border border-border-strong bg-surface px-space-3 py-[6px] text-caption text-secondary transition-colors hover:border-accent hover:text-accent">#{skillName(s)}</button>)}</div>}
         <Composer value={promptText} onChange={changePrompt} onSubmit={() => { if (!streaming) submitPrompt() }} onStop={stop} streaming={streaming}
           placeholder={`Nhắn ${activeChat.provider}…`} skillMatches={skillMatches.map(skillName)} onPickSkill={name => { activateSkill(name); setPromptText('') }}
-          onAttach={() => showToast('Đính kèm: backend chưa nối')} />
+          onAttach={() => fileInput.current?.click()} />
       </div>
 
       <div className="cw-artifact">
         {activeArtifact
-          ? <ArtifactPanel message={activeArtifact} focused={artifactFocus} onFocus={() => setArtifactFocus(v => !v)} onPopout={() => showToast('Pop-out: chưa có route độc lập cho artifact — cần thêm sau')} onHistory={() => setShowVersionHistory(true)} onExport={() => setShowExport(true)} onCopy={() => { void navigator.clipboard?.writeText(activeArtifact.content); showToast('Đã copy') }} onEditSection={editSection} onSelection={(text, action) => { if (action === 'Copy') { void navigator.clipboard?.writeText(text); showToast('Đã copy vùng chọn'); return } if (action === 'Comment') { showToast('Comment: chưa nối backend'); return } void send(`${action} đoạn văn bản sau:\n"${text}"`) }} />
+          ? <ArtifactPanel message={activeArtifact} comments={comments} focused={artifactFocus} onFocus={() => setArtifactFocus(v => !v)} onPopout={() => void popoutArtifact()} onHistory={() => setShowVersionHistory(true)} onExport={() => setShowExport(true)} onCopy={() => { void navigator.clipboard?.writeText(activeArtifact.content); showToast('Đã copy') }} onEditSection={editSection} onResolveComment={setCommentResolved} onDeleteComment={deleteComment} onSelection={(text, action) => { if (action === 'Copy') { void navigator.clipboard?.writeText(text); showToast('Đã copy vùng chọn'); return } if (action === 'Comment') { void addComment(text); return } void send(`${action} đoạn văn bản sau:\n"${text}"`) }} />
           : <ArtifactEmpty onOpenLibrary={() => setLeftTab('artifacts')} count={Math.max(artifactMessages.length, serverArtifactCount)} />}
       </div>
     </div>
@@ -224,6 +238,7 @@ export default function ChatPage() {
     {contextOpen && <ContextDrawer context={sharedContext} onChange={setSharedContext} tooLarge={contextTooLarge} estimate={contextEstimate} onClose={() => setContextOpen(false)} />}
     {showVersionHistory && activeArtifact && <VersionHistoryModal message={activeArtifact} onClose={() => setShowVersionHistory(false)} />}
     {showExport && activeArtifact && <ExportModal message={activeArtifact} onClose={() => setShowExport(false)} onToast={showToast} />}
+    <input ref={fileInput} className="hidden" type="file" onChange={event => { const file = event.target.files?.[0]; event.target.value = ''; if (file) void uploadFile(file) }} />
     {toast && <div role="status" className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded-full bg-elevated px-space-4 py-space-2 text-caption font-medium text-primary shadow-lg ring-1 ring-border-strong">{toast}</div>}
   </div>
 }
@@ -284,14 +299,14 @@ function ModelSelector({ chat, catalog, providers, defaultModel, triggerLabel, o
 }
 
 // ── Left sidebar ────────────────────────────────────────────────────────────────
-function WorkspaceSidebar({ tab, onTab, chats, activeChatId, onNewChat, onSelectChat, artifacts, activeArtifactIndex, onSelectArtifact, onUploadFile }: {
+function WorkspaceSidebar({ tab, onTab, chats, activeChatId, onNewChat, onSelectChat, artifacts, activeArtifactIndex, onSelectArtifact, files, onUploadFile, onDeleteFile }: {
   tab: 'chats' | 'files' | 'artifacts'; onTab: (t: 'chats' | 'files' | 'artifacts') => void
   chats: Chat[]; activeChatId: string; onNewChat: () => void; onSelectChat: (id: string) => void
-  artifacts: { m: Message; index: number }[]; activeArtifactIndex: number | null; onSelectArtifact: (i: number) => void; onUploadFile: () => void
+  artifacts: { m: Message; index: number }[]; activeArtifactIndex: number | null; onSelectArtifact: (i: number) => void; files: ChatFile[]; onUploadFile: () => void; onDeleteFile: (name: string) => Promise<void>
 }) {
   const tabs: { id: 'chats' | 'files' | 'artifacts'; icon: string; label: string; count: number }[] = [
     { id: 'chats', icon: '💬', label: 'Chats', count: chats.length },
-    { id: 'files', icon: '📄', label: 'Files', count: 0 },
+    { id: 'files', icon: '📄', label: 'Files', count: files.length },
     { id: 'artifacts', icon: '▤', label: 'Artifacts', count: artifacts.length },
   ]
   return <div className="cw-sidebar">
@@ -313,7 +328,7 @@ function WorkspaceSidebar({ tab, onTab, chats, activeChatId, onNewChat, onSelect
       </>}
       {tab === 'files' && <>
         <div className="flex items-center justify-between px-space-1 pb-space-2 pt-space-1"><SidebarHeading inline>Files</SidebarHeading><button onClick={onUploadFile} className="text-caption font-semibold text-accent">+ Tải lên</button></div>
-        <p className="px-space-1 py-space-2 text-caption text-muted">Chưa có file. <span className="text-tertiary">(backend chưa nối)</span></p>
+        {files.length === 0 ? <p className="px-space-1 py-space-2 text-caption text-muted">Chưa có file.</p> : files.map(file => <div key={file.name} className="flex items-center gap-space-2 px-space-1 py-space-2"><a className="min-w-0 flex-1 truncate text-label text-primary hover:text-accent" href={`/api/chats/${encodeURIComponent(activeChatId)}/files/${encodeURIComponent(file.name)}`}>{file.name}</a><span className="text-caption text-muted">{file.size} B</span><button onClick={() => void onDeleteFile(file.name)} className="text-caption text-muted hover:text-error">Xóa</button></div>)}
       </>}
       {tab === 'artifacts' && <>
         <SidebarHeading>Artifacts</SidebarHeading>
@@ -404,7 +419,7 @@ function ArtifactEmpty({ onOpenLibrary, count }: { onOpenLibrary: () => void; co
   </div>
 }
 
-function ArtifactPanel({ message, focused, onFocus, onPopout, onHistory, onExport, onCopy, onEditSection, onSelection }: { message: Message; focused: boolean; onFocus: () => void; onPopout: () => void; onHistory: () => void; onExport: () => void; onCopy: () => void; onEditSection: (heading: string, action: string) => void; onSelection: (text: string, action: string) => void }) {
+function ArtifactPanel({ message, comments, focused, onFocus, onPopout, onHistory, onExport, onCopy, onEditSection, onSelection, onResolveComment, onDeleteComment }: { message: Message; comments: ArtifactComment[]; focused: boolean; onFocus: () => void; onPopout: () => void; onHistory: () => void; onExport: () => void; onCopy: () => void; onEditSection: (heading: string, action: string) => void; onSelection: (text: string, action: string) => void; onResolveComment: (comment: ArtifactComment, resolved: boolean) => void; onDeleteComment: (comment: ArtifactComment) => void }) {
   const summary = artifactSummary(message.content)
   const sections = useMemo(() => splitSections(message.content), [message.content])
   const [selectedText, setSelectedText] = useState(''); const [selectionPoint, setSelectionPoint] = useState({ top: 0, left: 0 })
@@ -431,6 +446,7 @@ function ArtifactPanel({ message, focused, onFocus, onPopout, onHistory, onExpor
     <div className="relative min-h-0 flex-1 overflow-y-auto" onMouseUp={captureSelection}>
       {selectedText && <div className="fixed z-30 flex gap-1 rounded-md border border-border-strong bg-elevated p-1 shadow-lg" style={{ top: selectionPoint.top, left: selectionPoint.left }} onMouseDown={e => e.preventDefault()}>{['Hỏi AI', 'Viết lại', 'Rút gọn', 'Comment', 'Copy'].map(action => <button key={action} onClick={() => { onSelection(selectedText, action); setSelectedText('') }} className="rounded-sm px-space-2 py-space-1 text-caption text-primary hover:bg-hover">{action}</button>)}</div>}
       {sections.map((sec, i) => <ArtifactSection key={i} heading={sec.heading} body={sec.body} onAction={action => onEditSection(sec.heading, action)} />)}
+      {comments.length > 0 && <div className="border-t border-border-subtle p-space-4"><div className="mb-space-2 text-section font-semibold uppercase tracking-section text-muted">Bình luận</div>{comments.map(comment => <div key={comment.id} className="mb-space-2 rounded-md border border-border-subtle bg-elevated p-space-3"><div className="truncate text-caption text-muted">“{comment.quoted_text}”</div><div className={`mt-space-1 text-label ${comment.resolved ? 'text-muted line-through' : 'text-primary'}`}>{comment.author}: {comment.body}</div><div className="mt-space-2 flex gap-space-2"><button onClick={() => onResolveComment(comment, !comment.resolved)} className="text-caption text-accent">{comment.resolved ? 'Mở lại' : 'Đã xử lý'}</button><button onClick={() => onDeleteComment(comment)} className="text-caption text-muted hover:text-error">Xóa</button></div></div>)}</div>}
     </div>
   </>
 }
@@ -478,7 +494,7 @@ function ContextDrawer({ context, onChange, tooLarge, estimate, onClose }: { con
         {context.pinned.length === 0 && <p className="text-caption text-muted">Chưa ghim tin nào. Ghim từ tin nhắn của AI.</p>}
         {context.pinned.map(item => <label key={item.id} className="flex items-center gap-space-2 py-space-2"><input type="checkbox" checked onChange={() => onChange({ ...context, pinned: context.pinned.filter(p => p.id !== item.id) })} className="h-[15px] w-[15px] shrink-0" /><span className="min-w-0 flex-1 truncate text-label text-primary">{item.content}</span></label>)}
         <div className="mt-space-4"><SidebarHeading>Files</SidebarHeading></div>
-        <p className="text-caption text-muted">Chưa có file. <span className="text-tertiary">(backend chưa nối)</span></p>
+        <p className="text-caption text-muted">File đính kèm của chat hiển thị trong tab Files.</p>
         <div className="mt-space-4"><SidebarHeading>Hướng dẫn</SidebarHeading></div>
         {context.instructions.map(i => <label key={i.id} className="flex items-center gap-space-2 py-space-2"><input type="checkbox" checked={i.active} onChange={() => toggleInstruction(i.id)} className="h-[15px] w-[15px] shrink-0" /><span className="text-label text-primary">{i.label}</span></label>)}
         <div className="mt-space-4 flex items-center justify-between rounded-[9px] bg-elevated p-space-3 text-caption text-secondary"><span>Ước tính bối cảnh</span><b className={tooLarge ? 'text-error' : 'text-success'}>~{formatTokens(estimate)} token</b></div>

@@ -24,7 +24,9 @@ from fastapi.staticfiles import StaticFiles
 import config
 from services import (
     behavior,
+    artifact_comments,
     board,
+    chat_files,
     chat,
     execution,
     gitjobs,
@@ -350,6 +352,16 @@ def api_chat(payload: dict[str, object]) -> StreamingResponse:
     if not isinstance(provider_id, str):
         raise HTTPException(status_code=400, detail="provider must be a string")
     messages = _chat_messages(payload.get("messages"))
+    chat_id = payload.get("chat_id")
+    if chat_id is not None and not isinstance(chat_id, str):
+        raise HTTPException(status_code=400, detail="chat_id must be a string")
+    if chat_id:
+        try:
+            file_context = chat_files.context(chat_id)
+        except (FileNotFoundError, PermissionError) as exc:
+            raise _http_error(exc) from exc
+        if file_context:
+            messages = [{"role": "system", "content": f"[Tệp đính kèm của chat]\n{file_context}"}, *messages]
     model = runtime_agents.resolve_provider(agent)["model"] if agent else payload.get("model")
     if agent and model is None:
         model = payload.get("model")
@@ -977,6 +989,32 @@ def api_run_file_delete(run_id: str, name: str) -> dict[str, bool]:
     return {"ok": True}
 
 
+@app.get("/api/chats/{chat_id}/files")
+def api_chat_files(chat_id: str) -> list[dict[str, object]]:
+    try: return chat_files.list_files(chat_id)
+    except (FileNotFoundError, PermissionError) as exc: raise _http_error(exc) from exc
+
+
+@app.post("/api/chats/{chat_id}/files")
+async def api_chat_files_upload(chat_id: str, file: UploadFile = File(...)) -> dict[str, object]:
+    try: return chat_files.upload(chat_id, file.filename or "", await file.read())
+    except ValueError as exc: raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except (FileNotFoundError, PermissionError) as exc: raise _http_error(exc) from exc
+
+
+@app.get("/api/chats/{chat_id}/files/{name:path}")
+def api_chat_file_download(chat_id: str, name: str) -> FileResponse:
+    try: return FileResponse(chat_files.download(chat_id, name), filename=Path(name).name)
+    except (FileNotFoundError, PermissionError) as exc: raise _http_error(exc) from exc
+
+
+@app.delete("/api/chats/{chat_id}/files/{name:path}")
+def api_chat_file_delete(chat_id: str, name: str) -> dict[str, bool]:
+    try: chat_files.delete(chat_id, name)
+    except (FileNotFoundError, PermissionError) as exc: raise _http_error(exc) from exc
+    return {"ok": True}
+
+
 # --- C2a workflow routes ---
 @app.get("/api/workflows")
 def api_workflows() -> list[dict[str, object]]:
@@ -1162,6 +1200,52 @@ def api_artifact_save(payload: dict[str, object]) -> dict[str, object]:
         raise HTTPException(status_code=404) from exc
     except (PermissionError, ValueError) as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+def _require_artifact(artifact_id: str) -> None:
+    runtime_artifacts.read_library_artifact(artifact_id)
+
+
+@app.get("/api/artifacts/{artifact_id}/comments")
+def api_artifact_comments(artifact_id: str) -> dict[str, object]:
+    try:
+        _require_artifact(artifact_id)
+        return {"comments": artifact_comments.list_comments(artifact_id)}
+    except FileNotFoundError as exc: raise HTTPException(status_code=404) from exc
+    except (PermissionError, ValueError) as exc: raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.post("/api/artifacts/{artifact_id}/comments")
+def api_artifact_comment_create(artifact_id: str, payload: dict[str, object]) -> dict[str, object]:
+    quoted_text, author, body = payload.get("quoted_text"), payload.get("author"), payload.get("body")
+    if not all(isinstance(value, str) for value in (quoted_text, author, body)):
+        raise HTTPException(status_code=400, detail="quoted_text, author and body must be strings")
+    try:
+        _require_artifact(artifact_id)
+        return artifact_comments.create(artifact_id, quoted_text, author, body)
+    except FileNotFoundError as exc: raise HTTPException(status_code=404) from exc
+    except (PermissionError, ValueError) as exc: raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.patch("/api/artifacts/{artifact_id}/comments/{comment_id}")
+def api_artifact_comment_resolve(artifact_id: str, comment_id: str, payload: dict[str, object]) -> dict[str, object]:
+    resolved = payload.get("resolved")
+    if not isinstance(resolved, bool): raise HTTPException(status_code=400, detail="resolved must be a boolean")
+    try:
+        _require_artifact(artifact_id)
+        return artifact_comments.resolve(artifact_id, comment_id, resolved)
+    except FileNotFoundError as exc: raise HTTPException(status_code=404) from exc
+    except (PermissionError, ValueError) as exc: raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.delete("/api/artifacts/{artifact_id}/comments/{comment_id}")
+def api_artifact_comment_delete(artifact_id: str, comment_id: str) -> dict[str, bool]:
+    try:
+        _require_artifact(artifact_id)
+        artifact_comments.delete(artifact_id, comment_id)
+    except FileNotFoundError as exc: raise HTTPException(status_code=404) from exc
+    except (PermissionError, ValueError) as exc: raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return {"ok": True}
 
 
 @app.get("/api/board")

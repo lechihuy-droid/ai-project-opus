@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 
 import config
 import server
-from services import execution, gitjobs, hooks, runtime_agents, runtime_state
+from services import boundary, execution, gitjobs, hooks, runtime_agents, runtime_state
 
 
 @pytest.fixture()
@@ -25,6 +25,12 @@ def runtime_tmp(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
     monkeypatch.setattr(config, "RUNTIME_RUNS_DIR", root / "runs")
     monkeypatch.setattr(config, "RUNTIME_STORE_DIR", root / "store")
     return root
+
+
+@pytest.fixture()
+def storage_tmp(monkeypatch: pytest.MonkeyPatch, runtime_tmp: Path, tmp_path: Path) -> Path:
+    monkeypatch.setattr(boundary, "ROOT_RESOLVED", tmp_path.resolve())
+    return runtime_tmp
 
 
 @pytest.fixture()
@@ -97,6 +103,37 @@ def test_run_files_api_rejects_traversal_and_size_caps(client: TestClient, runti
     assert client.post(f"/api/runs/{run_id}/files", files={"file": ("one.txt", b"123", "text/plain")}).status_code == 200
     assert client.post(f"/api/runs/{run_id}/files", files={"file": ("two.txt", b"123", "text/plain")}).status_code == 400
     assert client.delete(f"/api/runs/{run_id}/files/missing.txt").status_code == 404
+
+
+def test_chat_files_api_crud_context_and_rejections(client: TestClient, storage_tmp: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    chat_id = "chat-123"
+    assert client.get(f"/api/chats/{chat_id}/files").json() == []
+    uploaded = client.post(f"/api/chats/{chat_id}/files", files={"file": ("brief.txt", b"Important context", "text/plain")})
+    assert uploaded.status_code == 200 and uploaded.json()["size"] == 17
+    assert client.get(f"/api/chats/{chat_id}/files/brief.txt").content == b"Important context"
+    adapter = execution.MockAdapter([{"type": "done", "usage": {}}])
+    monkeypatch.setattr(execution, "get_provider", lambda _provider: adapter)
+    assert client.post("/api/chat", json={"chat_id": chat_id, "messages": [{"role": "user", "content": "Use the file"}]}).status_code == 200
+    assert "Important context" in str(adapter.calls[0]["messages"])
+    assert client.delete(f"/api/chats/{chat_id}/files/brief.txt").json() == {"ok": True}
+    assert client.get("/api/chats/unknown!/files").status_code == 404
+    assert client.post(f"/api/chats/{chat_id}/files", files={"file": ("../escape.txt", b"x", "text/plain")}).status_code == 403
+    monkeypatch.setattr(config, "RUNTIME_FILE_MAX_BYTES", 3)
+    assert client.post(f"/api/chats/{chat_id}/files", files={"file": ("large.txt", b"1234", "text/plain")}).status_code == 400
+
+
+def test_artifact_comments_api_crud_and_rejections(client: TestClient, storage_tmp: Path) -> None:
+    artifact = client.post("/api/artifacts", json={"title": "Note", "content": "# Note", "source": "chat"}).json()
+    artifact_id = artifact["id"]
+    created = client.post(f"/api/artifacts/{artifact_id}/comments", json={"quoted_text": "Note", "author": "Bạn", "body": "Kiểm tra số liệu"})
+    assert created.status_code == 200 and created.json()["resolved"] is False
+    comment_id = created.json()["id"]
+    assert client.get(f"/api/artifacts/{artifact_id}/comments").json()["comments"][0]["body"] == "Kiểm tra số liệu"
+    assert client.patch(f"/api/artifacts/{artifact_id}/comments/{comment_id}", json={"resolved": True}).json()["resolved"] is True
+    assert client.delete(f"/api/artifacts/{artifact_id}/comments/{comment_id}").json() == {"ok": True}
+    assert client.get("/api/artifacts/missing/comments").status_code == 404
+    assert client.post(f"/api/artifacts/{artifact_id}/comments", json={"quoted_text": "", "author": "Bạn", "body": "x"}).status_code == 400
+    assert client.patch(f"/api/artifacts/{artifact_id}/comments/missing", json={"resolved": "yes"}).status_code == 400
 
 
 def test_skill_library_write_endpoints(client: TestClient, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
