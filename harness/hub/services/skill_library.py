@@ -36,6 +36,7 @@ _DEFAULT_SKILL_SOURCES: dict[str, Path] = {
 _INDEX_CACHE: dict[str, Any] = {"expires": 0.0, "fingerprint": None, "entries": []}
 _SKILL_NAMES_CACHE: dict[str, Any] = {"expires": 0.0, "fingerprint": None, "names": set()}
 _LOCK = threading.RLock()
+_SAFE_SKILL_NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
 
 
 def _sources() -> dict[str, Path]:
@@ -50,6 +51,40 @@ def _deploy_log_path() -> Path:
     if isinstance(path, Path):
         return path
     return config.HUB_DIR / ".cache" / "skill_deploy_log.jsonl"
+
+
+def _clear_cache() -> None:
+    _INDEX_CACHE.update({"expires": 0.0, "fingerprint": None, "entries": []})
+    _SKILL_NAMES_CACHE.update({"expires": 0.0, "fingerprint": None, "names": set()})
+
+
+def create_skill(payload: dict[str, Any]) -> dict[str, Any]:
+    name, source, content = payload.get("name"), payload.get("source"), payload.get("content")
+    if not isinstance(name, str) or not _SAFE_SKILL_NAME.fullmatch(name): raise ValueError("Invalid skill name")
+    if not isinstance(source, str) or source not in _sources(): raise ValueError("Unknown skill source")
+    if not isinstance(content, str) or not content.strip(): raise ValueError("content is required")
+    root = _sources()[source]; path = root / name
+    if path.exists(): raise ValueError("Skill already exists")
+    path.mkdir(parents=True); (path / "SKILL.md").write_text(content, encoding="utf-8"); _clear_cache()
+    return get_skill(f"{source}/{name}")
+
+
+def update_skill(skill_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    entry = next((row for row in _scan_all_sources() if row["id"] == skill_id), None)
+    if entry is None: raise FileNotFoundError(f"Skill not found: {skill_id}")
+    content = payload.get("content")
+    if not isinstance(content, str) or not content.strip(): raise ValueError("content is required")
+    _skill_md_path(Path(entry["path"])).write_text(content, encoding="utf-8"); _clear_cache()
+    return get_skill(skill_id)
+
+
+def delete_skill(skill_id: str) -> None:
+    entry = next((row for row in _scan_all_sources() if row["id"] == skill_id), None)
+    if entry is None: raise FileNotFoundError(f"Skill not found: {skill_id}")
+    path = Path(entry["path"])
+    if path.is_dir(): shutil.rmtree(path)
+    else: path.unlink()
+    _clear_cache()
 
 
 # --------------------------------------------------------------------------

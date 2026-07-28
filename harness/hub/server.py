@@ -11,7 +11,7 @@ HUB_DIR = Path(__file__).resolve().parent
 if str(HUB_DIR) not in sys.path:
     sys.path.insert(0, str(HUB_DIR))
 
-from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi import FastAPI, File, HTTPException, Query, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -22,6 +22,7 @@ from services import (
     chat,
     gitjobs,
     governance,
+    hooks,
     inspect_evals,
     integrity,
     replay,
@@ -30,6 +31,7 @@ from services import (
     runtime_agents,
     runtime_artifacts,
     runtime_events,
+    runtime_files,
     runtime_interrupts,
     runtime_memory,
     runtime_pipeline,
@@ -283,8 +285,34 @@ def api_agents_delete(agent_id: str) -> dict[str, bool]:
 
 
 @app.get("/api/agent/runs")
-def api_agent_runs() -> list[dict[str, object]]:
-    return runtime_state.list_runs()
+def api_agent_runs(agent_id: str | None = None) -> list[dict[str, object]]:
+    rows = runtime_state.list_runs()
+    if agent_id is not None:
+        rows = [row for row in rows if (row.get("metadata") or {}).get("agent_id") == agent_id]
+    return rows
+
+
+@app.post("/api/agents/{agent_id}/test")
+def api_agent_test(agent_id: str) -> dict[str, object]:
+    import time
+    try:
+        agent = runtime_agents.get_agent(agent_id)
+        routed = runtime_agents.resolve_provider(agent)
+        started = time.monotonic(); output: list[str] = []; usage: dict[str, object] = {}
+        for item in get_provider(routed["provider"]).stream_chat(
+            [{"role": "user", "content": "Trả lời ngắn: kết nối agent hoạt động."}], session_id=None, model=routed["model"],
+            tool_policy={"permission": agent["permission"], "allowed_tools": agent.get("allowed_tools", []), "allowed_paths": agent.get("allowed_paths", [])},
+        ):
+            if item.get("type") == "delta": output.append(str(item.get("text") or ""))
+            elif item.get("type") == "done": usage = dict(item.get("usage") or {})
+            elif item.get("type") == "error": raise RuntimeError(str(item.get("message") or "Provider error"))
+        elapsed = time.monotonic() - started
+        if elapsed > agent["budget"]["seconds"]: raise RuntimeError("budget_exceeded: agent seconds")
+        return {"output": "".join(output), "elapsed_seconds": elapsed, "usage": usage}
+    except FileNotFoundError as exc:
+        raise _http_error(exc) from exc
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 @app.post("/api/agent/runs")
@@ -602,6 +630,7 @@ def api_usage_rollup(
 
 
 @app.get("/api/tools")
+@app.get("/api/tools/usage")
 def api_tools(
     source: str | None = None,
     model: str | None = None,
@@ -645,6 +674,26 @@ def api_skill_library() -> list[dict[str, object]]:
     return skill_library.list_skills()
 
 
+@app.post("/api/skill-library")
+def api_skill_library_create(payload: dict[str, object]) -> dict[str, object]:
+    try: return skill_library.create_skill(payload)
+    except ValueError as exc: raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.put("/api/skill-library/{skill_id:path}")
+def api_skill_library_update(skill_id: str, payload: dict[str, object]) -> dict[str, object]:
+    try: return skill_library.update_skill(skill_id, payload)
+    except ValueError as exc: raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except (FileNotFoundError, PermissionError) as exc: raise _http_error(exc) from exc
+
+
+@app.delete("/api/skill-library/{skill_id:path}")
+def api_skill_library_delete(skill_id: str) -> dict[str, bool]:
+    try: skill_library.delete_skill(skill_id)
+    except (FileNotFoundError, PermissionError) as exc: raise _http_error(exc) from exc
+    return {"ok": True}
+
+
 @app.get("/api/skill-library/drift")
 def api_skill_library_drift() -> list[dict[str, object]]:
     return skill_library.drift()
@@ -674,6 +723,64 @@ def api_skill_library_deploy(skill_id: str, payload: dict[str, object]) -> dict[
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except (FileNotFoundError, PermissionError) as exc:
         raise _http_error(exc) from exc
+
+
+@app.get("/api/hooks")
+def api_hooks() -> list[dict[str, object]]: return hooks.list_hooks()
+
+
+@app.get("/api/hooks/events")
+def api_hook_events() -> list[str]: return hooks.events()
+
+
+@app.post("/api/hooks")
+def api_hooks_create(payload: dict[str, object]) -> dict[str, object]:
+    try: return hooks.create(payload)
+    except ValueError as exc: raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.put("/api/hooks/{hook_id}")
+def api_hooks_update(hook_id: str, payload: dict[str, object]) -> dict[str, object]:
+    try: return hooks.update(hook_id, payload)
+    except ValueError as exc: raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except FileNotFoundError as exc: raise _http_error(exc) from exc
+
+
+@app.delete("/api/hooks/{hook_id}")
+def api_hooks_delete(hook_id: str) -> dict[str, bool]:
+    try: hooks.delete(hook_id)
+    except FileNotFoundError as exc: raise _http_error(exc) from exc
+    return {"ok": True}
+
+
+@app.get("/api/hooks/{hook_id}/log")
+def api_hook_log(hook_id: str) -> list[dict[str, object]]: return hooks.log(hook_id)
+
+
+@app.get("/api/runs/{run_id}/files")
+def api_run_files(run_id: str) -> list[dict[str, object]]:
+    try: return runtime_files.list_files(run_id)
+    except (FileNotFoundError, PermissionError) as exc: raise _http_error(exc) from exc
+
+
+@app.post("/api/runs/{run_id}/files")
+async def api_run_files_upload(run_id: str, file: UploadFile = File(...)) -> dict[str, object]:
+    try: return runtime_files.upload(run_id, file.filename or "", await file.read())
+    except ValueError as exc: raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except (FileNotFoundError, PermissionError) as exc: raise _http_error(exc) from exc
+
+
+@app.get("/api/runs/{run_id}/files/{name:path}")
+def api_run_file_download(run_id: str, name: str) -> FileResponse:
+    try: return FileResponse(runtime_files.download(run_id, name), filename=Path(name).name)
+    except (FileNotFoundError, PermissionError) as exc: raise _http_error(exc) from exc
+
+
+@app.delete("/api/runs/{run_id}/files/{name:path}")
+def api_run_file_delete(run_id: str, name: str) -> dict[str, bool]:
+    try: runtime_files.delete(run_id, name)
+    except (FileNotFoundError, PermissionError) as exc: raise _http_error(exc) from exc
+    return {"ok": True}
 
 
 # --- C2a workflow routes ---

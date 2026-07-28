@@ -23,6 +23,12 @@ def append_event(run_id: str, event_type: str, data: dict[str, Any] | None = Non
     path = runtime_state.runtime_path("run", run_id, "events.jsonl")
     with path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(event, ensure_ascii=False) + "\n")
+    # Hooks are isolated from execution: dispatch failures never affect a run.
+    try:
+        from services import hooks
+        hooks.fire(event)
+    except Exception:
+        pass
     return event
 
 
