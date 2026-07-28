@@ -272,21 +272,20 @@ export function Status({ kind, label, className }: StatusProps) {
 // ProviderDot
 // ---------------------------------------------------------------------------
 
-export type ProviderId = 'claude' | 'codex' | 'nvidia' | 'gemini'
+export type ProviderId = 'claude' | 'codex' | 'nvidia'
 
 export type ProviderDotProps = {
   provider: ProviderId
   className?: string
 }
 
-// Reuses the existing --color-claude/codex/nvidia/gemini tokens from
+// Reuses the existing --color-claude/codex/nvidia tokens from
 // index.css's @theme block via their Tailwind bg-* utilities — provider
 // colour usage is restricted to this 6-8px identity dot everywhere else.
 const providerDotClass: Record<ProviderId, string> = {
   claude: 'bg-claude',
   codex: 'bg-codex',
   nvidia: 'bg-nvidia',
-  gemini: 'bg-gemini',
 }
 
 export function ProviderDot({ provider, className }: ProviderDotProps) {

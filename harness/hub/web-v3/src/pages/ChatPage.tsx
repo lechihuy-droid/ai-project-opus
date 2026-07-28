@@ -25,7 +25,7 @@ type SharedContextState = { text: string; pinned: PinnedMessage[]; instructions:
 
 const chatsKey = 'hub-v3-chats'
 const sharedContextKey = 'hub-v3-shared-context'
-const providerKinds = ['claude', 'codex', 'nvidia', 'gemini'] as const
+const providerKinds = ['claude', 'codex', 'nvidia'] as const
 type ProviderKind = (typeof providerKinds)[number]
 const asKind = (id: string): ProviderKind => (providerKinds as readonly string[]).includes(id) ? id as ProviderKind : 'nvidia'
 
@@ -34,7 +34,6 @@ const providerRole: Record<string, { role: string; note: string }> = {
   claude: { role: 'CLI code · tools · artifacts', note: 'Cần Claude Code CLI cài sẵn' },
   codex: { role: 'CLI code · refactor', note: 'Chạy qua Codex CLI' },
   nvidia: { role: 'API chat · chọn model cụ thể', note: 'Nhanh, rẻ; không có tool' },
-  gemini: { role: 'CLI đa phương thức', note: 'Chưa cài trên máy này' },
 }
 
 const formatTokens = (value: number) => value < 1000 ? String(value) : value < 1e6 ? `${(value / 1000).toFixed(1).replace(/\.0$/, '')}k` : `${(value / 1e6).toFixed(1).replace(/\.0$/, '')}M`

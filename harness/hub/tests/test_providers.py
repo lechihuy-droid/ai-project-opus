@@ -11,7 +11,7 @@ import pytest
 
 import config
 from services import chat
-from services.providers import claude_cli, codex_cli, gemini_cli, nvidia_api, procs
+from services.providers import claude_cli, codex_cli, nvidia_api, procs
 from services.providers import get_provider, list_providers
 
 
@@ -286,64 +286,6 @@ def test_codex_status_parses_version(tmp_path: Path, monkeypatch: pytest.MonkeyP
     assert status["available"] is True
     assert status["version"] == "codex-cli 0.144.3"
     assert status["detail"] == "ok"
-
-
-# ---------------------------------------------------------------------------
-# gemini_cli — stub
-# ---------------------------------------------------------------------------
-
-
-_FAKE_GEMINI_SCRIPT = """
-import sys
-if "--version" in sys.argv:
-    print("gemini-cli 1.2.3")
-else:
-    print("first response")
-    print("second response")
-"""
-
-
-@pytest.fixture
-def fake_gemini_cli(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
-    script = tmp_path / "fake_gemini.py"
-    script.write_text(_FAKE_GEMINI_SCRIPT, encoding="utf-8")
-    monkeypatch.setitem(config.PROVIDERS, "gemini", {"cmd": [sys.executable, str(script)]})
-    monkeypatch.setattr(config, "CHAT_USAGE_FILE", tmp_path / "chat_usage.jsonl")
-    monkeypatch.setitem(gemini_cli._status_cache, "value", None)
-    return script
-
-
-def test_gemini_status_parses_version(fake_gemini_cli: Path) -> None:
-    status = gemini_cli.status()
-    assert status["available"] is True
-    assert status["version"] == "gemini-cli 1.2.3"
-    assert status["capabilities"] == {"stream": True, "resume": False, "models": None}
-
-
-def test_gemini_stream_chat_yields_delta_done_and_transcript(fake_gemini_cli: Path) -> None:
-    messages = [{"role": "user", "content": "prior question"}, {"role": "assistant", "content": "prior answer"}, {"role": "user", "content": "new question"}]
-    events = list(gemini_cli.stream_chat(messages))
-
-    assert [event["text"] for event in events if event["type"] == "delta"] == ["first response", "second response"]
-    assert events[-1] == {"type": "done", "usage": {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0}, "session_id": None}
-    prompt = gemini_cli._build_cmd(messages)[-1]
-    assert "prior question" in prompt and "prior answer" in prompt and "new question" in prompt
-
-
-def test_gemini_cli_nonzero_returncode_emits_error_without_usage(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    script = tmp_path / "fake_gemini_error.py"
-    script.write_text('import sys\nsys.stderr.write("gemini auth failed")\nraise SystemExit(4)\n', encoding="utf-8")
-    monkeypatch.setitem(config.PROVIDERS, "gemini", {"cmd": [sys.executable, str(script)]})
-    monkeypatch.setattr(config, "CHAT_USAGE_FILE", tmp_path / "chat_usage.jsonl")
-
-    append = Mock()
-    monkeypatch.setattr(gemini_cli, "_append_usage_event", append)
-    events = list(gemini_cli.stream_chat([{"role": "user", "content": "hi"}]))
-
-    assert events == [{"type": "error", "message": "gemini auth failed", "code": None}]
-    append.assert_not_called()
-
-
 # ---------------------------------------------------------------------------
 # procs.ProcessRegistry — timeout kill + max concurrent
 # ---------------------------------------------------------------------------
@@ -400,7 +342,7 @@ def test_procs_raises_busy_error_at_max_concurrent(monkeypatch: pytest.MonkeyPat
 # ---------------------------------------------------------------------------
 
 
-def test_list_providers_returns_four_entries(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_list_providers_returns_three_entries(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         claude_cli,
         "status",
@@ -413,8 +355,8 @@ def test_list_providers_returns_four_entries(monkeypatch: pytest.MonkeyPatch) ->
     )
 
     statuses = list_providers()
-    assert len(statuses) == 4
-    assert {item["id"] for item in statuses} == {"nvidia", "claude", "codex", "gemini"}
+    assert len(statuses) == 3
+    assert {item["id"] for item in statuses} == {"nvidia", "claude", "codex"}
 
 
 def test_get_provider_unknown_raises() -> None:

@@ -369,7 +369,6 @@ PROVIDERS: dict[str, Any] = {
     "claude": {"cmd": ["claude"]},
     "codex": {"cmd": [str(Path.home() / "AppData" / "Local" / "pnpm" / "codex")]},
     "nvidia": {},
-    "gemini": {"cmd": ["gemini"]},
 }
 
 MODEL_CLASS_ROUTING: dict[str, dict[str, Any]] = {
