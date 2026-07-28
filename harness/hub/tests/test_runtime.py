@@ -188,6 +188,19 @@ def test_runtime_child_run_constraints_and_artifact_merge(runtime_tmp: Path) -> 
     assert runtime_state.read_run(failed_child["run_id"])["metadata"]["timed_out"] is True
 
 
+def test_direct_child_spawn_obeys_governance_tier_gate(runtime_tmp: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from services import governance
+
+    parent = runtime_state.create_run(metadata={"agent_id": "lead"})
+    monkeypatch.setattr(runtime_children.runtime_agents, "get_agent", lambda _agent_id: {"risk_tier": "network"})
+    monkeypatch.setattr(governance, "effective_blocked_tiers", lambda level=None: ["network"])
+
+    with pytest.raises(PermissionError, match="child spawn denied: risk_tier 'network' blocked for agent 'researcher'"):
+        runtime_children.create_child_run(parent["run_id"], {"objective": "blocked", "agent_id": "researcher"})
+
+    assert "risk_tier 'network' blocked for agent 'researcher'" in governance.status()["recent_denials"][0]["reasons"]
+
+
 def test_runtime_skills_memory_and_guardrail_apis(runtime_tmp: Path, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     skill_dir = tmp_path / "skills" / "demo"
     skill_dir.mkdir(parents=True)

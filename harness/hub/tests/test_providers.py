@@ -80,6 +80,13 @@ print(json.dumps({"type": "assistant", "message": {"role": "assistant", "content
 print(json.dumps({"type": "result", "subtype": "success", "session_id": "sess-abc123", "usage": {"input_tokens": 11, "output_tokens": 22}}))
 """
 
+_FAKE_CLAUDE_TOOL_SCRIPT = """
+import json
+print(json.dumps({"type": "assistant", "message": {"content": [{"type": "tool_use", "id": "toolu_1", "name": "Read", "input": {"file_path": "x.txt"}}]}}))
+print(json.dumps({"type": "user", "message": {"content": [{"type": "tool_result", "tool_use_id": "toolu_1", "content": "contents"}]}}))
+print(json.dumps({"type": "result", "subtype": "success", "usage": {}}))
+"""
+
 
 @pytest.fixture
 def fake_claude_cli(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
@@ -150,6 +157,28 @@ def test_claude_cli_build_cmd_includes_disallowed_tools_and_resume() -> None:
     assert "-p" in cmd and "hello" in cmd
     assert cmd.count("--disallowed-tools") == 3
     assert "-r" in cmd and "sess-1" in cmd
+
+
+def test_claude_cli_policy_maps_to_vendor_flags() -> None:
+    cmd = claude_cli._build_cmd("hello", None, tool_policy={
+        "permission": "workspace_write", "allowed_tools": ["Read", "Edit"], "allowed_paths": ["harness/hub"],
+    })
+    assert ["--permission-mode", "acceptEdits"] == cmd[cmd.index("--permission-mode"):cmd.index("--permission-mode") + 2]
+    assert cmd.count("--allowedTools") == 2
+    assert ["--add-dir", "harness/hub"] == cmd[cmd.index("--add-dir"):cmd.index("--add-dir") + 2]
+    assert "--disallowed-tools" not in cmd
+
+
+def test_claude_cli_emits_tool_call_and_result(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    script = tmp_path / "fake_claude_tools.py"
+    script.write_text(_FAKE_CLAUDE_TOOL_SCRIPT, encoding="utf-8")
+    monkeypatch.setitem(config.PROVIDERS, "claude", {"cmd": [sys.executable, str(script)]})
+    monkeypatch.setattr(config, "CHAT_USAGE_FILE", tmp_path / "usage.jsonl")
+
+    events = list(claude_cli.stream_chat([{"role": "user", "content": "hi"}]))
+
+    assert events[0] == {"type": "tool_call", "tool_name": "Read", "tool_input": {"file_path": "x.txt"}, "tool_use_id": "toolu_1"}
+    assert events[1] == {"type": "tool_result", "tool_use_id": "toolu_1", "tool_output": "contents"}
 
 
 def test_claude_cli_build_cmd_passes_model_alias_when_given() -> None:
@@ -229,6 +258,21 @@ def test_codex_cli_build_cmd_has_fresh_start_preamble_and_flags() -> None:
     assert "--json" in cmd
     assert cmd[-1].startswith("FRESH START\n\n")
     assert cmd[-1].endswith("do the thing")
+
+
+def test_codex_cli_policy_maps_to_real_sandbox_config() -> None:
+    cmd = codex_cli._build_cmd("do", None, tool_policy={"permission": "workspace_write", "allowed_paths": ["harness/hub"]})
+    assert ["-s", "workspace-write"] == cmd[cmd.index("-s"):cmd.index("-s") + 2]
+    assert "sandbox_workspace_write.writable_roots=[\"harness/hub\"]" in cmd
+
+
+def test_non_cli_providers_reject_unenforceable_tool_allowlists() -> None:
+    assert list(nvidia_api.stream_chat([{"role": "user", "content": "hi"}], tool_policy={"allowed_tools": ["Read"]})) == [
+        {"type": "error", "message": "nvidia provider cannot enforce allowed_tools or allowed_paths", "code": None}
+    ]
+    assert list(codex_cli.stream_chat([{"role": "user", "content": "hi"}], tool_policy={"allowed_tools": ["Read"]})) == [
+        {"type": "error", "message": "codex provider cannot enforce allowed_tools", "code": None}
+    ]
 
 
 def test_codex_cli_build_cmd_passes_model_alias_before_positionals() -> None:

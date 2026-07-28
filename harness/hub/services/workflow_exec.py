@@ -92,6 +92,14 @@ def _agent_system_prompt(agent: dict[str, Any]) -> tuple[str, list[str]]:
     return str(skill_library.system_prompt_with_skills(agent["system_prompt"], contents) or ""), warnings
 
 
+def _tool_policy(agent: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "permission": agent["permission"],
+        "allowed_tools": list(agent.get("allowed_tools") or []),
+        "allowed_paths": list(agent.get("allowed_paths") or []),
+    }
+
+
 def _run_child(
     *, parent_run_id: str, node_id: str, objective: str, agent: dict[str, Any], child_run_id: str
 ) -> Iterator[str]:
@@ -114,7 +122,7 @@ def _run_child(
         provider = get_provider(routed["provider"])
         call_started_at = runtime_state.now_iso()
         output: list[str] = []
-        for item in provider.stream_chat(messages, session_id=None, model=routed["model"]):
+        for item in provider.stream_chat(messages, session_id=None, model=routed["model"], tool_policy=_tool_policy(agent)):
             item_type = item.get("type")
             if item_type == "delta":
                 text = str(item.get("text") or "")
@@ -122,6 +130,8 @@ def _run_child(
                 yield from _yield_event(parent_run_id, "child_run", child_run_id=child_run_id, parent_run_id=parent_run_id, node=node_id, agent_id=agent_id, text=text)
             elif item_type == "reasoning":
                 yield from _yield_event(parent_run_id, "child_run", child_run_id=child_run_id, parent_run_id=parent_run_id, node=node_id, agent_id=agent_id, reasoning=str(item.get("text") or ""))
+            elif item_type in {"tool_call", "tool_result"}:
+                yield from _yield_event(parent_run_id, "child_run", child_run_id=child_run_id, parent_run_id=parent_run_id, node=node_id, agent_id=agent_id, tool_event=dict(item))
             elif item_type == "done":
                 child_state = runtime_state.read_run(child_run_id)
                 child_metadata = _metadata(child_state)
@@ -282,7 +292,7 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
             provider = get_provider(routed["provider"])
             call_started_at = runtime_state.now_iso()
             output: list[str] = []
-            for item in provider.stream_chat(messages, session_id=None, model=routed["model"]):
+            for item in provider.stream_chat(messages, session_id=None, model=routed["model"], tool_policy=_tool_policy(agent)):
                 item_type = item.get("type")
                 if item_type == "delta":
                     text = str(item.get("text") or "")
@@ -290,6 +300,8 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
                     yield from _yield_event(run_id, "assistant_delta", node=node["id"], text=text)
                 elif item_type == "reasoning":
                     yield from _yield_event(run_id, "reasoning", node=node["id"], text=str(item.get("text") or ""))
+                elif item_type in {"tool_call", "tool_result"}:
+                    yield from _yield_event(run_id, item_type, node=node["id"], **{key: value for key, value in item.items() if key != "type"})
                 elif item_type == "done":
                     runtime_state.update_run_state(run_id, {"usage": item.get("usage", {})})
                     agent_calls[agent_id] = int(agent_calls.get(agent_id, 0)) + 1
@@ -315,6 +327,7 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
                 child = runtime_children.create_child_run(run_id, {
                     "objective": rendered_objective,
                     "agent_id": spawn_agent_id,
+                    "risk_tier": tier,
                     "budget": spawn_agent["budget"],
                     "skills": spawn_agent.get("skills", []),
                 })
