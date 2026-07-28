@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import pytest
@@ -108,6 +109,64 @@ def test_runtime_state_checkpoint_events_interrupts_and_boundaries(runtime_tmp: 
         runtime_state.runtime_path("run", run_id, "..", "outside.json")
     with pytest.raises(FileNotFoundError):
         runtime_state.read_run("../outside")
+
+
+def test_runtime_command_rejects_stale_expected_version(runtime_tmp: Path) -> None:
+    run = runtime_state.create_run()
+    first = runtime_state.update_run_state(run["run_id"], {"metadata": {"one": True}}, expected_version=0, command_id="cmd-first")
+    assert first["state_version"] == 1
+    with pytest.raises(runtime_state.StaleRunVersionError):
+        runtime_state.update_run_state(run["run_id"], {"metadata": {"stale": True}}, expected_version=0, command_id="cmd-stale")
+    assert runtime_state.read_run(run["run_id"])["state_version"] == 1
+    assert "stale" not in runtime_state.read_run(run["run_id"])["metadata"]
+
+
+def test_runtime_commands_do_not_interleave_per_run(runtime_tmp: Path) -> None:
+    run = runtime_state.create_run()
+
+    def apply(index: int) -> dict[str, object]:
+        return runtime_state.update_run_state(run["run_id"], {"metadata": {f"worker_{index}": index}}, command_id=f"cmd-worker-{index}")
+
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        list(executor.map(apply, range(20)))
+    state = runtime_state.read_run(run["run_id"])
+    assert state["state_version"] == 20
+    assert {state["metadata"][f"worker_{index}"] for index in range(20)} == set(range(20))
+
+
+def test_runtime_command_idempotency_replays_once(runtime_tmp: Path) -> None:
+    run = runtime_state.create_run()
+    first = runtime_state.update_run_state(
+        run["run_id"], {"metadata": {"applied": True}}, command_id="cmd-replay", idempotency_key="key-replay"
+    )
+    replay = runtime_state.update_run_state(
+        run["run_id"], {"metadata": {"applied": True}}, command_id="cmd-replay", idempotency_key="key-replay"
+    )
+    assert first["state_version"] == replay["state_version"] == 1
+    with pytest.raises(runtime_state.IdempotencyConflictError):
+        runtime_state.update_run_state(run["run_id"], {"metadata": {"different": True}}, command_id="cmd-other", idempotency_key="key-replay")
+
+
+def test_runtime_recovery_quarantines_truncated_journal_tail(runtime_tmp: Path) -> None:
+    run = runtime_state.create_run()
+    runtime_state.update_run_state(run["run_id"], {"metadata": {"committed": True}}, command_id="cmd-commit")
+    journal = runtime_state.run_journal_path(run["run_id"])
+    journal.write_bytes(journal.read_bytes() + b'{"phase":"prepared"')
+    recovered = runtime_state.recover_run(run["run_id"])
+    assert recovered["state_version"] == 1
+    assert list((runtime_state.run_dir(run["run_id"]) / "quarantine").glob("transactions.tail-*.jsonl"))
+    assert len(runtime_state._read_journal(run["run_id"], repair_tail=False)) == 2
+
+
+def test_runtime_legacy_run_without_journal_remains_readable(runtime_tmp: Path) -> None:
+    run = runtime_state.create_run()
+    path = runtime_state.run_state_path(run["run_id"])
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    raw.pop("state_version")
+    path.write_text(json.dumps(raw), encoding="utf-8")
+    state = runtime_state.read_run(run["run_id"])
+    assert state["run_id"] == run["run_id"]
+    assert state["runtime_compatibility"] == "legacy_unjournaled"
 
 
 def test_runtime_pipeline_api_create_interrupt_resume_and_404(runtime_tmp: Path) -> None:
