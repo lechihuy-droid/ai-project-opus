@@ -6,8 +6,7 @@ import json
 import re
 from typing import Any
 
-from services import governance, runtime_agents, runtime_artifacts, runtime_checkpoint, runtime_children, runtime_events, runtime_interrupts, runtime_state, runtime_validate, skill_library, workflow
-from services.providers import get_provider
+from services import execution, governance, runtime_artifacts, runtime_checkpoint, runtime_children, runtime_events, runtime_interrupts, runtime_state, runtime_validate, skill_library, workflow
 
 
 _TEMPLATE_REF = re.compile(r"{{(.*?)}}")
@@ -118,11 +117,13 @@ def _run_child(
             {"role": "user", "content": f"SYSTEM INSTRUCTIONS:\n{system_prompt}"},
             {"role": "user", "content": objective},
         ]
-        routed = runtime_agents.resolve_provider(agent)
-        provider = get_provider(routed["provider"])
         call_started_at = runtime_state.now_iso()
         output: list[str] = []
-        for item in provider.stream_chat(messages, session_id=None, model=routed["model"], tool_policy=_tool_policy(agent)):
+        request = execution.ExecutionRequest(
+            correlation_id=child_run_id, provider_id=str(agent["provider"]), model=agent.get("model"),
+            messages=messages, tool_policy=_tool_policy(agent), limits=dict(agent.get("budget") or {}),
+        )
+        for item in execution.execute(request):
             item_type = item.get("type")
             if item_type == "delta":
                 text = str(item.get("text") or "")
@@ -288,11 +289,13 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
                 {"role": "user", "content": f"SYSTEM INSTRUCTIONS:\n{system_prompt}"},
                 {"role": "user", "content": rendered_prompt},
             ]
-            routed = runtime_agents.resolve_provider(agent)
-            provider = get_provider(routed["provider"])
             call_started_at = runtime_state.now_iso()
             output: list[str] = []
-            for item in provider.stream_chat(messages, session_id=None, model=routed["model"], tool_policy=_tool_policy(agent)):
+            request = execution.ExecutionRequest(
+                correlation_id=run_id, provider_id=str(agent["provider"]), model=agent.get("model"),
+                messages=messages, tool_policy=_tool_policy(agent), limits=dict(agent.get("budget") or {}),
+            )
+            for item in execution.execute(request):
                 item_type = item.get("type")
                 if item_type == "delta":
                     text = str(item.get("text") or "")
