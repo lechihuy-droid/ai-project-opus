@@ -20,6 +20,7 @@ from services import (
     behavior,
     board,
     chat,
+    execution,
     gitjobs,
     governance,
     inspect_evals,
@@ -43,7 +44,10 @@ from services import (
     workflow,
     workflow_exec,
 )
-from services.providers import get_provider, list_providers
+from services.providers import list_providers
+
+# Compatibility for existing in-process callers; API chat execution uses services.execution.
+get_provider = execution.get_provider
 
 
 @asynccontextmanager
@@ -187,14 +191,9 @@ def api_chat(payload: dict[str, object]) -> StreamingResponse:
         except FileNotFoundError as exc:
             raise HTTPException(status_code=400, detail=f"Unknown agent: {agent_id}") from exc
 
-    provider_id = (runtime_agents.resolve_provider(agent)["provider"] if agent else payload.get("provider")) or "nvidia"
+    provider_id = (agent["provider"] if agent else payload.get("provider")) or "nvidia"
     if not isinstance(provider_id, str):
         raise HTTPException(status_code=400, detail="provider must be a string")
-    try:
-        provider = get_provider(provider_id)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-
     messages = _chat_messages(payload.get("messages"))
     model = runtime_agents.resolve_provider(agent)["model"] if agent else payload.get("model")
     if agent and model is None:
@@ -220,15 +219,17 @@ def api_chat(payload: dict[str, object]) -> StreamingResponse:
         if agent
         else None
     )
+    request = execution.ExecutionRequest(
+        correlation_id=session_id or "chat", provider_id=provider_id, model=model, messages=messages,
+        session_id=session_id, system_prompt=system_prompt, tool_policy=tool_policy,
+    )
+    route = execution.gateway(request)
+    if route.error is not None:
+        raise HTTPException(status_code=400, detail=route.error.message)
 
     def events():
         try:
-            stream_kwargs: dict[str, object] = {"session_id": session_id, "model": model}
-            if system_prompt:
-                stream_kwargs["system_prompt"] = system_prompt
-            if tool_policy is not None:
-                stream_kwargs["tool_policy"] = tool_policy
-            for item in provider.stream_chat(messages, **stream_kwargs):
+            for item in execution.execute(request, result=route):
                 item_type = item.get("type")
                 if item_type == "reasoning":
                     yield _sse("reasoning", {"text": item.get("text", "")})
