@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-import os
+import hashlib
 import queue
 import re
 import subprocess
@@ -9,12 +9,12 @@ import threading
 import time
 import uuid
 from dataclasses import dataclass, field
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Iterator
 
 import config
-from services import governance, inform, integrity, risk, verify
+from services import audit, governance, inform, integrity, risk, security, verify
 from services.boundary import resolve_in_root
 
 
@@ -62,6 +62,7 @@ def _run_git(cwd: Path, args: list[str], check: bool = True) -> subprocess.Compl
         encoding="utf-8",
         errors="replace",
         shell=False,
+        env=security.subprocess_env(),
         check=False,
     )
     if check and result.returncode != 0:
@@ -168,6 +169,41 @@ def _agent_command(job: dict[str, Any]) -> list[str]:
     ]
 
 
+def _approval_binding(job: dict[str, Any]) -> dict[str, Any]:
+    worktree = Path(str(job.get("worktree") or "")).resolve()
+    command = [config.JOB_AGENT_CMD, "exec", "--cd", str(worktree), "-s", "workspace-write", str(job.get("brief") or "")]
+    return {
+        "action": "gitjob.execute",
+        "args": command,
+        "targets": {"worktree": str(worktree), "base_sha": str(job.get("base_sha") or "")},
+        "execution": {"job_id": str(job.get("id") or ""), "run_id": str(job.get("run_id") or ""), "node_id": str(job.get("node_id") or "")},
+        "scope": {"data_classification": str(job.get("data_classification") or "internal"), "secret_refs": list(job.get("secret_refs") or []), "egress": list(job.get("egress_scope") or [])},
+        "policy_hash": str(job.get("policy_hash") or ""),
+        "tool_hash": str(job.get("tool_hash") or ""),
+        "skill_hash": str(job.get("skill_hash") or ""),
+        "schema_hash": str(job.get("schema_hash") or ""),
+    }
+
+
+def _binding_hash(job: dict[str, Any]) -> str:
+    payload = json.dumps(_approval_binding(job), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _approval_receipt(job: dict[str, Any]) -> dict[str, Any]:
+    receipt = job.get("approval_receipt")
+    if not isinstance(receipt, dict):
+        raise ValueError("approval receipt missing")
+    if receipt.get("binding_hash") != _binding_hash(job):
+        raise ValueError("approval binding changed")
+    if receipt.get("used_at"):
+        raise ValueError("approval receipt already used")
+    expires_at = _parse_time(receipt.get("expires_at"))
+    if expires_at is None or datetime.now(UTC) >= expires_at:
+        raise ValueError("approval receipt expired")
+    return receipt
+
+
 def verify_brief(job: dict[str, Any]) -> bool:
     return integrity.verify_text(str(job.get("brief") or ""), job.get("brief_sig"))
 
@@ -215,11 +251,11 @@ def _budget_payload(stream: JobStream) -> dict[str, Any]:
 def _append_log(stream: JobStream, text: str) -> None:
     with stream.log_lock:
         with stream.log_path.open("a", encoding="utf-8", errors="replace") as handle:
-            handle.write(text + "\n")
+            handle.write(security.redact_text(text) + "\n")
 
 
 def _emit_line(stream: JobStream, line: str) -> None:
-    text = line.rstrip("\r\n")
+    text = security.redact_text(line.rstrip("\r\n"))
     _append_log(stream, text)
     stream.events.put({"type": "line", "data": text})
 
@@ -426,6 +462,11 @@ def create_job(brief: str, agent: str = "codex", allow_override: bool = False) -
             "brief_sig": integrity.sign_text(brief),
             "provenance": {"source": JOB_ARTIFACT_SOURCE},
         }
+        job["approval_receipt"] = {
+            "binding_hash": _binding_hash(job),
+            "expires_at": (datetime.now(UTC) + timedelta(seconds=int(config.JOB_TTL_SECONDS))).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+            "used_at": None,
+        }
         _write_job(job)
         try:
             governance.record_findings(job_id, inform_findings)
@@ -501,6 +542,13 @@ def approve(job_id: str) -> dict[str, Any]:
     run_count = int(job.get("run_count") or 0)
     if run_count >= int(config.JOB_MAX_RUNS):
         raise ValueError("run cap exceeded")
+    try:
+        receipt = _approval_receipt(job)
+    except ValueError as exc:
+        job["approval_block_reasons"] = [str(exc)]
+        _write_job(job)
+        audit.append("approval.denied", subject_id=job_id, context={"reason": str(exc)})
+        raise
     if not verify_brief(job):
         job["approval_block_reasons"] = ["brief signature mismatch"]
         _write_job(job)
@@ -542,21 +590,25 @@ def approve(job_id: str) -> dict[str, Any]:
         governance.record_denial(job_id, reasons)
         raise ValueError("; ".join(reasons))
 
-    env = os.environ.copy()
-    env.setdefault("PYTHONIOENCODING", "utf-8")
+    env = security.subprocess_env()
 
     job["status"] = "running"
     job["started_at"] = _now()
     job["finished_at"] = None
     job["exit_code"] = None
     job["run_count"] = run_count + 1
+    receipt["used_at"] = _now()
+    job["approval_receipt"] = receipt
     _write_job(job)
+    audit.append("approval.used", subject_id=job_id, context={"binding": _approval_binding(job), "expires_at": receipt["expires_at"]})
 
     try:
         process = _spawn_agent(command, cwd=worktree, env=env)
     except OSError as exc:
-        _fail_job(job_id, str(exc))
+        _fail_job(job_id, security.redact_text(exc))
         raise
+
+    audit.append("cli.launch", subject_id=job_id, context={"command": command, "worktree": str(worktree)})
 
     stream = JobStream(job_id=job_id, process=process, log_path=log_path, started_monotonic=time.monotonic())
     _STREAMS[job_id] = stream

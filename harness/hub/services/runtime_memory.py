@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import uuid
 from typing import Any
 
-from services import runtime_state
+from services import audit, runtime_state
 
 
 def _jsonl_path(name: str):
@@ -50,6 +51,7 @@ def create_candidate(text: str, metadata: dict[str, Any] | None = None) -> dict[
         "status": "pending",
         "created_at": runtime_state.now_iso(),
         "metadata": dict(metadata or {}),
+        "provenance": {"source": "runtime_candidate", "scope": "local", "classification": "internal"},
     }
     rows = list_candidates()
     rows.append(candidate)
@@ -57,7 +59,7 @@ def create_candidate(text: str, metadata: dict[str, Any] | None = None) -> dict[
     return candidate
 
 
-def _transition_candidate(candidate_id: str, status: str) -> dict[str, Any]:
+def _transition_candidate(candidate_id: str, status: str, acceptance: dict[str, Any] | None = None) -> dict[str, Any]:
     rows = list_candidates()
     for index, row in enumerate(rows):
         if row.get("id") != candidate_id:
@@ -70,24 +72,56 @@ def _transition_candidate(candidate_id: str, status: str) -> dict[str, Any]:
         rows[index] = updated
         _write_jsonl("memory_candidates.jsonl", rows)
         if status == "accepted":
+            provenance = dict(updated.get("provenance") or {})
+            provenance.update(acceptance or {})
+            required = ("source", "accepted_by", "reason", "scope", "classification", "expires_at")
+            missing = [key for key in required if not isinstance(provenance.get(key), str) or not provenance[key].strip()]
+            if missing:
+                raise ValueError(f"Memory acceptance provenance missing: {', '.join(missing)}")
+            content = str(updated.get("text") or "")
             memory = list_memory()
             memory.append(
                 {
                     "id": f"memory-{uuid.uuid4().hex[:10]}",
                     "candidate_id": candidate_id,
-                    "text": str(updated.get("text") or ""),
+                    "text": content,
                     "created_at": updated["accepted_at"],
                     "metadata": updated.get("metadata") if isinstance(updated.get("metadata"), dict) else {},
+                    "provenance": provenance,
+                    "content_hash": hashlib.sha256(content.encode("utf-8")).hexdigest(),
+                    "revoked_at": None,
                 }
             )
             _write_jsonl("memory.jsonl", memory)
+            audit.append("memory.accepted", subject_id=candidate_id, context={"content_hash": memory[-1]["content_hash"], "provenance": provenance})
         return updated
     raise FileNotFoundError(f"Memory candidate not found: {candidate_id}")
 
 
-def accept_candidate(candidate_id: str) -> dict[str, Any]:
-    return _transition_candidate(candidate_id, "accepted")
+def accept_candidate(candidate_id: str, acceptance: dict[str, Any] | None = None) -> dict[str, Any]:
+    default = {"accepted_by": "local_user", "reason": "accepted through local control plane", "expires_at": "9999-12-31T23:59:59Z"}
+    return _transition_candidate(candidate_id, "accepted", {**default, **(acceptance or {})})
 
 
 def reject_candidate(candidate_id: str) -> dict[str, Any]:
     return _transition_candidate(candidate_id, "rejected")
+
+
+def revoke_memory(memory_id: str, revoked_by: str, reason: str) -> dict[str, Any]:
+    if not str(revoked_by).strip() or not str(reason).strip():
+        raise ValueError("Memory revocation requires reviewer and reason")
+    rows = list_memory()
+    for index, row in enumerate(rows):
+        if row.get("id") != memory_id:
+            continue
+        if row.get("revoked_at"):
+            raise ValueError(f"Memory already revoked: {memory_id}")
+        updated = dict(row)
+        updated["revoked_at"] = runtime_state.now_iso()
+        updated["revoked_by"] = str(revoked_by)
+        updated["revocation_reason"] = str(reason)
+        rows[index] = updated
+        _write_jsonl("memory.jsonl", rows)
+        audit.append("memory.revoked", subject_id=memory_id, context={"revoked_by": revoked_by, "reason": reason})
+        return updated
+    raise FileNotFoundError(f"Memory not found: {memory_id}")
