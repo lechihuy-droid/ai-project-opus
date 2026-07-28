@@ -414,6 +414,56 @@ def read_skill_content(skill_name: str) -> str:
     raise FileNotFoundError(f"Skill not found: {skill_name}")
 
 
+def pin_skill_prompt_contents(skill_names: list[str]) -> list[dict[str, str]]:
+    """Resolve skills once, retaining their identity and exact prompt text for a run."""
+    pins: list[dict[str, str]] = []
+    for name in skill_names:
+        entry = next((row for row in _scan_all_sources() if row["name"] == name), None)
+        if entry is None:
+            raise FileNotFoundError(f"Skill not found: {name}")
+        try:
+            content = _skill_md_path(Path(entry["path"])).read_text(encoding="utf-8", errors="replace")
+        except OSError as exc:
+            raise FileNotFoundError(f"Skill not readable: {name}") from exc
+        pins.append({"source": str(entry["source"]), "name": name, "content_hash": str(entry["content_hash"]), "content": content})
+    return pins
+
+
+def load_pinned_skill_prompt_contents(skill_pins: list[dict[str, Any]]) -> tuple[list[str], bool]:
+    """Validate pinned identity against the live resolver, then return pinned text.
+
+    A changed hash or a higher-priority same-name source is an execution error:
+    using either live variant would make a run unreproducible.
+    """
+    entries = _scan_all_sources()
+    contents: list[str] = []
+    used = 0
+    truncated = False
+    for pin in skill_pins:
+        name = str(pin.get("name") or "")
+        resolved = next((row for row in entries if row["name"] == name), None)
+        if resolved is None:
+            raise ValueError(f"Pinned skill missing: {name}")
+        if resolved["source"] != pin.get("source"):
+            raise ValueError(f"Pinned skill source drift: {name}")
+        if resolved["content_hash"] != pin.get("content_hash"):
+            raise ValueError(f"Pinned skill content drift: {name}")
+        content = pin.get("content")
+        if not isinstance(content, str):
+            raise ValueError(f"Pinned skill content missing: {name}")
+        remaining = SKILL_PROMPT_MAX_CHARS - used
+        if remaining <= 0:
+            truncated = True
+            break
+        if len(content) > remaining:
+            contents.append(content[:remaining])
+            truncated = True
+            break
+        contents.append(content)
+        used += len(content)
+    return contents, truncated
+
+
 def load_skill_prompt_contents(
     skill_names: list[str], *, skip_missing: bool = False
 ) -> tuple[list[str], bool, list[str]]:
