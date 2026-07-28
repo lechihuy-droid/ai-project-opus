@@ -183,11 +183,11 @@ Nguồn chân lý cho path và model:
 
 ## 9. Mở rộng: Super Agent Harness
 
-> **Trạng thái:** mục này viết khi orchestration-plane còn là kế hoạch. Phần lớn
-> đã ship — xem bảng endpoint ở mục 2 và `services/workflow*.py` + `runtime_*`.
-> Các bảng "Endpoint tương lai" bên dưới giữ lại làm bối cảnh thiết kế; đối chiếu
-> mục 2 để biết đường dẫn thật (ví dụ child run là `POST /api/agent/runs`, không
-> phải `/api/agents/runs`; chưa có `/api/blackboard/{run_id}`).
+> **Trạng thái:** orchestration-plane đã chạy in-process trong FastAPI. Mã runtime
+> nằm ở `services/workflow.py`, `services/workflow_exec.py` và các module
+> `services/runtime_*.py`; endpoint thật được liệt kê dưới đây. Không có module
+> `orchestrator.py`, `blackboard.py`, `agents.py`, `skills.py`, hay route
+> `/api/blackboard/{run_id}`.
 
 Harness Hub khởi đầu là **control-plane**: giám sát, chat, usage, replay, suites,
 governance và git-jobs. Lớp mở rộng là **orchestration-plane** cho
@@ -224,19 +224,18 @@ harness/hub/
 │  └─ reviewer.agent.yaml        # model, tools, skills, budget, scope
 ├─ skills/
 │  └─ <skill-name>/SKILL.md      # skill package + scripts/references
-├─ blackboard/
-│  └─ <run_id>/
-│     ├─ state.json              # typed shared state
-│     ├─ events.jsonl            # append-only timeline
-│     ├─ claims.jsonl            # findings/claims with provenance
-│     ├─ decisions.md            # human/agent decisions
-│     └─ artifacts/              # diffs, reports, generated files
+├─ runtime/
+│  └─ runs/<run_id>/
+│     ├─ state.json              # runtime state
+│     ├─ events.jsonl            # append-only runtime events
+│     └─ artifacts/              # task packets and generated artifacts
 └─ services/
-   ├─ workflow.py                # parse/validate/execute workflow IR
-   ├─ agents.py                  # agent profiles + child task packets
-   ├─ skills.py                  # metadata index + progressive disclosure
-   ├─ orchestrator.py            # node execution + handoff + HITL gates
-   └─ blackboard.py              # append/read state/events/artifacts
+   ├─ workflow.py                # parse/validate workflow model
+   ├─ workflow_exec.py           # workflow node execution + handoff + gates
+   ├─ runtime_agents.py          # agent profiles + provider resolution
+   ├─ runtime_skills.py          # skill metadata and usage
+   ├─ runtime_children.py        # child task packets and child-run lifecycle
+   └─ runtime_state/events/artifacts.py # persisted state, events, artifacts
 ```
 
 Các thư mục trên là extension target, không thay thế `runs/`, `jobs/`,
@@ -262,8 +261,9 @@ Endpoint tương lai:
 | Nhóm | Endpoint | Vai trò |
 |---|---|---|
 | Workflows | `GET /api/workflows`, `POST /api/workflows/validate` | đọc/validate workflow |
-| Workflow runs | `POST /api/workflows/{id}/runs`, `GET /api/workflows/runs/{id}/stream` | chạy + SSE |
-| Blackboard | `GET /api/blackboard/{run_id}` | đọc state/events/artifacts |
+| Workflow runs | `POST /api/workflows/{id}/runs` | chạy, trả SSE response |
+| Workflow artifacts | `GET /api/workflows/runs/{id}/artifacts` | liệt kê artifacts |
+| Workflow gate | `POST /api/workflows/runs/{id}/interrupts/{interrupt_id}/resume` | resume/approve gate |
 
 LangGraph có thể được thêm sau như `services/langgraph_adapter.py`, nhận IR đã
 validate từ `workflow.py`. Không để UI hoặc config phụ thuộc trực tiếp vào
@@ -275,10 +275,10 @@ Skill là package tái sử dụng, không chỉ là prompt:
 
 - `SKILL.md` chứa metadata, trigger rules, usage instructions, scripts và
   references.
-- `skills.py` tạo index nhẹ: name, description, path, required tools, risk tier.
+- `runtime_skills.py` tạo index nhẹ: name, description, path và usage.
 - Progressive disclosure: prompt ban đầu chỉ thấy metadata. Khi workflow/agent
   chọn skill, runtime mới đọc full `SKILL.md` và các resource cần thiết.
-- Telemetry: mỗi skill call ghi result/failure vào blackboard hoặc usage log.
+- Telemetry: usage được đọc qua runtime skill usage log.
 - Evolution: failure-mode patch phải đi qua proposed diff/git-job/review, không
   auto-edit skill package.
 
@@ -307,17 +307,20 @@ Sub-agent được tạo từ **child task packet**:
 }
 ```
 
-Lead agent không tự cấp quyền mới cho child agent. `governance` kiểm tra
-profile, risk tier, blocked tiers, path scope và HITL trước khi launch. Child
-agent báo cáo bằng blackboard artifacts/events; parent tổng hợp từ đó.
+`runtime_children.create_child_run` chỉ cho lead runtime spawn, giới hạn số child
+run, yêu cầu objective và chặn child mở rộng `allowed_paths`/`allowed_tools` so
+với parent. Hàm này **không** kiểm tra `risk_tier` hoặc HITL trước khi launch.
+Child ghi task packet, state, events và artifacts vào runtime; parent tổng hợp
+child summary/artifacts qua `runtime_state` và `runtime_events`.
 
 Endpoint tương lai:
 
 | Nhóm | Endpoint | Vai trò |
 |---|---|---|
 | Agents | `GET /api/agents` | agent profiles |
-| Child run | `POST /api/agents/runs` | tạo sub-agent managed run |
-| Child stream | `GET /api/agents/runs/{id}/stream` | SSE tiến trình |
+| Child/agent run | `POST /api/agent/runs` | tạo managed runtime, trả SSE response |
+| Run detail/events | `GET /api/agent/runs/{id}`, `GET /api/agent/runs/{id}/events` | state và event history |
+| Resume gate | `POST /api/agent/runs/{id}/interrupts/{interrupt_id}/resume` | tiếp tục runtime interrupt |
 
 ### Visual Workflow Builder
 
@@ -332,7 +335,8 @@ Canvas kéo-thả là editor/visualizer cho file cấu hình, không phải ngu�
 **Đã ship** trong `web-v3/src/pages/WorkflowsPage.tsx`: canvas pan/zoom + kéo-thả
 node + nối edge port-to-port, viết bằng React/SVG thuần — không thêm thư viện đồ
 thị nào. Save gọi `PUT /{id}/model` + `PUT /{id}/layout`, validate gọi
-`POST /api/workflows/validate`, run + gate approve dùng chung trang.
+`POST /api/workflows/validate`, run gọi `POST /api/workflows/{id}/runs` và gate
+dùng route resume workflow.
 Lưu ý: UI cho phép vẽ tự do nhưng backend vẫn chỉ nhận **chuỗi tuyến tính** —
 đồ thị rẽ nhánh sẽ bị `validate_workflow` từ chối.
 

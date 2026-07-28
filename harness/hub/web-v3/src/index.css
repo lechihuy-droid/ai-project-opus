@@ -35,8 +35,6 @@
   --spacing-space-8: 32px;
   --spacing-input: 40px;
   --spacing-composer-min: 56px;
-  --spacing-context-strip: 32px;
-  --spacing-pane-header: 52px;
   --spacing-toolbar: 48px;
   --text-caption: 12px;
   --text-caption--line-height: 16px;
@@ -73,7 +71,6 @@ button { font: inherit; color: inherit; }
 .main > header span { color: var(--color-secondary); }
 .main > header b { color: var(--color-primary); }
 .content > div { padding: 28px; }
-.content:has(.chat-grid) { overflow: hidden; }
 
 /* ── AI Workspace: full-bleed 3-panel (top bar / sidebar · chat · artifact) ── */
 .content:has(.chat-workspace) { overflow: hidden; }
@@ -89,25 +86,12 @@ button { font: inherit; color: inherit; }
 .cw-artifact { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
 @media (max-width: 1180px) { .cw-body { grid-template-columns: 220px minmax(0, 1fr); } .cw-artifact { display: none; } }
 @media (max-width: 820px) { .cw-body { grid-template-columns: minmax(0, 1fr); } .cw-sidebar { display: none; } }
-.chat-grid.panes-1 { grid-template-columns: 1fr; }
-.chat-grid.panes-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.chat-grid.panes-3, .chat-grid.panes-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); }
-.chat-layout { display: grid; min-height: 0; overflow: hidden; grid-template-columns: minmax(0, 1fr); gap: 12px; }
-.chat-layout.has-artifact { grid-template-columns: minmax(0, 1fr) minmax(320px, 40%); }
-.chat-layout.has-drawer { grid-template-columns: minmax(0, 1fr) var(--hub-size-drawer); }
-.chat-layout.has-artifact.has-drawer { grid-template-columns: minmax(0, 1fr) minmax(320px, 40%) var(--hub-size-drawer); }
-.chat-layout > .chat-grid { min-width: 0; min-height: 0; }
-/* Scroll ownership: a pane is header + body + composer, and only the body moves. */
-.pane { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
-.pane > .msgs { min-height: 0; overflow-y: auto; }
 .artifact-panel { min-height: 320px; }
 .artifact-panel h1, .artifact-panel h2, .artifact-panel h3 { scroll-margin-top: 12px; }
 .message a { color: var(--color-info); }
 .node-pulse { animation: run-pulse 1.4s ease-in-out infinite; }
 @keyframes run-pulse { 0%,100% { opacity: .45; transform: scale(.92); } 50% { opacity: 1; transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) { .node-pulse { animation: none; } }
-@media (max-width: 1023px) { .chat-layout { display: flex; flex-direction: column; overflow-y: auto; } .chat-layout > .chat-grid { flex: 1 1 55%; min-height: 360px; overflow: visible; /* Intentional: mobile pane grid must scroll its panes vertically. */ } .chat-layout .artifact-panel { flex: 1 1 45%; } }
-@media (max-width: 900px) { .chat-grid.panes-2, .chat-grid.panes-3, .chat-grid.panes-4 { grid-template-columns: 1fr; grid-template-rows: none; overflow-y: auto; } .chat-grid .pane { min-height: 360px; } }
 .content h1 { color: var(--color-primary); font-size: 16px; line-height: 24px; margin: 0; }
 .content p { color: var(--color-secondary); margin-top: 8px; }
 @media (max-width: 700px) { .app { grid-template-columns: 190px 1fr; } }
