@@ -53,7 +53,7 @@ const loadSharedContext = (): SharedContextState => {
 }
 const activeInstructionText = (context: SharedContextState) => context.instructions.filter(i => i.active).map(i => i.label)
 const sharedText = (context: SharedContextState) => [context.text.trim(), ...context.pinned.map(i => i.content.trim()), ...activeInstructionText(context)].filter(Boolean).join('\n\n')
-const promptFor = (context: SharedContextState, text: string, inject: boolean) => inject && sharedText(context) ? `[Bối cảnh chung]\n${sharedText(context)}\n\n[Yêu cầu]\n${text}` : text
+const promptFor = (context: SharedContextState, text: string, inject: boolean, extra = '') => { const contextText = [sharedText(context), extra].filter(Boolean).join('\n\n'); return inject && contextText ? `[Bối cảnh chung]\n${contextText}\n\n[Yêu cầu]\n${text}` : text }
 
 const providerState = (provider?: Provider) => {
   if (!provider?.available) {
@@ -69,6 +69,7 @@ const makeChat = (provider = 'nvidia', model = ''): Chat => ({ id: crypto.random
 const loadChats = (): Chat[] => { try { const v = JSON.parse(localStorage.getItem(chatsKey) ?? 'null'); return Array.isArray(v) && v.length ? v : [makeChat()] } catch { return [makeChat()] } }
 const chatSubtitle = (chat: Chat) => { const last = [...chat.messages].reverse().find(m => m.content.trim()); return last ? last.content.replace(/\s+/g, ' ').slice(0, 42) : 'Chưa có tin nhắn' }
 const modelShort = (chat: Chat, catalog: Catalog[]) => chat.model ? (catalog.find(m => m.id === chat.model)?.shortName ?? chat.model.split('/').at(-1) ?? chat.model) : 'theo CLI'
+const activeChatHandoffKey = 'hub-v3-active-chat'
 
 export default function ChatPage() {
   const [chats, setChats] = useState<Chat[]>(loadChats)
@@ -84,6 +85,8 @@ export default function ChatPage() {
   const [promptText, setPromptText] = useState('')
   const [contextOpen, setContextOpen] = useState(false)
   const [activeArtifactIndex, setActiveArtifactIndex] = useState<number | null>(null)
+  const [artifactContextEnabled, setArtifactContextEnabled] = useState(true)
+  const [artifactFocus, setArtifactFocus] = useState(false)
   const [showVersionHistory, setShowVersionHistory] = useState(false)
   const [showExport, setShowExport] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
@@ -98,6 +101,7 @@ export default function ChatPage() {
   useEffect(() => { localStorage.setItem(chatsKey, JSON.stringify(chats.map(c => ({ ...c, messages: c.messages.map(({ streaming: _s, ...m }) => m) })))) }, [chats])
   useEffect(() => { localStorage.setItem(sharedContextKey, JSON.stringify(sharedContext)) }, [sharedContext])
   useEffect(() => { setActiveArtifactIndex(null) }, [activeChatId])
+  useEffect(() => { const handoff = sessionStorage.getItem(activeChatHandoffKey); if (handoff && chats.some(chat => chat.id === handoff)) { setActiveChatId(handoff); sessionStorage.removeItem(activeChatHandoffKey) } }, [chats])
   useEffect(() => () => window.clearTimeout(toastTimer.current), [])
   useEffect(() => {
     void Promise.all([
@@ -128,9 +132,10 @@ export default function ChatPage() {
   const send = async (text: string, selectedSkills = activeSkills) => {
     const trimmed = text.trim(); if (!trimmed) return
     const chat = chats.find(c => c.id === activeChatId); if (!chat) return
-    const fingerprint = `${sharedContext.text}\n${sharedContext.pinned.map(i => i.id).join('|')}\n${activeInstructionText(sharedContext).join('|')}`
-    const shouldInject = Boolean(sharedText(sharedContext)) && (!chat.messages.some(m => m.role === 'user') || injectedContext[chat.id] !== fingerprint)
-    const prompt = promptFor(sharedContext, trimmed, shouldInject)
+    const artifactContext = artifactContextEnabled && activeArtifact ? `[Artifact đang mở]\n${activeArtifact.content}` : ''
+    const fingerprint = `${sharedContext.text}\n${sharedContext.pinned.map(i => i.id).join('|')}\n${activeInstructionText(sharedContext).join('|')}\n${artifactContext}`
+    const shouldInject = Boolean(sharedText(sharedContext) || artifactContext) && (!chat.messages.some(m => m.role === 'user') || injectedContext[chat.id] !== fingerprint)
+    const prompt = promptFor(sharedContext, trimmed, shouldInject, artifactContext)
     const title = chat.messages.length === 0 ? trimmed.replace(/\s+/g, ' ').slice(0, 40) : chat.title
     const user: Message = { role: 'user', content: prompt }
     const assistant: Message = { role: 'assistant', content: '', reasoning: '', streaming: true }
@@ -169,21 +174,21 @@ export default function ChatPage() {
   // Section-level "edit" is a real backend round-trip: it sends a scoped follow-up prompt.
   const editSection = (heading: string, action: string) => { void send(`${action} phần "${heading}" trong artifact vừa tạo. Chỉ trả lại phần đó.`); showToast(`${action} · ${heading}`) }
 
-  const contextEstimate = estimateTokens(sharedText(sharedContext))
+  const contextEstimate = estimateTokens([sharedText(sharedContext), artifactContextEnabled && activeArtifact?.content].filter(Boolean).join('\n\n'))
   const contextTooLarge = contextEstimate > 8000
   const contextSummary = `Bối cảnh ~${formatTokens(contextEstimate)} token · Ghim ${sharedContext.pinned.length}/10`
 
   return <div className="chat-workspace">
     <TopBar workspace="Harness Hub" chat={activeChat} catalog={catalog} providers={providers} defaultModel={defaultModel}
       onChooseModel={chooseModel} exportDisabled={!activeArtifact} onExport={() => setShowExport(true)} onSettings={() => { window.location.hash = '#/settings' }} onToast={showToast} />
-    <div className="cw-body">
+    <div className={`cw-body ${artifactFocus ? 'artifact-focus' : ''}`}>
       <WorkspaceSidebar tab={leftTab} onTab={setLeftTab} chats={chats} activeChatId={activeChatId} onNewChat={newChat} onSelectChat={selectChat}
         artifacts={artifactMessages} activeArtifactIndex={activeArtifactIndex} onSelectArtifact={i => setActiveArtifactIndex(i)} onUploadFile={() => showToast('Tải file: backend chưa nối')} />
 
       <div className="cw-center">
         {/* Context bar only once a conversation exists; the composer is always present. */}
         {!isEmptyPhase && <div className="flex items-center gap-space-2 border-b border-border-subtle px-space-4 py-space-2 text-caption text-secondary">
-          <span className="min-w-0 truncate">{contextSummary}</span>
+          <span className="min-w-0 truncate">{contextSummary}</span>{activeArtifact && <button onClick={() => setArtifactContextEnabled(v => !v)} className={`shrink-0 rounded-full border px-space-2 py-[3px] ${artifactContextEnabled ? 'border-accent bg-accent-subtle text-accent' : 'border-border-subtle text-muted'}`}>Bối cảnh: {artifactSummary(activeArtifact.content).title} · {activeChat.title}</button>}
           <Button variant="ghost" size="sm" className="shrink-0" onClick={() => setContextOpen(true)}>Quản lý</Button>
         </div>}
         <div className="cw-msgs">
@@ -198,6 +203,7 @@ export default function ChatPage() {
             </div>}
         </div>
         {activeSkills.length > 0 && <div className="flex flex-wrap gap-space-2 px-space-4 pt-space-2">{activeSkills.map(skill => <Chip key={skill.id} onRemove={() => removeSkill(skill.id)}>#{skill.id}</Chip>)}</div>}
+        {!isEmptyPhase && activeArtifact && <div className="flex flex-wrap gap-space-2 px-space-4 pt-space-2">{['Phân tích tài liệu', 'Tóm tắt', 'Rút gọn', 'Viết lại', 'Tạo slide', 'Hỏi về dữ liệu'].map(action => <button key={action} onClick={() => void send(`${action} tài liệu đang mở`)} className="shrink-0 whitespace-nowrap rounded-full border border-border-strong bg-surface px-space-3 py-[6px] text-caption text-secondary transition-colors hover:border-accent hover:text-accent">{action}</button>)}</div>}
         {!isEmptyPhase && skills.length > 0 && <div className="flex flex-wrap gap-space-2 px-space-4 pt-space-2">{skills.slice(0, 6).map(s => <button key={skillName(s)} onClick={() => activateSkill(skillName(s))} className="shrink-0 whitespace-nowrap rounded-full border border-border-strong bg-surface px-space-3 py-[6px] text-caption text-secondary transition-colors hover:border-accent hover:text-accent">#{skillName(s)}</button>)}</div>}
         <Composer value={promptText} onChange={changePrompt} onSubmit={submitPrompt} onStop={stop} streaming={streaming}
           placeholder={`Nhắn ${activeChat.provider}…`} skillMatches={skillMatches.map(skillName)} onPickSkill={name => { activateSkill(name); setPromptText('') }}
@@ -206,7 +212,7 @@ export default function ChatPage() {
 
       <div className="cw-artifact">
         {activeArtifact
-          ? <ArtifactPanel message={activeArtifact} onHistory={() => setShowVersionHistory(true)} onExport={() => setShowExport(true)} onCopy={() => { void navigator.clipboard?.writeText(activeArtifact.content); showToast('Đã copy') }} onEditSection={editSection} />
+          ? <ArtifactPanel message={activeArtifact} focused={artifactFocus} onFocus={() => setArtifactFocus(v => !v)} onPopout={() => showToast('Pop-out: chưa có route độc lập cho artifact — cần thêm sau')} onHistory={() => setShowVersionHistory(true)} onExport={() => setShowExport(true)} onCopy={() => { void navigator.clipboard?.writeText(activeArtifact.content); showToast('Đã copy') }} onEditSection={editSection} onSelection={(text, action) => { if (action === 'Copy') { void navigator.clipboard?.writeText(text); showToast('Đã copy vùng chọn'); return } if (action === 'Comment') { showToast('Comment: chưa nối backend'); return } void send(`${action} đoạn văn bản sau:\n"${text}"`) }} />
           : <ArtifactEmpty onOpenLibrary={() => setLeftTab('artifacts')} count={artifactMessages.length} />}
       </div>
     </div>
@@ -394,14 +400,19 @@ function ArtifactEmpty({ onOpenLibrary, count }: { onOpenLibrary: () => void; co
   </div>
 }
 
-function ArtifactPanel({ message, onHistory, onExport, onCopy, onEditSection }: { message: Message; onHistory: () => void; onExport: () => void; onCopy: () => void; onEditSection: (heading: string, action: string) => void }) {
+function ArtifactPanel({ message, focused, onFocus, onPopout, onHistory, onExport, onCopy, onEditSection, onSelection }: { message: Message; focused: boolean; onFocus: () => void; onPopout: () => void; onHistory: () => void; onExport: () => void; onCopy: () => void; onEditSection: (heading: string, action: string) => void; onSelection: (text: string, action: string) => void }) {
   const summary = artifactSummary(message.content)
   const sections = useMemo(() => splitSections(message.content), [message.content])
+  const [selectedText, setSelectedText] = useState(''); const [selectionPoint, setSelectionPoint] = useState({ top: 0, left: 0 })
+  const captureSelection = () => { const current = window.getSelection(); const text = current?.toString().trim() ?? ''; if (!text || !current?.rangeCount) { setSelectedText(''); return } const rect = current.getRangeAt(0).getBoundingClientRect(); setSelectedText(text); setSelectionPoint({ top: rect.bottom + 8, left: Math.max(8, rect.left) }) }
   return <>
     <div className="border-b border-border-subtle p-space-4">
       <div className="flex items-start justify-between gap-space-2">
         <div className="min-w-0 text-title font-bold text-primary">{summary.title}</div>
         <div className="flex shrink-0 gap-space-1">
+          <button disabled className="rounded-md border border-border-subtle bg-elevated px-space-2 text-caption text-secondary">v1 · hiện tại</button>
+          <IconButton icon={focused ? '↙' : '↗'} aria-label={focused ? 'Split view' : 'Focus'} onClick={onFocus} />
+          <IconButton icon="□" aria-label="Pop-out" onClick={onPopout} />
           <IconButton icon="⏱" aria-label="Lịch sử phiên bản" onClick={onHistory} />
           <IconButton icon="⭳" aria-label="Xuất" onClick={onExport} />
           <IconButton icon="⧉" aria-label="Copy" onClick={onCopy} />
@@ -413,7 +424,8 @@ function ArtifactPanel({ message, onHistory, onExport, onCopy, onEditSection }: 
         <span className="text-caption text-muted">· {summary.items} mục</span>
       </div>
     </div>
-    <div className="min-h-0 flex-1 overflow-y-auto">
+    <div className="relative min-h-0 flex-1 overflow-y-auto" onMouseUp={captureSelection}>
+      {selectedText && <div className="fixed z-30 flex gap-1 rounded-md border border-border-strong bg-elevated p-1 shadow-lg" style={{ top: selectionPoint.top, left: selectionPoint.left }} onMouseDown={e => e.preventDefault()}>{['Hỏi AI', 'Viết lại', 'Rút gọn', 'Comment', 'Copy'].map(action => <button key={action} onClick={() => { onSelection(selectedText, action); setSelectedText('') }} className="rounded-sm px-space-2 py-space-1 text-caption text-primary hover:bg-hover">{action}</button>)}</div>}
       {sections.map((sec, i) => <ArtifactSection key={i} heading={sec.heading} body={sec.body} onAction={action => onEditSection(sec.heading, action)} />)}
     </div>
   </>
