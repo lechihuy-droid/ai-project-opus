@@ -550,9 +550,9 @@ def api_memory_candidates() -> list[dict[str, object]]:
 
 
 @app.post("/api/memory/candidates/{candidate_id}/accept")
-def api_memory_candidate_accept(candidate_id: str) -> dict[str, object]:
+def api_memory_candidate_accept(candidate_id: str, payload: dict[str, object] | None = None) -> dict[str, object]:
     try:
-        return runtime_memory.accept_candidate(candidate_id)
+        return runtime_memory.accept_candidate(candidate_id, payload if isinstance(payload, dict) else None)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except (FileNotFoundError, PermissionError) as exc:
@@ -563,6 +563,16 @@ def api_memory_candidate_accept(candidate_id: str) -> dict[str, object]:
 def api_memory_candidate_reject(candidate_id: str) -> dict[str, object]:
     try:
         return runtime_memory.reject_candidate(candidate_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+
+
+@app.post("/api/memory/{memory_id}/revoke")
+def api_memory_revoke(memory_id: str, payload: dict[str, object]) -> dict[str, object]:
+    try:
+        return runtime_memory.revoke_memory(memory_id, str(payload.get("revoked_by") or ""), str(payload.get("reason") or ""))
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except (FileNotFoundError, PermissionError) as exc:
