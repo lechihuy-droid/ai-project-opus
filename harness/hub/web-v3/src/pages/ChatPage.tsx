@@ -201,7 +201,7 @@ export default function ChatPage() {
 
   return <div className="chat-workspace">
     <TopBar workspace="Harness Hub" chat={activeChat} catalog={catalog} providers={providers} defaultModel={defaultModel}
-      onChooseModel={chooseModel} exportDisabled={!activeArtifact} onExport={() => setShowExport(true)} onSettings={() => { window.location.hash = '#/settings' }} onToast={showToast} />
+      onChooseModel={chooseModel} exportDisabled={!activeArtifact} onExport={() => setShowExport(true)} onSettings={() => { window.location.hash = '#/settings' }} />
     <div className={`cw-body ${artifactFocus ? 'artifact-focus' : ''}`}>
       <WorkspaceSidebar tab={leftTab} onTab={setLeftTab} chats={chats} activeChatId={activeChatId} onNewChat={newChat} onSelectChat={selectChat}
         artifacts={artifactMessages} activeArtifactIndex={activeArtifactIndex} onSelectArtifact={i => setActiveArtifactIndex(i)} files={chatFiles} onUploadFile={() => fileInput.current?.click()} onDeleteFile={async name => { await api(`/api/chats/${encodeURIComponent(activeChatId)}/files/${encodeURIComponent(name)}`, { method: 'DELETE' }); loadFiles() }} />
@@ -247,9 +247,9 @@ export default function ChatPage() {
 }
 
 // ── Top bar ───────────────────────────────────────────────────────────────────
-function TopBar({ workspace, chat, catalog, providers, defaultModel, onChooseModel, exportDisabled, onExport, onSettings, onToast }: {
+function TopBar({ workspace, chat, catalog, providers, defaultModel, onChooseModel, exportDisabled, onExport, onSettings }: {
   workspace: string; chat: Chat; catalog: Catalog[]; providers: Provider[]; defaultModel: string
-  onChooseModel: (provider: string, model: string) => void; exportDisabled: boolean; onExport: () => void; onSettings: () => void; onToast: (t: string) => void
+  onChooseModel: (provider: string, model: string) => void; exportDisabled: boolean; onExport: () => void; onSettings: () => void
 }) {
   const label = `${chat.provider} · ${modelShort(chat, catalog)}`
   return <div className="flex h-full items-center justify-between gap-space-3 border-b border-border-subtle bg-sidebar px-space-4">
@@ -263,7 +263,6 @@ function TopBar({ workspace, chat, catalog, providers, defaultModel, onChooseMod
       <div className="h-5 w-px bg-border-subtle" />
       <Button variant="secondary" size="sm" disabled={exportDisabled} onClick={onExport}>Export</Button>
       <IconButton icon="⚙" aria-label="Cài đặt" onClick={onSettings} />
-      <button aria-label="Tài khoản" onClick={() => onToast('Tài khoản: chưa nối')} className="flex h-7 w-7 items-center justify-center rounded-full bg-elevated text-caption font-semibold text-secondary">U</button>
     </div>
   </div>
 }
@@ -531,7 +530,7 @@ function VersionHistoryModal({ message, onClose }: { message: Message; onClose: 
 }
 
 // ── Export modal (markdown/text/json/html are real; PDF + share are stubs) ──────
-const exportFormats = [{ id: 'markdown', label: 'Markdown' }, { id: 'text', label: 'Text' }, { id: 'json', label: 'JSON' }, { id: 'html', label: 'HTML' }, { id: 'pdf', label: 'PDF (chưa nối)' }]
+const exportFormats = [{ id: 'markdown', label: 'Markdown' }, { id: 'text', label: 'Text' }, { id: 'json', label: 'JSON' }, { id: 'html', label: 'HTML' }]
 function ExportModal({ message, onClose, onToast }: { message: Message; onClose: () => void; onToast: (t: string) => void }) {
   const [format, setFormat] = useState('markdown')
   const [withTitle, setWithTitle] = useState(true)
@@ -545,7 +544,7 @@ function ExportModal({ message, onClose, onToast }: { message: Message; onClose:
   }
   const mime = format === 'json' ? 'application/json' : format === 'html' ? 'text/html' : 'text/markdown'
   const ext = format === 'json' ? 'json' : format === 'html' ? 'html' : format === 'text' ? 'txt' : 'md'
-  const download = () => { if (format === 'pdf') { onToast('PDF: backend chưa nối'); return } const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([render()], { type: mime })); a.download = `${summary.title.slice(0, 40) || 'artifact'}.${ext}`; a.click(); URL.revokeObjectURL(a.href); onToast('Đã tải xuống') }
+  const download = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([render()], { type: mime })); a.download = `${summary.title.slice(0, 40) || 'artifact'}.${ext}`; a.click(); URL.revokeObjectURL(a.href); onToast('Đã tải xuống') }
   return <div onClick={onClose} className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-space-4">
     <div role="dialog" aria-modal="true" onClick={e => e.stopPropagation()} className="w-[480px] max-w-[92vw] overflow-hidden rounded-[14px] bg-surface shadow-2xl">
       <div className="flex items-center justify-between border-b border-border-subtle p-space-4"><div className="text-title font-bold text-primary">Xuất artifact</div><IconButton icon="×" aria-label="Đóng" onClick={onClose} /></div>
@@ -560,8 +559,7 @@ function ExportModal({ message, onClose, onToast }: { message: Message; onClose:
       </div>
       <div className="flex gap-space-2 border-t border-border-subtle p-space-4">
         <Button variant="secondary" onClick={() => { void navigator.clipboard?.writeText(render()); onToast('Đã copy') }}>Copy</Button>
-        <Button variant="secondary" onClick={() => onToast('Share link: backend chưa nối')}>Chia sẻ link</Button>
-        <div className="flex-1" />
+                <div className="flex-1" />
         <Button variant="primary" onClick={download}>Tải xuống</Button>
       </div>
     </div>
