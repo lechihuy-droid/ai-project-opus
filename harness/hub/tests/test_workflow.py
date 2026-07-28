@@ -46,6 +46,57 @@ def test_valid_workflow_builds_ordered_ir(review_ui: dict[str, object]) -> None:
     assert ir[0]["agent"]["id"] == "reviewer"
 
 
+def test_tuple_edges_remain_valid_and_round_trip_unchanged(
+    monkeypatch: pytest.MonkeyPatch, tmp_path, review_ui: dict[str, object]
+) -> None:
+    _use_workflows_dir(monkeypatch, tmp_path)
+    text = yaml.safe_dump(review_ui, sort_keys=False)
+    path = tmp_path / "review-ui.workflow.yaml"
+    path.write_bytes(text.encode("utf-8"))
+
+    assert workflow.validate_workflow(review_ui) == []
+    workflow.save_workflow("review-ui", text)
+
+    assert path.read_bytes() == text.encode("utf-8")
+    assert yaml.safe_load(workflow.model_yaml_text("review-ui", review_ui))["edges"] == [["plan", "act"]]
+
+
+def test_mapping_edge_metadata_is_valid_and_ignored_by_ir_ordering(
+    monkeypatch: pytest.MonkeyPatch, tmp_path, review_ui: dict[str, object]
+) -> None:
+    data = deepcopy(review_ui)
+    data["edges"] = [{"from": "plan", "to": "act", "kind": "success", "label": "Approved plan"}]
+
+    assert workflow.validate_workflow(data) == []
+    assert [node["id"] for node in workflow.build_ir(data)] == ["plan", "act"]
+    _use_workflows_dir(monkeypatch, tmp_path)
+    path = tmp_path / "review-ui.workflow.yaml"
+    path.write_text(yaml.safe_dump(review_ui), encoding="utf-8")
+    workflow.save_workflow("review-ui", workflow.model_yaml_text("review-ui", data))
+    assert yaml.safe_load(path.read_text(encoding="utf-8"))["edges"] == data["edges"]
+
+
+def test_mapping_edge_rejects_unknown_kind_and_overlong_label(review_ui: dict[str, object]) -> None:
+    unknown_kind = deepcopy(review_ui)
+    unknown_kind["edges"] = [{"from": "plan", "to": "act", "kind": "branch"}]
+    assert "kind must be one of: default, error, success, warning" in "; ".join(workflow.validate_workflow(unknown_kind))
+
+    long_label = deepcopy(review_ui)
+    long_label["edges"] = [{"from": "plan", "to": "act", "label": "x" * 121}]
+    assert "label must be at most 120 characters" in "; ".join(workflow.validate_workflow(long_label))
+
+
+def test_real_workflow_files_still_validate() -> None:
+    for path in workflow.WORKFLOWS_DIR.glob("*.workflow.yaml"):
+        data = workflow.parse_workflow(path.read_text(encoding="utf-8"))
+        available_agents = {
+            node["agent"]
+            for node in data["nodes"]
+            if node.get("type", "agent") == "agent" and isinstance(node.get("agent"), str)
+        }
+        assert workflow.validate_workflow(data, available_agents) == [], path.name
+
+
 def test_cycle_is_rejected(review_ui: dict[str, object]) -> None:
     data = deepcopy(review_ui)
     data["edges"] = [["plan", "act"], ["act", "plan"]]
