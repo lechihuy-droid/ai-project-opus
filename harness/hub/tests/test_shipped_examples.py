@@ -9,7 +9,6 @@ from services import runtime_agents, skill_library
 
 
 EXAMPLE_AGENTS_DIR = config.HUB_DIR / "agents"
-EXAMPLE_PREFIX = "example-"
 
 
 def _read_yaml(path: Path) -> dict[str, object]:
@@ -28,15 +27,13 @@ def test_hub_builtin_skill_source_is_discovered() -> None:
     }
 
 
-def test_shipped_example_agents_validate_and_resolve_their_skills() -> None:
+def test_shipped_agents_validate_and_resolve_their_skills() -> None:
     skill_library._clear_cache()
-    shipped_skills = {
-        entry["name"] for entry in skill_library.list_skills() if entry["source"] == "hub_builtin"
-    }
-    examples = sorted(EXAMPLE_AGENTS_DIR.glob(f"{EXAMPLE_PREFIX}*.agent.yaml"))
+    known_skills = skill_library.list_skill_names()
+    agents = sorted(EXAMPLE_AGENTS_DIR.glob("*.agent.yaml"))
 
-    assert examples
-    for path in examples:
+    assert agents
+    for path in agents:
         profile = _read_yaml(path)
-        runtime_agents.validate_agent_profile(profile, shipped_skills)
-        assert set(profile["skills"]) <= shipped_skills
+        runtime_agents.validate_agent_profile(profile, known_skills)
+        assert set(profile["skills"]) <= known_skills
