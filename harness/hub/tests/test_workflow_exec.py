@@ -28,7 +28,7 @@ class FakeProvider:
     def status(self) -> dict[str, Any]:
         return {"id": "fake", "available": True}
 
-    def stream_chat(self, messages: list[dict[str, str]], session_id: str | None = None, model: str | None = None) -> Iterator[dict[str, Any]]:
+    def stream_chat(self, messages: list[dict[str, str]], session_id: str | None = None, model: str | None = None, **_: Any) -> Iterator[dict[str, Any]]:
         self.messages.append(messages)
         yield from self.scripts.pop(0)
 

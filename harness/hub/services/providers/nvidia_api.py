@@ -5,7 +5,7 @@ from typing import Iterator
 
 import config
 from services import chat
-from services.providers.base import ChatEvent, ProviderStatus
+from services.providers.base import ChatEvent, ProviderStatus, ToolPolicy
 
 PROVIDER_ID = "nvidia"
 
@@ -26,8 +26,12 @@ def stream_chat(
     session_id: str | None = None,
     model: str | None = None,
     system_prompt: str | None = None,
+    tool_policy: ToolPolicy | None = None,
 ) -> Iterator[ChatEvent]:
     """Thin adapter over the existing services/chat.py NVIDIA client — does not modify it."""
+    if tool_policy and (tool_policy.get("allowed_tools") or tool_policy.get("allowed_paths")):
+        yield {"type": "error", "message": "nvidia provider cannot enforce allowed_tools or allowed_paths", "code": None}
+        return
     chat_model = model or config.CHAT_DEFAULT_MODEL
     try:
         if system_prompt:

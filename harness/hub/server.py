@@ -211,17 +211,31 @@ def api_chat(payload: dict[str, object]) -> StreamingResponse:
     system_prompt = _system_prompt_with_skills(system_prompt, skill_contents)
     skill_notice = "Một phần nội dung skill đã bị cắt do giới hạn prompt." if skills_truncated else None
 
+    tool_policy = (
+        {
+            "permission": agent["permission"],
+            "allowed_tools": list(agent.get("allowed_tools") or []),
+            "allowed_paths": list(agent.get("allowed_paths") or []),
+        }
+        if agent
+        else None
+    )
+
     def events():
         try:
             stream_kwargs: dict[str, object] = {"session_id": session_id, "model": model}
             if system_prompt:
                 stream_kwargs["system_prompt"] = system_prompt
+            if tool_policy is not None:
+                stream_kwargs["tool_policy"] = tool_policy
             for item in provider.stream_chat(messages, **stream_kwargs):
                 item_type = item.get("type")
                 if item_type == "reasoning":
                     yield _sse("reasoning", {"text": item.get("text", "")})
                 elif item_type == "delta":
                     yield _sse("delta", {"text": item.get("text", "")})
+                elif item_type in {"tool_call", "tool_result"}:
+                    yield _sse(item_type, {key: value for key, value in item.items() if key != "type"})
                 elif item_type == "done":
                     done_payload: dict[str, object] = {
                         "usage": item.get("usage", {}),

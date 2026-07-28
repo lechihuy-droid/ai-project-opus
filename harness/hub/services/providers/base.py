@@ -12,12 +12,22 @@ class ProviderStatus(TypedDict):
 
 
 class ChatEvent(TypedDict, total=False):
-    type: str  # "reasoning" | "delta" | "done" | "error"
+    type: str  # "reasoning" | "delta" | "tool_call" | "tool_result" | "done" | "error"
     text: str
     usage: dict[str, object]
     session_id: str | None
     message: str
     code: int | None
+    tool_name: str
+    tool_input: object
+    tool_use_id: str
+    tool_output: object
+
+
+class ToolPolicy(TypedDict, total=False):
+    permission: str
+    allowed_tools: list[str]
+    allowed_paths: list[str]
 
 
 class Provider(Protocol):
@@ -31,4 +41,5 @@ class Provider(Protocol):
         session_id: str | None = None,
         model: str | None = None,
         system_prompt: str | None = None,
+        tool_policy: ToolPolicy | None = None,
     ) -> Iterator[ChatEvent]: ...
