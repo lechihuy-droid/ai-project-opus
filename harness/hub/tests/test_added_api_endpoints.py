@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 
 import config
 import server
-from services import hooks, runtime_agents, runtime_state
+from services import execution, hooks, runtime_agents, runtime_state
 
 
 @pytest.fixture()
@@ -125,7 +125,7 @@ def test_agent_test_endpoint_returns_provider_result(client: TestClient, monkeyp
     class Provider:
         def stream_chat(self, *_: Any, **__: Any) -> Iterator[dict[str, Any]]:
             yield {"type": "delta", "text": "ok"}; yield {"type": "done", "usage": {"input_tokens": 3, "output_tokens": 1}}
-    monkeypatch.setattr(server, "get_provider", lambda _provider: Provider())
+    monkeypatch.setattr(execution, "get_provider", lambda _provider: Provider())
     response = client.post("/api/agents/tester/test")
     assert response.status_code == 200 and response.json()["output"] == "ok"
     assert response.json()["usage"] == {"input_tokens": 3, "output_tokens": 1}
@@ -138,7 +138,7 @@ def test_agent_test_endpoint_rejects_missing_or_provider_error(client: TestClien
     class Provider:
         def stream_chat(self, *_: Any, **__: Any) -> Iterator[dict[str, Any]]:
             yield {"type": "error", "message": "provider unavailable"}
-    monkeypatch.setattr(server, "get_provider", lambda _provider: Provider())
+    monkeypatch.setattr(execution, "get_provider", lambda _provider: Provider())
     response = client.post("/api/agents/tester/test")
     assert response.status_code == 400 and response.json()["detail"] == "provider unavailable"
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import sys
 import threading
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -295,15 +296,15 @@ def api_agent_runs(agent_id: str | None = None) -> list[dict[str, object]]:
 
 @app.post("/api/agents/{agent_id}/test")
 def api_agent_test(agent_id: str) -> dict[str, object]:
-    import time
     try:
         agent = runtime_agents.get_agent(agent_id)
-        routed = runtime_agents.resolve_provider(agent)
         started = time.monotonic(); output: list[str] = []; usage: dict[str, object] = {}
-        for item in get_provider(routed["provider"]).stream_chat(
-            [{"role": "user", "content": "Trả lời ngắn: kết nối agent hoạt động."}], session_id=None, model=routed["model"],
+        request = execution.ExecutionRequest(
+            correlation_id=f"agent-test-{agent_id}", provider_id=str(agent["provider"]), model=agent.get("model"),
+            messages=[{"role": "user", "content": "Trả lời ngắn: kết nối agent hoạt động."}],
             tool_policy={"permission": agent["permission"], "allowed_tools": agent.get("allowed_tools", []), "allowed_paths": agent.get("allowed_paths", [])},
-        ):
+        )
+        for item in execution.execute(request):
             if item.get("type") == "delta": output.append(str(item.get("text") or ""))
             elif item.get("type") == "done": usage = dict(item.get("usage") or {})
             elif item.get("type") == "error": raise RuntimeError(str(item.get("message") or "Provider error"))

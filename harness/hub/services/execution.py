@@ -49,8 +49,10 @@ class ExecutionResult:
 ProviderResolver = Callable[[str], Provider]
 
 
-def gateway(request: ExecutionRequest, *, resolver: ProviderResolver = get_provider) -> ExecutionResult:
+def gateway(request: ExecutionRequest, *, resolver: ProviderResolver | None = None) -> ExecutionResult:
     """Resolve one authored provider/model route, or return an explicit denial."""
+    # Bound at call time, not as a default argument, so the seam stays injectable.
+    resolver = resolver or get_provider
     try:
         routed = runtime_agents.resolve_provider({"provider": request.provider_id, "model": request.model})
         return ExecutionResult(route=ExecutionRoute(
@@ -62,7 +64,7 @@ def gateway(request: ExecutionRequest, *, resolver: ProviderResolver = get_provi
 
 
 def execute(
-    request: ExecutionRequest, *, resolver: ProviderResolver = get_provider, result: ExecutionResult | None = None,
+    request: ExecutionRequest, *, resolver: ProviderResolver | None = None, result: ExecutionResult | None = None,
 ) -> Iterator[ExecutionEvent]:
     """Run exactly the gateway-selected route and preserve adapter event payloads."""
     result = result or gateway(request, resolver=resolver)
