@@ -19,6 +19,11 @@ _REQUIRED_TOP_LEVEL_FIELDS = ("id", "nodes", "edges", "stop")
 _TEMPLATE_REF = re.compile(r"{{(.*?)}}")
 _EDGE_KINDS = {"default", "success", "warning", "error"}
 _EDGE_LABEL_MAX_LENGTH = 120
+_WORKFLOW_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,63}$")
+
+
+class WorkflowConflictError(ValueError):
+    """Raised when creation would overwrite an existing workflow."""
 
 
 def _edge_endpoints(edge: Any) -> tuple[Any, Any] | None:
@@ -388,6 +393,60 @@ def save_workflow(workflow_id: str, yaml_text: str) -> dict[str, Any]:
     backup.write_bytes(old_bytes)
     path.write_bytes(yaml_text.encode("utf-8"))
     return data
+
+
+def create_workflow(
+    workflow_id: str, yaml_text: str | None = None, *, agent: str | None = None
+) -> dict[str, Any]:
+    """Validate and persist a new workflow without overwriting an existing definition."""
+    if not _WORKFLOW_ID.fullmatch(workflow_id):
+        raise ValueError("Workflow id must be a lowercase slug (letters, numbers, and hyphens)")
+
+    path = workflow_path(workflow_id)
+    if path.exists():
+        raise WorkflowConflictError(f"Workflow already exists: {workflow_id}")
+
+    agents = runtime_agents.list_agents()
+    available_agents = {item["id"] for item in agents}
+    if yaml_text is None:
+        selected_agent = agent or (agents[0]["id"] if agents else None)
+        if selected_agent is None:
+            raise ValueError("Cannot create a workflow without an available agent")
+        data: dict[str, Any] = {
+            "id": workflow_id,
+            "nodes": [{"id": "start", "agent": selected_agent, "prompt": "{{objective}}", "gate": "none"}],
+            "edges": [],
+            "stop": {"max_nodes": 10, "max_seconds": 1800},
+        }
+        yaml_text = yaml.safe_dump(data, sort_keys=False, allow_unicode=True)
+    else:
+        data = parse_workflow(yaml_text)
+        if data["id"] != workflow_id:
+            raise ValueError("Workflow id must match the path id")
+
+    errors = validate_workflow(data, available_agents)
+    if errors:
+        raise ValueError("; ".join(errors))
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(yaml_text, encoding="utf-8")
+    save_layout(workflow_id, {
+        "nodes": {
+            node["id"]: {"x": 70 + index * 260, "y": 90}
+            for index, node in enumerate(data["nodes"])
+        }
+    })
+    return data
+
+
+def delete_workflow(workflow_id: str) -> None:
+    """Back up and remove a workflow definition and its optional layout sidecar."""
+    path = workflow_path(workflow_id)
+    old_bytes = path.read_bytes()
+    backup = path.with_name(f"{path.name}.bak-{int(time.time())}")
+    backup.write_bytes(old_bytes)
+    path.unlink()
+    workflow_layout_path(workflow_id).unlink(missing_ok=True)
 
 
 def model_yaml_text(workflow_id: str, model: dict[str, Any]) -> str:

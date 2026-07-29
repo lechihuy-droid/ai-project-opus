@@ -212,6 +212,65 @@ def test_save_workflow_requires_existing_file(monkeypatch: pytest.MonkeyPatch, t
         workflow.save_workflow("review-ui", yaml.safe_dump(review_ui))
 
 
+def test_create_starter_validates_lists_and_saves_layout(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
+    _use_workflows_dir(monkeypatch, tmp_path)
+
+    created = workflow.create_workflow("starter")
+
+    assert workflow.validate_workflow(created, {"reviewer"}) == []
+    assert workflow.list_workflows() == [created]
+    assert workflow.read_layout("starter") == {"start": {"x": 70, "y": 90}}
+
+
+def test_create_explicit_yaml_round_trips(monkeypatch: pytest.MonkeyPatch, tmp_path, review_ui: dict[str, object]) -> None:
+    _use_workflows_dir(monkeypatch, tmp_path)
+    yaml_text = yaml.safe_dump(review_ui, sort_keys=False)
+
+    created = workflow.create_workflow("review-ui", yaml_text)
+
+    assert created == workflow.parse_workflow((tmp_path / "review-ui.workflow.yaml").read_text(encoding="utf-8"))
+
+
+def test_create_rejects_mismatch_invalid_ids_duplicates_and_missing_agent(
+    monkeypatch: pytest.MonkeyPatch, tmp_path, review_ui: dict[str, object]
+) -> None:
+    _use_workflows_dir(monkeypatch, tmp_path)
+    yaml_text = yaml.safe_dump(review_ui)
+    changed = deepcopy(review_ui)
+    changed["id"] = "other"
+    with pytest.raises(ValueError, match="must match"):
+        workflow.create_workflow("review-ui", yaml.safe_dump(changed))
+    for invalid_id in ("Upper", "has space", "", "-leading", "../escape", "path/name"):
+        with pytest.raises(ValueError, match="lowercase slug"):
+            workflow.create_workflow(invalid_id)
+
+    workflow.create_workflow("review-ui", yaml_text)
+    path = tmp_path / "review-ui.workflow.yaml"
+    original = path.read_bytes()
+    with pytest.raises(workflow.WorkflowConflictError):
+        workflow.create_workflow("review-ui", yaml.safe_dump({**review_ui, "nodes": []}))
+    assert path.read_bytes() == original
+
+    changed = deepcopy(review_ui)
+    changed["id"] = "missing-agent"
+    changed["nodes"][0]["agent"] = "missing-agent"
+    with pytest.raises(ValueError, match="missing-agent"):
+        workflow.create_workflow("missing-agent", yaml.safe_dump(changed))
+
+
+def test_delete_workflow_removes_definition_and_layout_with_backup(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
+    _use_workflows_dir(monkeypatch, tmp_path)
+    workflow.create_workflow("remove-me")
+
+    workflow.delete_workflow("remove-me")
+
+    assert not (tmp_path / "remove-me.workflow.yaml").exists()
+    assert not (tmp_path / "remove-me.layout.json").exists()
+    assert len(list(tmp_path.glob("remove-me.workflow.yaml.bak-*"))) == 1
+    with pytest.raises(FileNotFoundError):
+        workflow.delete_workflow("missing")
+
+
 def test_model_save_preserves_vietnamese_header_and_rejects_branch(
     monkeypatch: pytest.MonkeyPatch, tmp_path, review_ui: dict[str, object]
 ) -> None:

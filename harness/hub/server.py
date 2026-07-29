@@ -1021,6 +1021,27 @@ def api_workflows() -> list[dict[str, object]]:
     return workflow.list_workflows()
 
 
+@app.post("/api/workflows", status_code=201)
+def api_workflow_create(payload: dict[str, object], response: Response) -> dict[str, object]:
+    workflow_id = payload.get("id")
+    yaml_text = payload.get("yaml_text")
+    agent = payload.get("agent")
+    if not isinstance(workflow_id, str):
+        raise HTTPException(status_code=400, detail="id must be a string")
+    if yaml_text is not None and not isinstance(yaml_text, str):
+        raise HTTPException(status_code=400, detail="yaml_text must be a string")
+    if agent is not None and not isinstance(agent, str):
+        raise HTTPException(status_code=400, detail="agent must be a string")
+    try:
+        result = workflow.create_workflow(workflow_id, yaml_text, agent=agent)
+        response.headers["ETag"] = _etag(workflow.workflow_path(workflow_id).read_bytes())
+        return result
+    except workflow.WorkflowConflictError as exc:
+        raise _http_error(exc, 409) from exc
+    except (PermissionError, ValueError) as exc:
+        raise _http_error(exc, 400) from exc
+
+
 @app.get("/api/workflows/{workflow_id}/layout")
 def api_workflow_layout(workflow_id: str, response: Response) -> dict[str, object]:
     try:
@@ -1109,6 +1130,15 @@ def api_workflow_save(workflow_id: str, payload: dict[str, object], request: Req
         raise _http_error(exc) from exc
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.delete("/api/workflows/{workflow_id}")
+def api_workflow_delete(workflow_id: str) -> dict[str, bool]:
+    try:
+        workflow.delete_workflow(workflow_id)
+    except (FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc) from exc
+    return {"ok": True}
 
 
 # --- end C2a workflow routes ---

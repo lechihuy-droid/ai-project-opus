@@ -23,7 +23,15 @@ def test_hub_builtin_skill_source_is_discovered() -> None:
 
     assert config.SKILL_SOURCES["hub_builtin"] == config.HUB_DIR / "skills"
     assert {entry["name"] for entry in entries} == {
-        "hub-commit-message", "hub-diff-review", "hub-run-artifact-summary",
+        "backend-patterns",
+        "coding-standards",
+        "documentation",
+        "hub-commit-message",
+        "hub-diff-review",
+        "hub-run-artifact-summary",
+        "system-design",
+        "tech-debt",
+        "testing-strategy",
     }
 
 
