@@ -348,18 +348,19 @@ function WorkspaceSidebar({ tab, onTab, chats, activeChatId, onNewChat, onSelect
     { id: 'files', icon: <FileText aria-hidden="true" size={16} strokeWidth={1.75} />, label: t('chat.files'), count: files.length },
     { id: 'artifacts', icon: <Archive aria-hidden="true" size={16} strokeWidth={1.75} />, label: t('chat.artifacts'), count: artifacts.length },
   ]
+  const moveTab = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => { const next = event.key === 'ArrowRight' ? (index + 1) % tabs.length : event.key === 'ArrowLeft' ? (index + tabs.length - 1) % tabs.length : -1; if (next >= 0) { event.preventDefault(); onTab(tabs[next].id); (event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role=tab]')[next])?.focus() } }
   return <div className={`cw-sidebar ${collapsed ? 'sessions-collapsed' : ''}`}>
     <div className="cw-sidebar-toggle"><button type="button" className="sidebar-collapse" aria-label={collapsed ? t('chat.expandChats') : t('chat.collapseChats')} title={collapsed ? t('chat.expandChats') : t('chat.collapseChats')} onClick={onToggle}>{collapsed ? <ChevronRight size={16} strokeWidth={1.75} /> : <ChevronLeft size={16} strokeWidth={1.75} />}</button></div>
     {!collapsed && <>
     <div className="p-space-3 pb-space-2">
       <Button variant="secondary" onClick={onNewChat} className="w-full justify-center" icon={<Plus aria-hidden="true" size={16} strokeWidth={1.75} />}>{t('chat.newChat')}</Button>
     </div>
-    <div className="flex flex-col gap-[2px] px-space-2">
-      {tabs.map(t => <button key={t.id} onClick={() => onTab(t.id)} className={`flex items-center justify-between rounded-[7px] px-space-2 py-space-2 text-label ${tab === t.id ? 'bg-hover font-semibold text-primary' : 'text-secondary hover:bg-hover'}`}>
+    <div role="tablist" className="flex flex-col gap-[2px] px-space-2">
+      {tabs.map((t, index) => <button key={t.id} id={`chat-sidebar-tab-${t.id}`} role="tab" aria-selected={tab === t.id} tabIndex={tab === t.id ? 0 : -1} onKeyDown={event => moveTab(event, index)} onClick={() => onTab(t.id)} className={`flex items-center justify-between rounded-[7px] px-space-2 py-space-2 text-label ${tab === t.id ? 'bg-hover font-semibold text-primary' : 'text-secondary hover:bg-hover'}`}>
         <span className="flex items-center gap-space-2"><span>{t.icon}</span>{t.label}</span><span className="text-caption text-muted">{t.count}</span>
       </button>)}
     </div>
-    <div className="min-h-0 flex-1 overflow-y-auto px-space-2 pb-space-3 pt-space-2">
+    <div role="tabpanel" id="chat-sidebar-panel" aria-labelledby={`chat-sidebar-tab-${tab}`} className="min-h-0 flex-1 overflow-y-auto px-space-2 pb-space-3 pt-space-2">
       {tab === 'chats' && <>
         <SidebarHeading>{t('chat.chats')}</SidebarHeading>
         {chats.map(c => <button key={c.id} onClick={() => onSelectChat(c.id)} className={`mb-[2px] block w-full rounded-md px-space-2 py-space-2 text-left ${c.id === activeChatId ? 'bg-hover' : 'hover:bg-hover'}`}>
