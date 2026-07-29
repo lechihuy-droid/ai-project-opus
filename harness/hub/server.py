@@ -66,6 +66,11 @@ get_provider = execution.get_provider
 async def lifespan(_app: FastAPI):
     threading.Thread(target=usage.warm, name="usage-warm", daemon=True).start()
     threading.Thread(target=behavior.warm, name="behavior-warm", daemon=True).start()
+    # The first skill-library call parses the telemetry log and walks every skill
+    # source, so without this the Skills metric sits in its skeleton for seconds
+    # after each restart while the rest of the dashboard has already resolved.
+    threading.Thread(target=skill_library.list_skills, name="skills-warm", daemon=True).start()
+    threading.Thread(target=list_providers, name="providers-warm", daemon=True).start()
     try:
         gitjobs.reconcile_orphans()
     except Exception:

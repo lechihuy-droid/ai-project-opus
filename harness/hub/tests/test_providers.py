@@ -327,6 +327,25 @@ def test_codex_status_parses_version(tmp_path: Path, monkeypatch: pytest.MonkeyP
     assert status["available"] is True
     assert status["version"] == "codex-cli 0.144.3"
     assert status["detail"] == "ok"
+
+
+def test_codex_status_cache_expires_and_reprobes(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls = 0
+
+    def run(*args: object, **kwargs: object) -> object:
+        nonlocal calls
+        calls += 1
+        return type("Result", (), {"returncode": 0, "stdout": "codex 1", "stderr": ""})()
+
+    monkeypatch.setattr(codex_cli.subprocess, "run", run)
+    codex_cli._status_cache.update({"ts": 0.0, "value": None})
+
+    codex_cli.status()
+    codex_cli.status()
+    monkeypatch.setattr(codex_cli, "_STATUS_TTL", 0.0)
+    codex_cli.status()
+
+    assert calls == 2
 # ---------------------------------------------------------------------------
 # procs.ProcessRegistry — timeout kill + max concurrent
 # ---------------------------------------------------------------------------
