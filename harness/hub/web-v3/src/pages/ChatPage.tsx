@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { api, apiRequest } from '../lib/api'
 import { parseSse } from '../lib/sse'
 import { Markdown } from '../lib/markdown'
@@ -30,6 +30,7 @@ type SharedContextState = { text: string; pinned: PinnedMessage[]; instructions:
 
 const chatsKey = 'hub-v3-chats'
 const sharedContextKey = 'hub-v3-shared-context'
+const artifactWidthKey = 'hub-v3-artifact-width'
 const asKind = asProviderId
 
 // Honest, provider-level capability copy — no fabricated per-model speed/cost ratings.
@@ -90,6 +91,13 @@ export default function ChatPage() {
   const [activeArtifactIndex, setActiveArtifactIndex] = useState<number | null>(null)
   const [artifactContextEnabled, setArtifactContextEnabled] = useState(true)
   const [artifactFocus, setArtifactFocus] = useState(false)
+  const [artifactPanelOpen, setArtifactPanelOpen] = useState(false)
+  const [artifactAutoOpened, setArtifactAutoOpened] = useState<Record<string, true>>({})
+  const [artifactDismissed, setArtifactDismissed] = useState<Record<string, true>>({})
+  const [artifactWidth, setArtifactWidth] = useState(() => {
+    const saved = Number(localStorage.getItem(artifactWidthKey))
+    return Number.isFinite(saved) ? Math.min(560, Math.max(320, saved)) : 400
+  })
   const [showVersionHistory, setShowVersionHistory] = useState(false)
   const [showExport, setShowExport] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
@@ -97,6 +105,7 @@ export default function ChatPage() {
   const [chatFiles, setChatFiles] = useState<ChatFile[]>([])
   const [comments, setComments] = useState<ArtifactComment[]>([])
   useEffect(() => { localStorage.setItem('hub-v3-sessions-collapsed', String(sessionsCollapsed)) }, [sessionsCollapsed])
+  useEffect(() => { localStorage.setItem(artifactWidthKey, String(artifactWidth)) }, [artifactWidth])
   const fileInput = useRef<HTMLInputElement>(null)
   const controllers = useRef(new Map<string, AbortController>())
   const streamingMessageIds = useRef(new Map<string, string>())
@@ -110,6 +119,14 @@ export default function ChatPage() {
   useEffect(() => { localStorage.setItem(chatsKey, JSON.stringify(chats.map(c => ({ ...c, messages: c.messages.map(({ streaming: _s, ...m }) => m) })))) }, [chats])
   useEffect(() => { localStorage.setItem(sharedContextKey, JSON.stringify(sharedContext)) }, [sharedContext])
   useEffect(() => { setActiveArtifactIndex(null) }, [activeChatId])
+  useEffect(() => {
+    if (!artifactMessages.length) { setArtifactPanelOpen(false); return }
+    if (!artifactAutoOpened[activeChatId] && !artifactDismissed[activeChatId] && window.innerWidth >= 1600) {
+      setActiveArtifactIndex(artifactMessages.at(-1)?.index ?? null)
+      setArtifactPanelOpen(true)
+      setArtifactAutoOpened(current => ({ ...current, [activeChatId]: true }))
+    }
+  }, [activeChatId, artifactAutoOpened, artifactDismissed, artifactMessages])
   useEffect(() => { const handoff = sessionStorage.getItem(activeChatHandoffKey); if (handoff && chats.some(chat => chat.id === handoff)) { setActiveChatId(handoff); sessionStorage.removeItem(activeChatHandoffKey) } }, [chats])
   useEffect(() => () => window.clearTimeout(toastTimer.current), [])
   useEffect(() => {
@@ -201,11 +218,21 @@ export default function ChatPage() {
   const contextEstimate = estimateTokens([sharedText(sharedContext), artifactContextEnabled && activeArtifact?.content].filter(Boolean).join('\n\n'))
   const contextTooLarge = contextEstimate > 8000
   const contextSummary = `Bối cảnh ~${formatTokens(contextEstimate)} token · Ghim ${sharedContext.pinned.length}/10`
+  const resizeArtifact = (next: number) => setArtifactWidth(Math.min(560, Math.max(320, next)))
+  const beginArtifactResize = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    const startX = event.clientX; const startWidth = artifactWidth
+    const onMove = (move: MouseEvent) => resizeArtifact(startWidth - (move.clientX - startX))
+    const onUp = () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp) }
+    window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onUp)
+  }
+  const openArtifactPanel = () => { setArtifactPanelOpen(true); if (activeArtifactIndex == null && artifactMessages.length) setActiveArtifactIndex(artifactMessages.at(-1)?.index ?? null) }
+  const closeArtifactPanel = () => { setArtifactPanelOpen(false); setArtifactFocus(false); setArtifactDismissed(current => ({ ...current, [activeChatId]: true })) }
 
   return <div className="chat-workspace">
-    <TopBar workspace="Harness Hub" chat={activeChat} catalog={catalog} providers={providers} defaultModel={defaultModel}
+    <TopBar chat={activeChat} catalog={catalog} providers={providers} defaultModel={defaultModel}
       onChooseModel={chooseModel} exportDisabled={!activeArtifact} onExport={() => setShowExport(true)} onSettings={() => { window.location.hash = '#/settings' }} />
-    <div className={`cw-body ${artifactFocus ? 'artifact-focus' : ''} ${sessionsCollapsed ? 'sessions-collapsed' : ''}`}>
+    <div data-artifact={artifactPanelOpen ? 'open' : 'closed'} className={`cw-body ${artifactFocus ? 'artifact-focus' : ''} ${sessionsCollapsed ? 'sessions-collapsed' : ''}`} style={{ '--cw-artifact-width': `${artifactWidth}px` } as CSSProperties}>
       <WorkspaceSidebar tab={leftTab} onTab={setLeftTab} chats={chats} activeChatId={activeChatId} onNewChat={newChat} onSelectChat={selectChat}
         artifacts={artifactMessages} activeArtifactIndex={activeArtifactIndex} onSelectArtifact={i => setActiveArtifactIndex(i)} files={chatFiles} onUploadFile={() => fileInput.current?.click()} onDeleteFile={async name => { await api(`/api/chats/${encodeURIComponent(activeChatId)}/files/${encodeURIComponent(name)}`, { method: 'DELETE' }); loadFiles() }} collapsed={sessionsCollapsed} onToggle={() => setSessionsCollapsed(value => !value)} />
 
@@ -217,28 +244,28 @@ export default function ChatPage() {
         </div>}
         <div className="cw-msgs">
           {isEmptyPhase
-            ? <EmptyState onCreate={() => void send('Tạo một kế hoạch ra mắt sản phẩm')} suggestions={skills.slice(0, 6).map(skillName)} onSuggestion={label => void send(label)} />
-            : <div className="space-y-space-4 p-space-4">
-              {activeChat.notice && <p className="text-caption text-muted">{activeChat.notice}</p>}
+            ? <EmptyState onCreate={() => void send('Tạo một kế hoạch ra mắt sản phẩm')} />
+            : <div className="cw-reading-column">
+              {activeChat.notice && <SystemEvent text={activeChat.notice} />}
               {activeChat.messages.map((m, i) => <MessageView key={i} message={m} last={i === activeChat.messages.length - 1}
-                onOpenArtifact={() => { setActiveArtifactIndex(i); setLeftTab('artifacts') }} onRetry={retry} onCopy={() => { void navigator.clipboard?.writeText(m.content); showToast('Đã copy') }}
+                onOpenArtifact={() => { setActiveArtifactIndex(i); setLeftTab('artifacts'); openArtifactPanel() }} onRetry={retry} onCopy={() => { void navigator.clipboard?.writeText(m.content); showToast('Đã copy') }}
                 pinned={pinnedIds.has(`${activeChatId}:${i}`)} onPin={() => pin(i, m.content)} onUnpin={() => unpin(`${activeChatId}:${i}`)} />)}
               {streaming && !activeChat.messages.at(-1)?.content && <ThinkingDots />}
             </div>}
         </div>
-        {activeSkills.length > 0 && <div className="flex flex-wrap gap-space-2 px-space-4 pt-space-2">{activeSkills.map(skill => <Chip key={skill.id} onRemove={() => removeSkill(skill.id)}>#{skill.id}</Chip>)}</div>}
         {!isEmptyPhase && activeArtifact && <div className="flex flex-wrap gap-space-2 px-space-4 pt-space-2">{['Phân tích tài liệu', 'Tóm tắt', 'Rút gọn', 'Viết lại', 'Tạo slide', 'Hỏi về dữ liệu'].map(action => <button key={action} onClick={() => void send(`${action} tài liệu đang mở`)} className="shrink-0 whitespace-nowrap rounded-full border border-border-strong bg-surface px-space-3 py-[6px] text-caption text-secondary transition-colors hover:border-accent hover:text-accent">{action}</button>)}</div>}
-        {!isEmptyPhase && skills.length > 0 && <div className="flex flex-wrap gap-space-2 px-space-4 pt-space-2">{skills.slice(0, 6).map(s => <button key={skillName(s)} onClick={() => activateSkill(skillName(s))} className="shrink-0 whitespace-nowrap rounded-full border border-border-strong bg-surface px-space-3 py-[6px] text-caption text-secondary transition-colors hover:border-accent hover:text-accent">#{skillName(s)}</button>)}</div>}
         <Composer value={promptText} onChange={changePrompt} onSubmit={() => { if (!streaming) submitPrompt() }} onStop={stop} streaming={streaming}
           placeholder={`Nhắn ${activeChat.provider}…`} skillMatches={skillMatches.map(skillName)} onPickSkill={name => { activateSkill(name); setPromptText('') }}
-          onAttach={() => fileInput.current?.click()} />
+          onAttach={() => fileInput.current?.click()} skills={skills.map(skillName)} onActivateSkill={name => activateSkill(name)} activeSkills={activeSkills} onRemoveSkill={removeSkill} providerLabel={`${activeChat.provider} · ${modelShort(activeChat, catalog)}`} />
       </div>
 
       <div className="cw-artifact">
+        <div className="cw-artifact-resizer" role="separator" aria-orientation="vertical" aria-label="Điều chỉnh chiều rộng artifact" tabIndex={0} onMouseDown={beginArtifactResize} onKeyDown={event => { if (event.key === 'ArrowLeft') { event.preventDefault(); resizeArtifact(artifactWidth + 16) } if (event.key === 'ArrowRight') { event.preventDefault(); resizeArtifact(artifactWidth - 16) } }} />
         {activeArtifact
-          ? <ArtifactPanel message={activeArtifact} comments={comments} focused={artifactFocus} onFocus={() => setArtifactFocus(v => !v)} onPopout={() => void popoutArtifact()} onHistory={() => setShowVersionHistory(true)} onExport={() => setShowExport(true)} onCopy={() => { void navigator.clipboard?.writeText(activeArtifact.content); showToast('Đã copy') }} onEditSection={editSection} onResolveComment={setCommentResolved} onDeleteComment={deleteComment} onSelection={(text, action) => { if (action === 'Copy') { void navigator.clipboard?.writeText(text); showToast('Đã copy vùng chọn'); return } if (action === 'Comment') { void addComment(text); return } void send(`${action} đoạn văn bản sau:\n"${text}"`) }} />
-          : <ArtifactEmpty onOpenLibrary={() => setLeftTab('artifacts')} count={Math.max(artifactMessages.length, serverArtifactCount)} />}
+          ? <ArtifactPanel message={activeArtifact} comments={comments} focused={artifactFocus} onClose={closeArtifactPanel} onFocus={() => setArtifactFocus(v => !v)} onPopout={() => void popoutArtifact()} onHistory={() => setShowVersionHistory(true)} onExport={() => setShowExport(true)} onCopy={() => { void navigator.clipboard?.writeText(activeArtifact.content); showToast('Đã copy') }} onEditSection={editSection} onResolveComment={setCommentResolved} onDeleteComment={deleteComment} onSelection={(text, action) => { if (action === 'Copy') { void navigator.clipboard?.writeText(text); showToast('Đã copy vùng chọn'); return } if (action === 'Comment') { void addComment(text); return } void send(`${action} đoạn văn bản sau:\n"${text}"`) }} />
+          : <ArtifactEmpty onClose={closeArtifactPanel} onOpenLibrary={() => setLeftTab('artifacts')} count={Math.max(artifactMessages.length, serverArtifactCount)} />}
       </div>
+      {artifactMessages.length > 0 && !artifactPanelOpen && <button type="button" className="cw-artifact-reopen" aria-label="Mở artifact" title="Mở artifact" onClick={openArtifactPanel}>◀</button>}
     </div>
 
     {contextOpen && <ContextDrawer context={sharedContext} onChange={setSharedContext} tooLarge={contextTooLarge} estimate={contextEstimate} onClose={() => setContextOpen(false)} />}
@@ -250,16 +277,15 @@ export default function ChatPage() {
 }
 
 // ── Top bar ───────────────────────────────────────────────────────────────────
-function TopBar({ workspace, chat, catalog, providers, defaultModel, onChooseModel, exportDisabled, onExport, onSettings }: {
-  workspace: string; chat: Chat; catalog: Catalog[]; providers: Provider[]; defaultModel: string
+function TopBar({ chat, catalog, providers, defaultModel, onChooseModel, exportDisabled, onExport, onSettings }: {
+  chat: Chat; catalog: Catalog[]; providers: Provider[]; defaultModel: string
   onChooseModel: (provider: string, model: string) => void; exportDisabled: boolean; onExport: () => void; onSettings: () => void
 }) {
   const label = `${chat.provider} · ${modelShort(chat, catalog)}`
   return <div className="flex h-full items-center justify-between gap-space-3 border-b border-border-subtle bg-sidebar px-space-4">
+    {/* Session identity, not product identity: the sidebar brand block already names the product. */}
     <div className="flex min-w-0 items-center gap-space-2">
-      <div className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-[7px] bg-accent text-[13px] font-bold text-app">W</div>
-      <div className="truncate text-label font-semibold text-primary">{workspace}</div>
-      <span className="flex shrink-0 items-center gap-[5px] rounded-full bg-[var(--color-success)]/15 px-[9px] py-[3px] text-caption font-semibold text-success"><span className="h-[6px] w-[6px] rounded-full bg-success" />Active</span>
+      <div className="truncate text-label font-semibold text-primary">{chat.title}</div>
     </div>
     <div className="flex shrink-0 items-center gap-space-2">
       <ModelSelector chat={chat} catalog={catalog} providers={providers} defaultModel={defaultModel} triggerLabel={label} onChoose={onChooseModel} />
@@ -353,16 +379,12 @@ function SidebarHeading({ children, inline }: { children: React.ReactNode; inlin
 }
 
 // ── Center: empty state, messages, composer ────────────────────────────────────
-function EmptyState({ onCreate, suggestions, onSuggestion }: { onCreate: () => void; suggestions: string[]; onSuggestion: (s: string) => void }) {
+function EmptyState({ onCreate }: { onCreate: () => void }) {
   return <div className="flex h-full flex-col items-center justify-center p-space-8">
     <div className="w-full max-w-[520px] text-center">
       <div className="mb-space-2 text-[22px] font-bold text-primary">Bạn muốn làm gì hôm nay?</div>
       <div className="mb-space-6 text-body text-secondary">Nhắn ở ô bên dưới, hoặc tạo artifact đầu tiên.</div>
       <div className="mb-space-6 flex justify-center"><Button variant="primary" onClick={onCreate}>Tạo Artifact</Button></div>
-      {suggestions.length > 0 && <>
-        <div className="mb-space-2 text-section font-semibold uppercase tracking-section text-muted">Gợi ý</div>
-        <div className="flex flex-wrap justify-center gap-space-2">{suggestions.map(s => <button key={s} onClick={() => onSuggestion(s)} className="whitespace-nowrap rounded-full border border-border-strong bg-surface px-space-4 py-space-2 text-caption text-secondary transition-colors hover:border-accent hover:text-accent">{s}</button>)}</div>
-      </>}
     </div>
   </div>
 }
@@ -371,20 +393,20 @@ function ThinkingDots() {
   return <div className="flex justify-start"><div className="flex gap-[4px] rounded-[12px] bg-surface px-space-3 py-space-3">{[0, 0.2, 0.4].map(d => <span key={d} className="h-[6px] w-[6px] rounded-full bg-muted" style={{ animation: `run-pulse 1.2s infinite ease-in-out ${d}s` }} />)}</div></div>
 }
 
+function SystemEvent({ text, onRetry }: { text: string; onRetry?: () => void }) {
+  return <div className="cw-system-event"><span>{text}</span>{onRetry && <button type="button" aria-label="Thử lại" title="Thử lại" onClick={onRetry}>↻</button>}</div>
+}
+
 function MessageView({ message, last, onOpenArtifact, onRetry, onCopy, pinned, onPin, onUnpin }: {
   message: Message; last: boolean; onOpenArtifact: () => void; onRetry: () => void; onCopy: () => void; pinned: boolean; onPin: () => void; onUnpin: () => void
 }) {
   const [showReasoning, setShowReasoning] = useState(false)
   const artifact = isArtifact(message); const summary = artifact ? artifactSummary(message.content) : null
-  if (message.role === 'system' && last) return <div className="rounded-[12px] border border-error bg-surface px-space-4 py-space-3 text-label">
-    <div className="font-semibold text-error">Provider không khả dụng</div>
-    <div className="mt-space-2 whitespace-pre-wrap text-primary">Nguyên nhân: {message.content}</div>
-    <div className="mt-space-3 flex flex-wrap gap-space-2"><Button variant="ghost" size="sm" onClick={onRetry}>Thử lại</Button><Button variant="ghost" size="sm" onClick={() => { window.location.hash = '#/settings' }}>Mở Settings</Button></div>
-  </div>
+  if (message.role === 'system') return <SystemEvent text={message.content} onRetry={last ? onRetry : undefined} />
   const mine = message.role === 'user'
-  return <div className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
-    <div className="max-w-[78%]">
-      <div className={`whitespace-pre-wrap rounded-[12px] px-space-4 py-space-3 text-label ${mine ? 'bg-accent-subtle text-primary' : 'bg-surface text-secondary'}`}>
+  return <div className={`cw-message group flex ${mine ? 'justify-end' : 'justify-start'}`}>
+    <div className={mine ? 'relative max-w-[70%]' : 'relative w-full'}>
+      <div className={`whitespace-pre-wrap px-space-4 py-space-3 text-label leading-[1.6] ${mine ? 'rounded-[12px] bg-accent-subtle pr-12 text-primary' : 'cw-assistant-message text-secondary'}`}>
         {message.role === 'assistant' && !message.streaming && !artifact ? <Markdown source={message.content} /> : message.content || (message.streaming ? '…' : '')}
       </div>
       {artifact && summary && <button onClick={onOpenArtifact} className="mt-space-2 flex w-full max-w-[340px] items-center gap-space-3 rounded-[10px] border border-border-subtle bg-elevated px-space-3 py-space-3 text-left transition-colors hover:border-accent">
@@ -393,32 +415,42 @@ function MessageView({ message, last, onOpenArtifact, onRetry, onCopy, pinned, o
         <span className="text-caption text-muted">→</span>
       </button>}
       {message.reasoning && <><Button variant="ghost" size="sm" className="mt-space-1" onClick={() => setShowReasoning(v => !v)}>{showReasoning ? 'Ẩn suy nghĩ' : 'Hiện suy nghĩ'}</Button>{showReasoning && <div className="mt-space-1 whitespace-pre-wrap border-l border-border-subtle pl-space-2 font-mono text-caption text-muted">{message.reasoning}</div>}</>}
-      {message.content && !message.streaming && <div className="mt-space-1 flex gap-space-2"><Button variant="ghost" size="sm" onClick={onCopy}>Copy</Button>{message.role === 'assistant' && <Button variant="ghost" size="sm" onClick={pinned ? onUnpin : onPin}>{pinned ? 'Bỏ ghim' : 'Ghim'}</Button>}</div>}
+      {message.content && !message.streaming && <div className="cw-message-actions">
+        <button type="button" aria-label="Copy" title="Copy" onClick={onCopy}>⧉</button>
+        {message.role === 'assistant' && <><button type="button" aria-label={pinned ? 'Bỏ ghim' : 'Ghim'} title={pinned ? 'Bỏ ghim' : 'Ghim'} onClick={pinned ? onUnpin : onPin}>{pinned ? '⌑' : '⌖'}</button><button type="button" aria-label="Thử lại" title="Thử lại" onClick={onRetry}>↻</button></>}
+      </div>}
     </div>
   </div>
 }
 
-function Composer({ value, onChange, onSubmit, onStop, streaming, placeholder, skillMatches, onPickSkill, onAttach }: {
-  value: string; onChange: (v: string) => void; onSubmit: () => void; onStop: () => void; streaming: boolean; placeholder: string; skillMatches: string[]; onPickSkill: (name: string) => void; onAttach: () => void
+function Composer({ value, onChange, onSubmit, onStop, streaming, placeholder, skillMatches, onPickSkill, onAttach, skills, onActivateSkill, activeSkills, onRemoveSkill, providerLabel }: {
+  value: string; onChange: (v: string) => void; onSubmit: () => void; onStop: () => void; streaming: boolean; placeholder: string; skillMatches: string[]; onPickSkill: (name: string) => void; onAttach: () => void; skills: string[]; onActivateSkill: (name: string) => boolean; activeSkills: ActiveSkill[]; onRemoveSkill: (id: string) => void; providerLabel: string
 }) {
-  return <div className="p-space-4 pt-space-2">
+  const textarea = useRef<HTMLTextAreaElement>(null)
+  useEffect(() => { if (textarea.current) { textarea.current.style.height = '0px'; textarea.current.style.height = `${Math.min(textarea.current.scrollHeight, 180)}px` } }, [value])
+  return <div className="cw-composer p-space-4 pt-space-2">
     <div className="relative">
       {skillMatches.length > 0 && <div className="absolute bottom-full left-0 z-10 mb-space-1 w-full max-w-[280px] rounded-md border border-border-subtle bg-surface p-space-1">{skillMatches.map(name => <button key={name} onClick={() => onPickSkill(name)} className="block w-full rounded-sm px-space-2 py-space-1 text-left text-caption text-secondary hover:bg-hover">#{name}</button>)}</div>}
-      <div className="flex items-end gap-space-2 rounded-[12px] border border-border-strong bg-surface py-space-2 pl-space-4 pr-space-2">
-        <textarea aria-label="Nhập tin nhắn" value={value} onChange={e => onChange(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); onSubmit() } }}
-          placeholder={placeholder} rows={1} className="max-h-[120px] flex-1 resize-none border-none bg-transparent py-space-1 text-label text-primary outline-none placeholder:text-muted" />
-        <IconButton icon="📎" aria-label="Đính kèm file" onClick={onAttach} />
-        {streaming
-          ? <button aria-label="Dừng" onClick={onStop} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-error text-error">■</button>
-          : <button aria-label="Gửi" onClick={onSubmit} disabled={!value.trim()} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent text-app disabled:opacity-40">➤</button>}
+      <div className="rounded-[12px] border border-border-strong bg-surface p-space-2">
+        {activeSkills.length > 0 && <div className="mb-space-2 flex flex-wrap gap-space-2">{activeSkills.map(skill => <Chip key={skill.id} onRemove={() => onRemoveSkill(skill.id)}>#{skill.id}</Chip>)}</div>}
+        <div className="flex items-end gap-space-2 px-space-2">
+          <textarea ref={textarea} aria-label="Nhập tin nhắn" value={value} onChange={e => onChange(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); onSubmit() } }} placeholder={placeholder} rows={1} className="max-h-[180px] min-h-[52px] flex-1 resize-none overflow-y-auto border-none bg-transparent py-space-1 text-label text-primary outline-none placeholder:text-muted" />
+          {streaming ? <button aria-label="Dừng" title="Dừng" onClick={onStop} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-error text-error">■</button> : <button aria-label="Gửi" title="Gửi" onClick={onSubmit} disabled={!value.trim()} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-accent text-app disabled:opacity-40">➤</button>}
+        </div>
+        <div className="mt-space-1 flex items-center gap-space-1 border-t border-border-subtle pt-space-1">
+          <IconButton icon="📎" aria-label="Đính kèm file" title="Đính kèm file" onClick={onAttach} className="!h-9 !w-9" />
+          <Popover label="Skills" aria-label="Chọn skill" triggerClassName="!h-9 !px-space-2">{(close: () => void) => <div>{skills.map(name => <button key={name} type="button" onClick={() => { onActivateSkill(name); close() }} className="block w-full rounded-sm px-space-2 py-space-1 text-left text-caption text-primary hover:bg-hover">#{name}</button>)}</div>}</Popover>
+          <span className="ml-auto truncate px-space-2 text-caption text-muted">{providerLabel}</span>
+        </div>
       </div>
     </div>
   </div>
 }
 
 // ── Right: artifact panel ──────────────────────────────────────────────────────
-function ArtifactEmpty({ onOpenLibrary, count }: { onOpenLibrary: () => void; count: number }) {
-  return <div className="flex flex-1 flex-col items-center justify-center p-space-8 text-center">
+function ArtifactEmpty({ onClose, onOpenLibrary, count }: { onClose: () => void; onOpenLibrary: () => void; count: number }) {
+  return <div className="relative flex flex-1 flex-col items-center justify-center p-space-8 text-center">
+    <IconButton icon="×" aria-label="Đóng artifact" title="Đóng artifact" className="absolute right-space-3 top-space-3" onClick={onClose} />
     <div className="mb-space-3 flex h-[44px] w-[44px] items-center justify-center rounded-[11px] bg-surface text-[19px] text-muted">▤</div>
     <div className="mb-space-1 text-label font-semibold text-primary">Chưa chọn artifact</div>
     <div className="max-w-[220px] text-caption text-muted">Artifact hiện ra đây khi AI tạo output tái dùng được.</div>
@@ -426,7 +458,7 @@ function ArtifactEmpty({ onOpenLibrary, count }: { onOpenLibrary: () => void; co
   </div>
 }
 
-function ArtifactPanel({ message, comments, focused, onFocus, onPopout, onHistory, onExport, onCopy, onEditSection, onSelection, onResolveComment, onDeleteComment }: { message: Message; comments: ArtifactComment[]; focused: boolean; onFocus: () => void; onPopout: () => void; onHistory: () => void; onExport: () => void; onCopy: () => void; onEditSection: (heading: string, action: string) => void; onSelection: (text: string, action: string) => void; onResolveComment: (comment: ArtifactComment, resolved: boolean) => void; onDeleteComment: (comment: ArtifactComment) => void }) {
+function ArtifactPanel({ message, comments, focused, onClose, onFocus, onPopout, onHistory, onExport, onCopy, onEditSection, onSelection, onResolveComment, onDeleteComment }: { message: Message; comments: ArtifactComment[]; focused: boolean; onClose: () => void; onFocus: () => void; onPopout: () => void; onHistory: () => void; onExport: () => void; onCopy: () => void; onEditSection: (heading: string, action: string) => void; onSelection: (text: string, action: string) => void; onResolveComment: (comment: ArtifactComment, resolved: boolean) => void; onDeleteComment: (comment: ArtifactComment) => void }) {
   const summary = artifactSummary(message.content)
   const sections = useMemo(() => splitSections(message.content), [message.content])
   const [selectedText, setSelectedText] = useState(''); const [selectionPoint, setSelectionPoint] = useState({ top: 0, left: 0 })
@@ -437,7 +469,8 @@ function ArtifactPanel({ message, comments, focused, onFocus, onPopout, onHistor
         <div className="min-w-0 text-title font-bold text-primary">{summary.title}</div>
         <div className="flex shrink-0 gap-space-1">
           <button disabled className="rounded-md border border-border-subtle bg-elevated px-space-2 text-caption text-secondary">v1 · hiện tại</button>
-          <IconButton icon={focused ? '↙' : '↗'} aria-label={focused ? 'Split view' : 'Focus'} onClick={onFocus} />
+           <IconButton icon={focused ? '↙' : '↗'} aria-label={focused ? 'Split view' : 'Focus'} onClick={onFocus} />
+           <IconButton icon="×" aria-label="Đóng artifact" title="Đóng artifact" onClick={onClose} />
           <IconButton icon="□" aria-label="Pop-out" onClick={onPopout} />
           <IconButton icon="⏱" aria-label="Lịch sử phiên bản" onClick={onHistory} />
           <IconButton icon="⭳" aria-label="Xuất" onClick={onExport} />
