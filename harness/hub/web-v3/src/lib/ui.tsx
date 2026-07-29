@@ -268,6 +268,18 @@ export function Status({ kind, label, className }: StatusProps) {
   )
 }
 
+export type RunStatusKind = 'running' | 'success' | 'error' | 'interrupted' | 'queued' | 'neutral'
+export type RunStatusBadgeProps = { kind: RunStatusKind; label: string; className?: string }
+
+const runStatusBadgeClass: Record<RunStatusKind, string> = {
+  running: 'border border-accent bg-accent-subtle text-primary', success: 'border border-success bg-surface text-primary', error: 'border border-error bg-error-subtle text-primary', interrupted: 'border border-warning bg-warning-subtle text-primary', queued: 'border border-border-strong bg-elevated text-secondary', neutral: 'border border-border-subtle bg-elevated text-secondary',
+}
+const runStatusBadgeMark: Record<RunStatusKind, string> = { running: '●', success: '✓', error: '!', interrupted: '◆', queued: '○', neutral: '?' }
+
+export function RunStatusBadge({ kind, label, className }: RunStatusBadgeProps) {
+  return <span className={cx('inline-flex items-center gap-[5px] rounded-full px-space-2 py-[2px] text-caption leading-caption', runStatusBadgeClass[kind], className)}><span aria-hidden="true" className="text-[10px] leading-none">{runStatusBadgeMark[kind]}</span>{label}</span>
+}
+
 // ---------------------------------------------------------------------------
 // ProviderDot
 // ---------------------------------------------------------------------------
