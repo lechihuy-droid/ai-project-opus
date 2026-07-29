@@ -84,6 +84,7 @@ export default function ChatPage() {
   const [activeChatId, setActiveChatId] = useState<string>(() => loadChats()[0].id)
   const [leftTab, setLeftTab] = useState<'chats' | 'files' | 'artifacts'>('chats')
   const [sessionsCollapsed, setSessionsCollapsed] = useState(() => localStorage.getItem('hub-v3-sessions-collapsed') === 'true')
+  const [sessionsDrawerOpen, setSessionsDrawerOpen] = useState(false)
   const [providers, setProviders] = useState<Provider[]>([])
   const [catalog, setCatalog] = useState<Catalog[]>([])
   const [defaultModel, setDefaultModel] = useState('')
@@ -103,6 +104,7 @@ export default function ChatPage() {
     const saved = Number(localStorage.getItem(artifactWidthKey))
     return Number.isFinite(saved) ? Math.min(560, Math.max(320, saved)) : 400
   })
+  const artifactReopen = useRef<HTMLButtonElement>(null)
   const [showVersionHistory, setShowVersionHistory] = useState(false)
   const [showExport, setShowExport] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
@@ -231,17 +233,18 @@ export default function ChatPage() {
     const onUp = () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp) }
     window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onUp)
   }
-  const openArtifactPanel = () => { setArtifactPanelOpen(true); if (activeArtifactIndex == null && artifactMessages.length) setActiveArtifactIndex(artifactMessages.at(-1)?.index ?? null) }
-  const closeArtifactPanel = () => { setArtifactPanelOpen(false); setArtifactFocus(false); setArtifactDismissed(current => ({ ...current, [activeChatId]: true })) }
+  const openArtifactPanel = () => { setArtifactPanelOpen(true); if (activeArtifactIndex == null && artifactMessages.length) setActiveArtifactIndex(artifactMessages.at(-1)?.index ?? null); window.requestAnimationFrame(() => document.querySelector<HTMLButtonElement>('[data-artifact-close]')?.focus()) }
+  const closeArtifactPanel = () => { setArtifactPanelOpen(false); setArtifactFocus(false); setArtifactDismissed(current => ({ ...current, [activeChatId]: true })); window.requestAnimationFrame(() => artifactReopen.current?.focus()) }
 
   return <div className="chat-workspace">
     <TopBar chat={activeChat} catalog={catalog} providers={providers} defaultModel={defaultModel}
       onChooseModel={chooseModel} exportDisabled={!activeArtifact} onExport={() => setShowExport(true)} onSettings={() => { window.location.hash = '#/settings' }} />
-    <div data-artifact={artifactPanelOpen ? 'open' : 'closed'} className={`cw-body ${artifactFocus ? 'artifact-focus' : ''} ${sessionsCollapsed ? 'sessions-collapsed' : ''}`} style={{ '--cw-artifact-width': `${artifactWidth}px` } as CSSProperties}>
-      <WorkspaceSidebar tab={leftTab} onTab={setLeftTab} chats={chats} activeChatId={activeChatId} onNewChat={newChat} onSelectChat={selectChat}
-        artifacts={artifactMessages} activeArtifactIndex={activeArtifactIndex} onSelectArtifact={i => setActiveArtifactIndex(i)} files={chatFiles} onUploadFile={() => fileInput.current?.click()} onDeleteFile={async name => { await api(`/api/chats/${encodeURIComponent(activeChatId)}/files/${encodeURIComponent(name)}`, { method: 'DELETE' }); loadFiles() }} collapsed={sessionsCollapsed} onToggle={() => setSessionsCollapsed(value => !value)} />
+    <div data-artifact={artifactPanelOpen ? 'open' : 'closed'} className={`cw-body ${artifactFocus ? 'artifact-focus' : ''} ${sessionsCollapsed ? 'sessions-collapsed' : ''} ${sessionsDrawerOpen ? 'sessions-drawer-open' : ''}`} style={{ '--cw-artifact-width': `${artifactWidth}px` } as CSSProperties}>
+      <WorkspaceSidebar tab={leftTab} onTab={setLeftTab} chats={chats} activeChatId={activeChatId} onNewChat={newChat} onSelectChat={id => { selectChat(id); setSessionsDrawerOpen(false) }}
+        artifacts={artifactMessages} activeArtifactIndex={activeArtifactIndex} onSelectArtifact={i => { setActiveArtifactIndex(i); setSessionsDrawerOpen(false) }} files={chatFiles} onUploadFile={() => fileInput.current?.click()} onDeleteFile={async name => { await api(`/api/chats/${encodeURIComponent(activeChatId)}/files/${encodeURIComponent(name)}`, { method: 'DELETE' }); loadFiles() }} collapsed={sessionsCollapsed} onToggle={() => setSessionsCollapsed(value => !value)} />
 
       <div className="cw-center">
+        <button type="button" className="cw-drawer-toggle" aria-label={t('chat.expandChats')} onClick={() => setSessionsDrawerOpen(true)}><MessageCircle size={16} strokeWidth={1.75} aria-hidden="true" /></button>
         {/* Context bar only once a conversation exists; the composer is always present. */}
         {!isEmptyPhase && <div className="flex items-center gap-space-2 border-b border-border-subtle px-space-4 py-space-2 text-caption text-secondary">
           <span className="min-w-0 truncate">{contextSummary}</span>{activeArtifact && <button onClick={() => setArtifactContextEnabled(v => !v)} className={`shrink-0 rounded-full border px-space-2 py-[3px] ${artifactContextEnabled ? 'border-accent bg-accent-subtle text-accent' : 'border-border-subtle text-muted'}`}>{t('chat.contextArtifact', { artifact: artifactSummary(activeArtifact.content).title, chat: activeChat.title })}</button>}
@@ -270,7 +273,7 @@ export default function ChatPage() {
           ? <ArtifactPanel message={activeArtifact} comments={comments} focused={artifactFocus} onClose={closeArtifactPanel} onFocus={() => setArtifactFocus(v => !v)} onPopout={() => void popoutArtifact()} onHistory={() => setShowVersionHistory(true)} onExport={() => setShowExport(true)} onCopy={() => { void navigator.clipboard?.writeText(activeArtifact.content); showToast(t('chat.copied')) }} onEditSection={editSection} onResolveComment={setCommentResolved} onDeleteComment={deleteComment} onSelection={(text, action) => { if (action === t('chat.copy')) { void navigator.clipboard?.writeText(text); showToast(t('chat.selectionCopied')); return } if (action === t('chat.selection.comment')) { void addComment(text); return } void send(`${action} the following text:\n"${text}"`) }} />
           : <ArtifactEmpty onClose={closeArtifactPanel} onOpenLibrary={() => setLeftTab('artifacts')} count={Math.max(artifactMessages.length, serverArtifactCount)} />}
       </div>
-      {artifactMessages.length > 0 && !artifactPanelOpen && <button type="button" className="cw-artifact-reopen" aria-label={t('chat.openArtifact')} title={t('chat.openArtifact')} onClick={openArtifactPanel}><ChevronLeft size={16} strokeWidth={1.75} /></button>}
+      {artifactMessages.length > 0 && !artifactPanelOpen && <button ref={artifactReopen} type="button" className="cw-artifact-reopen" aria-label={t('chat.openArtifact')} title={t('chat.openArtifact')} onClick={openArtifactPanel}><ChevronLeft size={16} strokeWidth={1.75} /></button>}
     </div>
 
     {contextOpen && <ContextDrawer context={sharedContext} onChange={setSharedContext} tooLarge={contextTooLarge} estimate={contextEstimate} onClose={() => setContextOpen(false)} />}
@@ -295,7 +298,7 @@ function TopBar({ chat, catalog, providers, defaultModel, onChooseModel, exportD
     <div className="flex shrink-0 items-center gap-space-2">
       <ModelSelector chat={chat} catalog={catalog} providers={providers} defaultModel={defaultModel} triggerLabel={label} onChoose={onChooseModel} />
       <div className="h-5 w-px bg-border-subtle" />
-      <Button variant="secondary" size="sm" disabled={exportDisabled} onClick={onExport}>{t('chat.export')}</Button>
+      <Button variant="secondary" size="sm" disabled={exportDisabled} title={exportDisabled ? t('chat.noArtifactSelected') : undefined} onClick={onExport}>{t('chat.export')}</Button>
       <IconButton icon={<Settings size={16} strokeWidth={1.75} />} aria-label={t('chat.settings')} title={t('chat.settings')} className="!h-10 !w-10" onClick={onSettings} />
     </div>
   </div>
@@ -455,7 +458,7 @@ function Composer({ value, onChange, onSubmit, onStop, streaming, placeholder, s
 // ── Right: artifact panel ──────────────────────────────────────────────────────
 function ArtifactEmpty({ onClose, onOpenLibrary, count }: { onClose: () => void; onOpenLibrary: () => void; count: number }) {
   return <div className="relative flex flex-1 flex-col items-center justify-center p-space-8 text-center">
-    <IconButton icon={<X size={16} strokeWidth={1.75} />} aria-label={t('common.close')} title={t('common.close')} className="absolute right-space-3 top-space-3 !h-10 !w-10" onClick={onClose} />
+    <IconButton data-artifact-close icon={<X size={16} strokeWidth={1.75} />} aria-label={t('common.close')} title={t('common.close')} className="absolute right-space-3 top-space-3 !h-10 !w-10" onClick={onClose} />
     <div className="mb-space-3 flex h-[44px] w-[44px] items-center justify-center rounded-[11px] bg-surface text-muted"><Archive aria-hidden="true" size={16} strokeWidth={1.75} /></div>
     <div className="mb-space-1 text-label font-semibold text-primary">{t('chat.noArtifactSelected')}</div>
     <div className="max-w-[220px] text-caption text-muted">{t('chat.artifactEmptyDescription')}</div>
@@ -475,7 +478,7 @@ function ArtifactPanel({ message, comments, focused, onClose, onFocus, onPopout,
         <div className="flex shrink-0 gap-space-1">
           <button disabled className="rounded-md border border-border-subtle bg-elevated px-space-2 text-caption text-secondary">{t('chat.currentVersion')}</button>
            <IconButton icon={focused ? <ArrowLeft size={16} strokeWidth={1.75} /> : <ArrowRight size={16} strokeWidth={1.75} />} aria-label={focused ? t('chat.splitView') : t('chat.focus')} title={focused ? t('chat.splitView') : t('chat.focus')} className="!h-10 !w-10" onClick={onFocus} />
-           <IconButton icon={<X size={16} strokeWidth={1.75} />} aria-label={t('common.close')} title={t('common.close')} className="!h-10 !w-10" onClick={onClose} />
+           <IconButton data-artifact-close icon={<X size={16} strokeWidth={1.75} />} aria-label={t('common.close')} title={t('common.close')} className="!h-10 !w-10" onClick={onClose} />
           <IconButton icon={<ExternalLink size={16} strokeWidth={1.75} />} aria-label={t('chat.popOut')} title={t('chat.popOut')} className="!h-10 !w-10" onClick={onPopout} />
           <IconButton icon={<History size={16} strokeWidth={1.75} />} aria-label={t('chat.versionHistory')} title={t('chat.versionHistory')} className="!h-10 !w-10" onClick={onHistory} />
           <IconButton icon={<Download size={16} strokeWidth={1.75} />} aria-label={t('chat.export')} title={t('chat.export')} className="!h-10 !w-10" onClick={onExport} />

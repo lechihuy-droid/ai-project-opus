@@ -55,7 +55,7 @@ const buttonVariants: Record<ButtonVariant, string> = {
 }
 
 const buttonSizes: Record<ButtonSize, string> = {
-  sm: 'h-8 px-space-3 text-caption leading-caption',
+  sm: 'h-10 px-space-3 text-caption leading-caption',
   md: 'h-10 px-space-4 text-label leading-label',
 }
 
@@ -97,9 +97,9 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
       type={type}
       className={cx(
         variant === 'handle'
-          ? 'inline-flex h-4 w-4 min-h-4 min-w-4 items-center justify-center rounded-full border border-accent bg-app'
+          ? 'inline-flex h-10 w-10 min-h-10 min-w-10 items-center justify-center rounded-full border border-accent bg-app'
           : cx(
-            'inline-flex h-8 w-8 min-h-[32px] min-w-[32px] items-center justify-center',
+            'inline-flex h-10 w-10 min-h-10 min-w-10 items-center justify-center',
             'rounded-md text-secondary transition-colors',
             'hover:bg-hover hover:text-primary',
             'disabled:cursor-not-allowed disabled:opacity-40',
@@ -202,7 +202,7 @@ export function Chip({ children, selected = false, muted = false, onRemove, remo
           onClick={onRemove}
           aria-label={removeLabel}
           className={cx(
-            'ml-[2px] inline-flex h-4 w-4 items-center justify-center rounded-full leading-none',
+            'ml-[2px] inline-flex h-10 w-10 items-center justify-center rounded-full leading-none',
             'text-muted hover:bg-hover hover:text-primary',
             focusRing,
           )}
