@@ -9,7 +9,9 @@
  * See DESIGN.md for the full component contract, when-to-use rules, and
  * the migration checklist that points existing pages at these primitives.
  */
+import { X } from 'lucide-react'
 import { forwardRef, useEffect, useRef, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
+import { t } from './i18n'
 
 const cx = (...parts: Array<string | false | undefined>) => parts.filter(Boolean).join(' ')
 
@@ -174,14 +176,14 @@ export type ChipProps = {
   children: ReactNode
   selected?: boolean
   muted?: boolean
-  /** Presence enables the removable variant and renders an × affordance. */
+  /** Presence enables the removable variant and renders a close-icon affordance. */
   onRemove?: () => void
-  /** Accessible label for the remove button. Defaults to "Xoá". */
+  /** Accessible label for the remove button. Defaults to the translated Remove label. */
   removeLabel?: string
   className?: string
 }
 
-export function Chip({ children, selected = false, muted = false, onRemove, removeLabel = 'Xoá', className }: ChipProps) {
+export function Chip({ children, selected = false, muted = false, onRemove, removeLabel = t('misc.ui.remove'), className }: ChipProps) {
   return (
     <span
       className={cx(
@@ -204,7 +206,7 @@ export function Chip({ children, selected = false, muted = false, onRemove, remo
             focusRing,
           )}
         >
-          ×
+          <X size={16} strokeWidth={1.75} aria-hidden="true" />
         </button>
       ) : null}
     </span>
@@ -244,14 +246,14 @@ const statusDotClass: Record<StatusKind, string> = {
 }
 
 const statusLabels: Record<StatusKind, string> = {
-  ready: 'Sẵn sàng',
-  running: 'Đang chạy',
-  paused: 'Tạm dừng',
-  'setup-required': 'Cần cấu hình',
-  'not-installed': 'Chưa cài',
-  'rate-limited': 'Giới hạn tốc độ',
-  error: 'Lỗi',
-  offline: 'Ngoại tuyến',
+  ready: t('misc.status.ready'),
+  running: t('misc.status.running'),
+  paused: t('misc.status.paused'),
+  'setup-required': t('misc.status.setupRequired'),
+  'not-installed': t('misc.status.notInstalled'),
+  'rate-limited': t('misc.status.rateLimited'),
+  error: t('misc.status.error'),
+  offline: t('misc.status.offline'),
 }
 
 export function Status({ kind, label, className }: StatusProps) {
