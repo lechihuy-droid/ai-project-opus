@@ -1,5 +1,5 @@
 import { Ellipsis, Plus, Puzzle, X } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ApiError, api } from '../lib/api'
 import { t } from '../lib/i18n'
 import { Markdown } from '../lib/markdown'
@@ -18,9 +18,9 @@ export default function SkillsPage() {
   const deploy = async (skill: Skill) => { if (!target) return; try { await api(`/api/skill-library/${encodeURIComponent(skill.id)}/deploy`, { method: 'POST', body: JSON.stringify({ target }) }); setLog(await api<Log[]>('/api/skill-library/deploy-log')); setError('') } catch (e) { setError(e instanceof ApiError ? e.message : t('skills.deployFailed')) } }
   const create = async () => { try { const created = await api<Detail>('/api/skill-library', { method: 'POST', body: JSON.stringify({ name: newName, source: newSource, content: newContent }) }); setDetail(created); setCreating(false); setNewName(''); setNewContent(''); setNotice(t('skills.created')); setError(''); load() } catch (e) { setError(e instanceof ApiError ? e.message : t('skills.createFailed')) } }
   const remove = async (skill: Skill) => { if (!window.confirm(t('skills.confirmDelete', { name: skill.name }))) return; try { await api(`/api/skill-library/${encodeURIComponent(skill.id)}`, { method: 'DELETE' }); if (detail?.id === skill.id) setDetail(null); setNotice(t('skills.deleted')); setError(''); load() } catch (e) { setError(e instanceof ApiError ? e.message : t('skills.deleteFailed')) } }
-  const driftFor = (skill: Skill) => drift.find(item => item.name === skill.name || item.variants.some(variant => variant.id === skill.id))
+  const driftFor = useCallback((skill: Skill) => drift.find(item => item.name === skill.name || item.variants.some(variant => variant.id === skill.id)), [drift])
   const sources = useMemo(() => [...new Set(skills.map(skill => skill.source))].sort(), [skills])
-  const filtered = useMemo(() => skills.filter(skill => `${skill.name} ${skill.description}`.toLowerCase().includes(query.toLowerCase())).filter(skill => source === 'all' || skill.source === source).filter(skill => status === 'all' || (status === 'sync' ? driftFor(skill)?.in_sync : !driftFor(skill)?.in_sync)).sort((a, b) => sort === 'used' ? (b.use_count_30d ?? -1) - (a.use_count_30d ?? -1) : sort === 'recent' ? (b.last_used ?? '').localeCompare(a.last_used ?? '') : a.name.localeCompare(b.name)), [skills, query, source, status, sort, drift])
+  const filtered = useMemo(() => skills.filter(skill => `${skill.name} ${skill.description}`.toLowerCase().includes(query.toLowerCase())).filter(skill => source === 'all' || skill.source === source).filter(skill => status === 'all' || (status === 'sync' ? driftFor(skill)?.in_sync : !driftFor(skill)?.in_sync)).sort((a, b) => sort === 'used' ? (b.use_count_30d ?? -1) - (a.use_count_30d ?? -1) : sort === 'recent' ? (b.last_used ?? '').localeCompare(a.last_used ?? '') : a.name.localeCompare(b.name)), [skills, query, source, status, sort, driftFor])
   const pages = Math.ceil(filtered.length / 12); const shown = filtered.slice(page * 12, page * 12 + 12)
   useEffect(() => setPage(0), [query, source, status, sort]); useEffect(() => setPage(current => Math.min(current, Math.max(0, pages - 1))), [pages])
   const copyPath = (path: string) => { if (!navigator.clipboard) { setNotice(t('skills.copyPathFailed')); return } void navigator.clipboard.writeText(path).then(() => setNotice(t('skills.copyPathSuccess'))).catch(() => setNotice(t('skills.copyPathFailed'))) }

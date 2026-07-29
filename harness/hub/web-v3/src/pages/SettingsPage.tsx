@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { ApiError, api } from '../lib/api'
 import { t } from '../lib/i18n'
-import { asProviderId, Chip, ProviderDot, Status } from '../lib/ui'
+import { Chip, ProviderDot, Status } from '../lib/ui'
+import { asProviderId } from '../lib/uiHelpers'
 
 type Provider = { id: string; available: boolean; version?: string | null; detail?: string }
 type Catalog = { id?: string; shortName?: string; label?: string; category?: string }

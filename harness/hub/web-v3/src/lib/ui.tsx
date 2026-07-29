@@ -12,6 +12,7 @@
 import { X } from 'lucide-react'
 import { forwardRef, useEffect, useRef, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
 import { t } from './i18n'
+import type { ProviderId } from './uiHelpers'
 
 const cx = (...parts: Array<string | false | undefined>) => parts.filter(Boolean).join(' ')
 
@@ -285,16 +286,6 @@ export function RunStatusBadge({ kind, label, className }: RunStatusBadgeProps) 
 // ---------------------------------------------------------------------------
 // ProviderDot
 // ---------------------------------------------------------------------------
-
-export type ProviderId = 'claude' | 'codex' | 'nvidia'
-
-export const providerIds: ProviderId[] = ['claude', 'codex', 'nvidia']
-
-export const asProviderId = (id: string): ProviderId =>
-  id === 'claude' || id === 'codex' || id === 'nvidia' ? id : 'nvidia'
-
-export const resolveProvider = (value: string, classes: Record<string, { provider: string }>) =>
-  classes[value]?.provider ?? value
 
 export type ProviderDotProps = {
   provider: ProviderId

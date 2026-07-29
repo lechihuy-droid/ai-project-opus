@@ -2,7 +2,8 @@ import { Ellipsis, Plus, Sparkles, X } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { ApiError, api } from '../lib/api'
 import { t } from '../lib/i18n'
-import { Button, IconButton, Input, Popover, resolveProvider, Select, Status, Textarea } from '../lib/ui'
+import { Button, IconButton, Input, Popover, Select, Status, Textarea } from '../lib/ui'
+import { resolveProvider } from '../lib/uiHelpers'
 
 type Provider = { id: string; available: boolean; detail: string }
 type Agent = { id: string; provider: string; model?: string; system_prompt: string; skills: string[]; permission: 'read_only' | 'workspace_write'; risk_tier: string; budget: { seconds: number; max_calls: number } }

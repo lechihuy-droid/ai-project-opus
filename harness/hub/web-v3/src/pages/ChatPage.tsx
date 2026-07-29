@@ -3,9 +3,10 @@ import { api, apiRequest } from '../lib/api'
 import { parseSse } from '../lib/sse'
 import { Markdown } from '../lib/markdown'
 import { artifactSummary, isArtifact } from '../lib/artifact'
-import { asProviderId, Button, Chip, IconButton, Popover, providerIds, ProviderDot, Textarea } from '../lib/ui'
+import { Button, Chip, IconButton, Popover, ProviderDot, Textarea } from '../lib/ui'
+import { asProviderId, providerIds } from '../lib/uiHelpers'
 import { t } from '../lib/i18n'
-import { Archive, ArrowLeft, ArrowRight, Check, ChevronDown, ChevronLeft, ChevronRight, Clipboard, Download, ExternalLink, FileText, History, MessageCircle, MoreHorizontal, Paperclip, Pin, PinOff, Plus, RotateCcw, Send, Settings, Square, X } from 'lucide-react'
+import { Archive, ArrowLeft, ArrowRight, Check, ChevronDown, ChevronLeft, ChevronRight, Clipboard, Download, Ellipsis, ExternalLink, FileText, History, MessageCircle, Paperclip, Pin, PinOff, Plus, RotateCcw, Send, Settings, Square, X } from 'lucide-react'
 
 // ── AI Chat Workspace ─────────────────────────────────────────────────────────
 // Three-panel workspace (imported from the "AI Workspace" design system, mapped to
@@ -499,7 +500,7 @@ function ArtifactSection({ heading, body, onAction }: { heading: string; body: s
   return <div className="border-b border-border-subtle p-space-4">
     <div className="mb-space-1 flex items-center justify-between">
       <div className="text-label font-bold text-primary">{heading}</div>
-      <Popover align="end" label={<MoreHorizontal aria-hidden="true" size={16} strokeWidth={1.75} />} aria-label={t('chat.editSection', { heading })} triggerClassName="!h-10 !w-10 !px-0" className="w-[180px]">
+      <Popover align="end" label={<Ellipsis aria-hidden="true" size={16} strokeWidth={1.75} />} aria-label={t('chat.editSection', { heading })} triggerClassName="!h-10 !w-10 !px-0" className="w-[180px]">
         {(close: () => void) => <div>{sectionActions.map(key => { const action = t(key); return <button key={key} onClick={() => { onAction(action); close() }} className="block w-full rounded-sm px-space-2 py-space-1 text-left text-caption text-primary hover:bg-hover">{action}</button> })}</div>}
       </Popover>
     </div>

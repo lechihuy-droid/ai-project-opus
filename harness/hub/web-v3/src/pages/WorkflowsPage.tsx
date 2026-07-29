@@ -5,7 +5,8 @@ import { t } from '../lib/i18n'
 import { parseSse } from '../lib/sse'
 import { getRunEvents, listRuns, resumeGate, startRun, validateWorkflow, type RunEvent, type RunState } from '../lib/runsApi'
 import GateCard from '../components/GateCard'
-import { Button, IconButton, Input, resolveProvider, Select, Textarea } from '../lib/ui'
+import { Button, IconButton, Input, Select, Textarea } from '../lib/ui'
+import { resolveProvider } from '../lib/uiHelpers'
 
 type Agent = { id: string; name?: string; provider?: string; [key: string]: unknown }
 type AgentNode = { id: string; agent: string; prompt: string; gate: 'none' | 'approval'; type?: 'agent'; [key: string]: unknown }

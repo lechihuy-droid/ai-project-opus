@@ -4,7 +4,8 @@ import { t } from '../lib/i18n'
 import { Markdown } from '../lib/markdown'
 import type { IrNode, RunState } from '../lib/runsApi'
 import GateCard from './GateCard'
-import { Button, ProviderDot, Status, type ProviderId } from '../lib/ui'
+import { Button, ProviderDot, Status } from '../lib/ui'
+import type { ProviderId } from '../lib/uiHelpers'
 export type NodeView = IrNode & { state: 'pending' | 'running' | 'done' | 'failed'; output: string; reasoning: string; artifact?: boolean; error?: string }
 type Props = { nodes: NodeView[]; run?: RunState | null; interrupt?: Record<string, unknown> | null; onGate: (approved: boolean) => void; resuming: boolean }
 const providerId = (agent: IrNode['agent']): ProviderId | null => { const p = typeof agent === 'string' ? agent : agent?.provider; return p && ['claude', 'codex', 'nvidia'].includes(p) ? p as ProviderId : null }
