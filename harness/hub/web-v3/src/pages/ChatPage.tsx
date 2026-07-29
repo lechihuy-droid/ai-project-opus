@@ -77,6 +77,7 @@ export default function ChatPage() {
   const [chats, setChats] = useState<Chat[]>(loadChats)
   const [activeChatId, setActiveChatId] = useState<string>(() => loadChats()[0].id)
   const [leftTab, setLeftTab] = useState<'chats' | 'files' | 'artifacts'>('chats')
+  const [sessionsCollapsed, setSessionsCollapsed] = useState(() => localStorage.getItem('hub-v3-sessions-collapsed') === 'true')
   const [providers, setProviders] = useState<Provider[]>([])
   const [catalog, setCatalog] = useState<Catalog[]>([])
   const [defaultModel, setDefaultModel] = useState('')
@@ -95,6 +96,7 @@ export default function ChatPage() {
   const [serverArtifactCount, setServerArtifactCount] = useState(0)
   const [chatFiles, setChatFiles] = useState<ChatFile[]>([])
   const [comments, setComments] = useState<ArtifactComment[]>([])
+  useEffect(() => { localStorage.setItem('hub-v3-sessions-collapsed', String(sessionsCollapsed)) }, [sessionsCollapsed])
   const fileInput = useRef<HTMLInputElement>(null)
   const controllers = useRef(new Map<string, AbortController>())
   const streamingMessageIds = useRef(new Map<string, string>())
@@ -203,9 +205,9 @@ export default function ChatPage() {
   return <div className="chat-workspace">
     <TopBar workspace="Harness Hub" chat={activeChat} catalog={catalog} providers={providers} defaultModel={defaultModel}
       onChooseModel={chooseModel} exportDisabled={!activeArtifact} onExport={() => setShowExport(true)} onSettings={() => { window.location.hash = '#/settings' }} />
-    <div className={`cw-body ${artifactFocus ? 'artifact-focus' : ''}`}>
+    <div className={`cw-body ${artifactFocus ? 'artifact-focus' : ''} ${sessionsCollapsed ? 'sessions-collapsed' : ''}`}>
       <WorkspaceSidebar tab={leftTab} onTab={setLeftTab} chats={chats} activeChatId={activeChatId} onNewChat={newChat} onSelectChat={selectChat}
-        artifacts={artifactMessages} activeArtifactIndex={activeArtifactIndex} onSelectArtifact={i => setActiveArtifactIndex(i)} files={chatFiles} onUploadFile={() => fileInput.current?.click()} onDeleteFile={async name => { await api(`/api/chats/${encodeURIComponent(activeChatId)}/files/${encodeURIComponent(name)}`, { method: 'DELETE' }); loadFiles() }} />
+        artifacts={artifactMessages} activeArtifactIndex={activeArtifactIndex} onSelectArtifact={i => setActiveArtifactIndex(i)} files={chatFiles} onUploadFile={() => fileInput.current?.click()} onDeleteFile={async name => { await api(`/api/chats/${encodeURIComponent(activeChatId)}/files/${encodeURIComponent(name)}`, { method: 'DELETE' }); loadFiles() }} collapsed={sessionsCollapsed} onToggle={() => setSessionsCollapsed(value => !value)} />
 
       <div className="cw-center">
         {/* Context bar only once a conversation exists; the composer is always present. */}
@@ -302,17 +304,19 @@ function ModelSelector({ chat, catalog, providers, defaultModel, triggerLabel, o
 }
 
 // ── Left sidebar ────────────────────────────────────────────────────────────────
-function WorkspaceSidebar({ tab, onTab, chats, activeChatId, onNewChat, onSelectChat, artifacts, activeArtifactIndex, onSelectArtifact, files, onUploadFile, onDeleteFile }: {
+function WorkspaceSidebar({ tab, onTab, chats, activeChatId, onNewChat, onSelectChat, artifacts, activeArtifactIndex, onSelectArtifact, files, onUploadFile, onDeleteFile, collapsed, onToggle }: {
   tab: 'chats' | 'files' | 'artifacts'; onTab: (t: 'chats' | 'files' | 'artifacts') => void
   chats: Chat[]; activeChatId: string; onNewChat: () => void; onSelectChat: (id: string) => void
-  artifacts: { m: Message; index: number }[]; activeArtifactIndex: number | null; onSelectArtifact: (i: number) => void; files: ChatFile[]; onUploadFile: () => void; onDeleteFile: (name: string) => Promise<void>
+  artifacts: { m: Message; index: number }[]; activeArtifactIndex: number | null; onSelectArtifact: (i: number) => void; files: ChatFile[]; onUploadFile: () => void; onDeleteFile: (name: string) => Promise<void>; collapsed: boolean; onToggle: () => void
 }) {
   const tabs: { id: 'chats' | 'files' | 'artifacts'; icon: string; label: string; count: number }[] = [
     { id: 'chats', icon: '💬', label: 'Chats', count: chats.length },
     { id: 'files', icon: '📄', label: 'Files', count: files.length },
     { id: 'artifacts', icon: '▤', label: 'Artifacts', count: artifacts.length },
   ]
-  return <div className="cw-sidebar">
+  return <div className={`cw-sidebar ${collapsed ? 'sessions-collapsed' : ''}`}>
+    <div className="cw-sidebar-toggle"><button type="button" className="sidebar-collapse" aria-label={collapsed ? 'Mở rộng danh sách phiên chat' : 'Thu gọn danh sách phiên chat'} title={collapsed ? 'Mở rộng danh sách phiên chat' : 'Thu gọn danh sách phiên chat'} onClick={onToggle}>{collapsed ? '›' : '‹'}</button></div>
+    {!collapsed && <>
     <div className="p-space-3 pb-space-2">
       <Button variant="secondary" onClick={onNewChat} className="w-full justify-center" icon={<span className="text-[15px] leading-none">+</span>}>Trò chuyện mới</Button>
     </div>
@@ -341,7 +345,7 @@ function WorkspaceSidebar({ tab, onTab, chats, activeChatId, onNewChat, onSelect
           <div className="mt-[3px] flex items-center gap-space-2"><span className="rounded-full bg-accent-subtle px-space-2 py-[2px] text-caption font-semibold text-accent">Draft</span><span className="text-caption text-muted">{s.chars} ký tự</span></div>
         </button> })}
       </>}
-    </div>
+    </div></>}
   </div>
 }
 function SidebarHeading({ children, inline }: { children: React.ReactNode; inline?: boolean }) {
