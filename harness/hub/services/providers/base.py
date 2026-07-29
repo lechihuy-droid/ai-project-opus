@@ -44,3 +44,33 @@ class Provider(Protocol):
         tool_policy: ToolPolicy | None = None,
         tools: list[dict[str, object]] | None = None,
     ) -> Iterator[ChatEvent]: ...
+
+
+def turn_context(messages: list[dict[str, str]]) -> str:
+    """Join system-role messages carried by a single turn.
+
+    CLI providers are driven by one prompt string, so they read only the latest
+    user message. Per-turn context the hub injects as system messages — chat
+    file attachments, for example — is otherwise dropped for them. Unlike an
+    agent's static system prompt this can change between turns, so it must be
+    replayed even when resuming a session.
+    """
+    return "\n\n".join(
+        content for item in messages
+        if item.get("role") == "system" and (content := (item.get("content") or "").strip())
+    )
+
+
+def latest_user_prompt(messages: list[dict[str, str]]) -> str:
+    """The prompt text a single-prompt CLI provider actually sends."""
+    for item in reversed(messages):
+        if item.get("role") == "user":
+            return item.get("content", "")
+    return messages[-1].get("content", "") if messages else ""
+
+
+def turn_prompt(messages: list[dict[str, str]]) -> str:
+    """Assemble one CLI prompt: this turn's system context plus the user text."""
+    prompt = latest_user_prompt(messages)
+    turn = turn_context(messages)
+    return f"{turn}\n\n[User request]\n{prompt}" if turn else prompt

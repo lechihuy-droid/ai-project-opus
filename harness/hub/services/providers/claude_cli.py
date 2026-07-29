@@ -10,7 +10,7 @@ from typing import Any, Iterator
 
 import config
 from services.providers import procs
-from services.providers.base import ChatEvent, ProviderStatus, ToolPolicy
+from services.providers.base import ChatEvent, ProviderStatus, ToolPolicy, turn_prompt
 
 PROVIDER_ID = "claude"
 _STATUS_TTL = 60.0
@@ -198,7 +198,7 @@ def stream_chat(
     system_prompt: str | None = None,
     tool_policy: ToolPolicy | None = None,
 ) -> Iterator[ChatEvent]:
-    prompt = _latest_user_prompt(messages)
+    prompt = turn_prompt(messages)
     cmd = _build_cmd(prompt, session_id, model=model, system_prompt=system_prompt, tool_policy=tool_policy)
     env = os.environ.copy()
     env.setdefault("PYTHONIOENCODING", "utf-8")

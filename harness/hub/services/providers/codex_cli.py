@@ -10,7 +10,7 @@ from typing import Any, Iterator
 
 import config
 from services.providers import procs
-from services.providers.base import ChatEvent, ProviderStatus, ToolPolicy
+from services.providers.base import ChatEvent, ProviderStatus, ToolPolicy, turn_prompt
 
 PROVIDER_ID = "codex"
 _STATUS_TTL = 60.0
@@ -187,7 +187,7 @@ def stream_chat(
     if tool_policy and tool_policy.get("allowed_tools"):
         yield {"type": "error", "message": "codex provider cannot enforce allowed_tools", "code": None}
         return
-    prompt = _latest_user_prompt(messages)
+    prompt = turn_prompt(messages)
     cmd = _build_cmd(prompt, session_id, model=model, system_prompt=system_prompt, tool_policy=tool_policy)
     env = os.environ.copy()
     env.setdefault("PYTHONIOENCODING", "utf-8")
