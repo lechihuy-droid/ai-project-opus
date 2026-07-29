@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 
 import config
 import server
-from services import boundary, execution, gitjobs, hooks, runtime_agents, runtime_state
+from services import boundary, chat_files, execution, gitjobs, hooks, run_inputs, runtime_agents, runtime_artifacts, runtime_state, workflow, workflow_exec
 
 
 @pytest.fixture()
@@ -130,6 +130,44 @@ def test_chat_files_api_crud_context_and_rejections(client: TestClient, storage_
     assert client.post(f"/api/chats/{chat_id}/files", files={"file": ("../escape.txt", b"x", "text/plain")}).status_code == 403
     monkeypatch.setattr(config, "RUNTIME_FILE_MAX_BYTES", 3)
     assert client.post(f"/api/chats/{chat_id}/files", files={"file": ("large.txt", b"1234", "text/plain")}).status_code == 400
+
+
+def test_run_inputs_resolve_bound_truncate_and_reject_missing(storage_tmp: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    artifact = runtime_artifacts.save_library_artifact(None, "Q3 plan", "artifact text", "chat")
+    chat_files.upload("chat-123", "brief.md", b"file text")
+    references, block = run_inputs.resolve_inputs([
+        {"kind": "artifact", "id": artifact["id"]},
+        {"kind": "chat_file", "chat_id": "chat-123", "name": "brief.md"},
+    ])
+    assert references == [{"kind": "artifact", "id": artifact["id"]}, {"kind": "chat_file", "chat_id": "chat-123", "name": "brief.md"}]
+    assert '[Input: artifact "Q3 plan"]' in block and '[Input: file brief.md]' in block
+    assert "artifact text" in block and "file text" in block
+    with pytest.raises(ValueError, match="missing"):
+        run_inputs.resolve_inputs([{"kind": "artifact", "id": "missing"}])
+    with pytest.raises(ValueError, match="Unsupported"):
+        run_inputs.resolve_inputs([{"kind": "path", "id": "nope"}])
+    with pytest.raises(ValueError, match="chat-123/../escape"):
+        run_inputs.resolve_inputs([{"kind": "chat_file", "chat_id": "chat-123", "name": "../escape"}])
+    monkeypatch.setattr(chat_files, "CHAT_FILE_CONTEXT_MAX_CHARS", 4)
+    _, truncated = run_inputs.resolve_inputs([{"kind": "artifact", "id": artifact["id"]}])
+    assert "truncated at 4 characters" in truncated
+
+
+def test_inputs_token_is_valid_template_reference() -> None:
+    data = {"version": 1, "id": "inputs-ok", "nodes": [{"id": "first", "agent": "reviewer", "prompt": "Read {{inputs}} for {{objective}}", "gate": "none"}], "edges": [], "stop": {"max_nodes": 1, "max_seconds": 1}}
+    assert not workflow.validate_workflow(data)
+    assert workflow_exec.render_template("Read {{inputs}}", workflow_exec._context("objective", {}, "attached text")) == "Read attached text"
+
+
+def test_agent_run_inputs_reject_missing_reference_and_record_resolved_block(client: TestClient, storage_tmp: Path) -> None:
+    missing = client.post("/api/agent/runs", json={"objective": "read", "inputs": [{"kind": "artifact", "id": "missing"}]})
+    assert missing.status_code == 400 and "missing" in missing.json()["detail"]
+    artifact = runtime_artifacts.save_library_artifact(None, "Attached", "attached content", "chat")
+    response = client.post("/api/agent/runs", json={"objective": "read", "inputs": [{"kind": "artifact", "id": artifact["id"]}]})
+    assert response.status_code == 200
+    state = runtime_state.list_runs()[0]
+    assert state["metadata"]["input_references"] == [{"kind": "artifact", "id": artifact["id"]}]
+    assert "attached content" in state["metadata"]["inputs"]
 
 
 def test_artifact_comments_api_crud_and_rejections(client: TestClient, storage_tmp: Path) -> None:

@@ -348,7 +348,7 @@ def validate_workflow(data: dict[str, Any], available_agents: set[str] | None = 
                     templates.append((f"spawn {index} objective", spawn_objective))
             for _label, template in templates:
                 for token in _TEMPLATE_REF.findall(template):
-                    if token == "objective":
+                    if token in {"objective", "inputs"}:
                         continue
                     match = re.fullmatch(r"(.+)_(output|claims)", token)
                     if match and match.group(1) in walk_position and walk_position[match.group(1)] < walk_position[node_id]:

@@ -33,6 +33,19 @@ def list_files(chat_id: str) -> list[dict[str, object]]:
     ]
 
 
+def list_all_files() -> list[dict[str, object]]:
+    root = boundary.resolve_in_root(config.RUNTIME_STORE_DIR / "chats", config.RUNTIME_STORE_DIR)
+    if not root.is_dir():
+        return []
+    items: list[dict[str, object]] = []
+    for chat_dir in sorted(root.iterdir(), key=lambda item: item.name.lower()):
+        if not chat_dir.is_dir() or not _CHAT_ID.fullmatch(chat_dir.name):
+            continue
+        for item in list_files(chat_dir.name):
+            items.append({"chat_id": chat_dir.name, **item})
+    return items
+
+
 def upload(chat_id: str, name: str, content: bytes) -> dict[str, object]:
     if len(content) > config.RUNTIME_FILE_MAX_BYTES:
         raise ValueError("File exceeds size limit")

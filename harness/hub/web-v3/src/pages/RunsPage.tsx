@@ -4,8 +4,9 @@ import { t } from '../lib/i18n'
 import { parseSse } from '../lib/sse'
 import ArtifactRail from '../components/ArtifactRail'
 import RunSpine, { type NodeView } from '../components/RunSpine'
-import { getRun, getRunEvents, listRuns, listWorkflows, resumeGate, startRun, validateWorkflow, type IrNode, type RunEvent, type RunState, type Workflow } from '../lib/runsApi'
+import { getRun, getRunEvents, listRuns, listWorkflows, resumeGate, startRun, validateWorkflow, type IrNode, type RunEvent, type RunInput, type RunState, type Workflow } from '../lib/runsApi'
 import { Button, Select, Textarea } from '../lib/ui'
+import RunInputPicker from '../components/RunInputPicker'
 
 type Interrupt = Record<string, unknown>
 const initialNode = (node: IrNode): NodeView => ({ ...node, state: 'pending', output: '', reasoning: '' })
@@ -15,6 +16,7 @@ export default function RunsPage() {
   const [workflows, setWorkflows] = useState<Workflow[]>([])
   const [workflowId, setWorkflowId] = useState('')
   const [objective, setObjective] = useState('')
+  const [inputs, setInputs] = useState<RunInput[]>([])
   const [nodes, setNodes] = useState<NodeView[]>([])
   const [run, setRun] = useState<RunState | null>(null)
   const [events, setEvents] = useState<RunEvent[]>([])
@@ -74,7 +76,7 @@ export default function RunsPage() {
     const validation = await validateWorkflow(workflowId).catch(e => { setError(e instanceof ApiError ? e.message : t('runs.validateFailed')); return null })
     if (!validation?.ok || !validation.ir) { setError(validation?.errors.join('; ') || t('runs.invalidWorkflow')); setBusy(false); return }
     setNodes(validation.ir.sort((a, b) => a.order - b.order).map(initialNode))
-    try { controller.current = new AbortController(); await handleStream(await startRun(workflowId, objective.trim(), controller.current.signal)) } catch (e) { if ((e as Error).name !== 'AbortError') setError((e as Error).message) }
+    try { controller.current = new AbortController(); await handleStream(await startRun(workflowId, objective.trim(), inputs, controller.current.signal)) } catch (e) { if ((e as Error).name !== 'AbortError') setError((e as Error).message) }
     finally { setBusy(false); controller.current = null; void listRuns().then(setRecent).catch(() => undefined) }
   }
 
@@ -92,7 +94,7 @@ export default function RunsPage() {
 
   const label = (w: Workflow) => w.name ?? w.title ?? w.id
   return <div className="flex h-full min-h-0 flex-col gap-3 p-3 md:p-4">
-    <form onSubmit={e => { e.preventDefault(); void launch() }} className="flex flex-wrap items-end gap-2 rounded-[var(--hub-radius-lg)] border border-border-subtle bg-surface p-3"><label className="flex min-w-[180px] flex-1 flex-col gap-1 text-[length:var(--hub-section-size)] font-semibold uppercase tracking-[var(--hub-section-tracking)] text-muted">{t('runs.workflow')}<Select value={workflowId} onChange={e => setWorkflowId(e.target.value)}><option value="">{t('runs.selectWorkflow')}</option>{workflows.map(w => <option key={w.id} value={w.id}>{label(w)}</option>)}</Select></label><label className="flex min-w-[240px] flex-[2] flex-col gap-1 text-[length:var(--hub-section-size)] font-semibold uppercase tracking-[var(--hub-section-tracking)] text-muted">{t('runs.objective')}<Textarea value={objective} onChange={e => setObjective(e.target.value)} rows={1} placeholder={t('runs.objectivePlaceholder')} /></label><Button variant="primary" type="submit" disabled={busy || !workflowId || !objective.trim()}>{busy ? t('runs.running') : t('runs.run')}</Button></form>
+    <form onSubmit={e => { e.preventDefault(); void launch() }} className="flex flex-wrap items-end gap-2 rounded-[var(--hub-radius-lg)] border border-border-subtle bg-surface p-3"><label className="flex min-w-[180px] flex-1 flex-col gap-1 text-[length:var(--hub-section-size)] font-semibold uppercase tracking-[var(--hub-section-tracking)] text-muted">{t('runs.workflow')}<Select value={workflowId} onChange={e => setWorkflowId(e.target.value)}><option value="">{t('runs.selectWorkflow')}</option>{workflows.map(w => <option key={w.id} value={w.id}>{label(w)}</option>)}</Select></label><label className="flex min-w-[240px] flex-[2] flex-col gap-1 text-[length:var(--hub-section-size)] font-semibold uppercase tracking-[var(--hub-section-tracking)] text-muted">{t('runs.objective')}<Textarea value={objective} onChange={e => setObjective(e.target.value)} rows={1} placeholder={t('runs.objectivePlaceholder')} /></label><RunInputPicker value={inputs} onChange={setInputs} copy={{ add: t('runs.addInputs'), artifacts: t('runs.artifacts'), files: t('runs.files'), search: t('runs.searchInputs'), noArtifacts: t('runs.noArtifacts'), noFiles: t('runs.noFiles'), artifact: t('runs.inputArtifact'), file: t('runs.inputFile'), remove: t('runs.removeInput') }} /><Button variant="primary" type="submit" disabled={busy || !workflowId || !objective.trim()}>{busy ? t('runs.running') : t('runs.run')}</Button></form>
     {error && <div className="flex items-center gap-3 text-xs text-error">{error}<Button variant="ghost" size="sm" onClick={() => setError('')}>{t('runs.hideError')}</Button></div>}
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-border-subtle lg:flex-row"><div className="flex min-h-0 min-w-0 flex-1 flex-col"><div className="flex items-center justify-between border-b border-border-subtle bg-surface px-4 py-2"><span className="text-xs font-semibold">{t('runs.spine')}</span><span className="font-mono text-[10px] text-muted">{run ? `${run.run_id} · ${run.status}` : t('runs.noRun')}</span></div><RunSpine nodes={nodes} run={run} interrupt={interrupt} onGate={approved => void gate(approved)} resuming={resuming} /></div><ArtifactRail run={run} events={events} live={busy} refreshKey={refreshKey} /></div>
     {recent.length > 0 && <RecentRuns rows={recent} onChoose={row => void reopen(row)} disabled={busy} />}
@@ -100,5 +102,4 @@ export default function RunsPage() {
 }
 
 function RecentRuns({ rows, onChoose, disabled }: { rows: RunState[]; onChoose: (row: RunState) => void; disabled: boolean }) { const compact = useMemo(() => rows.slice(0, 5), [rows]); return <section className="rounded-[var(--hub-radius-lg)] border border-border-subtle bg-surface p-3"><div className="mb-2 text-[length:var(--hub-section-size)] font-semibold uppercase tracking-[var(--hub-section-tracking)] text-muted">{t('runs.recent')}</div><div className="flex flex-wrap gap-2">{compact.map(row => <Button variant="secondary" size="sm" disabled={disabled} key={row.run_id} onClick={() => onChoose(row)} className="min-w-[180px] text-left"><span><span className="block truncate text-primary">{String(row.metadata?.objective ?? row.run_id)}</span><span className="font-mono text-[10px] text-secondary">{row.status} · {String(row.metadata?.updated_at ?? row.metadata?.created_at ?? '')}</span></span></Button>)}</div></section> }
-
 

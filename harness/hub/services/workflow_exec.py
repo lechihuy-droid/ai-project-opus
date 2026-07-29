@@ -83,8 +83,8 @@ def _fail(run_id: str, message: str) -> Iterator[str]:
     yield from _yield_event(run_id, "error", message=message, state=state)
 
 
-def _context(objective: str, node_outputs: dict[str, Any]) -> dict[str, str]:
-    context = {"objective": objective}
+def _context(objective: str, node_outputs: dict[str, Any], inputs: str = "") -> dict[str, str]:
+    context = {"objective": objective, "inputs": inputs}
     for key, value in node_outputs.items():
         context[str(key)] = str(value)
         context[f"{key}_output"] = str(value)
@@ -281,16 +281,17 @@ def _workflow_snapshot(data: dict[str, Any], ir: list[dict[str, Any]]) -> dict[s
     return {"definition": deepcopy(data), "ir": frozen_ir, "stop": deepcopy(data["stop"]), "agent_profiles": profiles}
 
 
-def _snapshot_inputs(state: dict[str, Any], ir: list[dict[str, Any]], stop: dict[str, Any], objective: str) -> tuple[list[dict[str, Any]], dict[str, Any], str]:
+def _snapshot_inputs(state: dict[str, Any], ir: list[dict[str, Any]], stop: dict[str, Any], objective: str) -> tuple[list[dict[str, Any]], dict[str, Any], str, str]:
     snapshot = _metadata(state).get("workflow_snapshot")
     if not isinstance(snapshot, dict):
         runtime_state.update_run_state(str(state["run_id"]), {"metadata": {"snapshot_status": "legacy_live_read"}})
-        return ir, stop, objective
+        return ir, stop, objective, str(_metadata(state).get("inputs") or "")
     frozen_ir = snapshot.get("ir")
     frozen_stop = snapshot.get("stop")
     if not isinstance(frozen_ir, list) or not isinstance(frozen_stop, dict):
         raise ValueError("Invalid workflow snapshot")
-    return frozen_ir, frozen_stop, str(_metadata(state).get("objective") or objective)
+    metadata = _metadata(state)
+    return frozen_ir, frozen_stop, str(metadata.get("objective") or objective), str(metadata.get("inputs") or "")
 
 
 def _provider_route(agent: dict[str, Any]) -> dict[str, Any]:
@@ -374,7 +375,7 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
     """Execute a resolved linear workflow against an existing runtime run."""
     run_id = runtime_state.validate_id("run", run_id)
     state = runtime_state.read_run(run_id)
-    ir, stop, objective = _snapshot_inputs(state, ir, stop, objective)
+    ir, stop, objective, inputs = _snapshot_inputs(state, ir, stop, objective)
     metadata = _metadata(state)
     initial = {
         "node_index": int(metadata.get("node_index") or 0),
@@ -514,7 +515,7 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
                 yield from _fail(run_id, f"budget_exceeded: agent seconds ({agent_id})")
                 return
 
-            context = _context(objective, node_outputs)
+            context = _context(objective, node_outputs, inputs)
             rendered_prompt = render_template(str(node["prompt"]), context)
             state = runtime_state.update_run_state(
                 run_id, {"metadata": {"current_node": node["id"], "node_index": node_index}}
@@ -578,7 +579,7 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
                     governance.record_denial(run_id, [f"risk_tier '{tier}' blocked for agent '{spawn_agent_id}'"])
                     yield from _yield_event(run_id, "error", node=node_id, agent_id=spawn_agent_id, message=f"spawn denied for agent '{spawn_agent_id}' at node '{node_id}': risk_tier '{tier}' blocked")
                     continue
-                rendered_objective = render_template(str(spawn["objective"]), _context(objective, node_outputs))
+                rendered_objective = render_template(str(spawn["objective"]), _context(objective, node_outputs, inputs))
                 child = runtime_children.create_child_run(run_id, {
                     "objective": rendered_objective,
                     "agent_id": spawn_agent_id,
@@ -627,25 +628,28 @@ def _load_workflow(workflow_id: str) -> tuple[dict[str, Any], list[dict[str, Any
     return data, workflow.build_ir(data)
 
 
-def create_workflow_run_stream(workflow_id: str, objective: str) -> Iterator[str]:
+def create_workflow_run_stream(workflow_id: str, objective: str, inputs: str = "", input_references: list[dict[str, str]] | None = None) -> Iterator[str]:
     data, ir = _load_workflow(workflow_id)
     snapshot = _workflow_snapshot(data, ir)
     run_started_at = runtime_state.now_iso()
+    metadata = {
+        "objective": objective,
+        "workflow_id": workflow_id,
+        "node_index": 0,
+        "completed_nodes": [],
+        "node_outputs": {},
+        "run_started_at": run_started_at,
+        "agent_calls": {},
+        "agent_elapsed_seconds": {},
+        "workflow_snapshot": snapshot,
+        "snapshot_status": "pinned",
+    }
+    if input_references:
+        metadata.update({"inputs": inputs, "input_references": input_references})
     run = runtime_state.create_run(
         agent_id="lead",
         messages=[{"id": "user-objective", "role": "user", "content": objective}],
-        metadata={
-            "objective": objective,
-            "workflow_id": workflow_id,
-            "node_index": 0,
-            "completed_nodes": [],
-            "node_outputs": {},
-            "run_started_at": run_started_at,
-            "agent_calls": {},
-            "agent_elapsed_seconds": {},
-            "workflow_snapshot": snapshot,
-            "snapshot_status": "pinned",
-        },
+        metadata=metadata,
     )
     run_id = str(run["run_id"])
     yield from _yield_event(run_id, "debug", message="workflow run created", thread_id=run["thread_id"])

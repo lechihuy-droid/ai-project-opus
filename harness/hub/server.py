@@ -43,6 +43,7 @@ from services import (
     runtime_files,
     runtime_interrupts,
     runtime_memory,
+    run_inputs,
     runtime_pipeline,
     runtime_policy,
     retention,
@@ -498,7 +499,16 @@ def api_agent_test(agent_id: str) -> dict[str, object]:
 
 @app.post("/api/agent/runs")
 def api_create_agent_run(payload: dict[str, object]) -> StreamingResponse:
-    return StreamingResponse(runtime_pipeline.create_run_stream(payload), media_type="text/event-stream")
+    try:
+        references, inputs = run_inputs.resolve_inputs(payload.get("inputs"))
+    except (ValueError, PermissionError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    forwarded = dict(payload)
+    if references:
+        metadata = dict(forwarded.get("metadata") or {}) if isinstance(forwarded.get("metadata"), dict) else {}
+        metadata.update({"inputs": inputs, "input_references": references})
+        forwarded["metadata"] = metadata
+    return StreamingResponse(runtime_pipeline.create_run_stream(forwarded), media_type="text/event-stream")
 
 
 @app.get("/api/agent/runs/{run_id}")
@@ -1000,6 +1010,12 @@ def api_chat_files(chat_id: str) -> list[dict[str, object]]:
     except (FileNotFoundError, PermissionError) as exc: raise _http_error(exc) from exc
 
 
+@app.get("/api/chat-files")
+def api_all_chat_files() -> list[dict[str, object]]:
+    try: return chat_files.list_all_files()
+    except (FileNotFoundError, PermissionError) as exc: raise _http_error(exc) from exc
+
+
 @app.post("/api/chats/{chat_id}/files")
 async def api_chat_files_upload(chat_id: str, file: UploadFile = File(...)) -> dict[str, object]:
     try: return chat_files.upload(chat_id, file.filename or "", await file.read())
@@ -1156,6 +1172,7 @@ def api_workflow_run(workflow_id: str, payload: dict[str, object]):
     if not isinstance(objective, str):
         raise HTTPException(status_code=400, detail="objective must be a string")
     try:
+        references, inputs = run_inputs.resolve_inputs(payload.get("inputs"))
         source = workflow.workflow_path(workflow_id).read_text(encoding="utf-8")
         errors = workflow.validate_workflow(workflow.parse_workflow(source))
     except (FileNotFoundError, PermissionError) as exc:
@@ -1164,7 +1181,7 @@ def api_workflow_run(workflow_id: str, payload: dict[str, object]):
         raise _http_error(exc, 400) from exc
     if errors:
         raise _http_error(ValueError("Workflow validation failed"), 422)
-    return StreamingResponse(workflow_exec.create_workflow_run_stream(workflow_id, objective), media_type="text/event-stream")
+    return StreamingResponse(workflow_exec.create_workflow_run_stream(workflow_id, objective, inputs, references), media_type="text/event-stream")
 
 
 @app.get("/api/workflows/runs/{run_id}/artifacts")
