@@ -31,6 +31,16 @@ JOB_MAX_RUNS = 3
 RUNTIME_MAX_CHILD_RUNS = 3
 RUNTIME_CHILD_TIMEOUT_SECONDS = 900
 JOB_BLOCKED_TIERS = ["destructive"]
+RENDER_TARGETS: dict[str, dict[str, Any]] = {
+    "lucida-remotion": {
+        "cwd": ROOT / "opus-animus" / "opus-lucida" / "apps" / "lucida-remotion-demo",
+        "command": ["node", "scripts/render-run.mjs", "--props", "{props}"],
+        "timeout_seconds": 1800,
+        "risk_tier": "execute",
+        "env": {},
+        "output_hint": "output/render/flow-runs",
+    },
+}
 JOB_TTL_SECONDS = 3600
 JOB_ALLOW_AGENTS = {"codex"}
 RETENTION_DAYS_DEFAULT = 7

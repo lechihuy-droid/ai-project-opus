@@ -40,6 +40,25 @@ def write_node_artifact(run_id: str, node_id: str, text: str) -> str:
     return f"artifacts/{safe_node_id}.md"
 
 
+def register_file_artifact(run_id: str, node_id: str, path: Path) -> dict[str, int | str]:
+    """Register a renderer-produced file without copying it into the runtime store."""
+    runtime_state.validate_id("run", run_id)
+    resolved = path.resolve()
+    if not resolved.is_file():
+        raise FileNotFoundError(f"Artifact file not found: {resolved}")
+    item: dict[str, int | str] = {
+        "name": resolved.name,
+        "path": str(resolved),
+        "size": resolved.stat().st_size,
+        "node": node_id,
+    }
+    state = runtime_state.read_run(run_id)
+    existing = [value for value in state.get("artifacts", []) if isinstance(value, dict)]
+    existing.append(item)
+    runtime_state.update_run_state(run_id, {"artifacts": existing})
+    return item
+
+
 def list_artifacts(run_id: str) -> list[dict[str, int | str]]:
     runtime_state.validate_id("run", run_id)
     artifacts_dir = _artifacts_dir(run_id)
@@ -50,7 +69,9 @@ def list_artifacts(run_id: str) -> list[dict[str, int | str]]:
         if path.is_file():
             text = path.read_text(encoding="utf-8", errors="replace")
             items.append({"name": path.name, "chars": len(text)})
-    return items
+    state = runtime_state.read_run(run_id)
+    registered = [dict(item) for item in state.get("artifacts", []) if isinstance(item, dict)]
+    return items + registered
 
 
 def read_artifact(run_id: str, name: str) -> str:

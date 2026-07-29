@@ -28,8 +28,9 @@ def test_hub_builtin_skill_source_is_discovered() -> None:
         "documentation",
         "hub-commit-message",
         "hub-diff-review",
-        "hub-run-artifact-summary",
-        "system-design",
+            "hub-run-artifact-summary",
+            "remotion-video-map",
+            "system-design",
         "tech-debt",
         "testing-strategy",
     }

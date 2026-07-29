@@ -20,6 +20,7 @@ _TEMPLATE_REF = re.compile(r"{{(.*?)}}")
 _EDGE_KINDS = {"default", "success", "warning", "error"}
 _EDGE_LABEL_MAX_LENGTH = 120
 _WORKFLOW_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,63}$")
+_RENDER_NODE_FORBIDDEN_FIELDS = {"command", "cwd", "args", "env"}
 
 
 class WorkflowConflictError(ValueError):
@@ -168,14 +169,18 @@ def validate_workflow(data: dict[str, Any], available_agents: set[str] | None = 
             continue
         normalized_nodes.append(node)
         node_type = node.get("type", "agent")
-        if node_type not in {"agent", "validate"}:
+        if node_type not in {"agent", "validate", "render"}:
             errors.append(f"Node {node.get('id', index)} has unknown type: {node_type}")
         elif node_type == "agent":
             for field in ("id", "agent", "prompt", "gate"):
                 if field not in node:
                     errors.append(f"Node {index} missing required field: {field}")
-        else:
+        elif node_type == "validate":
             for field in ("id", "target", "checks", "on_fail"):
+                if field not in node:
+                    errors.append(f"Node {index} missing required field: {field}")
+        else:
+            for field in ("id", "target", "props_from"):
                 if field not in node:
                     errors.append(f"Node {index} missing required field: {field}")
         node_id = node.get("id")
@@ -215,6 +220,29 @@ def validate_workflow(data: dict[str, Any], available_agents: set[str] | None = 
                             errors.append(f"Node {node.get('id', index)} check {check_index} values must be a non-empty list of strings")
             if node.get("on_fail") not in {"interrupt", "fail"}:
                 errors.append(f"Node {node.get('id', index)} has invalid on_fail: {node.get('on_fail')}")
+        elif node_type == "render":
+            target = node.get("target")
+            if not isinstance(target, str) or not target:
+                errors.append(f"Node {node.get('id', index)} target must be a non-empty string")
+            elif target not in config.RENDER_TARGETS:
+                errors.append(f"Node {node.get('id', index)} references unknown render target: {target}")
+            else:
+                target_config = config.RENDER_TARGETS[target]
+                command = target_config.get("command") if isinstance(target_config, dict) else None
+                if not isinstance(command, list) or command.count("{props}") != 1 or any(
+                    not isinstance(value, str) or ("{" in value or "}" in value) and value != "{props}"
+                    for value in (command or [])
+                ):
+                    errors.append(f"Render target {target} has invalid command configuration")
+            props_from = node.get("props_from")
+            if not isinstance(props_from, str) or not props_from:
+                errors.append(f"Node {node.get('id', index)} props_from must be a non-empty string")
+            gate = node.get("gate", "approval")
+            if gate not in {"none", "approval"}:
+                errors.append(f"Node {node.get('id', index)} has invalid gate: {gate}")
+            forbidden = sorted(_RENDER_NODE_FORBIDDEN_FIELDS & set(node))
+            if forbidden:
+                errors.append(f"Node {node.get('id', index)} may not supply render fields: {', '.join(forbidden)}")
 
     if available_agents is None:
         available_agents = {agent["id"] for agent in runtime_agents.list_agents()}
@@ -286,7 +314,17 @@ def validate_workflow(data: dict[str, Any], available_agents: set[str] | None = 
         walk_position = {node_id: position for position, node_id in enumerate(walk)}
         for node in normalized_nodes:
             node_id = node.get("id")
-            if node.get("type", "agent") == "validate":
+            if node.get("type", "agent") in {"validate", "render"}:
+                reference_field = "target" if node.get("type") == "validate" else "props_from"
+                reference = node.get(reference_field)
+                if node.get("type") == "render":
+                    if reference not in node_ids:
+                        errors.append(f"Node {node_id} references unknown props_from: {reference}")
+                    elif reference == node_id:
+                        errors.append(f"Node {node_id} cannot use itself as props_from")
+                    elif isinstance(node_id, str) and walk_position.get(reference, -1) >= walk_position.get(node_id, 0):
+                        errors.append(f"Node {node_id} props_from must be an earlier node: {reference}")
+                    continue
                 target = node.get("target")
                 if target not in node_ids:
                     errors.append(f"Node {node_id} references unknown target: {target}")
@@ -341,6 +379,21 @@ def build_ir(data: dict[str, Any]) -> list[dict[str, Any]]:
                 "target": node["target"],
                 "checks": [dict(check) for check in node["checks"]],
                 "on_fail": node["on_fail"],
+                "order": order,
+            })
+            continue
+        if node.get("type") == "render":
+            target_name = node["target"]
+            target = config.RENDER_TARGETS[target_name]
+            resolved_target = {**target, "cwd": str(target["cwd"])}
+            result.append({
+                "id": node_id,
+                "type": "render",
+                "target": target_name,
+                "render_target": resolved_target,
+                "props_from": node["props_from"],
+                "gate": node.get("gate", "approval"),
+                "risk_tier": target["risk_tier"],
                 "order": order,
             })
             continue

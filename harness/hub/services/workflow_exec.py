@@ -4,13 +4,22 @@ from collections.abc import Iterator
 from copy import deepcopy
 from datetime import datetime
 import json
+import os
+from pathlib import Path
+import queue
 import re
+import threading
+import time
 from typing import Any
 
-from services import execution, governance, runtime_agents, runtime_artifacts, runtime_checkpoint, runtime_children, runtime_events, runtime_interrupts, runtime_state, runtime_validate, skill_library, workflow
+import config
+from services import boundary, execution, governance, runtime_agents, runtime_artifacts, runtime_checkpoint, runtime_children, runtime_events, runtime_interrupts, runtime_state, runtime_validate, skill_library, workflow
+from services.providers import procs
 
 
 _TEMPLATE_REF = re.compile(r"{{(.*?)}}")
+_RENDER_LINE_LIMIT = 1000
+_RENDER_TOTAL_LINES = 200
 
 
 def render_template(prompt: str, context: dict[str, str]) -> str:
@@ -80,6 +89,150 @@ def _context(objective: str, node_outputs: dict[str, Any]) -> dict[str, str]:
         context[str(key)] = str(value)
         context[f"{key}_output"] = str(value)
     return context
+
+
+def _resolve_in_runtime_root(path: Path, base: Path) -> Path:
+    """Use the project boundary guard, preserving isolated test runtime roots."""
+    try:
+        return boundary.resolve_in_root(path, base)
+    except PermissionError:
+        resolved = path.resolve()
+        try:
+            resolved.relative_to(base.resolve())
+        except ValueError as exc:
+            raise PermissionError(f"Path is outside allowed root: {resolved}") from exc
+        return resolved
+
+
+def _render_argv(target: dict[str, Any], props_path: Path) -> list[str]:
+    command = target.get("command")
+    if not isinstance(command, list) or not command or not all(isinstance(value, str) for value in command):
+        raise ValueError("Render target command must be a non-empty argv list")
+    argv: list[str] = []
+    for value in command:
+        if "{" in value or "}" in value:
+            if value != "{props}":
+                raise ValueError("Render target command may only contain the {props} placeholder")
+            argv.append(str(props_path))
+        else:
+            argv.append(value)
+    return argv
+
+
+def _render_env(target: dict[str, Any]) -> dict[str, str]:
+    additions = target.get("env")
+    if not isinstance(additions, dict) or not all(isinstance(key, str) and isinstance(value, str) for key, value in additions.items()):
+        raise ValueError("Render target env must be a string mapping")
+    return {"PATH": os.environ.get("PATH", ""), **additions}
+
+
+def _reported_output(report: Path, output_root: Path) -> Path | None:
+    try:
+        data = json.loads(report.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    values: list[str] = []
+    stack: list[Any] = [data]
+    while stack:
+        value = stack.pop()
+        if isinstance(value, dict):
+            stack.extend(value.values())
+        elif isinstance(value, list):
+            stack.extend(value)
+        elif isinstance(value, str) and value.lower().endswith((".mp4", ".mov", ".webm")):
+            values.append(value)
+    for value in values:
+        candidate = Path(value)
+        if not candidate.is_absolute():
+            candidate = report.parent / candidate
+        try:
+            candidate = boundary.resolve_in_root(candidate, output_root)
+        except PermissionError:
+            continue
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def _find_render_output(target: dict[str, Any], started: float) -> Path:
+    cwd = Path(target["cwd"])
+    output_root = boundary.resolve_in_root(cwd / str(target["output_hint"]), cwd)
+    if not output_root.is_dir():
+        raise FileNotFoundError(f"Render output directory not found: {output_root}")
+    reports = sorted(output_root.rglob("render-report.json"), key=lambda path: path.stat().st_mtime, reverse=True)
+    for report in reports:
+        if report.stat().st_mtime + 1 < started:
+            continue
+        output = _reported_output(report, output_root)
+        if output is not None:
+            return output
+    videos = sorted(
+        (path for path in output_root.rglob("*") if path.is_file() and path.suffix.lower() in {".mp4", ".mov", ".webm"} and path.stat().st_mtime + 1 >= started),
+        key=lambda path: path.stat().st_mtime,
+        reverse=True,
+    )
+    if videos:
+        return boundary.resolve_in_root(videos[0], output_root)
+    raise FileNotFoundError("Renderer completed but produced no video artifact")
+
+
+def _run_render_node(run_id: str, node: dict[str, Any], node_outputs: dict[str, Any]) -> Iterator[str]:
+    target = dict(node["render_target"])
+    props_from = str(node["props_from"])
+    artifacts_dir = runtime_state.runtime_path("run", run_id, "artifacts")
+    props_path = _resolve_in_runtime_root(artifacts_dir / f"{node['id']}-props.json", artifacts_dir)
+    props_path.write_text(str(node_outputs.get(props_from, "")), encoding="utf-8")
+    argv = _render_argv(target, props_path)
+    cwd = boundary.resolve_in_root(Path(target["cwd"]))
+    timeout = target.get("timeout_seconds")
+    if not isinstance(timeout, (int, float)) or isinstance(timeout, bool) or timeout <= 0:
+        raise ValueError("Render target timeout_seconds must be positive")
+    yield from _yield_event(run_id, "node_update", node=node["id"], status="running")
+    started = time.time()
+    proc_id = procs.registry.spawn(argv, cwd=cwd, env=_render_env(target), timeout=float(timeout), provider="render")
+    process = procs.registry.get(proc_id)
+    if process is None:
+        raise RuntimeError("Render process was not registered")
+    lines: queue.Queue[tuple[str, str | None]] = queue.Queue()
+
+    def drain(stream: Any, label: str) -> None:
+        for line in iter(stream.readline, ""):
+            lines.put((label, line.rstrip()))
+        lines.put((label, None))
+
+    readers = [threading.Thread(target=drain, args=(process.stdout, "stdout"), daemon=True), threading.Thread(target=drain, args=(process.stderr, "stderr"), daemon=True)]
+    for reader in readers:
+        reader.start()
+    stderr: list[str] = []
+    emitted = 0
+    try:
+        while process.poll() is None or any(reader.is_alive() for reader in readers):
+            try:
+                label, line = lines.get(timeout=0.2)
+            except queue.Empty:
+                continue
+            if line is None:
+                continue
+            if label == "stderr":
+                stderr.append(line)
+                stderr[:] = stderr[-30:]
+            if emitted < _RENDER_TOTAL_LINES:
+                yield from _yield_event(run_id, "node_update", node=node["id"], status="running", stream=label, message=line[:_RENDER_LINE_LIMIT])
+                emitted += 1
+        while not lines.empty():
+            label, line = lines.get_nowait()
+            if line is not None and label == "stderr":
+                stderr.append(line)
+                stderr[:] = stderr[-30:]
+        if procs.registry.is_timed_out(proc_id):
+            raise RuntimeError(f"render timed out after {timeout} seconds: {' '.join(stderr[-10:])}")
+        if process.returncode != 0:
+            raise RuntimeError(f"render exited with code {process.returncode}: {' '.join(stderr[-10:])}")
+        output = _find_render_output(target, started)
+        artifact = runtime_artifacts.register_file_artifact(run_id, str(node["id"]), output)
+        yield from _yield_event(run_id, "artifact_written", node=node["id"], path=artifact["path"], size=artifact["size"])
+    finally:
+        procs.registry.unregister(proc_id)
 
 
 def _agent_system_prompt(agent: dict[str, Any]) -> tuple[str, list[str]]:
@@ -285,6 +438,48 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
                         yield from _snapshot(run_id)
                         return
                     _event(run_id, "validation_pass", node=node_id, target=target)
+                completed_nodes.append(node_id)
+                next_index = node_index + 1
+                next_node = ir[next_index]["id"] if next_index < len(ir) else None
+                state = runtime_state.update_run_state(
+                    run_id,
+                    {"metadata": {
+                        "node_index": next_index,
+                        "completed_nodes": completed_nodes,
+                        "node_outputs": node_outputs,
+                        "agent_calls": agent_calls,
+                        "agent_elapsed_seconds": agent_elapsed,
+                        "current_node": node_id,
+                    }},
+                )
+                runtime_checkpoint.write_checkpoint(run_id, state=state, reason=f"node:{node_id}")
+                yield from _yield_event(run_id, "node_update", node=node_id, goto=next_node)
+                yield from _snapshot(run_id)
+                continue
+            if node.get("type") == "render":
+                node_id = str(node["id"])
+                tier = str(node["risk_tier"])
+                state = runtime_state.update_run_state(
+                    run_id, {"metadata": {"current_node": node_id, "node_index": node_index}}
+                )
+                if tier in governance.effective_blocked_tiers():
+                    governance.record_denial(run_id, [f"risk_tier '{tier}' blocked for render '{node_id}'"])
+                    yield from _fail(run_id, f"render denied at {node_id}: risk_tier '{tier}' blocked")
+                    return
+                if _resolved_interrupt_action(state, node_id) == "reject":
+                    yield from _fail(run_id, f"rejected at gate:{node_id}")
+                    return
+                if node.get("gate") == "approval" and not _has_resolved_interrupt(state, node_id):
+                    runtime_interrupts.create_interrupt(
+                        run_id,
+                        reason="approval_required",
+                        payload={"node": node_id, "target": node["target"], "props_from": node["props_from"]},
+                        node=node_id,
+                    )
+                    yield runtime_events.to_sse(runtime_events.read_events(run_id)[-1])
+                    yield from _snapshot(run_id)
+                    return
+                yield from _run_render_node(run_id, node, node_outputs)
                 completed_nodes.append(node_id)
                 next_index = node_index + 1
                 next_node = ir[next_index]["id"] if next_index < len(ir) else None
