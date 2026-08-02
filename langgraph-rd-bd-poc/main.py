@@ -1,7 +1,9 @@
+import os
 from typing import TypedDict
 
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import END, START, StateGraph
+from langgraph.types import Command, interrupt
 
 
 class WorkflowState(TypedDict, total=False):
@@ -172,9 +174,27 @@ def route_after_review(state: WorkflowState) -> str:
     return "revise"
 
 
-def human_approval_mock(state: WorkflowState) -> dict:
-    print("[NODE] human_approval_mock — automatically approved")
-    return {"human_decision": "APPROVED"}
+def human_approval(state: WorkflowState) -> dict:
+    # interrupt() dừng graph tại đây và lưu state vào checkpoint; khác
+    # với input(), tiến trình không bị block — có thể resume sau, ở
+    # process khác, miễn dùng lại đúng thread_id.
+    decision = interrupt(
+        {
+            "type": "BD_APPROVAL_REQUEST",
+            "review_score": state["review_score"],
+            "review_issues": state["review_issues"],
+            "design": state["merged_design"],
+            "allowed_actions": ["APPROVE", "REJECT"],
+        }
+    )
+    print(f"[NODE] human_approval — decision={decision}")
+    return {"human_decision": decision}
+
+
+def route_after_human(state: WorkflowState) -> str:
+    if state["human_decision"] == "APPROVE":
+        return "approved"
+    return "revise"
 
 
 def build_graph():
@@ -187,7 +207,7 @@ def build_graph():
     builder.add_node("merge_design", merge_design)
     builder.add_node("review_design", review_design)
     builder.add_node("revise_context", revise_context)
-    builder.add_node("human_approval", human_approval_mock)
+    builder.add_node("human_approval", human_approval)
 
     builder.add_edge(START, "parse_requirement")
     builder.add_edge("parse_requirement", "plan_design")
@@ -220,7 +240,14 @@ def build_graph():
     builder.add_edge("revise_context", "generate_db")
     builder.add_edge("revise_context", "generate_screen")
 
-    builder.add_edge("human_approval", END)
+    builder.add_conditional_edges(
+        "human_approval",
+        route_after_human,
+        {
+            "approved": END,
+            "revise": "revise_context",
+        },
+    )
 
     checkpointer = InMemorySaver()
     return builder.compile(checkpointer=checkpointer)
@@ -239,6 +266,18 @@ def main():
     }
     config = {"configurable": {"thread_id": "rd-bd-run-001"}}
     result = graph.invoke(initial_state, config=config)
+
+    while "__interrupt__" in result:
+        payload = result["__interrupt__"][0].value
+        print("\n[INTERRUPT] human_approval is waiting for a decision")
+        print(payload)
+        decision = os.environ.get("HUMAN_DECISION")
+        if decision is None:
+            decision = input("Decision (APPROVE/REJECT): ").strip().upper()
+        else:
+            print(f"(HUMAN_DECISION env var) -> {decision}")
+        result = graph.invoke(Command(resume=decision), config=config)
+
     print("\n========== FINAL RESULT ==========")
     print(f'Review status: {result["review_status"]}')
     print(f'Review score: {result["review_score"]}')
