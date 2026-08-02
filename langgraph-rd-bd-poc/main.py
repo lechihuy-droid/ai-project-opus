@@ -1,5 +1,6 @@
 from typing import TypedDict
 
+from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import END, START, StateGraph
 
 
@@ -221,7 +222,8 @@ def build_graph():
 
     builder.add_edge("human_approval", END)
 
-    return builder.compile()
+    checkpointer = InMemorySaver()
+    return builder.compile(checkpointer=checkpointer)
 
 
 def load_requirement() -> str:
@@ -235,13 +237,17 @@ def main():
         "requirement": load_requirement(),
         "revision_count": 0,
     }
-    result = graph.invoke(initial_state)
+    config = {"configurable": {"thread_id": "rd-bd-run-001"}}
+    result = graph.invoke(initial_state, config=config)
     print("\n========== FINAL RESULT ==========")
     print(f'Review status: {result["review_status"]}')
     print(f'Review score: {result["review_score"]}')
     print(f'Revision count: {result["revision_count"]}')
     print(f'Human decision: {result.get("human_decision")}')
     print("==================================")
+
+    checkpoints = list(graph.get_state_history(config))
+    print(f"Checkpoints saved for thread rd-bd-run-001: {len(checkpoints)}")
 
 
 if __name__ == "__main__":
