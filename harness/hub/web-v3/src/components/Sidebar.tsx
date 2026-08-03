@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { BarChart3, Bot, FileText, Folder, History, LayoutDashboard, MessagesSquare, PanelLeftClose, PanelLeftOpen, Play, Settings, ShieldCheck, Sparkles, Webhook, Workflow } from 'lucide-react'
+import { BarChart3, Bot, FileText, Folder, GitCompare, History, LayoutDashboard, MessagesSquare, PanelLeftClose, PanelLeftOpen, Play, Settings, ShieldCheck, Sparkles, Webhook, Workflow } from 'lucide-react'
 import { api } from '../lib/api'
 import { t } from '../lib/i18n'
 import { Status } from '../lib/ui'
@@ -9,6 +9,7 @@ const zones = [
   { label: t('nav.zone.overview'), items: [[LayoutDashboard, t('nav.overview'), '/overview']] },
   { label: t('nav.zone.chat'), items: [[MessagesSquare, t('nav.chat'), '/chat'], [History, t('nav.sessions'), '/sessions']] },
   { label: t('nav.zone.orchestration'), items: [[Workflow, t('nav.workflows'), '/workflows'], [FileText, t('nav.artifacts'), '/artifacts'], [Play, t('nav.runs'), '/runs'], [Bot, t('nav.agents'), '/agents'], [Sparkles, t('nav.skills'), '/skills'], [Webhook, t('nav.hooks'), '/hooks'], [Folder, t('nav.files'), '/files']] },
+  { label: 'Version Governance', items: [[Play, 'Run workflow', '/vgov/run'], [FileText, 'Output history', '/vgov/output'], [History, 'Provenance', '/vgov/provenance'], [GitCompare, 'Compare outputs', '/vgov/compare']] },
   { label: t('nav.zone.monitoring'), items: [[ShieldCheck, t('nav.approvals'), '/approvals'], [BarChart3, t('nav.usage'), '/usage']] },
   { label: t('nav.zone.system'), items: [[Settings, t('nav.settings'), '/settings']] },
 ] as const

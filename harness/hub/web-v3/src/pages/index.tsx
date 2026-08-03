@@ -12,6 +12,11 @@ import OverviewPage from './OverviewPage'
 import HooksPage from './HooksPage'
 import FilesPage from './FilesPage'
 import ArtifactDetailPage from './ArtifactDetailPage'
+import VgovReleasesPage from './VgovReleasesPage'
+import VgovRunPage from './VgovRunPage'
+import VgovOutputPage from './VgovOutputPage'
+import VgovProvenancePage from './VgovProvenancePage'
+import VgovComparePage from './VgovComparePage'
 
 export const pages = [
   { path: 'overview', element: <OverviewPage /> },
@@ -23,4 +28,9 @@ export const pages = [
   { path: 'hooks', element: <HooksPage /> }, { path: 'files', element: <FilesPage /> },
   { path: 'approvals', element: <ApprovalsPage /> }, { path: 'usage', element: <UsagePage /> },
   { path: 'settings', element: <SettingsPage /> },
+  { path: 'vgov/releases', element: <VgovReleasesPage /> },
+  { path: 'vgov/run', element: <VgovRunPage /> },
+  { path: 'vgov/output', element: <VgovOutputPage /> },
+  { path: 'vgov/provenance', element: <VgovProvenancePage /> },
+  { path: 'vgov/compare', element: <VgovComparePage /> },
 ]

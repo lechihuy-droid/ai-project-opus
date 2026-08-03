@@ -11,6 +11,8 @@ import uuid
 from contextlib import asynccontextmanager
 from pathlib import Path
 
+import httpx
+
 
 HUB_DIR = Path(__file__).resolve().parent
 if str(HUB_DIR) not in sys.path:
@@ -1298,6 +1300,31 @@ def api_artifact_comment_delete(artifact_id: str, comment_id: str) -> dict[str, 
     except FileNotFoundError as exc: raise HTTPException(status_code=404) from exc
     except (PermissionError, ValueError) as exc: raise HTTPException(status_code=400, detail=str(exc)) from exc
     return {"ok": True}
+
+
+@app.api_route("/api/vgov/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
+async def api_vgov_proxy(path: str, request: Request) -> Response:
+    """Keep Version Governance behind the Hub control-plane boundary.
+
+    vgov-api mounts every functional router under /api/vgov, so the prefix must be preserved.
+    Forwarding to /{path} only ever resolved /health and 404'd everything else.
+    """
+    target = f"{config.VGOV_BASE_URL.rstrip('/')}/api/vgov/{path}"
+    headers = {name: value for name, value in request.headers.items()
+               if name.lower() in {"x-actor", "content-type"}}
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            upstream = await client.request(
+                request.method, target, params=request.query_params,
+                content=await request.body(), headers=headers,
+            )
+    except (httpx.ConnectError, httpx.TimeoutException):
+        return JSONResponse(
+            status_code=502,
+            content={"error": {"code": "RUNTIME_UNAVAILABLE", "message": "Version Governance API is unavailable"}},
+        )
+    content_type = upstream.headers.get("content-type")
+    return Response(content=upstream.content, status_code=upstream.status_code, media_type=content_type)
 
 
 @app.get("/api/board")
