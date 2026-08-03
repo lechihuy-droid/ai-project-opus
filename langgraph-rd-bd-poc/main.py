@@ -19,6 +19,8 @@ class WorkflowState(TypedDict, total=False):
     review_issues: list[str]
     revision_count: int
     human_decision: str
+    api_review_status: str
+    api_issues: list[str]
 
 
 class APIDesignState(TypedDict, total=False):
@@ -174,7 +176,11 @@ def generate_api(state: WorkflowState) -> dict:
         "[NODE] generate_api — subgraph finished "
         f"(internal revisions={sub_result.get('api_revision_count', 0)})"
     )
-    return {"api_spec": sub_result["api_spec"]}
+    return {
+        "api_spec": sub_result["api_spec"],
+        "api_review_status": sub_result.get("api_review_status"),
+        "api_issues": sub_result.get("api_issues", []),
+    }
 
 
 def generate_db(state: WorkflowState) -> dict:
@@ -231,8 +237,6 @@ def review_design(state: WorkflowState) -> dict:
     api_spec = design["api"]
     db_spec = design["database"]
     screen_spec = design["screen"]
-    if "409" not in api_spec["responses"]:
-        issues.append("API specification is missing duplicate-email response.")
     db_columns = {column["name"]: column for column in db_spec["columns"]}
     if "email" not in db_columns:
         issues.append("Database specification is missing the email column.")
@@ -241,6 +245,10 @@ def review_design(state: WorkflowState) -> dict:
     # Cố ý fail ở revision đầu tiên để quan sát revision loop.
     if revision_count == 0:
         issues.append("Traceability matrix has not yet been generated.")
+    # Subgraph tự "give up" sau khi hết retry nội bộ vẫn phải được phản ánh
+    # lên review cấp cha, không được để lọt qua human_approval.
+    if state.get("api_review_status") == "FAIL":
+        issues.extend(state.get("api_issues", []))
     if issues:
         status = "FAIL"
         score = 75
@@ -291,6 +299,12 @@ def human_approval(state: WorkflowState) -> dict:
 def route_after_human(state: WorkflowState) -> str:
     if state["human_decision"] == "APPROVE":
         return "approved"
+    if state.get("revision_count", 0) >= 2:
+        print(
+            "[NODE] route_after_human — stopped after exhausting revisions "
+            "following human rejection"
+        )
+        return "stop"
     return "revise"
 
 
@@ -343,6 +357,7 @@ def build_graph():
         {
             "approved": END,
             "revise": "revise_context",
+            "stop": END,
         },
     )
 
@@ -368,11 +383,20 @@ def main():
         payload = result["__interrupt__"][0].value
         print("\n[INTERRUPT] human_approval is waiting for a decision")
         print(payload)
-        decision = os.environ.get("HUMAN_DECISION")
-        if decision is None:
+        allowed_actions = payload["allowed_actions"]
+        env_decision = os.environ.get("HUMAN_DECISION")
+        if env_decision is None:
             decision = input("Decision (APPROVE/REJECT): ").strip().upper()
+            while decision not in allowed_actions:
+                print(f"Invalid decision '{decision}'. Allowed: {allowed_actions}")
+                decision = input("Decision (APPROVE/REJECT): ").strip().upper()
         else:
+            decision = env_decision
             print(f"(HUMAN_DECISION env var) -> {decision}")
+            if decision not in allowed_actions:
+                raise ValueError(
+                    f"Invalid HUMAN_DECISION '{decision}'. Allowed: {allowed_actions}"
+                )
         result = graph.invoke(Command(resume=decision), config=config)
 
     print("\n========== FINAL RESULT ==========")
