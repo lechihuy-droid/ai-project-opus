@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>LangGraph RD → BD PoC</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: system-ui, sans-serif;
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    line-height: 1.5;
+  }
+  button {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    border: 1px solid #888;
+    background: #f0f0f0;
+    color: #111;
+  }
+  button:hover { background: #e0e0e0; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .approve { background: #d1f7d6; border-color: #2e7d32; }
+  .reject { background: #fbd6d6; border-color: #c62828; }
+  .badge {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .badge.interrupted { background: #fff3cd; color: #7a5b00; }
+  .badge.done { background: #d1f7d6; color: #14532d; }
+  .escalation {
+    background: #fbe3d6;
+    border: 1px solid #c65a00;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin: 0.75rem 0;
+  }
+  .normal-approval {
+    background: #e3f0fb;
+    border: 1px solid #1565c0;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin: 0.75rem 0;
+  }
+  pre {
+    background: #f5f5f5;
+    color: #111;
+    padding: 0.75rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    max-height: 300px;
+  }
+  ul { padding-left: 1.2rem; }
+  #status-panel { display: none; margin-top: 1.5rem; }
+</style>
+</head>
+<body>
+<h1>LangGraph RD → BD PoC</h1>
+<p>Bấm nút để chạy graph (dùng mock data cố định trong <code>input/sample_rd.txt</code>).</p>
+<button id="start-btn">Bắt đầu run mới</button>
+
+<div id="status-panel">
+  <h2>Run: <code id="thread-id"></code> <span id="status-badge" class="badge"></span></h2>
+  <p>Checkpoints đã lưu: <strong id="checkpoints"></strong></p>
+
+  <div id="interrupt-area" style="display:none">
+    <div id="interrupt-banner"></div>
+    <p>Review score: <strong id="review-score"></strong></p>
+    <p>Issues:</p>
+    <ul id="review-issues"></ul>
+    <p>Design:</p>
+    <pre id="design-json"></pre>
+    <button id="approve-btn" class="approve">APPROVE</button>
+    <button id="reject-btn" class="reject">REJECT</button>
+  </div>
+
+  <div id="result-area" style="display:none">
+    <h3>Kết quả cuối cùng</h3>
+    <ul>
+      <li>Review status: <strong id="final-status"></strong></li>
+      <li>Review score: <strong id="final-score"></strong></li>
+      <li>Revision count: <strong id="final-revisions"></strong></li>
+      <li>Human decision: <strong id="final-decision"></strong></li>
+    </ul>
+  </div>
+</div>
+
+<script>
+let currentThreadId = null;
+
+function render(data) {
+  currentThreadId = data.thread_id;
+  document.getElementById('status-panel').style.display = 'block';
+  document.getElementById('thread-id').textContent = data.thread_id;
+  document.getElementById('checkpoints').textContent = data.checkpoints;
+
+  const badge = document.getElementById('status-badge');
+  badge.textContent = data.status;
+  badge.className = 'badge ' + data.status;
+
+  const interruptArea = document.getElementById('interrupt-area');
+  const resultArea = document.getElementById('result-area');
+
+  if (data.status === 'interrupted') {
+    interruptArea.style.display = 'block';
+    resultArea.style.display = 'none';
+
+    const banner = document.getElementById('interrupt-banner');
+    if (data.interrupt.type === 'AI_REVIEW_ESCALATION') {
+      banner.className = 'escalation';
+      banner.textContent = '⚠️ AI đã hết lượt tự sửa, review vẫn FAIL — cần bạn quyết định.';
+    } else {
+      banner.className = 'normal-approval';
+      banner.textContent = '✅ AI review PASS — đang chờ bạn duyệt.';
+    }
+
+    document.getElementById('review-score').textContent = data.interrupt.review_score;
+
+    const issuesList = document.getElementById('review-issues');
+    issuesList.innerHTML = '';
+    const issues = data.interrupt.review_issues || [];
+    if (issues.length === 0) {
+      issuesList.innerHTML = '<li><em>(không có issue)</em></li>';
+    } else {
+      issues.forEach((issue) => {
+        const li = document.createElement('li');
+        li.textContent = issue;
+        issuesList.appendChild(li);
+      });
+    }
+
+    document.getElementById('design-json').textContent =
+      JSON.stringify(data.interrupt.design, null, 2);
+  } else {
+    interruptArea.style.display = 'none';
+    resultArea.style.display = 'block';
+    document.getElementById('final-status').textContent = data.result.review_status;
+    document.getElementById('final-score').textContent = data.result.review_score;
+    document.getElementById('final-revisions').textContent = data.result.revision_count;
+    document.getElementById('final-decision').textContent = data.result.human_decision;
+  }
+}
+
+async function startRun() {
+  const res = await fetch('/api/runs', { method: 'POST' });
+  const data = await res.json();
+  render(data);
+}
+
+async function resume(decision) {
+  const res = await fetch(`/api/runs/${currentThreadId}/resume`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ decision }),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    alert('Lỗi: ' + (err.detail || res.statusText));
+    return;
+  }
+  const data = await res.json();
+  render(data);
+}
+
+document.getElementById('start-btn').addEventListener('click', startRun);
+document.getElementById('approve-btn').addEventListener('click', () => resume('APPROVE'));
+document.getElementById('reject-btn').addEventListener('click', () => resume('REJECT'));
+</script>
+</body>
+</html>
