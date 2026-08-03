@@ -21,6 +21,15 @@ class WorkflowState(TypedDict, total=False):
     human_decision: str
 
 
+class APIDesignState(TypedDict, total=False):
+    parsed_requirement: dict
+    api_revision_count: int
+    api_spec: dict
+    api_structurally_valid: bool
+    api_review_status: str
+    api_issues: list[str]
+
+
 def parse_requirement(state: WorkflowState) -> dict:
     requirement = state["requirement"]
     parsed = {
@@ -57,9 +66,23 @@ def plan_design(state: WorkflowState) -> dict:
     return {"plan": plan}
 
 
-def generate_api(state: WorkflowState) -> dict:
+# ---- API Design Subgraph -------------------------------------------------
+# generate_api_sub -> validate_api -> review_api -> pass? -> END
+#                                              \-> revise_api -> generate_api_sub
+# State (APIDesignState) is private to this subgraph: the parent never sees
+# api_revision_count/api_issues, only the final api_spec.
+
+
+def generate_api_sub(state: APIDesignState) -> dict:
     parsed = state["parsed_requirement"]
-    revision_count = state.get("revision_count", 0)
+    revision_count = state.get("api_revision_count", 0)
+    responses = {
+        "201": "Customer created",
+        "409": "Email already exists",
+    }
+    # Cố ý thiếu response 400 ở lần đầu để quan sát vòng lặp nội bộ subgraph.
+    if revision_count > 0:
+        responses["400"] = "Invalid request"
     api_spec = {
         "artifact_id": f'{parsed["function_id"]}_API_SPEC',
         "revision": revision_count + 1,
@@ -70,14 +93,88 @@ def generate_api(state: WorkflowState) -> dict:
             "email": "string, required",
             "phone": "string, optional",
         },
-        "responses": {
-            "201": "Customer created",
-            "400": "Invalid request",
-            "409": "Email already exists",
-        },
+        "responses": responses,
     }
-    print("[NODE] generate_api")
+    print(f"[API-SUBGRAPH] generate_api_sub — revision={revision_count + 1}")
     return {"api_spec": api_spec}
+
+
+def validate_api(state: APIDesignState) -> dict:
+    api_spec = state["api_spec"]
+    structurally_valid = (
+        api_spec["endpoint"].startswith("/api/") and api_spec["method"] == "POST"
+    )
+    print(f"[API-SUBGRAPH] validate_api — structurally_valid={structurally_valid}")
+    return {"api_structurally_valid": structurally_valid}
+
+
+def review_api(state: APIDesignState) -> dict:
+    api_spec = state["api_spec"]
+    issues: list[str] = []
+    if not state.get("api_structurally_valid", False):
+        issues.append("API endpoint/method failed structural validation.")
+    if "400" not in api_spec["responses"]:
+        issues.append("API specification is missing the invalid-request (400) response.")
+    status = "FAIL" if issues else "PASS"
+    print(f"[API-SUBGRAPH] review_api — status={status}, issues={issues}")
+    return {"api_review_status": status, "api_issues": issues}
+
+
+def revise_api(state: APIDesignState) -> dict:
+    current_revision = state.get("api_revision_count", 0)
+    print(f"[API-SUBGRAPH] revise_api — revision={current_revision + 1}")
+    return {"api_revision_count": current_revision + 1}
+
+
+def route_after_api_review(state: APIDesignState) -> str:
+    if state["api_review_status"] == "PASS":
+        return "pass"
+    if state.get("api_revision_count", 0) >= 2:
+        return "stop"
+    return "revise"
+
+
+def build_api_subgraph():
+    builder = StateGraph(APIDesignState)
+    builder.add_node("generate_api_sub", generate_api_sub)
+    builder.add_node("validate_api", validate_api)
+    builder.add_node("review_api", review_api)
+    builder.add_node("revise_api", revise_api)
+    builder.add_edge(START, "generate_api_sub")
+    builder.add_edge("generate_api_sub", "validate_api")
+    builder.add_edge("validate_api", "review_api")
+    builder.add_conditional_edges(
+        "review_api",
+        route_after_api_review,
+        {
+            "pass": END,
+            "revise": "revise_api",
+            "stop": END,
+        },
+    )
+    builder.add_edge("revise_api", "generate_api_sub")
+    return builder.compile()
+
+
+api_subgraph = build_api_subgraph()
+
+
+def generate_api(state: WorkflowState) -> dict:
+    # Parent node = wrapper quanh subgraph. Toàn bộ vòng lặp nội bộ chạy
+    # gọn trong MỘT super-step của parent graph (parent chỉ thấy 1 lần
+    # invoke, không thấy các bước generate/validate/review/revise bên trong).
+    print("[NODE] generate_api — delegating to API design subgraph")
+    sub_result = api_subgraph.invoke(
+        {
+            "parsed_requirement": state["parsed_requirement"],
+            "api_revision_count": 0,
+        }
+    )
+    print(
+        "[NODE] generate_api — subgraph finished "
+        f"(internal revisions={sub_result.get('api_revision_count', 0)})"
+    )
+    return {"api_spec": sub_result["api_spec"]}
 
 
 def generate_db(state: WorkflowState) -> dict:
