@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tạo / sửa graph</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: system-ui, sans-serif;
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    line-height: 1.5;
+  }
+  nav a { margin-right: 1rem; }
+  fieldset { border: 1px solid #888; border-radius: 8px; margin: 1rem 0; padding: 1rem; }
+  legend { font-weight: 600; padding: 0 0.5rem; }
+  label { display: block; margin-top: 0.5rem; font-size: 0.9rem; }
+  input, select, textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.4rem;
+    margin-top: 0.2rem;
+    border-radius: 6px;
+    border: 1px solid #888;
+    font-family: inherit;
+  }
+  button {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    border: 1px solid #888;
+    background: #f0f0f0;
+    color: #111;
+    margin-top: 0.75rem;
+  }
+  button:hover { background: #e0e0e0; }
+  table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; }
+  th, td { text-align: left; border-bottom: 1px solid #ccc; padding: 0.3rem 0.5rem; font-size: 0.9rem; }
+  .del-btn { background: #fbd6d6; border-color: #c62828; padding: 0.1rem 0.5rem; margin: 0; }
+  .row { display: flex; gap: 0.75rem; }
+  .row > div { flex: 1; }
+  #diagram { border: 1px solid #ccc; border-radius: 8px; padding: 1rem; margin-top: 0.75rem; overflow-x: auto; min-height: 2rem; }
+  #diagram svg { max-width: 100%; }
+  .errors { background: #fbe3d6; border: 1px solid #c65a00; padding: 0.75rem; border-radius: 6px; margin-top: 0.75rem; }
+  ul { padding-left: 1.2rem; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<nav><a href="/">Chạy graph RD→BD →</a></nav>
+<h1>Tạo / sửa graph</h1>
+
+<fieldset>
+  <legend>Danh sách graph</legend>
+  <table id="graph-list"><thead><tr><th>Tên</th><th>Loại</th><th></th></tr></thead><tbody></tbody></table>
+  <button id="refresh-list-btn">Làm mới danh sách</button>
+</fieldset>
+
+<fieldset>
+  <legend id="form-title">Tạo graph mới</legend>
+  <label>Tên graph
+    <input id="graph-name-input" type="text" placeholder="Ví dụ: Demo router">
+  </label>
+
+  <h3>Node</h3>
+  <div class="row">
+    <div>
+      <label>Node id
+        <input id="node-id-input" type="text" placeholder="vd: n1">
+      </label>
+    </div>
+    <div>
+      <label>Loại node
+        <select id="node-type-input">
+          <option value="mock">mock (trả 1 giá trị JSON tĩnh)</option>
+          <option value="merge">merge (gộp nhiều key thành 1)</option>
+          <option value="human_approval">human_approval (dừng chờ duyệt)</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div id="config-mock">
+    <label>output_key
+      <input id="mock-output-key" type="text" placeholder="vd: greeting">
+    </label>
+    <label>value (JSON)
+      <textarea id="mock-value" rows="2">{"msg": "hello"}</textarea>
+    </label>
+  </div>
+  <div id="config-merge" class="hidden">
+    <label>output_key
+      <input id="merge-output-key" type="text" placeholder="vd: combined">
+    </label>
+    <label>input_keys (cách nhau bởi dấu phẩy)
+      <input id="merge-input-keys" type="text" placeholder="vd: a, b, c">
+    </label>
+  </div>
+  <div id="config-human_approval" class="hidden">
+    <label>question
+      <input id="ha-question" type="text" placeholder="vd: Có đồng ý không?">
+    </label>
+    <label>decision_key
+      <input id="ha-decision-key" type="text" value="decision">
+    </label>
+  </div>
+  <button id="add-node-btn">+ Thêm node</button>
+  <table id="node-table"><thead><tr><th>id</th><th>type</th><th>config</th><th></th></tr></thead><tbody></tbody></table>
+
+  <h3>Cạnh (edge)</h3>
+  <div class="row">
+    <div>
+      <label>from
+        <select id="edge-from-input"></select>
+      </label>
+    </div>
+    <div>
+      <label>to
+        <select id="edge-to-input"></select>
+      </label>
+    </div>
+  </div>
+  <label><input type="checkbox" id="edge-conditional-checkbox" style="width:auto"> Cạnh có điều kiện (conditional)</label>
+  <div id="edge-conditional-fields" class="hidden">
+    <label><input type="checkbox" id="edge-else-checkbox" style="width:auto"> Đây là nhánh "else" (mặc định khi không khớp điều kiện nào)</label>
+    <div id="edge-if-fields">
+      <label>if_field (tên key trong state)
+        <input id="edge-if-field" type="text" placeholder="vd: decision">
+      </label>
+      <label>if_equals (giá trị JSON để so sánh bằng)
+        <input id="edge-if-equals" type="text" placeholder='vd: "APPROVE" hoặc 1 hoặc true'>
+      </label>
+    </div>
+  </div>
+  <button id="add-edge-btn">+ Thêm cạnh</button>
+  <table id="edge-table"><thead><tr><th>from</th><th>to</th><th>điều kiện</th><th></th></tr></thead><tbody></tbody></table>
+
+  <div>
+    <button id="preview-btn">Xem trước sơ đồ</button>
+    <button id="save-btn">Lưu graph</button>
+  </div>
+  <div id="preview-errors"></div>
+  <div id="diagram"></div>
+</fieldset>
+
+<script>
+mermaid.initialize({ startOnLoad: false });
+
+let nodes = [];
+let edges = [];
+let editingGraphId = null;
+
+const params = new URLSearchParams(window.location.search);
+const editId = params.get('edit');
+
+function refreshTypeFields() {
+  const type = document.getElementById('node-type-input').value;
+  ['mock', 'merge', 'human_approval'].forEach((t) => {
+    document.getElementById(`config-${t}`).classList.toggle('hidden', t !== type);
+  });
+}
+document.getElementById('node-type-input').addEventListener('change', refreshTypeFields);
+refreshTypeFields();
+
+document.getElementById('edge-conditional-checkbox').addEventListener('change', (e) => {
+  document.getElementById('edge-conditional-fields').classList.toggle('hidden', !e.target.checked);
+});
+document.getElementById('edge-else-checkbox').addEventListener('change', (e) => {
+  document.getElementById('edge-if-fields').classList.toggle('hidden', e.target.checked);
+});
+
+function renderNodeTable() {
+  const tbody = document.querySelector('#node-table tbody');
+  tbody.innerHTML = '';
+  nodes.forEach((node, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${node.id}</td><td>${node.type}</td><td><code>${JSON.stringify(node.config)}</code></td><td><button class="del-btn" data-i="${i}">x</button></td>`;
+    tbody.appendChild(tr);
+  });
+  tbody.querySelectorAll('.del-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      nodes.splice(Number(btn.dataset.i), 1);
+      renderNodeTable();
+      refreshEdgeSelects();
+    });
+  });
+  refreshEdgeSelects();
+}
+
+function refreshEdgeSelects() {
+  const ids = ['__start__', ...nodes.map((n) => n.id), '__end__'];
+  ['edge-from-input', 'edge-to-input'].forEach((selId) => {
+    const sel = document.getElementById(selId);
+    const current = sel.value;
+    sel.innerHTML = ids.map((id) => `<option value="${id}">${id}</option>`).join('');
+    if (ids.includes(current)) sel.value = current;
+  });
+}
+
+document.getElementById('add-node-btn').addEventListener('click', () => {
+  const id = document.getElementById('node-id-input').value.trim();
+  const type = document.getElementById('node-type-input').value;
+  if (!id) { alert('Cần nhập node id'); return; }
+  let config = {};
+  if (type === 'mock') {
+    let value;
+    try { value = JSON.parse(document.getElementById('mock-value').value); }
+    catch (e) { alert('value không phải JSON hợp lệ: ' + e.message); return; }
+    config = { output_key: document.getElementById('mock-output-key').value.trim(), value };
+  } else if (type === 'merge') {
+    config = {
+      output_key: document.getElementById('merge-output-key').value.trim(),
+      input_keys: document.getElementById('merge-input-keys').value.split(',').map((s) => s.trim()).filter(Boolean),
+    };
+  } else if (type === 'human_approval') {
+    config = {
+      question: document.getElementById('ha-question').value.trim(),
+      decision_key: document.getElementById('ha-decision-key').value.trim() || 'decision',
+    };
+  }
+  nodes.push({ id, type, config });
+  document.getElementById('node-id-input').value = '';
+  renderNodeTable();
+});
+
+function renderEdgeTable() {
+  const tbody = document.querySelector('#edge-table tbody');
+  tbody.innerHTML = '';
+  edges.forEach((edge, i) => {
+    let cond = 'plain';
+    if (edge.else) cond = 'else';
+    else if (edge.if_field) cond = `if ${edge.if_field} == ${JSON.stringify(edge.if_equals)}`;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${edge.from}</td><td>${edge.to}</td><td>${cond}</td><td><button class="del-btn" data-i="${i}">x</button></td>`;
+    tbody.appendChild(tr);
+  });
+  tbody.querySelectorAll('.del-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      edges.splice(Number(btn.dataset.i), 1);
+      renderEdgeTable();
+    });
+  });
+}
+
+document.getElementById('add-edge-btn').addEventListener('click', () => {
+  const from = document.getElementById('edge-from-input').value;
+  const to = document.getElementById('edge-to-input').value;
+  const conditional = document.getElementById('edge-conditional-checkbox').checked;
+  const edge = { from, to };
+  if (conditional) {
+    if (document.getElementById('edge-else-checkbox').checked) {
+      edge.else = true;
+    } else {
+      edge.if_field = document.getElementById('edge-if-field').value.trim();
+      try {
+        edge.if_equals = JSON.parse(document.getElementById('edge-if-equals').value);
+      } catch (e) {
+        edge.if_equals = document.getElementById('edge-if-equals').value;
+      }
+    }
+  }
+  edges.push(edge);
+  renderEdgeTable();
+});
+
+async function preview() {
+  const res = await fetch('/api/graphs/preview', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nodes, edges }),
+  });
+  const data = await res.json();
+  const errorsDiv = document.getElementById('preview-errors');
+  if (!data.valid) {
+    errorsDiv.innerHTML = '<div class="errors"><ul>' + data.errors.map((e) => `<li>${e}</li>`).join('') + '</ul></div>';
+    document.getElementById('diagram').innerHTML = '';
+    return null;
+  }
+  errorsDiv.innerHTML = '';
+  const { svg } = await mermaid.render('builder-svg', data.mermaid);
+  document.getElementById('diagram').innerHTML = svg;
+  return data;
+}
+
+document.getElementById('preview-btn').addEventListener('click', preview);
+
+async function save() {
+  const valid = await preview();
+  if (!valid) return;
+  const name = document.getElementById('graph-name-input').value.trim() || 'Untitled graph';
+  const payload = { name, nodes, edges };
+  const url = editingGraphId ? `/api/graphs/${editingGraphId}` : '/api/graphs';
+  const method = editingGraphId ? 'PUT' : 'POST';
+  const res = await fetch(url, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    alert('Lỗi khi lưu: ' + JSON.stringify(err.detail || res.statusText));
+    return;
+  }
+  const data = await res.json();
+  alert(`Đã lưu graph "${data.name}" (id: ${data.graph_id})`);
+  await loadGraphList();
+  window.location.href = `/run?graph_id=${data.graph_id}`;
+}
+document.getElementById('save-btn').addEventListener('click', save);
+
+async function loadGraphList() {
+  const res = await fetch('/api/graphs');
+  const graphs = await res.json();
+  const tbody = document.querySelector('#graph-list tbody');
+  tbody.innerHTML = '';
+  graphs.forEach((g) => {
+    const tr = document.createElement('tr');
+    const editLink = g.builtin ? '' : ` | <a href="/builder?edit=${g.graph_id}">Sửa</a>`;
+    tr.innerHTML = `<td>${g.name}</td><td>${g.builtin ? 'có sẵn' : 'tự tạo'}</td><td><a href="/run?graph_id=${g.graph_id}">Chạy</a>${editLink}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+document.getElementById('refresh-list-btn').addEventListener('click', loadGraphList);
+
+async function loadForEdit(graphId) {
+  const res = await fetch(`/api/graphs/${graphId}`);
+  if (!res.ok) { alert('Không tìm thấy graph để sửa'); return; }
+  const data = await res.json();
+  if (data.builtin) { alert('Graph có sẵn không sửa được ở đây.'); return; }
+  editingGraphId = graphId;
+  document.getElementById('form-title').textContent = `Sửa graph: ${data.name}`;
+  document.getElementById('graph-name-input').value = data.name;
+  nodes = data.nodes;
+  edges = data.edges;
+  renderNodeTable();
+  renderEdgeTable();
+}
+
+loadGraphList();
+if (editId) {
+  loadForEdit(editId);
+}
+</script>
+</body>
+</html>
