@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LangGraph RD → BD PoC</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --border: #d8dce3;
+    --text: #1b1f27;
+    --muted: #5f6672;
+    --accent: #3457d5;
+    --accent-soft: #e8edfd;
+    --ok-bg: #d9f5e0; --ok-fg: #14532d; --ok-br: #2e7d32;
+    --warn-bg: #fdf1cf; --warn-fg: #6b4e00; --warn-br: #b98900;
+    --danger-bg: #fbdcdc; --danger-fg: #7f1d1d; --danger-br: #c62828;
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171c; --surface: #1c2027; --border: #333944;
+      --text: #e8eaee; --muted: #a0a7b4;
+      --accent: #7d9bff; --accent-soft: #232b45;
+      --ok-bg: #16341f; --ok-fg: #9ae6b4; --ok-br: #2f855a;
+      --warn-bg: #3a2f10; --warn-fg: #f3d183; --warn-br: #b98900;
+      --danger-bg: #3a1a1a; --danger-fg: #f5b5b5; --danger-br: #c62828;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+  }
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .header-inner { max-width: 1000px; margin: 0 auto; padding: 0.9rem 1rem 0; }
+  h1 { font-size: 1.15rem; margin: 0 0 0.6rem; }
+  h1 small { font-weight: 400; color: var(--muted); font-size: 0.85rem; }
+  .tabs { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+  .tabs a {
+    padding: 0.5rem 0.9rem; text-decoration: none; color: var(--muted);
+    border-bottom: 2px solid transparent; font-size: 0.92rem; font-weight: 500;
+  }
+  .tabs a:hover { color: var(--text); }
+  .tabs a.active { color: var(--accent); border-bottom-color: var(--accent); }
+  main { max-width: 1000px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem;
+  }
+  .card h2 { font-size: 1rem; margin: 0 0 0.75rem; }
+  .card h3 { font-size: 0.9rem; margin: 1rem 0 0.4rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
+  label { display: block; font-size: 0.85rem; color: var(--muted); margin-top: 0.6rem; }
+  input, select, textarea {
+    width: 100%; padding: 0.45rem 0.6rem; margin-top: 0.2rem;
+    border: 1px solid var(--border); border-radius: 7px;
+    background: var(--bg); color: var(--text); font-family: inherit; font-size: 0.92rem;
+  }
+  textarea { font-family: ui-monospace, Menlo, Consolas, monospace; }
+  button {
+    font-size: 0.92rem; font-weight: 500; padding: 0.5rem 1rem; cursor: pointer;
+    border-radius: 7px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text);
+  }
+  button:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--accent); }
+  button:disabled { opacity: 0.5; cursor: progress; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.primary:hover:not(:disabled) { filter: brightness(1.1); background: var(--accent); }
+  button.approve { background: var(--ok-bg); border-color: var(--ok-br); color: var(--ok-fg); }
+  button.reject { background: var(--danger-bg); border-color: var(--danger-br); color: var(--danger-fg); }
+  button.tiny { padding: 0.15rem 0.5rem; font-size: 0.8rem; }
+  .btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-top: 0.85rem; }
+  .row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .row > * { flex: 1 1 200px; }
+  .badge {
+    display: inline-block; padding: 0.1rem 0.55rem; border-radius: 999px;
+    font-size: 0.78rem; font-weight: 600; white-space: nowrap;
+  }
+  .badge.interrupted, .badge.warn { background: var(--warn-bg); color: var(--warn-fg); }
+  .badge.done, .badge.ok { background: var(--ok-bg); color: var(--ok-fg); }
+  .badge.danger { background: var(--danger-bg); color: var(--danger-fg); }
+  .badge.muted { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+  .banner { padding: 0.7rem 0.9rem; border-radius: 8px; margin: 0.75rem 0; font-size: 0.92rem; }
+  .banner.info { background: var(--accent-soft); border: 1px solid var(--accent); }
+  .banner.warn { background: var(--warn-bg); color: var(--warn-fg); border: 1px solid var(--warn-br); }
+  .banner.danger { background: var(--danger-bg); color: var(--danger-fg); border: 1px solid var(--danger-br); }
+  table { width: 100%; border-collapse: collapse; margin-top: 0.6rem; font-size: 0.88rem; }
+  th, td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  pre {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 0.7rem; overflow-x: auto; font-size: 0.82rem; margin: 0.4rem 0 0;
+    max-height: 340px;
+  }
+  details > summary { cursor: pointer; font-size: 0.88rem; padding: 0.25rem 0; color: var(--accent); }
+  code { font-size: 0.85em; }
+  .meta { color: var(--muted); font-size: 0.85rem; }
+  .meta strong, .meta code { color: var(--text); }
+  .kv { display: flex; gap: 1.25rem; flex-wrap: wrap; font-size: 0.88rem; margin-top: 0.3rem; }
+  #diagram { overflow-x: auto; margin-top: 0.6rem; min-height: 2rem; }
+  #diagram svg { max-width: 100%; }
+  .highlight-node rect, .highlight-node polygon {
+    stroke: var(--warn-br) !important; stroke-width: 3px !important; fill: var(--warn-bg) !important;
+  }
+  #toast {
+    position: fixed; bottom: 1.25rem; left: 50%; transform: translateX(-50%);
+    background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent);
+    border-radius: 8px; padding: 0.7rem 1rem; box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+    font-size: 0.9rem; max-width: 90vw; display: none; z-index: 50;
+  }
+  #toast.error { border-left-color: var(--danger-br); }
+  .hidden { display: none !important; }
+  .spinner {
+    display: inline-block; width: 0.85em; height: 0.85em; vertical-align: -0.1em;
+    border: 2px solid var(--muted); border-top-color: transparent;
+    border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 0.4rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .empty { color: var(--muted); font-style: italic; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <h1>LangGraph RD → BD PoC <small>mock data · chưa gọi LLM</small></h1>
+    <nav class="tabs">
+      <a href="#run" data-tab="run">Chạy</a>
+      <a href="#graph" data-tab="graph">Sơ đồ</a>
+      <a href="#artifacts" data-tab="artifacts">Artifact versions</a>
+      <a href="#builder" data-tab="builder">Builder</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ================= TAB: RUN ================= -->
+  <section class="panel" id="panel-run">
+    <div class="card">
+      <h2>Chọn graph để chạy</h2>
+      <div class="row">
+        <div>
+          <label>Graph
+            <select id="run-graph-select"></select>
+          </label>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="primary" id="start-btn">Bắt đầu run mới</button>
+        <button id="reload-runs-btn">Tải lại danh sách run</button>
+      </div>
+      <label>Hoặc mở lại run đã có
+        <select id="existing-run-select"><option value="">-- chọn run --</option></select>
+      </label>
+    </div>
+
+    <div class="card hidden" id="run-status-card">
+      <h2>Run <code id="thread-id"></code> <span id="status-badge" class="badge"></span></h2>
+      <div class="kv meta">
+        <span>Node hiện tại: <code id="current-node"></code></span>
+        <span>Checkpoints: <strong id="checkpoints"></strong></span>
+      </div>
+
+      <div id="interrupt-area" class="hidden">
+        <div id="interrupt-banner" class="banner"></div>
+        <div class="kv meta" id="review-meta"></div>
+        <div id="issues-wrap"></div>
+        <div id="versions-wrap"></div>
+        <div id="design-wrap"></div>
+        <div id="decision-area"></div>
+      </div>
+
+      <div id="result-area" class="hidden">
+        <h3>Kết quả cuối cùng</h3>
+        <div id="result-summary"></div>
+        <details id="result-details"><summary>Xem toàn bộ state</summary><pre id="result-json"></pre></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TAB: GRAPH ================= -->
+  <section class="panel" id="panel-graph">
+    <div class="card">
+      <h2>Sơ đồ node</h2>
+      <p class="meta">
+        Sơ đồ sinh trực tiếp từ <code>graph.get_graph().draw_mermaid()</code> — luôn
+        khớp topology thật của code, không phải hình vẽ tay.
+      </p>
+      <div class="row">
+        <div>
+          <label>Graph
+            <select id="diagram-graph-select"></select>
+          </label>
+        </div>
+        <div>
+          <label>Highlight node đang dừng của run
+            <select id="highlight-run-select"><option value="">-- chọn run --</option></select>
+          </label>
+        </div>
+      </div>
+      <div id="highlight-note" class="meta"></div>
+      <div id="diagram"></div>
+      <p class="meta" style="margin-top:0.75rem">
+        Lưu ý: khi hai route key cùng trỏ về một node (vd <code>approved</code> và
+        <code>escalate</code> cùng tới <code>human_approval</code>), LangGraph chỉ vẽ
+        một nhãn cạnh — đúng kết nối, chỉ không phân biệt được lý do.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= TAB: ARTIFACTS ================= -->
+  <section class="panel" id="panel-artifacts">
+    <div class="card">
+      <h2>Lịch sử version của artifact</h2>
+      <p class="meta">
+        Mỗi vòng revision sinh ra một version mới cho từng artifact. Quyết định của
+        con người được gắn vào <em>đúng version</em> họ đã nhìn thấy lúc duyệt —
+        không phải gắn chung cho cả artifact.
+      </p>
+      <label>Run (chỉ graph RD → BD sinh artifact)
+        <select id="artifact-run-select"><option value="">-- chọn run --</option></select>
+      </label>
+      <div class="btn-row">
+        <button id="reload-artifacts-btn">Tải lại</button>
+      </div>
+      <div id="artifact-content"></div>
+    </div>
+  </section>
+
+  <!-- ================= TAB: BUILDER ================= -->
+  <section class="panel" id="panel-builder">
+    <div class="card">
+      <h2>Danh sách graph</h2>
+      <table id="graph-list"><thead><tr><th>Tên</th><th>Loại</th><th>Thao tác</th></tr></thead><tbody></tbody></table>
+      <div class="btn-row"><button id="refresh-list-btn">Làm mới</button></div>
+    </div>
+
+    <div class="card">
+      <h2 id="form-title">Tạo graph mới</h2>
+      <label>Tên graph
+        <input id="graph-name-input" type="text" placeholder="Ví dụ: Demo router">
+      </label>
+
+      <h3>Thêm node</h3>
+      <div class="row">
+        <div>
+          <label>Node id
+            <input id="node-id-input" type="text" placeholder="vd: n1">
+          </label>
+        </div>
+        <div>
+          <label>Loại node
+            <select id="node-type-input">
+              <option value="mock">mock — trả 1 giá trị JSON tĩnh</option>
+              <option value="merge">merge — gộp nhiều key thành 1</option>
+              <option value="human_approval">human_approval — dừng chờ duyệt</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <div id="config-mock">
+        <label>output_key <input id="mock-output-key" type="text" placeholder="vd: greeting"></label>
+        <label>value (JSON) <textarea id="mock-value" rows="2">{"msg": "hello"}</textarea></label>
+      </div>
+      <div id="config-merge" class="hidden">
+        <label>output_key <input id="merge-output-key" type="text" placeholder="vd: combined"></label>
+        <label>input_keys (cách nhau bởi dấu phẩy) <input id="merge-input-keys" type="text" placeholder="vd: a, b, c"></label>
+      </div>
+      <div id="config-human_approval" class="hidden">
+        <label>question <input id="ha-question" type="text" placeholder="vd: Có đồng ý không?"></label>
+        <label>decision_key <input id="ha-decision-key" type="text" value="decision"></label>
+      </div>
+      <div class="btn-row"><button id="add-node-btn">+ Thêm node</button></div>
+      <table id="node-table"><thead><tr><th>id</th><th>type</th><th>config</th><th></th></tr></thead><tbody></tbody></table>
+
+      <h3>Thêm cạnh</h3>
+      <div class="row">
+        <div><label>from <select id="edge-from-input"></select></label></div>
+        <div><label>to <select id="edge-to-input"></select></label></div>
+      </div>
+      <label style="margin-top:0.7rem">
+        <input type="checkbox" id="edge-conditional-checkbox" style="width:auto"> Cạnh có điều kiện (conditional)
+      </label>
+      <div id="edge-conditional-fields" class="hidden">
+        <label>
+          <input type="checkbox" id="edge-else-checkbox" style="width:auto"> Đây là nhánh "else" (mặc định khi không khớp điều kiện nào)
+        </label>
+        <div id="edge-if-fields">
+          <label>if_field (tên key trong state) <input id="edge-if-field" type="text" placeholder="vd: decision"></label>
+          <label>if_equals (giá trị JSON) <input id="edge-if-equals" type="text" placeholder='vd: "APPROVE"'></label>
+        </div>
+      </div>
+      <div class="btn-row"><button id="add-edge-btn">+ Thêm cạnh</button></div>
+      <table id="edge-table"><thead><tr><th>from</th><th>to</th><th>điều kiện</th><th></th></tr></thead><tbody></tbody></table>
+
+      <div class="btn-row">
+        <button id="preview-btn">Xem trước sơ đồ</button>
+        <button class="primary" id="save-btn">Lưu graph</button>
+      </div>
+      <div id="preview-errors"></div>
+      <div id="builder-diagram"></div>
+    </div>
+  </section>
+</main>
+
+<div id="toast"></div>
+
+<script>
+mermaid.initialize({ startOnLoad: false });
+
+/* ---------- helpers ---------- */
+const $ = (id) => document.getElementById(id);
+
+function toast(message, isError = false) {
+  const el = $('toast');
+  el.textContent = message;
+  el.className = isError ? 'error' : '';
+  el.style.display = 'block';
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => { el.style.display = 'none'; }, 4200);
+}
+
+async function busy(button, fn) {
+  const original = button ? button.innerHTML : null;
+  if (button) { button.disabled = true; button.innerHTML = '<span class="spinner"></span>đang chạy…'; }
+  try { return await fn(); }
+  finally { if (button) { button.disabled = false; button.innerHTML = original; } }
+}
+
+async function api(url, options) {
+  const res = await fetch(url, options);
+  if (!res.ok) {
+    let detail = res.statusText;
+    try { const body = await res.json(); detail = JSON.stringify(body.detail ?? body); } catch (e) {}
+    throw new Error(detail);
+  }
+  return res.json();
+}
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+/* rd_bd dùng /api/runs*, graph tự tạo dùng /api/graphs/{id}/runs* */
+const isBuiltin = (graphId) => graphId === 'rd_bd';
+const runsBase = (graphId) => (isBuiltin(graphId) ? '/api/runs' : `/api/graphs/${graphId}/runs`);
+
+/* ---------- tabs ---------- */
+const TABS = ['run', 'graph', 'artifacts', 'builder'];
+function showTab(name) {
+  const tab = TABS.includes(name) ? name : 'run';
+  TABS.forEach((t) => {
+    $(`panel-${t}`).classList.toggle('active', t === tab);
+    document.querySelector(`.tabs a[data-tab="${t}"]`).classList.toggle('active', t === tab);
+  });
+  if (tab === 'graph') renderDiagram();
+  if (tab === 'artifacts') loadArtifactRunOptions();
+}
+window.addEventListener('hashchange', () => showTab(location.hash.slice(1)));
+
+/* ---------- shared graph list ---------- */
+let graphList = [];
+async function loadGraphs() {
+  graphList = await api('/api/graphs');
+  const options = graphList.map((g) => `<option value="${g.graph_id}">${esc(g.name)}</option>`).join('');
+  ['run-graph-select', 'diagram-graph-select'].forEach((id) => {
+    const sel = $(id);
+    const current = sel.value;
+    sel.innerHTML = options;
+    if (graphList.some((g) => g.graph_id === current)) sel.value = current;
+  });
+  const tbody = document.querySelector('#graph-list tbody');
+  tbody.innerHTML = graphList.map((g) => `
+    <tr>
+      <td>${esc(g.name)}</td>
+      <td><span class="badge ${g.builtin ? 'muted' : 'ok'}">${g.builtin ? 'có sẵn' : 'tự tạo'}</span></td>
+      <td>
+        <button class="tiny" data-run="${g.graph_id}">Chạy</button>
+        ${g.builtin ? '' : `<button class="tiny" data-edit="${g.graph_id}">Sửa</button>`}
+      </td>
+    </tr>`).join('');
+  tbody.querySelectorAll('[data-run]').forEach((b) => b.addEventListener('click', () => {
+    $('run-graph-select').value = b.dataset.run;
+    location.hash = '#run';
+    loadRunOptions();
+  }));
+  tbody.querySelectorAll('[data-edit]').forEach((b) => b.addEventListener('click', () => loadForEdit(b.dataset.edit)));
+}
+
+/* ---------- TAB: run ---------- */
+let currentThreadId = null;
+let currentGraphId = 'rd_bd';
+
+async function loadRunOptions() {
+  const graphId = $('run-graph-select').value || 'rd_bd';
+  let runs = [];
+  try { runs = await api(runsBase(graphId)); } catch (e) { runs = []; }
+  $('existing-run-select').innerHTML = '<option value="">-- chọn run --</option>' +
+    runs.map((r) => `<option value="${r.thread_id}">${r.thread_id.slice(0, 8)}… (${r.status})</option>`).join('');
+}
+
+function renderRun(data, graphId) {
+  currentThreadId = data.thread_id;
+  currentGraphId = graphId;
+  $('run-status-card').classList.remove('hidden');
+  $('thread-id').textContent = data.thread_id.slice(0, 12) + '…';
+  $('checkpoints').textContent = data.checkpoints;
+  $('current-node').textContent = data.current_node || '(đã kết thúc)';
+  const badge = $('status-badge');
+  badge.textContent = data.status === 'interrupted' ? 'đang chờ quyết định' : 'đã xong';
+  badge.className = 'badge ' + data.status;
+
+  const interruptArea = $('interrupt-area');
+  const resultArea = $('result-area');
+
+  if (data.status === 'interrupted') {
+    interruptArea.classList.remove('hidden');
+    resultArea.classList.add('hidden');
+    const p = data.interrupt || {};
+    const banner = $('interrupt-banner');
+    if (p.type === 'AI_REVIEW_ESCALATION') {
+      banner.className = 'banner warn';
+      banner.textContent = '⚠️ AI đã hết lượt tự sửa mà review vẫn FAIL — cần bạn quyết định.';
+    } else if (p.type === 'BD_APPROVAL_REQUEST') {
+      banner.className = 'banner info';
+      banner.textContent = '✅ AI review PASS — đang chờ bạn duyệt.';
+    } else {
+      banner.className = 'banner info';
+      banner.textContent = p.question ? `❓ ${p.question}` : 'Graph đang chờ một quyết định.';
+    }
+
+    $('review-meta').innerHTML = p.review_score !== undefined
+      ? `<span>Review score: <strong>${p.review_score}</strong></span>` : '';
+
+    const issues = p.review_issues || [];
+    $('issues-wrap').innerHTML = p.review_issues
+      ? `<h3>Issues</h3>` + (issues.length
+          ? `<ul>${issues.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>`
+          : `<p class="empty">Không có issue nào.</p>`)
+      : '';
+
+    $('versions-wrap').innerHTML = (p.version_ids || []).length
+      ? `<h3>Đang duyệt các version</h3><div>${p.version_ids.map((v) => `<span class="badge muted">${esc(v)}</span>`).join(' ')}</div>`
+      : '';
+
+    $('design-wrap').innerHTML = p.design
+      ? `<details><summary>Xem thiết kế (api / database / screen)</summary><pre>${esc(JSON.stringify(p.design, null, 2))}</pre></details>`
+      : `<details><summary>Xem payload interrupt</summary><pre>${esc(JSON.stringify(p, null, 2))}</pre></details>`;
+
+    const allowed = p.allowed_actions;
+    $('decision-area').innerHTML = allowed
+      ? `<div class="btn-row">${allowed.map((a) =>
+          `<button class="${a === 'APPROVE' ? 'approve' : 'reject'}" data-decide="${a}">${a}</button>`).join('')}</div>`
+      : `<div class="btn-row">
+           <input id="free-decision" type="text" placeholder="nhập quyết định bất kỳ" style="max-width:280px">
+           <button class="primary" data-decide-free="1">Resume</button>
+         </div>`;
+    $('decision-area').querySelectorAll('[data-decide]').forEach((b) =>
+      b.addEventListener('click', () => busy(b, () => resume(b.dataset.decide))));
+    const freeBtn = $('decision-area').querySelector('[data-decide-free]');
+    if (freeBtn) freeBtn.addEventListener('click', () => busy(freeBtn, () => resume($('free-decision').value)));
+  } else {
+    interruptArea.classList.add('hidden');
+    resultArea.classList.remove('hidden');
+    const r = data.result || {};
+    const parts = [];
+    if (r.review_status) parts.push(`<span class="badge ${r.review_status === 'PASS' ? 'ok' : 'danger'}">review ${r.review_status}</span>`);
+    if (r.review_score !== undefined && r.review_score !== null) parts.push(`<span class="meta">score <strong>${r.review_score}</strong></span>`);
+    if (r.revision_count !== undefined && r.revision_count !== null) parts.push(`<span class="meta">revisions <strong>${r.revision_count}</strong></span>`);
+    if (r.human_decision) parts.push(`<span class="badge ${r.human_decision === 'APPROVE' ? 'ok' : 'danger'}">${esc(r.human_decision)}</span>`);
+    $('result-summary').innerHTML = parts.length ? `<div class="kv">${parts.join(' ')}</div>` : '<p class="empty">Graph đã chạy xong — state cuối cùng:</p>';
+    $('result-json').textContent = JSON.stringify(r, null, 2);
+    // Graph tự tạo không có tóm tắt có cấu trúc, state chính LÀ kết quả —
+    // mở sẵn thay vì bắt người dùng tự bấm.
+    $('result-details').open = parts.length === 0;
+  }
+}
+
+async function startRun() {
+  const graphId = $('run-graph-select').value || 'rd_bd';
+  try {
+    const data = await api(runsBase(graphId), { method: 'POST' });
+    renderRun(data, graphId);
+    await loadRunOptions();
+    toast('Đã bắt đầu run mới.');
+  } catch (e) { toast('Lỗi khi bắt đầu run: ' + e.message, true); }
+}
+
+async function resume(decision) {
+  try {
+    const data = await api(`${runsBase(currentGraphId)}/${currentThreadId}/resume`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ decision }),
+    });
+    renderRun(data, currentGraphId);
+    await loadRunOptions();
+    toast(`Đã gửi quyết định: ${decision}`);
+  } catch (e) { toast('Lỗi: ' + e.message, true); }
+}
+
+$('start-btn').addEventListener('click', (e) => busy(e.currentTarget, startRun));
+$('reload-runs-btn').addEventListener('click', (e) => busy(e.currentTarget, loadRunOptions));
+$('run-graph-select').addEventListener('change', loadRunOptions);
+$('existing-run-select').addEventListener('change', async (e) => {
+  if (!e.target.value) return;
+  const graphId = $('run-graph-select').value || 'rd_bd';
+  try { renderRun(await api(`${runsBase(graphId)}/${e.target.value}`), graphId); }
+  catch (err) { toast('Không mở được run: ' + err.message, true); }
+});
+
+/* ---------- TAB: graph diagram ---------- */
+async function renderDiagram() {
+  const graphId = $('diagram-graph-select').value || 'rd_bd';
+  try {
+    const info = await api(`/api/graphs/${graphId}`);
+    const { svg } = await mermaid.render('dash-svg', info.mermaid);
+    $('diagram').innerHTML = svg;
+  } catch (e) {
+    $('diagram').innerHTML = `<p class="empty">Không tải được sơ đồ: ${esc(e.message)}</p>`;
+    return;
+  }
+  let runs = [];
+  try { runs = await api(runsBase(graphId)); } catch (e) {}
+  $('highlight-run-select').innerHTML = '<option value="">-- chọn run --</option>' +
+    runs.map((r) => `<option value="${r.thread_id}">${r.thread_id.slice(0, 8)}… (${r.status})</option>`).join('');
+  $('highlight-note').textContent = '';
+}
+
+async function highlightRun(threadId) {
+  document.querySelectorAll('#diagram .highlight-node').forEach((el) => el.classList.remove('highlight-node'));
+  const note = $('highlight-note');
+  if (!threadId) { note.textContent = ''; return; }
+  const graphId = $('diagram-graph-select').value || 'rd_bd';
+  try {
+    const data = await api(`${runsBase(graphId)}/${threadId}`);
+    if (data.status === 'done' || !data.current_node) {
+      note.textContent = 'Run này đã kết thúc — không có node nào đang chờ.';
+      return;
+    }
+    note.textContent = `Đang dừng ở node: ${data.current_node}`;
+    const el = document.querySelector(`#diagram [id*="flowchart-${data.current_node}-"]`);
+    if (el) el.classList.add('highlight-node');
+    else note.textContent += ' (không tìm thấy node tương ứng trên sơ đồ)';
+  } catch (e) { note.textContent = 'Lỗi: ' + e.message; }
+}
+$('diagram-graph-select').addEventListener('change', renderDiagram);
+$('highlight-run-select').addEventListener('change', (e) => highlightRun(e.target.value));
+
+/* ---------- TAB: artifacts ---------- */
+async function loadArtifactRunOptions() {
+  let runs = [];
+  try { runs = await api('/api/runs'); } catch (e) {}
+  const sel = $('artifact-run-select');
+  const current = sel.value;
+  sel.innerHTML = '<option value="">-- chọn run --</option>' +
+    runs.map((r) => `<option value="${r.thread_id}">${r.thread_id.slice(0, 8)}… (${r.status})</option>`).join('');
+  if (runs.some((r) => r.thread_id === current)) sel.value = current;
+}
+
+async function loadArtifacts() {
+  const threadId = $('artifact-run-select').value;
+  const wrap = $('artifact-content');
+  if (!threadId) { wrap.innerHTML = '<p class="empty">Chọn một run để xem lịch sử version.</p>'; return; }
+  let data;
+  try { data = await api(`/api/runs/${threadId}/artifacts`); }
+  catch (e) { wrap.innerHTML = `<p class="empty">Lỗi: ${esc(e.message)}</p>`; return; }
+
+  if (!data.versions.length) {
+    wrap.innerHTML = '<p class="empty">Run này chưa sinh version nào.</p>';
+    return;
+  }
+
+  const byType = {};
+  data.versions.forEach((v) => { (byType[v.artifact_type] ||= []).push(v); });
+
+  wrap.innerHTML = Object.keys(byType).sort().map((type) => `
+    <h3>${esc(type)}</h3>
+    <table>
+      <thead><tr><th>Version</th><th>Cycle</th><th>Thời điểm</th><th>Quyết định</th><th>Nội dung</th></tr></thead>
+      <tbody>
+        ${byType[type].map((v) => {
+          const a = v.approval;
+          const badge = a
+            ? `<span class="badge ${a.decision === 'APPROVE' ? 'ok' : 'danger'}">${esc(a.decision)}</span>` +
+              (a.was_escalation ? ' <span class="badge warn">escalation</span>' : '')
+            : '<span class="badge muted">chưa duyệt</span>';
+          return `<tr>
+            <td><code>${esc(v.version_id)}</code></td>
+            <td>${v.cycle}</td>
+            <td class="meta">${esc(new Date(v.created_at).toLocaleTimeString())}</td>
+            <td>${badge}</td>
+            <td><details><summary>xem</summary><pre>${esc(JSON.stringify(v.content, null, 2))}</pre></details></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`).join('') +
+    `<h3>Lịch sử quyết định</h3>` +
+    (data.approvals.length
+      ? `<table><thead><tr><th>Quyết định</th><th>Thời điểm</th><th>Áp dụng cho version</th></tr></thead><tbody>
+          ${data.approvals.map((a) => `<tr>
+            <td><span class="badge ${a.decision === 'APPROVE' ? 'ok' : 'danger'}">${esc(a.decision)}</span></td>
+            <td class="meta">${esc(new Date(a.decided_at).toLocaleTimeString())}</td>
+            <td>${a.version_ids.map((v) => `<code>${esc(v)}</code>`).join(', ')}</td>
+          </tr>`).join('')}
+         </tbody></table>`
+      : '<p class="empty">Chưa có quyết định nào của con người.</p>');
+}
+$('artifact-run-select').addEventListener('change', loadArtifacts);
+$('reload-artifacts-btn').addEventListener('click', (e) => busy(e.currentTarget, async () => {
+  await loadArtifactRunOptions();
+  await loadArtifacts();
+}));
+
+/* ---------- TAB: builder ---------- */
+let nodes = [];
+let edges = [];
+let editingGraphId = null;
+
+function refreshTypeFields() {
+  const type = $('node-type-input').value;
+  ['mock', 'merge', 'human_approval'].forEach((t) => $(`config-${t}`).classList.toggle('hidden', t !== type));
+}
+$('node-type-input').addEventListener('change', refreshTypeFields);
+refreshTypeFields();
+
+$('edge-conditional-checkbox').addEventListener('change', (e) =>
+  $('edge-conditional-fields').classList.toggle('hidden', !e.target.checked));
+$('edge-else-checkbox').addEventListener('change', (e) =>
+  $('edge-if-fields').classList.toggle('hidden', e.target.checked));
+
+function refreshEdgeSelects() {
+  const ids = ['__start__', ...nodes.map((n) => n.id), '__end__'];
+  ['edge-from-input', 'edge-to-input'].forEach((selId) => {
+    const sel = $(selId);
+    const current = sel.value;
+    sel.innerHTML = ids.map((id) => `<option value="${id}">${id}</option>`).join('');
+    if (ids.includes(current)) sel.value = current;
+  });
+}
+
+function renderNodeTable() {
+  const tbody = document.querySelector('#node-table tbody');
+  tbody.innerHTML = nodes.map((n, i) =>
+    `<tr><td><code>${esc(n.id)}</code></td><td>${esc(n.type)}</td><td><code>${esc(JSON.stringify(n.config))}</code></td>
+     <td><button class="tiny reject del-btn" data-i="${i}">x</button></td></tr>`).join('');
+  tbody.querySelectorAll('.del-btn').forEach((btn) => btn.addEventListener('click', () => {
+    nodes.splice(Number(btn.dataset.i), 1); renderNodeTable();
+  }));
+  refreshEdgeSelects();
+}
+
+function renderEdgeTable() {
+  const tbody = document.querySelector('#edge-table tbody');
+  tbody.innerHTML = edges.map((e, i) => {
+    let cond = 'plain';
+    if (e.else) cond = 'else';
+    else if (e.if_field) cond = `if ${esc(e.if_field)} == ${esc(JSON.stringify(e.if_equals))}`;
+    return `<tr><td><code>${esc(e.from)}</code></td><td><code>${esc(e.to)}</code></td><td>${cond}</td>
+            <td><button class="tiny reject del-btn" data-i="${i}">x</button></td></tr>`;
+  }).join('');
+  tbody.querySelectorAll('.del-btn').forEach((btn) => btn.addEventListener('click', () => {
+    edges.splice(Number(btn.dataset.i), 1); renderEdgeTable();
+  }));
+}
+
+$('add-node-btn').addEventListener('click', () => {
+  const id = $('node-id-input').value.trim();
+  const type = $('node-type-input').value;
+  if (!id) { toast('Cần nhập node id', true); return; }
+  let config = {};
+  if (type === 'mock') {
+    let value;
+    try { value = JSON.parse($('mock-value').value); }
+    catch (err) { toast('value không phải JSON hợp lệ: ' + err.message, true); return; }
+    config = { output_key: $('mock-output-key').value.trim(), value };
+  } else if (type === 'merge') {
+    config = {
+      output_key: $('merge-output-key').value.trim(),
+      input_keys: $('merge-input-keys').value.split(',').map((s) => s.trim()).filter(Boolean),
+    };
+  } else {
+    config = {
+      question: $('ha-question').value.trim(),
+      decision_key: $('ha-decision-key').value.trim() || 'decision',
+    };
+  }
+  nodes.push({ id, type, config });
+  $('node-id-input').value = '';
+  renderNodeTable();
+});
+
+$('add-edge-btn').addEventListener('click', () => {
+  const edge = { from: $('edge-from-input').value, to: $('edge-to-input').value };
+  if ($('edge-conditional-checkbox').checked) {
+    if ($('edge-else-checkbox').checked) {
+      edge.else = true;
+    } else {
+      edge.if_field = $('edge-if-field').value.trim();
+      try { edge.if_equals = JSON.parse($('edge-if-equals').value); }
+      catch (e) { edge.if_equals = $('edge-if-equals').value; }
+    }
+  }
+  edges.push(edge);
+  renderEdgeTable();
+});
+
+async function preview() {
+  const errorsDiv = $('preview-errors');
+  let data;
+  try {
+    data = await api('/api/graphs/preview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nodes, edges }),
+    });
+  } catch (e) { toast('Lỗi preview: ' + e.message, true); return null; }
+  if (!data.valid) {
+    errorsDiv.innerHTML = `<div class="banner danger"><ul>${data.errors.map((e) => `<li>${esc(e)}</li>`).join('')}</ul></div>`;
+    $('builder-diagram').innerHTML = '';
+    return null;
+  }
+  errorsDiv.innerHTML = '';
+  const { svg } = await mermaid.render('builder-svg', data.mermaid);
+  $('builder-diagram').innerHTML = svg;
+  return data;
+}
+$('preview-btn').addEventListener('click', (e) => busy(e.currentTarget, preview));
+
+async function save() {
+  if (!(await preview())) return;
+  const name = $('graph-name-input').value.trim() || 'Untitled graph';
+  try {
+    const data = await api(editingGraphId ? `/api/graphs/${editingGraphId}` : '/api/graphs', {
+      method: editingGraphId ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, nodes, edges }),
+    });
+    await loadGraphs();
+    $('run-graph-select').value = data.graph_id;
+    await loadRunOptions();
+    toast(`Đã lưu graph "${data.name}" — chuyển sang tab Chạy.`);
+    location.hash = '#run';
+  } catch (e) { toast('Lỗi khi lưu: ' + e.message, true); }
+}
+$('save-btn').addEventListener('click', (e) => busy(e.currentTarget, save));
+
+async function loadForEdit(graphId) {
+  let data;
+  try { data = await api(`/api/graphs/${graphId}`); }
+  catch (e) { toast('Không tìm thấy graph để sửa', true); return; }
+  if (data.builtin) { toast('Graph có sẵn không sửa được ở đây.', true); return; }
+  editingGraphId = graphId;
+  $('form-title').textContent = `Sửa graph: ${data.name}`;
+  $('graph-name-input').value = data.name;
+  nodes = data.nodes;
+  edges = data.edges;
+  renderNodeTable();
+  renderEdgeTable();
+  location.hash = '#builder';
+  toast(`Đang sửa "${data.name}".`);
+}
+$('refresh-list-btn').addEventListener('click', (e) => busy(e.currentTarget, loadGraphs));
+
+/* ---------- boot ---------- */
+(async function init() {
+  await loadGraphs();
+  await loadRunOptions();
+  renderNodeTable();
+  renderEdgeTable();
+  showTab(location.hash.slice(1));
+})();
+</script>
+</body>
+</html>

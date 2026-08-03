@@ -1,5 +1,7 @@
+import operator
 import os
-from typing import TypedDict
+from datetime import datetime, timezone
+from typing import Annotated, TypedDict
 
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import END, START, StateGraph
@@ -21,6 +23,10 @@ class WorkflowState(TypedDict, total=False):
     human_decision: str
     api_review_status: str
     api_issues: list[str]
+    # Append-only. Reducer BẮT BUỘC vì ba generator chạy cùng super-step đều
+    # ghi vào key này — không có reducer, LangGraph raise InvalidUpdateError.
+    artifact_versions: Annotated[list[dict], operator.add]
+    approval_records: Annotated[list[dict], operator.add]
 
 
 class APIDesignState(TypedDict, total=False):
@@ -30,6 +36,37 @@ class APIDesignState(TypedDict, total=False):
     api_structurally_valid: bool
     api_review_status: str
     api_issues: list[str]
+
+
+def _version_record(artifact_type: str, spec: dict, cycle: int) -> dict:
+    """Một bản ghi version bất biến cho artifact vừa sinh ra.
+
+    version_id đánh số theo chu kỳ của graph CHA (v1, v2, ...) chứ không theo
+    field `revision` bên trong spec: generate_api uỷ quyền cho subgraph và
+    subgraph luôn trả revision=2 sau vòng lặp nội bộ, nên dùng `revision` sẽ
+    tạo ra hai version trùng id ở hai chu kỳ khác nhau.
+    """
+    return {
+        "version_id": f'{spec["artifact_id"]}#v{cycle + 1}',
+        "artifact_type": artifact_type,
+        "artifact_id": spec["artifact_id"],
+        "version": cycle + 1,
+        "revision": spec["revision"],
+        "cycle": cycle,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "content": spec,
+    }
+
+
+def _latest_version_ids(state: WorkflowState) -> list[str]:
+    """version_id mới nhất của từng loại artifact — thứ human đang duyệt."""
+    latest: dict[str, dict] = {}
+    for version in state.get("artifact_versions", []):
+        artifact_type = version["artifact_type"]
+        current = latest.get(artifact_type)
+        if current is None or version["version"] >= current["version"]:
+            latest[artifact_type] = version
+    return [latest[key]["version_id"] for key in sorted(latest)]
 
 
 def parse_requirement(state: WorkflowState) -> dict:
@@ -176,10 +213,16 @@ def generate_api(state: WorkflowState) -> dict:
         "[NODE] generate_api — subgraph finished "
         f"(internal revisions={sub_result.get('api_revision_count', 0)})"
     )
+    api_spec = sub_result["api_spec"]
     return {
-        "api_spec": sub_result["api_spec"],
+        "api_spec": api_spec,
         "api_review_status": sub_result.get("api_review_status"),
         "api_issues": sub_result.get("api_issues", []),
+        # Chỉ ghi lại artifact mà subgraph bàn giao ra ngoài; các lần thử nội
+        # bộ của subgraph vẫn được đóng gói kín (đúng tinh thần milestone 4).
+        "artifact_versions": [
+            _version_record("api", api_spec, state.get("revision_count", 0))
+        ],
     }
 
 
@@ -198,7 +241,10 @@ def generate_db(state: WorkflowState) -> dict:
         ],
     }
     print("[NODE] generate_db")
-    return {"db_spec": db_spec}
+    return {
+        "db_spec": db_spec,
+        "artifact_versions": [_version_record("database", db_spec, revision_count)],
+    }
 
 
 def generate_screen(state: WorkflowState) -> dict:
@@ -217,7 +263,12 @@ def generate_screen(state: WorkflowState) -> dict:
         "success_message": "Customer registered successfully.",
     }
     print("[NODE] generate_screen")
-    return {"screen_spec": screen_spec}
+    return {
+        "screen_spec": screen_spec,
+        "artifact_versions": [
+            _version_record("screen", screen_spec, revision_count)
+        ],
+    }
 
 
 def merge_design(state: WorkflowState) -> dict:
@@ -286,17 +337,36 @@ def human_approval(state: WorkflowState) -> dict:
     # với input(), tiến trình không bị block — có thể resume sau, ở
     # process khác, miễn dùng lại đúng thread_id.
     is_escalation = state["review_status"] == "FAIL"
+    # Tính TRƯỚC interrupt() cũng không sao: đây chỉ là đọc state, không side
+    # effect. Đoạn code phía trên interrupt() sẽ chạy lại khi resume.
+    version_ids = _latest_version_ids(state)
     decision = interrupt(
         {
             "type": "AI_REVIEW_ESCALATION" if is_escalation else "BD_APPROVAL_REQUEST",
             "review_score": state["review_score"],
             "review_issues": state["review_issues"],
             "design": state["merged_design"],
+            "version_ids": version_ids,
             "allowed_actions": ["APPROVE", "REJECT"],
         }
     )
     print(f"[NODE] human_approval — decision={decision}")
-    return {"human_decision": decision}
+    # Bản ghi approval nằm trong RETURN value (sau interrupt) nên chỉ được áp
+    # dụng đúng một lần — nếu append trước interrupt sẽ bị ghi trùng mỗi lần
+    # resume.
+    return {
+        "human_decision": decision,
+        "approval_records": [
+            {
+                "decided_at": datetime.now(timezone.utc).isoformat(),
+                "decision": decision,
+                "version_ids": version_ids,
+                "review_status": state["review_status"],
+                "review_score": state["review_score"],
+                "was_escalation": is_escalation,
+            }
+        ],
+    }
 
 
 def route_after_human(state: WorkflowState) -> str:

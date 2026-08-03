@@ -1,7 +1,7 @@
 import uuid
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -69,22 +69,29 @@ def _get_compiled_graph(graph_id: str):
 
 @app.get("/")
 def index():
-    return FileResponse("static/index.html")
+    return FileResponse("static/dashboard.html")
 
 
+# Bốn trang rời trước đây đã gộp vào dashboard; giữ URL cũ để link/bookmark
+# không chết, chỉ chuyển hướng sang đúng tab.
 @app.get("/graph")
 def graph_page():
-    return FileResponse("static/graph.html")
+    return RedirectResponse("/#graph")
 
 
 @app.get("/builder")
 def builder_page():
-    return FileResponse("static/builder.html")
+    return RedirectResponse("/#builder")
 
 
 @app.get("/run")
 def run_page():
-    return FileResponse("static/run.html")
+    return RedirectResponse("/#run")
+
+
+@app.get("/artifacts")
+def artifacts_page():
+    return RedirectResponse("/#artifacts")
 
 
 @app.get("/api/graph")
@@ -146,6 +153,34 @@ def get_run(thread_id: str):
     if not snapshot.values:
         raise HTTPException(404, "Unknown thread_id")
     return _build_response(graph, thread_id, snapshot)
+
+
+@app.get("/api/runs/{thread_id}/artifacts")
+def get_run_artifacts(thread_id: str):
+    config = {"configurable": {"thread_id": thread_id}}
+    snapshot = graph.get_state(config)
+    if not snapshot.values:
+        raise HTTPException(404, "Unknown thread_id")
+
+    versions = snapshot.values.get("artifact_versions", [])
+    approvals = snapshot.values.get("approval_records", [])
+
+    # Gắn quyết định của con người vào ĐÚNG version mà họ đã nhìn thấy lúc
+    # duyệt — đây chính là điểm "approval gắn với artifact version".
+    decision_by_version: dict[str, dict] = {}
+    for record in approvals:
+        for version_id in record["version_ids"]:
+            decision_by_version[version_id] = {
+                "decision": record["decision"],
+                "decided_at": record["decided_at"],
+                "was_escalation": record["was_escalation"],
+            }
+
+    annotated = [
+        {**version, "approval": decision_by_version.get(version["version_id"])}
+        for version in versions
+    ]
+    return {"thread_id": thread_id, "versions": annotated, "approvals": approvals}
 
 
 # ---- Milestone 8: custom user-created graphs -----------------------------
