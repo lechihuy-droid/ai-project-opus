@@ -275,7 +275,9 @@ def route_after_review(state: WorkflowState) -> str:
     if status == "PASS":
         return "approved"
     if revision_count >= 2:
-        return "stop"
+        # AI đã hết 2 lần tự sửa mà vẫn FAIL — escalate cho người quyết định,
+        # không được âm thầm dừng graph mà không ai biết.
+        return "escalate"
     return "revise"
 
 
@@ -283,9 +285,10 @@ def human_approval(state: WorkflowState) -> dict:
     # interrupt() dừng graph tại đây và lưu state vào checkpoint; khác
     # với input(), tiến trình không bị block — có thể resume sau, ở
     # process khác, miễn dùng lại đúng thread_id.
+    is_escalation = state["review_status"] == "FAIL"
     decision = interrupt(
         {
-            "type": "BD_APPROVAL_REQUEST",
+            "type": "AI_REVIEW_ESCALATION" if is_escalation else "BD_APPROVAL_REQUEST",
             "review_score": state["review_score"],
             "review_issues": state["review_issues"],
             "design": state["merged_design"],
@@ -299,10 +302,12 @@ def human_approval(state: WorkflowState) -> dict:
 def route_after_human(state: WorkflowState) -> str:
     if state["human_decision"] == "APPROVE":
         return "approved"
-    if state.get("revision_count", 0) >= 2:
+    # REJECT: nếu đây là escalation (AI đã bó tay) hoặc đã hết ngân sách revision,
+    # không còn lý do gì để tự động thử lại nữa — dừng hẳn.
+    if state["review_status"] == "FAIL" or state.get("revision_count", 0) >= 2:
         print(
-            "[NODE] route_after_human — stopped after exhausting revisions "
-            "following human rejection"
+            "[NODE] route_after_human — stopped, no further automatic revision "
+            "available"
         )
         return "stop"
     return "revise"
@@ -341,8 +346,8 @@ def build_graph():
         route_after_review,
         {
             "approved": "human_approval",
+            "escalate": "human_approval",
             "revise": "revise_context",
-            "stop": END,
         },
     )
 
