@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>LangGraph RD → BD PoC — Sơ đồ node</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: system-ui, sans-serif;
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    line-height: 1.5;
+  }
+  nav a { margin-right: 1rem; }
+  select, button {
+    font-size: 1rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    border: 1px solid #888;
+  }
+  button { cursor: pointer; background: #f0f0f0; color: #111; }
+  button:hover { background: #e0e0e0; }
+  #diagram {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+    overflow-x: auto;
+  }
+  #diagram svg { max-width: 100%; }
+  .highlight-node rect,
+  .highlight-node polygon {
+    stroke: #c65a00 !important;
+    stroke-width: 3px !important;
+    fill: #ffe0b3 !important;
+  }
+  #note { margin-top: 0.75rem; font-style: italic; }
+  .controls { display: flex; align-items: center; gap: 0.75rem; margin-top: 1rem; }
+</style>
+</head>
+<body>
+<nav><a href="/">← Chạy graph</a></nav>
+<h1>Sơ đồ node của graph</h1>
+<p>
+  Sơ đồ này lấy trực tiếp từ <code>graph.get_graph().draw_mermaid()</code> —
+  luôn khớp với topology thật của code, không phải hình vẽ tay.
+</p>
+<p><em>Lưu ý: một số route key trỏ về cùng 1 đích (vd "approved" và "escalate" cùng
+tới <code>human_approval</code>) chỉ hiện 1 nhãn cạnh — đây là cách vẽ mặc định của
+LangGraph, không phải thiếu sót của trang này.</em></p>
+
+<div class="controls">
+  <select id="run-select">
+    <option value="">-- chọn run để highlight --</option>
+  </select>
+  <button id="refresh-btn">Làm mới danh sách run</button>
+</div>
+<div id="note"></div>
+
+<div id="diagram">Đang tải sơ đồ...</div>
+
+<script>
+let currentGraphNodeNames = [];
+
+async function loadDiagram() {
+  const res = await fetch('/api/graph');
+  const data = await res.json();
+  const { svg } = await mermaid.render('graph-svg', data.mermaid);
+  document.getElementById('diagram').innerHTML = svg;
+  currentGraphNodeNames = [...document.querySelectorAll('#diagram .node')]
+    .map((n) => n.id);
+}
+
+async function loadRuns() {
+  const res = await fetch('/api/runs');
+  const runs = await res.json();
+  const select = document.getElementById('run-select');
+  select.innerHTML = '<option value="">-- chọn run để highlight --</option>';
+  runs.forEach((run) => {
+    const opt = document.createElement('option');
+    opt.value = run.thread_id;
+    opt.textContent = `${run.thread_id.slice(0, 8)}… (${run.status})`;
+    select.appendChild(opt);
+  });
+}
+
+function clearHighlight() {
+  document.querySelectorAll('#diagram .highlight-node').forEach((el) => {
+    el.classList.remove('highlight-node');
+  });
+}
+
+async function highlightRun(threadId) {
+  clearHighlight();
+  const note = document.getElementById('note');
+  if (!threadId) {
+    note.textContent = '';
+    return;
+  }
+  const res = await fetch(`/api/runs/${threadId}`);
+  const data = await res.json();
+  if (data.status === 'done' || !data.current_node) {
+    note.textContent = 'Run này đã kết thúc — không có node nào đang chờ.';
+    return;
+  }
+  note.textContent = `Đang dừng ở node: ${data.current_node}`;
+  const el = document.querySelector(`#diagram [id*="flowchart-${data.current_node}-"]`);
+  if (el) {
+    el.classList.add('highlight-node');
+  } else {
+    note.textContent += ' (không tìm thấy node tương ứng trên sơ đồ)';
+  }
+}
+
+document.getElementById('run-select').addEventListener('change', (e) => {
+  highlightRun(e.target.value);
+});
+document.getElementById('refresh-btn').addEventListener('click', loadRuns);
+
+mermaid.initialize({ startOnLoad: false });
+loadDiagram();
+loadRuns();
+</script>
+</body>
+</html>

@@ -61,6 +61,7 @@
 </style>
 </head>
 <body>
+<nav><a href="/graph">Xem sơ đồ node →</a></nav>
 <h1>LangGraph RD → BD PoC</h1>
 <p>Bấm nút để chạy graph (dùng mock data cố định trong <code>input/sample_rd.txt</code>).</p>
 <button id="start-btn">Bắt đầu run mới</button>
@@ -68,6 +69,7 @@
 <div id="status-panel">
   <h2>Run: <code id="thread-id"></code> <span id="status-badge" class="badge"></span></h2>
   <p>Checkpoints đã lưu: <strong id="checkpoints"></strong></p>
+  <p>Node hiện tại: <code id="current-node"></code></p>
 
   <div id="interrupt-area" style="display:none">
     <div id="interrupt-banner"></div>
@@ -99,6 +101,7 @@ function render(data) {
   document.getElementById('status-panel').style.display = 'block';
   document.getElementById('thread-id').textContent = data.thread_id;
   document.getElementById('checkpoints').textContent = data.checkpoints;
+  document.getElementById('current-node').textContent = data.current_node || '(đã kết thúc)';
 
   const badge = document.getElementById('status-badge');
   badge.textContent = data.status;
