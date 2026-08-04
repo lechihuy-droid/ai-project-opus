@@ -85,6 +85,18 @@ export default function ChatPage() {
   const [leftTab, setLeftTab] = useState<'chats' | 'files' | 'artifacts'>('chats')
   const [sessionsCollapsed, setSessionsCollapsed] = useState(() => localStorage.getItem('hub-v3-sessions-collapsed') === 'true')
   const [sessionsDrawerOpen, setSessionsDrawerOpen] = useState(false)
+  // Below 1280px the sessions column is a full-width drawer (position: fixed, see index.css),
+  // not a collapsible dock — the desktop-only `sessionsCollapsed` preference must not hide its
+  // content there. WorkspaceSidebar hides content via JSX (not CSS), so the viewport check has
+  // to happen in React; matchMedia + a change listener keeps it live across resizes.
+  const [sessionsCollapseActive, setSessionsCollapseActive] = useState(() => window.matchMedia('(min-width: 1280px)').matches)
+  useEffect(() => {
+    const query = window.matchMedia('(min-width: 1280px)')
+    const onChange = (event: MediaQueryListEvent) => setSessionsCollapseActive(event.matches)
+    query.addEventListener('change', onChange)
+    return () => query.removeEventListener('change', onChange)
+  }, [])
+  const sessionsCollapsedEffective = sessionsCollapsed && sessionsCollapseActive
   const [providers, setProviders] = useState<Provider[]>([])
   const [catalog, setCatalog] = useState<Catalog[]>([])
   const [defaultModel, setDefaultModel] = useState('')
@@ -239,9 +251,10 @@ export default function ChatPage() {
   return <div className="chat-workspace">
     <TopBar chat={activeChat} catalog={catalog} providers={providers} defaultModel={defaultModel}
       onChooseModel={chooseModel} exportDisabled={!activeArtifact} onExport={() => setShowExport(true)} onSettings={() => { window.location.hash = '#/settings' }} />
-    <div data-artifact={artifactPanelOpen ? 'open' : 'closed'} className={`cw-body ${artifactFocus ? 'artifact-focus' : ''} ${sessionsCollapsed ? 'sessions-collapsed' : ''} ${sessionsDrawerOpen ? 'sessions-drawer-open' : ''}`} style={{ '--cw-artifact-width': `${artifactWidth}px` } as CSSProperties}>
+    <div data-artifact={artifactPanelOpen ? 'open' : 'closed'} className={`cw-body ${artifactFocus ? 'artifact-focus' : ''} ${sessionsCollapsedEffective ? 'sessions-collapsed' : ''} ${sessionsDrawerOpen ? 'sessions-drawer-open' : ''}`} style={{ '--cw-artifact-width': `${artifactWidth}px` } as CSSProperties}>
       <WorkspaceSidebar tab={leftTab} onTab={setLeftTab} chats={chats} activeChatId={activeChatId} onNewChat={newChat} onSelectChat={id => { selectChat(id); setSessionsDrawerOpen(false) }}
-        artifacts={artifactMessages} activeArtifactIndex={activeArtifactIndex} onSelectArtifact={i => { setActiveArtifactIndex(i); setSessionsDrawerOpen(false) }} files={chatFiles} onUploadFile={() => fileInput.current?.click()} onDeleteFile={async name => { await api(`/api/chats/${encodeURIComponent(activeChatId)}/files/${encodeURIComponent(name)}`, { method: 'DELETE' }); loadFiles() }} collapsed={sessionsCollapsed} onToggle={() => setSessionsCollapsed(value => !value)} />
+        artifacts={artifactMessages} activeArtifactIndex={activeArtifactIndex} onSelectArtifact={i => { setActiveArtifactIndex(i); setSessionsDrawerOpen(false) }} files={chatFiles} onUploadFile={() => fileInput.current?.click()} onDeleteFile={async name => { await api(`/api/chats/${encodeURIComponent(activeChatId)}/files/${encodeURIComponent(name)}`, { method: 'DELETE' }); loadFiles() }} collapsed={sessionsCollapsedEffective} onToggle={() => setSessionsCollapsed(value => !value)} />
+      <button type="button" className="cw-sidebar-scrim" aria-label={t('common.close')} onClick={() => setSessionsDrawerOpen(false)} />
 
       <div className="cw-center">
         <button type="button" className="cw-drawer-toggle" aria-label={t('chat.expandChats')} onClick={() => setSessionsDrawerOpen(true)}><MessageCircle size={16} strokeWidth={1.75} aria-hidden="true" /></button>
