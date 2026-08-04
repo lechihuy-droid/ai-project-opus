@@ -4,6 +4,18 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  assertProductionInputsApproved,
+  readApprovalRecords,
+  readJson,
+  writeJson,
+} from "./operating-model/orchestration.mjs";
+import {
+  assertNormalizedContentBriefBinding,
+  assertValidContentBrief,
+  readContentBriefFile,
+  resolveExistingFileInside,
+} from "../pipeline/contracts/content-brief-contracts.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2);
@@ -11,7 +23,7 @@ const args = process.argv.slice(2);
 const failUsage = (message) => {
   console.error(`flow:run: ${message}`);
   console.error(
-    "Usage: npm run flow:run -- --script <approved-script.json> --video-map <video-map.json> [--run-id <id>] [--skip-voice]",
+    "Usage: npm run flow:run -- --content-brief <content-brief.json> --script <approved-script.json> --video-map <video-map.json> --normalized-input <normalized-input.json> --run-envelope <run-envelope.json> --approvals <approvals.json> [--run-id <id>] [--skip-voice]",
   );
   process.exit(1);
 };
@@ -24,7 +36,7 @@ const parseArgs = () => {
       parsed.skipVoice = true;
       continue;
     }
-    if (!["--script", "--video-map", "--run-id"].includes(flag)) {
+    if (!["--content-brief", "--script", "--video-map", "--normalized-input", "--run-envelope", "--approvals", "--run-id"].includes(flag)) {
       failUsage(`Unknown argument: ${flag}`);
     }
     const value = args[index + 1];
@@ -33,8 +45,8 @@ const parseArgs = () => {
     parsed[flag.slice(2)] = value;
     index += 1;
   }
-  if (!parsed.script || !parsed["video-map"])
-    failUsage("--script and --video-map are required");
+  if (!parsed.script || !parsed["video-map"] || !parsed["run-envelope"] || !parsed.approvals)
+    failUsage("--script, --video-map, --run-envelope, and --approvals are required");
   return parsed;
 };
 
@@ -48,38 +60,92 @@ const safeRunId = (value) => {
 };
 
 const parsed = parseArgs();
-const runId = safeRunId(parsed["run-id"] ?? `flow-${Date.now()}`);
-const scriptPath = path.resolve(root, parsed.script);
-const videoMapPath = path.resolve(root, parsed["video-map"]);
+if (parsed["run-id"] !== undefined) safeRunId(parsed["run-id"]);
+if (!parsed["content-brief"]) failUsage("--content-brief is required for production flow:run");
+const scriptPath = resolveExistingFileInside({ projectRoot: root, filePath: parsed.script, label: "approved script" }).filePath;
+const videoMapPath = resolveExistingFileInside({ projectRoot: root, filePath: parsed["video-map"], label: "video map" }).filePath;
+const envelopePath = resolveExistingFileInside({ projectRoot: root, filePath: parsed["run-envelope"], label: "run envelope" }).filePath;
+const approvalsPath = resolveExistingFileInside({ projectRoot: root, filePath: parsed.approvals, label: "approvals" }).filePath;
+const envelope = readJson(envelopePath);
+const { brief: contentBrief, filePath: contentBriefPath, rawChecksum: contentBriefRawChecksum } = readContentBriefFile({
+  projectRoot: root,
+  filePath: parsed["content-brief"],
+  runEnvelope: envelope,
+});
+const approvals = readApprovalRecords(approvalsPath);
+const runId = parsed["run-id"] ?? safeRunId(envelope.runId);
+if (envelope.runId !== runId) failUsage("--run-id must match run-envelope.runId");
+if (!parsed["normalized-input"]) failUsage("--normalized-input is required");
+const normalizedInputPath = resolveExistingFileInside({ projectRoot: root, filePath: parsed["normalized-input"], label: "normalized input" }).filePath;
 const runDir = path.join(root, "output", "render", "flow-runs", runId);
+if (fs.existsSync(runDir)) {
+  failUsage(`Output run directory already exists and is immutable: ${runDir}`);
+}
 const audioDir = path.join(root, "public", "runs", runId, "audio");
 const timedScriptPath = path.join(audioDir, "timed-script.json");
 const voicePath = path.join(audioDir, "voice.wav");
 const voiceTrackPath = path.join(audioDir, "voice-track.json");
 const approvedScriptCopy = path.join(runDir, "approved-script.json");
+const contentBriefCopy = path.join(runDir, "content-brief.json");
 const sourceMapCopy = path.join(runDir, "video-map.source.json");
+const normalizedInputCopy = path.join(runDir, "normalized-input.json");
 const timedMapPath = path.join(runDir, "video-map.json");
 const renderPropsPath = path.join(runDir, "render-props.json");
 const reportPath = path.join(runDir, "flow-report.json");
 const semanticReportPath = path.join(runDir, "semantic-report.json");
 const renderReportPath = path.join(runDir, "render-report.json");
 
-for (const [label, filePath] of [
-  ["approved script", scriptPath],
-  ["video map", videoMapPath],
-]) {
-  if (!fs.existsSync(filePath))
-    failUsage(`${label} does not exist: ${filePath}`);
+const normalizedInput = readJson(normalizedInputPath);
+if (!normalizedInput?.contentBrief) failUsage("production normalized input must contain a structured ContentBrief");
+try {
+  assertValidContentBrief(normalizedInput.contentBrief, { runEnvelope: envelope });
+} catch (error) {
+  failUsage(error instanceof Error ? error.message : String(error));
+}
+if (JSON.stringify(normalizedInput.contentBrief) !== JSON.stringify(contentBrief)) {
+  failUsage("--content-brief must exactly match normalized-input.contentBrief");
+}
+try {
+  assertNormalizedContentBriefBinding({
+    brief: contentBrief,
+    normalizedInput,
+    rawChecksum: contentBriefRawChecksum,
+    projectRoot: root,
+    briefPath: contentBriefPath,
+    expectedProjectId: runId,
+    expectedRunId: runId,
+  });
+} catch (error) {
+  failUsage(error instanceof Error ? error.message : String(error));
 }
 
-fs.mkdirSync(runDir, { recursive: true });
+try {
+  assertProductionInputsApproved({ envelope, approvals, scriptPath, videoMapPath });
+} catch (error) {
+  failUsage(error instanceof Error ? error.message : String(error));
+}
+
+fs.mkdirSync(runDir);
 fs.copyFileSync(scriptPath, approvedScriptCopy);
+fs.copyFileSync(contentBriefPath, contentBriefCopy);
 fs.copyFileSync(videoMapPath, sourceMapCopy);
+fs.copyFileSync(normalizedInputPath, normalizedInputCopy);
+writeJson(path.join(runDir, "run-envelope.json"), envelope);
+writeJson(path.join(runDir, "approvals.json"), approvals);
+writeJson(path.join(root, "pipeline", "runs", runId, "run-envelope.json"), envelope);
+writeJson(path.join(root, "pipeline", "runs", runId, "approvals.json"), approvals);
 
 const report = {
   runId,
   startedAt: new Date().toISOString(),
   completedAt: null,
+  status: "running",
+  contentBrief: {
+    schemaVersion: contentBrief.schemaVersion,
+    title: contentBrief.title,
+    styleMode: contentBrief.styleMode,
+    beatCount: contentBrief.beats.length,
+  },
   stages: [],
 };
 
@@ -148,6 +214,23 @@ const definitions = [
     args: ["--input", timedMapPath, "--timed-script", timedScriptPath],
   },
   {
+    name: "qa:pre-render",
+    script: "scripts/qa-production.mjs",
+    args: [
+      "--phase", "pre",
+      "--run-id", runId,
+      "--run-dir", runDir,
+      "--script", approvedScriptCopy,
+      "--source-video-map", sourceMapCopy,
+      "--video-map", timedMapPath,
+      "--render-props", renderPropsPath,
+      "--timed-script", timedScriptPath,
+      "--audio", voicePath,
+      "--normalized-input", normalizedInputCopy,
+      "--content-brief", contentBriefCopy,
+    ],
+  },
+  {
     name: "validate:semantic",
     script: "scripts/validate-semantic.mjs",
     args: ["--input", timedMapPath, "--final", "--report", semanticReportPath],
@@ -177,9 +260,22 @@ const definitions = [
     },
   },
   {
-    name: "publish:handoff",
-    script: "scripts/publish-handoff.mjs",
-    args: ["--run-id", runId],
+    name: "qa:post-render",
+    script: "scripts/qa-production.mjs",
+    args: [
+      "--phase", "post",
+      "--run-id", runId,
+      "--run-dir", runDir,
+      "--script", approvedScriptCopy,
+      "--source-video-map", sourceMapCopy,
+      "--video-map", timedMapPath,
+      "--render-props", renderPropsPath,
+      "--timed-script", timedScriptPath,
+      "--audio", voicePath,
+      "--normalized-input", normalizedInputCopy,
+      "--content-brief", contentBriefCopy,
+      "--video", path.join(runDir, "video.mp4"),
+    ],
   },
 ];
 
@@ -214,6 +310,7 @@ if (parsed.skipVoice) {
       });
     });
     report.completedAt = new Date().toISOString();
+    report.status = "failed";
     writeReport();
     process.exit(1);
   }
@@ -283,6 +380,7 @@ for (const [index, stage] of definitions.entries()) {
       });
     });
     report.completedAt = new Date().toISOString();
+    report.status = "failed";
     writeReport();
     process.exit(1);
   }
@@ -300,5 +398,7 @@ for (const [index, stage] of definitions.entries()) {
 }
 
 report.completedAt = new Date().toISOString();
+report.status = "awaiting_final_approval";
+report.nextAction = "Run flow:finalize with a final-video approval matching output/render/flow-runs/<runId>/video.mp4.";
 writeReport();
-console.log(`Flow completed: ${path.relative(root, runDir)}`);
+console.log(`Flow rendered and is awaiting final approval: ${path.relative(root, runDir)}`);

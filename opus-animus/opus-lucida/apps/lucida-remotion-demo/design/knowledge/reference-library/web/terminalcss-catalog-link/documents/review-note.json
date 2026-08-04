@@ -1,10 +1,25 @@
 {
+  "contentChecksum": "bd03f6129d5fe068a60ebad490078c624d5f78b733ca1bd20b77d51d6add87d2",
+  "domain": "visual-style",
+  "mediaType": "web",
+  "observations": [
+    {
+      "definition": {
+        "assetPolicy": "no third-party assets",
+        "family": "terminal",
+        "use": "taxonomy only"
+      },
+      "kind": "layout_reference",
+      "reviewStatus": "approved"
+    }
+  ],
+  "rawText": "# Terminal CSS\n\nThe visual reference flow registers Terminal CSS as a terminal web-reference source. This approved package stores the source link and a reviewer-authored taxonomy note only. It does not copy page text, styles, screenshots, or other third-party assets.\n\nUse the evidence for terminal-family vocabulary, then validate any implementation against Lucida-owned components.",
   "schemaVersion": "lucida-reference-document/v1",
   "sourceRef": "https://terminalcss.xyz/#lucida-review-note",
-  "title": "Terminal CSS source link review note",
-  "mediaType": "web",
-  "rawText": "# Terminal CSS\n\nThe visual reference flow registers Terminal CSS as a terminal web-reference source. This approved package stores the source link and a reviewer-authored taxonomy note only. It does not copy page text, styles, screenshots, or other third-party assets.\n\nUse the evidence for terminal-family vocabulary, then validate any implementation against Lucida-owned components.",
-  "contentChecksum": "bd03f6129d5fe068a60ebad490078c624d5f78b733ca1bd20b77d51d6add87d2",
-  "tags": ["terminal", "web-reference", "link-only"],
-  "observations": [{ "kind": "layout_reference", "reviewStatus": "approved", "definition": { "family": "terminal", "use": "taxonomy only", "assetPolicy": "no third-party assets" } }]
+  "tags": [
+    "terminal",
+    "web-reference",
+    "link-only"
+  ],
+  "title": "Terminal CSS source link review note"
 }

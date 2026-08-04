@@ -1,0 +1,60 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-16",
+    "approvedBy": "HUY",
+    "status": "approved"
+  },
+  "generatedAt": "2026-07-16T00:00:00.000Z",
+  "projectId": "lucida-remotion-demo-w8-evidence",
+  "rights": {
+    "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
+  "sanitization": {
+    "findings": [
+      "Link-only reviewer notes; no third-party source body or media is stored."
+    ],
+    "redactions": 0,
+    "status": "passed"
+  },
+  "schemaVersion": "sanitized-visual-input/v1",
+  "sources": [
+    {
+      "checksum": "5ecf602b407772b7a3b27b6de05e509c6bfe56bfd4e6d5368bf161fa1e5f33b4",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "dashboard-data",
+        "url": "https://github.com/primer/react"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "dashboard-data",
+            "tags": [
+              "dashboard-data",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "5ecf602b407772b7a3b27b6de05e509c6bfe56bfd4e6d5368bf161fa1e5f33b4",
+            "sourceRef": "https://github.com/primer/react"
+          },
+          "text": "# Primer React dashboard hierarchy review note\n\nSource: https://github.com/primer/react\nTarget package: dashboard-data\n\nReviewer-authored concepts:\n- compact component hierarchy\n- semantic status surfaces\n- accessible operational controls\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "rights": {
+        "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+        "policy": "link-and-review-note-only",
+        "status": "approved"
+      },
+      "sourceId": "source:reference:w8-dashboard-primer-react",
+      "sourceRevision": "git:4045abea621d0940edcd1120fc70e6ed5f797205",
+      "sourceType": "repository"
+    }
+  ]
+}

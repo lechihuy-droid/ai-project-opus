@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "terra-pattern-proposal-p7-validation/v1",
+  "packageId": "product-showcase",
+  "proposalStatus": "proposed",
+  "humanPatternReview": "pending",
+  "compilerEligibility": false,
+  "canonicalEligibility": false,
+  "patternCount": 30,
+  "uniquePatternIdCount": 30,
+  "patternStatuses": {
+    "proposed": 30
+  },
+  "patternsPerVariant": {
+    "product-hero": 6,
+    "feature-reveal": 6,
+    "before-after": 6,
+    "capability-grid": 6,
+    "launch-summary": 6
+  },
+  "referencedSourceEvidenceIds": [
+    "repo-mui",
+    "web-mui"
+  ],
+  "verifiedEvidence": [
+    {
+      "evidenceId": "repo-mui",
+      "artifact": "design/visual-library/styles/product-showcase/artifacts/er2-evidence-validation-report.json",
+      "lunaResolved": true
+    },
+    {
+      "evidenceId": "web-mui",
+      "artifact": "design/visual-library/styles/product-showcase/artifacts/er2-evidence-validation-report.json",
+      "lunaResolved": true
+    }
+  ],
+  "scope": {
+    "patterns": "design/visual-library/styles/product-showcase/visual-patterns.json",
+    "validator": "design/visual-library/styles/product-showcase/validate-visual-patterns.mjs",
+    "collectionEdited": false,
+    "rendererEdited": false,
+    "globalEdited": false
+  },
+  "validation": {
+    "schemaValid": true,
+    "referencesValid": true,
+    "idsUnique": true,
+    "sixPatternsPerVariant": true,
+    "compilerEligible": false,
+    "passed": true,
+    "failures": []
+  },
+  "notes": [
+    "This artifact records a non-canonical P7 Terra proposal set only.",
+    "No approval, promotion, renderer, global registry, or collection action is performed by this validator."
+  ]
+}

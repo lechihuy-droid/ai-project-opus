@@ -13,9 +13,11 @@ import {
   sha256File,
   stableJson,
 } from "./index-utils.mjs";
+import { assertEvidenceDomain, domainCounts } from "./evidence-domain.mjs";
 
 export const REFERENCE_INDEX_SCHEMA = "lucida-reference-index/v1";
 export const CHUNKER_VERSION = "structural-v1";
+export const STYLE_PATTERN_INDEX_SCHEMA = "lucida-style-pattern-index/v1";
 
 const MAX_CHUNK_GRAPHEMES = 1600;
 const TARGET_CHUNK_GRAPHEMES = 1200;
@@ -40,6 +42,19 @@ const isChecksum = (value) => /^[a-f0-9]{64}$/.test(normalizedChecksum(value));
 const isInside = (root, candidate) => {
   const relative = path.relative(root, candidate);
   return relative && !relative.startsWith("..") && !path.isAbsolute(relative);
+};
+const isInsideOrEqual = (root, candidate) => {
+  const relative = path.relative(root, candidate);
+  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+};
+
+const realPathInside = (root, candidate, label) => {
+  const realRoot = fs.realpathSync.native(root);
+  const realCandidate = fs.realpathSync.native(candidate);
+  if (!isInsideOrEqual(realRoot, realCandidate)) {
+    throw new Error(`${label} escapes its owned directory via a symlink or junction.`);
+  }
+  return realCandidate;
 };
 
 const approvalArtifactPath = (appRoot, packageDir, source) => path.join(
@@ -239,6 +254,402 @@ const packageDirectories = (referenceRoot) => {
     .sort((left, right) => left.localeCompare(right, "en"));
 };
 
+const stylePackageDirectories = (stylesRoot) => {
+  if (!fs.existsSync(stylesRoot)) return [];
+  return fs.readdirSync(stylesRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() || entry.isSymbolicLink())
+    .map((entry) => path.join(stylesRoot, entry.name))
+    .filter((packageDir) => fs.existsSync(path.join(packageDir, "style-package.json")))
+    .map((packageDir) => {
+      realPathInside(stylesRoot, packageDir, `Style package directory ${packageDir}`);
+      realPathInside(stylesRoot, path.join(packageDir, "style-package.json"), `Style package file ${packageDir}/style-package.json`);
+      return packageDir;
+    })
+    .sort((left, right) => left.localeCompare(right, "en"));
+};
+
+const styleCollection = (filePath, key) => {
+  const value = readJson(filePath);
+  if (Array.isArray(value)) return value;
+  if (value && typeof value === "object" && Array.isArray(value[key])) return value[key];
+  if (key === "patterns" && value && typeof value === "object" && Array.isArray(value.visualPatterns)) {
+    return value.visualPatterns;
+  }
+  throw new Error(`${filePath} must be an array or an object with a ${key} array.`);
+};
+
+const canonicalVisualSources = (referenceRoot) => {
+  const sourceById = new Map();
+  for (const packageDir of packageDirectories(referenceRoot)) {
+    const sourcePath = path.join(packageDir, "source.json");
+    if (!fs.existsSync(sourcePath)) continue;
+    let source;
+    try {
+      source = readJson(sourcePath);
+    } catch {
+      continue;
+    }
+    if (
+      source.domain !== "visual-style"
+      || source.approval?.status !== "approved"
+      || source.rights?.status !== "approved"
+      || typeof source.sourceId !== "string"
+    ) {
+      continue;
+    }
+    for (const id of [source.sourceId, source.sourceId.split(":").at(-1)]) {
+      sourceById.set(id, source);
+    }
+  }
+  return sourceById;
+};
+
+const tokenizeTypeScript = (source) => {
+  const tokens = [];
+  let index = 0;
+  while (index < source.length) {
+    const current = source[index];
+    const next = source[index + 1];
+    if (/\s/u.test(current)) {
+      index += 1;
+      continue;
+    }
+    if (current === "/" && next === "/") {
+      index = source.indexOf("\n", index + 2);
+      if (index === -1) break;
+      continue;
+    }
+    if (current === "/" && next === "*") {
+      const end = source.indexOf("*/", index + 2);
+      if (end === -1) break;
+      index = end + 2;
+      continue;
+    }
+    if (current === "\"" || current === "'" || current === "`") {
+      const quote = current;
+      let value = "";
+      index += 1;
+      while (index < source.length) {
+        if (source[index] === "\\") {
+          value += source[index + 1] ?? "";
+          index += 2;
+          continue;
+        }
+        if (source[index] === quote) {
+          index += 1;
+          break;
+        }
+        value += source[index];
+        index += 1;
+      }
+      tokens.push({ type: "string", value });
+      continue;
+    }
+    if (/[A-Za-z_$]/u.test(current)) {
+      let end = index + 1;
+      while (end < source.length && /[\w$]/u.test(source[end])) end += 1;
+      tokens.push({ type: "identifier", value: source.slice(index, end) });
+      index = end;
+      continue;
+    }
+    tokens.push({ type: "punctuation", value: current });
+    index += 1;
+  }
+  return tokens;
+};
+
+const runtimeRendererPackageIds = (appRoot) => {
+  const registryPath = path.join(appRoot, "src", "styles", "runtime", "packages.ts");
+  if (!fs.existsSync(registryPath)) return new Set();
+  const tokens = tokenizeTypeScript(fs.readFileSync(registryPath, "utf8"));
+  const importedVisuals = new Map();
+  const stylesRoot = path.join(appRoot, "design", "visual-library", "styles");
+  for (let index = 0; index < tokens.length - 3; index += 1) {
+    const [keyword, binding, from, specifier] = tokens.slice(index, index + 4);
+    if (
+      keyword.value !== "import"
+      || binding.type !== "identifier"
+      || from.value !== "from"
+      || specifier.type !== "string"
+    ) continue;
+    const importedPath = path.resolve(path.dirname(registryPath), specifier.value);
+    if (path.basename(importedPath) !== "visual.json" || !isInside(stylesRoot, importedPath)) continue;
+    importedVisuals.set(binding.value, path.basename(path.dirname(importedPath)));
+  }
+
+  const registeredBindings = new Set();
+  for (let index = 0; index < tokens.length - 2; index += 1) {
+    const [callee, openParen, binding] = tokens.slice(index, index + 3);
+    const previous = tokens[index - 1];
+    if (
+      callee.value === "definePackage"
+      && openParen.value === "("
+      && binding.type === "identifier"
+      && previous?.value !== "."
+      && previous?.value !== "function"
+    ) {
+      registeredBindings.add(binding.value);
+    }
+  }
+  return new Set(
+    [...registeredBindings]
+      .map((binding) => importedVisuals.get(binding))
+      .filter((packageId) => typeof packageId === "string"),
+  );
+};
+
+const resolveStyleRagRecordPath = ({ appRoot, packageDir, ref, label }) => {
+  if (typeof ref !== "string" || ref.trim().length === 0) {
+    throw new Error(`${label} must be a non-empty relative path.`);
+  }
+  if (ref.includes("\\") || path.isAbsolute(ref)) {
+    throw new Error(`${label} must be a relative path using forward slashes.`);
+  }
+  const baseDir = ref.startsWith("./") || ref.startsWith("../") ? packageDir : appRoot;
+  const resolvedPath = path.resolve(baseDir, ref);
+  if (!isInsideOrEqual(appRoot, resolvedPath) || !isInside(packageDir, resolvedPath)) {
+    throw new Error(`${label} must remain inside its style package directory.`);
+  }
+  if (!fs.existsSync(resolvedPath)) {
+    throw new Error(`${label} does not exist.`);
+  }
+  const realPath = realPathInside(packageDir, resolvedPath, label);
+  if (!fs.statSync(realPath).isFile()) {
+    throw new Error(`${label} must resolve to a file.`);
+  }
+  return realPath;
+};
+
+const loadStyleRagRecords = ({
+  appRoot,
+  packageDir,
+  pkg,
+  property,
+  defaultName,
+  collectionKey,
+  label,
+}) => {
+  const hasRefs = Object.hasOwn(pkg, property);
+  if (!hasRefs) {
+    const defaultPath = path.join(packageDir, defaultName);
+    if (!fs.existsSync(defaultPath)) return { records: [], paths: [] };
+    const realPath = realPathInside(packageDir, defaultPath, `${label} ${relativePath(appRoot, defaultPath)}`);
+    if (!fs.statSync(realPath).isFile()) {
+      throw new Error(`${label} ${relativePath(appRoot, defaultPath)} must resolve to a file.`);
+    }
+    return {
+      records: styleCollection(realPath, collectionKey),
+      paths: [realPath],
+    };
+  }
+
+  const refs = pkg[property];
+  if (!Array.isArray(refs)) {
+    throw new Error(`${relativePath(appRoot, packageDir)}/style-package.json ${property} must be an array.`);
+  }
+  const paths = refs.map((ref, index) => resolveStyleRagRecordPath({
+    appRoot,
+    packageDir,
+    ref,
+    label: `${label} ref ${property}[${index}]`,
+  }));
+  return {
+    records: paths.map((recordPath) => {
+      const record = readJson(recordPath);
+      if (!record || typeof record !== "object" || Array.isArray(record)) {
+        throw new Error(`${label} ref ${relativePath(appRoot, recordPath)} must contain a JSON object.`);
+      }
+      return record;
+    }),
+    paths,
+  };
+};
+
+const sortBy = (key) => (left, right) => left[key].localeCompare(right[key], "en");
+
+const assertUniqueStyleIds = (records, key, packageId, globalIds = null) => {
+  const packageIds = new Set();
+  for (const record of records) {
+    const id = record?.[key];
+    if (typeof id !== "string") continue;
+    if (packageIds.has(id)) {
+      throw new Error(`Duplicate ${key} in style package ${packageId}: ${id}.`);
+    }
+    packageIds.add(id);
+    const previousPackageId = globalIds?.get(id);
+    if (previousPackageId) {
+      throw new Error(`Duplicate ${key} across style packages ${previousPackageId} and ${packageId}: ${id}.`);
+    }
+    globalIds?.set(id, packageId);
+  }
+};
+
+const assertStyleRagSchema = (records, validate, label) => {
+  records.forEach((record, index) => {
+    if (validate(record)) return;
+    throw new Error(
+      `${label}[${index}] does not satisfy its schema: ${validationErrors(label, validate)}.`,
+    );
+  });
+};
+
+const projectVariant = (variant, sourceHashes) => ({
+  variantId: variant.variantId,
+  packageId: variant.packageId,
+  label: variant.label,
+  description: variant.description,
+  intentTags: variant.intentTags,
+  beatRoles: variant.beatRoles,
+  contentDensity: variant.contentDensity,
+  aspectRatios: variant.aspectRatios,
+  layoutTraits: variant.layoutTraits,
+  typographyTraits: variant.typographyTraits,
+  paletteTraits: variant.paletteTraits,
+  motionTraits: variant.motionTraits,
+  componentTraits: variant.componentTraits,
+  contentCapacity: variant.contentCapacity,
+  positiveUseCases: variant.positiveUseCases,
+  antiPatterns: variant.antiPatterns,
+  sourceHashes,
+});
+
+const projectPattern = (pattern, sourceHashes) => ({
+  patternId: pattern.patternId,
+  packageId: pattern.packageId,
+  variantIds: pattern.variantIds,
+  patternType: pattern.patternType,
+  intentTags: pattern.intentTags,
+  beatRoles: pattern.beatRoles,
+  contentDensity: pattern.contentDensity,
+  aspectRatios: pattern.aspectRatios,
+  layoutTraits: pattern.layoutTraits,
+  typographyTraits: pattern.typographyTraits,
+  paletteTraits: pattern.paletteTraits,
+  motionTraits: pattern.motionTraits,
+  componentTraits: pattern.componentTraits,
+  contentCapacity: pattern.contentCapacity,
+  positiveUseCases: pattern.positiveUseCases,
+  antiPatterns: pattern.antiPatterns,
+  sourceHashes,
+});
+
+// This mirrors the current visual-package validator's eligibility boundary while
+// keeping the compiler read-only: records that are not eligible are not projected.
+export const compileStylePatterns = ({ appRoot = process.cwd() } = {}) => {
+  const stylesRoot = path.join(appRoot, "design", "visual-library", "styles");
+  const schemasDir = path.join(appRoot, "design", "schemas");
+  const ajv = new Ajv({ allErrors: true, strict: true });
+  const validatePackage = ajv.compile(readJson(path.join(schemasDir, "visual-package.schema.json")));
+  const validateVariant = ajv.compile(readJson(path.join(schemasDir, "style-variant.schema.json")));
+  const validatePattern = ajv.compile(readJson(path.join(schemasDir, "visual-pattern.schema.json")));
+  const approvedSources = canonicalVisualSources(
+    path.join(appRoot, "design", "knowledge", "reference-library"),
+  );
+  const packages = [];
+  const variants = [];
+  const patterns = [];
+  const variantIds = new Set();
+  const globalPatternIds = new Map();
+  const runtimePackageIds = runtimeRendererPackageIds(appRoot);
+
+  for (const packageDir of stylePackageDirectories(stylesRoot)) {
+    const pkg = readJson(path.join(packageDir, "style-package.json"));
+    const packageId = pkg?.id;
+    if (typeof packageId !== "string" || packageId !== path.basename(packageDir)) {
+      throw new Error(`${relativePath(appRoot, packageDir)}/style-package.json has an invalid package id.`);
+    }
+    if (!validatePackage(pkg)) {
+      if (Object.hasOwn(pkg, "variantRefs") || Object.hasOwn(pkg, "visualPatternRefs")) {
+        throw new Error(
+          `${relativePath(appRoot, packageDir)}/style-package.json does not satisfy its schema: ${validationErrors("style package", validatePackage)}.`,
+        );
+      }
+      continue;
+    }
+    const variantRecords = loadStyleRagRecords({
+      appRoot,
+      packageDir,
+      pkg,
+      property: "variantRefs",
+      defaultName: "variants.json",
+      collectionKey: "variants",
+      label: "Style variants file",
+    });
+    const patternRecords = loadStyleRagRecords({
+      appRoot,
+      packageDir,
+      pkg,
+      property: "visualPatternRefs",
+      defaultName: "visual-patterns.json",
+      collectionKey: "patterns",
+      label: "Style patterns file",
+    });
+    // Variants are retrieval metadata for visual patterns. A draft package may
+    // define variants before it has any patterns, but it must not enter the
+    // canonical retrieval index until patterns exist.
+    if (patternRecords.records.length === 0) continue;
+    const allPackageVariants = variantRecords.records;
+    const allPackagePatterns = patternRecords.records;
+    assertUniqueStyleIds(allPackageVariants, "variantId", packageId);
+    assertUniqueStyleIds(allPackagePatterns, "patternId", packageId, globalPatternIds);
+    // Proposed and rejected catalog records are intentionally outside the
+    // canonical retrieval boundary. Validate every approved candidate before it
+    // can be projected, while still checking IDs and filesystem ownership for
+    // the complete package catalog above.
+    const approvedVariants = allPackageVariants.filter((variant) => variant?.reviewStatus === "approved");
+    const approvedPatterns = allPackagePatterns.filter((pattern) => pattern?.reviewStatus === "approved");
+    assertStyleRagSchema(approvedVariants, validateVariant, `Approved style variants in ${packageId}`);
+    assertStyleRagSchema(approvedPatterns, validatePattern, `Approved style patterns in ${packageId}`);
+    const packageEvidenceIds = new Set((pkg.sourceReferences ?? []).map((reference) => reference?.id));
+    const evidenceEligible = (ids) => Array.isArray(ids)
+      && ids.every((id) => packageEvidenceIds.has(id) && approvedSources.has(id));
+    const rendererSupported = runtimePackageIds.has(packageId);
+    const packageVariants = approvedVariants
+      .filter((variant) => variant.packageId === packageId)
+      .filter((variant) => evidenceEligible(variant.sourceEvidenceIds));
+    const eligibleVariants = packageVariants;
+    const eligibleVariantIds = new Set(eligibleVariants.map((variant) => variant.variantId));
+    const packagePatterns = approvedPatterns
+      .filter((pattern) => pattern.packageId === packageId)
+      .filter(() => rendererSupported)
+      .filter((pattern) => evidenceEligible(pattern.sourceEvidenceIds))
+      .filter((pattern) => pattern.variantIds.every((variantId) => eligibleVariantIds.has(variantId)));
+    const eligiblePatterns = packagePatterns;
+
+    const sourcePaths = [...new Set([...variantRecords.paths, ...patternRecords.paths])];
+    const sourceHashes = Object.fromEntries(
+      sourcePaths.map((recordPath) => [relativePath(appRoot, recordPath), sha256File(recordPath)]),
+    );
+    packages.push({
+      id: packageId,
+      paths: {
+        package: relativePath(appRoot, packageDir),
+        variants: variantRecords.paths.map((recordPath) => relativePath(appRoot, recordPath)),
+        visualPatterns: patternRecords.paths.map((recordPath) => relativePath(appRoot, recordPath)),
+      },
+      sourceHashes,
+    });
+    for (const variant of eligibleVariants) {
+      variants.push(projectVariant(variant, sourceHashes));
+      variantIds.add(variant.variantId);
+    }
+    for (const pattern of eligiblePatterns) {
+      patterns.push(projectPattern(pattern, sourceHashes));
+    }
+  }
+
+  packages.sort(sortBy("id"));
+  variants.sort(sortBy("variantId"));
+  patterns.sort(sortBy("patternId"));
+  return {
+    schemaVersion: STYLE_PATTERN_INDEX_SCHEMA,
+    packages,
+    variants,
+    patterns,
+    counts: { packages: packages.length, variants: variants.length, patterns: patterns.length },
+  };
+};
+
 const documentFiles = (packageDir) => {
   const documentsDir = path.join(packageDir, "documents");
   if (!fs.existsSync(documentsDir)) return [];
@@ -283,6 +694,7 @@ export const compileReferences = ({ appRoot = process.cwd() } = {}) => {
       continue;
     }
     if (!validateSource(source)) errors.push(validationErrors(`${label}/source.json`, validateSource));
+    try { assertEvidenceDomain(source.domain, `${label}/source.json domain`); } catch (error) { errors.push(error.message); }
     if (source.sourceType !== path.basename(path.dirname(packageDir))) {
       errors.push(`${label}: sourceType must match its library directory`);
     }
@@ -303,6 +715,8 @@ export const compileReferences = ({ appRoot = process.cwd() } = {}) => {
         continue;
       }
       if (!validateDocument(document)) errors.push(validationErrors(documentLabel, validateDocument));
+      try { assertEvidenceDomain(document.domain, `${documentLabel} domain`); } catch (error) { errors.push(error.message); }
+      if (document.domain !== source.domain) errors.push(`${documentLabel}: domain must equal source domain`);
       if (document.mediaType !== source.sourceType) errors.push(`${documentLabel}: mediaType must equal sourceType`);
       if (document.rawText !== document.rawText.normalize("NFC")) errors.push(`${documentLabel}: rawText must be NFC`);
       if (sha256(document.rawText.normalize("NFC")) !== document.contentChecksum) {
@@ -317,6 +731,7 @@ export const compileReferences = ({ appRoot = process.cwd() } = {}) => {
         snapshotId,
         sourceRef: document.sourceRef,
         mediaType: document.mediaType,
+        domain: document.domain,
         title: document.title.normalize("NFC"),
         tags: [...document.tags].sort((left, right) => left.localeCompare(right, "en")),
         contentHash: document.contentChecksum,
@@ -333,6 +748,7 @@ export const compileReferences = ({ appRoot = process.cwd() } = {}) => {
         chunks.push({
           chunkId: idForChunk,
           documentId: compiledDocument.documentId,
+          domain: compiledDocument.domain,
           ordinal,
           rawText: normalizedRaw,
           searchText: normalizeSearchText(normalizedRaw),
@@ -366,6 +782,11 @@ export const compileReferences = ({ appRoot = process.cwd() } = {}) => {
     documents,
     chunks,
     counts: { sources: sources.length, documents: documents.length, chunks: chunks.length },
+    domainCounts: {
+      sources: domainCounts(sources, "reference source"),
+      documents: domainCounts(documents, "reference document"),
+      chunks: domainCounts(chunks, "reference chunk"),
+    },
   };
 };
 

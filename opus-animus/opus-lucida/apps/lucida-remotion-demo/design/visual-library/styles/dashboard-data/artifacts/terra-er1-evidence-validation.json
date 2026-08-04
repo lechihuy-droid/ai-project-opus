@@ -1,0 +1,243 @@
+{
+  "schemaVersion": "terra-er1-package-evidence-validation/v1",
+  "packageId": "dashboard-data",
+  "lunaEvidenceRule": "canonical visual-style source with approved approval and rights, or exact LUNA_VERIFIED_REVIEW_ELIGIBLE queue source ID.",
+  "status": "PASS",
+  "variantCount": 5,
+  "patternCount": 30,
+  "proposedVariantCount": 5,
+  "proposedPatternCount": 30,
+  "records": [
+    {
+      "recordType": "sourceReference",
+      "recordId": "w8-dashboard-primer-docs",
+      "sourceEvidenceId": "w8-dashboard-primer-docs",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "sourceReference",
+      "recordId": "w8-dashboard-primer-react",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "sourceReference",
+      "recordId": "w8-dashboard-remotion-animation",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "benchmark-grid",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "operations-monitor",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "comparison-dashboard",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "trend-panel",
+      "sourceEvidenceId": "w8-dashboard-primer-docs",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "scorecard",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-alert-triage-severity-kpi-strip",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-alert-triage-signal-delta-cell",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-alert-triage-threshold-state-cut",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-alert-triage-owner-remediation-ledger",
+      "sourceEvidenceId": "w8-dashboard-primer-docs",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-alert-triage-escalation-type-hierarchy",
+      "sourceEvidenceId": "w8-dashboard-primer-docs",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-alert-triage-four-signal-budget",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-cohort-compare-twin-kpi-strip",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-cohort-compare-aligned-series-legend",
+      "sourceEvidenceId": "w8-dashboard-primer-docs",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-cohort-compare-paired-series-draw",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-cohort-compare-variance-decision-rail",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-cohort-compare-delta-first-number-type",
+      "sourceEvidenceId": "w8-dashboard-primer-docs",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-cohort-compare-two-cohort-budget",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-capacity-plan-committed-available-grid",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-capacity-plan-forecast-window-row",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-capacity-plan-threshold-fill",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-capacity-plan-owner-ledger",
+      "sourceEvidenceId": "w8-dashboard-primer-docs",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-capacity-plan-utilization-type-hierarchy",
+      "sourceEvidenceId": "w8-dashboard-primer-docs",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-capacity-plan-four-window-budget",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-sla-watch-exposure-kpi-strip",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-sla-watch-breach-window-row",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-sla-watch-threshold-state-cut",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-sla-watch-owner-window-rail",
+      "sourceEvidenceId": "w8-dashboard-primer-docs",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-sla-watch-status-type-hierarchy",
+      "sourceEvidenceId": "w8-dashboard-primer-docs",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-sla-watch-three-exposure-budget",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-handoff-queue-aging-kpi-strip",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-handoff-queue-owner-action-row",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-handoff-queue-arrival-release",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-handoff-queue-ready-blocked-ledger",
+      "sourceEvidenceId": "w8-dashboard-primer-docs",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-handoff-queue-owner-first-type",
+      "sourceEvidenceId": "w8-dashboard-primer-docs",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "dashboard-handoff-queue-four-row-budget",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    }
+  ],
+  "failures": [],
+  "approvalOrPromotionPerformed": false,
+  "compilerEligibility": false
+}

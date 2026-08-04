@@ -1,0 +1,317 @@
+{
+  "schemaVersion": "terra-evidence-validation/v1",
+  "packageId": "interface-walkthrough",
+  "rule": "Every sourceEvidenceId and sourceReferences id must resolve to an approved canonical visual-style source or an exact source ID from a PASS Luna visual-style audit.",
+  "status": "PASS",
+  "counts": {
+    "variants": 5,
+    "patterns": 30,
+    "sourceReferences": 3,
+    "referencesChecked": 38,
+    "invalid": 0
+  },
+  "resolutions": [
+    {
+      "kind": "variant",
+      "recordId": "annotated-screen",
+      "sourceId": "source:reference:w8-dashboard-primer-react",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-react"
+    },
+    {
+      "kind": "variant",
+      "recordId": "step-flow",
+      "sourceId": "source:reference:w8-technical-primer-primitives",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-technical-primer-primitives"
+    },
+    {
+      "kind": "variant",
+      "recordId": "feature-tour",
+      "sourceId": "source:reference:w8-dashboard-primer-react",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-react"
+    },
+    {
+      "kind": "variant",
+      "recordId": "before-after-ui",
+      "sourceId": "source:reference:w8-dashboard-primer-react",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-react"
+    },
+    {
+      "kind": "variant",
+      "recordId": "state-transition",
+      "sourceId": "source:reference:w8-dashboard-primer-react",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-react"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-annotated-screen-fixed-app-shell-layout",
+      "sourceId": "w8-dashboard-primer-react",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-react"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-annotated-screen-metric-action-type",
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-annotated-screen-semantic-metric-palette",
+      "sourceId": "w8-dashboard-primer-docs",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-docs"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-annotated-screen-toolbar-then-focus-motion",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-annotated-screen-first-control-callout-component",
+      "sourceId": "w8-dashboard-primer-react",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-react"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-annotated-screen-metric-to-action-composition",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-step-flow-fixed-decision-layout",
+      "sourceId": "w8-dashboard-primer-react",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-react"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-step-flow-current-next-type",
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-step-flow-progress-state-palette",
+      "sourceId": "w8-dashboard-primer-docs",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-docs"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-step-flow-decision-then-confirmation-motion",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-step-flow-stateful-step-component",
+      "sourceId": "w8-technical-primer-primitives",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-technical-primer-primitives"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-step-flow-state-to-submit-composition",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-feature-tour-single-setting-layout",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-feature-tour-label-value-consequence-type",
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-feature-tour-value-consequence-palette",
+      "sourceId": "w8-dashboard-primer-docs",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-docs"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-feature-tour-focus-then-consequence-motion",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-feature-tour-explicit-state-control-component",
+      "sourceId": "w8-dashboard-primer-react",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-react"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-feature-tour-value-to-consequence-composition",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-before-after-ui-stable-row-layout",
+      "sourceId": "w8-dashboard-primer-docs",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-docs"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-before-after-ui-row-field-type",
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-before-after-ui-row-status-palette",
+      "sourceId": "w8-dashboard-primer-docs",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-docs"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-before-after-ui-filter-then-row-motion",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-before-after-ui-selected-record-component",
+      "sourceId": "w8-dashboard-primer-react",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-react"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-before-after-ui-filter-to-record-composition",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-state-transition-primary-action-layout",
+      "sourceId": "w8-dashboard-primer-react",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-react"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-state-transition-action-confirmation-type",
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-hierarchy"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-state-transition-action-result-palette",
+      "sourceId": "w8-dashboard-primer-docs",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-primer-docs"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-state-transition-action-then-confirmation-motion",
+      "sourceId": "w8-dashboard-remotion-animation",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-dashboard-remotion-animation"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-state-transition-primary-action-callout-component",
+      "sourceId": "w8-technical-primer-primitives",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-technical-primer-primitives"
+    },
+    {
+      "kind": "pattern",
+      "recordId": "iw-state-transition-action-to-result-composition",
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "resolution": "CANONICAL_APPROVED_VISUAL_STYLE",
+      "valid": true,
+      "canonicalSourceId": "source:reference:w8-minimal-nng-aesthetic"
+    },
+    {
+      "kind": "sourceReference",
+      "recordId": "web-primer",
+      "sourceId": "web-primer",
+      "resolution": "LUNA_PASS_REVIEW_ELIGIBLE",
+      "valid": true
+    },
+    {
+      "kind": "sourceReference",
+      "recordId": "web-mui",
+      "sourceId": "web-mui",
+      "resolution": "LUNA_PASS_REVIEW_ELIGIBLE",
+      "valid": true
+    },
+    {
+      "kind": "sourceReference",
+      "recordId": "web-tremor",
+      "sourceId": "web-tremor",
+      "resolution": "LUNA_PASS_REVIEW_ELIGIBLE",
+      "valid": true
+    }
+  ],
+  "invalid": []
+}

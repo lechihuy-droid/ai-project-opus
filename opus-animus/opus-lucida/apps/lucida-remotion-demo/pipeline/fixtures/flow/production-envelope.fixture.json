@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "lucida-run/v1",
+  "runId": "flow-fixture",
+  "lane": "production",
+  "styleMode": "auto",
+  "publicationStatus": "promotion_pending",
+  "approvalRefs": ["flow-treatment", "flow-map"]
+}

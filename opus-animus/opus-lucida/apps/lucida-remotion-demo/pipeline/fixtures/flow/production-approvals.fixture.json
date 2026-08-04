@@ -1,0 +1,22 @@
+[
+  {
+    "schemaVersion": "lucida-approval/v1",
+    "approvalId": "flow-treatment",
+    "runId": "flow-fixture",
+    "kind": "visual-treatment",
+    "status": "approved",
+    "artifactHash": "sha256:7bf19c0497682ff187e6c3f373cb019efd98b378d84a228cb9685e74409ac4d6",
+    "approvedBy": "reviewer@example.test",
+    "approvedAt": "2026-07-16T10:00:00Z"
+  },
+  {
+    "schemaVersion": "lucida-approval/v1",
+    "approvalId": "flow-map",
+    "runId": "flow-fixture",
+    "kind": "video-map",
+    "status": "approved",
+    "artifactHash": "sha256:69248a118c989b2696a51e4964cf47858d43c80a3a2bdd9fb3f3fab8bbc1417d",
+    "approvedBy": "reviewer@example.test",
+    "approvedAt": "2026-07-16T10:00:00Z"
+  }
+]

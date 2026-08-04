@@ -24,6 +24,20 @@
         "cinematic_typography"
       ]
     },
+    "packageId": {
+      "enum": [
+        "terminal-command-center",
+        "technical-editorial",
+        "minimal-education",
+        "cinematic-type",
+        "dashboard-data",
+        "paper-notebook",
+        "product-showcase",
+        "editorial-collage",
+        "timeline-documentary"
+      ]
+    },
+    "legacyFamily": { "$ref": "#/$defs/visualFamily" },
     "preset": { "type": "string", "minLength": 1 },
     "themeId": { "type": "string", "minLength": 1 },
     "durationInFrames": { "type": "integer", "minimum": 1 },
@@ -58,6 +72,11 @@
           }
         }
       }
+    }
+  },
+  "$defs": {
+    "visualFamily": {
+      "enum": ["terminal", "dashboard", "editorial", "infographic", "code", "data_visualization", "product_demo", "cinematic_typography"]
     }
   }
 }

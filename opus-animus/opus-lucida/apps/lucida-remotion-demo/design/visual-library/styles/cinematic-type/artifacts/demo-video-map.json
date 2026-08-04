@@ -8,7 +8,7 @@
   "durationInFrames": 90,
   "scenes": [
     {
-      "sceneKey": "hook",
+      "sceneKey": "kinetic-hook",
       "frame": 24,
       "output": "./frames/scene-01.png"
     },
@@ -18,7 +18,7 @@
       "output": "./frames/scene-02.png"
     },
     {
-      "sceneKey": "transition",
+      "sceneKey": "chapter-reset",
       "frame": 24,
       "output": "./frames/scene-03.png"
     }

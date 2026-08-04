@@ -1,0 +1,271 @@
+{
+  "schemaVersion": "lucida-er2-evidence-validation/v1",
+  "packageId": "code-walkthrough",
+  "lunaRule": "A sourceEvidenceId passes only when it resolves to a canonical source with domain visual-style, approval.status approved, and rights.status approved, or to an exact source ID listed as eligible by a PASS Luna review artifact. A review PNG or generic completed ingest report is not sufficient.",
+  "counts": {
+    "variants": 5,
+    "patterns": 30,
+    "evidenceReferences": 35
+  },
+  "allowedEvidence": {
+    "approvedCanonicalCount": 16,
+    "lunaReviewEligibleCount": 88
+  },
+  "checks": {
+    "allSourceEvidenceIdsResolveUnderLunaRule": true,
+    "interfaceSourceReferencesResolveUnderLunaRule": true,
+    "allVariantsProposed": true,
+    "allPatternsProposed": true
+  },
+  "resolvedRecords": [
+    {
+      "kind": "variant",
+      "id": "code-focus",
+      "sourceEvidenceIds": [
+        "source:reference:w8-technical-reveal-code"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "diff-review",
+      "sourceEvidenceIds": [
+        "source:reference:w8-technical-reveal-code"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "api-sequence",
+      "sourceEvidenceIds": [
+        "source:reference:w8-technical-primer-primitives"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "debugging-trace",
+      "sourceEvidenceIds": [
+        "source:reference:w8-technical-reveal-code"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "terminal-code-split",
+      "sourceEvidenceIds": [
+        "source:reference:fixture-terminal-repo"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-code-focus-fixed-gutter",
+      "sourceEvidenceIds": [
+        "source:reference:w8-technical-reveal-code"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-code-focus-decision-type-scale",
+      "sourceEvidenceIds": [
+        "source:reference:w8-technical-primer-foundations"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-code-focus-cyan-active-line",
+      "sourceEvidenceIds": [
+        "source:reference:local-reference-theme"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-code-focus-line-first-entrance",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-remotion-animation"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-code-focus-three-state-rail",
+      "sourceEvidenceIds": [
+        "source:reference:w8-technical-primer-primitives"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-code-focus-code-rail-caption-stack",
+      "sourceEvidenceIds": [
+        "source:reference:technical-editorial-frame"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-diff-review-semantic-gutters",
+      "sourceEvidenceIds": [
+        "source:reference:w8-technical-reveal-code"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-diff-review-marker-first-type",
+      "sourceEvidenceIds": [
+        "source:reference:w8-technical-primer-foundations"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-diff-review-dual-semantic-color",
+      "sourceEvidenceIds": [
+        "source:reference:local-reference-theme"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-diff-review-change-before-outcome",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-remotion-animation"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-diff-review-review-result-rail",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-react"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-diff-review-context-change-outcome",
+      "sourceEvidenceIds": [
+        "source:reference:w8-minimal-nng-hierarchy"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-api-sequence-code-ordered-rail",
+      "sourceEvidenceIds": [
+        "source:reference:w8-technical-primer-primitives"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-api-sequence-boundary-type-hierarchy",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-docs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-api-sequence-active-boundary-color",
+      "sourceEvidenceIds": [
+        "source:reference:local-reference-theme"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-api-sequence-stepwise-emphasis",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-remotion-animation"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-api-sequence-four-boundary-rail",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-react"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-api-sequence-source-to-response-stack",
+      "sourceEvidenceIds": [
+        "source:reference:w8-minimal-nng-hierarchy"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-debugging-trace-fault-branch-anchor",
+      "sourceEvidenceIds": [
+        "source:reference:w8-technical-reveal-code"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-debugging-trace-observed-hypothesis-next-type",
+      "sourceEvidenceIds": [
+        "source:reference:w8-technical-primer-foundations"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-debugging-trace-amber-fault-state",
+      "sourceEvidenceIds": [
+        "source:reference:local-reference-theme"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-debugging-trace-static-fault-review",
+      "sourceEvidenceIds": [
+        "source:reference:w8-minimal-nng-aesthetic"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-debugging-trace-three-state-diagnosis",
+      "sourceEvidenceIds": [
+        "source:reference:w8-technical-primer-primitives"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-debugging-trace-fault-evidence-next-step",
+      "sourceEvidenceIds": [
+        "source:reference:technical-editorial-frame"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-terminal-code-split-fixed-evidence-halves",
+      "sourceEvidenceIds": [
+        "source:reference:fixture-terminal-repo"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-terminal-code-split-command-output-type",
+      "sourceEvidenceIds": [
+        "source:reference:terminalcss-catalog-link"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-terminal-code-split-exit-status-semantic-color",
+      "sourceEvidenceIds": [
+        "source:reference:fixture-terminal-repo"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-terminal-code-split-evidence-then-source",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-remotion-animation"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-terminal-code-split-exit-contract-component",
+      "sourceEvidenceIds": [
+        "source:reference:terminalcss-catalog-link"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "cw-terminal-code-split-command-to-exit-composition",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-docs"
+      ]
+    }
+  ],
+  "sourceReferences": [],
+  "failures": [],
+  "sourceReferenceFailures": [],
+  "result": "PASS"
+}

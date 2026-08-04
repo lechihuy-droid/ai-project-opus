@@ -1,0 +1,386 @@
+{
+  "generatedAt": "2026-07-16T00:00:00.000Z",
+  "projectId": "lucida-remotion-demo-w8-evidence",
+  "sanitization": {
+    "findings": [
+      "Link-only reviewer notes; no third-party source body or media is stored."
+    ],
+    "redactions": 0,
+    "status": "passed"
+  },
+  "schemaVersion": "sanitized-visual-input/v1",
+  "sources": [
+    {
+      "checksum": "5ecf602b407772b7a3b27b6de05e509c6bfe56bfd4e6d5368bf161fa1e5f33b4",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "dashboard-data",
+        "url": "https://github.com/primer/react"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "dashboard-data",
+            "tags": [
+              "dashboard-data",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "5ecf602b407772b7a3b27b6de05e509c6bfe56bfd4e6d5368bf161fa1e5f33b4",
+            "sourceRef": "https://github.com/primer/react"
+          },
+          "text": "# Primer React dashboard hierarchy review note\n\nSource: https://github.com/primer/react\nTarget package: dashboard-data\n\nReviewer-authored concepts:\n- compact component hierarchy\n- semantic status surfaces\n- accessible operational controls\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "sourceId": "w8-dashboard-primer-react",
+      "sourceRevision": "git:4045abea621d0940edcd1120fc70e6ed5f797205",
+      "sourceType": "repository"
+    },
+    {
+      "checksum": "ed0c08224248380a66b0719ab741744642d04ef638c05ac9f1091c5847a52681",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "dashboard-data",
+        "url": "https://primer.style/"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "dashboard-data",
+            "tags": [
+              "dashboard-data",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "ed0c08224248380a66b0719ab741744642d04ef638c05ac9f1091c5847a52681",
+            "sourceRef": "https://primer.style/"
+          },
+          "text": "# Primer design system dashboard review note\n\nSource: https://primer.style/\nTarget package: dashboard-data\n\nReviewer-authored concepts:\n- information hierarchy\n- semantic color roles\n- dense but inspectable UI\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "sourceId": "w8-dashboard-primer-docs",
+      "sourceRevision": "link-note:2026-07-16",
+      "sourceType": "web_reference"
+    },
+    {
+      "checksum": "2594651d67e204312d55ef0763fcc2dfff3500331393e6b916bc187ec0a78a63",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "dashboard-data",
+        "url": "https://www.remotion.dev/docs/animating-properties"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "dashboard-data",
+            "tags": [
+              "dashboard-data",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "2594651d67e204312d55ef0763fcc2dfff3500331393e6b916bc187ec0a78a63",
+            "sourceRef": "https://www.remotion.dev/docs/animating-properties"
+          },
+          "text": "# Remotion deterministic dashboard motion note\n\nSource: https://www.remotion.dev/docs/animating-properties\nTarget package: dashboard-data\n\nReviewer-authored concepts:\n- frame-driven motion\n- deterministic interpolation\n- render-stable transitions\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "sourceId": "w8-dashboard-remotion-animation",
+      "sourceRevision": "link-note:2026-07-16",
+      "sourceType": "web_reference"
+    },
+    {
+      "checksum": "d2aaddd576a92ab279d2e0ebdcbeb6ecb56763196787b0ac66502b22f2cd7603",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "technical-editorial",
+        "url": "https://github.com/primer/primitives"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "technical-editorial",
+            "tags": [
+              "technical-editorial",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "d2aaddd576a92ab279d2e0ebdcbeb6ecb56763196787b0ac66502b22f2cd7603",
+            "sourceRef": "https://github.com/primer/primitives"
+          },
+          "text": "# Primer primitives technical editorial review note\n\nSource: https://github.com/primer/primitives\nTarget package: technical-editorial\n\nReviewer-authored concepts:\n- explicit design tokens\n- technical hierarchy\n- inspectable typography and spacing roles\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "sourceId": "w8-technical-primer-primitives",
+      "sourceRevision": "git:b447200fa097165c956c5833031c15608dbe6094",
+      "sourceType": "repository"
+    },
+    {
+      "checksum": "e5256d08f1c37969d87efffc3d6dc1923f310432950d65c9ea5af132ed5194d3",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "technical-editorial",
+        "url": "https://primer.style/foundations/"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "technical-editorial",
+            "tags": [
+              "technical-editorial",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "e5256d08f1c37969d87efffc3d6dc1923f310432950d65c9ea5af132ed5194d3",
+            "sourceRef": "https://primer.style/foundations/"
+          },
+          "text": "# Primer foundations technical composition note\n\nSource: https://primer.style/foundations/\nTarget package: technical-editorial\n\nReviewer-authored concepts:\n- systematic foundations\n- clear labels\n- structured evidence surfaces\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "sourceId": "w8-technical-primer-foundations",
+      "sourceRevision": "link-note:2026-07-16",
+      "sourceType": "web_reference"
+    },
+    {
+      "checksum": "12bcde6e9db55924c1202e6f3575744e04f9c3c9aa55939d15478112baf35c04",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "technical-editorial",
+        "url": "https://revealjs.com/code/"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "technical-editorial",
+            "tags": [
+              "technical-editorial",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "12bcde6e9db55924c1202e6f3575744e04f9c3c9aa55939d15478112baf35c04",
+            "sourceRef": "https://revealjs.com/code/"
+          },
+          "text": "# Reveal.js code presentation review note\n\nSource: https://revealjs.com/code/\nTarget package: technical-editorial\n\nReviewer-authored concepts:\n- progressive code focus\n- line-level evidence\n- presentation-safe technical density\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "sourceId": "w8-technical-reveal-code",
+      "sourceRevision": "link-note:2026-07-16",
+      "sourceType": "web_reference"
+    },
+    {
+      "checksum": "f83f54910bda206ffd70ca0d83357ba161e6101255aebf24bc5f75faa21e51b5",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "minimal-education",
+        "url": "https://github.com/material-components/material-web"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "minimal-education",
+            "tags": [
+              "minimal-education",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "f83f54910bda206ffd70ca0d83357ba161e6101255aebf24bc5f75faa21e51b5",
+            "sourceRef": "https://github.com/material-components/material-web"
+          },
+          "text": "# Material Web minimal education review note\n\nSource: https://github.com/material-components/material-web\nTarget package: minimal-education\n\nReviewer-authored concepts:\n- semantic component roles\n- accessible teaching controls\n- systematic spacing\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "sourceId": "w8-minimal-material-web",
+      "sourceRevision": "git:b4de401eb665ec63474f39319a4ba8f2145974cc",
+      "sourceType": "repository"
+    },
+    {
+      "checksum": "8541e5e284eb44489002c97c1da2c2787ef3bd6c648f1422827f2af30614b838",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "minimal-education",
+        "url": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "minimal-education",
+            "tags": [
+              "minimal-education",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "8541e5e284eb44489002c97c1da2c2787ef3bd6c648f1422827f2af30614b838",
+            "sourceRef": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/"
+          },
+          "text": "# Visual hierarchy education review note\n\nSource: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/\nTarget package: minimal-education\n\nReviewer-authored concepts:\n- spacing-driven grouping\n- clear reading order\n- single-concept emphasis\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "sourceId": "w8-minimal-nng-hierarchy",
+      "sourceRevision": "link-note:2026-07-16",
+      "sourceType": "web_reference"
+    },
+    {
+      "checksum": "03bf2b417c0270f5a713099490bcb3cc99a9d76549bac14f1cf73bd9382a6593",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "minimal-education",
+        "url": "https://www.nngroup.com/articles/aesthetic-minimalist-design/"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "minimal-education",
+            "tags": [
+              "minimal-education",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "03bf2b417c0270f5a713099490bcb3cc99a9d76549bac14f1cf73bd9382a6593",
+            "sourceRef": "https://www.nngroup.com/articles/aesthetic-minimalist-design/"
+          },
+          "text": "# Aesthetic minimalist education review note\n\nSource: https://www.nngroup.com/articles/aesthetic-minimalist-design/\nTarget package: minimal-education\n\nReviewer-authored concepts:\n- noise reduction\n- task-first restraint\n- content-led whitespace\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "sourceId": "w8-minimal-nng-aesthetic",
+      "sourceRevision": "link-note:2026-07-16",
+      "sourceType": "web_reference"
+    },
+    {
+      "checksum": "b44e01ceca38a2b2009a87e00c52513f9bf2596e7090bbeed249d5d7b010a789",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "timeline-documentary",
+        "url": "https://github.com/LibraryOfCongress/citizen-dj"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "timeline-documentary",
+            "tags": [
+              "timeline-documentary",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "b44e01ceca38a2b2009a87e00c52513f9bf2596e7090bbeed249d5d7b010a789",
+            "sourceRef": "https://github.com/LibraryOfCongress/citizen-dj"
+          },
+          "text": "# Library of Congress chronology interface review note\n\nSource: https://github.com/LibraryOfCongress/citizen-dj\nTarget package: timeline-documentary\n\nReviewer-authored concepts:\n- source-forward chronology\n- archival metadata\n- dated record navigation\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "sourceId": "w8-timeline-citizen-dj",
+      "sourceRevision": "git:216bda2dc80b4ec53b3d279d67923eea020dcce7",
+      "sourceType": "repository"
+    },
+    {
+      "checksum": "7bfd4cb54469f10fc5382fb12251b750191de737fe79d13617972593fabd85a1",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "timeline-documentary",
+        "url": "https://www.loc.gov/pictures/"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "timeline-documentary",
+            "tags": [
+              "timeline-documentary",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "7bfd4cb54469f10fc5382fb12251b750191de737fe79d13617972593fabd85a1",
+            "sourceRef": "https://www.loc.gov/pictures/"
+          },
+          "text": "# Library of Congress picture catalog review note\n\nSource: https://www.loc.gov/pictures/\nTarget package: timeline-documentary\n\nReviewer-authored concepts:\n- visible source context\n- catalog identifiers\n- date-forward evidence\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "sourceId": "w8-timeline-loc-pictures",
+      "sourceRevision": "link-note:2026-07-16",
+      "sourceType": "web_reference"
+    },
+    {
+      "checksum": "2a5f49f6b65f9b157555ba6d6c7329f1ec0c0a49d3c9ad73fad64a30cc693599",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "timeline-documentary",
+        "url": "https://catalog.archives.gov/"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "timeline-documentary",
+            "tags": [
+              "timeline-documentary",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "2a5f49f6b65f9b157555ba6d6c7329f1ec0c0a49d3c9ad73fad64a30cc693599",
+            "sourceRef": "https://catalog.archives.gov/"
+          },
+          "text": "# US National Archives catalog review note\n\nSource: https://catalog.archives.gov/\nTarget package: timeline-documentary\n\nReviewer-authored concepts:\n- record provenance\n- chronological context\n- missing-record transparency\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "sourceId": "w8-timeline-national-archives",
+      "sourceRevision": "link-note:2026-07-16",
+      "sourceType": "web_reference"
+    }
+  ]
+}

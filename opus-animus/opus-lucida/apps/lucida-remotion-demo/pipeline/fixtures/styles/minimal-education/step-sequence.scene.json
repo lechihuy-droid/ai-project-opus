@@ -1,0 +1,39 @@
+{
+  "sceneId": "step-sequence-scene",
+  "sceneType": "steps",
+  "durationInFrames": 180,
+  "motionPolicy": "full",
+  "density": "balanced",
+  "accentTone": "gold",
+  "eyebrow": "Teach the sequence",
+  "title": "A short step sequence works best when every step names one action the learner can observe.",
+  "summary": "The rail keeps the sequence readable while the active step gives an adult a clear place to pause, point, and coach.",
+  "footer": "Move to the next step only after the visible action is complete.",
+  "callout": {
+    "label": "Coach prompt",
+    "value": "Point to the step, then wait for the smallest successful move."
+  },
+  "steps": {
+    "headline": "Three moves for a short practice start",
+    "items": [
+      {
+        "index": "01",
+        "title": "Set one clear target",
+        "detail": "Show the single word, problem, or movement the learner will work on first.",
+        "state": "ready"
+      },
+      {
+        "index": "02",
+        "title": "Try it once together",
+        "detail": "Model the action briefly, then let the learner repeat the same move with support.",
+        "state": "active"
+      },
+      {
+        "index": "03",
+        "title": "Name what changed",
+        "detail": "Close by noticing the concrete evidence that the learner completed the target.",
+        "state": "ready"
+      }
+    ]
+  }
+}

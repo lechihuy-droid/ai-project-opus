@@ -1,0 +1,24 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-16",
+    "approvedBy": "HUY",
+    "status": "approved"
+  },
+  "collectorVersion": "w8-link-note-collector/1",
+  "domain": "visual-style",
+  "provenance": {
+    "collectorArtifact": "design/knowledge/reference-approvals/repository/w8-minimal-material-web.sanitized-approved.json",
+    "sanitizedArtifactChecksum": "111fad49311d8da6c7bbf20d67eab407c9a8dbaff9d2a0df99c1593c8f7d9868"
+  },
+  "rights": {
+    "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
+  "schemaVersion": "lucida-reference-source/v1",
+  "snapshotChecksum": "f83f54910bda206ffd70ca0d83357ba161e6101255aebf24bc5f75faa21e51b5",
+  "sourceId": "source:reference:w8-minimal-material-web",
+  "sourceRef": "https://github.com/material-components/material-web",
+  "sourceRevision": "git:b4de401eb665ec63474f39319a4ba8f2145974cc",
+  "sourceType": "repository"
+}

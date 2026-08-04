@@ -1,0 +1,288 @@
+[
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "annotated-screen",
+    "packageId": "interface-walkthrough",
+    "label": "Annotated screen",
+    "description": "A product screen with an explicit visual focus that orients the viewer to active metrics, navigation, and the first useful control.",
+    "intentTags": [
+      "product-walkthrough",
+      "feature-explanation"
+    ],
+    "beatRoles": [
+      "orient"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "application-shell",
+      "metric-overview"
+    ],
+    "typographyTraits": [
+      "compact-ui-labels",
+      "high-contrast-metrics"
+    ],
+    "paletteTraits": [
+      "graphite-chrome",
+      "blue-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "app-shell",
+      "focus-callout",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 4,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "annotating a product screen for a new user"
+    ],
+    "antiPatterns": [
+      "marketing copy replacing interface evidence"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound annotated-screen draft variant."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "step-flow",
+    "packageId": "interface-walkthrough",
+    "label": "Step flow",
+    "description": "A staged product flow that shows the current step, a visible decision, and the state that follows submission.",
+    "intentTags": [
+      "product-walkthrough",
+      "process"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "application-shell",
+      "ordered-stepper"
+    ],
+    "typographyTraits": [
+      "compact-ui-labels",
+      "clear-state-labels"
+    ],
+    "paletteTraits": [
+      "blue-focus",
+      "green-completion"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "app-shell",
+      "focus-callout",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 4,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "explaining a multi-step task"
+    ],
+    "antiPatterns": [
+      "simulating an unbounded click path"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound step-flow draft variant."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "feature-tour",
+    "packageId": "interface-walkthrough",
+    "label": "Feature tour",
+    "description": "A focused feature tour that explains one bounded setting, its current value, and the consequence of changing it.",
+    "intentTags": [
+      "feature-explanation",
+      "product-walkthrough"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "application-shell",
+      "single-setting-focus"
+    ],
+    "typographyTraits": [
+      "compact-ui-labels",
+      "readable-setting-copy"
+    ],
+    "paletteTraits": [
+      "graphite-chrome",
+      "amber-review"
+    ],
+    "motionTraits": [
+      "static-review",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "app-shell",
+      "focus-callout",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "touring one configuration decision"
+    ],
+    "antiPatterns": [
+      "color-only toggle meaning"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound feature-tour draft variant."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "before-after-ui",
+    "packageId": "interface-walkthrough",
+    "label": "Before / after UI",
+    "description": "A stable tabular UI comparison that makes the selected record and its before-and-after review state inspectable.",
+    "intentTags": [
+      "product-walkthrough",
+      "comparison"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "application-shell",
+      "stable-data-table"
+    ],
+    "typographyTraits": [
+      "compact-ui-labels",
+      "tabular-metadata"
+    ],
+    "paletteTraits": [
+      "graphite-chrome",
+      "blue-focus",
+      "amber-review"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "app-shell",
+      "focus-callout",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 6,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "comparing a bounded before-and-after operational state"
+    ],
+    "antiPatterns": [
+      "rapidly reordering table rows"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound before-after-ui draft variant."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "state-transition",
+    "packageId": "interface-walkthrough",
+    "label": "State transition",
+    "description": "A mobile product state transition that names the primary action and the resulting confirmation state.",
+    "intentTags": [
+      "product-walkthrough",
+      "process"
+    ],
+    "beatRoles": [
+      "demonstrate"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "mobile-preview",
+      "action-companion-rail"
+    ],
+    "typographyTraits": [
+      "compact-ui-labels",
+      "touch-target-labels"
+    ],
+    "paletteTraits": [
+      "graphite-chrome",
+      "green-completion"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "app-shell",
+      "focus-callout",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 4,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "showing a primary mobile product state transition"
+    ],
+    "antiPatterns": [
+      "decorative device mockups without a task"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound state-transition draft variant."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  }
+]

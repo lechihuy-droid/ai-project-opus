@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "terra-pattern-proposal-validation/v1",
+  "proposalId": "terra-pattern-proposal-p10",
+  "packageId": "code-walkthrough",
+  "patternPath": "../visual-patterns.json",
+  "proposalStatus": "pending-human-approval",
+  "compilerEligibility": "ineligible",
+  "approvalAction": "none",
+  "canonicalPromotion": "none",
+  "expectedPatternCount": 30,
+  "expectedPerVariant": 6,
+  "expectedVariantIds": [
+    "code-focus",
+    "diff-review",
+    "api-sequence",
+    "debugging-trace",
+    "terminal-code-split"
+  ],
+  "expectedPatternTypes": [
+    "layout",
+    "typography",
+    "palette",
+    "motion",
+    "component",
+    "composition"
+  ],
+  "canonicalEvidenceIds": [
+    "fixture-terminal-repo",
+    "local-reference-theme",
+    "technical-editorial-frame",
+    "terminalcss-catalog-link",
+    "w8-dashboard-primer-docs",
+    "w8-dashboard-primer-react",
+    "w8-dashboard-remotion-animation",
+    "w8-minimal-nng-aesthetic",
+    "w8-minimal-nng-hierarchy",
+    "w8-technical-primer-foundations",
+    "w8-technical-primer-primitives",
+    "w8-technical-reveal-code"
+  ],
+  "validationScope": [
+    "schema",
+    "canonical-reference",
+    "uniqueness",
+    "recipe-uniqueness",
+    "variant-distribution",
+    "pending-compiler-gate"
+  ],
+  "generatedBy": "design/visual-library/styles/code-walkthrough/artifacts/validate-terra-pattern-proposals.mjs"
+}

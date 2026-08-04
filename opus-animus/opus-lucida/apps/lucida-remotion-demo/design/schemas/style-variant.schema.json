@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lucida.local/schemas/style-variant.schema.json",
+  "title": "Lucida Style Variant v1",
+  "description": "Evidence-backed renderable style variant contract for Style RAG Phase 1.",
+  "$comment": "Collection validators must resolve packageId and sourceEvidenceIds, require unique variantId values across a package collection, and reject non-approved records from canonical retrieval.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "variantId",
+    "packageId",
+    "label",
+    "description",
+    "intentTags",
+    "beatRoles",
+    "contentDensity",
+    "aspectRatios",
+    "layoutTraits",
+    "typographyTraits",
+    "paletteTraits",
+    "motionTraits",
+    "componentTraits",
+    "contentCapacity",
+    "positiveUseCases",
+    "antiPatterns",
+    "sourceEvidenceIds",
+    "classificationReasons",
+    "classifierVersion",
+    "reviewStatus"
+  ],
+  "definitions": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "uniqueStringList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/nonEmptyString"
+      }
+    },
+    "aspectRatioList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": ["9:16", "16:9", "1:1"]
+      }
+    },
+    "contentCapacity": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "headlineChars": { "type": "integer", "minimum": 0 },
+        "bodyChars": { "type": "integer", "minimum": 0 },
+        "bulletsMaxItems": { "type": "integer", "minimum": 0 },
+        "maxDataSeries": { "type": "integer", "minimum": 0 },
+        "maxCodeLines": { "type": "integer", "minimum": 0 },
+        "maxItems": { "type": "integer", "minimum": 0 },
+        "maxPanels": { "type": "integer", "minimum": 0 },
+        "maxMetrics": { "type": "integer", "minimum": 0 },
+        "maxEvents": { "type": "integer", "minimum": 0 }
+      }
+    }
+  },
+  "properties": {
+    "schemaVersion": { "const": "lucida-style-variant/v1" },
+    "variantId": { "$ref": "#/definitions/slug" },
+    "packageId": { "$ref": "#/definitions/slug" },
+    "label": { "type": "string", "minLength": 3 },
+    "description": { "type": "string", "minLength": 20 },
+    "intentTags": { "$ref": "#/definitions/uniqueStringList" },
+    "beatRoles": { "$ref": "#/definitions/uniqueStringList" },
+    "contentDensity": { "enum": ["sparse", "balanced", "dense"] },
+    "aspectRatios": { "$ref": "#/definitions/aspectRatioList" },
+    "layoutTraits": { "$ref": "#/definitions/uniqueStringList" },
+    "typographyTraits": { "$ref": "#/definitions/uniqueStringList" },
+    "paletteTraits": { "$ref": "#/definitions/uniqueStringList" },
+    "motionTraits": { "$ref": "#/definitions/uniqueStringList" },
+    "componentTraits": { "$ref": "#/definitions/uniqueStringList" },
+    "contentCapacity": { "$ref": "#/definitions/contentCapacity" },
+    "positiveUseCases": { "$ref": "#/definitions/uniqueStringList" },
+    "antiPatterns": { "$ref": "#/definitions/uniqueStringList" },
+    "sourceEvidenceIds": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/definitions/slug" }
+    },
+    "classificationReasons": { "$ref": "#/definitions/uniqueStringList" },
+    "classifierVersion": { "type": "string", "minLength": 1 },
+    "reviewStatus": { "enum": ["proposed", "approved", "rejected"] }
+  }
+}

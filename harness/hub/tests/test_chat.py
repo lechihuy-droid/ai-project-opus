@@ -18,7 +18,7 @@ from services import chat as chat_service
 @pytest.fixture()
 def client(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> TestClient:
     monkeypatch.setattr(chat_service, "CHAT_USAGE_FILE", tmp_path / "chat_usage.jsonl")
-    return TestClient(server.app)
+    return TestClient(server.app, headers={"x-hub-client": "harness-hub"})
 
 
 def _messages() -> list[dict[str, str]]:
@@ -107,6 +107,161 @@ def test_chat_models_are_derived_from_catalog() -> None:
 
 def test_chat_rejects_unknown_model(client: TestClient) -> None:
     response = client.post("/api/chat", json={"messages": _messages(), "model": "not-a-model"})
+    events = _sse_events(response.text)
+
+    assert response.status_code == 200
+    assert [event for event, _payload in events] == ["error"]
+    assert "not-a-model" in str(events[0][1]["message"])
+
+
+def test_chat_rejects_unknown_agent(client: TestClient) -> None:
+    response = client.post("/api/chat", json={"agent_id": "missing", "messages": _messages()})
+
+    assert response.status_code == 400
+    assert "missing" in response.json()["detail"]
+
+
+def test_chat_rejects_unknown_skill(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(server.skill_library, "list_skill_names", lambda: {"known-skill"})
+
+    response = client.post("/api/chat", json={"skills": ["missing-skill"], "messages": _messages()})
+
+    assert response.status_code == 400
+    assert "missing-skill" in response.json()["detail"]
+
+
+def test_skill_names_endpoint_matches_chat_validator(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    names = {"caveman", "skillspector"}
+    monkeypatch.setattr(server.skill_library, "list_skill_names", lambda: names)
+    monkeypatch.setattr(server.skill_library, "read_skill_content", lambda name: f"content for {name}")
+
+    response = client.get("/api/skills/names")
+
+    assert response.status_code == 200
+    assert response.json() == sorted(names)
+    for name in response.json():
+        assert server._chat_skills([name])[0] == [f"content for {name}"]
+
+
+def test_chat_loads_skill_after_agent_prompt(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[dict[str, object]] = []
+    _install_fake_openai(monkeypatch, calls)
+    monkeypatch.setattr(server.skill_library, "list_skill_names", lambda: {"known-skill"})
+    monkeypatch.setattr(server.skill_library, "read_skill_content", lambda _name: "Follow skill rules.")
+    monkeypatch.setattr(server.runtime_agents, "get_agent", lambda _agent_id: {
+        "id": "reviewer", "provider": "nvidia", "model": config.CHAT_DEFAULT_MODEL,
+        "system_prompt": "Agent role.", "skills": [], "permission": "read_only",
+        "budget": {"seconds": 60, "max_calls": 1}, "risk_tier": "read_only",
+    })
+
+    response = client.post("/api/chat", json={
+        "agent_id": "reviewer", "skills": ["known-skill"], "messages": _messages(),
+    })
+
+    assert response.status_code == 200
+    sent_messages = calls[0]["messages"]
+    assert isinstance(sent_messages, list)
+    agent_skill_index = next(index for index, message in enumerate(sent_messages) if message["content"] == "Agent role.\n\n[Activated skills]\nFollow skill rules.")
+    user_index = next(index for index, message in enumerate(sent_messages) if message["role"] == "user")
+    assert agent_skill_index < user_index
+
+
+def test_chat_without_skills_never_collects_telemetry(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[dict[str, object]] = []
+    _install_fake_openai(monkeypatch, calls)
+    monkeypatch.setattr(server.skill_library, "list_skills", lambda: (_ for _ in ()).throw(AssertionError("telemetry")))
+
+    response = client.post("/api/chat", json={"messages": _messages(), "model": config.CHAT_DEFAULT_MODEL})
+
+    assert response.status_code == 200
+    assert calls
+
+
+def test_chat_reports_skill_prompt_truncation(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    _install_fake_openai(monkeypatch, [])
+    monkeypatch.setattr(server.skill_library, "list_skill_names", lambda: {"large-skill"})
+    monkeypatch.setattr(server.skill_library, "read_skill_content", lambda _name: "x" * (server.CHAT_SKILL_MAX_CHARS + 1))
+
+    response = client.post("/api/chat", json={"skills": ["large-skill"], "messages": _messages()})
+    events = _sse_events(response.text)
+
+    assert response.status_code == 200
+    assert "cắt" in str(events[-1][1]["skill_notice"])
+
+
+def test_chat_agent_overrides_provider_model_and_delivers_system_prompt(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[dict[str, object]] = []
+    _install_fake_openai(monkeypatch, calls)
+    monkeypatch.setattr(server.runtime_agents, "get_agent", lambda _agent_id: {
+        "id": "reviewer", "provider": "nvidia", "model": "deepseek-ai/deepseek-v4-flash",
+        "system_prompt": "Review strictly.", "skills": [], "permission": "read_only",
+        "budget": {"seconds": 60, "max_calls": 1}, "risk_tier": "read_only",
+    })
+
+    response = client.post("/api/chat", json={
+        "agent_id": "reviewer", "provider": "claude", "model": config.CHAT_DEFAULT_MODEL,
+        "messages": _messages(),
+    })
+
+    assert response.status_code == 200
+    assert calls[0]["model"] == "deepseek-ai/deepseek-v4-flash"
+    assert calls[0]["messages"] == [{"role": "system", "content": "Review strictly."}, *_messages()]
+
+
+def test_chat_agent_with_null_model_uses_client_model(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[dict[str, object]] = []
+    _install_fake_openai(monkeypatch, calls)
+    monkeypatch.setattr(server.runtime_agents, "get_agent", lambda _agent_id: {
+        "id": "reviewer", "provider": "nvidia", "model": None, "system_prompt": "Review.",
+        "skills": [], "permission": "read_only", "budget": {"seconds": 60, "max_calls": 1},
+        "risk_tier": "read_only",
+    })
+
+    response = client.post("/api/chat", json={
+        "agent_id": "reviewer", "provider": "nvidia", "model": config.CHAT_DEFAULT_MODEL,
+        "messages": _messages(),
+    })
+
+    assert response.status_code == 200
+    assert calls[0]["model"] == config.CHAT_DEFAULT_MODEL
+    assert calls[0]["messages"][0] == {"role": "system", "content": "Review."}
+
+
+def test_chat_surfaces_tool_events_and_threads_agent_policy(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    class FakeProvider:
+        def stream_chat(self, _messages: list[dict[str, str]], **kwargs: object):
+            assert kwargs["tool_policy"] == {
+                "permission": "workspace_write", "allowed_tools": ["Read"], "allowed_paths": ["harness/hub"],
+            }
+            yield {"type": "tool_call", "tool_name": "Read", "tool_input": {"file_path": "x"}, "tool_use_id": "toolu_1"}
+            yield {"type": "tool_result", "tool_use_id": "toolu_1", "tool_output": "ok"}
+            yield {"type": "done", "usage": {}}
+
+    monkeypatch.setattr(server.runtime_agents, "get_agent", lambda _agent_id: {
+        "id": "tool-agent", "provider": "fake", "model": None, "system_prompt": "Tools.", "skills": [],
+        "permission": "workspace_write", "allowed_tools": ["Read"], "allowed_paths": ["harness/hub"],
+        "budget": {"seconds": 60, "max_calls": 1}, "risk_tier": "write",
+    })
+    monkeypatch.setitem(server.runtime_agents.registry, "fake", FakeProvider())
+    monkeypatch.setattr(server, "get_provider", lambda _provider_id: FakeProvider())
+
+    response = client.post("/api/chat", json={"agent_id": "tool-agent", "messages": _messages()})
+
+    assert _sse_events(response.text) == [
+        ("tool_call", {"tool_name": "Read", "tool_input": {"file_path": "x"}, "tool_use_id": "toolu_1"}),
+        ("tool_result", {"tool_use_id": "toolu_1", "tool_output": "ok"}),
+        ("done", {"usage": {}, "model": "fake", "session_id": None}),
+    ]
+
+
+def test_chat_rejects_client_system_message(client: TestClient) -> None:
+    response = client.post("/api/chat", json={"messages": [{"role": "system", "content": "spoof"}]})
 
     assert response.status_code == 400
 
@@ -139,6 +294,7 @@ def test_chat_streams_delta_done_and_records_usage(
     assert events[3][1] == {
         "usage": {"input_tokens": 12, "output_tokens": 5, "total_tokens": 17},
         "model": config.CHAT_DEFAULT_MODEL,
+        "session_id": None,
     }
     assert client_calls == [{"base_url": chat_service.NVIDIA_BASE_URL, "api_key": "test-key"}]
     assert calls == [
@@ -163,6 +319,29 @@ def test_chat_streams_delta_done_and_records_usage(
     assert event["cache_creation_tokens"] == 0
     assert event["total_tokens"] == 17
     assert event["calls"] == 1
+
+
+@pytest.mark.parametrize(
+    "model",
+    [
+        config.CHAT_DEFAULT_MODEL,
+        "deepseek-ai/deepseek-v4-flash",
+        "openai/gpt-oss-120b",
+    ],
+)
+def test_chat_always_sends_configured_max_tokens_across_model_branches(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+    model: str,
+) -> None:
+    calls: list[dict[str, object]] = []
+    _install_fake_openai(monkeypatch, calls)
+
+    response = client.post("/api/chat", json={"messages": _messages(), "model": model})
+
+    assert response.status_code == 200
+    assert calls
+    assert all(call["max_tokens"] == config.CHAT_MAX_TOKENS for call in calls)
 
 
 def test_chat_deepseek_uses_thinking_extra_body(

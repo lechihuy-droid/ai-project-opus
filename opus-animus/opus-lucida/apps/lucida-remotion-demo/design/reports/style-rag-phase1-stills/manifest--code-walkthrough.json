@@ -1,0 +1,167 @@
+{
+  "schemaVersion": "lucida-style-rag-phase1-stills/v1",
+  "recordCount": 5,
+  "selection": {
+    "packageId": "code-walkthrough",
+    "variantId": null
+  },
+  "outputRoot": "design/reports/style-rag-phase1-stills",
+  "bounds": {
+    "bundleTimeoutMs": 120000,
+    "selectTimeoutMs": 30000,
+    "renderTimeoutMs": 60000,
+    "analysisTimeoutMs": 20000
+  },
+  "stills": [
+    {
+      "key": "code-walkthrough:api-sequence",
+      "packageId": "code-walkthrough",
+      "variantId": "api-sequence",
+      "entryPoint": "src/styles/families/code-walkthrough/renderRoot.tsx",
+      "compositionId": "CodeWalkthroughFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/code-walkthrough/api-sequence.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "api-sequence"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/code-walkthrough/api-sequence.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "0eab1e64dd1af7cc1dfd5cd92c82bdc170396c0b068d7a8d47220ca0e1e27e2a",
+      "fileBytes": 171980,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 6,
+        "signalStats": {
+          "yAverage": 26.8986,
+          "yLow": 19,
+          "yHigh": 25,
+          "saturationAverage": 3.78412
+        }
+      }
+    },
+    {
+      "key": "code-walkthrough:code-focus",
+      "packageId": "code-walkthrough",
+      "variantId": "code-focus",
+      "entryPoint": "src/styles/families/code-walkthrough/renderRoot.tsx",
+      "compositionId": "CodeWalkthroughFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/code-walkthrough/code-focus.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "code-focus"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/code-walkthrough/code-focus.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "631d38a1b45173ff3be3c92f55da03acfde48105c8df8787eedd6c3af3b274b7",
+      "fileBytes": 168744,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 6,
+        "signalStats": {
+          "yAverage": 26.9688,
+          "yLow": 19,
+          "yHigh": 25,
+          "saturationAverage": 3.84501
+        }
+      }
+    },
+    {
+      "key": "code-walkthrough:debugging-trace",
+      "packageId": "code-walkthrough",
+      "variantId": "debugging-trace",
+      "entryPoint": "src/styles/families/code-walkthrough/renderRoot.tsx",
+      "compositionId": "CodeWalkthroughFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/code-walkthrough/debugging-trace.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "debugging-trace"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/code-walkthrough/debugging-trace.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "15bc1273c02d74544a656755e317318fd6d684a04c52bca77229176e4f3ef034",
+      "fileBytes": 166676,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 6,
+        "signalStats": {
+          "yAverage": 26.4913,
+          "yLow": 19,
+          "yHigh": 25,
+          "saturationAverage": 3.76333
+        }
+      }
+    },
+    {
+      "key": "code-walkthrough:diff-review",
+      "packageId": "code-walkthrough",
+      "variantId": "diff-review",
+      "entryPoint": "src/styles/families/code-walkthrough/renderRoot.tsx",
+      "compositionId": "CodeWalkthroughFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/code-walkthrough/diff-review.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "diff-review"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/code-walkthrough/diff-review.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "e704051e39efcff4cd1b61ba316f54d348fef208a7fedd9906adb98c3dd8f56f",
+      "fileBytes": 172869,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 6,
+        "signalStats": {
+          "yAverage": 26.7656,
+          "yLow": 19,
+          "yHigh": 25,
+          "saturationAverage": 3.91764
+        }
+      }
+    },
+    {
+      "key": "code-walkthrough:terminal-code-split",
+      "packageId": "code-walkthrough",
+      "variantId": "terminal-code-split",
+      "entryPoint": "src/styles/families/code-walkthrough/renderRoot.tsx",
+      "compositionId": "CodeWalkthroughFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/code-walkthrough/terminal-code-split.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "terminal-code-split"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/code-walkthrough/terminal-code-split.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "99def2714fd1859ab06b72d162346abf90370d693c7b5eb9314d681a6b1409fe",
+      "fileBytes": 137554,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 11,
+        "signalStats": {
+          "yAverage": 23.5586,
+          "yLow": 14,
+          "yHigh": 25,
+          "saturationAverage": 3.35901
+        }
+      }
+    }
+  ]
+}

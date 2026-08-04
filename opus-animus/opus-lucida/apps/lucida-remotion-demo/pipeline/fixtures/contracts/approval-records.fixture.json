@@ -1,0 +1,22 @@
+[
+  {
+    "schemaVersion": "lucida-approval/v1",
+    "approvalId": "map-approved",
+    "runId": "production-publishable-contract",
+    "kind": "video-map",
+    "status": "approved",
+    "artifactHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "approvedBy": "reviewer@example.test",
+    "approvedAt": "2026-07-16T09:00:00Z"
+  },
+  {
+    "schemaVersion": "lucida-approval/v1",
+    "approvalId": "video-approved",
+    "runId": "production-publishable-contract",
+    "kind": "final-video",
+    "status": "approved",
+    "artifactHash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "approvedBy": "reviewer@example.test",
+    "approvedAt": "2026-07-16T10:00:00Z"
+  }
+]

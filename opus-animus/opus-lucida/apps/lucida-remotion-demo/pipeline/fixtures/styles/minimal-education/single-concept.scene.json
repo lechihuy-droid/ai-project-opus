@@ -1,0 +1,35 @@
+{
+  "sceneId": "single-concept-scene",
+  "sceneType": "definition",
+  "durationInFrames": 150,
+  "motionPolicy": "full",
+  "density": "balanced",
+  "accentTone": "blue",
+  "eyebrow": "Teach one concept",
+  "title": "A single concept gives one new term a clear meaning before learners need to use it.",
+  "summary": "The frame keeps the term, plain-language meaning, and a few useful cues visible at the same time so the explanation does not become a wall of notes.",
+  "footer": "Use this when one concept needs a calm first introduction.",
+  "callout": {
+    "label": "Teaching move",
+    "value": "Name the idea before asking learners to apply it."
+  },
+  "definition": {
+    "term": "Anchor example",
+    "phonetic": "notice -> name -> use",
+    "meaning": "A small, concrete example that gives a new idea somewhere stable to land before the learner has to generalize it.",
+    "keyPoints": [
+      {
+        "label": "Notice",
+        "detail": "Start with one detail the learner can already see or hear."
+      },
+      {
+        "label": "Name",
+        "detail": "Attach the new term after the shared detail is visible."
+      },
+      {
+        "label": "Use",
+        "detail": "Ask for one short application while the example remains on screen."
+      }
+    ]
+  }
+}

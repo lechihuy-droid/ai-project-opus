@@ -17,10 +17,41 @@ export const plannedStyleFamilyIds = [
 
 export type StyleFamilyId = (typeof plannedStyleFamilyIds)[number];
 
+export const styleRagPackageIds = [
+  ...plannedStyleFamilyIds,
+  "system-architecture",
+  "code-walkthrough",
+  "news-rundown",
+  "claim-evidence",
+  "interface-walkthrough",
+] as const;
+
+export type StyleRagPackageId = (typeof styleRagPackageIds)[number];
+
+/** Package IDs with an implementation in the renderer registry. */
+export const rendererBackedStyleRagPackageIds = plannedStyleFamilyIds;
+
+/** Style RAG IDs that remain evidence/retrieval-only until a renderer is registered. */
+export const ragOnlyStylePackageIds = [
+  "system-architecture",
+  "code-walkthrough",
+  "news-rundown",
+  "claim-evidence",
+  "interface-walkthrough",
+] as const;
+
+export type RendererBackedStyleRagPackageId = (typeof rendererBackedStyleRagPackageIds)[number];
+
+export const isRendererBackedStyleRagPackageId = (
+  packageId: StyleRagPackageId,
+): packageId is RendererBackedStyleRagPackageId =>
+  (rendererBackedStyleRagPackageIds as readonly string[]).includes(packageId);
+
 export const stylePackageStatuses = [
   "draft",
   "experimental",
   "stable",
+  "deprecated",
   "prototype-created",
 ] as const;
 
@@ -36,6 +67,24 @@ export type StyleRenderCost = "low" | "medium" | "high";
 
 export type StylePackageDensity = Density | "sparse" | "balanced" | "dense";
 
+export const stylePatternTypes = [
+  "layout",
+  "typography",
+  "palette",
+  "motion",
+  "component",
+  "composition",
+  "content-density",
+  "use-case",
+  "anti-pattern",
+] as const;
+
+export type StylePatternType = (typeof stylePatternTypes)[number];
+
+export type StyleRagContentDensity = "sparse" | "balanced" | "dense";
+
+export type StyleReviewStatus = "proposed" | "approved" | "rejected";
+
 export type StyleContentCapacity = {
   headlineChars?: number;
   bodyChars?: number;
@@ -46,6 +95,46 @@ export type StyleContentCapacity = {
   maxCodeLines?: number;
   maxMetrics?: number;
   maxEvents?: number;
+};
+
+export type StyleRagContentCapacity = StyleContentCapacity;
+
+export type StylePackageContentCapacity = StyleContentCapacity & {
+  headlineChars: number;
+  bodyChars: number;
+};
+
+export type StyleRagTraits = string[];
+
+export type StyleVariant = {
+  schemaVersion: "lucida-style-variant/v1";
+  variantId: string;
+  packageId: StyleRagPackageId;
+  label: string;
+  description: string;
+  intentTags: string[];
+  beatRoles: string[];
+  contentDensity: StyleRagContentDensity;
+  aspectRatios: StyleAspectRatio[];
+  layoutTraits: StyleRagTraits;
+  typographyTraits: StyleRagTraits;
+  paletteTraits: StyleRagTraits;
+  motionTraits: StyleRagTraits;
+  componentTraits: StyleRagTraits;
+  contentCapacity: StyleRagContentCapacity;
+  positiveUseCases: string[];
+  antiPatterns: string[];
+  sourceEvidenceIds: string[];
+  classificationReasons: string[];
+  classifierVersion: string;
+  reviewStatus: StyleReviewStatus;
+};
+
+export type VisualPattern = Omit<StyleVariant, "schemaVersion" | "variantId"> & {
+  schemaVersion: "lucida-visual-pattern/v1";
+  patternId: string;
+  variantIds: string[];
+  patternType: StylePatternType;
 };
 
 export type StyleSourcePolicy = {
@@ -61,14 +150,14 @@ export type StyleSourceArtifacts = {
   normalizedInput?: string;
   mappedScenes?: string;
   compiledVideoMap?: string;
-  sourceReviewReport?: string;
+  sourceReviewReport: string;
 };
 
 export type StyleValidationArtifacts = {
   demoVideoMap?: string;
   renderProps?: string;
-  previewFrames?: string[];
-  renderReport?: string;
+  previewFrames: string[];
+  renderReport: string;
   videoBinaryRegistered?: boolean;
 };
 
@@ -81,7 +170,7 @@ export type StyleSourceReference = {
 export type StyleQualityGate = {
   validated: boolean;
   checks: string[];
-  knownLimitations: string[];
+  knownLimitations?: string[];
 };
 
 export type StylePackageRenderCostSpec = {
@@ -131,7 +220,7 @@ export type StylePackageVisualSpec = {
   aspectRatios: StyleAspectRatio[];
   density: StylePackageDensity;
   renderCost: StyleRenderCost;
-  contentCapacity: StyleContentCapacity;
+  contentCapacity: StylePackageContentCapacity;
   preferredLayouts: string[];
   preferredTemplates: string[];
   backgroundEffects: string[];
@@ -205,7 +294,7 @@ export type StylePackageManifest = {
   recommendedIntents?: string[];
   avoidFor: string[];
   aspectRatios: StyleAspectRatio[];
-  contentCapacity: StyleContentCapacity;
+  contentCapacity: StylePackageContentCapacity;
   renderCost: StylePackageRenderCostSpec;
   reducedMotion: StylePackageReducedMotionSpec;
   accessibility: StylePackageAccessibilitySpec;
@@ -225,6 +314,30 @@ export type StylePackageManifest = {
   validationArtifacts: StyleValidationArtifacts;
   sourceReferences: StyleSourceReference[];
   qualityGate: StyleQualityGate;
+  /** Optional until existing package manifests are migrated to the Style RAG contracts. */
+  variantRefs?: string[];
+  /** Optional until existing package manifests are migrated to the Style RAG contracts. */
+  visualPatternRefs?: string[];
+  /** Optional until source associations are represented by canonical evidence records. */
+  sourceAssociationIds?: string[];
+};
+
+export type PatternSourceEvidenceValidation = {
+  valid: boolean;
+  missingSourceEvidenceIds: string[];
+};
+
+/** JSON Schema validates documents independently; this checks the cross-artifact evidence key. */
+export const validatePatternSourceEvidenceIds = (
+  pattern: Pick<VisualPattern, "sourceEvidenceIds">,
+  pkg: Pick<StylePackageManifest, "sourceReferences">,
+): PatternSourceEvidenceValidation => {
+  const packageSourceIds = new Set(pkg.sourceReferences.map((reference) => reference.id));
+  const missingSourceEvidenceIds = [...new Set(
+    pattern.sourceEvidenceIds.filter((sourceEvidenceId) => !packageSourceIds.has(sourceEvidenceId)),
+  )];
+
+  return {valid: missingSourceEvidenceIds.length === 0, missingSourceEvidenceIds};
 };
 
 export type LegacyStylePackageManifest = StylePackageManifest;

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "lucida-artifact-manifest/v1",
+  "packageId": "interface-walkthrough",
+  "domain": "visual-style",
+  "generatedAt": "2026-07-18T00:00:00.000Z",
+  "artifacts": [
+    {"id":"package-root","kind":"draft-package","path":"./","usage":"package-local draft implementation and review artifacts"},
+    {"id":"family-renderer","kind":"source_code","path":"src/styles/families/interface-walkthrough/InterfaceWalkthroughScene.tsx","usage":"renderer"},
+    {"id":"family-root","kind":"source_code","path":"src/styles/families/interface-walkthrough/renderRoot.tsx","usage":"renderer"},
+    {"id":"variant-validator","kind":"source_code","path":"src/styles/families/interface-walkthrough/validate-variants.mjs","usage":"validation"},
+    {"id":"render-harness","kind":"source_code","path":"src/styles/families/interface-walkthrough/render-review.mjs","usage":"bounded-review"}
+  ]
+}

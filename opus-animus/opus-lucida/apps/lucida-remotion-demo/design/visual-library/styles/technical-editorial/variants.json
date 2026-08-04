@@ -1,0 +1,297 @@
+[
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "technical-brief",
+    "packageId": "technical-editorial",
+    "label": "Technical brief",
+    "description": "A concise technical brief that pairs a code evidence rail with typed input, validation, and render behavior in one inspectable frame.",
+    "intentTags": [
+      "code-explanation",
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "code-evidence-rail",
+      "contract-flow"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-system-labels"
+    ],
+    "paletteTraits": [
+      "deep-neutral-canvas",
+      "blue-guardrail-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "code-data-callout",
+      "diagram-panel",
+      "annotation-rail"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 4,
+      "maxMetrics": 2,
+      "maxCodeLines": 4
+    },
+    "positiveUseCases": [
+      "technical implementation brief"
+    ],
+    "antiPatterns": [
+      "code detached from behavior"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound proposed technical brief variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "annotated-explainer",
+    "packageId": "technical-editorial",
+    "label": "Annotated explainer",
+    "description": "A central three-stage technical explanation with named handoffs and supporting annotation rails.",
+    "intentTags": [
+      "explain",
+      "system-architecture"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "central-mechanism-flow",
+      "annotation-rails"
+    ],
+    "typographyTraits": [
+      "compact-system-labels",
+      "readable-node-titles"
+    ],
+    "paletteTraits": [
+      "deep-neutral-canvas",
+      "blue-annotation-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "diagram-panel",
+      "annotation-rail",
+      "code-data-callout"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 4,
+      "maxMetrics": 2,
+      "maxCodeLines": 3
+    },
+    "positiveUseCases": [
+      "annotated causal system explanation"
+    ],
+    "antiPatterns": [
+      "unnamed transformation steps"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound proposed annotated explainer variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "data-essay",
+    "packageId": "technical-editorial",
+    "label": "Data essay",
+    "description": "A dense technical essay frame that separates an operational risk, local guardrail, and residual limitation.",
+    "intentTags": [
+      "summarize",
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "risk-control-sequence",
+      "static-review-frame"
+    ],
+    "typographyTraits": [
+      "compact-system-labels",
+      "readable-node-titles"
+    ],
+    "paletteTraits": [
+      "deep-neutral-canvas",
+      "amber-risk-focus"
+    ],
+    "motionTraits": [
+      "static-review",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "annotation-rail",
+      "diagram-panel",
+      "code-data-callout"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 4,
+      "maxMetrics": 2,
+      "maxCodeLines": 3
+    },
+    "positiveUseCases": [
+      "data-supported technical risk analysis"
+    ],
+    "antiPatterns": [
+      "automation-only quality claims"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-observable-plot"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound proposed data essay variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "research-digest",
+    "packageId": "technical-editorial",
+    "label": "Research digest",
+    "description": "A technical research digest that keeps the conclusion, local evidence, and follow-up boundary explicit.",
+    "intentTags": [
+      "summarize",
+      "explain"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "decision-evidence-boundary",
+      "technical-recap"
+    ],
+    "typographyTraits": [
+      "compact-system-labels",
+      "readable-node-titles"
+    ],
+    "paletteTraits": [
+      "deep-neutral-canvas",
+      "blue-and-amber-boundary"
+    ],
+    "motionTraits": [
+      "reduced-motion",
+      "deterministic-review"
+    ],
+    "componentTraits": [
+      "annotation-rail",
+      "diagram-panel",
+      "code-data-callout"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 4,
+      "maxMetrics": 2,
+      "maxCodeLines": 3
+    },
+    "positiveUseCases": [
+      "technical research digest"
+    ],
+    "antiPatterns": [
+      "generic closing copy"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-revealjs"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound proposed research digest variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "evidence-grid",
+    "packageId": "technical-editorial",
+    "label": "Evidence grid",
+    "description": "A dense technical evidence grid that keeps claims, local checks, and limitations visibly separate.",
+    "intentTags": [
+      "explain",
+      "summarize"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "evidence-lanes",
+      "qualified-conclusion"
+    ],
+    "typographyTraits": [
+      "compact-system-labels",
+      "readable-node-titles"
+    ],
+    "paletteTraits": [
+      "deep-neutral-canvas",
+      "blue-and-amber-evidence"
+    ],
+    "motionTraits": [
+      "reduced-motion",
+      "deterministic-review"
+    ],
+    "componentTraits": [
+      "annotation-rail",
+      "diagram-panel",
+      "code-data-callout"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 4,
+      "maxMetrics": 2,
+      "maxCodeLines": 3
+    },
+    "positiveUseCases": [
+      "technical evidence comparison"
+    ],
+    "antiPatterns": [
+      "unqualified proof claims"
+    ],
+    "sourceEvidenceIds": [
+      "p1-03-repo-observable-plot"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound proposed evidence grid variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  }
+]

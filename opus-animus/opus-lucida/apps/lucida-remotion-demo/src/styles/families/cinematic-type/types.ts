@@ -1,8 +1,17 @@
 import type { MotionPolicy, TextDensity } from "../../core";
 
-export type CinematicTypeFixtureKey = "hook" | "quote" | "transition";
+export const cinematicTypeVariantIds = [
+  "kinetic-hook",
+  "quote",
+  "chapter-reset",
+  "manifesto",
+  "outro",
+] as const;
 
-export type CinematicTypeSceneType = "hook" | "quote" | "transition";
+export type CinematicTypeFixtureKey =
+  (typeof cinematicTypeVariantIds)[number];
+
+export type CinematicTypeSceneType = CinematicTypeFixtureKey;
 
 export type CinematicTypeFixture = {
   key: CinematicTypeFixtureKey;

@@ -22,7 +22,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify($json.body ?? $json) }}",
+        "body": "={{ JSON.stringify({ contentBrief: ($json.body ?? $json).contentBrief, script: ($json.body ?? $json).script, videoMap: ($json.body ?? $json).videoMap, normalizedInput: ($json.body ?? $json).normalizedInput, runEnvelope: ($json.body ?? $json).runEnvelope, approvals: ($json.body ?? $json).approvals, runId: ($json.body ?? $json).runId }) }}",
         "options": {}
       },
       "id": "start-flow",
@@ -66,7 +66,7 @@
           "conditions": [
             {
               "id": "flow-is-terminal",
-              "leftValue": "={{ $json.stages.some(stage => stage.status === 'failed') || $json.stages.at(-1)?.status === 'completed' }}",
+              "leftValue": "={{ ['failed', 'awaiting_final_approval', 'publishable'].includes($json.status) }}",
               "rightValue": true,
               "operator": {
                 "type": "boolean",
@@ -98,7 +98,7 @@
             {
               "id": "summary-status",
               "name": "status",
-              "value": "={{ $json.stages.some(stage => stage.status === 'failed') ? 'failed' : 'completed' }}",
+              "value": "={{ $json.status }}",
               "type": "string"
             },
             {

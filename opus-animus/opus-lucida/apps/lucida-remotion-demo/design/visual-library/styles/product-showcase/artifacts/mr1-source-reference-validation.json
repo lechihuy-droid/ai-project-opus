@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "terra-mr1-source-reference-validation/v1",
+  "packageId": "product-showcase",
+  "status": "PASS",
+  "variantCount": 5,
+  "sourceEvidenceIds": [
+    "repo-mui",
+    "image-openmoji-mobile",
+    "web-material-web",
+    "repo-fluentui"
+  ],
+  "sourceReferences": [
+    "repo-mui",
+    "image-openmoji-mobile",
+    "web-material-web",
+    "repo-fluentui"
+  ],
+  "normalization": {
+    "sourceReferencePrefixRemoved": [],
+    "legacyAliasesUsed": [],
+    "localIdsUsed": []
+  },
+  "approvalOrPromotionPerformed": false
+}

@@ -1,0 +1,17 @@
+import type { SystemArchitectureFixture } from "../../../../src/styles/families/system-architecture";
+
+export const layeredStackFixture: SystemArchitectureFixture = {
+  key: "layered-stack", label: "Layered stack", eyebrow: "System architecture / layered boundaries",
+  title: "Show platform layers before explaining the traffic within them",
+  summary: "A stable vertical stack gives each boundary a named role without turning the architecture into a decorative diagram.",
+  density: "balanced", motionPolicy: "full",
+  nodes: [
+    { id: "client", label: "Client", detail: "User interaction", x: 50, y: 13, tone: "accent" },
+    { id: "edge", label: "Edge", detail: "Auth and routing", x: 50, y: 31, tone: "success" },
+    { id: "service", label: "Service", detail: "Domain decisions", x: 50, y: 49, tone: "accent" },
+    { id: "data", label: "Data", detail: "State and retrieval", x: 50, y: 67, tone: "warning" },
+    { id: "observability", label: "Observability", detail: "Logs and traces", x: 50, y: 85, tone: "neutral" },
+  ],
+  edges: [{ from: "client", to: "edge" }, { from: "edge", to: "service" }, { from: "service", to: "data" }, { from: "service", to: "observability", label: "emits" }],
+  caption: "The primary reading order is boundary first: client, edge, service, data, then operational evidence.",
+};

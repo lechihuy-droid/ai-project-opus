@@ -1,0 +1,14 @@
+{
+  "provider": "vieneu",
+  "voice": "Minh Đức",
+  "style": "tu_nhien",
+  "durationMs": 57970,
+  "sampleRate": 48000,
+  "channels": 1,
+  "checksum": "sha256:4b11e91614f36700d4eb51729c8f7ec44aee622801656dc65c3ce1f45ae68ea9",
+  "scriptId": "script-ai-email-keigo-001",
+  "scriptRevision": 1,
+  "scriptChecksum": "sha256:2ea8980c25a206cee2a603a03fb95c07f7ea5125cfd771fb2a7660bb7554dd1b",
+  "chunkStrategy": "per-sentence",
+  "generatedAt": "2026-07-14T09:13:31.537Z"
+}

@@ -18,8 +18,8 @@
   "frames": [
     {
       "id": "scene-01",
-      "label": "Notes review frame",
-      "sceneKey": "notes",
+      "label": "Research notes review frame",
+      "sceneKey": "research-notes",
       "frame": 58,
       "output": "design/visual-library/styles/paper-notebook/artifacts/frames/scene-01.png",
       "dimensions": {
@@ -106,5 +106,9 @@
     "Shared registry and app-root availability remain untouched because they are outside this ownership slice.",
     "16:9 support is metadata-ready only; this task renders portrait review frames only.",
     "Stable promotion still requires human visual approval."
-  ]
+  ],
+  "contractReconciliation": {
+    "status": "metadata-reconciled-no-render",
+    "note": "Fixture IDs and scene keys were reconciled without a new global render."
+  }
 }

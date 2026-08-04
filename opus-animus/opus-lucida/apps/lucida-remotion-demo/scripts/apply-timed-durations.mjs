@@ -50,39 +50,71 @@ export const applyTimedDurations = (videoMap, timedScript) => {
     }
   }
 
-  const warnings = [];
-  const scenes = videoMap.scenes.map((scene) => {
+  const mappedScenes = videoMap.scenes.map((scene) => {
     if (!Array.isArray(scene.segmentIds) || scene.segmentIds.length === 0) {
-      warnings.push(`scene "${scene.id ?? "<unknown>"}": no segmentIds; kept existing timing`);
-      return scene;
+      return { scene, reason: "no segmentIds" };
     }
 
     const missing = scene.segmentIds.filter((segmentId) => !segments.has(segmentId));
     if (missing.length > 0) {
-      warnings.push(
-        `scene "${scene.id ?? "<unknown>"}": missing segmentIds [${missing.join(", ")}]; kept existing timing`,
-      );
-      return scene;
+      return { scene, reason: `missing segmentIds [${missing.join(", ")}]` };
     }
 
     const ranges = scene.segmentIds.flatMap((segmentId) => segments.get(segmentId));
     const startMs = Math.min(...ranges.map((range) => range.startMs));
     const endMs = Math.max(...ranges.map((range) => range.endMs));
-    if (endMs <= startMs) {
-      warnings.push(`scene "${scene.id ?? "<unknown>"}": invalid mapped range; kept existing timing`);
-      return scene;
-    }
+    if (endMs <= startMs) return { scene, reason: "invalid mapped range" };
+
     return {
-      ...scene,
-      startMs,
-      endMs,
-      durationSec: Math.round(((endMs - startMs) / 1000) * 100) / 100,
+      scene: {
+        ...scene,
+        startMs,
+        endMs,
+        durationSec: Math.round(((endMs - startMs) / 1000) * 100) / 100,
+      },
+      mapped: true,
     };
   });
 
-  const durationSec = Math.round(
-    scenes.reduce((total, scene) => total + Number(scene.durationSec ?? 0), 0) * 100,
-  ) / 100;
+  const warnings = [];
+  const hasUsableBindings = mappedScenes.some(({ mapped }) => mapped);
+  let scenes;
+  if (hasUsableBindings) {
+    scenes = mappedScenes.map(({ scene, mapped, reason }) => {
+      if (!mapped) warnings.push(`scene "${scene.id ?? "<unknown>"}": ${reason}; kept existing timing`);
+      return scene;
+    });
+  } else {
+    const durationMs = timedScript.durationMs;
+    const totalExistingDurationSec = videoMap.scenes.reduce(
+      (total, scene) => total + Number(scene.durationSec ?? 0),
+      0,
+    );
+    if (!Number.isFinite(durationMs) || durationMs <= 0 || totalExistingDurationSec <= 0) {
+      scenes = videoMap.scenes;
+      warnings.push("no usable scene segment bindings; unable to apply proportional timing fallback");
+    } else {
+      let accumulatedDurationSec = 0;
+      scenes = videoMap.scenes.map((scene) => {
+        const startMs = Math.round((accumulatedDurationSec / totalExistingDurationSec) * durationMs);
+        accumulatedDurationSec += Number(scene.durationSec ?? 0);
+        const endMs = Math.round((accumulatedDurationSec / totalExistingDurationSec) * durationMs);
+        return {
+          ...scene,
+          startMs,
+          endMs,
+          durationSec: (endMs - startMs) / 1000,
+        };
+      });
+      warnings.push(
+        "no usable scene segment bindings; applied proportional timing fallback from timed-script.durationMs",
+      );
+    }
+  }
+
+  const durationSec = hasUsableBindings || scenes === videoMap.scenes
+    ? Math.round(scenes.reduce((total, scene) => total + Number(scene.durationSec ?? 0), 0) * 100) / 100
+    : timedScript.durationMs / 1000;
   return {
     videoMap: { ...videoMap, video: { ...videoMap.video, durationSec }, scenes },
     warnings,

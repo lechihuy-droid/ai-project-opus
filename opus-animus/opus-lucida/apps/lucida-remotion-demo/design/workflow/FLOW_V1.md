@@ -24,6 +24,8 @@ File này trả lời: **flow hoàn chỉnh từ market research đến video re
 ```text
 [S0 Topic & Script]  market research → topic theo series → script → USER DUYỆT
         ↓  ApprovedScript + series + brand block
+[S0.5 Visual Treatment]  script → actors/beats/component-check → USER DUYỆT treatment
+        ↓  visual-treatment.md
 [S1 Ingest]          source-ingestor-cleaner → clean-brief.json
         ↓                    (+ pipeline/ collectors = visual evidence)
 [S2 Audio & Timing]  TTS → voice.mp3 → WhisperX → TimedScript (timeline khóa)
@@ -37,6 +39,53 @@ File này trả lời: **flow hoàn chỉnh từ market research đến video re
 [S6 Publish]         n8n orchestration + publish handoff
 ```
 
+## 2b. Vòng lặp sản xuất (chính thức hóa 2026-07-16, từ bài học email-keigo v2)
+
+Flow KHÔNG tuyến tính. Ba vòng lặp bắt buộc, học từ lần nghiệm thu M6 (Sonnet bắt 3 lỗi layout ở tầng still — rẻ; nếu để lộ ở bản render full sẽ tốn ~10 phút render + 1 lượt duyệt của user cho mỗi lỗi):
+
+```text
+LOOP 0 — Design level (RẺ NHẤT, chữ — mỗi vòng vài phút):
+  script → VISUAL TREATMENT 1 trang:
+    • ACTORS: thực thể hình ảnh của video. Rule: danh từ trung tâm của chủ đề
+      bắt buộc có mặt (vd "Dùng AI viết email" → PHẢI có cả [AI terminal] lẫn [mail window])
+    • BEATS: mỗi segment 1 dòng tả CẢNH THẤY ĐƯỢC. Rule: beat tương tác A→B
+      thì cả A và B phải là actor cùng hiện diện
+    • COMPONENT CHECK: map actor/beat sang component có sẵn.
+      Không khớp → "COMPONENT GAP" → rẽ sang track engineering (RD/BD nhỏ → Codex build) → quay lại
+  EXIT: USER DUYỆT treatment (gộp gate 1; video tái dùng script cũ thì duyệt riêng, nhẹ)
+
+LOOP 1 — Map level (RẺ, lặp nhiều lần OK — mỗi vòng vài phút):
+  build/sửa video-map (theo treatment đã duyệt ở Loop 0)
+    → validate:videomap + validate:brand + validate:semantic   (máy, ~giây)
+      (+ fidelity: actor coverage, beat↔transition coverage — sau khi M6.1/action 4 build xong)
+    → render STILL storyboard (1 khung/scene + khung sau mỗi transition; TUẦN TỰ)
+    → visual QA still (Sonnet subagent hoặc Claude soi trực tiếp)
+    → còn lỗi? sửa map → lặp lại
+  EXIT: validators 0 fail + still sạch → trình USER DUYỆT map (gate 2, bảng "HỨA — THẤY":
+    mỗi beat 1 dòng, cột trái lời hứa treatment, cột phải still chứng minh)
+
+LOOP 2 — Video level (ĐẮT, chỉ vào khi Loop 1 đã exit — mỗi vòng ~15 phút):
+  flow:run (apply-timing → validate → render full → report → publish bundle)
+    → check report: audioStream / voiceChecksum / drift / semanticQa
+    → QA still trên video-map ĐÃ apply-timing (timing thật có thể xê dịch beat)
+    → đối chiếu NGUYÊN VĂN feedback gần nhất của user, từng ý — không dùng bản tóm tắt
+    → USER DUYỆT video final (gate 3)
+    → user chê? PHÂN LOẠI lỗi trước khi sửa:
+        (a) lỗi map (vị trí, beat, nội dung scene)      → quay về LOOP 1
+        (b) lỗi component/renderer (thiếu khả năng)      → RD/BD patch → Codex → LOOP 1
+        (c) lỗi script/voice (nội dung lời)              → quay về S0, revision mới
+  EXIT: user duyệt gate 3 → S6 Publish
+```
+
+**RULE CẤM LÁCH:** Khi một beat không thể hiện được bằng component hiện có, mapper PHẢI dừng và báo "component gap" — cấm mọi hình thức lách (đổi title cửa sổ, mượn component sai vai, bỏ beat trong im lặng). Nguồn gốc rule: sự cố email-keigo v2 (2026-07-16), xem `docs/review-design-before-render.md`.
+
+Quy tắc rút từ thực chiến:
+- **Lỗi bắt ở Loop 0 là rẻ nhất** — chỉ tốn vài phút chữ, rẻ hơn Loop 1 (vài phút still) và Loop 2 (~15 phút render); lọt đến user tốn 1 lượt duyệt + niềm tin.
+- **Không render full khi Loop 1 chưa exit.** Mọi lỗi bố cục phải chết ở tầng still.
+- **Máy yếu:** mọi still render TUẦN TỰ từng frame; render full để nền; không chạy Codex song song với render.
+- **QA still lần cuối phải chạy trên map đã apply-timing thật**, không phải map ước lượng — offset beat đổi theo giọng đọc.
+- Feedback gate 3 của user là input quý nhất — ghi vào review doc và đối chiếu RD trước khi sửa (tránh vá triệu chứng).
+
 ## 3. Chi tiết từng stage
 
 ### S0 — Topic & Script *(chưa có — build ở M2)*
@@ -46,12 +95,20 @@ File này trả lời: **flow hoàn chỉnh từ market research đến video re
 - **Output:** `ApprovedScript` (sentence-addressable, theo contract `contracts/APPROVED_SCRIPT.md`) + `series` + brand block (theo `docs/market-research/11-pipeline-contract.md`).
 - **Gate:** user duyệt script — script bị freeze sau khi duyệt.
 
+### S0.5 — Visual Treatment *(chưa có — build cùng M6.1/action 1-2, chính thức hóa 2026-07-16)*
+
+- **Input:** ApprovedScript (S0).
+- **Worker:** treatment step (Claude) dựng bản 1 trang ACTORS + BEATS + COMPONENT CHECK (chi tiết ở mục 2b Loop 0); COMPONENT GAP → rẽ track engineering (RD/BD → Codex) rồi quay lại.
+- **Output:** `input/scripts/<slug>/visual-treatment.md`.
+- **Gate:** user duyệt treatment (gộp gate 1 với S0 cùng lượt; video tái dùng script cũ thì duyệt riêng, nhẹ).
+
 ### S1 — Ingest *(đang chạy)*
 
 - **Input:** ApprovedScript + raw sources (URL, repo, PDF, ảnh).
 - **Worker:** skill `source-ingestor-cleaner`.
 - **Output:** `clean-brief.json` (M4 sẽ thêm trường brand/series).
 - **Nhánh phụ (M4):** `pipeline/` collectors (`npm run collect:visual` …) trở thành nguồn **visual evidence** cấp cho S3, không còn là pipeline sinh video-map song song.
+- **RAG ingest:** collector output phải qua sanitize → human approval → canonical promotion → compile/build. Không query raw collector artifact. Contract vận hành: [`RAG_INGEST_AND_RETRIEVAL.md`](RAG_INGEST_AND_RETRIEVAL.md).
 
 ### S2 — Audio & Timing *(chưa có — build ở M3, cần RD trước)*
 
@@ -64,6 +121,7 @@ File này trả lời: **flow hoàn chỉnh từ market research đến video re
 
 - **Input:** `clean-brief.json` + `TimedScript` (M3: scene duration lấy từ TimedScript thay vì ước lượng).
 - **Worker:** skill `script-template-mapper`.
+- **RAG retrieval:** chạy build-time trước mapper; ghi `03-knowledge-selection.json`; mapper ưu tiên source family → approved RAG family → deterministic fallback. Renderer không mở SQLite.
 - **Output:** `video-map.json` (M4: mang brand block; giữ per-scene `layout` + anti-monotony rules hiện có).
 - **Gate:** `npm run validate:videomap` + brand-check (M4) + **user duyệt** — giữ nguyên approval gate bắt buộc trong `remotion-script-to-video/SKILL.md`.
 
@@ -115,3 +173,30 @@ File này trả lời: **flow hoàn chỉnh từ market research đến video re
 - Spec north star: `design/workflow/create/G00–G12`, `contracts/`, `governance/`, `validation/`.
 - Thiết kế caption sync: `design/history/workflow/CREATE_FLOW_v1.02_CAPTION_SYNC_EXTENSION.md`.
 - Scripts: `package.json` (`validate:videomap`, `render`, `qa:stills`, `visual-flow`), `scripts/run-whisperx.ps1`.
+
+## 7. Lane contract (W1)
+
+New visual configs use `visual-flow/v2` with a `RunEnvelope` (`lucida-run/v1`): `lane`, `styleMode`, `publicationStatus`, and `approvalRefs`.
+
+- `rapid-visual-pilot` is always `non_publishable`; it is an exploration preview, not a publish handoff.
+- Only `production` may be `publishable`, and its contract requires approval references. W2 will enforce promotion and artifact/hash checks in orchestration.
+- `styleMode: auto` leaves family selection to the Director. Source `family` and `mapping.defaultFamily` are invalid.
+- `styleMode: locked` requires `lockedStyle.family`, `lockedBy`, and `reason`.
+- `visual-flow/v1` remains readable through the compatibility adapter. One legacy source family is retained as locked style; otherwise `mapping.defaultFamily` is used. The adapter emits a deprecation warning.
+
+## 8. Production dataflow proof (approved 2026-07-17)
+
+These rules apply to every `production` run. A run that misses any required gate is non-publishable and must not advance to handoff.
+
+- Promote collector output only through the approved canonical-source path. Record the promoted source revision; mapper/compiler inputs must not read raw collector artifacts.
+- The reference approval writer must persist approval date plus rights/usage status with each approved source. Final-video approval is a separate hash-bound record. Missing source rights block knowledge compile; missing final-video approval blocks publish.
+- Rebuild the canonical DB before compilation when promoted inputs, schema, or source revisions changed. Compilation may start only after the rebuild reports the expected revision.
+- Compiler output must carry the approved brand metadata and use the current language schema. Reject payloads whose brand block or language fields cannot validate together.
+- Build comparison payloads from capacity-safe summaries and bounded evidence references; do not embed unbounded source bodies in mapper/compiler payloads.
+- On Windows, invoke Chrome through the configured executable path from the direct Node CLI. Do not depend on shell/browser discovery for production rendering or QA.
+- Assign an immutable run ID at first attempt. Every retry creates a new run ID and links `retryOf`; never overwrite prior reports, approvals, or artifacts.
+- Size runner timeouts for the full render/QA budget, including Chrome startup and bounded retries. Timeout is a failed run, not permission to continue from partial output.
+- When speech has no usable scene segment bindings, derive contiguous scene timing proportionally from the existing scene durations, end exactly at `TimedScript.durationMs`, emit an explicit fallback warning, and require normal timing/QA checks before render.
+- Support alignment interpolation for sparse timestamps. Permit `--reuse-transcript` only with the same approved script, voice bytes, and voice-track checksum; otherwise realign.
+- Run QA before render on compiled inputs and after render on the final media/report. Final approval remains mandatory and must reference the final-video hash; source or map approval cannot substitute for it.
+- Generate final approval only after the reviewer explicitly accepts the rendered bytes. Use `flow:prepare-final-approval` to append the exact video hash into a new, project-contained approval artifact, then pass that artifact to `flow:finalize`; neither command may overwrite an earlier approval artifact.

@@ -126,13 +126,53 @@ function firstTiming(words, key) {
   return timed?.[key] ?? null;
 }
 
+export function fillMissingTimestamps(alignment, options = {}) {
+  const durationMs = Number.isFinite(options.durationMs) ? Math.max(0, Math.round(options.durationMs)) : null;
+  const words = alignment.words.map((word) => ({...word}));
+  const fallbackDurationMs = durationMs ?? Math.max(0, ...words.map((word) => word.endMs ?? 0));
+  let index = 0;
+
+  while (index < words.length) {
+    if (Number.isFinite(words[index].startMs) && Number.isFinite(words[index].endMs)) {
+      index += 1;
+      continue;
+    }
+
+    const runStart = index;
+    while (index < words.length && (!Number.isFinite(words[index].startMs) || !Number.isFinite(words[index].endMs))) index += 1;
+    const runEnd = index;
+    const previous = words[runStart - 1];
+    const next = words[runEnd];
+    const lowerBound = Number.isFinite(previous?.endMs) ? previous.endMs : 0;
+    const upperBound = Number.isFinite(next?.startMs) ? next.startMs : fallbackDurationMs;
+    const startMs = Math.max(0, Math.min(lowerBound, fallbackDurationMs));
+    const endMs = Math.max(startMs, Math.min(upperBound, fallbackDurationMs));
+    const count = runEnd - runStart;
+
+    for (let offset = 0; offset < count; offset += 1) {
+      words[runStart + offset].startMs = Math.round(startMs + ((endMs - startMs) * offset) / count);
+      words[runStart + offset].endMs = Math.round(startMs + ((endMs - startMs) * (offset + 1)) / count);
+    }
+  }
+
+  let previousEndMs = 0;
+  for (const word of words) {
+    word.startMs = Math.max(previousEndMs, Math.min(word.startMs, fallbackDurationMs));
+    word.endMs = Math.max(word.startMs, Math.min(word.endMs, fallbackDurationMs));
+    previousEndMs = word.endMs;
+  }
+
+  return {...alignment, words};
+}
+
 export function groupAlignedWords(alignment, options = {}) {
+  const timedAlignment = fillMissingTimestamps(alignment, {durationMs: options.durationMs});
   const maxWords = options.maxWords ?? MAX_PHRASE_WORDS;
   const pauseBreakMs = options.pauseBreakMs ?? PAUSE_BREAK_MS;
   const phrases = [];
 
-  for (const sentence of alignment.sentences) {
-    const words = alignment.words.filter((word) => word.sentenceId === sentence.sentenceId);
+  for (const sentence of timedAlignment.sentences) {
+    const words = timedAlignment.words.filter((word) => word.sentenceId === sentence.sentenceId);
     let current = [];
     const flush = () => {
       if (current.length === 0) return;
@@ -155,8 +195,8 @@ export function groupAlignedWords(alignment, options = {}) {
     });
   }
 
-  const timedSentences = alignment.sentences.map((sentence) => {
-    const words = alignment.words.filter((word) => word.sentenceId === sentence.sentenceId);
+  const timedSentences = timedAlignment.sentences.map((sentence) => {
+    const words = timedAlignment.words.filter((word) => word.sentenceId === sentence.sentenceId);
     return {
       sentenceId: sentence.sentenceId,
       segmentId: sentence.segmentId,
@@ -174,7 +214,7 @@ export function groupAlignedWords(alignment, options = {}) {
 
 export function buildTimedScript({approvedScript, whisperxJson, voiceTrack, voiceChecksum}) {
   const alignment = reconcileApprovedScript(approvedScript, whisperxJson);
-  const grouped = groupAlignedWords(alignment);
+  const grouped = groupAlignedWords(alignment, {durationMs: voiceTrack.durationMs});
   return {
     schemaVersion: '1.0',
     scriptId: approvedScript.scriptId ?? approvedScript.id,
@@ -196,13 +236,16 @@ function sha256(value) {
   return createHash('sha256').update(value).digest('hex');
 }
 
-function parseArgs(argv) {
+export function parseArgs(argv) {
   const args = {};
   for (let index = 0; index < argv.length; index += 1) {
     if (argv[index] === '--run-id') args.runId = argv[++index];
     else if (argv[index] === '--script') args.script = argv[++index];
+    else if (argv[index] === '--reuse-transcript') args.reuseTranscript = argv[++index];
+    else throw new Error(`Unknown argument: ${argv[index]}`);
   }
-  if (!args.runId || !args.script) throw new Error('Usage: node scripts/voice-align.mjs --run-id <id> --script <approved-script.json>');
+  if (!args.runId || !args.script) throw new Error('Usage: node scripts/voice-align.mjs --run-id <id> --script <approved-script.json> [--reuse-transcript <json>]');
+  if (args.reuseTranscript === undefined && argv.includes('--reuse-transcript')) throw new Error('Missing value for --reuse-transcript');
   if (!/^[A-Za-z0-9._-]+$/u.test(args.runId)) throw new Error('Invalid --run-id');
   return args;
 }
@@ -216,14 +259,18 @@ function findJsonFiles(directory) {
 }
 
 function runCli() {
-  const {runId, script} = parseArgs(process.argv.slice(2));
+  const {runId, script, reuseTranscript} = parseArgs(process.argv.slice(2));
   const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
   const audioDir = join(root, 'public', 'runs', runId, 'audio');
   const voicePath = join(audioDir, 'voice.wav');
   const voiceTrackPath = join(audioDir, 'voice-track.json');
   const pythonPath = join(root, '.venv-whisperx', 'Scripts', 'python.exe');
   const scriptPath = resolve(root, script);
-  for (const [label, path] of [['voice.wav', voicePath], ['voice-track.json', voiceTrackPath], ['WhisperX Python', pythonPath], ['approved script', scriptPath]]) {
+  const transcriptPath = reuseTranscript ? resolve(root, reuseTranscript) : null;
+  const preflightPaths = [['voice.wav', voicePath], ['voice-track.json', voiceTrackPath], ['approved script', scriptPath]];
+  if (transcriptPath) preflightPaths.push(['reused transcript', transcriptPath]);
+  else preflightPaths.push(['WhisperX Python', pythonPath]);
+  for (const [label, path] of preflightPaths) {
     if (!existsSync(path)) throw new Error(`Preflight failed: ${label} not found at ${path}`);
   }
 
@@ -234,23 +281,28 @@ function runCli() {
     throw new Error(`Preflight failed: scriptChecksum mismatch (voice-track=${voiceTrack.scriptChecksum}, approved-script=${expectedScriptChecksum})`);
   }
 
-  const whisperxDir = join(audioDir, 'whisperx');
-  mkdirSync(whisperxDir, {recursive: true});
-  // whisperx VAD/align in this venv emits bogus fixed timestamps (see docs/spike-vieneu-chunking.md);
-  // faster-whisper word timestamps are used instead via scripts/fw-transcribe.py.
-  const result = spawnSync(pythonPath, [
-    join(root, 'scripts', 'fw-transcribe.py'), voicePath,
-    '--language', 'vi', '--model', 'small',
-    '--out', join(whisperxDir, 'voice.json'),
-  ], {cwd: root, stdio: 'inherit', env: {...process.env, PYTHONIOENCODING: 'utf-8', PYTHONUTF8: '1'}});
-  if (result.error) throw result.error;
-  if (result.status !== 0) throw new Error(`WhisperX exited with code ${result.status}`);
+  let whisperxJson;
+  if (transcriptPath) {
+    whisperxJson = JSON.parse(readFileSync(transcriptPath, 'utf8'));
+  } else {
+    const whisperxDir = join(audioDir, 'whisperx');
+    mkdirSync(whisperxDir, {recursive: true});
+    // whisperx VAD/align in this venv emits bogus fixed timestamps (see docs/spike-vieneu-chunking.md);
+    // faster-whisper word timestamps are used instead via scripts/fw-transcribe.py.
+    const result = spawnSync(pythonPath, [
+      join(root, 'scripts', 'fw-transcribe.py'), voicePath,
+      '--language', 'vi', '--model', 'small',
+      '--out', join(whisperxDir, 'voice.json'),
+    ], {cwd: root, stdio: 'inherit', env: {...process.env, PYTHONIOENCODING: 'utf-8', PYTHONUTF8: '1'}});
+    if (result.error) throw result.error;
+    if (result.status !== 0) throw new Error(`WhisperX exited with code ${result.status}`);
 
-  const jsonFiles = findJsonFiles(whisperxDir).sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs);
-  const preferred = jsonFiles.find((path) => basename(path, '.json') === basename(voicePath, extname(voicePath)));
-  const transcriptPath = preferred ?? jsonFiles[0];
-  if (!transcriptPath) throw new Error(`WhisperX did not create a JSON transcript in ${whisperxDir}`);
-  const whisperxJson = JSON.parse(readFileSync(transcriptPath, 'utf8'));
+    const jsonFiles = findJsonFiles(whisperxDir).sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs);
+    const preferred = jsonFiles.find((path) => basename(path, '.json') === basename(voicePath, extname(voicePath)));
+    const generatedTranscriptPath = preferred ?? jsonFiles[0];
+    if (!generatedTranscriptPath) throw new Error(`WhisperX did not create a JSON transcript in ${whisperxDir}`);
+    whisperxJson = JSON.parse(readFileSync(generatedTranscriptPath, 'utf8'));
+  }
   const alignment = reconcileApprovedScript(approvedScript, whisperxJson);
   if (alignment.matchedWordRatio < MATCH_THRESHOLD) {
     console.error(JSON.stringify({

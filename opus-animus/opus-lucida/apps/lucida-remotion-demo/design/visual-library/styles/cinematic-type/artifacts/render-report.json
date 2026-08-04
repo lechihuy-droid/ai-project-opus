@@ -17,7 +17,7 @@
   "frames": [
     {
       "id": "scene-01",
-      "sceneKey": "hook",
+      "sceneKey": "kinetic-hook",
       "frame": 24,
       "output": "design/visual-library/styles/cinematic-type/artifacts/frames/scene-01.png",
       "dimensions": {
@@ -71,7 +71,7 @@
     },
     {
       "id": "scene-03",
-      "sceneKey": "transition",
+      "sceneKey": "chapter-reset",
       "frame": 24,
       "output": "design/visual-library/styles/cinematic-type/artifacts/frames/scene-03.png",
       "dimensions": {

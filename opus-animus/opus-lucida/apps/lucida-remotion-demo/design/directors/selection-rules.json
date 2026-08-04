@@ -360,6 +360,17 @@
   "layoutRules": {
     "archetypeLibrary": "Layout archetype definitions live in design/layout-library/index.json.",
     "effectiveDefault": "top-title",
+    "familyPreferences": {
+      "terminal-command-center": ["center-stage", "top-title", "bottom-statement"],
+      "technical-editorial": ["top-title", "center-stage", "bottom-statement"],
+      "minimal-education": ["top-title", "center-stage", "bottom-statement"],
+      "cinematic-type": ["oversized-type", "center-stage", "bottom-statement"],
+      "dashboard-data": ["top-title", "center-stage", "bottom-statement"],
+      "paper-notebook": ["center-stage", "top-title", "bottom-statement"],
+      "product-showcase": ["full-bleed-visual", "bottom-statement", "center-stage"],
+      "editorial-collage": ["full-bleed-visual", "bottom-statement", "center-stage"],
+      "timeline-documentary": ["bottom-statement", "top-title", "center-stage"]
+    },
     "rules": [
       "No two consecutive scenes may use the same effective layout unless continuity requires the dominant family outro.",
       "A video with 5 or more scenes must use at least 3 distinct layouts.",

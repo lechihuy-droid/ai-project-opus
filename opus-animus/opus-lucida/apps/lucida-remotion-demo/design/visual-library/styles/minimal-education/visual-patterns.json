@@ -1,0 +1,1846 @@
+[
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-definition-spotlight-term-meaning-split",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "single-concept"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "explain",
+      "list"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "term-meaning-split",
+      "left-term-right-definition",
+      "three-cue-rail"
+    ],
+    "typographyTraits": [
+      "dominant-teaching-headline",
+      "compact-term-label"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "blue-semantic-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 220,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "introduce one unfamiliar term before its plain-language meaning"
+    ],
+    "antiPatterns": [
+      "two unrelated definitions competing for the same focal area"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Proposal applies the reviewed spacing and reading-order evidence to a fixed two-column teaching composition; human pattern review remains pending. Classification: single-concept."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-definition-spotlight-term-weight-ladder",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "single-concept"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "term-meaning-split",
+      "single-concept-focus"
+    ],
+    "typographyTraits": [
+      "term-weight-800",
+      "meaning-weight-500",
+      "cue-label-weight-700"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "blue-semantic-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 180,
+      "maxItems": 2,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "make a technical term scan first and the explanation scan second"
+    ],
+    "antiPatterns": [
+      "equal-sized term, definition, and annotation copy"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Proposal turns the reviewed hierarchy concept into three fixed text weights for one teaching term; human pattern review remains pending. Classification: single-concept."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-definition-spotlight-blue-meaning-anchor",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "single-concept"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "term-meaning-split",
+      "single-concept-focus"
+    ],
+    "typographyTraits": [
+      "dominant-teaching-headline",
+      "compact-term-label"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "blue-semantic-focus",
+      "neutral-supporting-copy"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "bodyChars": 200,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "mark the one sentence that carries the meaning of a term"
+    ],
+    "antiPatterns": [
+      "multiple accent colors competing with the meaning sentence"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Proposal uses the recorded semantic color-role reference to reserve blue for the definition-bearing meaning; human pattern review remains pending. Classification: single-concept."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-definition-spotlight-meaning-then-cues-reveal",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "single-concept"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "explain",
+      "list"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "term-meaning-split",
+      "three-cue-rail"
+    ],
+    "typographyTraits": [
+      "dominant-teaching-headline",
+      "compact-term-label"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "blue-semantic-focus"
+    ],
+    "motionTraits": [
+      "term-static",
+      "meaning-fade-in",
+      "cue-rows-stagger-120ms",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 220,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "reveal supporting cues only after the main definition has been read"
+    ],
+    "antiPatterns": [
+      "moving the term and definition while the viewer is reading them"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Proposal applies reviewed noise-reduction evidence to a bounded reveal sequence with a stable reading frame; human pattern review remains pending. Classification: single-concept."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-definition-spotlight-one-sentence-callout",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "single-concept"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "term-meaning-split",
+      "single-concept-focus"
+    ],
+    "typographyTraits": [
+      "dominant-teaching-headline",
+      "readable-callout-copy"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "blue-semantic-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout",
+      "one-sentence-meaning-box"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 160,
+      "maxItems": 1,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "isolate a plain-language definition from its supporting notes"
+    ],
+    "antiPatterns": [
+      "using the callout as a second long-form body panel"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Proposal applies recorded semantic component-role evidence to one bounded definition callout; human pattern review remains pending. Classification: single-concept."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-definition-spotlight-cue-rail-summary",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "single-concept"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "explain",
+      "list"
+    ],
+    "beatRoles": [
+      "explain",
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "top-definition",
+      "bottom-three-cue-rail",
+      "single-concept-focus"
+    ],
+    "typographyTraits": [
+      "dominant-teaching-headline",
+      "compact-cue-labels"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "blue-semantic-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 180,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "end a definition beat with three short recognition cues"
+    ],
+    "antiPatterns": [
+      "a cue rail with ungrouped facts unrelated to the definition"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Proposal uses reviewed grouping-through-spacing evidence to place three cues below one dominant definition; human pattern review remains pending. Classification: single-concept."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-cue-action-loop-three-phase-loop",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "takeaway"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "process",
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "loop-definition-split",
+      "cue-action-completion-rows",
+      "repeatable-cue-rail"
+    ],
+    "typographyTraits": [
+      "dominant-teaching-headline",
+      "readable-process-labels"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-semantic-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 180,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "explain a repeatable routine through cue, action, and completion"
+    ],
+    "antiPatterns": [
+      "a loop whose rows do not describe a sequence"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Proposal converts the reviewed clear-reading-order concept into three aligned phases; human pattern review remains pending. Classification: takeaway."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-cue-action-loop-signal-action-contrast",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "takeaway"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "process",
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "loop-definition-split",
+      "repeatable-cue-rail"
+    ],
+    "typographyTraits": [
+      "cue-label-uppercase",
+      "action-title-weight-700",
+      "completion-copy-weight-500"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-semantic-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 180,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "separate the observable signal from the smallest next action"
+    ],
+    "antiPatterns": [
+      "identical visual weight for cue, action, and result"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Proposal uses reviewed hierarchy evidence to distinguish signal, action, and completion through fixed text roles; human pattern review remains pending. Classification: takeaway."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-cue-action-loop-teal-state-key",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "takeaway"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "process"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "cue-action-completion-rows",
+      "repeatable-cue-rail"
+    ],
+    "typographyTraits": [
+      "readable-process-labels",
+      "compact-state-labels"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-current-action",
+      "neutral-cue",
+      "gold-completion-marker"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 160,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "show which row is actionable while keeping cue and completion secondary"
+    ],
+    "antiPatterns": [
+      "using color alone to encode the routine phase"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Proposal applies recorded semantic color-role evidence to a visible phase key with text labels; human pattern review remains pending. Classification: takeaway."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-cue-action-loop-row-by-row-cycle-reveal",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "takeaway"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "process"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "cue-action-completion-rows",
+      "stable-loop-baseline"
+    ],
+    "typographyTraits": [
+      "readable-process-labels",
+      "compact-state-labels"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-semantic-focus"
+    ],
+    "motionTraits": [
+      "cue-fade-in",
+      "action-fade-in",
+      "completion-fade-in",
+      "static-after-cycle",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "teaching-rail",
+      "semantic-callout"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 160,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "teach a routine in its actual order without animated looping"
+    ],
+    "antiPatterns": [
+      "continuous circular motion that obscures the current step"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Proposal applies reviewed task-first restraint to one bounded, non-looping phase reveal; human pattern review remains pending. Classification: takeaway."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-cue-action-loop-completion-token",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "takeaway"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "process",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "explain",
+      "takeaway"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "loop-definition-split",
+      "single-completion-marker"
+    ],
+    "typographyTraits": [
+      "readable-process-labels",
+      "compact-state-labels"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-semantic-focus",
+      "gold-completion-marker"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "teaching-rail",
+      "completion-token",
+      "semantic-callout"
+    ],
+    "contentCapacity": {
+      "headlineChars": 44,
+      "bodyChars": 120,
+      "maxItems": 2,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "name the observable condition that closes a learning cycle"
+    ],
+    "antiPatterns": [
+      "a generic checkmark with no completion criterion"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Proposal uses recorded semantic-role evidence for a labelled completion token rather than an unlabeled decorative icon; human pattern review remains pending. Classification: takeaway."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-cue-action-loop-smallest-action-first",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "takeaway"
+    ],
+    "patternType": "use-case",
+    "intentTags": [
+      "process",
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "loop-definition-split",
+      "repeatable-cue-rail"
+    ],
+    "typographyTraits": [
+      "dominant-teaching-headline",
+      "readable-process-labels"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-semantic-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 180,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "teach a small repeatable action linked to a recognisable cue"
+    ],
+    "antiPatterns": [
+      "abstract motivation advice without an observable trigger or action"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Proposal applies reviewed task-first restraint to a minimal, actionable routine beat; human pattern review remains pending. Classification: takeaway."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-guided-routine-numbered-action-rail",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "step-sequence"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "process",
+      "list"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "numbered-action-rail",
+      "single-active-step",
+      "three-equal-step-rows"
+    ],
+    "typographyTraits": [
+      "dominant-teaching-headline",
+      "readable-step-titles"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "gold-progress-focus"
+    ],
+    "motionTraits": [
+      "staggered-rows",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 160,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "guide a learner through a short observable routine"
+    ],
+    "antiPatterns": [
+      "five or more steps squeezed into a portrait rail"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Proposal applies reviewed proximity and reading-order evidence to three stable numbered rows; human pattern review remains pending. Classification: step-sequence."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-guided-routine-active-step-hierarchy",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "step-sequence"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "process"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "numbered-action-rail",
+      "single-active-step"
+    ],
+    "typographyTraits": [
+      "active-step-weight-800",
+      "inactive-step-weight-500",
+      "compact-step-number"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "gold-progress-focus"
+    ],
+    "motionTraits": [
+      "staggered-rows",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 150,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "keep the current instruction readable while preserving upcoming steps"
+    ],
+    "antiPatterns": [
+      "presenting every instruction as simultaneously active"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Proposal turns reviewed single-concept emphasis into a fixed active-versus-inactive type hierarchy; human pattern review remains pending. Classification: step-sequence."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-guided-routine-gold-progress-marker",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "step-sequence"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "process"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "numbered-action-rail",
+      "single-active-step"
+    ],
+    "typographyTraits": [
+      "readable-step-titles",
+      "compact-step-number"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "gold-current-step",
+      "neutral-future-step"
+    ],
+    "motionTraits": [
+      "staggered-rows",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "teaching-rail",
+      "semantic-callout"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 150,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "give the current routine step one consistent semantic marker"
+    ],
+    "antiPatterns": [
+      "assigning a different decorative color to each step"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Proposal applies recorded semantic color-role evidence to one current-step marker with text hierarchy retained; human pattern review remains pending. Classification: step-sequence."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-guided-routine-advance-on-settle",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "step-sequence"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "process"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "numbered-action-rail",
+      "stable-step-geometry"
+    ],
+    "typographyTraits": [
+      "readable-step-titles",
+      "compact-step-number"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "gold-progress-focus"
+    ],
+    "motionTraits": [
+      "row-fade-in-140ms",
+      "active-marker-settle",
+      "no-layout-shift",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "teaching-rail",
+      "semantic-callout"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 150,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "advance a three-step explanation without moving completed instructions"
+    ],
+    "antiPatterns": [
+      "sliding rows away before the viewer can reread them"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Proposal applies reviewed low-noise structure to a stable row animation with no geometry shift; human pattern review remains pending. Classification: step-sequence."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-guided-routine-step-number-pills",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "step-sequence"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "process",
+      "list"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "numbered-action-rail",
+      "single-active-step"
+    ],
+    "typographyTraits": [
+      "compact-step-number",
+      "readable-step-titles"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "gold-progress-focus"
+    ],
+    "motionTraits": [
+      "staggered-rows",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "teaching-rail",
+      "numbered-step-marker",
+      "semantic-callout"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 150,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "keep an ordinal label attached to each instruction row"
+    ],
+    "antiPatterns": [
+      "unlabelled icons that require the viewer to infer sequence"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Proposal applies recorded component and semantic-role evidence to fixed labelled step markers; human pattern review remains pending. Classification: step-sequence."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-guided-routine-one-next-action",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "step-sequence"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "process",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "explain",
+      "takeaway"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "top-instruction",
+      "bottom-next-action",
+      "single-active-step"
+    ],
+    "typographyTraits": [
+      "dominant-teaching-headline",
+      "readable-step-titles"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "gold-progress-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "bodyChars": 130,
+      "maxItems": 2,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "close a routine with one immediate next action"
+    ],
+    "antiPatterns": [
+      "a summary surface that introduces more than one new instruction"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Proposal applies reviewed task-first restraint to a single next-action close; human pattern review remains pending. Classification: step-sequence."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-progress-check-checkpoint-observation-rail",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "checklist"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "takeaway",
+      "process"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "checkpoint-action-rail",
+      "three-observation-rows",
+      "single-active-observation"
+    ],
+    "typographyTraits": [
+      "dominant-teaching-headline",
+      "readable-step-titles"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "coral-checkpoint-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 170,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "summarize what a learner can observe before choosing the next action"
+    ],
+    "antiPatterns": [
+      "a checkpoint with no evidence rows or next action"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Proposal applies reviewed grouping evidence to separate checkpoint, observations, and next action; human pattern review remains pending. Classification: checklist."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-progress-check-observation-action-contrast",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "checklist"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "takeaway",
+      "process"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "checkpoint-action-rail",
+      "single-active-observation"
+    ],
+    "typographyTraits": [
+      "observation-weight-600",
+      "next-action-weight-800",
+      "compact-checkpoint-label"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "coral-checkpoint-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 160,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "make the recommended next action scan after the evidence rows"
+    ],
+    "antiPatterns": [
+      "styling observations and recommendation as equally urgent"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Proposal uses reviewed visual hierarchy evidence for a deliberate observation-to-action reading sequence; human pattern review remains pending. Classification: checklist."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-progress-check-coral-checkpoint-state",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "checklist"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "takeaway"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "checkpoint-action-rail",
+      "single-active-observation"
+    ],
+    "typographyTraits": [
+      "readable-step-titles",
+      "compact-checkpoint-label"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "coral-checkpoint-state",
+      "neutral-observation-copy"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 160,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "identify a review moment without turning the whole board into a warning state"
+    ],
+    "antiPatterns": [
+      "using coral for every row and every text label"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Proposal applies recorded semantic color-role evidence to a bounded checkpoint state; human pattern review remains pending. Classification: checklist."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-progress-check-observation-settle",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "checklist"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "takeaway",
+      "process"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "checkpoint-action-rail",
+      "stable-observation-rows"
+    ],
+    "typographyTraits": [
+      "readable-step-titles",
+      "compact-checkpoint-label"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "coral-checkpoint-focus"
+    ],
+    "motionTraits": [
+      "checkpoint-fade-in",
+      "observation-rows-stagger-100ms",
+      "next-action-settle",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 160,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "reveal evidence before the suggested response in a recap beat"
+    ],
+    "antiPatterns": [
+      "a bouncing progress indicator that implies score changes"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Proposal applies reviewed restraint evidence to an opacity-led recap sequence with no implied measurement change; human pattern review remains pending. Classification: checklist."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-progress-check-next-action-callout",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "checklist"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "takeaway",
+      "process"
+    ],
+    "beatRoles": [
+      "summarize",
+      "takeaway"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "checkpoint-action-rail",
+      "bottom-next-action"
+    ],
+    "typographyTraits": [
+      "readable-callout-copy",
+      "compact-checkpoint-label"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "coral-checkpoint-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "semantic-callout",
+      "next-action-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 44,
+      "bodyChars": 120,
+      "maxItems": 2,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "turn a progress observation into one named response"
+    ],
+    "antiPatterns": [
+      "a callout containing a grade, diagnosis, or unsupported evaluation"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Proposal uses recorded semantic component-role evidence for one clearly labelled next-action surface; human pattern review remains pending. Classification: checklist."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-progress-check-evidence-before-advice",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "checklist"
+    ],
+    "patternType": "use-case",
+    "intentTags": [
+      "takeaway",
+      "process"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "checkpoint-action-rail",
+      "three-observation-rows",
+      "bottom-next-action"
+    ],
+    "typographyTraits": [
+      "dominant-teaching-headline",
+      "readable-step-titles"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "coral-checkpoint-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 170,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "give learning feedback grounded in three observable checkpoints"
+    ],
+    "antiPatterns": [
+      "advice presented before any observation is named"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Proposal applies reviewed necessary-information evidence to a recap that preserves observations before advice; human pattern review remains pending. Classification: checklist."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-aligned-tradeoff-matched-criteria-grid",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "comparison-cards"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "comparison",
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "aligned-decision-rows",
+      "two-choice-comparison",
+      "matched-criteria-columns"
+    ],
+    "typographyTraits": [
+      "compact-criterion-labels",
+      "readable-comparison-values"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "blue-and-gold-semantic-focus"
+    ],
+    "motionTraits": [
+      "staggered-rows",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "bodyChars": 180,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "compare two teaching choices against the same four criteria"
+    ],
+    "antiPatterns": [
+      "columns with different criteria or unequal row geometry"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Proposal applies reviewed grouping and reading-order evidence to matched comparison rows; human pattern review remains pending. Classification: comparison-cards."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-aligned-tradeoff-criterion-value-hierarchy",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "comparison-cards"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "comparison",
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "aligned-decision-rows",
+      "two-choice-comparison"
+    ],
+    "typographyTraits": [
+      "criterion-weight-700",
+      "choice-value-weight-500",
+      "compact-column-heading"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "blue-and-gold-semantic-focus"
+    ],
+    "motionTraits": [
+      "staggered-rows",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 160,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "keep the criterion label scannable before either choice value"
+    ],
+    "antiPatterns": [
+      "long prose values that obscure the row criterion"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Proposal uses reviewed clear hierarchy evidence for a stable criterion-to-value type order; human pattern review remains pending. Classification: comparison-cards."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-aligned-tradeoff-blue-gold-choice-key",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "comparison-cards"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "comparison"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "aligned-decision-rows",
+      "two-choice-comparison"
+    ],
+    "typographyTraits": [
+      "compact-criterion-labels",
+      "readable-comparison-values"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "blue-choice-a",
+      "gold-choice-b",
+      "neutral-criterion-labels"
+    ],
+    "motionTraits": [
+      "staggered-rows",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "teaching-rail",
+      "semantic-callout"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 160,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "keep two options distinguishable across every matched criterion"
+    ],
+    "antiPatterns": [
+      "assigning positive and negative meaning to options solely through color"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Proposal applies recorded semantic color-role evidence to a labelled two-choice key with neutral criterion text; human pattern review remains pending. Classification: comparison-cards."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-aligned-tradeoff-row-pair-reveal",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "comparison-cards"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "comparison",
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "aligned-decision-rows",
+      "fixed-comparison-grid"
+    ],
+    "typographyTraits": [
+      "compact-criterion-labels",
+      "readable-comparison-values"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "blue-and-gold-semantic-focus"
+    ],
+    "motionTraits": [
+      "criterion-row-pairs-fade-in-120ms",
+      "fixed-column-geometry",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "teaching-rail",
+      "semantic-callout"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 160,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "reveal one matched criterion at a time while preserving both option columns"
+    ],
+    "antiPatterns": [
+      "alternating column movement that breaks cross-row comparison"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Proposal applies reviewed low-noise structure to an opacity-only comparison reveal with fixed geometry; human pattern review remains pending. Classification: comparison-cards."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-aligned-tradeoff-criterion-row-component",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "comparison-cards"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "comparison",
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "aligned-decision-rows",
+      "two-choice-comparison",
+      "matched-criteria-columns"
+    ],
+    "typographyTraits": [
+      "compact-criterion-labels",
+      "readable-comparison-values"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "blue-and-gold-semantic-focus"
+    ],
+    "motionTraits": [
+      "staggered-rows",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "teaching-rail",
+      "criterion-row",
+      "choice-key"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 160,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "render one criterion and its two answers as an indivisible aligned row"
+    ],
+    "antiPatterns": [
+      "separate cards for every cell of a comparison table"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Proposal uses recorded semantic component-role evidence for one repeated aligned criterion row; human pattern review remains pending. Classification: comparison-cards."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "me-aligned-tradeoff-decision-rule-close",
+    "packageId": "minimal-education",
+    "variantIds": [
+      "comparison-cards"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "comparison",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "explain",
+      "takeaway"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "top-two-choice-grid",
+      "bottom-decision-rule",
+      "aligned-decision-rows"
+    ],
+    "typographyTraits": [
+      "compact-criterion-labels",
+      "readable-decision-rule"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "blue-and-gold-semantic-focus"
+    ],
+    "motionTraits": [
+      "staggered-rows",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "bodyChars": 150,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "end an aligned comparison with one conditional choice rule"
+    ],
+    "antiPatterns": [
+      "declaring one option universally superior without criteria"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Proposal applies reviewed necessary-information evidence to a concise conditional decision rule after the comparison; human pattern review remains pending. Classification: comparison-cards."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p3/1.0",
+    "reviewStatus": "proposed"
+  }
+]

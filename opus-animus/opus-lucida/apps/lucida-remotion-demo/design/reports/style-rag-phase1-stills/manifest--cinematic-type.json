@@ -1,0 +1,167 @@
+{
+  "schemaVersion": "lucida-style-rag-phase1-stills/v1",
+  "recordCount": 5,
+  "selection": {
+    "packageId": "cinematic-type",
+    "variantId": null
+  },
+  "outputRoot": "design/reports/style-rag-phase1-stills",
+  "bounds": {
+    "bundleTimeoutMs": 120000,
+    "selectTimeoutMs": 30000,
+    "renderTimeoutMs": 60000,
+    "analysisTimeoutMs": 20000
+  },
+  "stills": [
+    {
+      "key": "cinematic-type:chapter-reset",
+      "packageId": "cinematic-type",
+      "variantId": "chapter-reset",
+      "entryPoint": "src/styles/families/cinematic-type/renderRoot.tsx",
+      "compositionId": "CinematicTypeFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/cinematic-type/chapter-reset.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "chapter-reset"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/cinematic-type/chapter-reset.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "46dde3afcdb05197fc773f8d10128be5a8ca9356c534f0909912ec9bcf0bd5aa",
+      "fileBytes": 1670541,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 33,
+        "signalStats": {
+          "yAverage": 46.3957,
+          "yLow": 25,
+          "yHigh": 58,
+          "saturationAverage": 3.49388
+        }
+      }
+    },
+    {
+      "key": "cinematic-type:kinetic-hook",
+      "packageId": "cinematic-type",
+      "variantId": "kinetic-hook",
+      "entryPoint": "src/styles/families/cinematic-type/renderRoot.tsx",
+      "compositionId": "CinematicTypeFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/cinematic-type/kinetic-hook.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "kinetic-hook"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/cinematic-type/kinetic-hook.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "ca3c301405f1d83fa78a495096b866c9c424148cf0a222bae0b9008fe47fe0ac",
+      "fileBytes": 1851472,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 28,
+        "signalStats": {
+          "yAverage": 44.4333,
+          "yLow": 25,
+          "yHigh": 53,
+          "saturationAverage": 3.633
+        }
+      }
+    },
+    {
+      "key": "cinematic-type:manifesto",
+      "packageId": "cinematic-type",
+      "variantId": "manifesto",
+      "entryPoint": "src/styles/families/cinematic-type/renderRoot.tsx",
+      "compositionId": "CinematicTypeFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/cinematic-type/manifesto.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "manifesto"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/cinematic-type/manifesto.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "d46dbddffad607744a72fe6964abe27f370a6e7abac28d9c6b875e33e23ea80c",
+      "fileBytes": 1650090,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 32,
+        "signalStats": {
+          "yAverage": 45.9953,
+          "yLow": 24,
+          "yHigh": 56,
+          "saturationAverage": 3.80311
+        }
+      }
+    },
+    {
+      "key": "cinematic-type:outro",
+      "packageId": "cinematic-type",
+      "variantId": "outro",
+      "entryPoint": "src/styles/families/cinematic-type/renderRoot.tsx",
+      "compositionId": "CinematicTypeFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/cinematic-type/outro.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "outro"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/cinematic-type/outro.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "c466b289efa7d0ba48c4520d6ed728f695ce637668bc16244db908fe0e634fb5",
+      "fileBytes": 1593200,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 15,
+        "signalStats": {
+          "yAverage": 36.545,
+          "yLow": 25,
+          "yHigh": 40,
+          "saturationAverage": 3.50171
+        }
+      }
+    },
+    {
+      "key": "cinematic-type:quote",
+      "packageId": "cinematic-type",
+      "variantId": "quote",
+      "entryPoint": "src/styles/families/cinematic-type/renderRoot.tsx",
+      "compositionId": "CinematicTypeFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/cinematic-type/quote.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "quote"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/cinematic-type/quote.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "a29a23c8d8744eb26ba879c5caa2019d7a586b2e9680ef034351923281a42046",
+      "fileBytes": 1828379,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 24,
+        "signalStats": {
+          "yAverage": 39.9533,
+          "yLow": 25,
+          "yHigh": 49,
+          "saturationAverage": 3.59579
+        }
+      }
+    }
+  ]
+}

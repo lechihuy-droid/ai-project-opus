@@ -1,0 +1,1879 @@
+[
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-hook-left-headline-field",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "kinetic-hook"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "hook",
+      "narrative"
+    ],
+    "beatRoles": [
+      "hook"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "left-anchored-headline",
+      "right-tall-texture-field",
+      "lower-safe-support-line"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "three-line-headline-limit"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "headline-settle-before-support",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "texture-field-placeholder",
+      "chapter-eyebrow-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 72,
+      "bodyChars": 54,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "open one consequential claim with a supporting visual field"
+    ],
+    "antiPatterns": [
+      "split headlines across competing columns"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Verified hierarchy evidence informs the reading order; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-hook-display-contrast",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "kinetic-hook"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "hook",
+      "emphasis"
+    ],
+    "beatRoles": [
+      "hook"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "left-anchored-headline",
+      "single-support-line"
+    ],
+    "typographyTraits": [
+      "display-weight-900",
+      "support-weight-520",
+      "sentence-case-display"
+    ],
+    "paletteTraits": [
+      "bone-text",
+      "muted-support-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "display-fade-up",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "chapter-eyebrow-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 68,
+      "bodyChars": 46,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "make the first sentence legible before its context"
+    ],
+    "antiPatterns": [
+      "equal visual weight for headline and support copy"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Verified type foundation evidence informs contrast roles; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-hook-two-stage-rise",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "kinetic-hook"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "hook",
+      "narrative"
+    ],
+    "beatRoles": [
+      "hook"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-headline-baseline",
+      "fixed-texture-field"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "stable-line-breaks"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "eyebrow-fade-0-8-frames",
+      "headline-rise-8-20-frames",
+      "support-fade-20-28-frames",
+      "reduced-motion-single-fade"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "chapter-eyebrow-rail",
+      "texture-field-placeholder"
+    ],
+    "contentCapacity": {
+      "headlineChars": 64,
+      "bodyChars": 42,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "create a controlled opening beat without moving the layout"
+    ],
+    "antiPatterns": [
+      "continuous drift after the headline settles"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Verified frame-driven motion evidence informs deterministic timing; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-hook-chapter-rail",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "kinetic-hook"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "hook",
+      "orientation"
+    ],
+    "beatRoles": [
+      "hook"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "top-left-context-rail",
+      "left-anchored-headline"
+    ],
+    "typographyTraits": [
+      "uppercase-metadata",
+      "oversized-sans-display"
+    ],
+    "paletteTraits": [
+      "muted-metadata",
+      "warm-copper-rule",
+      "bone-text"
+    ],
+    "motionTraits": [
+      "rail-static",
+      "headline-fade-up",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "chapter-eyebrow-rail",
+      "oversized-headline-block",
+      "thin-accent-rule"
+    ],
+    "contentCapacity": {
+      "headlineChars": 70,
+      "maxItems": 2,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "name a chapter and claim without adding UI chrome"
+    ],
+    "antiPatterns": [
+      "metadata rail with more than two labels"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Verified primitive vocabulary informs a small structural rail; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-hook-one-support-budget",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "kinetic-hook"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "hook",
+      "clarity"
+    ],
+    "beatRoles": [
+      "hook"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "one-dominant-sentence",
+      "one-support-line",
+      "negative-space-reserve"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "concise-supporting-copy"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "muted-support-text"
+    ],
+    "motionTraits": [
+      "headline-first-reveal",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "chapter-eyebrow-rail",
+      "texture-field-placeholder"
+    ],
+    "contentCapacity": {
+      "headlineChars": 76,
+      "bodyChars": 56,
+      "maxItems": 1,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "introduce one premise before evidence scenes begin"
+    ],
+    "antiPatterns": [
+      "bullets metrics or a second explanatory block"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Verified minimalist evidence informs the bounded content budget; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-hook-copper-rule-field",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "kinetic-hook"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "hook",
+      "narrative"
+    ],
+    "beatRoles": [
+      "hook"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "left-copy-right-field",
+      "single-vertical-rule",
+      "wide-negative-space"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "compact-chapter-label"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "warm-copper-rule",
+      "bone-text"
+    ],
+    "motionTraits": [
+      "rule-draw-0-10-frames",
+      "headline-rise-10-24-frames",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "texture-field-placeholder",
+      "thin-accent-rule"
+    ],
+    "contentCapacity": {
+      "headlineChars": 72,
+      "bodyChars": 40,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "pair a declarative opening with one non-branded texture field"
+    ],
+    "antiPatterns": [
+      "multiple decorative texture layers"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Verified material-surface evidence informs restrained structural separation; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-quote-attribution-copy-split",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "quote"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "quote",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "quote"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "left-attribution-rail",
+      "right-quote-block",
+      "single-side-texture-field"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "muted-attribution"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "warm-copper-quote-mark"
+    ],
+    "motionTraits": [
+      "attribution-first",
+      "quote-settle",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "chapter-eyebrow-rail",
+      "oversized-headline-block",
+      "texture-field-placeholder"
+    ],
+    "contentCapacity": {
+      "headlineChars": 116,
+      "bodyChars": 54,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "present one attributable statement with a stable reading path"
+    ],
+    "antiPatterns": [
+      "two quotations or a detached author card"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Verified hierarchy evidence informs attribution-to-quote sequencing; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-quote-mark-and-voice-contrast",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "quote"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "quote",
+      "emphasis"
+    ],
+    "beatRoles": [
+      "quote"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "quote-led-headline",
+      "lower-attribution"
+    ],
+    "typographyTraits": [
+      "display-weight-880",
+      "attribution-weight-560",
+      "large-quote-mark"
+    ],
+    "paletteTraits": [
+      "bone-text",
+      "muted-attribution",
+      "warm-copper-quote-mark"
+    ],
+    "motionTraits": [
+      "quote-mark-static",
+      "copy-fade-up",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "quote-mark-glyph",
+      "chapter-eyebrow-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 124,
+      "bodyChars": 48,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "separate the quoted words from their speaker line"
+    ],
+    "antiPatterns": [
+      "decorative italics that reduce long-quote legibility"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Verified typography foundation evidence informs voice contrast; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-quote-voice-then-statement",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "quote"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "quote",
+      "narrative"
+    ],
+    "beatRoles": [
+      "quote"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-attribution-rail",
+      "fixed-quote-baseline"
+    ],
+    "typographyTraits": [
+      "muted-attribution",
+      "oversized-sans-display"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "warm-copper-quote-mark"
+    ],
+    "motionTraits": [
+      "speaker-fade-0-8-frames",
+      "quote-rise-8-24-frames",
+      "source-line-fade-24-32-frames",
+      "reduced-motion-single-fade"
+    ],
+    "componentTraits": [
+      "chapter-eyebrow-rail",
+      "oversized-headline-block",
+      "quote-mark-glyph"
+    ],
+    "contentCapacity": {
+      "headlineChars": 110,
+      "bodyChars": 46,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "introduce provenance before a quoted claim lands"
+    ],
+    "antiPatterns": [
+      "word-by-word kinetic quote animation"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Verified deterministic motion evidence informs a bounded quote reveal; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-quote-source-rail",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "quote"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "quote",
+      "orientation"
+    ],
+    "beatRoles": [
+      "quote"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "left-source-rail",
+      "quote-led-headline"
+    ],
+    "typographyTraits": [
+      "uppercase-metadata",
+      "muted-attribution",
+      "oversized-sans-display"
+    ],
+    "paletteTraits": [
+      "muted-metadata",
+      "bone-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "rail-static",
+      "quote-fade-up",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "chapter-eyebrow-rail",
+      "source-name-cell",
+      "thin-accent-rule"
+    ],
+    "contentCapacity": {
+      "headlineChars": 112,
+      "bodyChars": 46,
+      "maxItems": 2,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "retain author and context in the same quote composition"
+    ],
+    "antiPatterns": [
+      "a source rail that competes with the quote in size"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Verified primitive vocabulary informs a compact source rail; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-quote-single-voice-budget",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "quote"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "quote",
+      "clarity"
+    ],
+    "beatRoles": [
+      "quote"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "one-quote-only",
+      "one-attribution-line",
+      "negative-space-reserve"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "concise-attribution"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "muted-attribution"
+    ],
+    "motionTraits": [
+      "single-block-fade",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "chapter-eyebrow-rail",
+      "texture-field-placeholder"
+    ],
+    "contentCapacity": {
+      "headlineChars": 128,
+      "bodyChars": 52,
+      "maxItems": 1,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "hold one memorable statement before the narrative advances"
+    ],
+    "antiPatterns": [
+      "quote grids or multiple speaker annotations"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Verified minimalist evidence informs the single-voice constraint; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-quote-side-field-pause",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "quote"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "quote",
+      "narrative"
+    ],
+    "beatRoles": [
+      "quote"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "quote-left-field-right",
+      "one-vertical-surface",
+      "bottom-attribution"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "muted-attribution"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "field-static",
+      "quote-rise",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "texture-field-placeholder",
+      "thin-accent-rule"
+    ],
+    "contentCapacity": {
+      "headlineChars": 116,
+      "bodyChars": 50,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "give a quotation one quiet contextual surface"
+    ],
+    "antiPatterns": [
+      "recognizable third-party photography or logo treatment"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Verified material-surface evidence informs a restrained secondary field; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-transition-full-width-reset",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "chapter-reset"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "chapter-reset",
+      "narrative"
+    ],
+    "beatRoles": [
+      "chapter-reset"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "full-width-headline",
+      "top-chapter-rail",
+      "bottom-panoramic-texture-strip"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "long-headline-fit"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "chapter-rail-first",
+      "headline-settle",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "chapter-eyebrow-rail",
+      "texture-field-placeholder"
+    ],
+    "contentCapacity": {
+      "headlineChars": 142,
+      "bodyChars": 42,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "reset a long argument with one chapter statement"
+    ],
+    "antiPatterns": [
+      "explanatory modules during a chapter reset"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Verified hierarchy evidence informs the chapter-reset reading order; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-transition-long-line-fit",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "chapter-reset"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "chapter-reset",
+      "clarity"
+    ],
+    "beatRoles": [
+      "chapter-reset"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "full-width-headline",
+      "fixed-bottom-strip"
+    ],
+    "typographyTraits": [
+      "display-weight-880",
+      "three-line-fit-limit",
+      "line-height-0-94"
+    ],
+    "paletteTraits": [
+      "bone-text",
+      "muted-support-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "line-group-fade-up",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "chapter-eyebrow-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 150,
+      "bodyChars": 38,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "keep a chapter statement readable at maximum copy length"
+    ],
+    "antiPatterns": [
+      "shrinking a long headline below the display role"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Verified type foundation evidence informs a concrete long-line fit rule; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-transition-strip-settle",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "chapter-reset"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "chapter-reset",
+      "narrative"
+    ],
+    "beatRoles": [
+      "chapter-reset"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-headline-block",
+      "fixed-panoramic-strip"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "stable-line-breaks"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "strip-fade-0-12-frames",
+      "headline-rise-12-30-frames",
+      "hold-after-30-frames",
+      "reduced-motion-single-fade"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "texture-field-placeholder",
+      "chapter-eyebrow-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 138,
+      "bodyChars": 36,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "create a pause between narrative chapters"
+    ],
+    "antiPatterns": [
+      "parallax or looping texture motion after the reset"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Verified frame-driven motion evidence informs the deterministic reset timing; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-transition-chapter-counter",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "chapter-reset"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "chapter-reset",
+      "orientation"
+    ],
+    "beatRoles": [
+      "chapter-reset"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "top-chapter-marker",
+      "full-width-headline"
+    ],
+    "typographyTraits": [
+      "uppercase-metadata",
+      "oversized-sans-display"
+    ],
+    "paletteTraits": [
+      "muted-metadata",
+      "bone-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "marker-static",
+      "headline-fade-up",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "chapter-eyebrow-rail",
+      "chapter-counter-cell",
+      "thin-accent-rule"
+    ],
+    "contentCapacity": {
+      "headlineChars": 138,
+      "maxItems": 2,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "orient the viewer at a named chapter boundary"
+    ],
+    "antiPatterns": [
+      "progress widgets or navigation controls"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Verified primitive vocabulary informs a bounded chapter marker; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-transition-reset-budget",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "chapter-reset"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "chapter-reset",
+      "clarity"
+    ],
+    "beatRoles": [
+      "chapter-reset"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "one-chapter-sentence",
+      "one-context-label",
+      "negative-space-reserve"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "compact-chapter-label"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "muted-metadata"
+    ],
+    "motionTraits": [
+      "headline-first-reveal",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "chapter-eyebrow-rail",
+      "texture-field-placeholder"
+    ],
+    "contentCapacity": {
+      "headlineChars": 144,
+      "bodyChars": 40,
+      "maxItems": 1,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "make a transition feel like a pause rather than another explanation"
+    ],
+    "antiPatterns": [
+      "body copy lists or metrics in the reset"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Verified minimalist evidence informs the reset content budget; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-transition-horizon-strip",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "chapter-reset"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "chapter-reset",
+      "narrative"
+    ],
+    "beatRoles": [
+      "chapter-reset"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "headline-above-horizon-strip",
+      "single-wide-surface",
+      "narrow-accent-rule"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "long-headline-fit"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "rule-draw",
+      "headline-rise",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "texture-field-placeholder",
+      "thin-accent-rule"
+    ],
+    "contentCapacity": {
+      "headlineChars": 140,
+      "bodyChars": 36,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "separate consecutive chapters without a new card surface"
+    ],
+    "antiPatterns": [
+      "stacked image bands or branded scenic imagery"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Verified material-surface evidence informs the single horizontal support field; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-takeaway-bottom-conclusion",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "manifesto"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "manifesto",
+      "conclusion"
+    ],
+    "beatRoles": [
+      "manifesto"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "top-texture-band",
+      "bottom-statement",
+      "full-width-conclusion"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "concise-supporting-copy"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "support-field-first",
+      "conclusion-settle",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "texture-field-placeholder",
+      "oversized-headline-block",
+      "chapter-eyebrow-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 88,
+      "bodyChars": 62,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "land one final lesson after an evidence sequence"
+    ],
+    "antiPatterns": [
+      "multi-card recap grids"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Verified hierarchy evidence informs the final-statement reading path; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-takeaway-conclusion-contrast",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "manifesto"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "manifesto",
+      "emphasis"
+    ],
+    "beatRoles": [
+      "manifesto"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "bottom-statement",
+      "one-support-line"
+    ],
+    "typographyTraits": [
+      "display-weight-900",
+      "support-weight-520",
+      "conclusion-line-emphasis"
+    ],
+    "paletteTraits": [
+      "bone-text",
+      "muted-support-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "conclusion-fade-up",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "chapter-eyebrow-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 86,
+      "bodyChars": 58,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "separate a conclusion from its qualifying support"
+    ],
+    "antiPatterns": [
+      "same-size conclusion and explanation text"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Verified type foundation evidence informs conclusion contrast; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-takeaway-band-then-land",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "manifesto"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "manifesto",
+      "conclusion"
+    ],
+    "beatRoles": [
+      "manifesto"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "fixed-top-band",
+      "stable-bottom-conclusion"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "stable-line-breaks"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "band-fade-0-10-frames",
+      "conclusion-rise-10-26-frames",
+      "support-fade-26-34-frames",
+      "reduced-motion-single-fade"
+    ],
+    "componentTraits": [
+      "texture-field-placeholder",
+      "oversized-headline-block",
+      "chapter-eyebrow-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 84,
+      "bodyChars": 52,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "make the final line arrive after a quiet visual cue"
+    ],
+    "antiPatterns": [
+      "animated exit before the conclusion can be read"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Verified frame-driven motion evidence informs a deterministic conclusion sequence; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-takeaway-verdict-rail",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "manifesto"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "manifesto",
+      "orientation"
+    ],
+    "beatRoles": [
+      "manifesto"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "bottom-statement",
+      "small-verdict-rail"
+    ],
+    "typographyTraits": [
+      "uppercase-metadata",
+      "oversized-sans-display"
+    ],
+    "paletteTraits": [
+      "muted-metadata",
+      "bone-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "rail-static",
+      "conclusion-fade-up",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "chapter-eyebrow-rail",
+      "verdict-label-cell",
+      "thin-accent-rule"
+    ],
+    "contentCapacity": {
+      "headlineChars": 88,
+      "maxItems": 2,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "label a conclusion without creating a summary card"
+    ],
+    "antiPatterns": [
+      "a verdict rail with status badges or scoring widgets"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Verified primitive vocabulary informs a compact verdict label; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-takeaway-one-lesson-budget",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "manifesto"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "manifesto",
+      "clarity"
+    ],
+    "beatRoles": [
+      "manifesto"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "one-conclusion",
+      "one-qualifier",
+      "negative-space-reserve"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "concise-supporting-copy"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "muted-support-text"
+    ],
+    "motionTraits": [
+      "single-block-fade",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "texture-field-placeholder",
+      "chapter-eyebrow-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 90,
+      "bodyChars": 58,
+      "maxItems": 1,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "finish with one durable lesson rather than a recap"
+    ],
+    "antiPatterns": [
+      "more than one conclusion or a dense checklist"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Verified minimalist evidence informs the single-lesson constraint; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-takeaway-top-band-quiet-close",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "manifesto"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "manifesto",
+      "conclusion"
+    ],
+    "beatRoles": [
+      "manifesto"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "top-support-band",
+      "bottom-copy-zone",
+      "one-narrow-rule"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "concise-supporting-copy"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "band-static",
+      "conclusion-rise",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "texture-field-placeholder",
+      "oversized-headline-block",
+      "thin-accent-rule"
+    ],
+    "contentCapacity": {
+      "headlineChars": 88,
+      "bodyChars": 52,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "use one abstract texture band to frame a final statement"
+    ],
+    "antiPatterns": [
+      "full-screen media competing with the conclusion"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Verified material-surface evidence informs a restrained conclusion composition; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-cta-centered-next-move",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "outro"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "outro",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "outro"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "centered-callout",
+      "low-texture-band",
+      "single-next-move"
+    ],
+    "typographyTraits": [
+      "centered-sans-headline",
+      "concise-supporting-copy"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "callout-settle",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "texture-field-placeholder",
+      "chapter-eyebrow-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 68,
+      "bodyChars": 48,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "end a narrative with one verbal next move"
+    ],
+    "antiPatterns": [
+      "buttons links or multiple conversion choices"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Verified hierarchy evidence informs a single-action reading path; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-cta-imperative-contrast",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "outro"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "outro",
+      "emphasis"
+    ],
+    "beatRoles": [
+      "outro"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "centered-callout",
+      "single-support-line"
+    ],
+    "typographyTraits": [
+      "display-weight-900",
+      "imperative-line-emphasis",
+      "support-weight-520"
+    ],
+    "paletteTraits": [
+      "bone-text",
+      "muted-support-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "callout-fade-up",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "chapter-eyebrow-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 64,
+      "bodyChars": 44,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "make one next move direct without dashboard chrome"
+    ],
+    "antiPatterns": [
+      "several equal-weight action sentences"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Verified type foundation evidence informs imperative contrast; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-cta-final-settle",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "outro"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "outro",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "outro"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-centered-callout",
+      "fixed-low-band"
+    ],
+    "typographyTraits": [
+      "centered-sans-headline",
+      "stable-line-breaks"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "label-fade-0-8-frames",
+      "callout-rise-8-24-frames",
+      "hold-after-24-frames",
+      "reduced-motion-single-fade"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "chapter-eyebrow-rail",
+      "texture-field-placeholder"
+    ],
+    "contentCapacity": {
+      "headlineChars": 66,
+      "bodyChars": 42,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "hold a final action long enough to read and remember"
+    ],
+    "antiPatterns": [
+      "bounce loops or post-action layout movement"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Verified frame-driven motion evidence informs the final hold behavior; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-cta-action-rail",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "outro"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "outro",
+      "orientation"
+    ],
+    "beatRoles": [
+      "outro"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "centered-callout",
+      "small-action-rail"
+    ],
+    "typographyTraits": [
+      "uppercase-metadata",
+      "centered-sans-headline"
+    ],
+    "paletteTraits": [
+      "muted-metadata",
+      "bone-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "rail-static",
+      "callout-fade-up",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "chapter-eyebrow-rail",
+      "action-label-cell",
+      "thin-accent-rule"
+    ],
+    "contentCapacity": {
+      "headlineChars": 66,
+      "maxItems": 2,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "label a single next move while preserving a type-led close"
+    ],
+    "antiPatterns": [
+      "button groups icons or interactive-control affordances"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Verified primitive vocabulary informs the compact action label; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-cta-one-action-budget",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "outro"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "outro",
+      "clarity"
+    ],
+    "beatRoles": [
+      "outro"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "one-imperative",
+      "one-qualifier",
+      "negative-space-reserve"
+    ],
+    "typographyTraits": [
+      "centered-sans-headline",
+      "concise-supporting-copy"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "muted-support-text"
+    ],
+    "motionTraits": [
+      "single-block-fade",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "texture-field-placeholder",
+      "chapter-eyebrow-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 70,
+      "bodyChars": 44,
+      "maxItems": 1,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "close with a focused invitation that remains verbal and non-interactive"
+    ],
+    "antiPatterns": [
+      "multiple CTAs or a button row"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Verified minimalist evidence informs the one-action constraint; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "ct-cta-low-band-close",
+    "packageId": "cinematic-type",
+    "variantIds": [
+      "outro"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "outro",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "outro"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "centered-copy-above-low-band",
+      "single-support-surface",
+      "narrow-accent-rule"
+    ],
+    "typographyTraits": [
+      "centered-sans-headline",
+      "concise-supporting-copy"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "bone-text",
+      "warm-copper-rule"
+    ],
+    "motionTraits": [
+      "band-static",
+      "callout-rise",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "texture-field-placeholder",
+      "thin-accent-rule"
+    ],
+    "contentCapacity": {
+      "headlineChars": 66,
+      "bodyChars": 42,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "close over one restrained abstract support field"
+    ],
+    "antiPatterns": [
+      "branded product imagery or a media collage"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Verified material-surface evidence informs the low-band composition; this original recipe remains pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p6/1.0",
+    "reviewStatus": "proposed"
+  }
+]

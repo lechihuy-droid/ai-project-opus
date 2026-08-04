@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "terra-mr1-source-reference-validation/v1",
+  "packageId": "cinematic-type",
+  "status": "PASS",
+  "variantCount": 5,
+  "sourceEvidenceIds": [
+    "w8-dashboard-remotion-animation",
+    "w8-technical-primer-foundations",
+    "w8-minimal-material-web"
+  ],
+  "sourceReferences": [
+    "w8-dashboard-remotion-animation",
+    "w8-technical-primer-foundations",
+    "w8-minimal-material-web"
+  ],
+  "normalization": {
+    "sourceReferencePrefixRemoved": [
+      "source:reference:w8-dashboard-remotion-animation",
+      "source:reference:w8-technical-primer-foundations",
+      "source:reference:w8-minimal-material-web"
+    ],
+    "legacyAliasesUsed": [],
+    "localIdsUsed": []
+  },
+  "approvalOrPromotionPerformed": false
+}

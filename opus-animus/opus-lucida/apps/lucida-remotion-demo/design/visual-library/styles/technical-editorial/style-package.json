@@ -145,7 +145,7 @@
   },
   "sourceReferences": [
     {
-      "id": "github-primer",
+      "id": "p1-03-repo-revealjs",
       "url": "https://primer.style/",
       "selectedConcepts": [
         "semantic primitives",
@@ -154,30 +154,12 @@
       ]
     },
     {
-      "id": "primer-react",
+      "id": "p1-03-repo-observable-plot",
       "url": "https://github.com/primer/react",
       "selectedConcepts": [
         "product-ui component structure",
         "compact states",
         "systematic spacing"
-      ]
-    },
-    {
-      "id": "awesome-design-md",
-      "url": "https://github.com/VoltAgent/awesome-design-md",
-      "selectedConcepts": [
-        "agent-readable package taxonomy",
-        "explicit do-dont rules",
-        "human-plus-machine documentation shape"
-      ]
-    },
-    {
-      "id": "remotion-animating-properties",
-      "url": "https://www.remotion.dev/docs/animating-properties",
-      "selectedConcepts": [
-        "frame-driven animation",
-        "deterministic still review",
-        "reduced-motion fallback thinking"
       ]
     }
   ],

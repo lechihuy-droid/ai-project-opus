@@ -1,0 +1,20 @@
+{
+  "status": "ok",
+  "packageId": "paper-notebook",
+  "proposalCount": 30,
+  "distribution": {
+    "research-notes": 6,
+    "derivation": 6,
+    "checklist": 6,
+    "lab-log": 6,
+    "annotated-paper": 6
+  },
+  "schemaValid": true,
+  "uniquePatternIds": 30,
+  "uniqueRecipes": 30,
+  "verifiedEvidenceOnly": true,
+  "reviewStatus": "proposed",
+  "humanReview": "pending",
+  "compilerEligibleCount": 0,
+  "validator": "./validate-terra-p5-visual-patterns.mjs"
+}

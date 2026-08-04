@@ -70,12 +70,11 @@ test("continuous static-scene check ignores slide motion and requires transition
   );
 });
 
-test("continuous schema accepts remove while legacy slides validation is unchanged", () => {
+test("continuous schema accepts remove without props while legacy slides validation is unchanged", () => {
   const videoMap = sample();
   videoMap.scenes[2].transitions.unshift({
     target: "recipient-chip",
     action: "remove",
-    props: {},
   });
   assert.equal(validateMap(videoMap), true, JSON.stringify(validateMap.errors));
 
@@ -89,6 +88,24 @@ test("continuous schema accepts remove while legacy slides validation is unchang
   );
 });
 
+test("continuous schema still requires props for add and update", () => {
+  for (const action of ["add", "update"]) {
+    const videoMap = sample();
+    videoMap.scenes[0].transitions.unshift({
+      target: `missing-props-${action}`,
+      action,
+    });
+
+    assert.equal(validateMap(videoMap), false);
+    assert.ok(
+      validateMap.errors.some(
+        (error) => error.params?.missingProperty === "props",
+      ),
+      `${action} without props should fail: ${JSON.stringify(validateMap.errors)}`,
+    );
+  }
+});
+
 test("continuous schema accepts offsetSec and preserves maps that omit it", () => {
   const videoMap = sample();
   videoMap.scenes[0].transitions[0].offsetSec = 2;
@@ -96,4 +113,85 @@ test("continuous schema accepts offsetSec and preserves maps that omit it", () =
 
   delete videoMap.scenes[0].transitions[0].offsetSec;
   assert.equal(validateMap(videoMap), true, JSON.stringify(validateMap.errors));
+});
+
+test("two-window continuous map with environment transform validates", () => {
+  const videoMap = sample();
+  videoMap.actors = [
+    { id: "email", target: "environment" },
+    { id: "chat", target: "chat-window" },
+  ];
+  videoMap.environment.props.position = { left: 80, top: 250 };
+  videoMap.environment.props.scale = 0.8;
+  videoMap.scenes[0].transitions.push({
+    target: "chat-window",
+    action: "add",
+    props: {
+      component: "MechanismWindow",
+      variant: "chat",
+      title: "Chat keigo",
+      japaneseText: "承知いたしました。",
+      vietnameseText: "Tôi đã hiểu.",
+      state: "draft",
+      showCursor: true,
+      cursorBlinkFrames: 12,
+      position: { left: 520, top: 720 },
+      scale: 0.5,
+    },
+  });
+  videoMap.scenes[1].transitions.push({
+    target: "environment",
+    action: "update",
+    props: { position: { left: 40, top: 210 }, scale: 0.7 },
+  });
+
+  assert.equal(validateMap(videoMap), true, JSON.stringify(validateMap.errors));
+  assert.equal(validateSemantic(videoMap).status, "pass");
+});
+
+test("declared actor target without add or update transition fails coverage", () => {
+  const videoMap = sample();
+  videoMap.actors = [{ id: "missing", target: "never-added" }];
+  const report = validateSemantic(videoMap);
+
+  assert.equal(report.status, "fail");
+  assert.equal(
+    report.results.find((item) => item.check === "actor-coverage")?.target,
+    "never-added",
+  );
+});
+
+test("actors elevate an empty continuous scene to beat-coverage FAIL", () => {
+  const videoMap = sample();
+  videoMap.actors = [{ id: "email", target: "environment" }];
+  videoMap.scenes[0].durationSec = 9;
+  videoMap.scenes[0].transitions = [];
+  const report = validateSemantic(videoMap);
+
+  assert.equal(
+    report.results.find((item) => item.check === "beat-coverage")?.severity,
+    "FAIL",
+  );
+  assert.equal(
+    report.results.some((item) => item.check === "static-scene"),
+    false,
+  );
+});
+
+test("maps without actors retain the previous semantic behavior and counts", () => {
+  const videoMap = sample();
+  videoMap.scenes[0].durationSec = 9;
+  videoMap.scenes[0].transitions = [];
+  const report = validateSemantic(videoMap);
+
+  assert.equal(report.status, "warn");
+  assert.deepEqual(report.counts, { pass: 3, warn: 1, fail: 0 });
+  assert.equal(
+    report.results.find((item) => item.check === "static-scene")?.severity,
+    "WARN",
+  );
+  assert.equal(
+    report.results.some((item) => item.check === "beat-coverage"),
+    false,
+  );
 });

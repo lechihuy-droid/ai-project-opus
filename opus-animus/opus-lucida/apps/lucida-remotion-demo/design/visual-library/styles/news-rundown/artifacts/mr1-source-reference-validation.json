@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "terra-mr1-source-reference-validation/v1",
+  "packageId": "news-rundown",
+  "status": "PASS",
+  "variantCount": 5,
+  "sourceEvidenceIds": [
+    "w8-minimal-nng-hierarchy",
+    "w8-dashboard-remotion-animation",
+    "w8-dashboard-primer-docs"
+  ],
+  "sourceReferences": [
+    "w8-minimal-nng-hierarchy",
+    "w8-dashboard-remotion-animation",
+    "w8-dashboard-primer-docs"
+  ],
+  "normalization": {
+    "sourceReferencePrefixRemoved": [
+      "source:reference:w8-minimal-nng-hierarchy",
+      "source:reference:w8-dashboard-remotion-animation",
+      "source:reference:w8-dashboard-primer-docs"
+    ],
+    "legacyAliasesUsed": [],
+    "localIdsUsed": []
+  },
+  "approvalOrPromotionPerformed": false
+}

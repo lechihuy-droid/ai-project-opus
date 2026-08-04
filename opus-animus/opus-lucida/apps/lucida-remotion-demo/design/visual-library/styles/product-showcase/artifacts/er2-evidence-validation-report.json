@@ -1,0 +1,271 @@
+{
+  "schemaVersion": "lucida-er2-evidence-validation/v1",
+  "packageId": "product-showcase",
+  "lunaRule": "A sourceEvidenceId passes only when it resolves to a canonical source with domain visual-style, approval.status approved, and rights.status approved, or to an exact source ID listed as eligible by a PASS Luna review artifact. A review PNG or generic completed ingest report is not sufficient.",
+  "counts": {
+    "variants": 5,
+    "patterns": 30,
+    "evidenceReferences": 35
+  },
+  "allowedEvidence": {
+    "approvedCanonicalCount": 16,
+    "lunaReviewEligibleCount": 88
+  },
+  "checks": {
+    "allSourceEvidenceIdsResolveUnderLunaRule": true,
+    "interfaceSourceReferencesResolveUnderLunaRule": true,
+    "allVariantsProposed": true,
+    "allPatternsProposed": true
+  },
+  "resolvedRecords": [
+    {
+      "kind": "variant",
+      "id": "product-hero",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "feature-reveal",
+      "sourceEvidenceIds": [
+        "image-openmoji-mobile"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "before-after",
+      "sourceEvidenceIds": [
+        "web-material-web"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "capability-grid",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "launch-summary",
+      "sourceEvidenceIds": [
+        "repo-fluentui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-product-hero-device-stage",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-product-hero-headline-media-scale",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-product-hero-teal-focus-role",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-product-hero-stage-then-copy",
+      "sourceEvidenceIds": [
+        "web-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-product-hero-device-policy-contract",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-product-hero-product-first-hook",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-feature-reveal-screen-grid",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-feature-reveal-marker-hierarchy",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-feature-reveal-status-color-key",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-feature-reveal-screen-then-markers",
+      "sourceEvidenceIds": [
+        "web-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-feature-reveal-four-marker-contract",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-feature-reveal-workflow-sequence",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-before-after-paired-state-gutter",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-before-after-before-after-type",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-before-after-neutral-to-teal",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-before-after-before-then-after",
+      "sourceEvidenceIds": [
+        "web-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-before-after-paired-frame-contract",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-before-after-visible-delta-note",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-capability-grid-landscape-crop-stage",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-capability-grid-control-label-scale",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-capability-grid-teal-control-role",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-capability-grid-fixed-crop-marker-reveal",
+      "sourceEvidenceIds": [
+        "web-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-capability-grid-media-marker-contract",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-capability-grid-guided-inspection-flow",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-launch-summary-result-footer-stage",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-launch-summary-result-marker-scale",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-launch-summary-confirmed-green-role",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-launch-summary-result-then-outcomes",
+      "sourceEvidenceIds": [
+        "web-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-launch-summary-three-outcome-contract",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "ps-launch-summary-evidence-led-close",
+      "sourceEvidenceIds": [
+        "repo-mui"
+      ]
+    }
+  ],
+  "sourceReferences": [],
+  "failures": [],
+  "sourceReferenceFailures": [],
+  "result": "PASS"
+}

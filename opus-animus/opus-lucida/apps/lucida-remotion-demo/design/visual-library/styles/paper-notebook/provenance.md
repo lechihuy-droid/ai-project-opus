@@ -41,11 +41,17 @@ The renderer creates paper grain, ruled lines, a margin rail, binding holes, cir
 
 ## Fixtures
 
-- `pipeline/fixtures/styles/paper-notebook/notes.fixture.ts` - normal note hierarchy
+- `pipeline/fixtures/styles/paper-notebook/research-notes.fixture.ts` - research note hierarchy
 - `pipeline/fixtures/styles/paper-notebook/derivation.fixture.ts` - dense equation sequence with reduced motion
+- `pipeline/fixtures/styles/paper-notebook/annotated-paper.fixture.ts` - bounded correction annotations with reduced motion
 - `pipeline/fixtures/styles/paper-notebook/checklist.fixture.ts` - edge review state with static motion and one open gate
+- `pipeline/fixtures/styles/paper-notebook/lab-log.fixture.ts` - sparse lab run record with ordered observations
 
 All displayed copy, equation terms, checklist states, labels, and annotations come from these typed fixtures.
+
+## Local Variant Records
+
+`variants.json` contains five local, fixture-bound records: `research-notes`, `derivation`, `annotated-paper`, `checklist`, and `lab-log`. Each remains `proposed`, cites one package-declared source, and does not assert approval, promotion, or an approved visual pattern.
 
 ## Source References
 

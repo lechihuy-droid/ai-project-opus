@@ -85,8 +85,7 @@
       "transitions": [
         {
           "target": "recipient-chip",
-          "action": "remove",
-          "props": {}
+          "action": "remove"
         },
         {
           "target": "time-saved",

@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "lucida-content-brief/v1",
+  "title": "AI weekly terminal treatment control",
+  "audience": "AI product and engineering leaders",
+  "intent": "explain",
+  "styleMode": "locked",
+  "factualSourceIds": [],
+  "visualConstraints": {
+    "requiredPackages": ["terminal-command-center"],
+    "assets": { "allowedClassifications": ["context_only"] },
+    "density": { "preferred": "medium" },
+    "layout": { "minDistinct": 3, "maxConsecutive": 2 }
+  },
+  "beats": [
+    {
+      "id": "hook",
+      "title": "One model is not one operating system",
+      "body": "A stronger model changes the work only when routing, evidence, and approval gates change with it.",
+      "intent": "hook",
+      "role": "hook",
+      "actors": ["AI lead", "engineering lead"],
+      "factRefs": []
+    },
+    {
+      "id": "explain",
+      "title": "Route work by risk and latency",
+      "body": "Use the frontier model for ambiguous decisions, a balanced model for implementation, and a fast model for bounded checks.",
+      "intent": "explain",
+      "role": "explanation",
+      "actors": ["orchestrator", "builder", "tester"],
+      "factRefs": []
+    },
+    {
+      "id": "compare",
+      "title": "Pilot speed versus production trust",
+      "body": "Rapid visual pilots optimize learning. Production runs add approved facts, timed audio, render QA, and publish handoff.",
+      "intent": "comparison",
+      "role": "comparison",
+      "actors": ["pilot owner", "production owner"],
+      "factRefs": []
+    },
+    {
+      "id": "process",
+      "title": "Evidence drives the visual decision",
+      "body": "Retrieve approved style evidence, score package fit, record the selection trace, then validate layout continuity.",
+      "intent": "process",
+      "role": "process",
+      "actors": ["RAG service", "Director", "QA"],
+      "factRefs": []
+    },
+    {
+      "id": "takeaway",
+      "title": "Promote only what can be audited",
+      "body": "A pilot becomes production input only after script, sources, timing, map, render, and approvals bind to exact hashes.",
+      "intent": "takeaway",
+      "role": "takeaway",
+      "actors": ["reviewer", "publisher"],
+      "factRefs": []
+    }
+  ]
+}

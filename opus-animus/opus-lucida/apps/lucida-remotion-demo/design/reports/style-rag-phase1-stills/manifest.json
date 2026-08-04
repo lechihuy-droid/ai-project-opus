@@ -1,0 +1,2117 @@
+{
+  "schemaVersion": "lucida-style-rag-phase1-stills/v1",
+  "recordCount": 70,
+  "selection": {
+    "packageId": null,
+    "variantId": null
+  },
+  "outputRoot": "design/reports/style-rag-phase1-stills",
+  "bounds": {
+    "bundleTimeoutMs": 120000,
+    "selectTimeoutMs": 30000,
+    "renderTimeoutMs": 60000,
+    "analysisTimeoutMs": 20000
+  },
+  "stills": [
+    {
+      "key": "cinematic-type:chapter-reset",
+      "packageId": "cinematic-type",
+      "variantId": "chapter-reset",
+      "entryPoint": "src/styles/families/cinematic-type/renderRoot.tsx",
+      "compositionId": "CinematicTypeFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/cinematic-type/chapter-reset.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "chapter-reset"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/cinematic-type/chapter-reset.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "46dde3afcdb05197fc773f8d10128be5a8ca9356c534f0909912ec9bcf0bd5aa",
+      "fileBytes": 1670541,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 33,
+        "signalStats": {
+          "yAverage": 46.3957,
+          "yLow": 25,
+          "yHigh": 58,
+          "saturationAverage": 3.49388
+        }
+      }
+    },
+    {
+      "key": "cinematic-type:kinetic-hook",
+      "packageId": "cinematic-type",
+      "variantId": "kinetic-hook",
+      "entryPoint": "src/styles/families/cinematic-type/renderRoot.tsx",
+      "compositionId": "CinematicTypeFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/cinematic-type/kinetic-hook.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "kinetic-hook"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/cinematic-type/kinetic-hook.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "ca3c301405f1d83fa78a495096b866c9c424148cf0a222bae0b9008fe47fe0ac",
+      "fileBytes": 1851472,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 28,
+        "signalStats": {
+          "yAverage": 44.4333,
+          "yLow": 25,
+          "yHigh": 53,
+          "saturationAverage": 3.633
+        }
+      }
+    },
+    {
+      "key": "cinematic-type:manifesto",
+      "packageId": "cinematic-type",
+      "variantId": "manifesto",
+      "entryPoint": "src/styles/families/cinematic-type/renderRoot.tsx",
+      "compositionId": "CinematicTypeFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/cinematic-type/manifesto.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "manifesto"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/cinematic-type/manifesto.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "d46dbddffad607744a72fe6964abe27f370a6e7abac28d9c6b875e33e23ea80c",
+      "fileBytes": 1650090,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 32,
+        "signalStats": {
+          "yAverage": 45.9953,
+          "yLow": 24,
+          "yHigh": 56,
+          "saturationAverage": 3.80311
+        }
+      }
+    },
+    {
+      "key": "cinematic-type:outro",
+      "packageId": "cinematic-type",
+      "variantId": "outro",
+      "entryPoint": "src/styles/families/cinematic-type/renderRoot.tsx",
+      "compositionId": "CinematicTypeFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/cinematic-type/outro.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "outro"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/cinematic-type/outro.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "c466b289efa7d0ba48c4520d6ed728f695ce637668bc16244db908fe0e634fb5",
+      "fileBytes": 1593200,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 15,
+        "signalStats": {
+          "yAverage": 36.545,
+          "yLow": 25,
+          "yHigh": 40,
+          "saturationAverage": 3.50171
+        }
+      }
+    },
+    {
+      "key": "cinematic-type:quote",
+      "packageId": "cinematic-type",
+      "variantId": "quote",
+      "entryPoint": "src/styles/families/cinematic-type/renderRoot.tsx",
+      "compositionId": "CinematicTypeFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/cinematic-type/quote.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "quote"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/cinematic-type/quote.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "a29a23c8d8744eb26ba879c5caa2019d7a586b2e9680ef034351923281a42046",
+      "fileBytes": 1828379,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 24,
+        "signalStats": {
+          "yAverage": 39.9533,
+          "yLow": 25,
+          "yHigh": 49,
+          "saturationAverage": 3.59579
+        }
+      }
+    },
+    {
+      "key": "claim-evidence:benchmark-audit",
+      "packageId": "claim-evidence",
+      "variantId": "benchmark-audit",
+      "entryPoint": "src/styles/families/claim-evidence/renderRoot.tsx",
+      "compositionId": "ClaimEvidenceFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/claim-evidence/benchmark-audit.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "benchmark-audit"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/claim-evidence/benchmark-audit.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "7397b7fcd1184aa11f4f01d97d5aa986788bc7151c7ef876c6eb1abaef64844e",
+      "fileBytes": 148153,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 8,
+        "signalStats": {
+          "yAverage": 27.5168,
+          "yLow": 20,
+          "yHigh": 28,
+          "saturationAverage": 3.01183
+        }
+      }
+    },
+    {
+      "key": "claim-evidence:claim-proof",
+      "packageId": "claim-evidence",
+      "variantId": "claim-proof",
+      "entryPoint": "src/styles/families/claim-evidence/renderRoot.tsx",
+      "compositionId": "ClaimEvidenceFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/claim-evidence/claim-proof.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "claim-proof"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/claim-evidence/claim-proof.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "55ebf44494b1f6b7f08bcc399f9b27231f9d5fbdc25bcc8953721f5e37800630",
+      "fileBytes": 178987,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 16,
+        "signalStats": {
+          "yAverage": 29.5132,
+          "yLow": 20,
+          "yHigh": 36,
+          "saturationAverage": 3.45139
+        }
+      }
+    },
+    {
+      "key": "claim-evidence:myth-reality",
+      "packageId": "claim-evidence",
+      "variantId": "myth-reality",
+      "entryPoint": "src/styles/families/claim-evidence/renderRoot.tsx",
+      "compositionId": "ClaimEvidenceFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/claim-evidence/myth-reality.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "myth-reality"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/claim-evidence/myth-reality.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "f35e946ad6a33057c4f742298e202bfd8200e85afa84ec047ce763c5118860e4",
+      "fileBytes": 196277,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 12,
+        "signalStats": {
+          "yAverage": 30.4998,
+          "yLow": 20,
+          "yHigh": 32,
+          "saturationAverage": 2.97631
+        }
+      }
+    },
+    {
+      "key": "claim-evidence:pro-con",
+      "packageId": "claim-evidence",
+      "variantId": "pro-con",
+      "entryPoint": "src/styles/families/claim-evidence/renderRoot.tsx",
+      "compositionId": "ClaimEvidenceFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/claim-evidence/pro-con.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "pro-con"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/claim-evidence/pro-con.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "630f9f183ba60a6f920fd406f42c7db845c257b22e0bd96de17a643bf542a21b",
+      "fileBytes": 153966,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 8,
+        "signalStats": {
+          "yAverage": 27.3859,
+          "yLow": 20,
+          "yHigh": 28,
+          "saturationAverage": 3.01211
+        }
+      }
+    },
+    {
+      "key": "claim-evidence:source-triangulation",
+      "packageId": "claim-evidence",
+      "variantId": "source-triangulation",
+      "entryPoint": "src/styles/families/claim-evidence/renderRoot.tsx",
+      "compositionId": "ClaimEvidenceFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/claim-evidence/source-triangulation.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "source-triangulation"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/claim-evidence/source-triangulation.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "14cc529efbebb122a9531713b215ff7a80ce046d608602031d158511086eeb62",
+      "fileBytes": 186810,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 11,
+        "signalStats": {
+          "yAverage": 28.6938,
+          "yLow": 20,
+          "yHigh": 31,
+          "saturationAverage": 3.52747
+        }
+      }
+    },
+    {
+      "key": "code-walkthrough:api-sequence",
+      "packageId": "code-walkthrough",
+      "variantId": "api-sequence",
+      "entryPoint": "src/styles/families/code-walkthrough/renderRoot.tsx",
+      "compositionId": "CodeWalkthroughFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/code-walkthrough/api-sequence.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "api-sequence"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/code-walkthrough/api-sequence.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "0eab1e64dd1af7cc1dfd5cd92c82bdc170396c0b068d7a8d47220ca0e1e27e2a",
+      "fileBytes": 171980,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 6,
+        "signalStats": {
+          "yAverage": 26.8986,
+          "yLow": 19,
+          "yHigh": 25,
+          "saturationAverage": 3.78412
+        }
+      }
+    },
+    {
+      "key": "code-walkthrough:code-focus",
+      "packageId": "code-walkthrough",
+      "variantId": "code-focus",
+      "entryPoint": "src/styles/families/code-walkthrough/renderRoot.tsx",
+      "compositionId": "CodeWalkthroughFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/code-walkthrough/code-focus.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "code-focus"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/code-walkthrough/code-focus.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "631d38a1b45173ff3be3c92f55da03acfde48105c8df8787eedd6c3af3b274b7",
+      "fileBytes": 168744,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 6,
+        "signalStats": {
+          "yAverage": 26.9688,
+          "yLow": 19,
+          "yHigh": 25,
+          "saturationAverage": 3.84501
+        }
+      }
+    },
+    {
+      "key": "code-walkthrough:debugging-trace",
+      "packageId": "code-walkthrough",
+      "variantId": "debugging-trace",
+      "entryPoint": "src/styles/families/code-walkthrough/renderRoot.tsx",
+      "compositionId": "CodeWalkthroughFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/code-walkthrough/debugging-trace.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "debugging-trace"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/code-walkthrough/debugging-trace.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "15bc1273c02d74544a656755e317318fd6d684a04c52bca77229176e4f3ef034",
+      "fileBytes": 166676,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 6,
+        "signalStats": {
+          "yAverage": 26.4913,
+          "yLow": 19,
+          "yHigh": 25,
+          "saturationAverage": 3.76333
+        }
+      }
+    },
+    {
+      "key": "code-walkthrough:diff-review",
+      "packageId": "code-walkthrough",
+      "variantId": "diff-review",
+      "entryPoint": "src/styles/families/code-walkthrough/renderRoot.tsx",
+      "compositionId": "CodeWalkthroughFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/code-walkthrough/diff-review.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "diff-review"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/code-walkthrough/diff-review.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "e704051e39efcff4cd1b61ba316f54d348fef208a7fedd9906adb98c3dd8f56f",
+      "fileBytes": 172869,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 6,
+        "signalStats": {
+          "yAverage": 26.7656,
+          "yLow": 19,
+          "yHigh": 25,
+          "saturationAverage": 3.91764
+        }
+      }
+    },
+    {
+      "key": "code-walkthrough:terminal-code-split",
+      "packageId": "code-walkthrough",
+      "variantId": "terminal-code-split",
+      "entryPoint": "src/styles/families/code-walkthrough/renderRoot.tsx",
+      "compositionId": "CodeWalkthroughFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/code-walkthrough/terminal-code-split.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "terminal-code-split"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/code-walkthrough/terminal-code-split.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "99def2714fd1859ab06b72d162346abf90370d693c7b5eb9314d681a6b1409fe",
+      "fileBytes": 137554,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 11,
+        "signalStats": {
+          "yAverage": 23.5586,
+          "yLow": 14,
+          "yHigh": 25,
+          "saturationAverage": 3.35901
+        }
+      }
+    },
+    {
+      "key": "dashboard-data:benchmark-grid",
+      "packageId": "dashboard-data",
+      "variantId": "benchmark-grid",
+      "entryPoint": "src/styles/families/dashboard-data/render-entry.tsx",
+      "compositionId": "DashboardDataFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/dashboard-data/benchmark-grid.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "benchmark-grid"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/dashboard-data/benchmark-grid.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "f85301bff9b2f63ddb642d3aecf8a8a73887a8508885c796bf331960ddfaabbc",
+      "fileBytes": 491323,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 14,
+        "signalStats": {
+          "yAverage": 33.237,
+          "yLow": 18,
+          "yHigh": 32,
+          "saturationAverage": 9.46098
+        }
+      }
+    },
+    {
+      "key": "dashboard-data:comparison-dashboard",
+      "packageId": "dashboard-data",
+      "variantId": "comparison-dashboard",
+      "entryPoint": "src/styles/families/dashboard-data/render-entry.tsx",
+      "compositionId": "DashboardDataFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/dashboard-data/comparison-dashboard.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "comparison-dashboard"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/dashboard-data/comparison-dashboard.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "163886ac29269837f0f012adfb24a0412f50acfb648f3519cc844714ac940904",
+      "fileBytes": 485905,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 14,
+        "signalStats": {
+          "yAverage": 33.1438,
+          "yLow": 18,
+          "yHigh": 32,
+          "saturationAverage": 9.44729
+        }
+      }
+    },
+    {
+      "key": "dashboard-data:operations-monitor",
+      "packageId": "dashboard-data",
+      "variantId": "operations-monitor",
+      "entryPoint": "src/styles/families/dashboard-data/render-entry.tsx",
+      "compositionId": "DashboardDataFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/dashboard-data/operations-monitor.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "operations-monitor"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/dashboard-data/operations-monitor.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "dc48c63ba4a8cc95095a41e1b2290ca55f2dcd45ac469938f186358a94ba5d40",
+      "fileBytes": 469540,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 14,
+        "signalStats": {
+          "yAverage": 32.4481,
+          "yLow": 18,
+          "yHigh": 32,
+          "saturationAverage": 9.35281
+        }
+      }
+    },
+    {
+      "key": "dashboard-data:scorecard",
+      "packageId": "dashboard-data",
+      "variantId": "scorecard",
+      "entryPoint": "src/styles/families/dashboard-data/render-entry.tsx",
+      "compositionId": "DashboardDataFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/dashboard-data/scorecard.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "scorecard"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/dashboard-data/scorecard.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "0096f5beb26e97aed604e3b4cebfe72a6104dc34d62b672a96fa2d848e5e7c72",
+      "fileBytes": 497223,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 14,
+        "signalStats": {
+          "yAverage": 33.065,
+          "yLow": 18,
+          "yHigh": 32,
+          "saturationAverage": 9.23925
+        }
+      }
+    },
+    {
+      "key": "dashboard-data:trend-panel",
+      "packageId": "dashboard-data",
+      "variantId": "trend-panel",
+      "entryPoint": "src/styles/families/dashboard-data/render-entry.tsx",
+      "compositionId": "DashboardDataFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/dashboard-data/trend-panel.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "trend-panel"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/dashboard-data/trend-panel.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "e601a06b380e4822c83c1f782be5a9454deb21967759ff6a7ad97414c394768d",
+      "fileBytes": 476272,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 14,
+        "signalStats": {
+          "yAverage": 33.4615,
+          "yLow": 18,
+          "yHigh": 32,
+          "saturationAverage": 9.60974
+        }
+      }
+    },
+    {
+      "key": "editorial-collage:culture-recap",
+      "packageId": "editorial-collage",
+      "variantId": "culture-recap",
+      "entryPoint": "src/styles/families/editorial-collage/render-entry.tsx",
+      "compositionId": "EditorialCollageFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/editorial-collage/culture-recap.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "culture-recap"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/editorial-collage/culture-recap.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "b056425df9338e65b4e68014c982435611ebde96fca9338c9dfa60a18e84e540",
+      "fileBytes": 1480552,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 181,
+        "signalStats": {
+          "yAverage": 63.657,
+          "yLow": 16,
+          "yHigh": 197,
+          "saturationAverage": 8.35199
+        }
+      }
+    },
+    {
+      "key": "editorial-collage:multi-source-evidence",
+      "packageId": "editorial-collage",
+      "variantId": "multi-source-evidence",
+      "entryPoint": "src/styles/families/editorial-collage/render-entry.tsx",
+      "compositionId": "EditorialCollageFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/editorial-collage/multi-source-evidence.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "multi-source-evidence"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/editorial-collage/multi-source-evidence.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "7c12e8dfbd5daff90ffe36803ff9695582d47fc3b94a1f31749a97e2e42c2c89",
+      "fileBytes": 1491873,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 173,
+        "signalStats": {
+          "yAverage": 54.7239,
+          "yLow": 13,
+          "yHigh": 186,
+          "saturationAverage": 6.67567
+        }
+      }
+    },
+    {
+      "key": "editorial-collage:quote-collage",
+      "packageId": "editorial-collage",
+      "variantId": "quote-collage",
+      "entryPoint": "src/styles/families/editorial-collage/render-entry.tsx",
+      "compositionId": "EditorialCollageFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/editorial-collage/quote-collage.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "quote-collage"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/editorial-collage/quote-collage.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "cc8cbca93b679d72f2966c9e175c10a89fb62415533347de25d0dc2b1a71c3fb",
+      "fileBytes": 1654028,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 160,
+        "signalStats": {
+          "yAverage": 61.0293,
+          "yLow": 20,
+          "yHigh": 180,
+          "saturationAverage": 7.63121
+        }
+      }
+    },
+    {
+      "key": "editorial-collage:source-montage",
+      "packageId": "editorial-collage",
+      "variantId": "source-montage",
+      "entryPoint": "src/styles/families/editorial-collage/render-entry.tsx",
+      "compositionId": "EditorialCollageFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/editorial-collage/source-montage.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "source-montage"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/editorial-collage/source-montage.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "ba942abd15b8ea7f228e71bc98aedc3caf475f347883aba1c3cb1354a5151b29",
+      "fileBytes": 1484210,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 146,
+        "signalStats": {
+          "yAverage": 60.4966,
+          "yLow": 19,
+          "yHigh": 165,
+          "saturationAverage": 8.3055
+        }
+      }
+    },
+    {
+      "key": "editorial-collage:visual-essay",
+      "packageId": "editorial-collage",
+      "variantId": "visual-essay",
+      "entryPoint": "src/styles/families/editorial-collage/render-entry.tsx",
+      "compositionId": "EditorialCollageFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/editorial-collage/visual-essay.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "visual-essay"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/editorial-collage/visual-essay.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "d28d5e83cf81475f750c38b6c5d17e43ab87ee89a968a1f47b0f3bdccd7c9b6c",
+      "fileBytes": 1494917,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 182,
+        "signalStats": {
+          "yAverage": 64.6804,
+          "yLow": 19,
+          "yHigh": 201,
+          "saturationAverage": 10.3001
+        }
+      }
+    },
+    {
+      "key": "interface-walkthrough:annotated-screen",
+      "packageId": "interface-walkthrough",
+      "variantId": "annotated-screen",
+      "entryPoint": "src/styles/families/interface-walkthrough/renderRoot.tsx",
+      "compositionId": "InterfaceWalkthroughFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/interface-walkthrough/annotated-screen.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "annotated-screen"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/interface-walkthrough/annotated-screen.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "1e15eb54c6a9587fe406c8886ffc2441a5a272aa0253ecb45da70ecc219d54da",
+      "fileBytes": 108757,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 11,
+        "signalStats": {
+          "yAverage": 31.7914,
+          "yLow": 22,
+          "yHigh": 33,
+          "saturationAverage": 9.50799
+        }
+      }
+    },
+    {
+      "key": "interface-walkthrough:before-after-ui",
+      "packageId": "interface-walkthrough",
+      "variantId": "before-after-ui",
+      "entryPoint": "src/styles/families/interface-walkthrough/renderRoot.tsx",
+      "compositionId": "InterfaceWalkthroughFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/interface-walkthrough/before-after-ui.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "before-after-ui"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/interface-walkthrough/before-after-ui.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "2baac891964ec29df41387e5c15e3b02ac91bb2ce410e923c9f4dc964943f1ad",
+      "fileBytes": 114229,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 11,
+        "signalStats": {
+          "yAverage": 32.5521,
+          "yLow": 22,
+          "yHigh": 33,
+          "saturationAverage": 9.59993
+        }
+      }
+    },
+    {
+      "key": "interface-walkthrough:feature-tour",
+      "packageId": "interface-walkthrough",
+      "variantId": "feature-tour",
+      "entryPoint": "src/styles/families/interface-walkthrough/renderRoot.tsx",
+      "compositionId": "InterfaceWalkthroughFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/interface-walkthrough/feature-tour.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "feature-tour"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/interface-walkthrough/feature-tour.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "9afec47f90c95cb7ce4216b23304f6dc8968f225d5f2f14011b55a9329643742",
+      "fileBytes": 113861,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 11,
+        "signalStats": {
+          "yAverage": 32.0086,
+          "yLow": 22,
+          "yHigh": 33,
+          "saturationAverage": 9.53735
+        }
+      }
+    },
+    {
+      "key": "interface-walkthrough:state-transition",
+      "packageId": "interface-walkthrough",
+      "variantId": "state-transition",
+      "entryPoint": "src/styles/families/interface-walkthrough/renderRoot.tsx",
+      "compositionId": "InterfaceWalkthroughFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/interface-walkthrough/state-transition.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "state-transition"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/interface-walkthrough/state-transition.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "4a957f1624f74808f697de14ca90b9eb60b8399828d2a1f48f02e5e05e22ccf8",
+      "fileBytes": 111801,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 11,
+        "signalStats": {
+          "yAverage": 31.4607,
+          "yLow": 22,
+          "yHigh": 33,
+          "saturationAverage": 9.3197
+        }
+      }
+    },
+    {
+      "key": "interface-walkthrough:step-flow",
+      "packageId": "interface-walkthrough",
+      "variantId": "step-flow",
+      "entryPoint": "src/styles/families/interface-walkthrough/renderRoot.tsx",
+      "compositionId": "InterfaceWalkthroughFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/interface-walkthrough/step-flow.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "step-flow"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/interface-walkthrough/step-flow.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "398bd9bc0861a6a9ca514ca4165d55fc0b74c1354b879eedd56e68622870c725",
+      "fileBytes": 117105,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 11,
+        "signalStats": {
+          "yAverage": 32.6358,
+          "yLow": 22,
+          "yHigh": 33,
+          "saturationAverage": 9.67429
+        }
+      }
+    },
+    {
+      "key": "minimal-education:checklist",
+      "packageId": "minimal-education",
+      "variantId": "checklist",
+      "entryPoint": "src/styles/families/minimal-education/render-entry.tsx",
+      "compositionId": "MinimalEducationFamily",
+      "fixturePath": "pipeline/fixtures/styles/minimal-education/checklist.scene.json",
+      "input": {
+        "kind": "scene-fixture-json",
+        "propName": "scene"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/minimal-education/checklist.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "a550e378f4ea75b04c7e238e7aab10c8114fe2663dcb7ad88141b4e1924193ea",
+      "fileBytes": 726389,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 15,
+        "signalStats": {
+          "yAverage": 237.811,
+          "yLow": 238,
+          "yHigh": 253,
+          "saturationAverage": 4.51897
+        }
+      }
+    },
+    {
+      "key": "minimal-education:comparison-cards",
+      "packageId": "minimal-education",
+      "variantId": "comparison-cards",
+      "entryPoint": "src/styles/families/minimal-education/render-entry.tsx",
+      "compositionId": "MinimalEducationFamily",
+      "fixturePath": "pipeline/fixtures/styles/minimal-education/comparison-cards.scene.json",
+      "input": {
+        "kind": "scene-fixture-json",
+        "propName": "scene"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/minimal-education/comparison-cards.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "7805e148980b0cd7fce16749b99bd8c852162cb31912ddb0e0204365e2c9ef8f",
+      "fileBytes": 772365,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 14,
+        "signalStats": {
+          "yAverage": 235.662,
+          "yLow": 233,
+          "yHigh": 247,
+          "saturationAverage": 4.53812
+        }
+      }
+    },
+    {
+      "key": "minimal-education:single-concept",
+      "packageId": "minimal-education",
+      "variantId": "single-concept",
+      "entryPoint": "src/styles/families/minimal-education/render-entry.tsx",
+      "compositionId": "MinimalEducationFamily",
+      "fixturePath": "pipeline/fixtures/styles/minimal-education/single-concept.scene.json",
+      "input": {
+        "kind": "scene-fixture-json",
+        "propName": "scene"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/minimal-education/single-concept.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "a81740cb4cae24af6e90c5d82f7c4d5d69d9eb9f86a0517161412e88dabefdd3",
+      "fileBytes": 721112,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 10,
+        "signalStats": {
+          "yAverage": 236.684,
+          "yLow": 237,
+          "yHigh": 247,
+          "saturationAverage": 4.01867
+        }
+      }
+    },
+    {
+      "key": "minimal-education:step-sequence",
+      "packageId": "minimal-education",
+      "variantId": "step-sequence",
+      "entryPoint": "src/styles/families/minimal-education/render-entry.tsx",
+      "compositionId": "MinimalEducationFamily",
+      "fixturePath": "pipeline/fixtures/styles/minimal-education/step-sequence.scene.json",
+      "input": {
+        "kind": "scene-fixture-json",
+        "propName": "scene"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/minimal-education/step-sequence.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "3ae58a8dd43b73ef1ad5326a3488f1f61345c52df4cfb071015e36bdee1726f4",
+      "fileBytes": 734189,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 12,
+        "signalStats": {
+          "yAverage": 239.146,
+          "yLow": 241,
+          "yHigh": 253,
+          "saturationAverage": 5.58448
+        }
+      }
+    },
+    {
+      "key": "minimal-education:takeaway",
+      "packageId": "minimal-education",
+      "variantId": "takeaway",
+      "entryPoint": "src/styles/families/minimal-education/render-entry.tsx",
+      "compositionId": "MinimalEducationFamily",
+      "fixturePath": "pipeline/fixtures/styles/minimal-education/takeaway.scene.json",
+      "input": {
+        "kind": "scene-fixture-json",
+        "propName": "scene"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/minimal-education/takeaway.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "10f4142d699f0c0112ec47615a1d045708515900b189f6530ed5760b31a5d984",
+      "fileBytes": 752913,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 8,
+        "signalStats": {
+          "yAverage": 236.334,
+          "yLow": 239,
+          "yHigh": 247,
+          "saturationAverage": 4.73374
+        }
+      }
+    },
+    {
+      "key": "news-rundown:breaking-update",
+      "packageId": "news-rundown",
+      "variantId": "breaking-update",
+      "entryPoint": "src/styles/families/news-rundown/renderRoot.tsx",
+      "compositionId": "NewsRundownFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/news-rundown/breaking-update.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "breaking-update"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/news-rundown/breaking-update.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "e431e4a5791fd94a3147ad1f5072500e938f2e71bf69b5c9d3df083bd10cdd84",
+      "fileBytes": 153627,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 10,
+        "signalStats": {
+          "yAverage": 37.0363,
+          "yLow": 23,
+          "yHigh": 33,
+          "saturationAverage": 7.84869
+        }
+      }
+    },
+    {
+      "key": "news-rundown:bulletin-grid",
+      "packageId": "news-rundown",
+      "variantId": "bulletin-grid",
+      "entryPoint": "src/styles/families/news-rundown/renderRoot.tsx",
+      "compositionId": "NewsRundownFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/news-rundown/bulletin-grid.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "bulletin-grid"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/news-rundown/bulletin-grid.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "724f41597dc50f8c9ed9d8004b0a4363831514174d779ee0c0152a1c5665520d",
+      "fileBytes": 122962,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 10,
+        "signalStats": {
+          "yAverage": 31.8487,
+          "yLow": 23,
+          "yHigh": 33,
+          "saturationAverage": 7.73158
+        }
+      }
+    },
+    {
+      "key": "news-rundown:headline-stack",
+      "packageId": "news-rundown",
+      "variantId": "headline-stack",
+      "entryPoint": "src/styles/families/news-rundown/renderRoot.tsx",
+      "compositionId": "NewsRundownFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/news-rundown/headline-stack.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "headline-stack"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/news-rundown/headline-stack.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "e400aa883613efb8ae0280af92df7142ddbf7469c90020a5d27713f7c6c03150",
+      "fileBytes": 149280,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 10,
+        "signalStats": {
+          "yAverage": 32.6806,
+          "yLow": 23,
+          "yHigh": 33,
+          "saturationAverage": 7.76895
+        }
+      }
+    },
+    {
+      "key": "news-rundown:top-stories",
+      "packageId": "news-rundown",
+      "variantId": "top-stories",
+      "entryPoint": "src/styles/families/news-rundown/renderRoot.tsx",
+      "compositionId": "NewsRundownFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/news-rundown/top-stories.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "top-stories"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/news-rundown/top-stories.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "ce7151b5674d3d9faef1415da212126df6a791dfcc21284191830c49dde8730c",
+      "fileBytes": 132614,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 10,
+        "signalStats": {
+          "yAverage": 30.9056,
+          "yLow": 23,
+          "yHigh": 33,
+          "saturationAverage": 8.03863
+        }
+      }
+    },
+    {
+      "key": "news-rundown:weekly-roundup",
+      "packageId": "news-rundown",
+      "variantId": "weekly-roundup",
+      "entryPoint": "src/styles/families/news-rundown/renderRoot.tsx",
+      "compositionId": "NewsRundownFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/news-rundown/weekly-roundup.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "weekly-roundup"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/news-rundown/weekly-roundup.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "0f6cdb021e7daf64888c29c29331133749c87a4a2e93e19cb32d039dc37daa18",
+      "fileBytes": 136078,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 10,
+        "signalStats": {
+          "yAverage": 32.2802,
+          "yLow": 23,
+          "yHigh": 33,
+          "saturationAverage": 7.75063
+        }
+      }
+    },
+    {
+      "key": "paper-notebook:annotated-paper",
+      "packageId": "paper-notebook",
+      "variantId": "annotated-paper",
+      "entryPoint": "src/styles/families/paper-notebook/render-entry.tsx",
+      "compositionId": "PaperNotebookFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/paper-notebook/annotated-paper.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "annotated-paper"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/paper-notebook/annotated-paper.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "8b71761abfac5007493d411d74b06cb2d7e245720dc648a536b8d704de7e32c9",
+      "fileBytes": 307312,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 43,
+        "signalStats": {
+          "yAverage": 229.945,
+          "yLow": 203,
+          "yHigh": 246,
+          "saturationAverage": 8.38779
+        }
+      }
+    },
+    {
+      "key": "paper-notebook:checklist",
+      "packageId": "paper-notebook",
+      "variantId": "checklist",
+      "entryPoint": "src/styles/families/paper-notebook/render-entry.tsx",
+      "compositionId": "PaperNotebookFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/paper-notebook/checklist.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "checklist"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/paper-notebook/checklist.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "06441b6754098db0e0e6723158fe3067a861e0ef8791e48fa7b27ef5bcfc0fe2",
+      "fileBytes": 347799,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 45,
+        "signalStats": {
+          "yAverage": 229.009,
+          "yLow": 201,
+          "yHigh": 246,
+          "saturationAverage": 8.46428
+        }
+      }
+    },
+    {
+      "key": "paper-notebook:derivation",
+      "packageId": "paper-notebook",
+      "variantId": "derivation",
+      "entryPoint": "src/styles/families/paper-notebook/render-entry.tsx",
+      "compositionId": "PaperNotebookFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/paper-notebook/derivation.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "derivation"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/paper-notebook/derivation.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "75be5657f764fd174d90404ccda59a93e79e6c31d7f04c0e113a0705e25267d2",
+      "fileBytes": 329800,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 45,
+        "signalStats": {
+          "yAverage": 228.847,
+          "yLow": 201,
+          "yHigh": 246,
+          "saturationAverage": 8.38603
+        }
+      }
+    },
+    {
+      "key": "paper-notebook:lab-log",
+      "packageId": "paper-notebook",
+      "variantId": "lab-log",
+      "entryPoint": "src/styles/families/paper-notebook/render-entry.tsx",
+      "compositionId": "PaperNotebookFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/paper-notebook/lab-log.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "lab-log"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/paper-notebook/lab-log.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "30aa3fdaac22ffa4c7af3c3f66a4071c7cb533e37f3b9b63d213f4d05a76c169",
+      "fileBytes": 304356,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 43,
+        "signalStats": {
+          "yAverage": 230,
+          "yLow": 203,
+          "yHigh": 246,
+          "saturationAverage": 8.39437
+        }
+      }
+    },
+    {
+      "key": "paper-notebook:research-notes",
+      "packageId": "paper-notebook",
+      "variantId": "research-notes",
+      "entryPoint": "src/styles/families/paper-notebook/render-entry.tsx",
+      "compositionId": "PaperNotebookFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/paper-notebook/research-notes.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "research-notes"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/paper-notebook/research-notes.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "ebc1baf4007f3f711a827a63e183eacb0193b92cd8253fe2949aba080815913d",
+      "fileBytes": 308975,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 43,
+        "signalStats": {
+          "yAverage": 229.988,
+          "yLow": 203,
+          "yHigh": 246,
+          "saturationAverage": 8.38643
+        }
+      }
+    },
+    {
+      "key": "product-showcase:before-after",
+      "packageId": "product-showcase",
+      "variantId": "before-after",
+      "entryPoint": "src/styles/families/product-showcase/render-entry.tsx",
+      "compositionId": "ProductShowcaseFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/product-showcase/before-after.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "before-after"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/product-showcase/before-after.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "11c79caf8595ee5c860306e7ab7002f8293e9b7135b8f90a043a24b36bc66553",
+      "fileBytes": 296558,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 56,
+        "signalStats": {
+          "yAverage": 231.541,
+          "yLow": 199,
+          "yHigh": 255,
+          "saturationAverage": 2.36498
+        }
+      }
+    },
+    {
+      "key": "product-showcase:capability-grid",
+      "packageId": "product-showcase",
+      "variantId": "capability-grid",
+      "entryPoint": "src/styles/families/product-showcase/render-entry.tsx",
+      "compositionId": "ProductShowcaseFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/product-showcase/capability-grid.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "capability-grid"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/product-showcase/capability-grid.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "706fc73ff42842640f9f6a1f20bda0292162d93ead98883f8d6e4b2b0a014054",
+      "fileBytes": 306493,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 98,
+        "signalStats": {
+          "yAverage": 230.767,
+          "yLow": 157,
+          "yHigh": 255,
+          "saturationAverage": 2.64831
+        }
+      }
+    },
+    {
+      "key": "product-showcase:feature-reveal",
+      "packageId": "product-showcase",
+      "variantId": "feature-reveal",
+      "entryPoint": "src/styles/families/product-showcase/render-entry.tsx",
+      "compositionId": "ProductShowcaseFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/product-showcase/feature-reveal.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "feature-reveal"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/product-showcase/feature-reveal.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "430728d99e52c265e4e80d53066a128e1c2c07bbb0efc78e46e9c87d1e862d05",
+      "fileBytes": 296017,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 25,
+        "signalStats": {
+          "yAverage": 243.035,
+          "yLow": 230,
+          "yHigh": 255,
+          "saturationAverage": 2.14329
+        }
+      }
+    },
+    {
+      "key": "product-showcase:launch-summary",
+      "packageId": "product-showcase",
+      "variantId": "launch-summary",
+      "entryPoint": "src/styles/families/product-showcase/render-entry.tsx",
+      "compositionId": "ProductShowcaseFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/product-showcase/launch-summary.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "launch-summary"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/product-showcase/launch-summary.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "c2ecdfd97b136086ce7a52c7ecced25c1505df6e39b0e953b8b47dbf659c8319",
+      "fileBytes": 351154,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 28,
+        "signalStats": {
+          "yAverage": 235.253,
+          "yLow": 227,
+          "yHigh": 255,
+          "saturationAverage": 2.14454
+        }
+      }
+    },
+    {
+      "key": "product-showcase:product-hero",
+      "packageId": "product-showcase",
+      "variantId": "product-hero",
+      "entryPoint": "src/styles/families/product-showcase/render-entry.tsx",
+      "compositionId": "ProductShowcaseFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/product-showcase/product-hero.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "product-hero"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/product-showcase/product-hero.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "ea2965959a53a31a3b2ef2d79832817dac0635fa4c7472e323746fdb7ced00e4",
+      "fileBytes": 346064,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 28,
+        "signalStats": {
+          "yAverage": 235.159,
+          "yLow": 227,
+          "yHigh": 255,
+          "saturationAverage": 2.20269
+        }
+      }
+    },
+    {
+      "key": "system-architecture:agent-graph",
+      "packageId": "system-architecture",
+      "variantId": "agent-graph",
+      "entryPoint": "src/styles/families/system-architecture/renderRoot.tsx",
+      "compositionId": "SystemArchitectureFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/system-architecture/agent-graph.fixture.json",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "agent-graph"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/system-architecture/agent-graph.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "6ec75a11c885c5ab3cf69fb243e08d3872e7d820f35621702f7596728d2f52c4",
+      "fileBytes": 137502,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 10,
+        "signalStats": {
+          "yAverage": 29.7335,
+          "yLow": 21,
+          "yHigh": 31,
+          "saturationAverage": 6.49281
+        }
+      }
+    },
+    {
+      "key": "system-architecture:data-pipeline",
+      "packageId": "system-architecture",
+      "variantId": "data-pipeline",
+      "entryPoint": "src/styles/families/system-architecture/renderRoot.tsx",
+      "compositionId": "SystemArchitectureFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/system-architecture/data-pipeline.fixture.json",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "data-pipeline"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/system-architecture/data-pipeline.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "7af4f6d8283ee77154bb7c156ac0eae6256a27ca73bc3cb3ffcd8763cda6ba9d",
+      "fileBytes": 145028,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 10,
+        "signalStats": {
+          "yAverage": 29.8272,
+          "yLow": 21,
+          "yHigh": 31,
+          "saturationAverage": 6.50231
+        }
+      }
+    },
+    {
+      "key": "system-architecture:dependency-map",
+      "packageId": "system-architecture",
+      "variantId": "dependency-map",
+      "entryPoint": "src/styles/families/system-architecture/renderRoot.tsx",
+      "compositionId": "SystemArchitectureFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/system-architecture/dependency-map.fixture.json",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "dependency-map"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/system-architecture/dependency-map.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "15a3a7a1c2a7157518482d7f38e6a293b9c87e0ea5120ff054973fa999ffc3f9",
+      "fileBytes": 138072,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 10,
+        "signalStats": {
+          "yAverage": 29.734,
+          "yLow": 21,
+          "yHigh": 31,
+          "saturationAverage": 6.47741
+        }
+      }
+    },
+    {
+      "key": "system-architecture:layered-stack",
+      "packageId": "system-architecture",
+      "variantId": "layered-stack",
+      "entryPoint": "src/styles/families/system-architecture/renderRoot.tsx",
+      "compositionId": "SystemArchitectureFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/system-architecture/layered-stack.fixture.json",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "layered-stack"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/system-architecture/layered-stack.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "e2b1ed09b8045dbe82fbf252527c26312a21dd0dec365995a2c5ea44d2d139af",
+      "fileBytes": 122387,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 10,
+        "signalStats": {
+          "yAverage": 29.3926,
+          "yLow": 21,
+          "yHigh": 31,
+          "saturationAverage": 6.44784
+        }
+      }
+    },
+    {
+      "key": "system-architecture:request-flow",
+      "packageId": "system-architecture",
+      "variantId": "request-flow",
+      "entryPoint": "src/styles/families/system-architecture/renderRoot.tsx",
+      "compositionId": "SystemArchitectureFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/system-architecture/request-flow.fixture.json",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "request-flow"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/system-architecture/request-flow.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "481373cc120fb3b70908cd9b8a6f7a6dbb2e505a12b433571b313bebc9e09adf",
+      "fileBytes": 125881,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 10,
+        "signalStats": {
+          "yAverage": 29.2737,
+          "yLow": 21,
+          "yHigh": 31,
+          "saturationAverage": 6.47258
+        }
+      }
+    },
+    {
+      "key": "technical-editorial:annotated-explainer",
+      "packageId": "technical-editorial",
+      "variantId": "annotated-explainer",
+      "entryPoint": "src/styles/families/technical-editorial/renderRoot.tsx",
+      "compositionId": "TechnicalEditorialFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/technical-editorial/annotated-explainer.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "annotated-explainer"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/technical-editorial/annotated-explainer.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "7a68471a3da096a16321614c32b819f402d6905bb5355a651b535b547eba5a32",
+      "fileBytes": 1277260,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 41,
+        "signalStats": {
+          "yAverage": 39.0781,
+          "yLow": 19,
+          "yHigh": 60,
+          "saturationAverage": 9.91165
+        }
+      }
+    },
+    {
+      "key": "technical-editorial:data-essay",
+      "packageId": "technical-editorial",
+      "variantId": "data-essay",
+      "entryPoint": "src/styles/families/technical-editorial/renderRoot.tsx",
+      "compositionId": "TechnicalEditorialFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/technical-editorial/data-essay.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "data-essay"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/technical-editorial/data-essay.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "724e06184b726f956740230c494f667daee5325fb728b0fee10f18b1750159fe",
+      "fileBytes": 1272181,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 40,
+        "signalStats": {
+          "yAverage": 39.4579,
+          "yLow": 19,
+          "yHigh": 59,
+          "saturationAverage": 9.41342
+        }
+      }
+    },
+    {
+      "key": "technical-editorial:evidence-grid",
+      "packageId": "technical-editorial",
+      "variantId": "evidence-grid",
+      "entryPoint": "src/styles/families/technical-editorial/renderRoot.tsx",
+      "compositionId": "TechnicalEditorialFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/technical-editorial/evidence-grid.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "evidence-grid"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/technical-editorial/evidence-grid.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "776b625c6eeb3fb20096809460b6b0d4b8ccbdeb0affdf92e5cf2f5ff7af085c",
+      "fileBytes": 1252719,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 70,
+        "signalStats": {
+          "yAverage": 40.8611,
+          "yLow": 19,
+          "yHigh": 89,
+          "saturationAverage": 10.1109
+        }
+      }
+    },
+    {
+      "key": "technical-editorial:research-digest",
+      "packageId": "technical-editorial",
+      "variantId": "research-digest",
+      "entryPoint": "src/styles/families/technical-editorial/renderRoot.tsx",
+      "compositionId": "TechnicalEditorialFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/technical-editorial/research-digest.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "research-digest"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/technical-editorial/research-digest.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "a122ad62b3f0555be00e052377b7a923de9dd4aa14324ede7a29a29c73f6a1f6",
+      "fileBytes": 1275833,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 74,
+        "signalStats": {
+          "yAverage": 41.5581,
+          "yLow": 19,
+          "yHigh": 93,
+          "saturationAverage": 10.0949
+        }
+      }
+    },
+    {
+      "key": "technical-editorial:technical-brief",
+      "packageId": "technical-editorial",
+      "variantId": "technical-brief",
+      "entryPoint": "src/styles/families/technical-editorial/renderRoot.tsx",
+      "compositionId": "TechnicalEditorialFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/technical-editorial/technical-brief.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "technical-brief"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/technical-editorial/technical-brief.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "ad902f3960badf3751742ab76601fc0fe6255c56972fc59e28d1eb833ace28a0",
+      "fileBytes": 1282781,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 65,
+        "signalStats": {
+          "yAverage": 40.7581,
+          "yLow": 19,
+          "yHigh": 84,
+          "saturationAverage": 10.2081
+        }
+      }
+    },
+    {
+      "key": "terminal-command-center:agent-runtime",
+      "packageId": "terminal-command-center",
+      "variantId": "agent-runtime",
+      "entryPoint": "src/styles/families/terminal-command-center/renderRoot.tsx",
+      "compositionId": "TerminalCommandCenterFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/terminal-command-center/agent-runtime.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "agent-runtime"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/terminal-command-center/agent-runtime.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "95236d2fdc1f7fe668aead07dd70a038f0928a470ef94779c2e24deb922908dd",
+      "fileBytes": 160569,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 9,
+        "signalStats": {
+          "yAverage": 18.4616,
+          "yLow": 11,
+          "yHigh": 20,
+          "saturationAverage": 3.94156
+        }
+      }
+    },
+    {
+      "key": "terminal-command-center:clean-cli",
+      "packageId": "terminal-command-center",
+      "variantId": "clean-cli",
+      "entryPoint": "src/styles/families/terminal-command-center/renderRoot.tsx",
+      "compositionId": "TerminalCommandCenterFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/terminal-command-center/clean-cli.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "clean-cli"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/terminal-command-center/clean-cli.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "18f72fbfc1d22320f6fd29b109b393d78a32152fad79853d6e3c6a84ed5034cf",
+      "fileBytes": 140740,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 9,
+        "signalStats": {
+          "yAverage": 17.7993,
+          "yLow": 11,
+          "yHigh": 20,
+          "saturationAverage": 4.07167
+        }
+      }
+    },
+    {
+      "key": "terminal-command-center:cyberdeck",
+      "packageId": "terminal-command-center",
+      "variantId": "cyberdeck",
+      "entryPoint": "src/styles/families/terminal-command-center/renderRoot.tsx",
+      "compositionId": "TerminalCommandCenterFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/terminal-command-center/cyberdeck.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "cyberdeck"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/terminal-command-center/cyberdeck.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "0be5fd1923089b916e1e9885a7bed1398abb74f425303fe7eb828742290a3ead",
+      "fileBytes": 169092,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 9,
+        "signalStats": {
+          "yAverage": 18.6025,
+          "yLow": 11,
+          "yHigh": 20,
+          "saturationAverage": 4.02107
+        }
+      }
+    },
+    {
+      "key": "terminal-command-center:retro-crt",
+      "packageId": "terminal-command-center",
+      "variantId": "retro-crt",
+      "entryPoint": "src/styles/families/terminal-command-center/renderRoot.tsx",
+      "compositionId": "TerminalCommandCenterFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/terminal-command-center/retro-crt.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "retro-crt"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/terminal-command-center/retro-crt.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "d1d6f8e982b17f7f078e52ed440a5a2a4d2e92feb0ab454e6d3b2a034435e554",
+      "fileBytes": 156661,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 9,
+        "signalStats": {
+          "yAverage": 17.3209,
+          "yLow": 11,
+          "yHigh": 20,
+          "saturationAverage": 3.40315
+        }
+      }
+    },
+    {
+      "key": "terminal-command-center:system-monitor",
+      "packageId": "terminal-command-center",
+      "variantId": "system-monitor",
+      "entryPoint": "src/styles/families/terminal-command-center/renderRoot.tsx",
+      "compositionId": "TerminalCommandCenterFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/terminal-command-center/system-monitor.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "system-monitor"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/terminal-command-center/system-monitor.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "ebfdcea65472544ffdf8dee5df2a453a57d3b58b317c822296c773ccf9820e73",
+      "fileBytes": 147077,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 9,
+        "signalStats": {
+          "yAverage": 18.1711,
+          "yLow": 11,
+          "yHigh": 20,
+          "saturationAverage": 4.04752
+        }
+      }
+    },
+    {
+      "key": "timeline-documentary:case-study",
+      "packageId": "timeline-documentary",
+      "variantId": "case-study",
+      "entryPoint": "src/styles/families/timeline-documentary/render-entry.tsx",
+      "compositionId": "TimelineDocumentaryFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/timeline-documentary/case-study.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "case-study"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/timeline-documentary/case-study.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "15f7c479bae249c1d02a722499246be0278b3d4adbcdd0461dc8aa43d164b7de",
+      "fileBytes": 957536,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 12,
+        "signalStats": {
+          "yAverage": 34.1266,
+          "yLow": 20,
+          "yHigh": 32,
+          "saturationAverage": 2.69997
+        }
+      }
+    },
+    {
+      "key": "timeline-documentary:chronology",
+      "packageId": "timeline-documentary",
+      "variantId": "chronology",
+      "entryPoint": "src/styles/families/timeline-documentary/render-entry.tsx",
+      "compositionId": "TimelineDocumentaryFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/timeline-documentary/chronology.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "chronology"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/timeline-documentary/chronology.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "5b5404f2338ca809bc26da273b413ec5e29b79a1b32e61058a8e8a52f46acc0c",
+      "fileBytes": 917581,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 11,
+        "signalStats": {
+          "yAverage": 32.0137,
+          "yLow": 20,
+          "yHigh": 31,
+          "saturationAverage": 2.59496
+        }
+      }
+    },
+    {
+      "key": "timeline-documentary:evolution",
+      "packageId": "timeline-documentary",
+      "variantId": "evolution",
+      "entryPoint": "src/styles/families/timeline-documentary/render-entry.tsx",
+      "compositionId": "TimelineDocumentaryFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/timeline-documentary/evolution.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "evolution"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/timeline-documentary/evolution.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "dcc7ed53636dd1a198ebccdc3ce5af1b986442a3bbe7b0109a29d20379797225",
+      "fileBytes": 994913,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 13,
+        "signalStats": {
+          "yAverage": 35.0384,
+          "yLow": 20,
+          "yHigh": 33,
+          "saturationAverage": 2.75015
+        }
+      }
+    },
+    {
+      "key": "timeline-documentary:milestones",
+      "packageId": "timeline-documentary",
+      "variantId": "milestones",
+      "entryPoint": "src/styles/families/timeline-documentary/render-entry.tsx",
+      "compositionId": "TimelineDocumentaryFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/timeline-documentary/milestones.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "milestones"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/timeline-documentary/milestones.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "61d558232f779e4ba7f6d8b3c61e1a3e432d277560eae84ccf2ee5723b45a6b5",
+      "fileBytes": 954889,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 12,
+        "signalStats": {
+          "yAverage": 33.3851,
+          "yLow": 20,
+          "yHigh": 32,
+          "saturationAverage": 2.65125
+        }
+      }
+    },
+    {
+      "key": "timeline-documentary:roadmap",
+      "packageId": "timeline-documentary",
+      "variantId": "roadmap",
+      "entryPoint": "src/styles/families/timeline-documentary/render-entry.tsx",
+      "compositionId": "TimelineDocumentaryFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/timeline-documentary/roadmap.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "roadmap"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/timeline-documentary/roadmap.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "54ee670bdddd9167aeaf461a484e7b8876b18217bd4196412aa064ecf62f737a",
+      "fileBytes": 894633,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 10,
+        "signalStats": {
+          "yAverage": 31.6867,
+          "yLow": 20,
+          "yHigh": 30,
+          "saturationAverage": 2.50132
+        }
+      }
+    }
+  ]
+}

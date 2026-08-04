@@ -9,21 +9,25 @@
   "tags": [
     "cinematic",
     "type",
-    "hook",
+    "kinetic-hook",
     "quote",
-    "transition"
+    "chapter-reset",
+    "manifesto",
+    "outro"
   ],
   "supportedIntents": [
     "hook",
     "quote",
-    "transition",
     "chapter-reset",
-    "takeaway"
+    "manifesto",
+    "outro"
   ],
   "recommendedIntents": [
     "hook",
     "quote",
-    "chapter-reset"
+    "chapter-reset",
+    "manifesto",
+    "outro"
   ],
   "avoidFor": [
     "dense dashboard scenes with multiple concurrent metrics",
@@ -48,14 +52,14 @@
   },
   "reducedMotion": {
     "strategy": "fade",
-    "notes": "Quote and transition fixtures use static entrance styles as the reduced-motion review behavior."
+    "notes": "Quote and chapter-reset fixtures use static entrance styles as the reduced-motion review behavior."
   },
   "accessibility": {
     "contrast": "AA",
     "notes": "Large type, restrained accent use, and fixed portrait safe areas keep the frames readable despite dark cinematic surfaces."
   },
   "directorCompatibility": {
-    "selectionReason": "Choose when the narration needs a hook, quote, or chapter-reset beat that lands through scale and pause rather than structured modules.",
+    "selectionReason": "Choose when the narration needs a kinetic hook, quote, chapter reset, manifesto, or outro that lands through scale and pause rather than structured modules.",
     "preferredNeighborFamilies": [
       "technical-editorial",
       "minimal-education",
@@ -147,30 +151,27 @@
   },
   "sourceReferences": [
     {
-      "id": "awesome-design-md",
-      "url": "https://github.com/VoltAgent/awesome-design-md",
-      "selectedConcepts": [
-        "explicit do-dont rules",
-        "agent-readable documentation shape",
-        "package-level provenance"
-      ]
-    },
-    {
-      "id": "remotion-animating-properties",
+      "id": "w8-dashboard-remotion-animation",
       "url": "https://www.remotion.dev/docs/animating-properties",
       "selectedConcepts": [
         "frame-driven motion",
-        "deterministic timing",
-        "reduced-motion adaptation"
+        "deterministic timing"
       ]
     },
     {
-      "id": "remotion-cli-still",
-      "url": "https://www.remotion.dev/docs/cli/still",
+      "id": "w8-technical-primer-foundations",
+      "url": "https://primer.style/foundations/",
       "selectedConcepts": [
-        "review-frame rendering",
-        "input-props driven composition selection",
-        "artifact-based visual QA"
+        "display-to-support hierarchy",
+        "readable type roles"
+      ]
+    },
+    {
+      "id": "w8-minimal-material-web",
+      "url": "https://github.com/primer/primitives",
+      "selectedConcepts": [
+        "compact type-led primitives",
+        "bounded callout components"
       ]
     }
   ],

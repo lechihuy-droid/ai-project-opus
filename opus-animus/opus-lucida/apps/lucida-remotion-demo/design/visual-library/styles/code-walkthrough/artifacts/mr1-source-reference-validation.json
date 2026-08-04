@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "terra-mr1-source-reference-validation/v1",
+  "packageId": "code-walkthrough",
+  "status": "PASS",
+  "variantCount": 5,
+  "sourceEvidenceIds": [
+    "w8-technical-reveal-code",
+    "w8-technical-primer-primitives",
+    "fixture-terminal-repo"
+  ],
+  "sourceReferences": [
+    "w8-technical-reveal-code",
+    "w8-technical-primer-primitives",
+    "fixture-terminal-repo"
+  ],
+  "normalization": {
+    "sourceReferencePrefixRemoved": [
+      "source:reference:w8-technical-reveal-code",
+      "source:reference:w8-technical-primer-primitives",
+      "source:reference:fixture-terminal-repo"
+    ],
+    "legacyAliasesUsed": [],
+    "localIdsUsed": []
+  },
+  "approvalOrPromotionPerformed": false
+}

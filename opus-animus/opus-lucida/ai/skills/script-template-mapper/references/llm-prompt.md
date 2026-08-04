@@ -63,6 +63,11 @@ Hierarchy rules (M6, RD-visual-mechanism FR4 — voice tells, visual shows):
 - When the script has a visualMechanism, prefer showing it (window / context chip / timer morph / diff-highlight state changes) over adding another headline.
 - A number stated in any headline/CTA ("ba bước", "3") must equal the number of items/steps rendered in that scene.
 
+Treatment rules (Loop 0 — M6.1 2026-07-16):
+- video-map PHẢI được build theo `visual-treatment.md` đã approved (xem `apps/lucida-remotion-demo/docs/review-design-before-render.md` mục 4) — mỗi beat trong treatment phải ứng với ít nhất một transition/scene tương ứng trong map.
+- Nếu một beat không thể hiện được bằng component hiện có: STOP, output "COMPONENT GAP: <beat> cần <khả năng>" thay vì trả JSON. Cấm lách: không đổi title cửa sổ, không mượn component sai vai, không bỏ beat trong im lặng.
+- Mọi actor liệt kê trong treatment phải xuất hiện ít nhất một lần trong map.
+
 Constraints:
 - Format: 9:16 vertical.
 - Style: dark AI tech, warm orange glow.

@@ -1,0 +1,24 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-16",
+    "approvedBy": "HUY",
+    "status": "approved"
+  },
+  "collectorVersion": "w8-link-note-collector/1",
+  "domain": "visual-style",
+  "provenance": {
+    "collectorArtifact": "design/knowledge/reference-approvals/web/w8-timeline-loc-pictures.sanitized-approved.json",
+    "sanitizedArtifactChecksum": "c5b57cff680645f156e1aea35bcceccba88fc25c01b66cc96eeedbba8a4771be"
+  },
+  "rights": {
+    "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
+  "schemaVersion": "lucida-reference-source/v1",
+  "snapshotChecksum": "7bfd4cb54469f10fc5382fb12251b750191de737fe79d13617972593fabd85a1",
+  "sourceId": "source:reference:w8-timeline-loc-pictures",
+  "sourceRef": "https://www.loc.gov/pictures/",
+  "sourceRevision": "link-note:2026-07-16",
+  "sourceType": "web"
+}

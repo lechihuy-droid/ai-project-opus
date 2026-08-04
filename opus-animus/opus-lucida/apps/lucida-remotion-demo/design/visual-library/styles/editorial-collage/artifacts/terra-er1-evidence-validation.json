@@ -1,0 +1,231 @@
+{
+  "schemaVersion": "terra-er1-package-evidence-validation/v1",
+  "packageId": "editorial-collage",
+  "lunaEvidenceRule": "canonical visual-style source with approved approval and rights, or exact LUNA_VERIFIED_REVIEW_ELIGIBLE queue source ID.",
+  "status": "PASS",
+  "variantCount": 5,
+  "patternCount": 30,
+  "proposedVariantCount": 5,
+  "proposedPatternCount": 30,
+  "records": [
+    {
+      "recordType": "sourceReference",
+      "recordId": "w8-dashboard-remotion-animation",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "source-montage",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "culture-recap",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "visual-essay",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "quote-collage",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "multi-source-evidence",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-source-montage-place-document-route-layout",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-source-montage-deck-caption-type-hierarchy",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-source-montage-three-role-semantic-palette",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-source-montage-three-layer-frame-motion",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-source-montage-captioned-crop-component-contract",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-source-montage-context-trace-route-composition",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-multi-source-evidence-wall-survey-route-layout",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-multi-source-evidence-source-audit-type-hierarchy",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-multi-source-evidence-evidence-role-palette",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-multi-source-evidence-reduced-stack-motion",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-multi-source-evidence-evidence-callout-component",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-multi-source-evidence-archive-measure-trace-composition",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-quote-collage-truthful-placeholder-layout",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-quote-collage-placeholder-type-contract",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-quote-collage-asset-policy-palette",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-quote-collage-static-audit-motion",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-quote-collage-explicit-placeholder-component",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-quote-collage-valid-rejected-missing-composition",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-visual-essay-document-poster-index-layout",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-visual-essay-source-role-type-hierarchy",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-visual-essay-evidence-role-palette",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-visual-essay-document-led-motion",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-visual-essay-evidence-callout-component",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-visual-essay-document-signal-index-composition",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-culture-recap-broadcast-note-route-layout",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-culture-recap-sequence-type-hierarchy",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-culture-recap-role-palette",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-culture-recap-reduced-sequence-motion",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-culture-recap-recap-component",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ec-culture-recap-cue-observation-route-composition",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    }
+  ],
+  "failures": [],
+  "approvalOrPromotionPerformed": false,
+  "compilerEligibility": false
+}

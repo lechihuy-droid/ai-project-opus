@@ -1,0 +1,24 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-16",
+    "approvedBy": "HUY",
+    "status": "approved"
+  },
+  "collectorVersion": "w8-link-note-collector/1",
+  "domain": "visual-style",
+  "provenance": {
+    "collectorArtifact": "design/knowledge/reference-approvals/repository/w8-dashboard-primer-react.sanitized-approved.json",
+    "sanitizedArtifactChecksum": "3aec8c287afba451169f3e854aa67cb9c56364c7d811eccc0f247b35b74c302b"
+  },
+  "rights": {
+    "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
+  "schemaVersion": "lucida-reference-source/v1",
+  "snapshotChecksum": "5ecf602b407772b7a3b27b6de05e509c6bfe56bfd4e6d5368bf161fa1e5f33b4",
+  "sourceId": "source:reference:w8-dashboard-primer-react",
+  "sourceRef": "https://github.com/primer/react",
+  "sourceRevision": "git:4045abea621d0940edcd1120fc70e6ed5f797205",
+  "sourceType": "repository"
+}

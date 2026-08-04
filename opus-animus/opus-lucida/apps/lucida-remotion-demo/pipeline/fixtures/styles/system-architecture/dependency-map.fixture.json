@@ -1,0 +1,23 @@
+{
+  "key": "dependency-map",
+  "label": "Dependency map",
+  "eyebrow": "System architecture / service dependencies",
+  "title": "Keep the central service distinct from the dependencies it must govern",
+  "summary": "The map separates direct policy, data, identity, and delivery dependencies so ownership and risk remain visible.",
+  "density": "balanced",
+  "motionPolicy": "static",
+  "nodes": [
+    {"id": "identity", "label": "Identity", "detail": "Authenticate users", "x": 18, "y": 24, "tone": "success"},
+    {"id": "policy", "label": "Policy", "detail": "Authorize actions", "x": 82, "y": 24, "tone": "warning"},
+    {"id": "service", "label": "Core service", "detail": "Owns business behavior", "x": 50, "y": 52, "tone": "accent"},
+    {"id": "data", "label": "Data store", "detail": "Persist system state", "x": 18, "y": 79, "tone": "neutral"},
+    {"id": "delivery", "label": "Delivery", "detail": "Publish outcomes", "x": 82, "y": 79, "tone": "danger"}
+  ],
+  "edges": [
+    {"from": "identity", "to": "service", "label": "claims"},
+    {"from": "policy", "to": "service", "label": "rules"},
+    {"from": "service", "to": "data", "label": "state"},
+    {"from": "service", "to": "delivery", "label": "events"}
+  ],
+  "caption": "The core service owns behavior, while identity, policy, data, and delivery remain explicit direct dependencies."
+}

@@ -1,0 +1,60 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-16",
+    "approvedBy": "HUY",
+    "status": "approved"
+  },
+  "generatedAt": "2026-07-16T00:00:00.000Z",
+  "projectId": "lucida-remotion-demo-w8-evidence",
+  "rights": {
+    "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
+  "sanitization": {
+    "findings": [
+      "Link-only reviewer notes; no third-party source body or media is stored."
+    ],
+    "redactions": 0,
+    "status": "passed"
+  },
+  "schemaVersion": "sanitized-visual-input/v1",
+  "sources": [
+    {
+      "checksum": "ed0c08224248380a66b0719ab741744642d04ef638c05ac9f1091c5847a52681",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "dashboard-data",
+        "url": "https://primer.style/"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "dashboard-data",
+            "tags": [
+              "dashboard-data",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "ed0c08224248380a66b0719ab741744642d04ef638c05ac9f1091c5847a52681",
+            "sourceRef": "https://primer.style/"
+          },
+          "text": "# Primer design system dashboard review note\n\nSource: https://primer.style/\nTarget package: dashboard-data\n\nReviewer-authored concepts:\n- information hierarchy\n- semantic color roles\n- dense but inspectable UI\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "rights": {
+        "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+        "policy": "link-and-review-note-only",
+        "status": "approved"
+      },
+      "sourceId": "source:reference:w8-dashboard-primer-docs",
+      "sourceRevision": "link-note:2026-07-16",
+      "sourceType": "web_reference"
+    }
+  ]
+}

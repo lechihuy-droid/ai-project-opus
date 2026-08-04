@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "terra-pattern-proposal-p13-validation/v1",
+  "proposalId": "terra-pattern-proposal-p13",
+  "packageId": "claim-evidence",
+  "proposalStatus": "pending-human-approval",
+  "humanPatternReview": "pending",
+  "compilerEligibility": {
+    "eligible": false,
+    "reason": "All patterns are proposed and require human approval; this validator cannot approve or promote them."
+  },
+  "canonicalPromotion": false,
+  "approvalAction": "none",
+  "scope": {
+    "patterns": "design/visual-library/styles/claim-evidence/visual-patterns.json",
+    "ownership": "package-local only",
+    "collectionEdited": false,
+    "rendererEdited": false,
+    "globalEdited": false
+  },
+  "checks": {
+    "schemaValid": true,
+    "referencesValid": true,
+    "exactPatternCount": true,
+    "uniquePatternIds": true,
+    "patternsPerVariant": {
+      "benchmark-audit": 6,
+      "claim-proof": 6,
+      "myth-reality": 6,
+      "pro-con": 6,
+      "source-triangulation": 6
+    },
+    "sixPatternsPerVariant": true,
+    "distinctRecipeTypesPerVariant": {
+      "benchmark-audit": [
+        "component",
+        "composition",
+        "layout",
+        "motion",
+        "palette",
+        "typography"
+      ],
+      "claim-proof": [
+        "component",
+        "composition",
+        "layout",
+        "motion",
+        "palette",
+        "typography"
+      ],
+      "myth-reality": [
+        "component",
+        "composition",
+        "layout",
+        "motion",
+        "palette",
+        "typography"
+      ],
+      "pro-con": [
+        "component",
+        "composition",
+        "layout",
+        "motion",
+        "palette",
+        "typography"
+      ],
+      "source-triangulation": [
+        "component",
+        "composition",
+        "layout",
+        "motion",
+        "palette",
+        "typography"
+      ]
+    },
+    "allReviewStatusesProposed": true,
+    "concreteRecipes": true,
+    "verifiedEvidenceAliases": [
+      "openai-gpt-5-6-official",
+      "w8-dashboard-remotion-animation",
+      "w8-minimal-nng-hierarchy"
+    ]
+  },
+  "result": "PASS",
+  "errors": []
+}

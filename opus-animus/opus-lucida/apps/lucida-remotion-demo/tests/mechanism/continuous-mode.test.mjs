@@ -23,7 +23,11 @@ const loadTypeScriptModule = (relativePath) => {
   return module.exports;
 };
 
-const { applyElementTransition } = loadTypeScriptModule(
+const {
+  applyElementTransition,
+  interpolateEnvironmentTransform,
+  normalizeEnvironmentTransform,
+} = loadTypeScriptModule(
   "src/mechanism/continuousState.ts",
 );
 const { splitSubtitleLines } = loadTypeScriptModule("src/subtitleLines.ts");
@@ -37,7 +41,34 @@ test("continuous renderer keeps one environment and dispatches C1 components", (
   assert.match(source, /case "ContextChip"/u);
   assert.match(source, /case "TimerMorph"/u);
   assert.match(source, /case "DiffHighlight"/u);
+  assert.match(source, /case "MechanismWindow"/u);
+  assert.match(source, /activeWindowTarget === element\.target/u);
   assert.match(source, /index <= sceneIndex/u);
+});
+
+test("environment position and scale animate over 20 frames", () => {
+  const from = normalizeEnvironmentTransform({});
+  const to = normalizeEnvironmentTransform({
+    position: { left: 280, top: 450 },
+    scale: 0.8,
+  });
+
+  assert.deepEqual(
+    interpolateEnvironmentTransform(from, to, 90, 90),
+    from,
+  );
+  assert.deepEqual(interpolateEnvironmentTransform(from, to, 100, 90), {
+    position: { left: 180, top: 350 },
+    scale: 0.9,
+  });
+  assert.deepEqual(interpolateEnvironmentTransform(from, to, 110, 90), to);
+});
+
+test("legacy environment maps keep the original transform defaults", () => {
+  assert.deepEqual(normalizeEnvironmentTransform({}), {
+    position: { left: 80, top: 250 },
+    scale: 1,
+  });
 });
 
 test("composition branches on continuous mode and reuses SubtitleBar", () => {

@@ -1,0 +1,167 @@
+{
+  "schemaVersion": "lucida-style-rag-phase1-stills/v1",
+  "recordCount": 5,
+  "selection": {
+    "packageId": "claim-evidence",
+    "variantId": null
+  },
+  "outputRoot": "design/reports/style-rag-phase1-stills",
+  "bounds": {
+    "bundleTimeoutMs": 120000,
+    "selectTimeoutMs": 30000,
+    "renderTimeoutMs": 60000,
+    "analysisTimeoutMs": 20000
+  },
+  "stills": [
+    {
+      "key": "claim-evidence:benchmark-audit",
+      "packageId": "claim-evidence",
+      "variantId": "benchmark-audit",
+      "entryPoint": "src/styles/families/claim-evidence/renderRoot.tsx",
+      "compositionId": "ClaimEvidenceFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/claim-evidence/benchmark-audit.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "benchmark-audit"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/claim-evidence/benchmark-audit.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "7397b7fcd1184aa11f4f01d97d5aa986788bc7151c7ef876c6eb1abaef64844e",
+      "fileBytes": 148153,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 8,
+        "signalStats": {
+          "yAverage": 27.5168,
+          "yLow": 20,
+          "yHigh": 28,
+          "saturationAverage": 3.01183
+        }
+      }
+    },
+    {
+      "key": "claim-evidence:claim-proof",
+      "packageId": "claim-evidence",
+      "variantId": "claim-proof",
+      "entryPoint": "src/styles/families/claim-evidence/renderRoot.tsx",
+      "compositionId": "ClaimEvidenceFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/claim-evidence/claim-proof.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "claim-proof"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/claim-evidence/claim-proof.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "55ebf44494b1f6b7f08bcc399f9b27231f9d5fbdc25bcc8953721f5e37800630",
+      "fileBytes": 178987,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 16,
+        "signalStats": {
+          "yAverage": 29.5132,
+          "yLow": 20,
+          "yHigh": 36,
+          "saturationAverage": 3.45139
+        }
+      }
+    },
+    {
+      "key": "claim-evidence:myth-reality",
+      "packageId": "claim-evidence",
+      "variantId": "myth-reality",
+      "entryPoint": "src/styles/families/claim-evidence/renderRoot.tsx",
+      "compositionId": "ClaimEvidenceFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/claim-evidence/myth-reality.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "myth-reality"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/claim-evidence/myth-reality.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "f35e946ad6a33057c4f742298e202bfd8200e85afa84ec047ce763c5118860e4",
+      "fileBytes": 196277,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 12,
+        "signalStats": {
+          "yAverage": 30.4998,
+          "yLow": 20,
+          "yHigh": 32,
+          "saturationAverage": 2.97631
+        }
+      }
+    },
+    {
+      "key": "claim-evidence:pro-con",
+      "packageId": "claim-evidence",
+      "variantId": "pro-con",
+      "entryPoint": "src/styles/families/claim-evidence/renderRoot.tsx",
+      "compositionId": "ClaimEvidenceFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/claim-evidence/pro-con.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "pro-con"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/claim-evidence/pro-con.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "630f9f183ba60a6f920fd406f42c7db845c257b22e0bd96de17a643bf542a21b",
+      "fileBytes": 153966,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 8,
+        "signalStats": {
+          "yAverage": 27.3859,
+          "yLow": 20,
+          "yHigh": 28,
+          "saturationAverage": 3.01211
+        }
+      }
+    },
+    {
+      "key": "claim-evidence:source-triangulation",
+      "packageId": "claim-evidence",
+      "variantId": "source-triangulation",
+      "entryPoint": "src/styles/families/claim-evidence/renderRoot.tsx",
+      "compositionId": "ClaimEvidenceFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/claim-evidence/source-triangulation.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "source-triangulation"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/claim-evidence/source-triangulation.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "14cc529efbebb122a9531713b215ff7a80ce046d608602031d158511086eeb62",
+      "fileBytes": 186810,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 11,
+        "signalStats": {
+          "yAverage": 28.6938,
+          "yLow": 20,
+          "yHigh": 31,
+          "saturationAverage": 3.52747
+        }
+      }
+    }
+  ]
+}

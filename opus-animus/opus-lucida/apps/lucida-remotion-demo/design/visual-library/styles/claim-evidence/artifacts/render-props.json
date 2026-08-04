@@ -1,0 +1,7 @@
+{
+  "packageId": "claim-evidence",
+  "compositionId": "ClaimEvidenceFamilyReview",
+  "entryPoint": "src/styles/families/claim-evidence/renderRoot.tsx",
+  "imageFormat": "png",
+  "qualityChecks": ["five-png", "1080x1920-dimensions", "decoded-png-nonblank", "repeat-render-sha256-sample"]
+}

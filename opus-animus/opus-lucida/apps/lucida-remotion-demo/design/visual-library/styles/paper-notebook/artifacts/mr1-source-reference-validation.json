@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "terra-mr1-source-reference-validation/v1",
+  "packageId": "paper-notebook",
+  "status": "PASS",
+  "variantCount": 5,
+  "sourceEvidenceIds": [
+    "web-excalidraw",
+    "web-katex",
+    "repo-excalidraw",
+    "repo-marp"
+  ],
+  "sourceReferences": [
+    "web-excalidraw",
+    "web-katex",
+    "repo-excalidraw",
+    "repo-marp"
+  ],
+  "normalization": {
+    "sourceReferencePrefixRemoved": [],
+    "legacyAliasesUsed": [],
+    "localIdsUsed": []
+  },
+  "approvalOrPromotionPerformed": false
+}

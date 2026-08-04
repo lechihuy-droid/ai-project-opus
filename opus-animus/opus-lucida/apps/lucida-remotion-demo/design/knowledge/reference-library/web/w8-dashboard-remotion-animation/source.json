@@ -1,0 +1,24 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-16",
+    "approvedBy": "HUY",
+    "status": "approved"
+  },
+  "collectorVersion": "w8-link-note-collector/1",
+  "domain": "visual-style",
+  "provenance": {
+    "collectorArtifact": "design/knowledge/reference-approvals/web/w8-dashboard-remotion-animation.sanitized-approved.json",
+    "sanitizedArtifactChecksum": "43ed315e129cbca8f60b6a18fd0b6bc177757a9947fcd494fef763f4f782b9bc"
+  },
+  "rights": {
+    "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
+  "schemaVersion": "lucida-reference-source/v1",
+  "snapshotChecksum": "2594651d67e204312d55ef0763fcc2dfff3500331393e6b916bc187ec0a78a63",
+  "sourceId": "source:reference:w8-dashboard-remotion-animation",
+  "sourceRef": "https://www.remotion.dev/docs/animating-properties",
+  "sourceRevision": "link-note:2026-07-16",
+  "sourceType": "web"
+}

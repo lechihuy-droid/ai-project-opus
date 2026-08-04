@@ -1,82 +1,69 @@
 from __future__ import annotations
 
-import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 
-from services import runtime_state
+from services import runtime_state, skill_library
 
 
-def _skill_roots() -> list[Path]:
-    home = Path.home()
-    return [
-        home / ".codex" / "skills",
-        home / ".codex" / "plugins" / "cache",
-    ]
+_SLUG_RE = re.compile(r"[^a-z0-9._-]+")
+_NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 ._:-]*$")
 
 
-def _skill_id(path: Path) -> str:
-    digest = hashlib.sha1(str(path.resolve()).encode("utf-8")).hexdigest()[:12]
-    return f"skill-{digest}"
+def _id(name: str) -> str:
+    return _SLUG_RE.sub("-", name.lower()).strip("-")
 
 
-def _summary(text: str) -> tuple[str, str]:
-    title = "Untitled skill"
-    description = ""
-    for line in text.splitlines():
+def _summary(content: str) -> tuple[str, str, str]:
+    """Preserve the legacy runtime title/description fallbacks."""
+    meta, body = skill_library.split_frontmatter(content)
+    title = description = ""
+    for line in body.splitlines():
         stripped = line.strip()
-        if not stripped:
+        if not stripped or stripped == "---":
             continue
         if stripped.startswith("#"):
             title = stripped.lstrip("#").strip() or title
+        else:
+            description = stripped
+            break
+    return meta.get("name", ""), title, description
+
+
+def _records(include_body: bool = False) -> list[dict[str, Any]]:
+    """Read the authoritative library and adapt it to the legacy API shape."""
+    rows: dict[str, dict[str, Any]] = {}
+    for entry in skill_library.list_skills():
+        fallback_name = str(entry["id"]).partition("/")[2]
+        detail = skill_library.get_skill(str(entry["id"]))
+        content = str(detail["content"])
+        declared, heading, first_line = _summary(content)
+        name = declared if _NAME_RE.match(declared) else fallback_name
+        skill_id = _id(name)
+        if not skill_id or skill_id in rows:
             continue
-        description = stripped
-        break
-    return title, description
-
-
-def _iter_skill_files() -> list[Path]:
-    files: list[Path] = []
-    for root in _skill_roots():
-        if not root.exists():
-            continue
-        try:
-            files.extend(path for path in root.rglob("SKILL.md") if path.is_file())
-        except OSError:
-            continue
-    return sorted(files, key=lambda path: str(path).lower())
-
-
-def _skill_record(path: Path, include_body: bool = False) -> dict[str, Any]:
-    text = path.read_text(encoding="utf-8", errors="replace")
-    title, description = _summary(text)
-    record: dict[str, Any] = {
-        "id": _skill_id(path),
-        "title": title,
-        "description": description,
-        "path": str(path),
-        "read_only": True,
-    }
-    if include_body:
-        record["body"] = text
-    return record
+        path = Path(str(entry["path"]))
+        rows[skill_id] = {
+            "id": skill_id,
+            "title": name if declared and _NAME_RE.match(declared) else heading or name or "Untitled skill",
+            "description": str(entry["description"]).strip() or first_line,
+            "path": str(path / "SKILL.md") if path.is_dir() else str(path),
+            "read_only": True,
+            **({"body": content} if include_body else {}),
+        }
+    return sorted(rows.values(), key=lambda row: str(row["id"]))
 
 
 def list_skills() -> list[dict[str, Any]]:
-    rows: list[dict[str, Any]] = []
-    for path in _iter_skill_files():
-        try:
-            rows.append(_skill_record(path))
-        except OSError:
-            continue
-    return rows
+    return _records()
 
 
 def get_skill(skill_id: str) -> dict[str, Any]:
-    for path in _iter_skill_files():
-        if _skill_id(path) == skill_id:
-            return _skill_record(path, include_body=True)
+    for record in _records(include_body=True):
+        if record["id"] == skill_id:
+            return record
     raise FileNotFoundError(f"Skill not found: {skill_id}")
 
 

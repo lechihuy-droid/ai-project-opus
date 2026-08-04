@@ -3,11 +3,12 @@
   "$id": "lucida-reference-source/v1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "sourceId", "sourceType", "sourceRef", "sourceRevision", "snapshotChecksum", "collectorVersion", "rights", "approval", "provenance"],
+  "required": ["schemaVersion", "sourceId", "sourceType", "domain", "sourceRef", "sourceRevision", "snapshotChecksum", "collectorVersion", "rights", "approval", "provenance"],
   "properties": {
     "schemaVersion": { "const": "lucida-reference-source/v1" },
     "sourceId": { "type": "string", "pattern": "^source:reference:[a-z0-9-]+$" },
     "sourceType": { "enum": ["repository", "web", "image", "theme"] },
+    "domain": { "enum": ["factual", "visual-style"] },
     "sourceRef": { "type": "string", "minLength": 1 },
     "sourceRevision": { "type": "string", "minLength": 1 },
     "snapshotChecksum": { "type": "string", "pattern": "^[a-f0-9]{64}$" },

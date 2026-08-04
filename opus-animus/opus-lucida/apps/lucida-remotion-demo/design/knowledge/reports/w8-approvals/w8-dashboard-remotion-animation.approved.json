@@ -1,0 +1,55 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-16T15:00:00.000Z",
+    "approvedBy": "HUY",
+    "status": "approved"
+  },
+  "generatedAt": "2026-07-16T00:00:00.000Z",
+  "projectId": "lucida-remotion-demo-w8-evidence",
+  "rights": {
+    "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
+  "sanitization": {
+    "findings": [
+      "Link-only reviewer notes; no third-party source body or media is stored."
+    ],
+    "redactions": 0,
+    "status": "passed"
+  },
+  "schemaVersion": "sanitized-visual-input/v1",
+  "sources": [
+    {
+      "checksum": "2594651d67e204312d55ef0763fcc2dfff3500331393e6b916bc187ec0a78a63",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "dashboard-data",
+        "url": "https://www.remotion.dev/docs/animating-properties"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "dashboard-data",
+            "tags": [
+              "dashboard-data",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "2594651d67e204312d55ef0763fcc2dfff3500331393e6b916bc187ec0a78a63",
+            "sourceRef": "https://www.remotion.dev/docs/animating-properties"
+          },
+          "text": "# Remotion deterministic dashboard motion note\n\nSource: https://www.remotion.dev/docs/animating-properties\nTarget package: dashboard-data\n\nReviewer-authored concepts:\n- frame-driven motion\n- deterministic interpolation\n- render-stable transitions\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "sourceId": "w8-dashboard-remotion-animation",
+      "sourceRevision": "link-note:2026-07-16",
+      "sourceType": "web_reference"
+    }
+  ]
+}

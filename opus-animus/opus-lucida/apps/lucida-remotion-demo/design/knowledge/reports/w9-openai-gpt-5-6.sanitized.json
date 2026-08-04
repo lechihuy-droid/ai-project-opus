@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "sanitized-visual-input/v1",
+  "projectId": "w9-gpt-5-6-production",
+  "generatedAt": "2026-07-16T00:00:00.000Z",
+  "sanitization": {
+    "status": "passed",
+    "redactions": 0,
+    "findings": ["Reviewer-authored factual summary and official source link only; no source page body or media stored."]
+  },
+  "sources": [
+    {
+      "sourceId": "w9-openai-gpt-5-6",
+      "sourceType": "web_reference",
+      "domain": "factual",
+      "collectorVersion": "w9-factual-link-note-collector/1",
+      "checksum": "57d85932a3043ffe3b267046af61de16a704e18de811155581347f8afa378747",
+      "sourceRevision": "openai-release:2026-07-09|link-note:2026-07-16",
+      "metadata": {
+        "url": "https://openai.com/index/gpt-5-6/"
+      },
+      "records": [
+        {
+          "kind": "factual_reference",
+          "text": "# OpenAI GPT-5.6 release factual review note\n\nSource: https://openai.com/index/gpt-5-6/\nPublished: 2026-07-09\n\nProposed factual claims:\n- GPT-5.6 launched on July 9, 2026.\n- The family includes Sol, Terra, and Luna.\n- GPT-5.6 is available across ChatGPT, Codex, and the OpenAI API.\n\nThis candidate stores a reviewer-authored factual summary and source link only; no page body, image, video, or brand asset is vendored.",
+          "data": {
+            "factIds": ["gpt-5-6-launch", "gpt-5-6-tiers", "gpt-5-6-availability"],
+            "tags": ["gpt-5-6", "openai", "official-source", "link-only"]
+          },
+          "provenance": {
+            "sourceRef": "https://openai.com/index/gpt-5-6/",
+            "sourceChecksum": "57d85932a3043ffe3b267046af61de16a704e18de811155581347f8afa378747",
+            "collectorVersion": "w9-factual-link-note-collector/1"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1851 @@
+[
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-alert-triage-severity-kpi-strip",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "operations-monitor"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "operations-monitor"
+    ],
+    "beatRoles": [
+      "monitor"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "top-title",
+      "four-cell-severity-kpi-strip",
+      "trend-panel-above-triage-table"
+    ],
+    "typographyTraits": [
+      "compact-system-labels",
+      "high-contrast-status-values"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "semantic-alert-colors"
+    ],
+    "motionTraits": [
+      "severity-strip-enter-first",
+      "reduced-motion-fade"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "trend-panel",
+      "operations-table"
+    ],
+    "contentCapacity": {
+      "headlineChars": 54,
+      "maxMetrics": 4,
+      "maxDataSeries": 2,
+      "maxItems": 4,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "triage a bounded service alert with signal, delta, owner, and response window"
+    ],
+    "antiPatterns": [
+      "more than four competing severity metrics",
+      "unowned remediation claim"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Uses the verified Primer React note for compact operational hierarchy; this original four-surface recipe remains pending human approval."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-alert-triage-signal-delta-cell",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "operations-monitor"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "operations-monitor"
+    ],
+    "beatRoles": [
+      "monitor"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "severity-led-kpi-strip",
+      "fixed-value-and-delta-columns"
+    ],
+    "typographyTraits": [
+      "numeric-value-first",
+      "compact-unit-label"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "semantic-alert-colors"
+    ],
+    "motionTraits": [
+      "value-then-delta-reveal",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "signal-delta-cell",
+      "severity-marker"
+    ],
+    "contentCapacity": {
+      "maxMetrics": 4,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "render one fixture-backed signal as current value, signed delta, unit, and severity"
+    ],
+    "antiPatterns": [
+      "delta without a comparison window",
+      "color-only severity encoding"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer React evidence for accessible operational controls; the signal cell is an original proposed component."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-alert-triage-threshold-state-cut",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "operations-monitor"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "operations-monitor"
+    ],
+    "beatRoles": [
+      "monitor"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "single-active-signal",
+      "stable-kpi-grid"
+    ],
+    "typographyTraits": [
+      "numeric-value-first",
+      "compact-threshold-label"
+    ],
+    "paletteTraits": [
+      "semantic-alert-colors",
+      "danger-reserved-for-breach"
+    ],
+    "motionTraits": [
+      "count-to-fixture-value",
+      "threshold-state-cut",
+      "reduced-motion-static-state"
+    ],
+    "componentTraits": [
+      "signal-delta-cell",
+      "severity-marker",
+      "trend-panel"
+    ],
+    "contentCapacity": {
+      "maxMetrics": 1,
+      "maxDataSeries": 1,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "show one measured threshold crossing before the triage rows appear"
+    ],
+    "antiPatterns": [
+      "continuous alarm pulsing",
+      "invented intermediate values"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Uses the verified Remotion note for deterministic frame-driven interpolation; threshold values remain fixture-bound and pending review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-alert-triage-owner-remediation-ledger",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "operations-monitor"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "operations-monitor"
+    ],
+    "beatRoles": [
+      "monitor"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "trend-panel-above-triage-table",
+      "owner-window-status-columns",
+      "one-decision-rail"
+    ],
+    "typographyTraits": [
+      "compact-system-labels",
+      "aligned-row-values"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "semantic-alert-colors"
+    ],
+    "motionTraits": [
+      "chart-settle-then-row-stagger",
+      "reduced-motion-fade"
+    ],
+    "componentTraits": [
+      "trend-panel",
+      "operations-table",
+      "watchlist-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 46,
+      "maxItems": 4,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "connect a detected signal to named owner, response window, and next remediation action"
+    ],
+    "antiPatterns": [
+      "table rows without accountable owners",
+      "chart with no operational consequence"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Uses the verified Primer design note for dense inspectable hierarchy; the owner ledger is an original pending composition."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-alert-triage-escalation-type-hierarchy",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "operations-monitor"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "operations-monitor"
+    ],
+    "beatRoles": [
+      "monitor"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "severity-led-kpi-strip",
+      "bottom-escalation-summary"
+    ],
+    "typographyTraits": [
+      "severity-label-12px",
+      "metric-value-28px",
+      "owner-action-16px"
+    ],
+    "paletteTraits": [
+      "high-contrast-neutral-text",
+      "semantic-alert-colors"
+    ],
+    "motionTraits": [
+      "summary-fade-in",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "severity-marker",
+      "operations-table",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 42,
+      "bodyChars": 96,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "make severity, measured value, and assigned action readable at a glance"
+    ],
+    "antiPatterns": [
+      "all-caps operational copy",
+      "same emphasis for label, value, and action"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer hierarchy evidence for distinct text roles; exact scale is a pending original Lucida proposal."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-alert-triage-four-signal-budget",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "operations-monitor"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "operations-monitor"
+    ],
+    "beatRoles": [
+      "monitor"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "four-cell-severity-kpi-strip",
+      "three-row-triage-table",
+      "single-decision-rail"
+    ],
+    "typographyTraits": [
+      "compact-system-labels",
+      "aligned-metric-values"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "semantic-alert-colors"
+    ],
+    "motionTraits": [
+      "one-panel-per-beat",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "trend-panel",
+      "operations-table",
+      "watchlist-rail"
+    ],
+    "contentCapacity": {
+      "maxMetrics": 4,
+      "maxDataSeries": 2,
+      "maxItems": 3,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "keep an alert review scannable within one portrait frame"
+    ],
+    "antiPatterns": [
+      "five or more KPI cells",
+      "scrolling alert log"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer React evidence for predictable dense structure; the explicit portrait budget remains pending approval."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-cohort-compare-twin-kpi-strip",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "comparison-dashboard"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "comparison",
+      "summarize"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "comparison-kpi-strip",
+      "paired-metric-columns",
+      "dual-series-trend-below"
+    ],
+    "typographyTraits": [
+      "aligned-metric-values",
+      "compact-cohort-labels"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "two-series-semantic-contrast"
+    ],
+    "motionTraits": [
+      "cohort-a-then-cohort-b-enter",
+      "reduced-motion-fade"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "trend-panel",
+      "watchlist-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "maxMetrics": 4,
+      "maxDataSeries": 2,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "compare exactly two fixture-bound cohorts across the same KPI definitions"
+    ],
+    "antiPatterns": [
+      "three or more cohorts",
+      "different units in paired columns"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer React evidence for compact comparison controls; the twin-cohort grid remains a pending original layout."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-cohort-compare-aligned-series-legend",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "comparison-dashboard"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "comparison"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dual-series-trend",
+      "legend-aligned-to-plot-edge"
+    ],
+    "typographyTraits": [
+      "compact-cohort-labels",
+      "numeric-value-first"
+    ],
+    "paletteTraits": [
+      "two-series-semantic-contrast",
+      "neutral-grid-lines"
+    ],
+    "motionTraits": [
+      "legend-before-line-draw",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "trend-panel",
+      "dual-series-legend",
+      "metric-cell"
+    ],
+    "contentCapacity": {
+      "maxDataSeries": 2,
+      "maxItems": 2,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "bind each of two plotted series to a stable name, swatch, and latest fixture value"
+    ],
+    "antiPatterns": [
+      "legend detached from plotted colors",
+      "series inferred from position alone"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer semantic-color evidence for role-based series labels; component details remain a proposal."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-cohort-compare-paired-series-draw",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "comparison-dashboard"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "comparison",
+      "summarize"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-dual-series-trend",
+      "fixed-legend-position"
+    ],
+    "typographyTraits": [
+      "compact-cohort-labels",
+      "aligned-metric-values"
+    ],
+    "paletteTraits": [
+      "two-series-semantic-contrast",
+      "dark-neutral-canvas"
+    ],
+    "motionTraits": [
+      "series-a-draw",
+      "series-b-draw",
+      "reduced-motion-state-cut"
+    ],
+    "componentTraits": [
+      "trend-panel",
+      "dual-series-legend",
+      "kpi-strip"
+    ],
+    "contentCapacity": {
+      "maxDataSeries": 2,
+      "maxMetrics": 2,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "reveal a two-series comparison without moving labels or changing axis scale"
+    ],
+    "antiPatterns": [
+      "animated axis rescaling",
+      "more than two animated series"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Uses verified Remotion evidence for deterministic timing; the ordered series reveal is proposed and pending approval."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-cohort-compare-variance-decision-rail",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "comparison-dashboard"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "comparison",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dual-series-trend",
+      "right-decision-rail",
+      "delta-summary-above-action"
+    ],
+    "typographyTraits": [
+      "delta-first-number",
+      "compact-decision-copy"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "two-series-semantic-contrast"
+    ],
+    "motionTraits": [
+      "plot-settle-then-rail-reveal",
+      "reduced-motion-fade"
+    ],
+    "componentTraits": [
+      "trend-panel",
+      "watchlist-rail",
+      "delta-summary-row"
+    ],
+    "contentCapacity": {
+      "bodyChars": 110,
+      "maxDataSeries": 2,
+      "maxItems": 2,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "turn an observed cohort variance into one bounded decision note with source metrics visible"
+    ],
+    "antiPatterns": [
+      "decision rail with no displayed delta",
+      "multiple competing recommendations"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer React hierarchy evidence for a supporting rail; this chart-to-decision composition is pending review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-cohort-compare-delta-first-number-type",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "comparison-dashboard"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "comparison"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "paired-metric-columns",
+      "delta-summary-row"
+    ],
+    "typographyTraits": [
+      "cohort-name-14px",
+      "current-value-28px",
+      "delta-value-20px"
+    ],
+    "paletteTraits": [
+      "high-contrast-neutral-text",
+      "two-series-semantic-contrast"
+    ],
+    "motionTraits": [
+      "value-fade-before-delta",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "metric-cell",
+      "delta-summary-row",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 38,
+      "maxMetrics": 2,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "make cohort identity, current value, and variance readable without a prose paragraph"
+    ],
+    "antiPatterns": [
+      "unlabeled signed values",
+      "color-only positive or negative meaning"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer information-hierarchy evidence for distinct numeric roles; proposed scale remains pending approval."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-cohort-compare-two-cohort-budget",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "comparison-dashboard"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "comparison",
+      "summarize"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "comparison-kpi-strip",
+      "single-dual-series-plot",
+      "one-decision-rail"
+    ],
+    "typographyTraits": [
+      "aligned-metric-values",
+      "compact-cohort-labels"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "two-series-semantic-contrast"
+    ],
+    "motionTraits": [
+      "one-surface-per-beat",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "trend-panel",
+      "watchlist-rail"
+    ],
+    "contentCapacity": {
+      "maxMetrics": 4,
+      "maxDataSeries": 2,
+      "maxItems": 2,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "fit a two-cohort comparison into one inspectable portrait dashboard"
+    ],
+    "antiPatterns": [
+      "more than two cohorts",
+      "two unrelated charts"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer React evidence for predictable spacing; this bounded portrait recipe remains pending review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-capacity-plan-committed-available-grid",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "benchmark-grid"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "benchmark-grid"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "capacity-kpi-strip",
+      "committed-versus-available-columns",
+      "planning-trend-grid"
+    ],
+    "typographyTraits": [
+      "aligned-metric-values",
+      "dense-table-alignment"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "capacity-status-contrast"
+    ],
+    "motionTraits": [
+      "availability-grid-enter",
+      "reduced-motion-fade"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "trend-panel",
+      "operations-table"
+    ],
+    "contentCapacity": {
+      "headlineChars": 50,
+      "maxMetrics": 4,
+      "maxDataSeries": 2,
+      "maxItems": 4,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "compare fixture-bound committed and available capacity across named planning windows"
+    ],
+    "antiPatterns": [
+      "forecast without a time window",
+      "derived capacity value"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer React evidence for compact stateful data surfaces; layout remains a pending original proposal."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-capacity-plan-forecast-window-row",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "benchmark-grid"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "benchmark-grid"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "planning-trend-grid",
+      "window-owner-status-columns"
+    ],
+    "typographyTraits": [
+      "dense-table-alignment",
+      "compact-system-labels"
+    ],
+    "paletteTraits": [
+      "capacity-status-contrast",
+      "dark-neutral-canvas"
+    ],
+    "motionTraits": [
+      "row-fade-in",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "operations-table",
+      "forecast-window-row",
+      "status-indicator"
+    ],
+    "contentCapacity": {
+      "maxItems": 4,
+      "maxMetrics": 2,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "render one capacity window with owner, available amount, committed amount, and status"
+    ],
+    "antiPatterns": [
+      "window row without unit",
+      "owner omitted from a constrained plan"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer React evidence for operational control structure; the window-row contract remains proposed."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-capacity-plan-threshold-fill",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "benchmark-grid"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "benchmark-grid"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "single-capacity-metric",
+      "stable-planning-grid"
+    ],
+    "typographyTraits": [
+      "numeric-value-first",
+      "compact-threshold-label"
+    ],
+    "paletteTraits": [
+      "capacity-status-contrast",
+      "warning-reserved-for-shortfall"
+    ],
+    "motionTraits": [
+      "fill-to-fixture-value",
+      "threshold-state-cut",
+      "reduced-motion-static-state"
+    ],
+    "componentTraits": [
+      "metric-cell",
+      "trend-panel",
+      "status-indicator"
+    ],
+    "contentCapacity": {
+      "maxMetrics": 1,
+      "maxDataSeries": 1,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "show utilization against an explicit fixture threshold without changing the grid"
+    ],
+    "antiPatterns": [
+      "looping gauge animation",
+      "threshold inferred from color alone"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Uses verified Remotion evidence for render-stable transitions; proposed fill is bounded to fixture data and pending review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-capacity-plan-owner-ledger",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "benchmark-grid"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "benchmark-grid"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "capacity-kpi-strip",
+      "planning-trend-grid",
+      "bottom-owner-ledger"
+    ],
+    "typographyTraits": [
+      "dense-table-alignment",
+      "compact-system-labels"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "capacity-status-contrast"
+    ],
+    "motionTraits": [
+      "metric-strip-then-ledger",
+      "reduced-motion-fade"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "trend-panel",
+      "operations-table"
+    ],
+    "contentCapacity": {
+      "bodyChars": 120,
+      "maxMetrics": 4,
+      "maxItems": 4,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "link capacity risk to named owner and planning window after the chart establishes context"
+    ],
+    "antiPatterns": [
+      "ledger with no measured capacity context",
+      "more than four planning rows"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer dense-UI evidence for an inspectable ledger hierarchy; composition is pending approval."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-capacity-plan-utilization-type-hierarchy",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "benchmark-grid"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "benchmark-grid"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "committed-versus-available-columns",
+      "bottom-owner-ledger"
+    ],
+    "typographyTraits": [
+      "window-label-12px",
+      "utilization-value-28px",
+      "constraint-note-16px"
+    ],
+    "paletteTraits": [
+      "high-contrast-neutral-text",
+      "capacity-status-contrast"
+    ],
+    "motionTraits": [
+      "label-then-value-fade",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "metric-cell",
+      "forecast-window-row",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 40,
+      "bodyChars": 90,
+      "maxMetrics": 2,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "separate planning window, utilization value, and constraint note in a dense capacity view"
+    ],
+    "antiPatterns": [
+      "unitless percentages",
+      "equal text treatment for plan and exception"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer information-hierarchy evidence; detailed type roles remain an original pending recipe."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-capacity-plan-four-window-budget",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "benchmark-grid"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "benchmark-grid"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "four-cell-capacity-strip",
+      "one-trend-panel",
+      "four-window-owner-ledger"
+    ],
+    "typographyTraits": [
+      "dense-table-alignment",
+      "aligned-metric-values"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "capacity-status-contrast"
+    ],
+    "motionTraits": [
+      "surface-by-surface-reveal",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "trend-panel",
+      "operations-table"
+    ],
+    "contentCapacity": {
+      "maxMetrics": 4,
+      "maxDataSeries": 2,
+      "maxItems": 4,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "keep a four-window capacity plan readable in one portrait operational frame"
+    ],
+    "antiPatterns": [
+      "five or more planning windows",
+      "unbounded planning grid"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer React spacing evidence for a bounded dense surface; the four-window limit is pending approval."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-sla-watch-exposure-kpi-strip",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "trend-panel"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "trend-panel"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "service-level-kpi-strip",
+      "threshold-trend-review",
+      "owner-followup-rail"
+    ],
+    "typographyTraits": [
+      "status-first-values",
+      "compact-system-labels"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "semantic-threshold-colors"
+    ],
+    "motionTraits": [
+      "service-kpis-enter-first",
+      "reduced-motion-fade"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "trend-panel",
+      "watchlist-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 50,
+      "maxMetrics": 4,
+      "maxDataSeries": 2,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "summarize response health, breach exposure, and owner follow-up from structured SLA data"
+    ],
+    "antiPatterns": [
+      "SLA state without a review window",
+      "decorative status chrome"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer React evidence for stateful data surfaces; this SLA layout remains proposed pending review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-sla-watch-breach-window-row",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "trend-panel"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "trend-panel"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "threshold-trend-review",
+      "owner-window-status-columns"
+    ],
+    "typographyTraits": [
+      "compact-system-labels",
+      "status-first-values"
+    ],
+    "paletteTraits": [
+      "semantic-threshold-colors",
+      "dark-neutral-canvas"
+    ],
+    "motionTraits": [
+      "row-fade-in",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "operations-table",
+      "breach-window-row",
+      "status-indicator"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxMetrics": 2,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "show one SLA exposure with owner, remaining window, measured state, and follow-up"
+    ],
+    "antiPatterns": [
+      "breach label without timing context",
+      "ownerless follow-up row"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer React evidence for accessible operational controls; breach-window row remains an original proposal."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-sla-watch-threshold-state-cut",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "trend-panel"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "trend-panel"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "single-active-service-metric",
+      "stable-threshold-trend"
+    ],
+    "typographyTraits": [
+      "status-first-values",
+      "compact-threshold-label"
+    ],
+    "paletteTraits": [
+      "semantic-threshold-colors",
+      "danger-reserved-for-breach"
+    ],
+    "motionTraits": [
+      "value-count-to-fixture",
+      "threshold-state-cut",
+      "reduced-motion-static-state"
+    ],
+    "componentTraits": [
+      "metric-cell",
+      "status-indicator",
+      "trend-panel"
+    ],
+    "contentCapacity": {
+      "maxMetrics": 1,
+      "maxDataSeries": 1,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "introduce a service state transition from the actual fixture value and threshold"
+    ],
+    "antiPatterns": [
+      "pulsing red animation",
+      "fictional breach countdown"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Uses verified Remotion deterministic-motion evidence; the state cut is proposed and retains fixture-only values."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-sla-watch-owner-window-rail",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "trend-panel"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "trend-panel"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "threshold-trend-review",
+      "right-owner-window-rail",
+      "one-next-action"
+    ],
+    "typographyTraits": [
+      "status-first-values",
+      "compact-decision-copy"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "semantic-threshold-colors"
+    ],
+    "motionTraits": [
+      "trend-settle-then-rail-reveal",
+      "reduced-motion-fade"
+    ],
+    "componentTraits": [
+      "trend-panel",
+      "watchlist-rail",
+      "breach-window-row"
+    ],
+    "contentCapacity": {
+      "bodyChars": 108,
+      "maxDataSeries": 2,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "place breach exposure beside its accountable owner and one review action"
+    ],
+    "antiPatterns": [
+      "multiple action owners per rail item",
+      "state summary without source metric"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer evidence for semantic state hierarchy; owner-window rail is an original pending composition."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-sla-watch-status-type-hierarchy",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "trend-panel"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "trend-panel"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "service-level-kpi-strip",
+      "owner-followup-rail"
+    ],
+    "typographyTraits": [
+      "service-label-12px",
+      "status-value-28px",
+      "review-window-16px"
+    ],
+    "paletteTraits": [
+      "high-contrast-neutral-text",
+      "semantic-threshold-colors"
+    ],
+    "motionTraits": [
+      "label-then-state-fade",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "metric-cell",
+      "breach-window-row",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 40,
+      "bodyChars": 92,
+      "maxMetrics": 2,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "give service name, state value, and review window distinct reading roles"
+    ],
+    "antiPatterns": [
+      "status labels treated as decorative captions",
+      "time window hidden in footnote"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer hierarchy evidence; exact type roles are proposed and pending human approval."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-sla-watch-three-exposure-budget",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "trend-panel"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "trend-panel"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "four-cell-service-strip",
+      "single-threshold-trend",
+      "three-owner-followups"
+    ],
+    "typographyTraits": [
+      "status-first-values",
+      "compact-system-labels"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "semantic-threshold-colors"
+    ],
+    "motionTraits": [
+      "surface-by-surface-reveal",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "trend-panel",
+      "watchlist-rail"
+    ],
+    "contentCapacity": {
+      "maxMetrics": 4,
+      "maxDataSeries": 2,
+      "maxItems": 3,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "keep an SLA watch readable when three exposed services require owner context"
+    ],
+    "antiPatterns": [
+      "four or more follow-up rows",
+      "two unrelated trend panels"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer React density evidence; this one-frame SLA limit remains a pending proposal."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-handoff-queue-aging-kpi-strip",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "scorecard"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "scorecard"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "queue-kpi-strip",
+      "aging-bucket-summary",
+      "handoff-operations-ledger"
+    ],
+    "typographyTraits": [
+      "compact-system-labels",
+      "dense-table-alignment"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "semantic-queue-colors"
+    ],
+    "motionTraits": [
+      "queue-summary-enter-first",
+      "reduced-motion-fade"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "watchlist-rail",
+      "operations-table"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "maxMetrics": 4,
+      "maxItems": 4,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "summarize queue volume, aging, owner readiness, and next review point"
+    ],
+    "antiPatterns": [
+      "handoff rows without accountable owners",
+      "queue age without unit"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer React evidence for compact operational hierarchy; queue layout remains an original pending proposal."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-handoff-queue-owner-action-row",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "scorecard"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "scorecard"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "handoff-operations-ledger",
+      "owner-age-status-action-columns"
+    ],
+    "typographyTraits": [
+      "dense-table-alignment",
+      "compact-system-labels"
+    ],
+    "paletteTraits": [
+      "semantic-queue-colors",
+      "dark-neutral-canvas"
+    ],
+    "motionTraits": [
+      "row-fade-in",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "operations-table",
+      "handoff-owner-action-row",
+      "status-indicator"
+    ],
+    "contentCapacity": {
+      "maxItems": 4,
+      "maxMetrics": 1,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "render one handoff item with owner, age, queue state, and next action"
+    ],
+    "antiPatterns": [
+      "action without owner",
+      "unbounded status pill collection"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer React evidence for accessible operational rows; owner-action row is pending review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-handoff-queue-arrival-release",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "scorecard"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "scorecard"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-handoff-ledger",
+      "single-active-queue-row"
+    ],
+    "typographyTraits": [
+      "compact-system-labels",
+      "dense-table-alignment"
+    ],
+    "paletteTraits": [
+      "semantic-queue-colors",
+      "dark-neutral-canvas"
+    ],
+    "motionTraits": [
+      "new-row-fade-in",
+      "ready-state-cut",
+      "reduced-motion-static-state"
+    ],
+    "componentTraits": [
+      "handoff-owner-action-row",
+      "status-indicator",
+      "kpi-strip"
+    ],
+    "contentCapacity": {
+      "maxItems": 1,
+      "maxMetrics": 2,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "show one queue item arriving, receiving an owner, then becoming ready without row reordering"
+    ],
+    "antiPatterns": [
+      "rows sliding past one another",
+      "simulated queue churn"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Uses verified Remotion evidence for deterministic frame-driven state changes; motion remains proposed pending approval."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-handoff-queue-ready-blocked-ledger",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "scorecard"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "scorecard"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "queue-kpi-strip",
+      "ready-blocked-status-columns",
+      "next-review-rail"
+    ],
+    "typographyTraits": [
+      "dense-table-alignment",
+      "owner-first-reading-order"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "semantic-queue-colors"
+    ],
+    "motionTraits": [
+      "summary-then-ledger-reveal",
+      "reduced-motion-fade"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "operations-table",
+      "watchlist-rail"
+    ],
+    "contentCapacity": {
+      "bodyChars": 110,
+      "maxMetrics": 4,
+      "maxItems": 4,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "make ready and blocked handoffs comparable while preserving one named next review action"
+    ],
+    "antiPatterns": [
+      "separate dashboards for ready and blocked work",
+      "blocker without owner"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer semantic-state evidence for clear queue roles; this original ledger composition remains pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-handoff-queue-owner-first-type",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "scorecard"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "scorecard"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "owner-age-status-action-columns",
+      "next-review-rail"
+    ],
+    "typographyTraits": [
+      "owner-name-16px",
+      "queue-age-20px",
+      "next-action-14px"
+    ],
+    "paletteTraits": [
+      "high-contrast-neutral-text",
+      "semantic-queue-colors"
+    ],
+    "motionTraits": [
+      "owner-then-state-fade",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "handoff-owner-action-row",
+      "watchlist-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 38,
+      "bodyChars": 88,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "make ownership and queue age scannable before the action detail"
+    ],
+    "antiPatterns": [
+      "action text outranking accountable owner",
+      "age displayed without unit"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer hierarchy evidence for accountable operational text roles; proposal remains pending review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "dashboard-handoff-queue-four-row-budget",
+    "packageId": "dashboard-data",
+    "variantIds": [
+      "scorecard"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "scorecard"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "four-cell-queue-strip",
+      "four-row-handoff-ledger",
+      "single-next-review-rail"
+    ],
+    "typographyTraits": [
+      "dense-table-alignment",
+      "compact-system-labels"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "semantic-queue-colors"
+    ],
+    "motionTraits": [
+      "surface-by-surface-reveal",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "operations-table",
+      "watchlist-rail"
+    ],
+    "contentCapacity": {
+      "maxMetrics": 4,
+      "maxItems": 4,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "keep a cross-team handoff queue legible at four active rows in portrait"
+    ],
+    "antiPatterns": [
+      "five or more active rows",
+      "scrolling handoff ledger"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Uses verified Primer React evidence for predictable spacing; the four-row portrait budget remains proposed."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p4/1.0",
+    "reviewStatus": "proposed"
+  }
+]

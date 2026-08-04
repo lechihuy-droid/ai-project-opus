@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "terra-mr1-source-reference-validation/v1",
+  "packageId": "system-architecture",
+  "status": "PASS",
+  "variantCount": 5,
+  "sourceEvidenceIds": [
+    "web-mermaid-architecture",
+    "web-diagrams",
+    "repo-diagrams",
+    "web-structurizr-diagrams",
+    "repo-mermaid"
+  ],
+  "sourceReferences": [
+    "web-mermaid-architecture",
+    "web-diagrams",
+    "repo-diagrams",
+    "web-structurizr-diagrams",
+    "repo-mermaid"
+  ],
+  "normalization": {
+    "sourceReferencePrefixRemoved": [],
+    "legacyAliasesUsed": [],
+    "localIdsUsed": []
+  },
+  "approvalOrPromotionPerformed": false
+}

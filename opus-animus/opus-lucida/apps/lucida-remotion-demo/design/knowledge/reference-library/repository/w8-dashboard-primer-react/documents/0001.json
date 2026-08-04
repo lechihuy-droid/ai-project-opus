@@ -1,0 +1,29 @@
+{
+  "contentChecksum": "5ecf602b407772b7a3b27b6de05e509c6bfe56bfd4e6d5368bf161fa1e5f33b4",
+  "domain": "visual-style",
+  "mediaType": "repository",
+  "observations": [
+    {
+      "definition": {
+        "packageId": "dashboard-data",
+        "tags": [
+          "dashboard-data",
+          "w8-candidate",
+          "link-only"
+        ]
+      },
+      "kind": "layout_reference",
+      "reviewStatus": "approved"
+    }
+  ],
+  "rawText": "# Primer React dashboard hierarchy review note\n\nSource: https://github.com/primer/react\nTarget package: dashboard-data\n\nReviewer-authored concepts:\n- compact component hierarchy\n- semantic status surfaces\n- accessible operational controls\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts.",
+  "schemaVersion": "lucida-reference-document/v1",
+  "sourceRef": "https://github.com/primer/react",
+  "tags": [
+    "dashboard-data",
+    "link-only",
+    "repository",
+    "w8-candidate"
+  ],
+  "title": "w8-dashboard-primer-react record 0001"
+}

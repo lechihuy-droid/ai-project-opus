@@ -697,12 +697,14 @@ const StepsPanel = ({
 
 export const TechnicalEditorialScene = ({
   sceneKey,
+  fixture: fixtureOverride,
 }: {
-  sceneKey: TechnicalEditorialFixtureKey;
+  sceneKey?: TechnicalEditorialFixtureKey;
+  fixture?: TechnicalEditorialFixture;
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const fixture = technicalEditorialFixtures[sceneKey];
+  const fixture = fixtureOverride ?? technicalEditorialFixtures[sceneKey ?? "normal"];
   const layout = resolveVerticalLayout({
     platform: "tiktok",
     reservedHeader: 0,

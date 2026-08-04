@@ -1,11 +1,15 @@
-import { editorialCollageDenseFixture } from "./dense.fixture";
-import { editorialCollageEdgeFixture } from "./edge.fixture";
-import { editorialCollageNormalFixture } from "./normal.fixture";
+import { editorialCollageCultureRecapFixture } from "./culture-recap.fixture";
+import { editorialCollageMultiSourceEvidenceFixture } from "./multi-source-evidence.fixture";
+import { editorialCollageQuoteCollageFixture } from "./quote-collage.fixture";
+import { editorialCollageSourceMontageFixture } from "./source-montage.fixture";
+import { editorialCollageVisualEssayFixture } from "./visual-essay.fixture";
 
 export const editorialCollageFixtures = {
-  normal: editorialCollageNormalFixture,
-  dense: editorialCollageDenseFixture,
-  edge: editorialCollageEdgeFixture,
+  "source-montage": editorialCollageSourceMontageFixture,
+  "culture-recap": editorialCollageCultureRecapFixture,
+  "visual-essay": editorialCollageVisualEssayFixture,
+  "quote-collage": editorialCollageQuoteCollageFixture,
+  "multi-source-evidence": editorialCollageMultiSourceEvidenceFixture,
 };
 
 export type {

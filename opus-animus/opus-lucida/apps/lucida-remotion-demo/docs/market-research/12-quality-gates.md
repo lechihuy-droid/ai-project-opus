@@ -96,6 +96,25 @@ Total                  /100
 - `70–79`: revise affected scenes.
 - `<70`: reject and regenerate blueprint/style.
 
+## W4 hard production gates
+
+Production uses `qa:production` in two phases. Pre-render rejects a scene that exceeds
+the capacity in its selected style package, a missing normalized factual provenance
+record, or missing audio/TimedScript inputs. Rapid visual pilots remain preview-capable
+and are never made publishable by these checks.
+
+Post-render rejects a missing audio stream, mean loudness at or below `-45 dB`, peak at
+or above `-0.1 dB`, caption drift above `80 ms`, invalid caption bounds, or a failed
+ffprobe/ffmpeg frame integrity probe. `qa-report.json` records evidence and SHA-256
+checksums for the exact production inputs and render. Finalize and publish recompute the
+approved script, source and timed video-maps, render props, TimedScript, audio, normalized
+input, and render checksums; any drift blocks handoff. A passed post-render report must
+contain unique passing audio, caption, and render-integrity checks.
+
+Each render wrapper takes the single atomic `.render.lock` at its approved output root.
+The lock records run ID, run root, PID, timestamp, and owner token. A live owner blocks
+all competing runs; a stale/dead lock is recovered safely. Only the owner can release it.
+
 ## Non-negotiable failures
 
 Bất kể tổng điểm, video không được publish nếu:

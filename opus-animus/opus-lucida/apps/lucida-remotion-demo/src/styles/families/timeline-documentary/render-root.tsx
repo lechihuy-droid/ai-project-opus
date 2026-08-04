@@ -3,4 +3,4 @@ import { timelineDocumentaryFixtures } from "../../../../pipeline/fixtures/style
 import { TIMELINE_DOCUMENTARY_COMPOSITION_ID, TimelineDocumentaryPreview, type TimelineDocumentaryPreviewProps } from "./TimelineDocumentaryPreview";
 
 const calculateMetadata = ({ props }: { props: TimelineDocumentaryPreviewProps }) => ({ durationInFrames: timelineDocumentaryFixtures[props.sceneKey].durationInFrames, fps: 30, width: 1080, height: 1920 });
-export const TimelineDocumentaryRemotionRoot = () => <Composition id={TIMELINE_DOCUMENTARY_COMPOSITION_ID} component={TimelineDocumentaryPreview} width={1080} height={1920} fps={30} durationInFrames={timelineDocumentaryFixtures.milestone.durationInFrames} defaultProps={{ sceneKey: "milestone" }} calculateMetadata={calculateMetadata} />;
+export const TimelineDocumentaryRemotionRoot = () => <Composition id={TIMELINE_DOCUMENTARY_COMPOSITION_ID} component={TimelineDocumentaryPreview} width={1080} height={1920} fps={30} durationInFrames={timelineDocumentaryFixtures.chronology.durationInFrames} defaultProps={{ sceneKey: "chronology" }} calculateMetadata={calculateMetadata} />;

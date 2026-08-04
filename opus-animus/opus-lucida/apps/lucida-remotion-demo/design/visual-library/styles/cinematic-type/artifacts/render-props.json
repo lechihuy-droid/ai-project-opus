@@ -9,14 +9,14 @@
     "signalstats-nonblank"
   ],
   "propsByScene": {
-    "hook": {
-      "sceneKey": "hook"
+    "kinetic-hook": {
+      "sceneKey": "kinetic-hook"
     },
     "quote": {
       "sceneKey": "quote"
     },
-    "transition": {
-      "sceneKey": "transition"
+    "chapter-reset": {
+      "sceneKey": "chapter-reset"
     }
   }
 }

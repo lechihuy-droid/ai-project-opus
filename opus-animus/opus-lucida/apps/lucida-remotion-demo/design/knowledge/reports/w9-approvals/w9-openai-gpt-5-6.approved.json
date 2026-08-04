@@ -1,0 +1,59 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-16T15:00:00.000Z",
+    "approvedBy": "HUY",
+    "status": "approved"
+  },
+  "generatedAt": "2026-07-16T00:00:00.000Z",
+  "projectId": "w9-gpt-5-6-production",
+  "rights": {
+    "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
+  "sanitization": {
+    "findings": [
+      "Reviewer-authored factual summary and official source link only; no source page body or media stored."
+    ],
+    "redactions": 0,
+    "status": "passed"
+  },
+  "schemaVersion": "sanitized-visual-input/v1",
+  "sources": [
+    {
+      "checksum": "57d85932a3043ffe3b267046af61de16a704e18de811155581347f8afa378747",
+      "collectorVersion": "w9-factual-link-note-collector/1",
+      "domain": "factual",
+      "metadata": {
+        "url": "https://openai.com/index/gpt-5-6/"
+      },
+      "records": [
+        {
+          "data": {
+            "factIds": [
+              "gpt-5-6-launch",
+              "gpt-5-6-tiers",
+              "gpt-5-6-availability"
+            ],
+            "tags": [
+              "gpt-5-6",
+              "openai",
+              "official-source",
+              "link-only"
+            ]
+          },
+          "kind": "factual_reference",
+          "provenance": {
+            "collectorVersion": "w9-factual-link-note-collector/1",
+            "sourceChecksum": "57d85932a3043ffe3b267046af61de16a704e18de811155581347f8afa378747",
+            "sourceRef": "https://openai.com/index/gpt-5-6/"
+          },
+          "text": "# OpenAI GPT-5.6 release factual review note\n\nSource: https://openai.com/index/gpt-5-6/\nPublished: 2026-07-09\n\nProposed factual claims:\n- GPT-5.6 launched on July 9, 2026.\n- The family includes Sol, Terra, and Luna.\n- GPT-5.6 is available across ChatGPT, Codex, and the OpenAI API.\n\nThis candidate stores a reviewer-authored factual summary and source link only; no page body, image, video, or brand asset is vendored."
+        }
+      ],
+      "sourceId": "w9-openai-gpt-5-6",
+      "sourceRevision": "openai-release:2026-07-09|link-note:2026-07-16",
+      "sourceType": "web_reference"
+    }
+  ]
+}

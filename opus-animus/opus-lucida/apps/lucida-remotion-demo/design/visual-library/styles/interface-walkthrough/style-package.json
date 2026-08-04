@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "lucida-style-package/v1",
+  "id": "interface-walkthrough",
+  "label": "Interface Walkthrough",
+  "version": "0.1.0",
+  "status": "draft",
+  "visualFamily": "interface-walkthrough",
+  "description": "Draft portrait package for product UI walkthroughs that keep interface state, user focus, and next action readable.",
+  "tags": ["product-ui", "walkthrough", "interface", "onboarding", "workflow"],
+  "supportedIntents": ["product-walkthrough", "feature-explanation", "process", "comparison"],
+  "recommendedIntents": ["product-walkthrough", "feature-explanation", "process"],
+  "avoidFor": ["image-led product reveals", "unstructured lifestyle montage", "dense source-code review"],
+  "aspectRatios": ["9:16"],
+  "contentCapacity": {"headlineChars": 82, "bodyChars": 220, "bulletsMaxItems": 3, "maxPanels": 4, "maxItems": 6},
+  "renderCost": {"tier": "medium", "estimatedSceneComplexity": 5, "notes": "Fixed application chrome and frame-driven focus entrances."},
+  "reducedMotion": {"strategy": "simplified-motion", "notes": "Reduced policies preserve screen geometry and use only restrained opacity transitions."},
+  "accessibility": {"contrast": "AA", "notes": "High-contrast labels, explicit focus states, text labels alongside color, and a fixed caption-safe area."},
+  "directorCompatibility": {"selectionReason": "Use when a product interface and its next user action are the primary visual evidence.", "hardBlocks": ["Registration remains pending outside this package ownership."]},
+  "files": {"visual": "./visual.json", "tokens": "./tokens.json", "componentMap": "./component-map.json", "provenance": "./provenance.md", "artifactManifest": "./artifact-manifest.json"},
+  "sourcePolicy": {"copyStatus": "not-assessed", "registeredMedia": "none", "notes": "Draft implementation uses deterministic local interface fixtures. No source approval or visual-pattern claim is made."},
+  "tokens": {"palette": "graphite chrome with blue focus, green completion, amber review, and red blocked states", "typography": "UI sans for interface labels and compact system mono for metadata", "surface": "fixed low-radius application panels"},
+  "layoutGrammar": ["Keep the product interface as the dominant visible artifact.", "Use an explicit focus ring and textual action label.", "Reserve a stable lower caption-safe panel.", "Do not animate interface dimensions, navigation position, or table rows.", "Keep walkthrough copy subordinate to the screen state."],
+  "componentPrimitives": [{"id": "app-shell", "role": "content", "notes": "Stable navigation, toolbar, and interface canvas."}, {"id": "focus-callout", "role": "support", "notes": "Textual action label paired with a visible focus boundary."}, {"id": "caption-safe-panel", "role": "caption", "notes": "Lower safe-area explanation panel."}],
+  "templateBindings": {"preferredTemplates": ["annotated-screen", "step-flow", "feature-tour", "before-after-ui", "state-transition"], "layouts": ["application-shell", "mobile-preview"], "backgroundEffects": ["quiet-grid"], "motionPreset": "interface-focus"},
+  "sourceArtifacts": {"sourceReviewReport": "./artifacts/source-review-report.json"},
+  "validationArtifacts": {"demoVideoMap": "./artifacts/demo-video-map.json", "renderProps": "./artifacts/render-props.json", "previewFrames": ["./artifacts/frames/scene-01.png", "./artifacts/frames/scene-02.png", "./artifacts/frames/scene-03.png", "./artifacts/frames/scene-04.png", "./artifacts/frames/scene-05.png"], "renderReport": "./artifacts/render-report.json", "videoBinaryRegistered": false},
+  "sourceReferences": [
+    {"id": "web-primer", "url": "https://primer.style/", "selectedConcepts": ["application-shell hierarchy", "focus-state clarity", "compact control labels"]},
+    {"id": "web-mui", "url": "https://mui.com/material-ui/getting-started/", "selectedConcepts": ["explicit component states", "responsive interface composition", "accessible interaction labels"]},
+    {"id": "web-tremor", "url": "https://www.tremor.so/", "selectedConcepts": ["dashboard information hierarchy", "data-table readability", "action-oriented UI composition"]}
+  ],
+  "qualityGate": {"validated": false, "checks": ["targeted TypeScript check pending", "local still render pending", "registration intentionally pending"], "knownLimitations": ["This draft is not registered for runtime selection.", "No approved source or visual-pattern claim is included."]}
+}

@@ -1,0 +1,297 @@
+[
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "product-hero",
+    "packageId": "product-showcase",
+    "label": "Product hero",
+    "description": "A device-framed product hero that puts one original product interface ahead of concise launch framing.",
+    "intentTags": [
+      "use-case",
+      "product-intro"
+    ],
+    "beatRoles": [
+      "hook"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "device-framed-product-stage",
+      "product-first-reveal"
+    ],
+    "typographyTraits": [
+      "compact-product-label",
+      "fitted-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-product-accent"
+    ],
+    "motionTraits": [
+      "stage-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "device-chrome",
+      "asset-policy-badge",
+      "feature-marker-row"
+    ],
+    "contentCapacity": {
+      "headlineChars": 72,
+      "bodyChars": 230,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "opening a product walkthrough with one embeddable interface"
+    ],
+    "antiPatterns": [
+      "using copy or a logo as the primary visual signal"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound draft variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "feature-reveal",
+    "packageId": "product-showcase",
+    "label": "Feature reveal",
+    "description": "A portrait product screen with four compact feature annotations arranged below the active interface.",
+    "intentTags": [
+      "use-case",
+      "feature"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "portrait-product-stage",
+      "four-feature-grid"
+    ],
+    "typographyTraits": [
+      "compact-feature-labels",
+      "fitted-product-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-and-green-statuses"
+    ],
+    "motionTraits": [
+      "staggered-feature-entrance",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "product-media-frame",
+      "feature-marker-grid",
+      "asset-policy-badge"
+    ],
+    "contentCapacity": {
+      "headlineChars": 80,
+      "bodyChars": 260,
+      "maxItems": 4,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "explaining an actionable mobile workflow in one product state"
+    ],
+    "antiPatterns": [
+      "placing more than four feature markers around a small screen"
+    ],
+    "sourceEvidenceIds": [
+      "image-openmoji-mobile"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound draft variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "before-after",
+    "packageId": "product-showcase",
+    "label": "Before after",
+    "description": "A side-by-side before and after product state that keeps the operational change explicit and media-bound.",
+    "intentTags": [
+      "comparison",
+      "process"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "paired-product-states",
+      "before-after-note"
+    ],
+    "typographyTraits": [
+      "state-labels",
+      "fitted-comparison-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-improvement-accent"
+    ],
+    "motionTraits": [
+      "sequenced-state-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "paired-media-frame",
+      "state-label-pill",
+      "comparison-note"
+    ],
+    "contentCapacity": {
+      "headlineChars": 84,
+      "bodyChars": 260,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "showing a bounded workflow improvement with two embeddable product states"
+    ],
+    "antiPatterns": [
+      "comparing unlicensed screenshots or unrenderable reference assets"
+    ],
+    "sourceEvidenceIds": [
+      "web-material-web"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound draft variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "capability-grid",
+    "packageId": "product-showcase",
+    "label": "Capability grid",
+    "description": "A landscape desktop control surface cropped into the product stage with four guided capability markers.",
+    "intentTags": [
+      "use-case",
+      "process"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "landscape-product-crop",
+      "guided-inspection-grid"
+    ],
+    "typographyTraits": [
+      "compact-control-labels",
+      "fitted-product-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-control-accent"
+    ],
+    "motionTraits": [
+      "guided-feature-entrance",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "product-media-frame",
+      "feature-marker-grid",
+      "asset-policy-badge"
+    ],
+    "contentCapacity": {
+      "headlineChars": 88,
+      "bodyChars": 300,
+      "maxItems": 4,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "touring one desktop interface without turning the scene into a dashboard"
+    ],
+    "antiPatterns": [
+      "using a dense metric table as the primary product visual"
+    ],
+    "sourceEvidenceIds": [
+      "repo-mui"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound draft variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "launch-summary",
+    "packageId": "product-showcase",
+    "label": "Launch summary",
+    "description": "A final product result state that summarizes three visible outcomes while preserving the interface as the dominant signal.",
+    "intentTags": [
+      "takeaway",
+      "product-outcome"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "result-state-stage",
+      "outcome-marker-row"
+    ],
+    "typographyTraits": [
+      "compact-outcome-labels",
+      "fitted-recap-headline"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-and-green-outcome-accent"
+    ],
+    "motionTraits": [
+      "stage-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "device-chrome",
+      "asset-policy-badge",
+      "feature-marker-row"
+    ],
+    "contentCapacity": {
+      "headlineChars": 76,
+      "bodyChars": 240,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "closing a walkthrough with a visible product result state"
+    ],
+    "antiPatterns": [
+      "making an unsupported performance claim outside the displayed product state"
+    ],
+    "sourceEvidenceIds": [
+      "repo-fluentui"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound draft variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  }
+]

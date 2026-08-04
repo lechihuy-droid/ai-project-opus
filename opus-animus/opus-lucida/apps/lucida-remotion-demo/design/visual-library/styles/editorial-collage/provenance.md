@@ -24,10 +24,14 @@ The renderer accepts only assets with `classification: "embed_asset"`. Any `styl
 
 ## Validation Intent
 
-The three fixtures cover:
+The five local proposed variants and fixtures cover:
 
 - `normal` / `montage`: balanced multi-source culture montage.
 - `dense` / `evidence`: higher caption density with reduced motion.
 - `edge` / `recap`: rejected context-only asset and missing embeddable source.
+- `archive-ledger` / `evidence`: document-led local evidence with explicit source-role captions.
+- `signal-thread` / `recap`: broadcast, field-note, and route signals joined by a fixed recap thread.
+
+`variants.json` records these as local fixture-bound proposals only. It does not add approved source evidence, visual patterns, registry entries, or Director routing.
 
 Review artifacts are declared in `design/visual-library/styles/editorial-collage/artifact-manifest.json`.

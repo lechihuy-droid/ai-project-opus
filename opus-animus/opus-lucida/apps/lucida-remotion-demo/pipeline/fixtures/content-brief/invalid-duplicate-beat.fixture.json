@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "lucida-content-brief/v1",
+  "title": "Duplicate beats",
+  "audience": "test",
+  "intent": "explain",
+  "styleMode": "auto",
+  "factualSourceIds": [],
+  "visualConstraints": {},
+  "beats": [
+    { "id": "same", "title": "Title one", "body": "Body one", "role": "hook", "actors": [], "factRefs": [] },
+    { "id": "same", "title": "Title two", "body": "Body two", "role": "takeaway", "actors": [], "factRefs": [] }
+  ]
+}

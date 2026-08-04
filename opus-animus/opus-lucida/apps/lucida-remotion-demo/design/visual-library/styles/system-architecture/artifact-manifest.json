@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "lucida-artifact-manifest/v1",
+  "packageId": "system-architecture",
+  "domain": "visual-style",
+  "generatedAt": "2026-07-18T00:00:00.000Z",
+  "artifacts": [
+    {"id": "package-root", "kind": "draft-package", "path": "./", "usage": "package-local draft implementation and review artifacts"},
+    {"id": "layered-stack-fixture", "kind": "fixture", "path": "pipeline/fixtures/styles/system-architecture/layered-stack.fixture.json", "usage": "validation_input"},
+    {"id": "request-flow-fixture", "kind": "fixture", "path": "pipeline/fixtures/styles/system-architecture/request-flow.fixture.json", "usage": "validation_input"},
+    {"id": "agent-graph-fixture", "kind": "fixture", "path": "pipeline/fixtures/styles/system-architecture/agent-graph.fixture.json", "usage": "validation_input"},
+    {"id": "data-pipeline-fixture", "kind": "fixture", "path": "pipeline/fixtures/styles/system-architecture/data-pipeline.fixture.json", "usage": "validation_input"},
+    {"id": "dependency-map-fixture", "kind": "fixture", "path": "pipeline/fixtures/styles/system-architecture/dependency-map.fixture.json", "usage": "validation_input"},
+    {"id": "family-render-review", "kind": "source_code", "path": "src/styles/families/system-architecture/render-review.mjs", "usage": "rerender"},
+    {"id": "render-props", "kind": "render_props", "path": "./artifacts/render-props.json", "usage": "validation_spec"},
+    {"id": "demo-video-map", "kind": "video_map", "path": "./artifacts/demo-video-map.json", "usage": "validation_spec"},
+    {"id": "preview-frames", "kind": "preview_frames", "path": "./artifacts/frames/", "usage": "visual_validation"},
+    {"id": "render-report", "kind": "render_report", "path": "./artifacts/render-report.json", "usage": "validation_report"}
+  ]
+}

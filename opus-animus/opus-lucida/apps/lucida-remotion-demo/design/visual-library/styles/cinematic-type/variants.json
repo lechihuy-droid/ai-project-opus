@@ -1,0 +1,300 @@
+[
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "kinetic-hook",
+    "packageId": "cinematic-type",
+    "label": "Kinetic hook",
+    "description": "A left-anchored opening statement paired with one tall texture field and generous negative space.",
+    "intentTags": [
+      "hook"
+    ],
+    "beatRoles": [
+      "hook"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "left-anchored-headline",
+      "tall-texture-field"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "compact-chapter-label"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "warm-copper-rule",
+      "bone-text"
+    ],
+    "motionTraits": [
+      "cinematic-rise",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "texture-field-placeholder",
+      "chapter-eyebrow-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 118,
+      "bodyChars": 180,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "opening a single consequential claim"
+    ],
+    "antiPatterns": [
+      "adding competing metric or product panels"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound draft variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "quote",
+    "packageId": "cinematic-type",
+    "label": "Quote",
+    "description": "A quote-led composition with attribution rail, oversized claim, and a single vertical texture field.",
+    "intentTags": [
+      "quote",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "quote"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "quote-led-headline",
+      "attribution-rail",
+      "side-texture-field"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "muted-attribution"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "warm-copper-quote-mark",
+      "bone-text"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "texture-field-placeholder",
+      "chapter-eyebrow-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 150,
+      "bodyChars": 150,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "framing one attributable design or narrative claim"
+    ],
+    "antiPatterns": [
+      "multiple quotations in one frame"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound draft variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "chapter-reset",
+    "packageId": "cinematic-type",
+    "label": "Chapter reset",
+    "description": "A full-width chapter reset that gives a long statement room above one restrained panoramic texture strip.",
+    "intentTags": [
+      "chapter-reset",
+      "narrative"
+    ],
+    "beatRoles": [
+      "chapter-reset"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "full-width-headline",
+      "long-form-reset",
+      "panoramic-texture-strip"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "long-headline-fit"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "warm-copper-rule",
+      "bone-text"
+    ],
+    "motionTraits": [
+      "cinematic-rise",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "texture-field-placeholder",
+      "chapter-eyebrow-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 170,
+      "bodyChars": 150,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "marking a chapter boundary after a long argument"
+    ],
+    "antiPatterns": [
+      "using dense explanatory modules during the reset"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound draft variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "manifesto",
+    "packageId": "cinematic-type",
+    "label": "Manifesto",
+    "description": "A top texture band followed by a low, full-width manifesto statement that lands one clear narrative position.",
+    "intentTags": [
+      "manifesto",
+      "conclusion"
+    ],
+    "beatRoles": [
+      "manifesto"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "top-texture-band",
+      "bottom-statement",
+      "full-width-conclusion"
+    ],
+    "typographyTraits": [
+      "oversized-sans-display",
+      "concise-supporting-copy"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "warm-copper-rule",
+      "bone-text"
+    ],
+    "motionTraits": [
+      "cinematic-rise",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "texture-field-placeholder",
+      "chapter-eyebrow-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 96,
+      "bodyChars": 150,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "delivering the conclusion after a visual or narrative sequence"
+    ],
+    "antiPatterns": [
+      "turning the ending into a multi-panel recap"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound draft variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "outro",
+    "packageId": "cinematic-type",
+    "label": "Outro",
+    "description": "A centered outro callout with a low texture band, designed to close on one verbal next move without UI chrome.",
+    "intentTags": [
+      "outro",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "outro"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "centered-callout",
+      "low-texture-band",
+      "text-led-close"
+    ],
+    "typographyTraits": [
+      "centered-sans-headline",
+      "concise-supporting-copy"
+    ],
+    "paletteTraits": [
+      "charcoal-canvas",
+      "warm-copper-rule",
+      "bone-text"
+    ],
+    "motionTraits": [
+      "cinematic-rise",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "oversized-headline-block",
+      "texture-field-placeholder",
+      "chapter-eyebrow-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 84,
+      "bodyChars": 130,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "closing a short narrative with one explicit next move"
+    ],
+    "antiPatterns": [
+      "adding a dashboard button or multiple conversion choices"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound draft variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  }
+]

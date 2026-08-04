@@ -2,6 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { mapVisualScenes } from "../pipeline/mappers/map-scenes.mjs";
 import { compileVideoMap } from "../pipeline/compilers/video-map.mjs";
+import { selectVisualKnowledge } from "../pipeline/retrieval/select-visual-knowledge.mjs";
+import { mergeKnowledgeSelections, selectFactualKnowledge } from "../pipeline/retrieval/select-factual-knowledge.mjs";
 
 const args = process.argv.slice(2);
 const valueAfter = (flag) => {
@@ -22,8 +24,19 @@ const config = JSON.parse(
 );
 const normalized = JSON.parse(fs.readFileSync(inputPath, "utf8"));
 const outDir = path.dirname(inputPath);
-const mapped = mapVisualScenes(normalized, config);
+const visualSelection = selectVisualKnowledge({ normalized, config, appRoot: root });
+const factualSelection = selectFactualKnowledge({ normalized, config, appRoot: root });
+const knowledgeSelection = mergeKnowledgeSelections({ visual: visualSelection, factual: factualSelection });
+const mapped = mapVisualScenes(normalized, config, knowledgeSelection);
 const videoMap = compileVideoMap(mapped, config);
+fs.writeFileSync(
+  path.join(outDir, "03-knowledge-selection.json"),
+  JSON.stringify(knowledgeSelection, null, 2) + "\n",
+);
+fs.writeFileSync(
+  path.join(outDir, "03-director-selection.json"),
+  JSON.stringify(mapped.directorSelection, null, 2) + "\n",
+);
 fs.writeFileSync(
   path.join(outDir, "04-visual-scenes.json"),
   JSON.stringify(mapped, null, 2) + "\n",

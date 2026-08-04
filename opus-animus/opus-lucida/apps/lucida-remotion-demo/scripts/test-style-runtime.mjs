@@ -28,6 +28,12 @@ require.extensions[".tsx"] = require.extensions[".ts"];
 
 const { createVideoInput } = require("../src/data.ts");
 const { resolveStyleRuntimeChoice } = require("../src/styles/runtime/select.ts");
+const {
+  cinematicTypeSceneKey,
+  editorialCollageSceneKey,
+  paperNotebookSceneKey,
+  timelineDocumentarySceneKey,
+} = require("../src/styles/runtime/family-scene-keys.ts");
 
 const fixturePath = path.join(
   appRoot,
@@ -121,6 +127,25 @@ for (const testCase of fixture.cases) {
       `${testCase.name}: templateId must not silently fall back`,
     );
   }
+}
+
+const legacySceneKeyMappings = [
+  [cinematicTypeSceneKey, "hook", "kinetic-hook"],
+  [cinematicTypeSceneKey, "quote", "quote"],
+  [cinematicTypeSceneKey, "transition", "chapter-reset"],
+  [paperNotebookSceneKey, "notes", "research-notes"],
+  [paperNotebookSceneKey, "derivation", "derivation"],
+  [paperNotebookSceneKey, "checklist", "checklist"],
+  [editorialCollageSceneKey, "normal", "source-montage"],
+  [editorialCollageSceneKey, "dense", "multi-source-evidence"],
+  [editorialCollageSceneKey, "edge", "visual-essay"],
+  [timelineDocumentarySceneKey, "milestone", "milestones"],
+  [timelineDocumentarySceneKey, "era-change", "evolution"],
+  [timelineDocumentarySceneKey, "conclusion", "roadmap"],
+];
+
+for (const [resolveSceneKey, legacyKey, canonicalKey] of legacySceneKeyMappings) {
+  assert.equal(resolveSceneKey(legacyKey), canonicalKey, `${legacyKey}: canonical scene key`);
 }
 
 console.log(`Style runtime tests passed: ${fixture.cases.length} deterministic cases.`);

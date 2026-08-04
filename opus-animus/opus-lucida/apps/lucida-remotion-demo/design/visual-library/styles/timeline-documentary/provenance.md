@@ -37,6 +37,10 @@ The dated spine, archival paper frames, blueprint/newsprint/contact-sheet abstra
 - `era-change.fixture.ts`: seven events, three missing images, reduced motion
 - `conclusion.fixture.ts`: three events, two missing images, static motion
 
+## Local Proposed Variants
+
+`variants.json` contains exactly five local, fixture-bound proposed variants: `origin-ledger`, `turning-point`, `parallel-threads`, `archive-gap`, and `closing-record`. They use `draft-local` evidence only and do not add an approval, promotion, or canonical pattern claim. The existing `milestone` default remains unchanged.
+
 ## Validation Artifacts
 
 - `artifacts/review-scenes.json`
