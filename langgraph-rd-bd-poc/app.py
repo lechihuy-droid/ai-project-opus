@@ -5,6 +5,7 @@ from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from langgraph.errors import GraphRecursionError
 from langgraph.types import Command
 from main import build_graph, load_requirement
 from graph_builder import compile_definition, validate_definition
@@ -55,7 +56,17 @@ def _build_response(graph_obj, thread_id: str, snapshot) -> dict:
 
 def _run_and_respond(graph_obj, thread_id: str, *invoke_args, **invoke_kwargs) -> dict:
     config = {"configurable": {"thread_id": thread_id}}
-    graph_obj.invoke(*invoke_args, config=config, **invoke_kwargs)
+    # Validation should already reject graphs with no path to __end__, but a
+    # custom graph can still recurse forever at runtime (e.g. an edge case
+    # validation missed) — surface that as a clean 400 instead of a bare 500.
+    try:
+        graph_obj.invoke(*invoke_args, config=config, **invoke_kwargs)
+    except GraphRecursionError as exc:
+        raise HTTPException(
+            400,
+            f"Graph did not reach '__end__' within its recursion limit ({exc}). "
+            "Check for a cycle with no exit.",
+        )
     snapshot = graph_obj.get_state(config)
     return _build_response(graph_obj, thread_id, snapshot)
 
@@ -128,7 +139,7 @@ def create_run():
 def resume_run(thread_id: str, body: ResumeRequest):
     config = {"configurable": {"thread_id": thread_id}}
     snapshot = graph.get_state(config)
-    if not snapshot.values:
+    if snapshot.created_at is None:
         raise HTTPException(404, "Unknown thread_id")
     if not snapshot.next:
         raise HTTPException(400, "This run has already finished; nothing to resume.")
@@ -150,7 +161,7 @@ def resume_run(thread_id: str, body: ResumeRequest):
 def get_run(thread_id: str):
     config = {"configurable": {"thread_id": thread_id}}
     snapshot = graph.get_state(config)
-    if not snapshot.values:
+    if snapshot.created_at is None:
         raise HTTPException(404, "Unknown thread_id")
     return _build_response(graph, thread_id, snapshot)
 
@@ -159,7 +170,7 @@ def get_run(thread_id: str):
 def get_run_artifacts(thread_id: str):
     config = {"configurable": {"thread_id": thread_id}}
     snapshot = graph.get_state(config)
-    if not snapshot.values:
+    if snapshot.created_at is None:
         raise HTTPException(404, "Unknown thread_id")
 
     versions = snapshot.values.get("artifact_versions", [])
@@ -290,7 +301,7 @@ def resume_graph_run(graph_id: str, thread_id: str, body: ResumeRequest):
     graph_obj = _get_compiled_graph(graph_id)
     config = {"configurable": {"thread_id": thread_id}}
     snapshot = graph_obj.get_state(config)
-    if not snapshot.values:
+    if snapshot.created_at is None:
         raise HTTPException(404, "Unknown thread_id")
     if not snapshot.next:
         raise HTTPException(400, "This run has already finished; nothing to resume.")
@@ -304,6 +315,6 @@ def get_graph_run(graph_id: str, thread_id: str):
     graph_obj = _get_compiled_graph(graph_id)
     config = {"configurable": {"thread_id": thread_id}}
     snapshot = graph_obj.get_state(config)
-    if not snapshot.values:
+    if snapshot.created_at is None:
         raise HTTPException(404, "Unknown thread_id")
     return _build_response(graph_obj, thread_id, snapshot)

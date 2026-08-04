@@ -61,6 +61,46 @@ def _output_keys(node: dict) -> list[str]:
     return []
 
 
+def _nodes_that_cannot_reach_end(
+    node_ids: set[str], edges_by_source: dict[str, list[dict]]
+) -> set[str]:
+    """Node id nào reachable từ __start__ nhưng không có đường nào tới __end__.
+
+    Một node KHÔNG có outgoing edge được LangGraph tự động nối tới __end__ —
+    nên tập "đích" ban đầu là {__end__} hợp với các node đó, rồi đi ngược
+    (theo chiều edge đảo) để tìm mọi node có thể tới đích. Node nào reachable
+    từ __start__ mà không nằm trong tập đó là dead-end thật sự (vòng lặp
+    không lối thoát).
+    """
+    end_set = {"__end__"} | {n for n in node_ids if n not in edges_by_source}
+
+    reverse_adj: dict[str, set[str]] = {}
+    for source, source_edges in edges_by_source.items():
+        for edge in source_edges:
+            reverse_adj.setdefault(edge.get("to"), set()).add(source)
+
+    can_reach_end = set(end_set)
+    frontier = list(end_set)
+    while frontier:
+        current = frontier.pop()
+        for pred in reverse_adj.get(current, ()):
+            if pred not in can_reach_end:
+                can_reach_end.add(pred)
+                frontier.append(pred)
+
+    reachable_from_start: set[str] = set()
+    frontier = ["__start__"]
+    while frontier:
+        current = frontier.pop()
+        for edge in edges_by_source.get(current, ()):
+            target = edge.get("to")
+            if target in node_ids and target not in reachable_from_start:
+                reachable_from_start.add(target)
+                frontier.append(target)
+
+    return reachable_from_start - can_reach_end
+
+
 def validate_definition(definition: dict) -> list[str]:
     errors: list[str] = []
     nodes = definition.get("nodes", [])
@@ -104,6 +144,12 @@ def validate_definition(definition: dict) -> list[str]:
 
     if "__start__" not in edges_by_source:
         errors.append("'__start__' has no outgoing edge — nothing would ever run.")
+
+    unreachable_end = _nodes_that_cannot_reach_end(node_ids, edges_by_source)
+    if unreachable_end:
+        errors.append(
+            "These nodes have no path to '__end__': " + ", ".join(sorted(unreachable_end))
+        )
 
     for source, source_edges in edges_by_source.items():
         conditional_flags = [

@@ -643,7 +643,7 @@ function refreshEdgeSelects() {
   ['edge-from-input', 'edge-to-input'].forEach((selId) => {
     const sel = $(selId);
     const current = sel.value;
-    sel.innerHTML = ids.map((id) => `<option value="${id}">${id}</option>`).join('');
+    sel.innerHTML = ids.map((id) => `<option value="${esc(id)}">${esc(id)}</option>`).join('');
     if (ids.includes(current)) sel.value = current;
   });
 }
