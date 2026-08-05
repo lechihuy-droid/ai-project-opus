@@ -95,7 +95,7 @@ quyền write, qua approve gate như gitjobs.
 | FR-112 | Skill detail: render SKILL.md + list file đính kèm + telemetry (đếm lần dùng từ session logs — tái dùng behavior parser) | P0 | |
 | FR-113 | Skill deploy/sync: copy skill giữa các CLI target; phát hiện drift (cùng tên khác nội dung) + nút đồng bộ | P1 | User sửa trực tiếp OK (user là chủ); agent sửa vẫn phải qua git-job |
 | FR-114 | Skill edit trong UI (textarea + preview) với backup trước khi ghi | P2 | |
-| FR-121 | **Agent profiles**: CRUD qua form → lưu `agents/*.agent.yaml` (provider, system prompt, skills, permission, budget) | P1 | Schema theo ARCHITECTURE.md §9 |
+| FR-121 | **Agent profiles**: CRUD qua form → lưu `agents/*.agent.yaml` (provider, system prompt, skills, permission, budget) | P1 | Schema theo ../ARCHITECTURE.md §9 |
 | FR-122 | Workflow chạy headless: `workflow.yaml` tuần tự/rẽ nhánh đơn giản; node = agent profile; executor = CLI Provider Layer; HITL gate tái dùng runtime_interrupts | P1 | Track B đúng nghĩa — agent chạy TRONG runtime của Hub |
 | FR-123 | Workflow run view: stream tiến trình từng node, artifact blackboard, nút approve/reject tại gate | P1 | Tái dùng UI pattern gitjobs stream |
 | FR-124 | Canvas kéo-thả: SVG thuần; node = agent, edge = handoff; Save = generate/patch YAML + validate + show diff | P2 | CHỈ sau khi FR-122 chạy ổn. Canvas là editor, không phải nguồn chân lý |

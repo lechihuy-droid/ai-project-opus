@@ -1,13 +1,13 @@
 # BD — Hub v2 Phase C (Build Plan)
 **Date:** 2026-07-16 · **Status:** 🟡 Ready sau khi Phase B xong · **Author:** Claude (Fable 5)
-**Upstream:** `SD-hub-v2-command-center.md` §11 Phase C + ARCHITECTURE.md §9 (nguyên tắc Super Agent) + RD FR-121→124.
+**Upstream:** `SD-hub-v2-command-center.md` §11 Phase C + ../ARCHITECTURE.md §9 (nguyên tắc Super Agent) + RD FR-121→124.
 **Mô hình orchestra:** như BD Phase B §0 (Claude điều phối · Codex code `[CODEX]` · Sonnet test/review). Codex chạy từ terminal thật của user — KHÔNG spawn từ Bash tool.
 
 ---
 
 ## 0. Mục tiêu Phase C
 
-Track B thật: Hub **chạy agent của riêng mình** qua CLI provider layer — workflow khai báo YAML, agent profile có quản trị, HITL gate, canvas cuối cùng. Nguyên tắc khoá (ARCHITECTURE.md §9):
+Track B thật: Hub **chạy agent của riêng mình** qua CLI provider layer — workflow khai báo YAML, agent profile có quản trị, HITL gate, canvas cuối cùng. Nguyên tắc khoá (../ARCHITECTURE.md §9):
 - Config-first: YAML là chân lý, canvas chỉ là editor.
 - Sub-agent không tự spawn — đi qua child task packet + governance check.
 - Node LLM = gọi CLI provider (không API key), budget cap bắt buộc.
@@ -80,7 +80,7 @@ stop: {max_nodes: 10, max_seconds: 1800}
 
 ## Step C2c — Child-run / sub-agent `[CODEX]` (M)
 
-**Việc:** node có `spawn:` → child task packet đúng ARCHITECTURE.md §9 (`agent_profile`, `allowed_paths`, `allowed_tools`, `budget`, `handoff_contract`); `runtime_children` (đã có khung) + **governance check trước launch**: risk_tier của agent profile vs `governance.effective_blocked_tiers()`, blocked → deny + record_denial. Child output ghi blackboard `claims.jsonl`, parent đọc tổng hợp.
+**Việc:** node có `spawn:` → child task packet đúng ../ARCHITECTURE.md §9 (`agent_profile`, `allowed_paths`, `allowed_tools`, `budget`, `handoff_contract`); `runtime_children` (đã có khung) + **governance check trước launch**: risk_tier của agent profile vs `governance.effective_blocked_tiers()`, blocked → deny + record_denial. Child output ghi blackboard `claims.jsonl`, parent đọc tổng hợp.
 **Test:** blocked tier bị chặn; child chạy fake provider ghi claims; parent state nhận kết quả.
 **DoD:** workflow cha spawn 1 child reviewer (fake) end-to-end trong test.
 
