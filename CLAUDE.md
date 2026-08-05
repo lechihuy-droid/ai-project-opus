@@ -35,11 +35,6 @@ Parent-level context for all projects under `C:/Users/HUY/workspace/ai-project-o
 - One subagent = one specific task, never vague multi-purpose tasks
 - Complex problems: break into pieces + throw more compute, don't cram into one conversation
 
-### Self-Improvement Loop
-- After any correction: write a new rule into `tasks/lessons.md` (if file exists)
-- Rules must be specific enough to prevent that exact mistake — no generic platitudes
-- Re-read `lessons.md` at session start if the file exists
-
 ### Verification Before Done
 - Never mark a task complete without proving it works
 - Self-check: "Would a staff engineer approve this?" — if not, fix it first
@@ -50,7 +45,7 @@ Phân tuyến công việc theo loại task:
 
 | Loại task | Thực thi bằng |
 |---|---|
-| Plan, kiến trúc, SDD docs (RD/SD/BD/CR), review, quyết định trade-off | **Opus 4.7** — main session |
+| Plan, kiến trúc, SDD docs (RD/SD/BD/CR), review, quyết định trade-off | **Opus 5** — main session |
 | Task thông thường (search, đọc, verify, sửa nhỏ, status, giải thích) | **Sonnet** |
 | Coding (implement) + viết test | **Codex** (`codex exec`) — Claude viết BD/brief rồi giao, KHÔNG tự code |
 
@@ -107,7 +102,6 @@ User không rành git — AI tự thực hiện toàn bộ quy trình git, khôn
 
 - **Trước mọi `git push`:** tự động `git fetch origin` + `git merge origin/main` rồi mới push — remote thường đi trước local (autosync từ máy khác + PR từ cloud agent). Không cần hỏi user trước khi merge.
 - **Conflict:** tự resolve phần rõ ràng; chỉ khi hai bên sửa cùng nội dung mới hỏi user bằng câu đơn giản ("bên A viết X, bên B viết Y — giữ cái nào?"), không bắt user đụng lệnh git.
-- **Pull Request:** KHÔNG cài đặt/auth `gh` CLI — đưa GitHub compare link để user bấm tạo PR.
 - **Dữ liệu nhạy cảm — cấm commit/push:** dữ liệu tài chính thật (`opus-animus/opus-actio/finance.db`, `data/_local/`), dữ liệu sức khỏe cá nhân, thông tin user profile. Không chép số liệu thật vào docs/report sẽ được push lên GitHub.
 
 ---
