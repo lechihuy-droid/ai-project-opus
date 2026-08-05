@@ -27,6 +27,8 @@ from api.system import router as system_router
 from api.memory import router as memory_router
 from api.agents import router as agents_router
 from api.jobs import router as jobs_router
+from api.workflows import router as workflows_router
+from api.skills import router as skills_router
 
 import config
 from services import (
@@ -261,6 +263,8 @@ app.include_router(system_router)
 app.include_router(jobs_router)
 app.include_router(agents_router)
 app.include_router(memory_router)
+app.include_router(workflows_router)
+app.include_router(skills_router)
 
 
 @app.get("/api/chat/models")
@@ -357,37 +361,6 @@ def api_chat(payload: dict[str, object]) -> StreamingResponse:
     return StreamingResponse(events(), media_type="text/event-stream")
 
 
-@app.get("/api/skills")
-def api_skills() -> list[dict[str, object]]:
-    return runtime_skills.list_skills()
-
-
-@app.get("/api/search")
-def api_search(q: str = "") -> list[dict[str, str]]:
-    return search.search(q)
-
-
-@app.get("/api/skills/names")
-def api_skill_names() -> list[str]:
-    return sorted(skill_library.list_skill_names())
-
-
-@app.get("/api/skills/{skill_id}/usage")
-def api_skill_usage(skill_id: str) -> dict[str, object]:
-    try:
-        return runtime_skills.skill_usage(skill_id)
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-
-
-@app.get("/api/skills/{skill_id}")
-def api_skill(skill_id: str) -> dict[str, object]:
-    try:
-        return runtime_skills.get_skill(skill_id)
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-
-
 @app.get("/api/runs")
 def api_runs() -> list[dict[str, object]]:
     return runs.list_runs()
@@ -465,77 +438,6 @@ def api_suite(suite_id: str) -> dict[str, object]:
         raise _http_error(exc) from exc
 
 
-@app.get("/api/tools")
-@app.get("/api/tools/usage")
-def api_tools(
-    source: str | None = None,
-    model: str | None = None,
-    since: str | None = None,
-) -> dict[str, object]:
-    try:
-        events, _warnings = behavior.collect_tool_events()
-        filtered = behavior.filter_tool_events(events, {"source": source, "model": model, "since": since})
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    return behavior.tool_rollup(filtered)
-
-
-@app.get("/api/skill-library")
-def api_skill_library() -> list[dict[str, object]]:
-    return skill_library.list_skills()
-
-
-@app.post("/api/skill-library")
-def api_skill_library_create(payload: dict[str, object]) -> dict[str, object]:
-    try: return skill_library.create_skill(payload)
-    except ValueError as exc: raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-
-@app.put("/api/skill-library/{skill_id:path}")
-def api_skill_library_update(skill_id: str, payload: dict[str, object]) -> dict[str, object]:
-    try: return skill_library.update_skill(skill_id, payload)
-    except ValueError as exc: raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except (FileNotFoundError, PermissionError) as exc: raise _http_error(exc) from exc
-
-
-@app.delete("/api/skill-library/{skill_id:path}")
-def api_skill_library_delete(skill_id: str) -> dict[str, bool]:
-    try: skill_library.delete_skill(skill_id)
-    except (FileNotFoundError, PermissionError) as exc: raise _http_error(exc) from exc
-    return {"ok": True}
-
-
-@app.get("/api/skill-library/drift")
-def api_skill_library_drift() -> list[dict[str, object]]:
-    return skill_library.drift()
-
-
-@app.get("/api/skill-library/deploy-log")
-def api_skill_library_deploy_log() -> list[dict[str, object]]:
-    return skill_library.deploy_log()
-
-
-@app.get("/api/skill-library/{skill_id:path}")
-def api_skill_library_detail(skill_id: str) -> dict[str, object]:
-    try:
-        return skill_library.get_skill(skill_id)
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-
-
-@app.post("/api/skill-library/{skill_id:path}/deploy")
-def api_skill_library_deploy(skill_id: str, payload: dict[str, object]) -> dict[str, object]:
-    target = payload.get("target")
-    if not isinstance(target, str) or not target:
-        raise HTTPException(status_code=400, detail="target is required")
-    try:
-        return skill_library.deploy(skill_id, target)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-
-
 @app.get("/api/runs/{run_id}/files")
 def api_run_files(run_id: str) -> list[dict[str, object]]:
     try: return runtime_files.list_files(run_id)
@@ -592,184 +494,6 @@ def api_chat_file_delete(chat_id: str, name: str) -> dict[str, bool]:
     try: chat_files.delete(chat_id, name)
     except (FileNotFoundError, PermissionError) as exc: raise _http_error(exc) from exc
     return {"ok": True}
-
-
-# --- C2a workflow routes ---
-@app.get("/api/workflows")
-def api_workflows() -> list[dict[str, object]]:
-    return workflow.list_workflows()
-
-
-@app.post("/api/workflows", status_code=201)
-def api_workflow_create(payload: dict[str, object], response: Response) -> dict[str, object]:
-    workflow_id = payload.get("id")
-    yaml_text = payload.get("yaml_text")
-    agent = payload.get("agent")
-    if not isinstance(workflow_id, str):
-        raise HTTPException(status_code=400, detail="id must be a string")
-    if yaml_text is not None and not isinstance(yaml_text, str):
-        raise HTTPException(status_code=400, detail="yaml_text must be a string")
-    if agent is not None and not isinstance(agent, str):
-        raise HTTPException(status_code=400, detail="agent must be a string")
-    try:
-        result = workflow.create_workflow(workflow_id, yaml_text, agent=agent)
-        response.headers["ETag"] = _etag(workflow.workflow_path(workflow_id).read_bytes())
-        return result
-    except workflow.WorkflowConflictError as exc:
-        raise _http_error(exc, 409) from exc
-    except (PermissionError, ValueError) as exc:
-        raise _http_error(exc, 400) from exc
-
-
-@app.get("/api/workflows/{workflow_id}/layout")
-def api_workflow_layout(workflow_id: str, response: Response) -> dict[str, object]:
-    try:
-        response.headers["ETag"] = _etag(workflow.workflow_layout_path(workflow_id).read_bytes()) if workflow.workflow_layout_path(workflow_id).exists() else '"empty"'
-        return {"nodes": workflow.read_layout(workflow_id)}
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-
-@app.put("/api/workflows/{workflow_id}/layout")
-def api_workflow_layout_save(workflow_id: str, payload: dict[str, object], request: Request, response: Response) -> dict[str, object]:
-    try:
-        path = workflow.workflow_layout_path(workflow_id)
-        _check_if_match(request, path.read_bytes() if path.exists() else b"")
-        result = {"nodes": workflow.save_layout(workflow_id, payload)}
-        response.headers["ETag"] = _etag(path.read_bytes())
-        return result
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-
-@app.put("/api/workflows/{workflow_id}/model")
-def api_workflow_model_save(workflow_id: str, payload: dict[str, object], request: Request, response: Response) -> dict[str, object]:
-    model = payload.get("model")
-    if not isinstance(model, dict):
-        raise HTTPException(status_code=400, detail="model must be a mapping")
-    try:
-        _check_if_match(request, workflow.workflow_path(workflow_id).read_bytes())
-        yaml_text = workflow.model_yaml_text(workflow_id, model)
-        result = workflow.save_workflow(workflow_id, yaml_text)
-        response.headers["ETag"] = _etag(workflow.workflow_path(workflow_id).read_bytes())
-        return result
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-
-@app.get("/api/workflows/{workflow_id}/source")
-def api_workflow_source(workflow_id: str, response: Response) -> dict[str, str]:
-    try:
-        path = workflow.workflow_path(workflow_id)
-        response.headers["ETag"] = _etag(path.read_bytes())
-        return {"id": workflow_id, "yaml_text": path.read_text(encoding="utf-8")}
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-
-
-@app.post("/api/workflows/validate")
-def api_workflow_validate(payload: dict[str, object]) -> dict[str, object]:
-    yaml_text = payload.get("yaml_text")
-    workflow_id = payload.get("id")
-    if isinstance(yaml_text, str):
-        source = yaml_text
-    elif isinstance(workflow_id, str):
-        try:
-            source = workflow.workflow_path(workflow_id).read_text(encoding="utf-8")
-        except (FileNotFoundError, PermissionError) as exc:
-            raise _http_error(exc) from exc
-    else:
-        raise HTTPException(status_code=400, detail="yaml_text or id is required")
-
-    try:
-        data = workflow.parse_workflow(source)
-    except ValueError as exc:
-        return {"ok": False, "errors": [str(exc)], "ir": None}
-    errors = workflow.validate_workflow(data)
-    return {"ok": not errors, "errors": errors, "ir": workflow.build_ir(data) if not errors else None}
-
-
-@app.put("/api/workflows/{workflow_id}")
-def api_workflow_save(workflow_id: str, payload: dict[str, object], request: Request, response: Response) -> dict[str, object]:
-    yaml_text = payload.get("yaml_text")
-    if not isinstance(yaml_text, str):
-        raise HTTPException(status_code=400, detail="yaml_text must be a string")
-    try:
-        _check_if_match(request, workflow.workflow_path(workflow_id).read_bytes())
-        result = workflow.save_workflow(workflow_id, yaml_text)
-        response.headers["ETag"] = _etag(workflow.workflow_path(workflow_id).read_bytes())
-        return result
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-
-@app.delete("/api/workflows/{workflow_id}")
-def api_workflow_delete(workflow_id: str) -> dict[str, bool]:
-    try:
-        workflow.delete_workflow(workflow_id)
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-    return {"ok": True}
-
-
-# --- end C2a workflow routes ---
-
-
-# --- C2b workflow run routes ---
-@app.post("/api/workflows/{workflow_id}/runs", response_model=None)
-def api_workflow_run(workflow_id: str, payload: dict[str, object]):
-    objective = payload.get("objective")
-    if not isinstance(objective, str):
-        raise HTTPException(status_code=400, detail="objective must be a string")
-    try:
-        references, inputs = run_inputs.resolve_inputs(payload.get("inputs"))
-        source = workflow.workflow_path(workflow_id).read_text(encoding="utf-8")
-        errors = workflow.validate_workflow(workflow.parse_workflow(source))
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-    except ValueError as exc:
-        raise _http_error(exc, 400) from exc
-    if errors:
-        raise _http_error(ValueError("Workflow validation failed"), 422)
-    return StreamingResponse(workflow_exec.create_workflow_run_stream(workflow_id, objective, inputs, references), media_type="text/event-stream")
-
-
-@app.get("/api/workflows/runs/{run_id}/artifacts")
-def api_workflow_run_artifacts(run_id: str) -> dict[str, object]:
-    try:
-        return {"artifacts": runtime_artifacts.list_artifacts(run_id)}
-    except (FileNotFoundError, PermissionError) as exc:
-        raise HTTPException(status_code=404) from exc
-
-
-@app.get("/api/workflows/runs/{run_id}/artifacts/{name}")
-def api_workflow_run_artifact(run_id: str, name: str) -> dict[str, str]:
-    try:
-        return {"name": name, "text": runtime_artifacts.read_artifact(run_id, name)}
-    except (FileNotFoundError, PermissionError) as exc:
-        raise HTTPException(status_code=404) from exc
-
-
-@app.post("/api/workflows/runs/{run_id}/interrupts/{interrupt_id}/resume")
-def api_workflow_run_interrupt_resume(run_id: str, interrupt_id: str, payload: dict[str, object]) -> StreamingResponse:
-    try:
-        runtime_state.read_run(run_id)
-        runtime_interrupts.get_interrupt(run_id, interrupt_id)
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-    return StreamingResponse(
-        workflow_exec.resume_workflow_run_stream(run_id, interrupt_id, payload),
-        media_type="text/event-stream",
-    )
-# --- end C2b workflow run routes ---
 
 
 @app.get("/api/artifacts")
