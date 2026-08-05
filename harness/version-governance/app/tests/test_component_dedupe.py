@@ -163,14 +163,19 @@ def test_precondition_error_code_never_leaks_raw_sql(session, tmp_path) -> None:
     revision = _seed_input(session, tmp_path)
 
     service = RunService(session, RuntimeFake(), None, SourceFake(), "http://api", BlobFake())
-    with pytest.raises(HTTPException):
+    with pytest.raises(HTTPException) as error:
         asyncio.run(service.start(RunRequest("project", "workflow", revision.id, "OUT", release_id=release.id)))
 
     error_code = session.scalar(text("SELECT error_code FROM execution_run"))
+    error_message = session.scalar(text("SELECT error_message FROM execution_run"))
     assert re.fullmatch(r"[A-Z_:./@a-z0-9-]+", error_code), error_code
     assert "SELECT" not in error_code
     assert "INSERT" not in error_code
     assert "psycopg" not in error_code
+    for message in (error_message, error.value.detail["message"]):
+        assert "INSERT INTO" not in message
+        assert "[SQL:" not in message
+        assert "run_component" not in message
 
 
 def test_missing_pinned_release_and_environment_mapping_have_distinct_codes(session) -> None:

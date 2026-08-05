@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 import shutil
 import subprocess
 import threading
@@ -12,11 +13,35 @@ import uuid
 import config
 
 
+_NODE_SCRIPT = re.compile(r'"([^"\r\n]+\.(?:cjs|mjs|js))"', re.IGNORECASE)
+
+
+def _batch_node_target(shim: str) -> tuple[str, str] | None:
+    """Return Node and the real script behind an npm/pnpm batch shim, if present."""
+    path = Path(shim)
+    candidates: list[Path] = [path.with_suffix(".js")]
+    try:
+        content = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        content = ""
+    for match in _NODE_SCRIPT.finditer(content):
+        target = match.group(1)
+        target = target.replace("%~dp0", str(path.parent) + os.sep)
+        candidate = Path(target)
+        candidates.append(candidate if candidate.is_absolute() else path.parent / candidate)
+    for candidate in candidates:
+        if candidate.is_file():
+            return shutil.which("node.exe") or shutil.which("node") or "node.exe", str(candidate.resolve())
+    return None
+
+
 def resolve_cmd(cmd: list[str]) -> list[str]:
-    """Make cmd[0] runnable on Windows: resolve via PATH and wrap .cmd/.bat shims
-    (e.g. npm/pnpm `claude`, `codex`) with `cmd /c`, since CreateProcess cannot
-    execute a batch shim directly with shell=False. Also upgrades an extension-less
-    shim path (pnpm drops a bare `codex` next to `codex.CMD`) to its .cmd/.exe sibling."""
+    """Make cmd[0] runnable without handing untrusted argv to ``cmd.exe``.
+
+    npm/pnpm Windows shims are batch files, which CreateProcess cannot execute
+    directly. Resolve their underlying Node entry point instead of using
+    ``cmd /c``: cmd.exe would parse chat/job arguments as shell syntax.
+    """
     if not cmd:
         return cmd
     exe = str(cmd[0])
@@ -27,7 +52,11 @@ def resolve_cmd(cmd: list[str]) -> list[str]:
                 resolved = resolved + ext
                 break
     if resolved.lower().endswith((".cmd", ".bat")):
-        return ["cmd", "/c", resolved, *cmd[1:]]
+        target = _batch_node_target(resolved)
+        if target is None:
+            raise ValueError(f"Cannot safely resolve Node entry point for batch shim: {resolved}")
+        node_exe, script = target
+        return [node_exe, script, *cmd[1:]]
     return [resolved, *cmd[1:]]
 
 

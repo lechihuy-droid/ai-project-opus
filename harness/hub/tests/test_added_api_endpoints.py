@@ -86,6 +86,17 @@ def test_hook_only_fires_for_its_agent(hooks_tmp: Path, monkeypatch: pytest.Monk
     assert calls == [(hook, {"type": "done", "agent_id": "reviewer"})]
 
 
+@pytest.mark.parametrize("unsafe_path", ["../outside.log", "C:/outside.log"])
+def test_hook_append_log_file_cannot_escape_store(
+    hooks_tmp: Path, storage_tmp: Path, unsafe_path: str
+) -> None:
+    hook = hooks.create(hook_payload() | {"action": {"type": "append_log_file", "path": unsafe_path}})
+    hooks._run(hook, {"type": "done", "run_id": "run-test"})
+
+    assert hooks.log(hook["id"])[0]["status"] == "failed"
+    assert not (storage_tmp.parent / "outside.log").exists()
+
+
 def make_run(runtime_tmp: Path, agent_id: str = "agent-a") -> str:
     state = runtime_state.create_run(run_id="run-20260728000000-abcdefgh", agent_id=agent_id)
     return str(state["run_id"])

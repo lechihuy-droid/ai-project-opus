@@ -16,6 +16,7 @@ from typing import Any, Iterator
 import config
 from services import audit, governance, inform, integrity, risk, security, verify
 from services.boundary import resolve_in_root
+from services.providers import procs
 
 
 JOB_ID_RE = re.compile(r"^j-[0-9a-z-]+$")
@@ -141,7 +142,7 @@ def _job_diff_path(job_id: str) -> Path:
 
 def _spawn_agent(command: list[str], cwd: Path, env: dict[str, str]) -> subprocess.Popen[str]:
     return subprocess.Popen(
-        command,
+        procs.resolve_cmd(command),
         cwd=cwd,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,

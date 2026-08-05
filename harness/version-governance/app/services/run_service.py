@@ -101,11 +101,12 @@ class RunService:
             assert failed_run is not None
             failed_run.status = "FAILED_PRECONDITION"
             failed_run.error_code = self._precondition_code(exc)
-            failed_run.error_message = str(exc)
+            message = self._safe_error_message(exc)
+            failed_run.error_message = message
             self.session.commit()
             raise HTTPException(
                 status_code=422,
-                detail={"code": failed_run.error_code, "message": str(exc)},
+                detail={"code": failed_run.error_code, "message": message},
             ) from exc
 
         try:
@@ -126,11 +127,12 @@ class RunService:
         except Exception as exc:
             run.status = "FAILED"
             run.error_code = "RUNTIME_UNAVAILABLE"
-            run.error_message = str(exc)
+            message = self._safe_error_message(exc)
+            run.error_message = message
             self.session.commit()
             raise HTTPException(
                 status_code=502,
-                detail={"code": "RUNTIME_UNAVAILABLE", "message": str(exc)},
+                detail={"code": "RUNTIME_UNAVAILABLE", "message": message},
             ) from exc
 
         run.status = "RUNNING"
@@ -353,6 +355,13 @@ class RunService:
         if isinstance(exc, ValueError):
             return str(exc)
         return "PRECONDITION_FAILED"
+
+    @staticmethod
+    def _safe_error_message(exc: Exception) -> str:
+        """Only expose messages from exceptions authored by this application."""
+        if isinstance(exc, (PromptResolutionError, ValueError)):
+            return str(exc)
+        return "database error"
 
     @staticmethod
     def _canonical_callback_status(value: Any) -> tuple[str, str | None]:
