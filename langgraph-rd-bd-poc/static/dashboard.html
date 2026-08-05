@@ -327,7 +327,15 @@
 <div id="toast"></div>
 
 <script>
-mermaid.initialize({ startOnLoad: false });
+// Mermaid tải từ CDN. Nếu CDN hỏng/không có mạng thì chỉ MẤT SƠ ĐỒ — các tab
+// còn lại vẫn phải chạy, nên không gọi thẳng mermaid.* ở top level (biến
+// undefined sẽ ném ReferenceError và giết toàn bộ script phía dưới).
+const mermaidReady = typeof mermaid !== 'undefined';
+if (mermaidReady) mermaid.initialize({ startOnLoad: false });
+
+const MERMAID_UNAVAILABLE =
+  'Không tải được thư viện vẽ sơ đồ (mermaid) từ CDN — cần mạng để xem sơ đồ. '
+  + 'Các chức năng khác vẫn dùng bình thường.';
 
 /* ---------- helpers ---------- */
 const $ = (id) => document.getElementById(id);
@@ -545,6 +553,10 @@ $('existing-run-select').addEventListener('change', async (e) => {
 /* ---------- TAB: graph diagram ---------- */
 async function renderDiagram() {
   const graphId = $('diagram-graph-select').value || 'rd_bd';
+  if (!mermaidReady) {
+    $('diagram').innerHTML = `<p class="empty">${MERMAID_UNAVAILABLE}</p>`;
+    return;
+  }
   try {
     const info = await api(`/api/graphs/${graphId}`);
     const { svg } = await mermaid.render('dash-svg', info.mermaid);
@@ -755,6 +767,12 @@ async function preview() {
     return null;
   }
   errorsDiv.innerHTML = '';
+  // Không có mermaid thì chỉ mất phần VẼ; definition vẫn hợp lệ (server đã
+  // validate) nên vẫn trả data để nút "Lưu graph" hoạt động bình thường.
+  if (!mermaidReady) {
+    $('builder-diagram').innerHTML = `<p class="empty">${MERMAID_UNAVAILABLE}</p>`;
+    return data;
+  }
   const { svg } = await mermaid.render('builder-svg', data.mermaid);
   $('builder-diagram').innerHTML = svg;
   return data;
