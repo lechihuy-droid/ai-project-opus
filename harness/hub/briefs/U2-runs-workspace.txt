@@ -3,7 +3,7 @@ Model: gpt-5.6-luna. This is the MAIN screen of the harness: "run đang chạy l
 NO backend change (server.py, services/, tests/*.py = zero edits). Do NOT touch web/ (legacy).
 
 READ FIRST:
-1. harness/hub/SD-ui-v3-rebuild.md — §3 tokens, §4 (Runs = màn hình chính: spine trái + artifact rail phải),
+1. harness/hub/docs/SD-ui-v3-rebuild.md — §3 tokens, §4 (Runs = màn hình chính: spine trái + artifact rail phải),
    §3 signature element "run spine": cột dọc; node tròn = agent step; GATE = hình thoi (diamond) amber
    (--gate #E4B15E); node live có pulse — MUST respect prefers-reduced-motion (no pulse if reduced).
 2. harness/hub/mockups/ui-v3-mockup.html — the Runs workspace screen is the visual reference (spine on

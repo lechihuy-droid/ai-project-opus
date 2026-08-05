@@ -1,6 +1,6 @@
 STEP C4 — Canvas workflow editor (Hub v2 Phase C, size L). Depends on C2
 (workflow.py + workflow_exec.py) AND C3 (#/workflows list + run view page in
-app.js) being landed and stable. Spec: harness/hub/BD-hub-v2-phaseC.md Step
+app.js) being landed and stable. Spec: harness/hub/docs/BD-hub-v2-phaseC.md Step
 C4. Read it first.
 
 *** MANDATORY PRECONDITION CHECK — DO THIS BEFORE WRITING ANY CODE ***

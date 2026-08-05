@@ -1,5 +1,5 @@
 STEP B5 — Settings page + real Gemini provider (Hub v2 Phase B).
-Spec: harness/hub/BD-hub-v2-phaseB.md Step B5. Read it + SD §3.4.
+Spec: harness/hub/docs/BD-hub-v2-phaseB.md Step B5. Read it + SD §3.4.
 Study: harness/hub/web/app.js (router, nav pattern, getJson, renderSkillLibrary
 as page example), harness/hub/services/providers/gemini_cli.py (stub),
 claude_cli.py (pattern to copy: status cache, procs.resolve_cmd, spawn via

@@ -1,6 +1,6 @@
 STEP C2a — Workflow schema + validate + IR (Hub v2 Phase C, runs in PARALLEL
 with C1 — read the parallelism note in TASK 1 and RUN before starting).
-Spec: harness/hub/BD-hub-v2-phaseC.md Step C2a. Read it + ARCHITECTURE.md §9
+Spec: harness/hub/docs/BD-hub-v2-phaseC.md Step C2a. Read it + ARCHITECTURE.md §9
 (config-first: YAML is truth, canvas/UI is just an editor — no runtime
 mutation of workflow semantics outside the yaml file) + RD FR-121→124.
 Study: harness/hub/services/runtime_agents.py (current stub — you depend on

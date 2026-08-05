@@ -1,6 +1,6 @@
-pytest
-openai  # NVIDIA integrate.api.nvidia.com OpenAI-compatible chat streaming
-pyyaml
-python-dotenv  # loads NVIDIA_API_KEY etc. from the repo-root .env at startup
-python-multipart  # FastAPI UploadFile for the per-run files API
-httpx
+pytest==9.1.1
+openai==2.44.0  # NVIDIA integrate.api.nvidia.com OpenAI-compatible chat streaming
+pyyaml==6.0.3
+python-dotenv==1.2.2  # loads NVIDIA_API_KEY etc. from the repo-root .env at startup
+python-multipart==0.0.32  # FastAPI UploadFile for the per-run files API
+httpx==0.28.1

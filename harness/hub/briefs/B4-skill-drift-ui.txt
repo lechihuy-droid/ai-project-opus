@@ -1,5 +1,5 @@
 STEP B4 — Skill drift tab + deploy UX + deploy log (Hub v2 Phase B).
-Spec: harness/hub/BD-hub-v2-phaseB.md Step B4. Read it first.
+Spec: harness/hub/docs/BD-hub-v2-phaseB.md Step B4. Read it first.
 Study: harness/hub/web/app.js (renderSkillLibrary + renderSkillDetail functions),
 harness/hub/services/skill_library.py, harness/hub/server.py (skill-library routes),
 harness/hub/tests/test_skill_library.py.

@@ -3,3 +3,7 @@
 jobs/
 runtime/
 workflows/*.bak-*
+__pycache__/
+*.pyc
+*.log
+ui-review-shots/

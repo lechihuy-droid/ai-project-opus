@@ -1,6 +1,6 @@
 STEP C2b — Executor: LLM node via provider layer + budget (Hub v2 Phase C,
 size L — highest-risk step). Runs AFTER C1 and C2a land (depends on both).
-Spec: harness/hub/BD-hub-v2-phaseC.md Step C2b. Read it + ARCHITECTURE.md §9
+Spec: harness/hub/docs/BD-hub-v2-phaseC.md Step C2b. Read it + ARCHITECTURE.md §9
 (Super Agent principles: config-first, budget cap mandatory, blackboard
 append-only/replayable) + RD FR-121→124.
 

@@ -117,7 +117,7 @@
 
 ## Brief giao Codex (copy nguyên văn khi exec)
 
-> FRESH START, don't ask. Đọc `harness/hub/SD-harness-hub.md` + `BD-harness-hub.md`.
+> FRESH START, don't ask. Đọc `harness/hub/docs/SD-harness-hub.md` + `BD-harness-hub.md`.
 > Implement Phase 1 → Phase 2 theo đúng module layout (SD §2) và data contract (SD §3).
 > Python chạy/test: `.ih\Scripts\python.exe`, cwd = project root. Bind 127.0.0.1:8799.
 > Sau mỗi Phase: chạy `pytest harness/hub/tests -q` và báo kết quả. KHÔNG thêm gói mới nếu `.ih` đã có; nếu buộc phải thì ghi `requirements-hub.txt` và nêu lý do. Không sửa file ngoài `harness/hub/`. Không gọi LLM.
