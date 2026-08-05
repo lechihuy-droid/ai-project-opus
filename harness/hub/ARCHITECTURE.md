@@ -384,4 +384,4 @@ harness/hub/
 └─ .cache/              # cache incremental + usage chat (gitignore)
 ```
 
-*(SDD docs của Hub: `RD-harness-hub.md`, `SD-harness-hub.md`, `BD-harness-hub.md`.)*
+*(SDD docs của Hub: `docs/RD-harness-hub.md`, `docs/SD-harness-hub.md`, `docs/BD-harness-hub.md`.)*

@@ -1,7 +1,7 @@
 # TODO — Harness Hub
 
 Backlog cho project build Hub (cổng thông tin cho Opus Agent Harness).
-SDD: `RD-harness-hub.md` → `SD-harness-hub.md` → `BD-harness-hub.md`.
+SDD: `docs/RD-harness-hub.md` → `docs/SD-harness-hub.md` → `docs/BD-harness-hub.md`.
 
 ---
 
