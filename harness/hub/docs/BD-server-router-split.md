@@ -171,7 +171,9 @@ Chuyển 6 helper thuần sang. `server.py` import lại. Chưa động route n�
 
 → **verify:** 337 test + test inventory xanh. `git diff --stat` chỉ thấy `server.py` và `api/_shared.py`.
 
-### Step 2..9 — Tách từng module, MỖI MODULE MỘT COMMIT
+> **Sửa quy trình (2026-08-06):** Codex chạy trong sandbox `workspace-write` **không ghi được `.git`** — `git commit` fail vì không tạo nổi `index.lock`. Nên phân công lại: **Codex sửa file + chạy test sau mỗi step; Claude commit.** Việc chạy test sau *mỗi* step giữ nguyên, không được gộp. Commit gom theo cụm rủi ro (2–5, 6–7, 8–9, 10) thay vì mỗi step một commit.
+
+### Step 2..9 — Tách từng module, chạy test sau MỖI module
 
 Thứ tự làm (từ ít rủi ro tới nhiều):
 

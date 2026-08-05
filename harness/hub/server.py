@@ -23,6 +23,10 @@ from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, Res
 from fastapi.staticfiles import StaticFiles
 
 from api._shared import _check_if_match, _error_code, _etag, _http_error, _safe_error_message, _sse
+from api.system import router as system_router
+from api.memory import router as memory_router
+from api.agents import router as agents_router
+from api.jobs import router as jobs_router
 
 import config
 from services import (
@@ -253,19 +257,10 @@ def _system_prompt_with_skills(system_prompt: str | None, contents: list[str]) -
     return skill_library.system_prompt_with_skills(system_prompt, contents)
 
 
-@app.get("/")
-def index() -> FileResponse:
-    return FileResponse(WEB_V3_DIST / "index.html")
-
-
-@app.get("/api/health")
-def health() -> dict[str, object]:
-    return {
-        "ok": True,
-        "root": str(config.ROOT),
-        "runs_dir": str(config.RUNS_DIR),
-        "port": config.PORT,
-    }
+app.include_router(system_router)
+app.include_router(jobs_router)
+app.include_router(agents_router)
+app.include_router(memory_router)
 
 
 @app.get("/api/chat/models")
@@ -275,16 +270,6 @@ def api_chat_models() -> dict[str, object]:
         "default": config.CHAT_DEFAULT_MODEL,
         "catalog": config.CHAT_MODEL_CATALOG,
     }
-
-
-@app.get("/api/providers")
-def api_providers() -> list[dict[str, object]]:
-    return list_providers()
-
-
-@app.get("/api/model-classes")
-def api_model_classes() -> dict[str, dict[str, object]]:
-    return config.MODEL_CLASS_ROUTING
 
 
 @app.post("/api/chat")
@@ -372,119 +357,6 @@ def api_chat(payload: dict[str, object]) -> StreamingResponse:
     return StreamingResponse(events(), media_type="text/event-stream")
 
 
-# --- C1 agent profile routes ---
-@app.get("/api/agents")
-def api_agents() -> list[dict[str, object]]:
-    return runtime_agents.list_agents()
-
-
-@app.get("/api/risk-tiers")
-def api_risk_tiers() -> list[str]:
-    return list(risk.TIERS)
-
-
-@app.post("/api/agents")
-def api_agents_create_or_update(payload: dict[str, object], request: Request, response: Response) -> dict[str, object]:
-    try:
-        agent_id = payload.get("id")
-        if isinstance(agent_id, str):
-            try:
-                current = runtime_agents.get_agent(agent_id)
-                current_path = runtime_agents.AGENTS_DIR / f"{current['id']}.agent.yaml"
-                _check_if_match(request, current_path.read_bytes())
-            except FileNotFoundError:
-                pass
-        result = runtime_agents.create_or_update_agent(payload)
-        response.headers["ETag"] = _etag((runtime_agents.AGENTS_DIR / f"{result['id']}.agent.yaml").read_bytes())
-        return result
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-
-@app.delete("/api/agents/{agent_id}")
-def api_agents_delete(agent_id: str) -> dict[str, bool]:
-    try:
-        runtime_agents.delete_agent(agent_id)
-    except FileNotFoundError as exc:
-        raise _http_error(exc) from exc
-    return {"ok": True}
-# --- end C1 agent profile routes ---
-
-
-@app.get("/api/agent/runs")
-def api_agent_runs(agent_id: str | None = None) -> list[dict[str, object]]:
-    rows = runtime_state.list_runs()
-    if agent_id is not None:
-        rows = [row for row in rows if (row.get("metadata") or {}).get("agent_id") == agent_id]
-    return rows
-
-
-@app.post("/api/agents/{agent_id}/test")
-def api_agent_test(agent_id: str) -> dict[str, object]:
-    try:
-        agent = runtime_agents.get_agent(agent_id)
-        started = time.monotonic(); output: list[str] = []; usage: dict[str, object] = {}
-        request = execution.ExecutionRequest(
-            correlation_id=f"agent-test-{agent_id}", provider_id=str(agent["provider"]), model=agent.get("model"),
-            messages=[{"role": "user", "content": "Trả lời ngắn: kết nối agent hoạt động."}],
-            tool_policy={"permission": agent["permission"], "allowed_tools": agent.get("allowed_tools", []), "allowed_paths": agent.get("allowed_paths", [])},
-        )
-        for item in execution.execute(request):
-            if item.get("type") == "delta": output.append(str(item.get("text") or ""))
-            elif item.get("type") == "done": usage = dict(item.get("usage") or {})
-            elif item.get("type") == "error": raise RuntimeError(str(item.get("message") or "Provider error"))
-        elapsed = time.monotonic() - started
-        if elapsed > agent["budget"]["seconds"]: raise RuntimeError("budget_exceeded: agent seconds")
-        return {"output": "".join(output), "elapsed_seconds": elapsed, "usage": usage}
-    except FileNotFoundError as exc:
-        raise _http_error(exc) from exc
-    except (ValueError, RuntimeError) as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-
-@app.post("/api/agent/runs")
-def api_create_agent_run(payload: dict[str, object]) -> StreamingResponse:
-    try:
-        references, inputs = run_inputs.resolve_inputs(payload.get("inputs"))
-    except (ValueError, PermissionError) as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    forwarded = dict(payload)
-    if references:
-        metadata = dict(forwarded.get("metadata") or {}) if isinstance(forwarded.get("metadata"), dict) else {}
-        metadata.update({"inputs": inputs, "input_references": references})
-        forwarded["metadata"] = metadata
-    return StreamingResponse(runtime_pipeline.create_run_stream(forwarded), media_type="text/event-stream")
-
-
-@app.get("/api/agent/runs/{run_id}")
-def api_agent_run(run_id: str) -> dict[str, object]:
-    try:
-        return runtime_state.read_run(run_id)
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-
-
-@app.get("/api/agent/runs/{run_id}/events")
-def api_agent_run_events(run_id: str) -> list[dict[str, object]]:
-    try:
-        return runtime_events.read_events(run_id)
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-
-
-@app.post("/api/agent/runs/{run_id}/interrupts/{interrupt_id}/resume")
-def api_agent_run_interrupt_resume(run_id: str, interrupt_id: str, payload: dict[str, object]) -> StreamingResponse:
-    try:
-        runtime_state.read_run(run_id)
-        runtime_interrupts.get_interrupt(run_id, interrupt_id)
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-    return StreamingResponse(
-        runtime_pipeline.resume_run_stream(run_id, interrupt_id, payload),
-        media_type="text/event-stream",
-    )
-
-
 @app.get("/api/skills")
 def api_skills() -> list[dict[str, object]]:
     return runtime_skills.list_skills()
@@ -516,171 +388,9 @@ def api_skill(skill_id: str) -> dict[str, object]:
         raise _http_error(exc) from exc
 
 
-@app.get("/api/memory")
-def api_memory() -> list[dict[str, object]]:
-    return runtime_memory.list_memory()
-
-
-@app.get("/api/settings/retention")
-def api_retention_settings() -> dict[str, int]:
-    return retention.settings()
-
-
-@app.put("/api/settings/retention")
-def api_retention_update(payload: dict[str, object]) -> dict[str, int]:
-    try:
-        result = retention.update(payload.get("days"))
-        retention.sweep()
-        return result
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-
-@app.get("/api/memory/candidates")
-def api_memory_candidates() -> list[dict[str, object]]:
-    return runtime_memory.list_candidates()
-
-
-@app.post("/api/memory/candidates/{candidate_id}/accept")
-def api_memory_candidate_accept(candidate_id: str, payload: dict[str, object] | None = None) -> dict[str, object]:
-    try:
-        return runtime_memory.accept_candidate(candidate_id, payload if isinstance(payload, dict) else None)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-
-
-@app.post("/api/memory/candidates/{candidate_id}/reject")
-def api_memory_candidate_reject(candidate_id: str) -> dict[str, object]:
-    try:
-        return runtime_memory.reject_candidate(candidate_id)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-
-
-@app.post("/api/memory/{memory_id}/revoke")
-def api_memory_revoke(memory_id: str, payload: dict[str, object]) -> dict[str, object]:
-    try:
-        return runtime_memory.revoke_memory(memory_id, str(payload.get("revoked_by") or ""), str(payload.get("reason") or ""))
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-
-
-@app.get("/api/guardrails/decisions")
-def api_guardrail_decisions() -> list[dict[str, object]]:
-    return runtime_policy.list_decisions()
-
-
-@app.post("/api/guardrails/decisions/command")
-def api_guardrail_command_decision(payload: dict[str, object]) -> dict[str, object]:
-    subject_id = str(payload.get("subject_id") or "manual")
-    command = payload.get("command")
-    return runtime_policy.decide_command(subject_id, command)
-
-
 @app.get("/api/runs")
 def api_runs() -> list[dict[str, object]]:
     return runs.list_runs()
-
-
-@app.get("/api/jobs")
-def api_jobs() -> list[dict[str, object]]:
-    return gitjobs.list_jobs()
-
-
-@app.post("/api/jobs")
-def api_create_job(payload: dict[str, object]) -> dict[str, object]:
-    brief = payload.get("brief")
-    agent = payload.get("agent") or "codex"
-    allow_override = bool(payload.get("allow_override"))
-    if not isinstance(brief, str) or not brief.strip():
-        raise HTTPException(status_code=400, detail="brief is required")
-    if not isinstance(agent, str):
-        raise HTTPException(status_code=400, detail="agent must be a string")
-    if agent not in config.JOB_ALLOW_AGENTS:
-        raise HTTPException(status_code=400, detail=f"Unsupported agent: {agent}")
-    try:
-        return gitjobs.create_job(brief, agent, allow_override=allow_override)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except (OSError, PermissionError, RuntimeError) as exc:
-        raise _http_error(exc) from exc
-
-
-@app.get("/api/jobs/{job_id}")
-def api_job(job_id: str) -> dict[str, object]:
-    try:
-        job = dict(gitjobs.get_job(job_id))
-        patch = gitjobs.diff(job_id)
-        if patch:
-            job["diff"] = patch
-        return job
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-
-
-@app.post("/api/jobs/{job_id}/approve")
-def api_job_approve(job_id: str) -> dict[str, object]:
-    try:
-        return gitjobs.approve(job_id)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-    except (OSError, RuntimeError) as exc:
-        raise _http_error(exc) from exc
-
-
-@app.get("/api/jobs/{job_id}/stream")
-def api_job_stream(job_id: str) -> StreamingResponse:
-    try:
-        gitjobs.get_job(job_id)
-        return StreamingResponse(gitjobs.stream_events(job_id), media_type="text/event-stream")
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
-
-
-@app.post("/api/jobs/{job_id}/accept")
-def api_job_accept(job_id: str) -> dict[str, object]:
-    try:
-        return gitjobs.accept(job_id)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except (FileNotFoundError, PermissionError, RuntimeError) as exc:
-        raise _http_error(exc) from exc
-
-
-@app.post("/api/jobs/{job_id}/rollback")
-def api_job_rollback(job_id: str) -> dict[str, object]:
-    try:
-        return gitjobs.rollback(job_id)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except (FileNotFoundError, PermissionError, RuntimeError) as exc:
-        raise _http_error(exc) from exc
-
-
-@app.post("/api/jobs/{job_id}/reject")
-def api_job_reject(job_id: str) -> dict[str, object]:
-    try:
-        return gitjobs.reject(job_id)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except (FileNotFoundError, PermissionError, RuntimeError) as exc:
-        raise _http_error(exc) from exc
-
-
-@app.get("/api/jobs/{job_id}/diff")
-def api_job_diff(job_id: str) -> PlainTextResponse:
-    try:
-        return PlainTextResponse(gitjobs.diff(job_id), media_type="text/plain; charset=utf-8")
-    except (FileNotFoundError, PermissionError) as exc:
-        raise _http_error(exc) from exc
 
 
 @app.post("/api/runs/trigger")
@@ -755,46 +465,6 @@ def api_suite(suite_id: str) -> dict[str, object]:
         raise _http_error(exc) from exc
 
 
-@app.get("/api/integrity")
-def api_integrity() -> dict[str, object]:
-    results = integrity.verify_suites()
-    return {
-        "ok": all(bool(item.get("ok")) for item in results),
-        "suites": results,
-        "count": len(results),
-    }
-
-
-@app.get("/api/governance")
-def api_governance() -> dict[str, object]:
-    return governance.status()
-
-
-@app.get("/api/usage")
-def api_usage(
-    source: str | None = None,
-    model: str | None = None,
-    since: str | None = None,
-) -> list[dict[str, object]]:
-    try:
-        return usage.collect_usage({"source": source, "model": model, "since": since})
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-
-@app.get("/api/usage/rollup")
-def api_usage_rollup(
-    source: str | None = None,
-    model: str | None = None,
-    since: str | None = None,
-) -> dict[str, object]:
-    try:
-        events = usage.collect_usage({"source": source, "model": model, "since": since})
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    return usage.rollup(events)
-
-
 @app.get("/api/tools")
 @app.get("/api/tools/usage")
 def api_tools(
@@ -808,31 +478,6 @@ def api_tools(
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return behavior.tool_rollup(filtered)
-
-
-@app.get("/api/inspect/logs")
-def api_inspect_logs() -> list[dict[str, object]]:
-    return inspect_evals.list_logs()
-
-
-@app.get("/api/inspect/mep")
-def api_inspect_mep() -> dict[str, object]:
-    try:
-        return inspect_evals.latest_mep()
-    except FileNotFoundError as exc:
-        raise _http_error(exc) from exc
-    except RuntimeError as exc:
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
-
-
-@app.get("/api/usage/cockpit")
-def api_usage_cockpit() -> dict[str, object]:
-    stats = usage.cockpit_stats()
-    stats["providers_online"] = [
-        {"id": provider["id"], "available": provider["available"]}
-        for provider in list_providers()
-    ]
-    return stats
 
 
 @app.get("/api/skill-library")
@@ -889,38 +534,6 @@ def api_skill_library_deploy(skill_id: str, payload: dict[str, object]) -> dict[
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except (FileNotFoundError, PermissionError) as exc:
         raise _http_error(exc) from exc
-
-
-@app.get("/api/hooks")
-def api_hooks() -> list[dict[str, object]]: return hooks.list_hooks()
-
-
-@app.get("/api/hooks/events")
-def api_hook_events() -> list[str]: return hooks.events()
-
-
-@app.post("/api/hooks")
-def api_hooks_create(payload: dict[str, object]) -> dict[str, object]:
-    try: return hooks.create(payload)
-    except ValueError as exc: raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-
-@app.put("/api/hooks/{hook_id}")
-def api_hooks_update(hook_id: str, payload: dict[str, object]) -> dict[str, object]:
-    try: return hooks.update(hook_id, payload)
-    except ValueError as exc: raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except FileNotFoundError as exc: raise _http_error(exc) from exc
-
-
-@app.delete("/api/hooks/{hook_id}")
-def api_hooks_delete(hook_id: str) -> dict[str, bool]:
-    try: hooks.delete(hook_id)
-    except FileNotFoundError as exc: raise _http_error(exc) from exc
-    return {"ok": True}
-
-
-@app.get("/api/hooks/{hook_id}/log")
-def api_hook_log(hook_id: str) -> list[dict[str, object]]: return hooks.log(hook_id)
 
 
 @app.get("/api/runs/{run_id}/files")
@@ -1243,36 +856,6 @@ def api_artifact_comment_delete(artifact_id: str, comment_id: str) -> dict[str, 
     except FileNotFoundError as exc: raise HTTPException(status_code=404) from exc
     except (PermissionError, ValueError) as exc: raise HTTPException(status_code=400, detail=str(exc)) from exc
     return {"ok": True}
-
-
-@app.api_route("/api/vgov/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
-async def api_vgov_proxy(path: str, request: Request) -> Response:
-    """Keep Version Governance behind the Hub control-plane boundary.
-
-    vgov-api mounts every functional router under /api/vgov, so the prefix must be preserved.
-    Forwarding to /{path} only ever resolved /health and 404'd everything else.
-    """
-    target = f"{config.VGOV_BASE_URL.rstrip('/')}/api/vgov/{path}"
-    headers = {name: value for name, value in request.headers.items()
-               if name.lower() in {"x-actor", "content-type"}}
-    try:
-        async with httpx.AsyncClient(timeout=15.0) as client:
-            upstream = await client.request(
-                request.method, target, params=request.query_params,
-                content=await request.body(), headers=headers,
-            )
-    except (httpx.ConnectError, httpx.TimeoutException):
-        return JSONResponse(
-            status_code=502,
-            content={"error": {"code": "RUNTIME_UNAVAILABLE", "message": "Version Governance API is unavailable"}},
-        )
-    content_type = upstream.headers.get("content-type")
-    return Response(content=upstream.content, status_code=upstream.status_code, media_type=content_type)
-
-
-@app.get("/api/board")
-def api_board() -> dict[str, object]:
-    return board.task_board()
 
 
 @app.get("/api/sessions")

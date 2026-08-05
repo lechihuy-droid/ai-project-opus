@@ -8,12 +8,7 @@
   [
     "/api/agent/runs",
     [
-      "GET"
-    ]
-  ],
-  [
-    "/api/agent/runs",
-    [
+      "GET",
       "POST"
     ]
   ],
@@ -38,12 +33,7 @@
   [
     "/api/agents",
     [
-      "GET"
-    ]
-  ],
-  [
-    "/api/agents",
-    [
+      "GET",
       "POST"
     ]
   ],
@@ -62,12 +52,7 @@
   [
     "/api/artifacts",
     [
-      "GET"
-    ]
-  ],
-  [
-    "/api/artifacts",
-    [
+      "GET",
       "POST"
     ]
   ],
@@ -80,24 +65,14 @@
   [
     "/api/artifacts/{artifact_id}/comments",
     [
-      "GET"
-    ]
-  ],
-  [
-    "/api/artifacts/{artifact_id}/comments",
-    [
+      "GET",
       "POST"
     ]
   ],
   [
     "/api/artifacts/{artifact_id}/comments/{comment_id}",
     [
-      "DELETE"
-    ]
-  ],
-  [
-    "/api/artifacts/{artifact_id}/comments/{comment_id}",
-    [
+      "DELETE",
       "PATCH"
     ]
   ],
@@ -128,24 +103,14 @@
   [
     "/api/chats/{chat_id}/files",
     [
-      "GET"
-    ]
-  ],
-  [
-    "/api/chats/{chat_id}/files",
-    [
+      "GET",
       "POST"
     ]
   ],
   [
-    "/api/chats/{chat_id}/files/{name:path}",
+    "/api/chats/{chat_id}/files/{name}",
     [
-      "DELETE"
-    ]
-  ],
-  [
-    "/api/chats/{chat_id}/files/{name:path}",
-    [
+      "DELETE",
       "GET"
     ]
   ],
@@ -176,12 +141,7 @@
   [
     "/api/hooks",
     [
-      "GET"
-    ]
-  ],
-  [
-    "/api/hooks",
-    [
+      "GET",
       "POST"
     ]
   ],
@@ -194,12 +154,7 @@
   [
     "/api/hooks/{hook_id}",
     [
-      "DELETE"
-    ]
-  ],
-  [
-    "/api/hooks/{hook_id}",
-    [
+      "DELETE",
       "PUT"
     ]
   ],
@@ -230,12 +185,7 @@
   [
     "/api/jobs",
     [
-      "GET"
-    ]
-  ],
-  [
-    "/api/jobs",
-    [
+      "GET",
       "POST"
     ]
   ],
@@ -374,24 +324,14 @@
   [
     "/api/runs/{run_id}/files",
     [
-      "GET"
-    ]
-  ],
-  [
-    "/api/runs/{run_id}/files",
-    [
+      "GET",
       "POST"
     ]
   ],
   [
-    "/api/runs/{run_id}/files/{name:path}",
+    "/api/runs/{run_id}/files/{name}",
     [
-      "DELETE"
-    ]
-  ],
-  [
-    "/api/runs/{run_id}/files/{name:path}",
-    [
+      "DELETE",
       "GET"
     ]
   ],
@@ -428,24 +368,14 @@
   [
     "/api/settings/retention",
     [
-      "GET"
-    ]
-  ],
-  [
-    "/api/settings/retention",
-    [
+      "GET",
       "PUT"
     ]
   ],
   [
     "/api/skill-library",
     [
-      "GET"
-    ]
-  ],
-  [
-    "/api/skill-library",
-    [
+      "GET",
       "POST"
     ]
   ],
@@ -462,25 +392,15 @@
     ]
   ],
   [
-    "/api/skill-library/{skill_id:path}",
+    "/api/skill-library/{skill_id}",
     [
-      "DELETE"
-    ]
-  ],
-  [
-    "/api/skill-library/{skill_id:path}",
-    [
-      "GET"
-    ]
-  ],
-  [
-    "/api/skill-library/{skill_id:path}",
-    [
+      "DELETE",
+      "GET",
       "PUT"
     ]
   ],
   [
-    "/api/skill-library/{skill_id:path}/deploy",
+    "/api/skill-library/{skill_id}/deploy",
     [
       "POST"
     ]
@@ -552,7 +472,7 @@
     ]
   ],
   [
-    "/api/vgov/{path:path}",
+    "/api/vgov/{path}",
     [
       "DELETE",
       "GET",
@@ -563,12 +483,7 @@
   [
     "/api/workflows",
     [
-      "GET"
-    ]
-  ],
-  [
-    "/api/workflows",
-    [
+      "GET",
       "POST"
     ]
   ],
@@ -599,24 +514,14 @@
   [
     "/api/workflows/{workflow_id}",
     [
-      "DELETE"
-    ]
-  ],
-  [
-    "/api/workflows/{workflow_id}",
-    [
+      "DELETE",
       "PUT"
     ]
   ],
   [
     "/api/workflows/{workflow_id}/layout",
     [
-      "GET"
-    ]
-  ],
-  [
-    "/api/workflows/{workflow_id}/layout",
-    [
+      "GET",
       "PUT"
     ]
   ],
@@ -636,38 +541,6 @@
     "/api/workflows/{workflow_id}/source",
     [
       "GET"
-    ]
-  ],
-  [
-    "/assets",
-    []
-  ],
-  [
-    "/docs",
-    [
-      "GET",
-      "HEAD"
-    ]
-  ],
-  [
-    "/docs/oauth2-redirect",
-    [
-      "GET",
-      "HEAD"
-    ]
-  ],
-  [
-    "/openapi.json",
-    [
-      "GET",
-      "HEAD"
-    ]
-  ],
-  [
-    "/redoc",
-    [
-      "GET",
-      "HEAD"
     ]
   ]
 ]
