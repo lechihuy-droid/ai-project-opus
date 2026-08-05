@@ -1,0 +1,13 @@
+Function ID: FNC001
+Function Name: Create Customer
+The system shall allow an operator to register a customer.
+Required input:
+- Customer name
+- Email
+- Phone number
+Business rules:
+- Customer name is mandatory.
+- Email must be unique.
+- Email format must be validated.
+- A customer record must be stored in the database.
+- The screen must show a successful registration message.
