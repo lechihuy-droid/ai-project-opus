@@ -21,6 +21,10 @@ class WorkflowState(TypedDict, total=False):
     review_issues: list[str]
     revision_count: int
     human_decision: str
+    # Opt-in demo flag: khi bật, review_design luôn FAIL để đi tới nhánh
+    # escalate — mock data mặc định tự sửa hết nên nếu không có flag này,
+    # escalate không bao giờ xảy ra được trong demo bình thường.
+    force_persistent_failure: bool
     api_review_status: str
     api_issues: list[str]
     # Append-only. Reducer BẮT BUỘC vì ba generator chạy cùng super-step đều
@@ -51,7 +55,10 @@ def _version_record(artifact_type: str, spec: dict, cycle: int) -> dict:
         "artifact_type": artifact_type,
         "artifact_id": spec["artifact_id"],
         "version": cycle + 1,
-        "revision": spec["revision"],
+        # Bộ đếm attempt nội bộ của chính node/subgraph sinh ra artifact (với
+        # api là số lần retry bên trong subgraph) — KHÔNG phải version cấp
+        # cha, nên đặt tên khác để tránh đọc nhầm là cùng một con số.
+        "producer_revision": spec["revision"],
         "cycle": cycle,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "content": spec,
@@ -296,6 +303,10 @@ def review_design(state: WorkflowState) -> dict:
     # Cố ý fail ở revision đầu tiên để quan sát revision loop.
     if revision_count == 0:
         issues.append("Traceability matrix has not yet been generated.")
+    # Demo flag: mô phỏng một lỗi AI không tự sửa được, để luồng escalate có
+    # thể xảy ra (mock data mặc định luôn tự sửa xong sau revision 0).
+    if state.get("force_persistent_failure"):
+        issues.append("[FORCED DEMO FAILURE] Simulated unfixable issue for escalation demo.")
     # Subgraph tự "give up" sau khi hết retry nội bộ vẫn phải được phản ánh
     # lên review cấp cha, không được để lọt qua human_approval.
     if state.get("api_review_status") == "FAIL":
@@ -450,6 +461,7 @@ def main():
     initial_state: WorkflowState = {
         "requirement": load_requirement(),
         "revision_count": 0,
+        "force_persistent_failure": os.environ.get("FORCE_FAILURE") == "1",
     }
     config = {"configurable": {"thread_id": "rd-bd-run-001"}}
     result = graph.invoke(initial_state, config=config)

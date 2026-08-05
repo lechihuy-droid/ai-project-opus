@@ -25,6 +25,12 @@ class ResumeRequest(BaseModel):
     decision: str
 
 
+class CreateRunRequest(BaseModel):
+    # Optional — chỉ áp dụng cho graph rd_bd. Mặc định False để hành vi cũ
+    # (không gửi body) không đổi.
+    force_failure: bool = False
+
+
 class GraphDefinitionRequest(BaseModel):
     name: str
     nodes: list[dict]
@@ -127,11 +133,18 @@ def list_runs():
 
 
 @app.post("/api/runs")
-def create_run():
+def create_run(body: CreateRunRequest | None = None):
     thread_id = uuid.uuid4().hex
     _known_thread_ids.append(thread_id)
+    force_failure = body.force_failure if body is not None else False
     return _run_and_respond(
-        graph, thread_id, {"requirement": load_requirement(), "revision_count": 0}
+        graph,
+        thread_id,
+        {
+            "requirement": load_requirement(),
+            "revision_count": 0,
+            "force_persistent_failure": force_failure,
+        },
     )
 
 

@@ -156,6 +156,10 @@
           </label>
         </div>
       </div>
+      <label id="force-failure-label" style="margin-top:0.7rem">
+        <input type="checkbox" id="force-failure-checkbox" style="width:auto">
+        Mô phỏng lỗi AI không tự sửa được (để xem luồng escalation)
+      </label>
       <div class="btn-row">
         <button class="primary" id="start-btn">Bắt đầu run mới</button>
         <button id="reload-runs-btn">Tải lại danh sách run</button>
@@ -227,6 +231,12 @@
         Mỗi vòng revision sinh ra một version mới cho từng artifact. Quyết định của
         con người được gắn vào <em>đúng version</em> họ đã nhìn thấy lúc duyệt —
         không phải gắn chung cho cả artifact.
+      </p>
+      <p class="meta">
+        Cột "Số lần thử nội bộ" (<code>producer_revision</code>) là bộ đếm attempt
+        riêng của node/subgraph sinh ra artifact đó — với artifact <code>api</code>,
+        đây là số lần retry bên trong subgraph thiết kế API nên sẽ luôn dừng ở 2 và
+        không tăng theo mỗi cycle như <code>database</code>/<code>screen</code>.
       </p>
       <label>Run (chỉ graph RD → BD sinh artifact)
         <select id="artifact-run-select"><option value="">-- chọn run --</option></select>
@@ -400,8 +410,17 @@ async function loadGraphs() {
 let currentThreadId = null;
 let currentGraphId = 'rd_bd';
 
+function refreshForceFailureVisibility() {
+  const graphId = $('run-graph-select').value || 'rd_bd';
+  const builtin = isBuiltin(graphId);
+  $('force-failure-label').classList.toggle('hidden', !builtin);
+  $('force-failure-checkbox').disabled = !builtin;
+  if (!builtin) $('force-failure-checkbox').checked = false;
+}
+
 async function loadRunOptions() {
   const graphId = $('run-graph-select').value || 'rd_bd';
+  refreshForceFailureVisibility();
   let runs = [];
   try { runs = await api(runsBase(graphId)); } catch (e) { runs = []; }
   $('existing-run-select').innerHTML = '<option value="">-- chọn run --</option>' +
@@ -487,8 +506,13 @@ function renderRun(data, graphId) {
 
 async function startRun() {
   const graphId = $('run-graph-select').value || 'rd_bd';
+  const options = { method: 'POST' };
+  if (isBuiltin(graphId) && $('force-failure-checkbox').checked) {
+    options.headers = { 'Content-Type': 'application/json' };
+    options.body = JSON.stringify({ force_failure: true });
+  }
   try {
-    const data = await api(runsBase(graphId), { method: 'POST' });
+    const data = await api(runsBase(graphId), options);
     renderRun(data, graphId);
     await loadRunOptions();
     toast('Đã bắt đầu run mới.');
@@ -586,7 +610,7 @@ async function loadArtifacts() {
   wrap.innerHTML = Object.keys(byType).sort().map((type) => `
     <h3>${esc(type)}</h3>
     <table>
-      <thead><tr><th>Version</th><th>Cycle</th><th>Thời điểm</th><th>Quyết định</th><th>Nội dung</th></tr></thead>
+      <thead><tr><th>Version</th><th>Cycle</th><th>Số lần thử nội bộ</th><th>Thời điểm</th><th>Quyết định</th><th>Nội dung</th></tr></thead>
       <tbody>
         ${byType[type].map((v) => {
           const a = v.approval;
@@ -597,6 +621,7 @@ async function loadArtifacts() {
           return `<tr>
             <td><code>${esc(v.version_id)}</code></td>
             <td>${v.cycle}</td>
+            <td>${v.producer_revision}</td>
             <td class="meta">${esc(new Date(v.created_at).toLocaleTimeString())}</td>
             <td>${badge}</td>
             <td><details><summary>xem</summary><pre>${esc(JSON.stringify(v.content, null, 2))}</pre></details></td>
