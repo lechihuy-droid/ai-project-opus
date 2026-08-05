@@ -1,0 +1,29 @@
+{
+  "contentChecksum": "ed0c08224248380a66b0719ab741744642d04ef638c05ac9f1091c5847a52681",
+  "domain": "visual-style",
+  "mediaType": "web",
+  "observations": [
+    {
+      "definition": {
+        "packageId": "dashboard-data",
+        "tags": [
+          "dashboard-data",
+          "w8-candidate",
+          "link-only"
+        ]
+      },
+      "kind": "layout_reference",
+      "reviewStatus": "approved"
+    }
+  ],
+  "rawText": "# Primer design system dashboard review note\n\nSource: https://primer.style/\nTarget package: dashboard-data\n\nReviewer-authored concepts:\n- information hierarchy\n- semantic color roles\n- dense but inspectable UI\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts.",
+  "schemaVersion": "lucida-reference-document/v1",
+  "sourceRef": "https://primer.style/",
+  "tags": [
+    "dashboard-data",
+    "link-only",
+    "w8-candidate",
+    "web"
+  ],
+  "title": "w8-dashboard-primer-docs record 0001"
+}

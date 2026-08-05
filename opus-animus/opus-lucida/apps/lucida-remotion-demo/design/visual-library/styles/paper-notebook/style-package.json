@@ -6,41 +6,145 @@
   "status": "experimental",
   "visualFamily": "paper-notebook",
   "description": "Original deterministic notebook family for reasoning, study notes, derivations, and truthful review checklists using a raster-free paper field and explicit ink hierarchy.",
-  "tags": ["paper", "notebook", "reasoning", "study", "annotation"],
-  "supportedIntents": ["code-explanation", "list", "process", "summarize", "takeaway"],
-  "recommendedIntents": ["process", "summarize", "takeaway"],
+  "tags": [
+    "paper",
+    "notebook",
+    "reasoning",
+    "study",
+    "annotation"
+  ],
+  "supportedIntents": [
+    "code-explanation",
+    "list",
+    "process",
+    "summarize",
+    "takeaway"
+  ],
+  "recommendedIntents": [
+    "process",
+    "summarize",
+    "takeaway"
+  ],
   "avoidFor": [
     "asset-led product reveals where media is the subject",
     "metric-heavy monitoring scenes requiring dashboard comparison",
     "cinematic hooks that need full-bleed imagery"
   ],
-  "aspectRatios": ["9:16", "16:9"],
-  "contentCapacity": { "headlineChars": 96, "bodyChars": 520, "bulletsMaxItems": 5, "maxDataSeries": 0, "maxCodeLines": 6 },
-  "renderCost": { "tier": "low", "estimatedSceneComplexity": 4, "notes": "Paper grain, ruled lines, ink marks, checks, and annotations are deterministic CSS and DOM primitives with no media decode cost." },
-  "reducedMotion": { "strategy": "reduced-motion-fade", "notes": "Reduced mode shortens travel to a small reveal, while static mode presents the complete notebook hierarchy without animation." },
-  "accessibility": { "contrast": "AA", "notes": "Dark navy ink on warm paper, semantic red used sparingly, stable baselines, and fixed annotation width preserve portrait readability." },
+  "aspectRatios": [
+    "9:16",
+    "16:9"
+  ],
+  "contentCapacity": {
+    "headlineChars": 96,
+    "bodyChars": 520,
+    "bulletsMaxItems": 5,
+    "maxDataSeries": 0,
+    "maxCodeLines": 6
+  },
+  "renderCost": {
+    "tier": "low",
+    "estimatedSceneComplexity": 4,
+    "notes": "Paper grain, ruled lines, ink marks, checks, and annotations are deterministic CSS and DOM primitives with no media decode cost."
+  },
+  "reducedMotion": {
+    "strategy": "reduced-motion-fade",
+    "notes": "Reduced mode shortens travel to a small reveal, while static mode presents the complete notebook hierarchy without animation."
+  },
+  "accessibility": {
+    "contrast": "AA",
+    "notes": "Dark navy ink on warm paper, semantic red used sparingly, stable baselines, and fixed annotation width preserve portrait readability."
+  },
   "directorCompatibility": {
     "selectionReason": "Choose when the narration exposes working logic, study notes, a compact derivation, or a review checklist whose annotations matter.",
-    "preferredNeighborFamilies": ["minimal-education", "technical-editorial"],
-    "bridgeFamilies": ["minimal-education"],
-    "hardBlocks": ["requires third-party screenshot fidelity", "requires more than five checklist items", "requires a data dashboard"]
+    "preferredNeighborFamilies": [
+      "minimal-education",
+      "technical-editorial"
+    ],
+    "bridgeFamilies": [
+      "minimal-education"
+    ],
+    "hardBlocks": [
+      "requires third-party screenshot fidelity",
+      "requires more than five checklist items",
+      "requires a data dashboard"
+    ]
   },
-  "files": { "visual": "./visual.json", "tokens": "./tokens.json", "componentMap": "./component-map.json", "provenance": "./provenance.md", "artifactManifest": "./artifact-manifest.json" },
-  "sourcePolicy": { "copyStatus": "original", "registeredMedia": "none", "notes": "The package uses original Lucida fixture copy and renderer geometry. It contains no raster paper, logos, screenshots, font binaries, or copied brand identity." },
-  "sourceArtifacts": { "normalizedInput": "./artifacts/review-scenes.json", "mappedScenes": "./artifacts/review-scenes.json", "compiledVideoMap": "./artifacts/demo-video-map.json", "sourceReviewReport": "./artifacts/source-review-report.json" },
+  "files": {
+    "visual": "./visual.json",
+    "tokens": "./tokens.json",
+    "componentMap": "./component-map.json",
+    "provenance": "./provenance.md",
+    "artifactManifest": "./artifact-manifest.json"
+  },
+  "sourcePolicy": {
+    "copyStatus": "original",
+    "registeredMedia": "none",
+    "notes": "The package uses original Lucida fixture copy and renderer geometry. It contains no raster paper, logos, screenshots, font binaries, or copied brand identity."
+  },
+  "sourceArtifacts": {
+    "normalizedInput": "./artifacts/review-scenes.json",
+    "mappedScenes": "./artifacts/review-scenes.json",
+    "compiledVideoMap": "./artifacts/demo-video-map.json",
+    "sourceReviewReport": "./artifacts/source-review-report.json"
+  },
   "validationArtifacts": {
     "demoVideoMap": "./artifacts/demo-video-map.json",
     "renderProps": "./artifacts/render-props.json",
-    "previewFrames": ["./artifacts/frames/scene-01.png", "./artifacts/frames/scene-02.png", "./artifacts/frames/scene-03.png"],
+    "previewFrames": [
+      "./artifacts/frames/scene-01.png",
+      "./artifacts/frames/scene-02.png",
+      "./artifacts/frames/scene-03.png"
+    ],
     "renderReport": "./artifacts/render-report.json",
     "videoBinaryRegistered": false
   },
   "sourceReferences": [
-    { "id": "remotion-animating-properties", "url": "https://www.remotion.dev/docs/animating-properties", "selectedConcepts": ["deterministic frame input", "still rendering", "network-free animation"] }
+    {
+      "id": "web-excalidraw",
+      "url": "https://www.remotion.dev/docs/animating-properties",
+      "selectedConcepts": [
+        "deterministic frame input",
+        "still rendering",
+        "network-free animation"
+      ]
+    },
+    {
+      "id": "web-katex",
+      "url": "https://www.remotion.dev/docs/animating-properties",
+      "selectedConcepts": [
+        "deterministic frame input",
+        "still rendering",
+        "network-free animation"
+      ]
+    },
+    {
+      "id": "repo-excalidraw",
+      "url": "https://www.remotion.dev/docs/animating-properties",
+      "selectedConcepts": [
+        "deterministic frame input",
+        "still rendering",
+        "network-free animation"
+      ]
+    },
+    {
+      "id": "repo-marp",
+      "url": "https://www.remotion.dev/docs/animating-properties",
+      "selectedConcepts": [
+        "deterministic frame input",
+        "still rendering",
+        "network-free animation"
+      ]
+    }
   ],
   "qualityGate": {
     "validated": true,
-    "checks": ["visual package validator --strict", "TypeScript noEmit", "Remotion still renders", "three portrait preview frames", "signalstats nonblank check"],
+    "checks": [
+      "visual package validator --strict",
+      "TypeScript noEmit",
+      "Remotion still renders",
+      "three portrait preview frames",
+      "signalstats nonblank check"
+    ],
     "knownLimitations": [
       "Shared registry and app-root availability remain untouched because they are outside this ownership slice.",
       "16:9 support is metadata-ready only; this task renders portrait review frames only.",

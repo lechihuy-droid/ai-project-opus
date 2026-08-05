@@ -1,0 +1,271 @@
+{
+  "schemaVersion": "lucida-er2-evidence-validation/v1",
+  "packageId": "technical-editorial",
+  "lunaRule": "A sourceEvidenceId passes only when it resolves to a canonical source with domain visual-style, approval.status approved, and rights.status approved, or to an exact source ID listed as eligible by a PASS Luna review artifact. A review PNG or generic completed ingest report is not sufficient.",
+  "counts": {
+    "variants": 5,
+    "patterns": 30,
+    "evidenceReferences": 35
+  },
+  "allowedEvidence": {
+    "approvedCanonicalCount": 16,
+    "lunaReviewEligibleCount": 88
+  },
+  "checks": {
+    "allSourceEvidenceIdsResolveUnderLunaRule": true,
+    "interfaceSourceReferencesResolveUnderLunaRule": true,
+    "allVariantsProposed": true,
+    "allPatternsProposed": true
+  },
+  "resolvedRecords": [
+    {
+      "kind": "variant",
+      "id": "mechanism-flow",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "evidence-ledger",
+      "sourceEvidenceIds": [
+        "p1-03-repo-observable-plot"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "code-contract",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "risk-register",
+      "sourceEvidenceIds": [
+        "p1-03-repo-observable-plot"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "decision-recap",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-mechanism-flow-three-stage-rail-layout",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-mechanism-flow-handoff-label-hierarchy",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-mechanism-flow-semantic-handoff-palette",
+      "sourceEvidenceIds": [
+        "p1-03-repo-observable-plot"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-mechanism-flow-segmented-build-motion",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-mechanism-flow-stage-card-contract",
+      "sourceEvidenceIds": [
+        "p1-03-repo-observable-plot"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-mechanism-flow-input-output-evidence-composition",
+      "sourceEvidenceIds": [
+        "p1-03-repo-observable-plot"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-evidence-ledger-claim-check-limit-layout",
+      "sourceEvidenceIds": [
+        "p1-03-repo-observable-plot"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-evidence-ledger-qualified-verdict-typography",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-evidence-ledger-status-role-palette",
+      "sourceEvidenceIds": [
+        "p1-03-repo-observable-plot"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-evidence-ledger-proof-before-verdict-motion",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-evidence-ledger-bounded-check-row-component",
+      "sourceEvidenceIds": [
+        "p1-03-repo-observable-plot"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-evidence-ledger-uncertainty-first-composition",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-code-contract-input-guard-output-layout",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-code-contract-line-to-behavior-typography",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-code-contract-syntax-to-status-palette",
+      "sourceEvidenceIds": [
+        "p1-03-repo-observable-plot"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-code-contract-line-focus-motion",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-code-contract-guardrail-callout-component",
+      "sourceEvidenceIds": [
+        "p1-03-repo-observable-plot"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-code-contract-excerpt-to-outcome-composition",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-risk-register-risk-control-residual-layout",
+      "sourceEvidenceIds": [
+        "p1-03-repo-observable-plot"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-risk-register-control-verdict-typography",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-risk-register-severity-control-palette",
+      "sourceEvidenceIds": [
+        "p1-03-repo-observable-plot"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-risk-register-control-reveal-motion",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-risk-register-residual-status-component",
+      "sourceEvidenceIds": [
+        "p1-03-repo-observable-plot"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-risk-register-escalation-boundary-composition",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-decision-recap-decision-evidence-boundary-layout",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-decision-recap-claim-basis-boundary-typography",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-decision-recap-confidence-boundary-palette",
+      "sourceEvidenceIds": [
+        "p1-03-repo-observable-plot"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-decision-recap-evidence-lock-motion",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-decision-recap-evidence-strip-component",
+      "sourceEvidenceIds": [
+        "p1-03-repo-observable-plot"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "te-decision-recap-decision-to-follow-up-composition",
+      "sourceEvidenceIds": [
+        "p1-03-repo-revealjs"
+      ]
+    }
+  ],
+  "sourceReferences": [],
+  "failures": [],
+  "sourceReferenceFailures": [],
+  "result": "PASS"
+}

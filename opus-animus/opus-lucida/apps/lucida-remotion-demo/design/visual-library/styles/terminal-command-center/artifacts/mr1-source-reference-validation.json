@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "terra-mr1-source-reference-validation/v1",
+  "packageId": "terminal-command-center",
+  "status": "PASS",
+  "variantCount": 5,
+  "sourceEvidenceIds": [
+    "repo-microsoft-terminal",
+    "web-zellij",
+    "web-wezterm",
+    "repo-charmbracelet-vhs"
+  ],
+  "sourceReferences": [
+    "repo-microsoft-terminal",
+    "web-zellij",
+    "web-wezterm",
+    "repo-charmbracelet-vhs"
+  ],
+  "normalization": {
+    "sourceReferencePrefixRemoved": [],
+    "legacyAliasesUsed": [],
+    "localIdsUsed": []
+  },
+  "approvalOrPromotionPerformed": false
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "terra-pattern-proposal-validation/v1",
+  "proposalId": "terra-pattern-proposal-p11",
+  "packageId": "system-architecture",
+  "patternPath": "../visual-patterns.json",
+  "proposalStatus": "pending-human-approval",
+  "compilerEligibility": "ineligible",
+  "approvalAction": "none",
+  "expectedPatternCount": 30,
+  "expectedPerVariant": 6,
+  "expectedVariantIds": ["layered-stack", "request-flow", "agent-graph", "data-pipeline", "dependency-map"],
+  "expectedPatternTypes": ["layout", "typography", "palette", "motion", "component", "composition"],
+  "canonicalEvidenceAliases": [
+    "w8-dashboard-remotion-animation",
+    "w8-technical-primer-foundations",
+    "w8-technical-primer-primitives",
+    "w8-technical-reveal-code"
+  ],
+  "validationScope": ["schema", "canonical-reference", "uniqueness", "variant-distribution", "pending-compiler-gate"],
+  "generatedBy": "design/visual-library/styles/system-architecture/validate-terra-p11-visual-patterns.mjs"
+}

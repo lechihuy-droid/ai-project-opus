@@ -1,4 +1,5 @@
 export { collectScript } from "./script.mjs";
+export { collectContentBrief } from "./content-brief.mjs";
 export { collectCommand } from "./command.mjs";
 export { collectAsciicast } from "./asciicast.mjs";
 export { collectRepository } from "./repository.mjs";

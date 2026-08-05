@@ -1,0 +1,232 @@
+{
+  "schemaVersion": "style-rag-phase1-collection-audit/v1",
+  "auditId": "STYLE_RAG_PHASE1_COLLECTION_AUDIT",
+  "generatedAt": "2026-07-18",
+  "owner": "Luna",
+  "scope": {
+    "domain": "visual-style",
+    "batches": [
+      "style-rag-p1-02",
+      "p1-03",
+      "style-rag-p1-04",
+      "style-rag-p1-05",
+      "style-rag-p1-06",
+      "style-rag-p1-07",
+      "style-rag-p1-08"
+    ],
+    "countingRule": "Count raw candidates once per batch; count review-eligible candidates once globally after union on exact sourceId, exact URL, or dedupeKey. Raw, proposed, and review-eligible items are not approved or canonical.",
+    "phase1Standard": "design/planning/STYLE_RAG_PHASE1_14_PACKAGE_STANDARD.md"
+  },
+  "verdict": {
+    "integrity": "PASS",
+    "integrityBasis": [
+      "All seven batch chains are machine-readable and bind raw, sanitized/proposal, and Luna evidence as available.",
+      "No human approval or canonical promotion is present in the audited artifacts.",
+      "The aggregate report is the only file written by this audit.",
+      "Historical P1-02 FAIL is preserved and its later 07 reverification is referenced without rewriting history."
+    ],
+    "phase1Credit": {
+      "approvedSources": 0,
+      "approvedPatterns": 0,
+      "promotedSources": 0,
+      "promotedPatterns": 0,
+      "renderablePackages": 0,
+      "targetVariants": 0
+    },
+    "completion": "BLOCKED",
+    "conclusion": "Integrity passes, but Phase1 credit remains zero. Human approval, canonical promotion, renderer/package gates, variant coverage, source quotas, and duplicate cleanup remain blocking conditions."
+  },
+  "aggregateCounts": {
+    "rawCandidates": 140,
+    "reviewEligibleBeforeCrossBatchDedup": 101,
+    "rejectedOrReviewIneligible": 39,
+    "uniqueReviewEligibleAfterCrossBatchDedup": 82,
+    "duplicateCandidateRowsRemovedFromReviewQueue": 19,
+    "approvals": 0,
+    "promotions": 0,
+    "canonicalEligible": 0
+  },
+  "sourceTypeCoverage": {
+    "rawCandidates": {
+      "repository": 36,
+      "web": 37,
+      "image": 33,
+      "theme": 34
+    },
+    "reviewEligibleBeforeDedup": {
+      "repository": 24,
+      "web": 24,
+      "image": 21,
+      "theme": 13
+    },
+    "uniqueReviewEligibleAfterDedup": {
+      "repository": 24,
+      "web": 24,
+      "image": 21,
+      "theme": 13
+    },
+    "allowedSourceTypes": ["repository", "web", "image", "theme"]
+  },
+  "crossBatchDuplicates": {
+    "dedupeMethod": "Exact string match on sourceId, exactUrl/url, and dedupeKey; duplicate dimensions are unioned for the unique review queue.",
+    "url": [
+      {"key": "https://carbondesignsystem.com/", "members": ["p1-03/p1-03-web-carbon-dataviz", "style-rag-p1-05/web-carbon", "style-rag-p1-06/web-carbon", "style-rag-p1-07/web-carbon"]},
+      {"key": "https://github.com/excalidraw/excalidraw", "members": ["style-rag-p1-04/repo-excalidraw", "style-rag-p1-07/repo-excalidraw"]},
+      {"key": "https://excalidraw.com/", "members": ["style-rag-p1-04/web-excalidraw", "style-rag-p1-07/web-excalidraw"]},
+      {"key": "https://raw.githubusercontent.com/animate-css/animate.css/main/animate.css", "members": ["style-rag-p1-05/theme-animate-css", "style-rag-p1-07/theme-animate-css"]},
+      {"key": "https://raw.githubusercontent.com/tailwindlabs/tailwindcss/main/packages/tailwindcss/theme.css", "members": ["style-rag-p1-05/theme-tailwind", "style-rag-p1-06/theme-tailwind", "style-rag-p1-07/theme-tailwind"]},
+      {"key": "https://github.com/ant-design/ant-design", "members": ["style-rag-p1-05/repo-ant-design", "style-rag-p1-06/repo-ant-design"]},
+      {"key": "https://github.com/carbon-design-system/carbon", "members": ["style-rag-p1-05/repo-carbon", "style-rag-p1-06/repo-carbon"]},
+      {"key": "https://raw.githubusercontent.com/twbs/bootstrap/main/scss/_variables.scss", "members": ["style-rag-p1-05/theme-bootstrap-variables", "style-rag-p1-06/theme-bootstrap", "style-rag-p1-07/theme-bootstrap"]},
+      {"key": "https://raw.githubusercontent.com/carbon-design-system/carbon/main/packages/themes/scss/themes/_white.scss", "members": ["style-rag-p1-05/theme-carbon-white", "style-rag-p1-06/theme-carbon-white"]},
+      {"key": "https://github.com/mui/material-ui", "members": ["style-rag-p1-06/repo-mui", "style-rag-p1-07/repo-mui"]},
+      {"key": "https://openmoji.org/data/color/svg/1F4F1.svg", "members": ["style-rag-p1-06/image-openmoji-mobile", "style-rag-p1-07/image-openmoji-mobile"]}
+    ],
+    "sourceId": [
+      {"key": "repo-excalidraw", "members": ["style-rag-p1-04/repo-excalidraw", "style-rag-p1-07/repo-excalidraw", "style-rag-p1-08/repo-excalidraw"]},
+      {"key": "repo-antv-infographic", "members": ["style-rag-p1-04/repo-antv-infographic", "style-rag-p1-08/repo-antv-infographic"]},
+      {"key": "web-excalidraw", "members": ["style-rag-p1-04/web-excalidraw", "style-rag-p1-07/web-excalidraw"]},
+      {"key": "theme-excalidraw-variables", "members": ["style-rag-p1-04/theme-excalidraw-variables", "style-rag-p1-08/theme-excalidraw-variables"]},
+      {"key": "repo-mermaid", "members": ["style-rag-p1-04/repo-mermaid", "style-rag-p1-08/repo-mermaid"]},
+      {"key": "theme-mermaid-default", "members": ["style-rag-p1-04/theme-mermaid-default", "style-rag-p1-08/theme-mermaid-default"]},
+      {"key": "theme-animate-css", "members": ["style-rag-p1-05/theme-animate-css", "style-rag-p1-07/theme-animate-css"]},
+      {"key": "theme-tailwind", "members": ["style-rag-p1-05/theme-tailwind", "style-rag-p1-06/theme-tailwind", "style-rag-p1-07/theme-tailwind"]},
+      {"key": "repo-ant-design", "members": ["style-rag-p1-05/repo-ant-design", "style-rag-p1-06/repo-ant-design"]},
+      {"key": "repo-carbon", "members": ["style-rag-p1-05/repo-carbon", "style-rag-p1-06/repo-carbon"]},
+      {"key": "web-ant-design", "members": ["style-rag-p1-05/web-ant-design", "style-rag-p1-06/web-ant-design"]},
+      {"key": "web-carbon", "members": ["style-rag-p1-05/web-carbon", "style-rag-p1-06/web-carbon", "style-rag-p1-07/web-carbon"]},
+      {"key": "theme-carbon-white", "members": ["style-rag-p1-05/theme-carbon-white", "style-rag-p1-06/theme-carbon-white"]},
+      {"key": "repo-mui", "members": ["style-rag-p1-06/repo-mui", "style-rag-p1-07/repo-mui"]},
+      {"key": "web-mui", "members": ["style-rag-p1-06/web-mui", "style-rag-p1-07/web-mui"]},
+      {"key": "image-openmoji-mobile", "members": ["style-rag-p1-06/image-openmoji-mobile", "style-rag-p1-07/image-openmoji-mobile"]},
+      {"key": "theme-bootstrap", "members": ["style-rag-p1-06/theme-bootstrap", "style-rag-p1-07/theme-bootstrap"]}
+    ],
+    "dedupeKey": [
+      {"key": "github:excalidraw/excalidraw", "members": ["style-rag-p1-04/repo-excalidraw", "style-rag-p1-07/repo-excalidraw"]},
+      {"key": "web:excalidraw.com", "members": ["style-rag-p1-04/web-excalidraw", "style-rag-p1-07/web-excalidraw"]},
+      {"key": "theme:animate-css:main", "members": ["style-rag-p1-05/theme-animate-css", "style-rag-p1-07/theme-animate-css"]},
+      {"key": "theme:tailwindcss:theme", "members": ["style-rag-p1-05/theme-tailwind", "style-rag-p1-06/theme-tailwind", "style-rag-p1-07/theme-tailwind"]},
+      {"key": "github:ant-design/ant-design", "members": ["style-rag-p1-05/repo-ant-design", "style-rag-p1-06/repo-ant-design"]},
+      {"key": "github:carbon-design-system/carbon", "members": ["style-rag-p1-05/repo-carbon", "style-rag-p1-06/repo-carbon"]},
+      {"key": "web:carbondesignsystem.com", "members": ["style-rag-p1-05/web-carbon", "style-rag-p1-06/web-carbon", "style-rag-p1-07/web-carbon"]},
+      {"key": "theme:bootstrap:variables", "members": ["style-rag-p1-05/theme-bootstrap-variables", "style-rag-p1-06/theme-bootstrap", "style-rag-p1-07/theme-bootstrap"]},
+      {"key": "theme:carbon:white", "members": ["style-rag-p1-05/theme-carbon-white", "style-rag-p1-06/theme-carbon-white"]},
+      {"key": "image:openmoji:1f4f1", "members": ["style-rag-p1-06/image-openmoji-mobile", "style-rag-p1-07/image-openmoji-mobile"]}
+    ]
+  },
+  "rightsAndSnapshotCompleteness": {
+    "rawCandidates": {
+      "rightsComplete": 116,
+      "rightsExplicitUnknown": 6,
+      "rightsNotDirectlyVerifiable": 18,
+      "rightsMissing": 0,
+      "snapshotComplete": 126,
+      "snapshotIncomplete": 14
+    },
+    "reviewEligibleBeforeDedup": {
+      "rightsComplete": 101,
+      "snapshotComplete": 101,
+      "rightsIncomplete": 0,
+      "snapshotIncomplete": 0
+    },
+    "uniqueReviewEligibleAfterDedup": {
+      "rightsComplete": 82,
+      "snapshotComplete": 82,
+      "rightsIncomplete": 0,
+      "snapshotIncomplete": 0
+    },
+    "interpretation": "The rejected/ineligible population contains the rights and snapshot gaps; eligible candidates have complete bound rights and snapshot evidence in the current review queue. This does not substitute for human approval."
+  },
+  "rendererAvailability": {
+    "rawCandidates": {"available": 60, "unavailable": 40, "notRecorded": 40},
+    "reviewEligibleBeforeDedup": {"available": 59, "unavailable": 19, "notRecorded": 23},
+    "uniqueReviewEligibleAfterDedup": {"available": 40, "unavailable": 19, "notRecorded": 23},
+    "blockingPackages": [
+      {"packageId": "system-architecture", "blocker": "P1-04 Luna reports no package directory, registry entry, or renderer."},
+      {"packageId": "interface-walkthrough", "blocker": "P1-06 validation records interfaceWalkthroughRendererAvailability=false."},
+      {"packageId": "technical-editorial", "blocker": "P1-03 records rendererAvailability=false."},
+      {"packageId": "claim-evidence", "blocker": "P1-03 records rendererAvailability=false and no eligible sources."}
+    ]
+  },
+  "canonicalAndGovernance": {
+    "rawCandidatesCanonicalEligibility": {"false": 100, "true": 0, "notRecorded": 40},
+    "reviewEligibleCanonicalEligibility": "false for all 101 eligible rows and all 82 unique queue entries",
+    "humanApprovals": 0,
+    "canonicalPromotions": 0,
+    "globalFilesEdited": false,
+    "creditRule": "Integrity PASS is not Phase1 credit. No source, pattern, package, variant, or renderer is credited until human approval and canonical promotion evidence exist."
+  },
+  "packageVariantCoverage": {
+    "targetPackages": 14,
+    "targetVariants": 70,
+    "packages": {
+      "terminal-command-center": {"uniqueReviewEligibleSources": 4, "sourceTypes": 2, "variantsCovered": 5, "missingVariants": [], "sourceQuotaPass": false, "sourceTypeQuotaPass": false},
+      "code-walkthrough": {"uniqueReviewEligibleSources": 4, "sourceTypes": 3, "variantsCovered": 4, "missingVariants": ["diff-review"], "sourceQuotaPass": false, "sourceTypeQuotaPass": true},
+      "technical-editorial": {"uniqueReviewEligibleSources": 2, "sourceTypes": 1, "variantsCovered": 2, "missingVariants": ["annotated-explainer", "evidence-grid", "research-digest"], "sourceQuotaPass": false, "sourceTypeQuotaPass": false},
+      "minimal-education": {"uniqueReviewEligibleSources": 8, "sourceTypes": 4, "variantsCovered": 5, "missingVariants": [], "sourceQuotaPass": true, "sourceTypeQuotaPass": true},
+      "system-architecture": {"uniqueReviewEligibleSources": 7, "sourceTypes": 4, "variantsCovered": 5, "missingVariants": [], "sourceQuotaPass": true, "sourceTypeQuotaPass": true},
+      "cinematic-type": {"uniqueReviewEligibleSources": 10, "sourceTypes": 4, "variantsCovered": 5, "missingVariants": [], "sourceQuotaPass": true, "sourceTypeQuotaPass": true},
+      "news-rundown": {"uniqueReviewEligibleSources": 8, "sourceTypes": 4, "variantsCovered": 5, "missingVariants": [], "sourceQuotaPass": true, "sourceTypeQuotaPass": true},
+      "dashboard-data": {"uniqueReviewEligibleSources": 3, "sourceTypes": 2, "variantsCovered": 4, "missingVariants": ["scorecard"], "sourceQuotaPass": false, "sourceTypeQuotaPass": false},
+      "interface-walkthrough": {"uniqueReviewEligibleSources": 9, "sourceTypes": 4, "variantsCovered": 5, "missingVariants": [], "sourceQuotaPass": true, "sourceTypeQuotaPass": true},
+      "paper-notebook": {"uniqueReviewEligibleSources": 6, "sourceTypes": 3, "variantsCovered": 5, "missingVariants": [], "sourceQuotaPass": false, "sourceTypeQuotaPass": true},
+      "product-showcase": {"uniqueReviewEligibleSources": 5, "sourceTypes": 4, "variantsCovered": 4, "missingVariants": ["product-hero"], "sourceQuotaPass": false, "sourceTypeQuotaPass": true},
+      "editorial-collage": {"uniqueReviewEligibleSources": 7, "sourceTypes": 4, "variantsCovered": 5, "missingVariants": [], "sourceQuotaPass": true, "sourceTypeQuotaPass": true},
+      "timeline-documentary": {"uniqueReviewEligibleSources": 9, "sourceTypes": 4, "variantsCovered": 5, "missingVariants": [], "sourceQuotaPass": true, "sourceTypeQuotaPass": true},
+      "claim-evidence": {"uniqueReviewEligibleSources": 0, "sourceTypes": 0, "variantsCovered": 0, "missingVariants": ["claim-proof", "pro-con", "benchmark-audit", "myth-reality", "source-triangulation"], "sourceQuotaPass": false, "sourceTypeQuotaPass": false}
+    }
+  },
+  "batchVerdicts": [
+    {"batch": "style-rag-p1-02", "rawCandidates": 20, "reviewEligible": 8, "rejected": 12, "integrity": "PASS", "lunaVerdictRef": "pipeline/runs/style-rag-p1-02/07-luna-reverification.json", "historicalVerdictRef": "pipeline/runs/style-rag-p1-02/06-luna-verification.json", "historicalVerdict": "FAIL preserved; remediation later reverifies PASS", "approvals": 0, "promotions": 0, "blockers": ["Human approval and promotion absent.", "Historical blockers LUNA-P1-02-001, LUNA-P1-02-002, LUNA-P1-02-003 were corrected/reverified; LUNA-P1-02-004 was a historical major evidence locator issue."]},
+    {"batch": "p1-03", "rawCandidates": 20, "reviewEligible": 2, "rejected": 18, "integrity": "PASS", "lunaVerdictRef": "pipeline/runs/p1-03/06-luna-verification.json", "approvals": 0, "promotions": 0, "blockers": ["18 candidates rejected for rights evidence not directly verifiable against the collected snapshot.", "rendererAvailability=false for the batch.", "Only 2/10 target variants are covered; technical-editorial covers 2/5 and claim-evidence covers 0/5.", "Human approval and canonical promotion absent."]},
+    {"batch": "style-rag-p1-04", "rawCandidates": 20, "reviewEligible": 15, "rejected": 5, "integrity": "PASS_WITH_LUNA_GATE_FAILURE", "lunaVerdictRef": "pipeline/runs/style-rag-p1-04/06-luna-verification.json", "approvals": 0, "promotions": 0, "blockers": ["LUNA-P1-04-001: system-architecture has no package directory, registry entry, or renderer and cannot count as renderable.", "Human approval and canonical promotion absent."]},
+    {"batch": "style-rag-p1-05", "rawCandidates": 20, "reviewEligible": 18, "rejected": 2, "integrity": "PASS", "lunaVerdictRef": "pipeline/runs/style-rag-p1-05/06-luna-verification.json", "approvals": 0, "promotions": 0, "blockers": ["10 candidate rows have rendererAvailability=false.", "Human approval and canonical promotion absent."]},
+    {"batch": "style-rag-p1-06", "rawCandidates": 20, "reviewEligible": 18, "rejected": 2, "integrity": "PASS", "lunaVerdictRef": "pipeline/runs/style-rag-p1-06/06-luna-verification.json", "approvals": 0, "promotions": 0, "blockers": ["10 candidate rows have rendererAvailability=false; interface-walkthrough renderer availability is explicitly false.", "Human approval and canonical promotion absent."]},
+    {"batch": "style-rag-p1-07", "rawCandidates": 20, "reviewEligible": 20, "rejected": 0, "integrity": "PASS", "lunaVerdictRef": "pipeline/runs/style-rag-p1-07/06-luna-verification.json", "approvals": 0, "promotions": 0, "blockers": ["Human approval and canonical promotion absent."]},
+    {"batch": "style-rag-p1-08", "rawCandidates": 20, "reviewEligible": 20, "rejected": 0, "integrity": "PASS", "lunaVerdictRef": "pipeline/runs/style-rag-p1-08/06-luna-verification.json", "approvals": 0, "promotions": 0, "blockers": ["Human approval and canonical promotion absent."]}
+  ],
+  "humanReviewQueue": {
+    "queueRule": "One queue ID per unique review-eligible union component; duplicate rows point to the same queue item and are not counted again.",
+    "queueIdFormat": "HRQ-<batch>-<sourceId>",
+    "uniqueQueueCount": 82,
+    "queueIdsByBatch": {
+      "style-rag-p1-02": ["HRQ-style-rag-p1-02-repo-microsoft-terminal", "HRQ-style-rag-p1-02-repo-charmbracelet-vhs", "HRQ-style-rag-p1-02-repo-microsoft-monaco-editor", "HRQ-style-rag-p1-02-repo-codemirror-dev", "HRQ-style-rag-p1-02-web-wezterm", "HRQ-style-rag-p1-02-web-zellij", "HRQ-style-rag-p1-02-web-vscode-debugging", "HRQ-style-rag-p1-02-theme-vscode-dark-plus"],
+      "p1-03": ["HRQ-p1-03-p1-03-repo-observable-plot", "HRQ-p1-03-p1-03-repo-revealjs"],
+      "style-rag-p1-04": ["HRQ-style-rag-p1-04-repo-excalidraw", "HRQ-style-rag-p1-04-repo-marp-core", "HRQ-style-rag-p1-04-repo-antv-infographic", "HRQ-style-rag-p1-04-web-excalidraw", "HRQ-style-rag-p1-04-web-marp", "HRQ-style-rag-p1-04-web-antv-infographic", "HRQ-style-rag-p1-04-image-openmoji-light-bulb", "HRQ-style-rag-p1-04-theme-excalidraw-variables", "HRQ-style-rag-p1-04-repo-mermaid", "HRQ-style-rag-p1-04-repo-diagrams", "HRQ-style-rag-p1-04-web-mermaid-architecture", "HRQ-style-rag-p1-04-web-diagrams", "HRQ-style-rag-p1-04-web-structurizr-diagrams", "HRQ-style-rag-p1-04-image-mermaid-header", "HRQ-style-rag-p1-04-theme-structurizr-ui"],
+      "style-rag-p1-05": ["HRQ-style-rag-p1-05-web-carbon", "HRQ-style-rag-p1-05-repo-motion-canvas", "HRQ-style-rag-p1-05-repo-animejs", "HRQ-style-rag-p1-05-repo-inter", "HRQ-style-rag-p1-05-web-motion-canvas-docs", "HRQ-style-rag-p1-05-web-animejs-docs", "HRQ-style-rag-p1-05-web-inter-site", "HRQ-style-rag-p1-05-image-openmoji-clapper", "HRQ-style-rag-p1-05-image-openmoji-speech", "HRQ-style-rag-p1-05-theme-animate-css", "HRQ-style-rag-p1-05-theme-tailwind", "HRQ-style-rag-p1-05-repo-ant-design", "HRQ-style-rag-p1-05-repo-carbon", "HRQ-style-rag-p1-05-web-ant-design", "HRQ-style-rag-p1-05-image-openmoji-newspaper", "HRQ-style-rag-p1-05-image-openmoji-siren", "HRQ-style-rag-p1-05-image-openmoji-television", "HRQ-style-rag-p1-05-theme-bootstrap-variables"],
+      "style-rag-p1-06": ["HRQ-style-rag-p1-06-repo-mui", "HRQ-style-rag-p1-06-repo-primer", "HRQ-style-rag-p1-06-repo-tremor", "HRQ-style-rag-p1-06-web-mui", "HRQ-style-rag-p1-06-web-primer", "HRQ-style-rag-p1-06-web-tremor", "HRQ-style-rag-p1-06-image-openmoji-bar-chart", "HRQ-style-rag-p1-06-image-openmoji-chart-up", "HRQ-style-rag-p1-06-image-openmoji-desktop", "HRQ-style-rag-p1-06-image-openmoji-mobile", "HRQ-style-rag-p1-06-image-openmoji-magnifier", "HRQ-style-rag-p1-06-theme-mui-default"],
+      "style-rag-p1-07": ["HRQ-style-rag-p1-07-repo-marp", "HRQ-style-rag-p1-07-repo-katex", "HRQ-style-rag-p1-07-web-katex", "HRQ-style-rag-p1-07-image-openmoji-memo", "HRQ-style-rag-p1-07-image-openmoji-pencil", "HRQ-style-rag-p1-07-image-openmoji-microscope", "HRQ-style-rag-p1-07-repo-fluentui", "HRQ-style-rag-p1-07-web-material-web", "HRQ-style-rag-p1-07-image-openmoji-rocket", "HRQ-style-rag-p1-07-theme-carbon", "HRQ-style-rag-p1-07-theme-mui-palette-v5"],
+      "style-rag-p1-08": ["HRQ-style-rag-p1-08-theme-mermaid-default", "HRQ-style-rag-p1-08-repo-tabler-icons", "HRQ-style-rag-p1-08-web-excalidraw-docs", "HRQ-style-rag-p1-08-web-antv-themes", "HRQ-style-rag-p1-08-web-tabler-icons", "HRQ-style-rag-p1-08-image-antv-basic-list", "HRQ-style-rag-p1-08-image-antv-list-icons", "HRQ-style-rag-p1-08-theme-antv-built-in", "HRQ-style-rag-p1-08-repo-vis-timeline", "HRQ-style-rag-p1-08-web-vis-timeline-docs", "HRQ-style-rag-p1-08-web-mermaid-timeline", "HRQ-style-rag-p1-08-image-antv-timeline", "HRQ-style-rag-p1-08-image-vis-timeline", "HRQ-style-rag-p1-08-image-excalidraw-archive", "HRQ-style-rag-p1-08-theme-vis-timeline", "HRQ-style-rag-p1-08-theme-antv-dark"]
+    }
+  },
+  "artifactRefs": {
+    "terraAndLunaInputs": [
+      "pipeline/runs/style-rag-p1-02/01-raw-input.json",
+      "pipeline/runs/style-rag-p1-02/02-sanitized-input.json",
+      "pipeline/runs/style-rag-p1-02/03-terra-classification-proposal.json",
+      "pipeline/runs/p1-03/01-raw-input.json",
+      "pipeline/runs/p1-03/candidate-registry.json",
+      "pipeline/runs/p1-03/03-terra-classification-proposal.json",
+      "pipeline/runs/style-rag-p1-04/01-raw-input.json",
+      "pipeline/runs/style-rag-p1-04/03-terra-classification-proposal.json",
+      "pipeline/runs/style-rag-p1-05/01-raw-input.json",
+      "pipeline/runs/style-rag-p1-05/03-terra-classification-proposal.json",
+      "pipeline/runs/style-rag-p1-06/01-raw-input.json",
+      "pipeline/runs/style-rag-p1-06/03-terra-classification-proposal.json",
+      "pipeline/runs/style-rag-p1-07/01-raw-input.json",
+      "pipeline/runs/style-rag-p1-07/03-terra-classification-proposal.json",
+      "pipeline/runs/style-rag-p1-08/01-raw-input.json",
+      "pipeline/runs/style-rag-p1-08/03-terra-classification-proposal.json"
+    ],
+    "lunaVerdicts": [
+      "pipeline/runs/style-rag-p1-02/06-luna-verification.json",
+      "pipeline/runs/style-rag-p1-02/07-luna-reverification.json",
+      "pipeline/runs/p1-03/06-luna-verification.json",
+      "pipeline/runs/style-rag-p1-04/06-luna-verification.json",
+      "pipeline/runs/style-rag-p1-05/06-luna-verification.json",
+      "pipeline/runs/style-rag-p1-06/06-luna-verification.json",
+      "pipeline/runs/style-rag-p1-07/06-luna-verification.json",
+      "pipeline/runs/style-rag-p1-08/06-luna-verification.json"
+    ]
+  }
+}

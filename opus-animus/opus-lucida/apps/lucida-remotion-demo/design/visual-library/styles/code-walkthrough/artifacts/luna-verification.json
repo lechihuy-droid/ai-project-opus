@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "lucida-luna-verification/v1",
+  "verificationId": "D2-luna-code-walkthrough",
+  "verifiedAt": "2026-07-18",
+  "verifier": "Luna",
+  "packageId": "code-walkthrough",
+  "overallStatus": "FAIL",
+  "decision": "DO_NOT_APPROVE_OR_PROMOTE",
+  "checks": {
+    "exactlyFiveVariants": {
+      "status": "PASS",
+      "count": 5,
+      "variantIds": ["code-focus", "diff-review", "api-sequence", "debugging-trace", "terminal-code-split"]
+    },
+    "variantSchema": {
+      "status": "PASS",
+      "command": "node src/styles/families/code-walkthrough/validate-variants.mjs",
+      "evidence": "Validated 5 code-walkthrough draft variants."
+    },
+    "draftAndRegistrationScope": {
+      "status": "PASS",
+      "evidence": ["style-package.status=draft", "render-report.registration=pending", "videoBinaryRegistered=false"],
+      "note": "Registration pending is not treated as a package defect; production registration readiness is assessed separately."
+    },
+    "sourceAndPatternClaims": {
+      "status": "PASS",
+      "evidence": ["sourceApproval=not-claimed", "patternClassification=not-claimed", "registeredMedia=[]"]
+    },
+    "runtimeFixtureParity": {
+      "status": "PASS",
+      "evidence": "Five runtime variant IDs, fixture index keys, and package variant IDs match one-to-one."
+    },
+    "fiveVariantRemotionRender": {
+      "status": "FAIL",
+      "command": "node src/styles/families/code-walkthrough/render-review.mjs",
+      "evidenceFile": "design/visual-library/styles/code-walkthrough/artifacts/luna/harness-timeout.json",
+      "failure": "TIMEOUT: command timed out after 124070 milliseconds",
+      "timeoutRequestedMs": 120000,
+      "note": "Fresh batch completion was not conclusive; fail-closed."
+    },
+    "fivePng1080x1920NonBlank": {
+      "status": "FAIL",
+      "packageEvidence": "Existing render-report records five 1080x1920 PNGs and nonBlank.passed=true.",
+      "lunaEvidence": "Fresh bounded harness run timed out before completion could be established; package evidence is not substituted for fresh verification."
+    },
+    "deterministicHashes": {
+      "status": "FAIL",
+      "packageEvidence": "Existing render-report records deterministic=true and SHA-256 values.",
+      "lunaEvidence": "Fresh repeat completion was not conclusive because the bounded harness command timed out; fail-closed."
+    },
+    "pixelTextFitAndCapacity": {
+      "status": "FAIL",
+      "evidence": "No independent screenshot/image inspection or completed pixel-level capacity audit was established before timeout."
+    },
+    "reducedMotion": {
+      "status": "UNVERIFIED",
+      "staticEvidence": "Fixtures declare full/reduce/static policies and runtime routes policy through entrance handling; debugging-trace uses static policy.",
+      "executionEvidence": "No separate reduced-motion render completed within this bounded follow-up."
+    },
+    "pathAndArtifactManifest": {
+      "status": "PASS",
+      "evidence": "Package-local manifest and referenced JSON/frame paths were present before bounded verification."
+    },
+    "ownershipGuard": {
+      "status": "PASS",
+      "evidence": "No source, runtime, fixture, or registry file was intentionally edited; Luna evidence is under artifacts/luna/** and this verifier JSON."
+    }
+  },
+  "productionRegistration": {
+    "status": "BLOCKED_BY_VERIFICATION",
+    "blockers": [
+      "Bounded package harness timed out: command timed out after 124070 milliseconds.",
+      "Fresh five-variant render completion and deterministic repeat evidence are inconclusive.",
+      "Independent pixel/text-fit/capacity inspection is unverified.",
+      "Reduced-motion execution evidence is unverified."
+    ],
+    "nonBlockers": [
+      "Package remains draft by design.",
+      "Runtime registration pending is outside package ownership and is not itself a defect.",
+      "No approve or promote action was taken."
+    ]
+  },
+  "artifacts": {
+    "timeoutEvidence": "design/visual-library/styles/code-walkthrough/artifacts/luna/harness-timeout.json"
+  },
+  "notes": [
+    "Sandbox attempt failed with Error: spawn EPERM while starting the Remotion compositor; escalated attempt was bounded and timed out.",
+    "Verification is fail-closed and does not infer PASS from pre-existing render-report values."
+  ]
+}

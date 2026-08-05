@@ -1,11 +1,19 @@
 import type { MotionPolicy, TextDensity } from "../../core";
 
-export type TimelineDocumentaryFixtureKey =
-  | "milestone"
-  | "era-change"
-  | "conclusion";
+export const timelineDocumentaryVariantIds = [
+  "chronology",
+  "milestones",
+  "case-study",
+  "evolution",
+  "roadmap",
+] as const;
 
-export type TimelineDocumentarySceneType = TimelineDocumentaryFixtureKey;
+export type TimelineDocumentaryVariantId =
+  (typeof timelineDocumentaryVariantIds)[number];
+
+export type TimelineDocumentaryFixtureKey = TimelineDocumentaryVariantId;
+
+export type TimelineDocumentarySceneType = TimelineDocumentaryVariantId;
 
 export type TimelineDocumentaryEvent = {
   id: string;

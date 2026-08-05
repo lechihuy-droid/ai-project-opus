@@ -1,0 +1,5 @@
+import type { InterfaceWalkthroughFixture } from "../../../../src/styles/families/interface-walkthrough";
+
+export const annotatedScreenFixture: InterfaceWalkthroughFixture = {
+  key: "annotated-screen", label: "Dashboard orientation", eyebrow: "Product walkthrough / first view", title: "Start with the dashboard state that changes the next action", summary: "The overview keeps active metrics, navigation, and a single review focus visible in one stable application shell.", density: "balanced", motionPolicy: "full", product: "Northstar", layout: "dashboard", navigation: ["Overview", "Activity", "Automation", "Settings"], items: [{ label: "Open work", detail: "18", state: "active" }, { label: "Completed", detail: "42", state: "complete" }, { label: "Needs review", detail: "6", state: "active" }, { label: "Blocked", detail: "2", state: "blocked" }], focusLabel: "Needs review", focusDetail: "Open the review queue before changing automation or assignments.", caption: "This orientation frame establishes the current product state before the walkthrough asks the viewer to act."
+};

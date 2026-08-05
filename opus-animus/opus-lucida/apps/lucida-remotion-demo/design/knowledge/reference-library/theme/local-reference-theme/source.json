@@ -1,12 +1,32 @@
 {
+  "approval": {
+    "approvedAt": "2026-07-14",
+    "approvedBy": "Lucida reference review",
+    "status": "approved"
+  },
+  "collectorVersion": "theme-reference-collector/1",
+  "domain": "visual-style",
+  "provenance": {
+    "collectorArtifact": "design/knowledge/reference-approvals/theme/local-reference-theme.sanitized-approved.json",
+    "sanitizedArtifactChecksum": "72552f1841fb7461154a903e0f643b22fa476e0c23617d6545b23d465577f4f2"
+  },
+  "rights": {
+    "evidence": "Project-owned CSS fixture listed by visual-reference-flow.",
+    "policy": "internal-fixture",
+    "status": "approved"
+  },
   "schemaVersion": "lucida-reference-source/v1",
+  "snapshotChecksum": "1a8844fa3c888cd1d13d498795f0bad7a1a5813c3f376bb61dd46cd23efe2827",
   "sourceId": "source:reference:local-reference-theme",
-  "sourceType": "theme",
   "sourceRef": "pipeline/fixtures/reference-theme.css",
   "sourceRevision": "visual-reference-flow-2026-07-14",
+<<<<<<< HEAD
+  "sourceType": "theme"
+=======
   "snapshotChecksum": "1a8844fa3c888cd1d13d498795f0bad7a1a5813c3f376bb61dd46cd23efe2827",
   "collectorVersion": "theme-reference-collector/1",
   "rights": { "policy": "internal-fixture", "status": "approved", "evidence": "Project-owned CSS fixture listed by visual-reference-flow." },
   "approval": { "status": "approved", "approvedBy": "Lucida reference review", "approvedAt": "2026-07-14" },
   "provenance": { "sanitizedArtifactChecksum": "72552f1841fb7461154a903e0f643b22fa476e0c23617d6545b23d465577f4f2", "collectorArtifact": "design/knowledge/reference-approvals/theme/local-reference-theme.sanitized-approved.json" }
+>>>>>>> origin/main
 }

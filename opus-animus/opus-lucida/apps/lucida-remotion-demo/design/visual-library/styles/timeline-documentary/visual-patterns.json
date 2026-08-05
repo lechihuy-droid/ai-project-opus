@@ -1,0 +1,1919 @@
+[
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-chronology-four-record-spine",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "chronology"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "process",
+      "case-study"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dated-spine",
+      "alternating-origin-records",
+      "four-record-field"
+    ],
+    "typographyTraits": [
+      "serif-record-headlines",
+      "mono-date-labels",
+      "persistent-source-captions"
+    ],
+    "paletteTraits": [
+      "archival-paper-contrast",
+      "amber-evidence-accent"
+    ],
+    "motionTraits": [
+      "chronology-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "archival-frame",
+      "source-label",
+      "missing-image-record"
+    ],
+    "contentCapacity": {
+      "headlineChars": 64,
+      "bodyChars": 280,
+      "maxItems": 4,
+      "maxPanels": 4,
+      "maxEvents": 4
+    },
+    "positiveUseCases": [
+      "render four sourced origin records in ascending date order with a source label on every record"
+    ],
+    "antiPatterns": [
+      "undated origin claims",
+      "more than four full-detail origin records"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-citizen-dj"
+    ],
+    "classificationReasons": [
+      "Concrete chronology recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-chronology-date-record-source-type",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "chronology"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "process",
+      "case-study"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dated-spine",
+      "fixed-record-metadata-zone"
+    ],
+    "typographyTraits": [
+      "mono-date-labels",
+      "serif-record-headlines",
+      "compact-source-captions"
+    ],
+    "paletteTraits": [
+      "archival-paper-contrast",
+      "amber-evidence-accent"
+    ],
+    "motionTraits": [
+      "metadata-static-content-reveal",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "source-label",
+      "archival-frame"
+    ],
+    "contentCapacity": {
+      "headlineChars": 54,
+      "bodyChars": 160,
+      "maxItems": 4,
+      "maxPanels": 4,
+      "maxEvents": 4
+    },
+    "positiveUseCases": [
+      "render date, event title, and catalog label as three fixed text roles on each origin record"
+    ],
+    "antiPatterns": [
+      "source text styled as decorative footer copy",
+      "event dates detached from their records"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-loc-pictures"
+    ],
+    "classificationReasons": [
+      "Concrete chronology recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-chronology-spine-first-reveal",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "chronology"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "process"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dated-spine",
+      "stable-event-slots"
+    ],
+    "typographyTraits": [
+      "mono-date-labels",
+      "serif-record-headlines"
+    ],
+    "paletteTraits": [
+      "archival-paper-contrast",
+      "amber-evidence-accent"
+    ],
+    "motionTraits": [
+      "spine-draw-before-records",
+      "ordered-record-fade",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "archival-frame",
+      "source-label"
+    ],
+    "contentCapacity": {
+      "maxItems": 4,
+      "maxPanels": 4,
+      "maxEvents": 4
+    },
+    "positiveUseCases": [
+      "reveal a fixed four-event origin sequence without changing chronological order or record geometry"
+    ],
+    "antiPatterns": [
+      "records reordering during motion",
+      "continuous decorative motion after the sequence settles"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-citizen-dj"
+    ],
+    "classificationReasons": [
+      "Concrete chronology recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-chronology-catalog-label-component",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "chronology"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "process",
+      "evidence"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "alternating-origin-records",
+      "fixed-record-metadata-zone"
+    ],
+    "typographyTraits": [
+      "compact-source-captions",
+      "mono-date-labels"
+    ],
+    "paletteTraits": [
+      "archival-paper-contrast",
+      "amber-evidence-accent"
+    ],
+    "motionTraits": [
+      "source-label-enter-with-record",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "source-label",
+      "catalog-identifier",
+      "archival-frame"
+    ],
+    "contentCapacity": {
+      "bodyChars": 92,
+      "maxItems": 4,
+      "maxPanels": 4,
+      "maxEvents": 4
+    },
+    "positiveUseCases": [
+      "attach one source type and catalog identifier to each dated origin event"
+    ],
+    "antiPatterns": [
+      "source label shared by multiple unrelated records",
+      "unlabelled archival frames"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-loc-pictures"
+    ],
+    "classificationReasons": [
+      "Concrete chronology recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-chronology-evidence-to-finding-footer",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "chronology"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "case-study",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "explain",
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dated-spine",
+      "alternating-origin-records",
+      "thesis-footer"
+    ],
+    "typographyTraits": [
+      "serif-record-headlines",
+      "compact-finding-copy",
+      "persistent-source-captions"
+    ],
+    "paletteTraits": [
+      "archival-paper-contrast",
+      "amber-evidence-accent"
+    ],
+    "motionTraits": [
+      "records-settle-then-finding-fade",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "source-label",
+      "documentary-thesis"
+    ],
+    "contentCapacity": {
+      "headlineChars": 58,
+      "bodyChars": 108,
+      "maxItems": 4,
+      "maxPanels": 5,
+      "maxEvents": 4
+    },
+    "positiveUseCases": [
+      "close four visible dated records with one explicitly interpretive documentary finding"
+    ],
+    "antiPatterns": [
+      "finding that replaces record labels",
+      "multiple unsupported conclusions"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-national-archives"
+    ],
+    "classificationReasons": [
+      "Concrete chronology recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-chronology-four-record-density-budget",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "chronology"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "process"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dated-spine",
+      "four-record-field",
+      "alternating-origin-records"
+    ],
+    "typographyTraits": [
+      "serif-record-headlines",
+      "compact-source-captions"
+    ],
+    "paletteTraits": [
+      "archival-paper-contrast",
+      "amber-evidence-accent"
+    ],
+    "motionTraits": [
+      "one-record-per-beat",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "archival-frame",
+      "source-label"
+    ],
+    "contentCapacity": {
+      "headlineChars": 64,
+      "bodyChars": 280,
+      "maxItems": 4,
+      "maxPanels": 4,
+      "maxEvents": 4
+    },
+    "positiveUseCases": [
+      "keep an origin chronology inspectable within one portrait frame"
+    ],
+    "antiPatterns": [
+      "five or more full-detail origin records",
+      "source captions removed to fit copy"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-citizen-dj"
+    ],
+    "classificationReasons": [
+      "Concrete chronology recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-case-study-decision-marker-spine",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "case-study"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "case-study",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "turning-point"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dated-spine",
+      "alternating-archive",
+      "emphasized-decision-marker"
+    ],
+    "typographyTraits": [
+      "serif-decision-headlines",
+      "persistent-source-captions",
+      "mono-date-labels"
+    ],
+    "paletteTraits": [
+      "dark-archive-canvas",
+      "amber-decision-accent"
+    ],
+    "motionTraits": [
+      "staggered-record-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "archival-frame",
+      "source-label",
+      "decision-marker"
+    ],
+    "contentCapacity": {
+      "headlineChars": 68,
+      "bodyChars": 300,
+      "maxItems": 5,
+      "maxPanels": 5,
+      "maxEvents": 5
+    },
+    "positiveUseCases": [
+      "render a five-record sourced chronology with one dated decision point visibly but proportionally emphasized"
+    ],
+    "antiPatterns": [
+      "decision marker without its date or source",
+      "multiple competing turning points"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-citizen-dj"
+    ],
+    "classificationReasons": [
+      "Concrete case-study recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-case-study-evidence-accent-hierarchy",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "case-study"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "case-study",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "turning-point"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "emphasized-decision-marker",
+      "dated-spine"
+    ],
+    "typographyTraits": [
+      "serif-decision-headlines",
+      "persistent-source-captions"
+    ],
+    "paletteTraits": [
+      "dark-archive-canvas",
+      "amber-decision-accent",
+      "neutral-evidence-records"
+    ],
+    "motionTraits": [
+      "accent-settle-after-record-reveal",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "decision-marker",
+      "source-label",
+      "archival-frame"
+    ],
+    "contentCapacity": {
+      "maxItems": 5,
+      "maxPanels": 5,
+      "maxEvents": 5
+    },
+    "positiveUseCases": [
+      "reserve one amber accent for the evidence-backed turning point while other records stay neutral"
+    ],
+    "antiPatterns": [
+      "accenting every record",
+      "color-only turning-point meaning"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-loc-pictures"
+    ],
+    "classificationReasons": [
+      "Concrete case-study recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-case-study-records-then-marker-reveal",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "case-study"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "case-study"
+    ],
+    "beatRoles": [
+      "turning-point"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dated-spine",
+      "stable-decision-marker"
+    ],
+    "typographyTraits": [
+      "serif-decision-headlines",
+      "mono-date-labels"
+    ],
+    "paletteTraits": [
+      "dark-archive-canvas",
+      "amber-decision-accent"
+    ],
+    "motionTraits": [
+      "ordered-record-fade",
+      "decision-marker-settle",
+      "reduced-motion-state-cut"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "archival-frame",
+      "decision-marker",
+      "source-label"
+    ],
+    "contentCapacity": {
+      "maxItems": 5,
+      "maxPanels": 5,
+      "maxEvents": 5
+    },
+    "positiveUseCases": [
+      "reveal source-labelled records before highlighting the one consequential dated record"
+    ],
+    "antiPatterns": [
+      "marker revealed before supporting chronology",
+      "moving markers after viewer attention lands"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-citizen-dj"
+    ],
+    "classificationReasons": [
+      "Concrete case-study recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-case-study-dated-decision-marker",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "case-study"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "case-study",
+      "evidence"
+    ],
+    "beatRoles": [
+      "turning-point"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dated-spine",
+      "emphasized-decision-marker"
+    ],
+    "typographyTraits": [
+      "mono-date-labels",
+      "compact-source-captions"
+    ],
+    "paletteTraits": [
+      "dark-archive-canvas",
+      "amber-decision-accent"
+    ],
+    "motionTraits": [
+      "marker-static-after-settle",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "decision-marker",
+      "dated-spine",
+      "source-label"
+    ],
+    "contentCapacity": {
+      "bodyChars": 82,
+      "maxItems": 5,
+      "maxPanels": 5,
+      "maxEvents": 5
+    },
+    "positiveUseCases": [
+      "bind a turning-point badge to one dated record, its source label, and its explicit event title"
+    ],
+    "antiPatterns": [
+      "floating decision badge",
+      "badge without record provenance"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-national-archives"
+    ],
+    "classificationReasons": [
+      "Concrete case-study recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-case-study-decision-and-thesis-close",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "case-study"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "case-study",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "turning-point",
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dated-spine",
+      "emphasized-decision-marker",
+      "thesis-footer"
+    ],
+    "typographyTraits": [
+      "serif-decision-headlines",
+      "compact-finding-copy",
+      "persistent-source-captions"
+    ],
+    "paletteTraits": [
+      "dark-archive-canvas",
+      "amber-decision-accent"
+    ],
+    "motionTraits": [
+      "decision-settle-then-thesis-fade",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "decision-marker",
+      "source-label",
+      "documentary-thesis"
+    ],
+    "contentCapacity": {
+      "headlineChars": 60,
+      "bodyChars": 112,
+      "maxItems": 5,
+      "maxPanels": 6,
+      "maxEvents": 5
+    },
+    "positiveUseCases": [
+      "turn one evidenced decision point into one clearly separated, source-visible takeaway"
+    ],
+    "antiPatterns": [
+      "thesis that states a single cause as fact",
+      "takeaway without visible source labels"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-national-archives"
+    ],
+    "classificationReasons": [
+      "Concrete case-study recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-case-study-five-record-density-budget",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "case-study"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "case-study"
+    ],
+    "beatRoles": [
+      "turning-point"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dated-spine",
+      "alternating-archive",
+      "one-decision-marker"
+    ],
+    "typographyTraits": [
+      "serif-decision-headlines",
+      "compact-source-captions"
+    ],
+    "paletteTraits": [
+      "dark-archive-canvas",
+      "amber-decision-accent"
+    ],
+    "motionTraits": [
+      "one-record-per-beat",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "archival-frame",
+      "source-label",
+      "decision-marker"
+    ],
+    "contentCapacity": {
+      "headlineChars": 68,
+      "bodyChars": 300,
+      "maxItems": 5,
+      "maxPanels": 5,
+      "maxEvents": 5
+    },
+    "positiveUseCases": [
+      "fit five dated records and one evidence-backed decision emphasis into one portrait documentary scene"
+    ],
+    "antiPatterns": [
+      "six detailed records plus a thesis footer",
+      "dropping dates to preserve copy"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-loc-pictures"
+    ],
+    "classificationReasons": [
+      "Concrete case-study recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-evolution-interleaved-dual-spine",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "evolution"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "process",
+      "summarize"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dated-spine",
+      "interleaved-workstream-records",
+      "two-named-workstreams"
+    ],
+    "typographyTraits": [
+      "compact-serif-event-titles",
+      "source-forward-captions",
+      "mono-date-labels"
+    ],
+    "paletteTraits": [
+      "archive-neutral-canvas",
+      "muted-workstream-contrast"
+    ],
+    "motionTraits": [
+      "chronology-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "archival-frame",
+      "source-label",
+      "workstream-key"
+    ],
+    "contentCapacity": {
+      "headlineChars": 64,
+      "bodyChars": 324,
+      "maxItems": 6,
+      "maxPanels": 6,
+      "maxEvents": 6
+    },
+    "positiveUseCases": [
+      "interleave six sourced records from two named workstreams while retaining one shared date order"
+    ],
+    "antiPatterns": [
+      "separate timelines with incompatible date scales",
+      "unnamed workstream colors"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-citizen-dj"
+    ],
+    "classificationReasons": [
+      "Concrete evolution recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-evolution-workstream-key-type",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "evolution"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "process",
+      "summarize"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "interleaved-workstream-records",
+      "fixed-workstream-key"
+    ],
+    "typographyTraits": [
+      "compact-workstream-labels",
+      "mono-date-labels",
+      "compact-source-captions"
+    ],
+    "paletteTraits": [
+      "archive-neutral-canvas",
+      "muted-workstream-contrast"
+    ],
+    "motionTraits": [
+      "key-static-records-reveal",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "workstream-key",
+      "source-label",
+      "dated-spine"
+    ],
+    "contentCapacity": {
+      "bodyChars": 240,
+      "maxItems": 6,
+      "maxPanels": 6,
+      "maxEvents": 6
+    },
+    "positiveUseCases": [
+      "label each record with a stable workstream name before its dated event and source caption"
+    ],
+    "antiPatterns": [
+      "workstreams identified only by position",
+      "long labels that eclipse dates"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-loc-pictures"
+    ],
+    "classificationReasons": [
+      "Concrete evolution recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-evolution-chronological-pair-reveal",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "evolution"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "process",
+      "summarize"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dated-spine",
+      "stable-workstream-slots"
+    ],
+    "typographyTraits": [
+      "compact-serif-event-titles",
+      "mono-date-labels"
+    ],
+    "paletteTraits": [
+      "archive-neutral-canvas",
+      "muted-workstream-contrast"
+    ],
+    "motionTraits": [
+      "date-order-record-reveal",
+      "fixed-workstream-key",
+      "reduced-motion-state-cut"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "workstream-key",
+      "source-label"
+    ],
+    "contentCapacity": {
+      "maxItems": 6,
+      "maxPanels": 6,
+      "maxEvents": 6
+    },
+    "positiveUseCases": [
+      "reveal two workstreams in chronological order without sliding records across their assigned lanes"
+    ],
+    "antiPatterns": [
+      "alternating by workstream instead of date",
+      "animated lane reassignment"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-citizen-dj"
+    ],
+    "classificationReasons": [
+      "Concrete evolution recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-evolution-labelled-record-component",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "evolution"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "process",
+      "evidence"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "interleaved-workstream-records",
+      "fixed-record-metadata-zone"
+    ],
+    "typographyTraits": [
+      "compact-workstream-labels",
+      "mono-date-labels",
+      "compact-source-captions"
+    ],
+    "paletteTraits": [
+      "archive-neutral-canvas",
+      "muted-workstream-contrast"
+    ],
+    "motionTraits": [
+      "record-fade-in",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "labelled-record",
+      "workstream-key",
+      "source-label",
+      "archival-frame"
+    ],
+    "contentCapacity": {
+      "bodyChars": 88,
+      "maxItems": 6,
+      "maxPanels": 6,
+      "maxEvents": 6
+    },
+    "positiveUseCases": [
+      "render one immutable record unit containing workstream label, date, event, and provenance label"
+    ],
+    "antiPatterns": [
+      "detached source labels",
+      "records without named workstreams"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-national-archives"
+    ],
+    "classificationReasons": [
+      "Concrete evolution recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-evolution-convergence-footer",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "evolution"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "summarize",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "compare",
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "interleaved-workstream-records",
+      "dated-spine",
+      "thesis-footer"
+    ],
+    "typographyTraits": [
+      "compact-serif-event-titles",
+      "compact-finding-copy",
+      "source-forward-captions"
+    ],
+    "paletteTraits": [
+      "archive-neutral-canvas",
+      "muted-workstream-contrast"
+    ],
+    "motionTraits": [
+      "records-settle-then-convergence-fade",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "workstream-key",
+      "source-label",
+      "documentary-thesis"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 104,
+      "maxItems": 6,
+      "maxPanels": 7,
+      "maxEvents": 6
+    },
+    "positiveUseCases": [
+      "close a dual-workstream chronology with one bounded convergence statement after its supporting records"
+    ],
+    "antiPatterns": [
+      "claiming causation from temporal proximity",
+      "convergence statement without displayed evidence"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-national-archives"
+    ],
+    "classificationReasons": [
+      "Concrete evolution recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-evolution-six-record-density-budget",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "evolution"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "process",
+      "summarize"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dated-spine",
+      "two-named-workstreams",
+      "six-record-field"
+    ],
+    "typographyTraits": [
+      "compact-serif-event-titles",
+      "compact-source-captions"
+    ],
+    "paletteTraits": [
+      "archive-neutral-canvas",
+      "muted-workstream-contrast"
+    ],
+    "motionTraits": [
+      "one-record-per-beat",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "workstream-key",
+      "source-label"
+    ],
+    "contentCapacity": {
+      "headlineChars": 64,
+      "bodyChars": 324,
+      "maxItems": 6,
+      "maxPanels": 6,
+      "maxEvents": 6
+    },
+    "positiveUseCases": [
+      "fit six sourced interleaved records within one portrait scene without hiding chronology metadata"
+    ],
+    "antiPatterns": [
+      "seven full-detail parallel records",
+      "more than two workstreams"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-citizen-dj"
+    ],
+    "classificationReasons": [
+      "Concrete evolution recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-milestones-explicit-missing-record-spine",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "milestones"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "evidence",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dated-evidence-spine",
+      "explicit-missing-records",
+      "alternating-archive"
+    ],
+    "typographyTraits": [
+      "serif-evidence-headlines",
+      "missing-record-captions",
+      "persistent-source-captions"
+    ],
+    "paletteTraits": [
+      "dark-archive-canvas",
+      "amber-provenance-accent"
+    ],
+    "motionTraits": [
+      "reduced-motion-fade",
+      "deterministic-review"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "missing-image-record",
+      "source-label",
+      "archival-frame"
+    ],
+    "contentCapacity": {
+      "headlineChars": 62,
+      "bodyChars": 250,
+      "maxItems": 5,
+      "maxPanels": 5,
+      "maxEvents": 5
+    },
+    "positiveUseCases": [
+      "render five dated evidence records while visibly retaining documented missing-image states"
+    ],
+    "antiPatterns": [
+      "fabricated visual reconstruction",
+      "missing record silently omitted"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-national-archives"
+    ],
+    "classificationReasons": [
+      "Concrete milestones recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-milestones-missing-state-type-hierarchy",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "milestones"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "evidence"
+    ],
+    "beatRoles": [
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "explicit-missing-records",
+      "fixed-record-metadata-zone"
+    ],
+    "typographyTraits": [
+      "missing-record-captions",
+      "mono-date-labels",
+      "persistent-source-captions"
+    ],
+    "paletteTraits": [
+      "dark-archive-canvas",
+      "amber-provenance-accent",
+      "muted-gap-copy"
+    ],
+    "motionTraits": [
+      "missing-state-static",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "missing-image-record",
+      "source-label",
+      "dated-spine"
+    ],
+    "contentCapacity": {
+      "bodyChars": 132,
+      "maxItems": 5,
+      "maxPanels": 5,
+      "maxEvents": 5
+    },
+    "positiveUseCases": [
+      "state why imagery is unavailable while preserving the date, provenance label, and event position"
+    ],
+    "antiPatterns": [
+      "euphemistic missing-state copy",
+      "gap state with no source context"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-national-archives"
+    ],
+    "classificationReasons": [
+      "Concrete milestones recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-milestones-gap-aware-record-reveal",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "milestones"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "evidence"
+    ],
+    "beatRoles": [
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dated-evidence-spine",
+      "stable-gap-slots"
+    ],
+    "typographyTraits": [
+      "serif-evidence-headlines",
+      "missing-record-captions"
+    ],
+    "paletteTraits": [
+      "dark-archive-canvas",
+      "amber-provenance-accent"
+    ],
+    "motionTraits": [
+      "date-order-fade",
+      "gap-state-equal-duration",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "missing-image-record",
+      "source-label"
+    ],
+    "contentCapacity": {
+      "maxItems": 5,
+      "maxPanels": 5,
+      "maxEvents": 5
+    },
+    "positiveUseCases": [
+      "reveal a missing record with the same chronological weight as records that have imagery"
+    ],
+    "antiPatterns": [
+      "skipping gap state during animation",
+      "dramatic glitch treatment for a missing record"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-national-archives"
+    ],
+    "classificationReasons": [
+      "Concrete milestones recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-milestones-provenance-placeholder-component",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "milestones"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "evidence"
+    ],
+    "beatRoles": [
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "explicit-missing-records",
+      "dated-evidence-spine"
+    ],
+    "typographyTraits": [
+      "missing-record-captions",
+      "compact-source-captions",
+      "mono-date-labels"
+    ],
+    "paletteTraits": [
+      "dark-archive-canvas",
+      "amber-provenance-accent"
+    ],
+    "motionTraits": [
+      "placeholder-static",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "missing-image-record",
+      "source-label",
+      "provenance-note"
+    ],
+    "contentCapacity": {
+      "bodyChars": 96,
+      "maxItems": 5,
+      "maxPanels": 5,
+      "maxEvents": 5
+    },
+    "positiveUseCases": [
+      "render a bounded placeholder that names unavailable imagery and retains a source/provenance label"
+    ],
+    "antiPatterns": [
+      "placeholder made to resemble a recovered photograph",
+      "generic no-image icon without explanation"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-national-archives"
+    ],
+    "classificationReasons": [
+      "Concrete milestones recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-milestones-evidence-limit-close",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "milestones"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "evidence",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "evidence",
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dated-evidence-spine",
+      "explicit-missing-records",
+      "thesis-footer"
+    ],
+    "typographyTraits": [
+      "serif-evidence-headlines",
+      "missing-record-captions",
+      "compact-finding-copy"
+    ],
+    "paletteTraits": [
+      "dark-archive-canvas",
+      "amber-provenance-accent"
+    ],
+    "motionTraits": [
+      "records-settle-then-limit-note",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "missing-image-record",
+      "source-label",
+      "documentary-thesis"
+    ],
+    "contentCapacity": {
+      "headlineChars": 54,
+      "bodyChars": 112,
+      "maxItems": 5,
+      "maxPanels": 6,
+      "maxEvents": 5
+    },
+    "positiveUseCases": [
+      "close an incomplete chronology by separating the evidenced finding from the known archive limitation"
+    ],
+    "antiPatterns": [
+      "certainty claim despite a visible gap",
+      "new evidence introduced only in the footer"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-national-archives"
+    ],
+    "classificationReasons": [
+      "Concrete milestones recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-milestones-five-record-density-budget",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "milestones"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "evidence"
+    ],
+    "beatRoles": [
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dated-evidence-spine",
+      "explicit-missing-records",
+      "five-record-field"
+    ],
+    "typographyTraits": [
+      "serif-evidence-headlines",
+      "missing-record-captions",
+      "compact-source-captions"
+    ],
+    "paletteTraits": [
+      "dark-archive-canvas",
+      "amber-provenance-accent"
+    ],
+    "motionTraits": [
+      "one-record-per-beat",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "missing-image-record",
+      "source-label"
+    ],
+    "contentCapacity": {
+      "headlineChars": 62,
+      "bodyChars": 250,
+      "maxItems": 5,
+      "maxPanels": 5,
+      "maxEvents": 5
+    },
+    "positiveUseCases": [
+      "keep five chronology records including explicit archive gaps readable in one portrait evidence scene"
+    ],
+    "antiPatterns": [
+      "removing gap captions to fit a sixth record",
+      "more than five full-detail records"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-national-archives"
+    ],
+    "classificationReasons": [
+      "Concrete milestones recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-roadmap-three-event-thesis-footer",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "roadmap"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "summarize",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "compact-dated-spine",
+      "three-record-field",
+      "thesis-footer"
+    ],
+    "typographyTraits": [
+      "serif-conclusion-headline",
+      "source-forward-captions",
+      "mono-date-labels"
+    ],
+    "paletteTraits": [
+      "paper-on-charcoal",
+      "restrained-amber-accent"
+    ],
+    "motionTraits": [
+      "static-review",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "source-label",
+      "missing-image-record",
+      "documentary-thesis"
+    ],
+    "contentCapacity": {
+      "headlineChars": 62,
+      "bodyChars": 180,
+      "maxItems": 3,
+      "maxPanels": 4,
+      "maxEvents": 3
+    },
+    "positiveUseCases": [
+      "render a compact three-record conclusion with one clearly separated sourced synthesis"
+    ],
+    "antiPatterns": [
+      "conclusion with fewer than three dated records",
+      "thesis presented as another source record"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-national-archives"
+    ],
+    "classificationReasons": [
+      "Concrete roadmap recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-roadmap-evidence-interpretation-type",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "roadmap"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "summarize",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "compact-dated-spine",
+      "thesis-footer"
+    ],
+    "typographyTraits": [
+      "mono-date-labels",
+      "compact-source-captions",
+      "serif-conclusion-headline",
+      "interpretation-label"
+    ],
+    "paletteTraits": [
+      "paper-on-charcoal",
+      "restrained-amber-accent"
+    ],
+    "motionTraits": [
+      "static-review",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "source-label",
+      "documentary-thesis",
+      "dated-spine"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 110,
+      "maxItems": 3,
+      "maxPanels": 4,
+      "maxEvents": 3
+    },
+    "positiveUseCases": [
+      "distinguish visible date-and-source evidence from the concluding interpretation using labelled text roles"
+    ],
+    "antiPatterns": [
+      "interpretation styled as source metadata",
+      "unlabelled conclusion claim"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-loc-pictures"
+    ],
+    "classificationReasons": [
+      "Concrete roadmap recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-roadmap-static-synthesis-settle",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "roadmap"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "summarize",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "compact-dated-spine",
+      "stable-thesis-footer"
+    ],
+    "typographyTraits": [
+      "serif-conclusion-headline",
+      "source-forward-captions"
+    ],
+    "paletteTraits": [
+      "paper-on-charcoal",
+      "restrained-amber-accent"
+    ],
+    "motionTraits": [
+      "static-records",
+      "single-thesis-fade",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "source-label",
+      "documentary-thesis"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 4,
+      "maxEvents": 3
+    },
+    "positiveUseCases": [
+      "show all three dated records before a restrained conclusion fade with no displacement"
+    ],
+    "antiPatterns": [
+      "animated evidence removal before the takeaway",
+      "looping outro motion"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-citizen-dj"
+    ],
+    "classificationReasons": [
+      "Concrete roadmap recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-roadmap-sourced-thesis-component",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "roadmap"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "summarize",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "thesis-footer",
+      "compact-dated-spine"
+    ],
+    "typographyTraits": [
+      "interpretation-label",
+      "compact-finding-copy",
+      "compact-source-captions"
+    ],
+    "paletteTraits": [
+      "paper-on-charcoal",
+      "restrained-amber-accent"
+    ],
+    "motionTraits": [
+      "thesis-static-after-fade",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "documentary-thesis",
+      "source-label",
+      "evidence-count-label"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "bodyChars": 96,
+      "maxItems": 3,
+      "maxPanels": 4,
+      "maxEvents": 3
+    },
+    "positiveUseCases": [
+      "render one footer finding with an interpretation label and visible support count from the displayed records"
+    ],
+    "antiPatterns": [
+      "footer with no interpretive label",
+      "finding that cites unseen evidence"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-national-archives"
+    ],
+    "classificationReasons": [
+      "Concrete roadmap recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-roadmap-three-record-use-case",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "roadmap"
+    ],
+    "patternType": "use-case",
+    "intentTags": [
+      "summarize",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "compact-dated-spine",
+      "three-record-field",
+      "thesis-footer"
+    ],
+    "typographyTraits": [
+      "serif-conclusion-headline",
+      "source-forward-captions",
+      "interpretation-label"
+    ],
+    "paletteTraits": [
+      "paper-on-charcoal",
+      "restrained-amber-accent"
+    ],
+    "motionTraits": [
+      "static-review",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "source-label",
+      "documentary-thesis"
+    ],
+    "contentCapacity": {
+      "headlineChars": 62,
+      "bodyChars": 180,
+      "maxItems": 3,
+      "maxPanels": 4,
+      "maxEvents": 3
+    },
+    "positiveUseCases": [
+      "close a sourced chronology when exactly three dated records support one limited takeaway"
+    ],
+    "antiPatterns": [
+      "new chronology details introduced in the conclusion",
+      "call to action replacing a finding"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-citizen-dj"
+    ],
+    "classificationReasons": [
+      "Concrete roadmap recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "td-roadmap-three-record-density-budget",
+    "packageId": "timeline-documentary",
+    "variantIds": [
+      "roadmap"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "summarize"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "compact-dated-spine",
+      "three-record-field",
+      "thesis-footer"
+    ],
+    "typographyTraits": [
+      "serif-conclusion-headline",
+      "compact-source-captions"
+    ],
+    "paletteTraits": [
+      "paper-on-charcoal",
+      "restrained-amber-accent"
+    ],
+    "motionTraits": [
+      "static-review",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "dated-spine",
+      "source-label",
+      "documentary-thesis"
+    ],
+    "contentCapacity": {
+      "headlineChars": 62,
+      "bodyChars": 180,
+      "maxItems": 3,
+      "maxPanels": 4,
+      "maxEvents": 3
+    },
+    "positiveUseCases": [
+      "retain three date labels, three sources, and one thesis in a readable portrait closing frame"
+    ],
+    "antiPatterns": [
+      "four detailed records plus thesis",
+      "sources collapsed into an unreadable footer"
+    ],
+    "sourceEvidenceIds": [
+      "w8-timeline-loc-pictures"
+    ],
+    "classificationReasons": [
+      "Concrete roadmap recipe preserves the deterministic local fixture and verified source evidence; it remains proposed pending human review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p8/1.0",
+    "reviewStatus": "proposed"
+  }
+]

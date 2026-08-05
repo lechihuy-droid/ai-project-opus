@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "lucida-content-brief/v1",
+  "title": "Sản phẩm cần được xem trên giao diện thật",
+  "audience": "Nhóm mua phần mềm",
+  "intent": "use-case",
+  "styleMode": "locked",
+  "factualSourceIds": ["fact-product"],
+  "visualConstraints": {
+    "requiredPackages": ["product-showcase"],
+    "assets": { "requiredClassifications": ["product-ui"] },
+    "density": { "maximum": "medium" },
+    "layout": { "required": ["split-screen"] }
+  },
+  "beats": [
+    {
+      "id": "product-proof",
+      "title": "Mỗi quyết định đều thấy được trên sản phẩm",
+      "body": "Người mua xem luồng phê duyệt.\nNgười vận hành xem nguồn dữ kiện.",
+      "role": "example",
+      "actors": ["người mua", "người vận hành"],
+      "factRefs": ["fact-product"]
+    }
+  ]
+}

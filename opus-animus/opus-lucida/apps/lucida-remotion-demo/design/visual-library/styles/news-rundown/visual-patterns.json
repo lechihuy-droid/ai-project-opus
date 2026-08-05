@@ -1,0 +1,1964 @@
+[
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-breaking-update-signal-band-layout",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "breaking-update"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "news-rundown"
+    ],
+    "beatRoles": [
+      "headline"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "top-signal-band",
+      "dominant-headline-field",
+      "lower-caption-safe-panel"
+    ],
+    "typographyTraits": [
+      "urgent-label-16px-uppercase",
+      "headline-56px-semibold",
+      "source-context-16px"
+    ],
+    "paletteTraits": [
+      "ink-canvas",
+      "signal-red-urgent-band",
+      "paper-text"
+    ],
+    "motionTraits": [
+      "signal-band-fade-120ms",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "news-header",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 74,
+      "bodyChars": 120,
+      "maxItems": 2,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "render one verified breaking development with one compact context line"
+    ],
+    "antiPatterns": [
+      "two equal-priority headlines",
+      "headline without visible source context"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Original breaking-update recipe makes one consequential development dominant while preserving a fixed source-context zone; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-breaking-update-alert-source-typography",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "breaking-update"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "news-rundown"
+    ],
+    "beatRoles": [
+      "headline"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "top-signal-band",
+      "headline-field",
+      "fixed-source-row"
+    ],
+    "typographyTraits": [
+      "alert-label-16px-uppercase",
+      "headline-56px-semibold",
+      "timestamp-18px-medium",
+      "source-context-16px"
+    ],
+    "paletteTraits": [
+      "paper-text",
+      "signal-red-alert-label",
+      "muted-slate-metadata"
+    ],
+    "motionTraits": [
+      "type-static-after-entrance",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "news-header",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 74,
+      "bodyChars": 120,
+      "maxItems": 2,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "separate urgency, headline, time, and source into readable editorial text roles"
+    ],
+    "antiPatterns": [
+      "source context smaller than readable caption size",
+      "urgent label used as headline copy"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Original type recipe applies verified visual-hierarchy evidence to a labelled breaking-update reading order; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-breaking-update-severity-palette",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "breaking-update"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "news-rundown"
+    ],
+    "beatRoles": [
+      "headline"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "single-headline-field",
+      "fixed-caption-safe-panel"
+    ],
+    "typographyTraits": [
+      "high-contrast-headline",
+      "muted-source-context"
+    ],
+    "paletteTraits": [
+      "ink-canvas",
+      "signal-red-for-urgent-only",
+      "amber-for-watch-only",
+      "paper-text"
+    ],
+    "motionTraits": [
+      "color-static-after-entrance",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "news-header",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 74,
+      "bodyChars": 120,
+      "maxItems": 2,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "signal one verified urgent state without assigning decorative accents to support copy"
+    ],
+    "antiPatterns": [
+      "red used for every label",
+      "color-only indication of urgency"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Original semantic color recipe keeps a sparse breaking update legible and restrained; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-breaking-update-stable-alert-entrance",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "breaking-update"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "news-rundown"
+    ],
+    "beatRoles": [
+      "headline"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-signal-band",
+      "stable-headline-field",
+      "stable-caption-safe-panel"
+    ],
+    "typographyTraits": [
+      "fixed-headline-baseline",
+      "static-source-context"
+    ],
+    "paletteTraits": [
+      "signal-red-urgent-band",
+      "ink-canvas"
+    ],
+    "motionTraits": [
+      "band-fade-120ms",
+      "headline-fade-160ms",
+      "context-fade-120ms",
+      "reduced-motion-all-visible"
+    ],
+    "componentTraits": [
+      "news-header",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 74,
+      "bodyChars": 120,
+      "maxItems": 2,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "reveal an urgent story once without shifting headline or source geometry"
+    ],
+    "antiPatterns": [
+      "looping alert pulse",
+      "late source-context reveal after the headline settles"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Original entrance sequence uses verified deterministic property-animation guidance while retaining fixed breaking-update geometry; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-breaking-update-verified-update-component",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "breaking-update"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "news-rundown",
+      "evidence"
+    ],
+    "beatRoles": [
+      "headline",
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "headline-over-context",
+      "fixed-verification-row"
+    ],
+    "typographyTraits": [
+      "headline-56px-semibold",
+      "verification-label-16px-uppercase",
+      "source-context-16px"
+    ],
+    "paletteTraits": [
+      "paper-text",
+      "cyan-verification-marker",
+      "muted-slate-metadata"
+    ],
+    "motionTraits": [
+      "component-fade-120ms",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "news-header",
+      "verification-row",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 74,
+      "bodyChars": 120,
+      "maxItems": 2,
+      "maxPanels": 3
+    },
+    "positiveUseCases": [
+      "attach one timestamp and one source context line to a breaking headline"
+    ],
+    "antiPatterns": [
+      "verification row with more than one unrelated source",
+      "unlabelled timestamp"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Original verification-row contract turns one breaking update into a bounded, inspectable news unit; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-breaking-update-single-story-density-budget",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "breaking-update"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "news-rundown"
+    ],
+    "beatRoles": [
+      "headline"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "one-headline-field",
+      "one-context-line",
+      "lower-caption-safe-panel"
+    ],
+    "typographyTraits": [
+      "headline-56px-semibold",
+      "compact-source-context"
+    ],
+    "paletteTraits": [
+      "ink-canvas",
+      "signal-red-urgent-band",
+      "paper-text"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "news-header",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 74,
+      "bodyChars": 120,
+      "maxItems": 2,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "keep one breaking headline, time, and source context readable in portrait"
+    ],
+    "antiPatterns": [
+      "three supporting stories",
+      "body copy competing with the lead headline"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Original density budget reserves space for verification context instead of filling the breaking update with competing facts; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-headline-stack-ranked-list-layout",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "headline-stack"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "news-rundown",
+      "comparison"
+    ],
+    "beatRoles": [
+      "headline",
+      "compare"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "lead-story-top-third",
+      "numbered-supporting-list",
+      "lower-caption-safe-panel"
+    ],
+    "typographyTraits": [
+      "lead-headline-38px-semibold",
+      "rank-number-18px-medium",
+      "support-headline-24px"
+    ],
+    "paletteTraits": [
+      "ink-canvas",
+      "paper-text",
+      "cyan-rank-marker"
+    ],
+    "motionTraits": [
+      "lead-before-list-entrance",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "news-header",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 62,
+      "bodyChars": 160,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "rank one lead development above three related daily headlines"
+    ],
+    "antiPatterns": [
+      "unranked list",
+      "four equal-sized story cards"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Original ranked layout applies verified hierarchy evidence to a compact headline stack; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-headline-stack-lead-rank-typography",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "headline-stack"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "news-rundown",
+      "comparison"
+    ],
+    "beatRoles": [
+      "headline",
+      "compare"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "lead-story-top-third",
+      "numbered-supporting-list"
+    ],
+    "typographyTraits": [
+      "lead-headline-38px-semibold",
+      "rank-number-18px-medium",
+      "support-headline-24px",
+      "source-context-14px"
+    ],
+    "paletteTraits": [
+      "paper-text",
+      "cyan-rank-marker",
+      "muted-slate-metadata"
+    ],
+    "motionTraits": [
+      "type-static-after-entrance",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "news-header",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 62,
+      "bodyChars": 160,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "make rank, headline, and source context readable before support-story detail"
+    ],
+    "antiPatterns": [
+      "rank number larger than lead headline",
+      "sources omitted from the lead story"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Original type roles make the headline-stack reading order explicit without reproducing a source interface; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-headline-stack-rank-palette",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "headline-stack"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "news-rundown",
+      "comparison"
+    ],
+    "beatRoles": [
+      "headline",
+      "compare"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "lead-story-top-third",
+      "neutral-supporting-list"
+    ],
+    "typographyTraits": [
+      "high-contrast-lead",
+      "muted-support-headlines"
+    ],
+    "paletteTraits": [
+      "paper-text-lead",
+      "cyan-rank-marker",
+      "neutral-support-rows",
+      "amber-watch-marker"
+    ],
+    "motionTraits": [
+      "color-static-after-entrance",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "news-header",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 62,
+      "bodyChars": 160,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "differentiate rank and one watch condition while keeping supporting stories neutral"
+    ],
+    "antiPatterns": [
+      "unique accent color per story",
+      "green used without defined status"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Original semantic palette avoids accent saturation in a dense headline stack; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-headline-stack-ranked-entrance",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "headline-stack"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "news-rundown",
+      "comparison"
+    ],
+    "beatRoles": [
+      "headline",
+      "compare"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-ranked-list",
+      "fixed-caption-safe-panel"
+    ],
+    "typographyTraits": [
+      "fixed-row-baselines",
+      "static-source-context"
+    ],
+    "paletteTraits": [
+      "cyan-rank-marker",
+      "paper-text"
+    ],
+    "motionTraits": [
+      "lead-fade-140ms",
+      "rows-fade-top-to-bottom-100ms",
+      "reduced-motion-all-visible"
+    ],
+    "componentTraits": [
+      "news-header",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 62,
+      "bodyChars": 160,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "reveal a lead story then three fixed-ranked rows without list reflow"
+    ],
+    "antiPatterns": [
+      "rank swapping during animation",
+      "scrolling headlines"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Original sequencing uses verified animation guidance for deterministic headline-stack row entrances with stable bounds; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-headline-stack-ranked-story-row-component",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "headline-stack"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "news-rundown",
+      "evidence"
+    ],
+    "beatRoles": [
+      "headline",
+      "evidence"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "fixed-row-height",
+      "rank-column",
+      "headline-source-columns"
+    ],
+    "typographyTraits": [
+      "rank-number-18px",
+      "row-headline-24px",
+      "row-source-14px"
+    ],
+    "paletteTraits": [
+      "cyan-rank-marker",
+      "paper-text",
+      "muted-slate-source"
+    ],
+    "motionTraits": [
+      "row-fade-100ms",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "ranked-story-row",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 72,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "render one ranked story with headline, source context, and one short implication"
+    ],
+    "antiPatterns": [
+      "row with multiple source groups",
+      "multi-line rank labels"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Original row contract makes each supporting headline a bounded, repeated editorial unit; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-headline-stack-four-story-density-budget",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "headline-stack"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "news-rundown"
+    ],
+    "beatRoles": [
+      "headline"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "one-lead-story",
+      "three-support-rows",
+      "lower-caption-safe-panel"
+    ],
+    "typographyTraits": [
+      "lead-headline-38px",
+      "support-headline-24px",
+      "source-context-14px"
+    ],
+    "paletteTraits": [
+      "ink-canvas",
+      "paper-text",
+      "cyan-rank-marker"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "news-header",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 62,
+      "bodyChars": 160,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "fit four ranked headlines with visible source context into a portrait news scene"
+    ],
+    "antiPatterns": [
+      "five or more full-detail headlines",
+      "source rows removed to fit another story"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Original density limit preserves lead-headline hierarchy and source visibility in a compact headline stack; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-top-stories-timestamp-rail-layout",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "top-stories"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "news-rundown",
+      "process"
+    ],
+    "beatRoles": [
+      "context",
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "timestamp-rail-left",
+      "ordered-update-field",
+      "lower-caption-safe-panel"
+    ],
+    "typographyTraits": [
+      "story-headline-40px-semibold",
+      "timestamp-16px-medium",
+      "update-copy-22px"
+    ],
+    "paletteTraits": [
+      "ink-canvas",
+      "amber-active-marker",
+      "paper-text"
+    ],
+    "motionTraits": [
+      "chronological-row-entrance",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "news-header",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 58,
+      "bodyChars": 180,
+      "maxItems": 4,
+      "maxPanels": 2,
+      "maxEvents": 4
+    },
+    "positiveUseCases": [
+      "render four time-ordered updates for one developing policy or product story"
+    ],
+    "antiPatterns": [
+      "reverse chronological mixed timestamps",
+      "multiple unrelated story rails"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Original time-marked rail organizes a bounded set of top stories without conflating their priority; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-top-stories-time-event-source-typography",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "top-stories"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "news-rundown",
+      "process"
+    ],
+    "beatRoles": [
+      "context",
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "timestamp-rail-left",
+      "fixed-update-rows"
+    ],
+    "typographyTraits": [
+      "timestamp-16px-medium",
+      "event-headline-22px-semibold",
+      "source-context-14px"
+    ],
+    "paletteTraits": [
+      "paper-text",
+      "amber-active-marker",
+      "muted-slate-source"
+    ],
+    "motionTraits": [
+      "type-static-after-row-entrance",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "timestamped-update-row",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 58,
+      "bodyChars": 180,
+      "maxItems": 4,
+      "maxPanels": 2,
+      "maxEvents": 4
+    },
+    "positiveUseCases": [
+      "bind time, event, and source context as three fixed text roles for each update"
+    ],
+    "antiPatterns": [
+      "time detached from event",
+      "source context styled as decorative footer copy"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Original text hierarchy keeps top-story context inspectable in a compact ordered rail; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-top-stories-status-palette",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "top-stories"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "news-rundown",
+      "process"
+    ],
+    "beatRoles": [
+      "context",
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "timestamp-rail-left",
+      "neutral-historical-rows"
+    ],
+    "typographyTraits": [
+      "high-contrast-event-copy",
+      "muted-source-context"
+    ],
+    "paletteTraits": [
+      "amber-for-current-update",
+      "cyan-for-confirmed-update",
+      "neutral-for-prior-update",
+      "red-for-correction-only"
+    ],
+    "motionTraits": [
+      "status-color-static",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "timestamped-update-row",
+      "status-marker",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 58,
+      "bodyChars": 180,
+      "maxItems": 4,
+      "maxPanels": 2,
+      "maxEvents": 4
+    },
+    "positiveUseCases": [
+      "differentiate current, confirmed, and corrected updates with textual status labels"
+    ],
+    "antiPatterns": [
+      "color-only status meaning",
+      "all historical rows shown as urgent"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Original semantic palette uses restrained status accents for an ordered top-stories rail; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-top-stories-chronological-reveal-motion",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "top-stories"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "news-rundown",
+      "process"
+    ],
+    "beatRoles": [
+      "context",
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-timestamp-rail",
+      "stable-update-rows"
+    ],
+    "typographyTraits": [
+      "fixed-timestamps",
+      "static-event-copy"
+    ],
+    "paletteTraits": [
+      "amber-active-marker",
+      "neutral-prior-rows"
+    ],
+    "motionTraits": [
+      "rail-fade-100ms",
+      "rows-fade-earliest-to-latest-100ms",
+      "reduced-motion-all-visible"
+    ],
+    "componentTraits": [
+      "timestamped-update-row",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 58,
+      "bodyChars": 180,
+      "maxItems": 4,
+      "maxPanels": 2,
+      "maxEvents": 4
+    },
+    "positiveUseCases": [
+      "reveal a fixed ordered update sequence without reordering or moving timestamps"
+    ],
+    "antiPatterns": [
+      "latest update appears before its context",
+      "looping live indicator"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Original ordered reveal follows verified deterministic animation principles while preserving top-story sequence; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-top-stories-timestamped-update-row-component",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "top-stories"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "news-rundown",
+      "evidence"
+    ],
+    "beatRoles": [
+      "context",
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "fixed-row-height",
+      "time-event-source-columns"
+    ],
+    "typographyTraits": [
+      "timestamp-16px",
+      "event-headline-22px",
+      "source-context-14px"
+    ],
+    "paletteTraits": [
+      "amber-current-marker",
+      "paper-text",
+      "muted-slate-source"
+    ],
+    "motionTraits": [
+      "row-fade-100ms",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "timestamped-update-row",
+      "status-marker",
+      "news-list"
+    ],
+    "contentCapacity": {
+      "bodyChars": 80,
+      "maxItems": 4,
+      "maxPanels": 2,
+      "maxEvents": 4
+    },
+    "positiveUseCases": [
+      "render one update with time, event, source context, and one labelled status"
+    ],
+    "antiPatterns": [
+      "row containing two event claims",
+      "source shared across unrelated updates"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Original story-row contract makes each top story a bounded and source-visible unit; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-top-stories-four-event-density-budget",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "top-stories"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "news-rundown",
+      "process"
+    ],
+    "beatRoles": [
+      "context",
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "timestamp-rail-left",
+      "four-update-field",
+      "lower-caption-safe-panel"
+    ],
+    "typographyTraits": [
+      "timestamp-16px",
+      "event-headline-22px",
+      "source-context-14px"
+    ],
+    "paletteTraits": [
+      "ink-canvas",
+      "amber-active-marker",
+      "paper-text"
+    ],
+    "motionTraits": [
+      "one-update-per-beat",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "timestamped-update-row",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 58,
+      "bodyChars": 180,
+      "maxItems": 4,
+      "maxPanels": 2,
+      "maxEvents": 4
+    },
+    "positiveUseCases": [
+      "keep four verified updates and their source context readable in one portrait live rail"
+    ],
+    "antiPatterns": [
+      "five detailed updates",
+      "unlabelled recap sentence replacing timestamps"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Original density budget preserves top-story scanning instead of compressing the briefing into unreadable rows; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-bulletin-grid-change-meaning-watch-layout",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "bulletin-grid"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "news-rundown",
+      "explain"
+    ],
+    "beatRoles": [
+      "context",
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "story-headline-top",
+      "two-by-two-bulletin-grid",
+      "lower-caption-safe-panel"
+    ],
+    "typographyTraits": [
+      "story-headline-40px-semibold",
+      "panel-label-16px-uppercase",
+      "panel-copy-20px"
+    ],
+    "paletteTraits": [
+      "ink-canvas",
+      "cyan-context-label",
+      "paper-text"
+    ],
+    "motionTraits": [
+      "grid-entrance-by-reading-order",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "news-header",
+      "context-cell",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 60,
+      "bodyChars": 200,
+      "maxItems": 4,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "explain what changed, why it matters, who is affected, and what to watch"
+    ],
+    "antiPatterns": [
+      "single urgent alert",
+      "four panels with unrelated topics"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Original four-cell bulletin-grid layout turns one news development into a fixed, scannable context recipe; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-bulletin-grid-question-label-typography",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "bulletin-grid"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "news-rundown",
+      "explain"
+    ],
+    "beatRoles": [
+      "context",
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "two-by-two-bulletin-grid",
+      "fixed-cell-label-zone"
+    ],
+    "typographyTraits": [
+      "question-label-16px-uppercase",
+      "answer-copy-20px",
+      "source-context-14px"
+    ],
+    "paletteTraits": [
+      "paper-text",
+      "cyan-context-label",
+      "muted-slate-source"
+    ],
+    "motionTraits": [
+      "type-static-after-entrance",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "context-cell",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 60,
+      "bodyChars": 200,
+      "maxItems": 4,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "separate the questions and answers that frame a policy or platform update"
+    ],
+    "antiPatterns": [
+      "question label used as body copy",
+      "unlabelled implication claim"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Original label-and-answer hierarchy makes the explanatory role of each bulletin cell explicit; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-bulletin-grid-evidence-caveat-palette",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "bulletin-grid"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "news-rundown",
+      "explain"
+    ],
+    "beatRoles": [
+      "context",
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "two-by-two-bulletin-grid",
+      "one-caveat-cell"
+    ],
+    "typographyTraits": [
+      "high-contrast-answer-copy",
+      "muted-source-context"
+    ],
+    "paletteTraits": [
+      "cyan-for-confirmed-change",
+      "amber-for-watch-caveat",
+      "neutral-for-background",
+      "red-for-correction-only"
+    ],
+    "motionTraits": [
+      "color-static-after-entrance",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "context-cell",
+      "status-marker",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 60,
+      "bodyChars": 200,
+      "maxItems": 4,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "mark one caveat or watch item without making every context cell compete for attention"
+    ],
+    "antiPatterns": [
+      "one accent color per cell",
+      "red used for ordinary uncertainty"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Original palette reserves emphasis for verified change and one bounded caveat in a bulletin grid; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-bulletin-grid-reading-order-motion",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "bulletin-grid"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "news-rundown",
+      "explain"
+    ],
+    "beatRoles": [
+      "context",
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-two-by-two-grid",
+      "fixed-caption-safe-panel"
+    ],
+    "typographyTraits": [
+      "fixed-cell-labels",
+      "static-answer-copy"
+    ],
+    "paletteTraits": [
+      "cyan-context-label",
+      "amber-watch-marker"
+    ],
+    "motionTraits": [
+      "headline-fade-120ms",
+      "cells-fade-top-left-to-bottom-right-100ms",
+      "reduced-motion-all-visible"
+    ],
+    "componentTraits": [
+      "context-cell",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 60,
+      "bodyChars": 200,
+      "maxItems": 4,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "introduce a four-part explanatory story without moving the established grid"
+    ],
+    "antiPatterns": [
+      "cell resizing during reveal",
+      "endless panel emphasis loop"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Original cell sequence uses verified property-animation guidance while preserving a deterministic bulletin grid; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-bulletin-grid-claim-context-cell-component",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "bulletin-grid"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "news-rundown",
+      "evidence"
+    ],
+    "beatRoles": [
+      "context",
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "fixed-cell-height",
+      "question-answer-source-rows"
+    ],
+    "typographyTraits": [
+      "question-label-16px",
+      "answer-copy-20px",
+      "source-context-14px"
+    ],
+    "paletteTraits": [
+      "cyan-question-label",
+      "paper-text",
+      "muted-slate-source"
+    ],
+    "motionTraits": [
+      "cell-fade-100ms",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "context-cell",
+      "status-marker",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "bodyChars": 92,
+      "maxItems": 4,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "render one bounded context claim with a label, answer, source context, and optional caveat"
+    ],
+    "antiPatterns": [
+      "cell containing multiple claims",
+      "source context without a related claim"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Original bulletin-cell contract gives each explanatory claim a stable and inspectable evidence slot; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-bulletin-grid-four-claim-density-budget",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "bulletin-grid"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "news-rundown",
+      "explain"
+    ],
+    "beatRoles": [
+      "context",
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "two-by-two-bulletin-grid",
+      "one-claim-per-cell",
+      "lower-caption-safe-panel"
+    ],
+    "typographyTraits": [
+      "question-label-16px",
+      "answer-copy-20px",
+      "source-context-14px"
+    ],
+    "paletteTraits": [
+      "ink-canvas",
+      "cyan-context-label",
+      "paper-text"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "context-cell",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 60,
+      "bodyChars": 200,
+      "maxItems": 4,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "fit exactly four short explanatory claims around one news development in portrait"
+    ],
+    "antiPatterns": [
+      "five context claims",
+      "body copy that overflows a single grid cell"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Original density limit keeps each bulletin cell readable and preserves space for source context; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-weekly-roundup-metric-signal-layout",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "weekly-roundup"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "news-rundown",
+      "comparison"
+    ],
+    "beatRoles": [
+      "headline",
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "large-metric-top-half",
+      "trend-strip",
+      "implication-list",
+      "lower-caption-safe-panel"
+    ],
+    "typographyTraits": [
+      "metric-64px-bold",
+      "trend-label-16px-uppercase",
+      "implication-copy-20px"
+    ],
+    "paletteTraits": [
+      "ink-canvas",
+      "success-green-trend",
+      "paper-text"
+    ],
+    "motionTraits": [
+      "metric-before-implication-entrance",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "news-header",
+      "metric-card",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 50,
+      "bodyChars": 150,
+      "maxItems": 3,
+      "maxPanels": 3,
+      "maxMetrics": 2
+    },
+    "positiveUseCases": [
+      "lead with one sourced market or adoption metric and two bounded news implications"
+    ],
+    "antiPatterns": [
+      "three equal-size metrics",
+      "metric without units or source context"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Original metric-led layout applies verified data-surface hierarchy to a weekly news roundup; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-weekly-roundup-metric-basis-typography",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "weekly-roundup"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "news-rundown",
+      "comparison"
+    ],
+    "beatRoles": [
+      "headline",
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "metric-card-top",
+      "fixed-basis-row",
+      "implication-list"
+    ],
+    "typographyTraits": [
+      "metric-64px-bold",
+      "unit-22px-medium",
+      "basis-label-14px-uppercase",
+      "source-context-14px"
+    ],
+    "paletteTraits": [
+      "paper-text",
+      "success-green-trend",
+      "muted-slate-metadata"
+    ],
+    "motionTraits": [
+      "type-static-after-entrance",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "metric-card",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 50,
+      "bodyChars": 150,
+      "maxItems": 3,
+      "maxPanels": 3,
+      "maxMetrics": 2
+    },
+    "positiveUseCases": [
+      "make the metric, unit, time basis, and source context distinct text roles"
+    ],
+    "antiPatterns": [
+      "bare number with no unit",
+      "source context separated from the metric card"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Original data typography separates fact, unit, basis, and source for a bounded weekly summary; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-weekly-roundup-trend-status-palette",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "weekly-roundup"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "news-rundown",
+      "comparison"
+    ],
+    "beatRoles": [
+      "headline",
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "large-metric-top-half",
+      "neutral-implication-list"
+    ],
+    "typographyTraits": [
+      "high-contrast-metric",
+      "muted-source-context"
+    ],
+    "paletteTraits": [
+      "green-for-positive-direction-only",
+      "red-for-negative-direction-only",
+      "amber-for-watch-range",
+      "neutral-for-context"
+    ],
+    "motionTraits": [
+      "color-static-after-entrance",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "metric-card",
+      "trend-marker",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 50,
+      "bodyChars": 150,
+      "maxItems": 3,
+      "maxPanels": 3,
+      "maxMetrics": 2
+    },
+    "positiveUseCases": [
+      "encode a sourced metric direction with an adjacent textual label and neutral implications"
+    ],
+    "antiPatterns": [
+      "green used as generic decoration",
+      "trend color without a direction label"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Original palette gives weekly trend direction a narrow semantic role and prevents dashboard-like accent overload; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-weekly-roundup-metric-first-motion",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "weekly-roundup"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "news-rundown",
+      "comparison"
+    ],
+    "beatRoles": [
+      "headline",
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-metric-card",
+      "stable-implication-list",
+      "fixed-caption-safe-panel"
+    ],
+    "typographyTraits": [
+      "fixed-metric-baseline",
+      "static-basis-row"
+    ],
+    "paletteTraits": [
+      "success-green-trend",
+      "paper-text"
+    ],
+    "motionTraits": [
+      "metric-fade-140ms",
+      "trend-marker-fade-100ms",
+      "implications-fade-top-to-bottom-100ms",
+      "reduced-motion-all-visible"
+    ],
+    "componentTraits": [
+      "metric-card",
+      "trend-marker",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 50,
+      "bodyChars": 150,
+      "maxItems": 3,
+      "maxPanels": 3,
+      "maxMetrics": 2
+    },
+    "positiveUseCases": [
+      "present the evidence metric before its news implications without changing card dimensions"
+    ],
+    "antiPatterns": [
+      "count-up animation that implies false precision",
+      "moving trend marker after reveal"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Original evidence-first motion uses verified deterministic property-animation guidance without fabricated numeric animation; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-weekly-roundup-sourced-metric-card-component",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "weekly-roundup"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "news-rundown",
+      "evidence"
+    ],
+    "beatRoles": [
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "metric-value-unit-basis-source-rows",
+      "fixed-metric-card"
+    ],
+    "typographyTraits": [
+      "metric-64px",
+      "unit-22px",
+      "basis-label-14px",
+      "source-context-14px"
+    ],
+    "paletteTraits": [
+      "paper-text",
+      "success-green-trend",
+      "muted-slate-source"
+    ],
+    "motionTraits": [
+      "card-fade-120ms",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "metric-card",
+      "trend-marker",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "bodyChars": 86,
+      "maxItems": 3,
+      "maxPanels": 3,
+      "maxMetrics": 2
+    },
+    "positiveUseCases": [
+      "render one metric with unit, time basis, source context, and one labelled direction"
+    ],
+    "antiPatterns": [
+      "metric card with two unrelated measures",
+      "unlabelled trend arrow"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Original metric-card contract makes weekly evidence metadata visible with the value it qualifies; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "nr-weekly-roundup-two-metric-density-budget",
+    "packageId": "news-rundown",
+    "variantIds": [
+      "weekly-roundup"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "news-rundown",
+      "comparison"
+    ],
+    "beatRoles": [
+      "headline",
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "one-primary-metric",
+      "optional-secondary-metric",
+      "two-implication-list",
+      "lower-caption-safe-panel"
+    ],
+    "typographyTraits": [
+      "primary-metric-64px",
+      "secondary-metric-32px",
+      "source-context-14px"
+    ],
+    "paletteTraits": [
+      "ink-canvas",
+      "success-green-trend",
+      "paper-text"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-static"
+    ],
+    "componentTraits": [
+      "metric-card",
+      "trend-marker",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "headlineChars": 50,
+      "bodyChars": 150,
+      "maxItems": 3,
+      "maxPanels": 3,
+      "maxMetrics": 2
+    },
+    "positiveUseCases": [
+      "keep one primary and one comparison metric with two implications readable in portrait"
+    ],
+    "antiPatterns": [
+      "three or more metrics",
+      "precise metric without source context or basis"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Original density budget preserves weekly metric provenance and implications rather than turning the scene into an unreadable dashboard; pending human pattern review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p12/1.0",
+    "reviewStatus": "proposed"
+  }
+]

@@ -3,6 +3,13 @@
   "projectId": "visual-reference-ingest",
   "fps": 30,
   "themeId": "lucida-reference-atlas/v1",
+  "knowledge": {
+    "enabled": true,
+    "repository": "sqlite",
+    "refreshProjection": true,
+    "limit": 3,
+    "maxQueryCharacters": 600
+  },
   "sources": [
     {
       "id": "repo-quarto-terminal",

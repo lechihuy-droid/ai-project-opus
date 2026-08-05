@@ -1,0 +1,174 @@
+{
+  "schemaVersion": "luna-verification/v1",
+  "packageId": "system-architecture",
+  "verifier": "Luna independent QA",
+  "generatedAt": "2026-07-18",
+  "verdict": "PASS",
+  "scope": "Final narrow independent QA of the current five system-architecture PNG frames after Terra root-cause remediation. Includes scene-02 and scene-04 targeted inspection, regression checks, artifact/hash consistency, capture-state checks, fixture parity, and strict package schema validation. No source, fixture, registry, approval, promotion, or registration changes.",
+  "claims": {
+    "draftOnly": true,
+    "approve": false,
+    "promote": false,
+    "sourceApproval": "not-claimed",
+    "patternClassification": "not-claimed"
+  },
+  "registration": {
+    "status": "pending",
+    "blocking": false,
+    "reason": "Registration is outside Luna ownership and was not changed."
+  },
+  "checks": [
+    {
+      "id": "schema-5-variants",
+      "status": "PASS",
+      "evidence": {
+        "schema": "design/schemas/style-variant.schema.json",
+        "variants": "design/visual-library/styles/system-architecture/variants.json",
+        "variantCount": 5,
+        "variantIds": ["layered-stack", "request-flow", "agent-graph", "data-pipeline", "dependency-map"],
+        "uniqueIds": true,
+        "packageIdConsistent": true,
+        "preferredTemplateParity": true
+      }
+    },
+    {
+      "id": "fixture-parity",
+      "status": "PASS",
+      "evidence": {
+        "fixtureRegistry": "pipeline/fixtures/styles/system-architecture/index.ts",
+        "reviewScenes": "design/visual-library/styles/system-architecture/artifacts/review-scenes.json",
+        "demoVideoMap": "design/visual-library/styles/system-architecture/artifacts/demo-video-map.json",
+        "sceneKeys": ["layered-stack", "request-flow", "agent-graph", "data-pipeline", "dependency-map"],
+        "fixtureFiles": [
+          "pipeline/fixtures/styles/system-architecture/layered-stack.fixture.json",
+          "pipeline/fixtures/styles/system-architecture/request-flow.fixture.json",
+          "pipeline/fixtures/styles/system-architecture/agent-graph.fixture.json",
+          "pipeline/fixtures/styles/system-architecture/data-pipeline.fixture.json",
+          "pipeline/fixtures/styles/system-architecture/dependency-map.fixture.json"
+        ],
+        "fixtureKeysMatchSceneKeys": true,
+        "allFixturesHaveNodesAndEdges": true,
+        "motionPoliciesValid": true
+      }
+    },
+    {
+      "id": "draft-no-claims",
+      "status": "PASS",
+      "evidence": {
+        "packageStatus": "draft",
+        "renderRegistration": "pending",
+        "sourceApproval": "not-claimed",
+        "patternClassification": "not-claimed",
+        "approveOrPromoteActionTaken": false
+      }
+    },
+    {
+      "id": "targeted-tsc",
+      "status": "PASS",
+      "command": "npx tsc --noEmit --pretty false --strict --jsx react-jsx --module commonjs --moduleResolution node --resolveJsonModule --esModuleInterop --skipLibCheck --target ES2018 src/styles/families/system-architecture/renderRoot.tsx pipeline/fixtures/styles/system-architecture/index.ts",
+      "exitCode": 0
+    },
+    {
+      "id": "local-visual-package-validator",
+      "status": "PASS",
+      "command": "node scripts/validate-visual-packages.mjs --json --root design/visual-library/styles/system-architecture",
+      "exitCode": 0,
+      "evidence": {
+        "validCount": 1,
+        "migrationGapCount": 0,
+        "errorCount": 0,
+        "rootErrorCount": 0
+      }
+    },
+    {
+      "id": "strict-visual-package-validator",
+      "status": "PASS",
+      "command": "npm run validate:visual-packages -- --strict --json --root design/visual-library/styles/system-architecture",
+      "exitCode": 0,
+      "evidence": {
+        "validCount": 1,
+        "migrationGapCount": 0,
+        "errorCount": 0,
+        "rootErrorCount": 0,
+        "sourceReferencesPresent": true,
+        "sourceReferenceIds": ["local-package-provenance", "local-source-review"]
+      }
+    },
+    {
+      "id": "local-pattern-validator",
+      "status": "PASS",
+      "command": "node design/visual-library/styles/system-architecture/validate-terra-p11-visual-patterns.mjs",
+      "exitCode": 0,
+      "evidence": {
+        "proposalId": "terra-pattern-proposal-p11",
+        "proposalStatus": "pending-human-approval",
+        "compilerEligibility": "ineligible",
+        "approvalAction": "none",
+        "schemaValid": true,
+        "proposalCount": 30,
+        "uniquePatternIds": 30,
+        "uniqueRenderableRecipes": 30
+      }
+    },
+    {
+      "id": "independent-frame-evidence",
+      "status": "PASS",
+      "method": "Independent PNG decode, SHA-256, dimensions/pixel-format inspection, signalstats nonblank rule, canvas probes, and ink-bound/right-edge probes over the current five PNG frames.",
+      "dimensions": "1080x1920",
+      "pixelFormat": "rgb24",
+      "nonBlankRule": "Y dynamic range >= 8 OR saturation average >= 3",
+      "canvasProbeRgb": [17, 22, 29],
+      "blackPixelCount": 0,
+      "rightEdgeProbe": "zero bright/saturated ink pixels at x >= 1040",
+      "frames": [
+        {"id": "scene-01", "sha256": "e2b1ed09b8045dbe82fbf252527c26312a21dd0dec365995a2c5ea44d2d139af", "bytes": 122387, "dynamicRange": 195, "saturationAverage": 5.97631, "nonBlank": true, "inkBounds": "x=72..1007,y=203..1453", "rightEdgeInkPixels": 0},
+        {"id": "scene-02", "sha256": "481373cc120fb3b70908cd9b8a6f7a6dbb2e505a12b433571b313bebc9e09adf", "bytes": 125881, "dynamicRange": 195, "saturationAverage": 5.99985, "nonBlank": true, "inkBounds": "x=72..1007,y=203..1453", "rightEdgeInkPixels": 0},
+        {"id": "scene-03", "sha256": "6ec75a11c885c5ab3cf69fb243e08d3872e7d820f35621702f7596728d2f52c4", "bytes": 137502, "dynamicRange": 195, "saturationAverage": 6.01648, "nonBlank": true, "inkBounds": "x=72..1007,y=203..1453", "rightEdgeInkPixels": 0},
+        {"id": "scene-04", "sha256": "7af4f6d8283ee77154bb7c156ac0eae6256a27ca73bc3cb3ffcd8763cda6ba9d", "bytes": 145028, "dynamicRange": 195, "saturationAverage": 6.0244, "nonBlank": true, "inkBounds": "x=72..1007,y=203..1453", "rightEdgeInkPixels": 0},
+        {"id": "scene-05", "sha256": "1639afcf58a0d6a6baa3bc046242f98f2ef4c11b3611e25034f498e20871d645", "bytes": 112981, "dynamicRange": 195, "saturationAverage": 6.00278, "nonBlank": true, "inkBounds": "x=72..1007,y=203..1261", "rightEdgeInkPixels": 0}
+      ]
+    },
+    {
+      "id": "render-report-consistency",
+      "status": "PASS",
+      "evidence": {
+        "renderReport": "design/visual-library/styles/system-architecture/artifacts/render-report.json",
+        "allFiveSha256Match": true,
+        "allFiveFileBytesMatch": true,
+        "allFiveDimensionsMatch": true,
+        "allFiveOutputPathsMatch": true,
+        "reportSummary": {"renderedFrameCount": 5, "nonBlankFrames": 5, "deterministicFrames": 5, "settledCaptureFrames": 5, "dimensionsValid": true}
+      }
+    },
+    {
+      "id": "visual-inspection",
+      "status": "PASS",
+      "method": "Independent inspection of current five frames for canvas/background integrity, text fit, right-edge fit, readable labels, caption fit, and variant distinction, backed by decoded PNG probes.",
+      "frames": [
+        {"id": "scene-01", "status": "PASS", "notes": "Graphite canvas is intact; title, caption, node labels, and right edge fit; layered-stack distinction is clear."},
+        {"id": "scene-02", "status": "PASS", "notes": "Targeted Terra regression frame: decoded canvas probes are graphite RGB 17,22,29 with zero black pixels; title, caption, flow labels, node text, and right edge fit."},
+        {"id": "scene-03", "status": "PASS", "notes": "Graphite canvas is intact; title, caption, node labels, and right edge fit; agent-graph distinction is clear."},
+        {"id": "scene-04", "status": "PASS", "notes": "Targeted Terra regression frame: decoded canvas probes are graphite RGB 17,22,29 with zero black pixels; title, caption, pipeline labels, node text, and right edge fit."},
+        {"id": "scene-05", "status": "PASS", "notes": "Graphite canvas is intact; dependency-map labels, arrows, title, and right edge fit; static dependency distinction is clear."}
+      ],
+      "regressionCheck": "PASS for all five current frames; no canvas, text-fit, or right-edge regression observed."
+    },
+    {
+      "id": "reduced-motion-static-safety",
+      "status": "PASS",
+      "evidence": {
+        "demoVideoMap": "design/visual-library/styles/system-architecture/artifacts/demo-video-map.json",
+        "renderReport": "design/visual-library/styles/system-architecture/artifacts/render-report.json",
+        "reduceVariants": ["request-flow", "data-pipeline"],
+        "reducedMotionFrames": [
+          {"id": "scene-02", "frame": 30, "mode": "reduced-motion-settled", "settled": true},
+          {"id": "scene-04", "frame": 30, "mode": "reduced-motion-settled", "settled": true}
+        ],
+        "staticVariants": ["dependency-map"],
+        "staticFrame": {"id": "scene-05", "frame": 0, "mode": "static-complete", "settled": true}
+      }
+    }
+  ],
+  "blockingFindings": [],
+  "nextState": "Remain draft. No approve, promote, register, source, fixture, renderer, registry, or global documentation action is authorized or recorded by this Luna QA artifact."
+}

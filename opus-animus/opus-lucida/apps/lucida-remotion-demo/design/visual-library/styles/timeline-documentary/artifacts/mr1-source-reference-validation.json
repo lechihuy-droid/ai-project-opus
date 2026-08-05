@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "terra-mr1-source-reference-validation/v1",
+  "packageId": "timeline-documentary",
+  "status": "PASS",
+  "variantCount": 5,
+  "sourceEvidenceIds": [
+    "web-vis-timeline-docs",
+    "theme-antv-dark",
+    "theme-vis-timeline",
+    "image-excalidraw-archive",
+    "repo-vis-timeline"
+  ],
+  "sourceReferences": [
+    "web-vis-timeline-docs",
+    "theme-antv-dark",
+    "theme-vis-timeline",
+    "image-excalidraw-archive",
+    "repo-vis-timeline"
+  ],
+  "normalization": {
+    "sourceReferencePrefixRemoved": [],
+    "legacyAliasesUsed": [],
+    "localIdsUsed": []
+  },
+  "approvalOrPromotionPerformed": false
+}

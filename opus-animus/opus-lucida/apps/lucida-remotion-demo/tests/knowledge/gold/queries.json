@@ -1,6 +1,473 @@
 {
   "schemaVersion": "lucida-knowledge-gold-queries/v1",
   "queries": [
+<<<<<<< HEAD
+    {
+      "id": "accent-terminal-sample-accented",
+      "category": "accent-pair",
+      "pairId": "terminal-sample",
+      "variant": "accented",
+      "input": {
+        "text": "mẫu terminal",
+        "sourceType": "repository",
+        "mediaType": "repository",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-terminal-sample-folded",
+      "category": "accent-pair",
+      "pairId": "terminal-sample",
+      "variant": "folded",
+      "input": {
+        "text": "mau terminal",
+        "sourceType": "repository",
+        "mediaType": "repository",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-terminal-panel-accented",
+      "category": "accent-pair",
+      "pairId": "terminal-panel",
+      "variant": "accented",
+      "input": {
+        "text": "bảng terminal",
+        "sourceType": "repository",
+        "mediaType": "repository",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-terminal-panel-folded",
+      "category": "accent-pair",
+      "pairId": "terminal-panel",
+      "variant": "folded",
+      "input": {
+        "text": "bang terminal",
+        "sourceType": "repository",
+        "mediaType": "repository",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-terminal-interface-accented",
+      "category": "accent-pair",
+      "pairId": "terminal-interface",
+      "variant": "accented",
+      "input": {
+        "text": "giao diện terminal",
+        "sourceType": "web",
+        "mediaType": "web",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-terminal-interface-folded",
+      "category": "accent-pair",
+      "pairId": "terminal-interface",
+      "variant": "folded",
+      "input": {
+        "text": "giao dien terminal",
+        "sourceType": "web",
+        "mediaType": "web",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-terminal-reference-accented",
+      "category": "accent-pair",
+      "pairId": "terminal-reference",
+      "variant": "accented",
+      "input": {
+        "text": "tham chiếu terminal",
+        "sourceType": "theme",
+        "mediaType": "theme",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-terminal-reference-folded",
+      "category": "accent-pair",
+      "pairId": "terminal-reference",
+      "variant": "folded",
+      "input": {
+        "text": "tham chieu terminal",
+        "sourceType": "theme",
+        "mediaType": "theme",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-terminal-source-accented",
+      "category": "accent-pair",
+      "pairId": "terminal-source",
+      "variant": "accented",
+      "input": {
+        "text": "nguồn terminal",
+        "sourceType": "repository",
+        "mediaType": "repository",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-terminal-source-folded",
+      "category": "accent-pair",
+      "pairId": "terminal-source",
+      "variant": "folded",
+      "input": {
+        "text": "nguon terminal",
+        "sourceType": "repository",
+        "mediaType": "repository",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-terminal-theme-accented",
+      "category": "accent-pair",
+      "pairId": "terminal-theme",
+      "variant": "accented",
+      "input": {
+        "text": "chủ đề terminal",
+        "sourceType": "theme",
+        "mediaType": "theme",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-terminal-theme-folded",
+      "category": "accent-pair",
+      "pairId": "terminal-theme",
+      "variant": "folded",
+      "input": {
+        "text": "chu de terminal",
+        "sourceType": "theme",
+        "mediaType": "theme",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-terminal-style-accented",
+      "category": "accent-pair",
+      "pairId": "terminal-style",
+      "variant": "accented",
+      "input": {
+        "text": "phong cách terminal",
+        "sourceType": "web",
+        "mediaType": "web",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-terminal-style-folded",
+      "category": "accent-pair",
+      "pairId": "terminal-style",
+      "variant": "folded",
+      "input": {
+        "text": "phong cach terminal",
+        "sourceType": "web",
+        "mediaType": "web",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-terminal-layout-accented",
+      "category": "accent-pair",
+      "pairId": "terminal-layout",
+      "variant": "accented",
+      "input": {
+        "text": "bố cục terminal",
+        "sourceType": "repository",
+        "mediaType": "repository",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-terminal-layout-folded",
+      "category": "accent-pair",
+      "pairId": "terminal-layout",
+      "variant": "folded",
+      "input": {
+        "text": "bo cuc terminal",
+        "sourceType": "repository",
+        "mediaType": "repository",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-terminal-status-accented",
+      "category": "accent-pair",
+      "pairId": "terminal-status",
+      "variant": "accented",
+      "input": {
+        "text": "trạng thái terminal",
+        "sourceType": "repository",
+        "mediaType": "repository",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-terminal-status-folded",
+      "category": "accent-pair",
+      "pairId": "terminal-status",
+      "variant": "folded",
+      "input": {
+        "text": "trang thai terminal",
+        "sourceType": "repository",
+        "mediaType": "repository",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-technical-sample-accented",
+      "category": "accent-pair",
+      "pairId": "technical-sample",
+      "variant": "accented",
+      "input": {
+        "text": "mẫu technical",
+        "sourceType": "image",
+        "mediaType": "image",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-technical-sample-folded",
+      "category": "accent-pair",
+      "pairId": "technical-sample",
+      "variant": "folded",
+      "input": {
+        "text": "mau technical",
+        "sourceType": "image",
+        "mediaType": "image",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-editorial-frame-accented",
+      "category": "accent-pair",
+      "pairId": "editorial-frame",
+      "variant": "accented",
+      "input": {
+        "text": "mô tả technical editorial",
+        "sourceType": "image",
+        "mediaType": "image",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-editorial-frame-folded",
+      "category": "accent-pair",
+      "pairId": "editorial-frame",
+      "variant": "folded",
+      "input": {
+        "text": "mo ta technical editorial",
+        "sourceType": "image",
+        "mediaType": "image",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-editorial-hierarchy-accented",
+      "category": "accent-pair",
+      "pairId": "editorial-hierarchy",
+      "variant": "accented",
+      "input": {
+        "text": "phân cấp technical editorial",
+        "sourceType": "image",
+        "mediaType": "image",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "accent-editorial-hierarchy-folded",
+      "category": "accent-pair",
+      "pairId": "editorial-hierarchy",
+      "variant": "folded",
+      "input": {
+        "text": "phan cap technical editorial",
+        "sourceType": "image",
+        "mediaType": "image",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "english-glitch-hook",
+      "category": "english",
+      "input": {
+        "text": "cinematic RGB tear",
+        "intent": "hook",
+        "aspectRatio": "9:16",
+        "renderable": true,
+        "rights": "canonical",
+        "approval": "validated",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "english-compact-command-panels",
+      "category": "english",
+      "input": {
+        "text": "compact command panels",
+        "sourceType": "repository",
+        "mediaType": "repository",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "english-taxonomy-note",
+      "category": "english",
+      "input": {
+        "text": "reviewer-authored taxonomy note",
+        "sourceType": "web",
+        "mediaType": "web",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "english-information-grouping",
+      "category": "english",
+      "input": {
+        "text": "structured information grouping",
+        "sourceType": "image",
+        "mediaType": "image",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "hard-rights-template-excluded",
+      "category": "hard-negative-rights",
+      "input": {
+        "text": "cinematic RGB tear",
+        "sourceType": "canonical-package",
+        "renderable": true,
+        "rights": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "hard-approval-web-excluded",
+      "category": "hard-negative-rights",
+      "input": {
+        "text": "terminal",
+        "sourceType": "web",
+        "mediaType": "web",
+        "rights": "approved",
+        "approval": "rejected",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "hard-renderable-image-excluded",
+      "category": "hard-negative-rights",
+      "input": {
+        "text": "technical editorial",
+        "sourceType": "image",
+        "mediaType": "image",
+        "renderable": true,
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    },
+    {
+      "id": "hard-conflicting-media-excluded",
+      "category": "hard-negative-rights",
+      "input": {
+        "text": "terminal",
+        "sourceType": "repository",
+        "mediaType": "web",
+        "rights": "approved",
+        "approval": "approved",
+        "limit": 5,
+        "domain": "visual-style"
+      }
+    }
+=======
     { "id": "accent-terminal-sample-accented", "category": "accent-pair", "pairId": "terminal-sample", "variant": "accented", "input": { "text": "mẫu terminal", "sourceType": "repository", "mediaType": "repository", "rights": "approved", "approval": "approved", "limit": 5 } },
     { "id": "accent-terminal-sample-folded", "category": "accent-pair", "pairId": "terminal-sample", "variant": "folded", "input": { "text": "mau terminal", "sourceType": "repository", "mediaType": "repository", "rights": "approved", "approval": "approved", "limit": 5 } },
     { "id": "accent-terminal-panel-accented", "category": "accent-pair", "pairId": "terminal-panel", "variant": "accented", "input": { "text": "bảng terminal", "sourceType": "repository", "mediaType": "repository", "rights": "approved", "approval": "approved", "limit": 5 } },
@@ -33,5 +500,6 @@
     { "id": "hard-approval-web-excluded", "category": "hard-negative-rights", "input": { "text": "terminal", "sourceType": "web", "mediaType": "web", "rights": "approved", "approval": "rejected", "limit": 5 } },
     { "id": "hard-renderable-image-excluded", "category": "hard-negative-rights", "input": { "text": "technical editorial", "sourceType": "image", "mediaType": "image", "renderable": true, "rights": "approved", "approval": "approved", "limit": 5 } },
     { "id": "hard-conflicting-media-excluded", "category": "hard-negative-rights", "input": { "text": "terminal", "sourceType": "repository", "mediaType": "web", "rights": "approved", "approval": "approved", "limit": 5 } }
+>>>>>>> origin/main
   ]
 }

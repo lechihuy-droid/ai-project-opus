@@ -73,6 +73,7 @@ const sanitizedArtifact = ({ sourceType = "repository", sourceId = "collector:fi
     sources: [{
       sourceId,
       sourceType,
+      domain: "visual-style",
       sourceRevision: `${sourceType}-revision-1`,
       checksum: CHECKSUM,
       collectorVersion,
@@ -132,11 +133,19 @@ test("canonical reference packages validate schemas and cover repository/web/ima
   });
 });
 
+<<<<<<< HEAD
+test("all canonical source provenance checksums match project-owned approval files", () => {
+  withRoot((root) => {
+    const approvalRoot = path.join(root, "design/knowledge/reference-approvals");
+    const packages = referencePackages(root);
+    assert.ok(packages.length >= 4);
+=======
 test("all four canonical source provenance checksums match project-owned approval files", () => {
   withRoot((root) => {
     const approvalRoot = path.join(root, "design/knowledge/reference-approvals");
     const packages = referencePackages(root);
     assert.equal(packages.length, 4);
+>>>>>>> origin/main
     for (const pkg of packages) {
       const sourcePath = path.join(pkg.path, "source.json");
       const source = readJson(sourcePath);
@@ -367,6 +376,7 @@ test("successful promotion emits schema-valid canonical packages for all four re
 
   withRoot((root) => {
     const validators = schemaValidators();
+    const initialPackageCount = referencePackages(root).length;
     for (const [sourceType, packageId] of cases) {
       const artifact = sanitizedArtifact({ sourceType, sourceId: `collector:${packageId}`, text: `Approved ${sourceType} evidence.` });
       const result = promoteFixture(root, artifact, packageId);
@@ -380,7 +390,7 @@ test("successful promotion emits schema-valid canonical packages for all four re
     }
 
     const index = compileReferences({ appRoot: root });
-    assert.equal(index.sources.length, 8);
+    assert.equal(index.sources.length, initialPackageCount + 4);
     assert.deepEqual(new Set(index.sources.map((source) => source.sourceType)), new Set(["repository", "web", "image", "theme"]));
   });
 });

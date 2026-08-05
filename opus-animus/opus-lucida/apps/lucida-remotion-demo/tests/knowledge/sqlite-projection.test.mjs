@@ -16,6 +16,7 @@ import {
 } from "../../scripts/knowledge/sqlite-client.mjs";
 import { migrateDatabase } from "../../scripts/knowledge/migrate.mjs";
 import { sha256, stableJson } from "../../scripts/knowledge/index-utils.mjs";
+import { domainCounts } from "../../scripts/knowledge/evidence-domain.mjs";
 
 const APP_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const KNOWLEDGE_FILES = [
@@ -101,6 +102,8 @@ const withMigratedDatabase = (callback) => withRoot({}, (root) => {
 
 const refreshManifest = (root) => {
   const knowledgeDir = path.join(root, ".generated/knowledge");
+  const references = readJson(path.join(knowledgeDir, "reference-index.json"));
+  const templates = readJson(path.join(knowledgeDir, "template-index.json")).templates;
   const manifest = readJson(path.join(knowledgeDir, "manifest.json"));
   const manifestWithoutHash = { ...manifest };
   delete manifestWithoutHash.manifestHash;
@@ -109,6 +112,25 @@ const refreshManifest = (root) => {
       .filter((file) => file !== "manifest.json")
       .map((file) => [file, sha256(fs.readFileSync(path.join(knowledgeDir, file)))]),
   );
+  manifestWithoutHash.counts = {
+    ...manifestWithoutHash.counts,
+    templates: templates.length,
+    referenceSources: references.sources.length,
+    referenceDocuments: references.documents.length,
+    referenceChunks: references.chunks.length,
+  };
+  manifestWithoutHash.domainCounts = {
+    templates: domainCounts(templates, "template"),
+    referenceSources: domainCounts(references.sources, "reference source"),
+    referenceDocuments: domainCounts(references.documents, "reference document"),
+    referenceChunks: domainCounts(references.chunks, "reference chunk"),
+  };
+  manifestWithoutHash.domainHashes = {
+    templates: sha256(stableJson(templates.map(({ id, domain }) => ({ id, domain })))),
+    referenceSources: sha256(stableJson(references.sources.map(({ sourceId, domain }) => ({ id: sourceId, domain })))),
+    referenceDocuments: sha256(stableJson(references.documents.map(({ documentId, domain }) => ({ id: documentId, domain })))),
+    referenceChunks: sha256(stableJson(references.chunks.map(({ chunkId, domain }) => ({ id: chunkId, domain })))),
+  };
   writeJson(path.join(knowledgeDir, "manifest.json"), {
     ...manifestWithoutHash,
     manifestHash: sha256(stableJson(manifestWithoutHash)),
@@ -131,12 +153,13 @@ const entityFixture = (database, {
   version = "1.0.0",
   packagePath = "fixture/package",
   contentHash = "a".repeat(64),
+  domain = "visual-style",
 } = {}) => {
   run(
     database,
     `INSERT INTO canonical_entities(
-      entity_id, entity_type, logical_id, version, package_path, content_hash, definition_json, build_id
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+       entity_id, entity_type, logical_id, version, package_path, content_hash, definition_json, build_id, domain
+     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     entityId,
     entityType,
     logicalId,
@@ -145,6 +168,7 @@ const entityFixture = (database, {
     contentHash,
     stableJson({ entityId, entityType, logicalId, version }),
     buildId,
+    domain,
   );
 };
 
@@ -165,8 +189,8 @@ const addSearchDocument = (database, entityId, {
 } = {}) => run(
   database,
   `INSERT INTO search_documents(
-    owner_type, owner_id, entity_id, title, body, tags, provenance, search_text, search_folded
-  ) VALUES ('entity', ?, ?, ?, ?, ?, ?, ?, ?)`,
+     owner_type, owner_id, entity_id, title, body, tags, provenance, search_text, search_folded, domain
+   ) VALUES ('entity', ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   entityId,
   entityId,
   title,
@@ -174,7 +198,8 @@ const addSearchDocument = (database, entityId, {
   tags,
   provenance,
   normalizeSearchText(searchText),
-  foldSearchText(searchText),
+    foldSearchText(searchText),
+    "visual-style",
 );
 
 const projectionSnapshot = (database) => Object.fromEntries(PROJECTION_TABLES.map((table) => {
@@ -191,14 +216,17 @@ test("migration upgrades, is idempotent, rolls back failed SQL, and rejects chec
     const dbPath = databasePath(root);
     const first = migrateDatabase({ appRoot: root, dbPath });
     const second = migrateDatabase({ appRoot: root, dbPath });
-    assert.equal(first.applied, 1);
-    assert.equal(second.applied, 1);
+    assert.equal(first.applied, 2);
+    assert.equal(second.applied, 2);
 
     const database = openDatabase(dbPath);
     try {
       assert.deepEqual(all(database, "SELECT version, checksum FROM schema_migrations"), [{
         version: "001-initial.sql",
         checksum: sha256(fs.readFileSync(path.join(root, "design/storage/migrations/001-initial.sql"))),
+      }, {
+        version: "002-evidence-domains.sql",
+        checksum: sha256(fs.readFileSync(path.join(root, "design/storage/migrations/002-evidence-domains.sql"))),
       }]);
     } finally {
       database.close();
@@ -216,7 +244,7 @@ test("migration upgrades, is idempotent, rolls back failed SQL, and rejects chec
     const afterFailure = openDatabase(dbPath);
     try {
       assert.equal(one(afterFailure, "SELECT name FROM sqlite_master WHERE name = 'migration_should_rollback'"), undefined);
-      assert.deepEqual(all(afterFailure, "SELECT version FROM schema_migrations"), [{ version: "001-initial.sql" }]);
+      assert.deepEqual(all(afterFailure, "SELECT version FROM schema_migrations"), [{ version: "001-initial.sql" }, { version: "002-evidence-domains.sql" }]);
     } finally {
       afterFailure.close();
     }
@@ -243,14 +271,14 @@ test("schema enforces foreign keys, STRICT types, CHECKs, UNIQUEs, and delete be
     assert.throws(() => run(database, "INSERT INTO entity_capabilities VALUES ('missing', 'intent', 'hook')"));
     assert.throws(() => run(
       database,
-      "INSERT INTO search_documents(rowid, owner_type, owner_id, entity_id, title, body, tags, provenance, search_text, search_folded) VALUES ('bad', 'entity', 'entity:strict-2', 'entity:strict-2', 'title', 'body', 'tags', 'provenance', 'text', 'text')",
+      "INSERT INTO search_documents(rowid, owner_type, owner_id, entity_id, title, body, tags, provenance, search_text, search_folded, domain) VALUES ('bad', 'entity', 'entity:strict-2', 'entity:strict-2', 'title', 'body', 'tags', 'provenance', 'text', 'text', 'visual-style')",
     ));
     assert.throws(() => run(database, "INSERT INTO projection_builds VALUES ('build:invalid', 'schema', ?, 'invalid')", "d".repeat(64)));
-    assert.throws(() => run(database, "INSERT INTO canonical_entities VALUES ('bad', 'invalid', 'bad', '1', 'path', ?, '{}', 'build:test')", "e".repeat(64)));
+    assert.throws(() => run(database, "INSERT INTO canonical_entities VALUES ('bad', 'invalid', 'bad', '1', 'path', ?, '{}', 'build:test', 'visual-style')", "e".repeat(64)));
 
     assert.throws(() => run(
       database,
-      "INSERT INTO canonical_entities VALUES ('template:duplicate', 'template', 'template:fixture', '1.0.0', 'path', ?, '{}', 'build:test')",
+      "INSERT INTO canonical_entities VALUES ('template:duplicate', 'template', 'template:fixture', '1.0.0', 'path', ?, '{}', 'build:test', 'visual-style')",
       "f".repeat(64),
     ));
     run(database, "INSERT INTO entity_relations VALUES ('template:fixture', 'adapter:fixture', 'adapter', NULL, '{}')");
@@ -449,6 +477,7 @@ test("build is a clean deterministic rebuild and removes stale/deleted generated
     });
     const expandedManifest = readJson(path.join(root, ".generated/knowledge/manifest.json"));
     expandedManifest.counts.templates = 2;
+    expandedManifest.domainCounts.templates["visual-style"] = 2;
     writeJson(path.join(root, ".generated/knowledge/manifest.json"), expandedManifest);
     refreshManifest(root);
     buildSqliteProjection({ appRoot: root });
@@ -466,6 +495,7 @@ test("build is a clean deterministic rebuild and removes stale/deleted generated
     const manifestPath = path.join(root, ".generated/knowledge/manifest.json");
     const manifest = readJson(manifestPath);
     manifest.counts.templates = 1;
+    manifest.domainCounts.templates["visual-style"] = 1;
     writeJson(manifestPath, manifest);
     refreshManifest(root);
     buildSqliteProjection({ appRoot: root });
@@ -496,6 +526,7 @@ test("failed projection and publish keep the last-good DB and clean build residu
     });
     const duplicateManifest = readJson(path.join(root, ".generated/knowledge/manifest.json"));
     duplicateManifest.counts.templates = 2;
+    duplicateManifest.domainCounts.templates["visual-style"] = 2;
     writeJson(path.join(root, ".generated/knowledge/manifest.json"), duplicateManifest);
     refreshManifest(root);
     assert.throws(() => buildSqliteProjection({ appRoot: root }), /UNIQUE constraint failed: canonical_entities/);

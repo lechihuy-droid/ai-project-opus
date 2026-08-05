@@ -1,8 +1,55 @@
 {
   "packageId": "editorial-collage",
   "scenes": [
-    { "sceneKey": "normal", "sceneLabel": "Normal montage", "sceneType": "montage", "fixture": "pipeline/fixtures/styles/editorial-collage/normal.fixture.ts", "density": "balanced", "motionPolicy": "full", "embedAssets": 3, "placeholderAssets": 0 },
-    { "sceneKey": "dense", "sceneLabel": "Dense evidence", "sceneType": "evidence", "fixture": "pipeline/fixtures/styles/editorial-collage/dense.fixture.ts", "density": "dense", "motionPolicy": "reduce", "embedAssets": 3, "placeholderAssets": 0 },
-    { "sceneKey": "edge", "sceneLabel": "Edge recap", "sceneType": "recap", "fixture": "pipeline/fixtures/styles/editorial-collage/edge.fixture.ts", "density": "balanced", "motionPolicy": "static", "embedAssets": 2, "placeholderAssets": 2 }
+    {
+      "sceneKey": "source-montage",
+      "sceneLabel": "Source montage",
+      "sceneType": "source-montage",
+      "fixture": "pipeline/fixtures/styles/editorial-collage/source-montage.fixture.ts",
+      "density": "balanced",
+      "motionPolicy": "full",
+      "embedAssets": 3,
+      "placeholderAssets": 0
+    },
+    {
+      "sceneKey": "culture-recap",
+      "sceneLabel": "Culture recap",
+      "sceneType": "culture-recap",
+      "fixture": "pipeline/fixtures/styles/editorial-collage/culture-recap.fixture.ts",
+      "density": "balanced",
+      "motionPolicy": "reduce",
+      "embedAssets": 3,
+      "placeholderAssets": 0
+    },
+    {
+      "sceneKey": "visual-essay",
+      "sceneLabel": "Visual essay",
+      "sceneType": "visual-essay",
+      "fixture": "pipeline/fixtures/styles/editorial-collage/visual-essay.fixture.ts",
+      "density": "dense",
+      "motionPolicy": "full",
+      "embedAssets": 3,
+      "placeholderAssets": 0
+    },
+    {
+      "sceneKey": "quote-collage",
+      "sceneLabel": "Quote collage",
+      "sceneType": "quote-collage",
+      "fixture": "pipeline/fixtures/styles/editorial-collage/quote-collage.fixture.ts",
+      "density": "balanced",
+      "motionPolicy": "static",
+      "embedAssets": 2,
+      "placeholderAssets": 2
+    },
+    {
+      "sceneKey": "multi-source-evidence",
+      "sceneLabel": "Multi-source evidence",
+      "sceneType": "multi-source-evidence",
+      "fixture": "pipeline/fixtures/styles/editorial-collage/multi-source-evidence.fixture.ts",
+      "density": "dense",
+      "motionPolicy": "reduce",
+      "embedAssets": 3,
+      "placeholderAssets": 0
+    }
   ]
 }

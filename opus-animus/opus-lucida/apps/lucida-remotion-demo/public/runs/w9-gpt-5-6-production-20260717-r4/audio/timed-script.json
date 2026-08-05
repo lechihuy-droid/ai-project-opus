@@ -1,0 +1,459 @@
+{
+  "schemaVersion": "1.0",
+  "scriptId": "w9-gpt-5-6-production-20260717",
+  "scriptRevision": 1,
+  "scriptChecksum": "sha256:ce3a07b6e070a5c5d6249664ed8365426e7ccc9143cc643ade8bd96cd80f9f9d",
+  "voiceChecksum": "sha256:4161406185fdb5e1c6115e15c2b447d7695e75f485200f7f4c28881da88933fb",
+  "durationMs": 31710,
+  "sentences": [
+    {
+      "sentenceId": "sent-001",
+      "segmentId": "seg-001",
+      "startMs": 0,
+      "endMs": 4360
+    },
+    {
+      "sentenceId": "sent-002",
+      "segmentId": "seg-002",
+      "startMs": 4880,
+      "endMs": 10640
+    },
+    {
+      "sentenceId": "sent-003",
+      "segmentId": "seg-003",
+      "startMs": 11300,
+      "endMs": 22480
+    },
+    {
+      "sentenceId": "sent-004",
+      "segmentId": "seg-004",
+      "startMs": 22480,
+      "endMs": 31420
+    }
+  ],
+  "phrases": [
+    {
+      "phraseId": "phrase-001",
+      "sentenceId": "sent-001",
+      "text": "GPT",
+      "startMs": 0,
+      "endMs": 660,
+      "words": [
+        {
+          "text": "GPT",
+          "startMs": 0,
+          "endMs": 660
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-002",
+      "sentenceId": "sent-001",
+      "text": "5.",
+      "startMs": 1100,
+      "endMs": 1380,
+      "words": [
+        {
+          "text": "5",
+          "startMs": 1100,
+          "endMs": 1380
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-003",
+      "sentenceId": "sent-001",
+      "text": "6 launched as Sol,",
+      "startMs": 1380,
+      "endMs": 1840,
+      "words": [
+        {
+          "text": "6",
+          "startMs": 1380,
+          "endMs": 1840
+        },
+        {
+          "text": "launched",
+          "startMs": null,
+          "endMs": null
+        },
+        {
+          "text": "as",
+          "startMs": null,
+          "endMs": null
+        },
+        {
+          "text": "Sol",
+          "startMs": null,
+          "endMs": null
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-004",
+      "sentenceId": "sent-001",
+      "text": "Terra,",
+      "startMs": 2780,
+      "endMs": 3340,
+      "words": [
+        {
+          "text": "Terra",
+          "startMs": 2780,
+          "endMs": 3340
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-005",
+      "sentenceId": "sent-001",
+      "text": "and Luna.",
+      "startMs": 3340,
+      "endMs": 4360,
+      "words": [
+        {
+          "text": "and",
+          "startMs": 3340,
+          "endMs": 4020
+        },
+        {
+          "text": "Luna",
+          "startMs": 4020,
+          "endMs": 4360
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-006",
+      "sentenceId": "sent-002",
+      "text": "It is available across ChatGPT,",
+      "startMs": 4880,
+      "endMs": 6780,
+      "words": [
+        {
+          "text": "It",
+          "startMs": 4880,
+          "endMs": 5020
+        },
+        {
+          "text": "is",
+          "startMs": 5020,
+          "endMs": 5320
+        },
+        {
+          "text": "available",
+          "startMs": 5320,
+          "endMs": 6020
+        },
+        {
+          "text": "across",
+          "startMs": 6020,
+          "endMs": 6780
+        },
+        {
+          "text": "ChatGPT",
+          "startMs": null,
+          "endMs": null
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-007",
+      "sentenceId": "sent-002",
+      "text": "Codex,",
+      "startMs": null,
+      "endMs": null,
+      "words": [
+        {
+          "text": "Codex",
+          "startMs": null,
+          "endMs": null
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-008",
+      "sentenceId": "sent-002",
+      "text": "and the OpenAI API.",
+      "startMs": 8840,
+      "endMs": 10640,
+      "words": [
+        {
+          "text": "and",
+          "startMs": 8840,
+          "endMs": 9320
+        },
+        {
+          "text": "the",
+          "startMs": 9320,
+          "endMs": 9560
+        },
+        {
+          "text": "OpenAI",
+          "startMs": 9560,
+          "endMs": 10120
+        },
+        {
+          "text": "API",
+          "startMs": 10120,
+          "endMs": 10640
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-009",
+      "sentenceId": "sent-003",
+      "text": "The practical shift is routing:",
+      "startMs": 11300,
+      "endMs": 13020,
+      "words": [
+        {
+          "text": "The",
+          "startMs": 11300,
+          "endMs": 11500
+        },
+        {
+          "text": "practical",
+          "startMs": 11500,
+          "endMs": 11820
+        },
+        {
+          "text": "shift",
+          "startMs": 11820,
+          "endMs": 12360
+        },
+        {
+          "text": "is",
+          "startMs": 12360,
+          "endMs": 12600
+        },
+        {
+          "text": "routing",
+          "startMs": 12600,
+          "endMs": 13020
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-010",
+      "sentenceId": "sent-003",
+      "text": "use frontier capability for ambiguity,",
+      "startMs": 13560,
+      "endMs": 16780,
+      "words": [
+        {
+          "text": "use",
+          "startMs": 13560,
+          "endMs": 13820
+        },
+        {
+          "text": "frontier",
+          "startMs": 13820,
+          "endMs": 14320
+        },
+        {
+          "text": "capability",
+          "startMs": 14320,
+          "endMs": 15260
+        },
+        {
+          "text": "for",
+          "startMs": 15260,
+          "endMs": 16020
+        },
+        {
+          "text": "ambiguity",
+          "startMs": 16020,
+          "endMs": 16780
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-011",
+      "sentenceId": "sent-003",
+      "text": "balanced capability for implementation,",
+      "startMs": 17640,
+      "endMs": 19620,
+      "words": [
+        {
+          "text": "balanced",
+          "startMs": null,
+          "endMs": null
+        },
+        {
+          "text": "capability",
+          "startMs": 17640,
+          "endMs": 18300
+        },
+        {
+          "text": "for",
+          "startMs": 18300,
+          "endMs": 18940
+        },
+        {
+          "text": "implementation",
+          "startMs": 18940,
+          "endMs": 19620
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-012",
+      "sentenceId": "sent-003",
+      "text": "and fast checks for bounded work.",
+      "startMs": 19620,
+      "endMs": 22480,
+      "words": [
+        {
+          "text": "and",
+          "startMs": 19620,
+          "endMs": 20640
+        },
+        {
+          "text": "fast",
+          "startMs": 20640,
+          "endMs": 21040
+        },
+        {
+          "text": "checks",
+          "startMs": 21040,
+          "endMs": 21440
+        },
+        {
+          "text": "for",
+          "startMs": 21440,
+          "endMs": 21820
+        },
+        {
+          "text": "bounded",
+          "startMs": 21820,
+          "endMs": 22180
+        },
+        {
+          "text": "work",
+          "startMs": 22180,
+          "endMs": 22480
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-013",
+      "sentenceId": "sent-004",
+      "text": "Production value appears only when evidence,",
+      "startMs": 22480,
+      "endMs": 26700,
+      "words": [
+        {
+          "text": "Production",
+          "startMs": 22480,
+          "endMs": 23460
+        },
+        {
+          "text": "value",
+          "startMs": 23460,
+          "endMs": 24200
+        },
+        {
+          "text": "appears",
+          "startMs": 24200,
+          "endMs": 24660
+        },
+        {
+          "text": "only",
+          "startMs": 24660,
+          "endMs": 25200
+        },
+        {
+          "text": "when",
+          "startMs": 25200,
+          "endMs": 26040
+        },
+        {
+          "text": "evidence",
+          "startMs": 26040,
+          "endMs": 26700
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-014",
+      "sentenceId": "sent-004",
+      "text": "timing,",
+      "startMs": 27120,
+      "endMs": 27540,
+      "words": [
+        {
+          "text": "timing",
+          "startMs": 27120,
+          "endMs": 27540
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-015",
+      "sentenceId": "sent-004",
+      "text": "quality gates,",
+      "startMs": 28020,
+      "endMs": 28880,
+      "words": [
+        {
+          "text": "quality",
+          "startMs": 28020,
+          "endMs": 28400
+        },
+        {
+          "text": "gates",
+          "startMs": 28400,
+          "endMs": 28880
+        }
+      ]
+    },
+    {
+      "phraseId": "phrase-016",
+      "sentenceId": "sent-004",
+      "text": "and approvals surround every decision.",
+      "startMs": 28880,
+      "endMs": 31420,
+      "words": [
+        {
+          "text": "and",
+          "startMs": 28880,
+          "endMs": 29440
+        },
+        {
+          "text": "approvals",
+          "startMs": null,
+          "endMs": null
+        },
+        {
+          "text": "surround",
+          "startMs": 29820,
+          "endMs": 30440
+        },
+        {
+          "text": "every",
+          "startMs": 30440,
+          "endMs": 30920
+        },
+        {
+          "text": "decision",
+          "startMs": 30920,
+          "endMs": 31420
+        }
+      ]
+    }
+  ],
+  "pauses": [
+    {
+      "afterSentenceId": "sent-001",
+      "durationMs": 520
+    },
+    {
+      "afterSentenceId": "sent-002",
+      "durationMs": 660
+    }
+  ],
+  "alignment": {
+    "matchedWordRatio": 0.8679245283018868,
+    "missingTimestamps": 7
+  }
+}

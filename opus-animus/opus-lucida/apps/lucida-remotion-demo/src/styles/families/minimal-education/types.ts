@@ -2,6 +2,17 @@ import type { MotionPolicy, TextDensity } from "../../core";
 
 export type MinimalEducationAccentTone = "blue" | "teal" | "gold" | "coral";
 
+export const minimalEducationVariantIds = [
+  "single-concept",
+  "step-sequence",
+  "comparison-cards",
+  "checklist",
+  "takeaway",
+] as const;
+
+export type MinimalEducationVariantId =
+  (typeof minimalEducationVariantIds)[number];
+
 export type MinimalEducationBaseScene = {
   sceneId: string;
   sceneType: "definition" | "steps" | "comparison";

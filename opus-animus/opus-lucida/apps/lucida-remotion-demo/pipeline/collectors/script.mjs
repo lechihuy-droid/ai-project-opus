@@ -26,6 +26,10 @@ export const collectScript = ({ source, projectRoot }) => {
       kind: "script_block",
       index,
       text,
+      data: {
+        ...(source.family ? { visualFamily: source.family } : {}),
+        ...(source.tags?.length ? { tags: source.tags } : {}),
+      },
       provenance: makeProvenance({
         source,
         sourceRef: `${sourceRef}#block-${index + 1}`,

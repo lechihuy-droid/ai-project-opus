@@ -25,7 +25,27 @@ SDD: `RD-harness-hub.md` → `SD-harness-hub.md` → `BD-harness-hub.md`.
 
 ---
 
-## Future — Track B: "Opus Runtime" (dự án MỚI, RD riêng — KHÔNG nhét vào Hub)
+## Track B — Opus Runtime: kế hoạch gốc lỗi thời, một phần đã build ngay trong Hub
+
+> **Cập nhật 2026-07-25:** kế hoạch gốc bên dưới (2026-06-28) nói Track B phải tách repo/RD
+> riêng, KHÔNG nhét vào Hub. Thực tế đã đi ngược lại: phần lõi của lớp G (HITL gate,
+> checkpoint, child-run) được build thẳng vào Hub qua BD Phase D + `plans/super-agent-runtime/`
+> (`services/workflow_exec.py`, `runtime_state.py`, `runtime_interrupts.py`,
+> `runtime_checkpoint.py`, `runtime_children.py`) — không phải orchestrator LangGraph tách
+> biệt như dự tính, mà là substrate file-backed tự viết (xem `docs/super-agent-runtime.md`
+> v0.2, "does not depend on langgraph").
+>
+> Đã có thật: HITL approval gate (`gate: approval` + `runtime_interrupts`), checkpoint mỗi
+> node, validate node có thể chặn/tạm dừng run (`runtime_validate` + Phase D2), live stream
+> qua SSE (không phải replay).
+>
+> Chưa có (vẫn đúng như lo ngại gốc): hot-swap quyền công cụ giữa lúc đang chạy, rollback về
+> checkpoint an toàn trước đó (checkpoint mới ghi, chưa có API restore), và runtime này vẫn
+> chỉ điều phối agent CLI của chính Hub — không giám sát được tool-call của Claude Code/Codex
+> chạy ngoài phiên hub (đúng giới hạn lớp O nêu ở kế hoạch gốc).
+
+<details>
+<summary>Kế hoạch gốc (2026-06-28) — giữ lại để đối chiếu, không còn là hướng đi hiện tại</summary>
 
 > Lý do tách: Hub chỉ là lớp **O (Observability)** — quan sát Claude Code/Codex qua log,
 > không cầm cương được từng tool-call vì chúng chạy ngoài runtime của hub.
@@ -40,6 +60,8 @@ SDD: `RD-harness-hub.md` → `SD-harness-hub.md` → `BD-harness-hub.md`.
   - **Ràng buộc giữ triết lý workspace:** ưu tiên local-only, no API key bắt buộc, không SaaS observability (Helicone/Langfuse/Opik) — cân nhắc kỹ trước khi kéo OTel/LangGraph vào.
   - Khi làm: Hub (Track A) trở thành frontend đọc state của Runtime → tái dùng được phần lớn UI.
 
+</details>
+
 ---
 
-*Cập nhật: 2026-06-28*
+*Cập nhật: 2026-07-25*

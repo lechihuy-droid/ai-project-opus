@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "visual-flow/v2",
+  "run": {
+    "schemaVersion": "lucida-run/v1",
+    "runId": "rapid-locked-package-contract",
+    "lane": "rapid-visual-pilot",
+    "styleMode": "locked",
+    "lockedStyle": {
+      "family": "technical-editorial",
+      "lockedBy": "director@example.test",
+      "reason": "Use the explicit production technical treatment."
+    },
+    "publicationStatus": "non_publishable",
+    "approvalRefs": []
+  },
+  "projectId": "rapid-locked-package-contract",
+  "fps": 30,
+  "themeId": "lucida-editorial/v1",
+  "sources": [{ "id": "script", "type": "script", "family": "terminal" }],
+  "mapping": {
+    "allowedFamilies": ["terminal", "editorial"],
+    "allowedPresets": ["command", "headline-stat-grid"],
+    "defaultFamily": "editorial",
+    "defaultPreset": "headline-stat-grid",
+    "minSceneSeconds": 3,
+    "maxSceneSeconds": 8,
+    "maxItemsPerScene": 10
+  }
+}

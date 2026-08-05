@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { assertEvidenceDomain, domainCounts } from "./evidence-domain.mjs";
 
 export const TEMPLATE_INDEX_SCHEMA = "lucida-template-index/v1";
 export const ADAPTER_INDEX_SCHEMA = "lucida-adapter-index/v1";
@@ -225,6 +226,16 @@ export const validateGeneratedIndex = ({ appRoot, knowledgeDir }) => {
       ) {
         errors.push("reference-index.json counts do not match entries.");
       }
+      try {
+        const expectedDomainCounts = {
+          sources: domainCounts(references.sources, "reference source"),
+          documents: domainCounts(references.documents, "reference document"),
+          chunks: domainCounts(references.chunks, "reference chunk"),
+        };
+        if (stableJson(references.domainCounts) !== stableJson(expectedDomainCounts)) errors.push("reference-index.json domain counts do not match entries.");
+        for (const document of references.documents) assertEvidenceDomain(document.domain, `Reference document ${document.documentId} domain`);
+        for (const chunk of references.chunks) assertEvidenceDomain(chunk.domain, `Reference chunk ${chunk.chunkId} domain`);
+      } catch (error) { errors.push(error.message); }
     }
   }
 
@@ -354,9 +365,39 @@ export const validateGeneratedIndex = ({ appRoot, knowledgeDir }) => {
   }
 
   const counts = manifest?.counts;
-  if (counts?.templates !== templateIds.size || counts?.adapters !== adapterIds.size) {
+  if (
+    counts?.templates !== templateIds.size ||
+    counts?.adapters !== adapterIds.size ||
+    counts?.referenceSources !== (references?.sources?.length ?? 0) ||
+    counts?.referenceDocuments !== (references?.documents?.length ?? 0) ||
+    counts?.referenceChunks !== (references?.chunks?.length ?? 0)
+  ) {
     errors.push("Manifest entry counts do not match generated indexes.");
   }
+  try {
+    const expectedTemplateDomains = domainCounts(templates?.templates ?? [], "template");
+    const expectedReferenceDomains = {
+      referenceSources: domainCounts(references?.sources ?? [], "reference source"),
+      referenceDocuments: domainCounts(references?.documents ?? [], "reference document"),
+      referenceChunks: domainCounts(references?.chunks ?? [], "reference chunk"),
+    };
+    if (stableJson(manifest?.domainCounts?.templates) !== stableJson(expectedTemplateDomains)) errors.push("Manifest template domain counts do not match entries.");
+    for (const [name, expected] of Object.entries(expectedReferenceDomains)) {
+      if (stableJson(manifest?.domainCounts?.[name]) !== stableJson(expected)) {
+        errors.push(`Manifest ${name} domain counts do not match entries.`);
+      }
+    }
+    const expectedDomainHashes = {
+      templates: sha256(stableJson((templates?.templates ?? []).map(({ id, domain }) => ({ id, domain })))),
+      referenceSources: sha256(stableJson((references?.sources ?? []).map(({ sourceId, domain }) => ({ id: sourceId, domain })))),
+      referenceDocuments: sha256(stableJson((references?.documents ?? []).map(({ documentId, domain }) => ({ id: documentId, domain })))),
+      referenceChunks: sha256(stableJson((references?.chunks ?? []).map(({ chunkId, domain }) => ({ id: chunkId, domain })))),
+    };
+    if (stableJson(manifest?.domainHashes) !== stableJson(expectedDomainHashes)) {
+      errors.push("Manifest domain hashes do not match generated indexes.");
+    }
+    for (const template of templates?.templates ?? []) assertEvidenceDomain(template.domain, `Template ${template.id} domain`);
+  } catch (error) { errors.push(error.message); }
 
   return { errors, templates: templateIds.size, adapters: adapterIds.size, references: references?.sources?.length ?? 0 };
 };

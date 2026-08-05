@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "terra-mr1-source-reference-validation/v1",
+  "packageId": "technical-editorial",
+  "status": "PASS",
+  "variantCount": 5,
+  "sourceEvidenceIds": [
+    "p1-03-repo-revealjs",
+    "p1-03-repo-observable-plot"
+  ],
+  "sourceReferences": [
+    "p1-03-repo-revealjs",
+    "p1-03-repo-observable-plot"
+  ],
+  "normalization": {
+    "sourceReferencePrefixRemoved": [],
+    "legacyAliasesUsed": [],
+    "localIdsUsed": []
+  },
+  "approvalOrPromotionPerformed": false
+}

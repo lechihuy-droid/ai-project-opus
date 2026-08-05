@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "hub-backend",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["harness/hub/server.py"],
+      "port": 8799
+    },
+    {
+      "name": "hub-web-v3",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--dir", "harness/hub/web-v3", "dev"],
+      "port": 5173
+    }
+  ]
+}

@@ -1,11 +1,15 @@
-import { cinematicTypeHookFixture } from "./hook.fixture";
+import { cinematicTypeChapterResetFixture } from "./chapter-reset.fixture";
+import { cinematicTypeKineticHookFixture } from "./kinetic-hook.fixture";
+import { cinematicTypeManifestoFixture } from "./manifesto.fixture";
+import { cinematicTypeOutroFixture } from "./outro.fixture";
 import { cinematicTypeQuoteFixture } from "./quote.fixture";
-import { cinematicTypeTransitionFixture } from "./transition.fixture";
 
 export const cinematicTypeFixtures = {
-  hook: cinematicTypeHookFixture,
+  "kinetic-hook": cinematicTypeKineticHookFixture,
   quote: cinematicTypeQuoteFixture,
-  transition: cinematicTypeTransitionFixture,
+  "chapter-reset": cinematicTypeChapterResetFixture,
+  manifesto: cinematicTypeManifestoFixture,
+  outro: cinematicTypeOutroFixture,
 };
 
 export type {

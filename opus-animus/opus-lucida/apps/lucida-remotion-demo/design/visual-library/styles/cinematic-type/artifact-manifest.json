@@ -1,7 +1,4 @@
 {
-  "schemaVersion": "lucida-artifact-manifest/v1",
-  "packageId": "cinematic-type",
-  "generatedAt": "2026-07-12T00:00:00.000Z",
   "artifacts": [
     {
       "id": "style-package",
@@ -93,5 +90,9 @@
       "path": "pipeline/fixtures/styles/cinematic-type/",
       "usage": "test_input"
     }
-  ]
+  ],
+  "domain": "visual-style",
+  "generatedAt": "2026-07-12T00:00:00.000Z",
+  "packageId": "cinematic-type",
+  "schemaVersion": "lucida-artifact-manifest/v1"
 }

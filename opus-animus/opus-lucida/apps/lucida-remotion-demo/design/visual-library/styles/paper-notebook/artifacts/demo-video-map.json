@@ -6,8 +6,26 @@
   "width": 1080,
   "height": 1920,
   "scenes": [
-    { "id": "scene-01", "label": "Notes review frame", "sceneKey": "notes", "frame": 58, "output": "frames/scene-01.png" },
-    { "id": "scene-02", "label": "Derivation review frame", "sceneKey": "derivation", "frame": 76, "output": "frames/scene-02.png" },
-    { "id": "scene-03", "label": "Checklist review frame", "sceneKey": "checklist", "frame": 40, "output": "frames/scene-03.png" }
+    {
+      "id": "scene-01",
+      "label": "Research notes review frame",
+      "sceneKey": "research-notes",
+      "frame": 58,
+      "output": "frames/scene-01.png"
+    },
+    {
+      "id": "scene-02",
+      "label": "Derivation review frame",
+      "sceneKey": "derivation",
+      "frame": 76,
+      "output": "frames/scene-02.png"
+    },
+    {
+      "id": "scene-03",
+      "label": "Checklist review frame",
+      "sceneKey": "checklist",
+      "frame": 40,
+      "output": "frames/scene-03.png"
+    }
   ]
 }

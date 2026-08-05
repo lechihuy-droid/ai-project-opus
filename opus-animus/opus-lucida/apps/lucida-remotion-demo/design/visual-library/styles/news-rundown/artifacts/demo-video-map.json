@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "lucida-news-rundown-demo/v1",
+  "packageId": "news-rundown",
+  "compositionId": "NewsRundownFamilyReview",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "scenes": [
+    {"id":"scene-01","sceneKey":"breaking-update","frame":42,"output":"frames/scene-01.png"},
+    {"id":"scene-02","sceneKey":"headline-stack","frame":42,"output":"frames/scene-02.png"},
+    {"id":"scene-03","sceneKey":"top-stories","frame":42,"output":"frames/scene-03.png"},
+    {"id":"scene-04","sceneKey":"bulletin-grid","frame":42,"output":"frames/scene-04.png"},
+    {"id":"scene-05","sceneKey":"weekly-roundup","frame":42,"output":"frames/scene-05.png"}
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "key": "data-pipeline",
+  "label": "Data pipeline",
+  "eyebrow": "System architecture / staged data flow",
+  "title": "Expose validation and enrichment before data reaches a downstream consumer",
+  "summary": "A staged path makes the transition from raw input to governed delivery visible without hiding quality controls.",
+  "density": "dense",
+  "motionPolicy": "reduce",
+  "nodes": [
+    {"id": "ingest", "label": "Ingest", "detail": "Receive source events", "x": 22, "y": 14, "tone": "accent"},
+    {"id": "validate", "label": "Validate", "detail": "Reject bad shape", "x": 78, "y": 28, "tone": "warning"},
+    {"id": "enrich", "label": "Enrich", "detail": "Add business context", "x": 22, "y": 44, "tone": "success"},
+    {"id": "store", "label": "Store", "detail": "Persist trusted data", "x": 78, "y": 60, "tone": "neutral"},
+    {"id": "deliver", "label": "Deliver", "detail": "Serve consumers", "x": 22, "y": 78, "tone": "accent"}
+  ],
+  "edges": [
+    {"from": "ingest", "to": "validate", "label": "raw"},
+    {"from": "validate", "to": "enrich", "label": "accepted"},
+    {"from": "enrich", "to": "store"},
+    {"from": "store", "to": "deliver", "label": "curated"}
+  ],
+  "caption": "Validation is a first-class stage: downstream storage and delivery only receive accepted, enriched data."
+}

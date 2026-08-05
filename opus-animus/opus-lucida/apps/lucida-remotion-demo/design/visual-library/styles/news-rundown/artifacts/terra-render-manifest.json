@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "lucida-terra-render-manifest/v1",
+  "actor": "Terra",
+  "packageId": "news-rundown",
+  "status": "failed",
+  "report": "design/visual-library/styles/news-rundown/artifacts/terra-render-report.json",
+  "files": [],
+  "repeatSample": null,
+  "failure": {
+    "name": "Error",
+    "message": "Module build failed (from ./node_modules/@remotion/bundler/dist/esbuild-loader/index.js):\nError: spawn EPERM\n    at ChildProcess.spawn (node:internal/child_process:441:11)\n    at Object.spawn (node:child_process:796:9)\n    at ensureServiceIsRunning (C:\\Users\\HUY\\workspace\\ai-project-opus\\opus-animus\\opus-lucida\\apps\\lucida-remotion-demo\\node_modules\\esbuild\\lib\\main.js:2268:29)\n    at transform (C:\\Users\\HUY\\workspace\\ai-project-opus\\opus-animus\\opus-lucida\\apps\\lucida-remotion-demo\\node_modules\\esbuild\\lib\\main.js:2168:37)\n    at Object.ESBuildLoader (C:\\Users\\HUY\\workspace\\ai-project-opus\\opus-animus\\opus-lucida\\apps\\lucida-remotion-demo\\node_modules\\@remotion\\bundler\\dist\\esbuild-loader\\index.js:48:37)\nundefined"
+  }
+}

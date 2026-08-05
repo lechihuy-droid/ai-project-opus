@@ -1,7 +1,4 @@
 {
-  "schemaVersion": "lucida-artifact-manifest/v1",
-  "packageId": "terminal-command-center",
-  "generatedAt": "2026-07-12T00:00:00.000Z",
   "artifacts": [
     {
       "id": "style-package",
@@ -97,8 +94,8 @@
       "id": "terminal-render-report",
       "kind": "render_report",
       "path": "design/visual-library/styles/terminal-command-center/artifacts/validation-render-report.json",
-      "usage": "validation_report",
-      "registersVideoBinary": false
+      "registersVideoBinary": false,
+      "usage": "validation_report"
     },
     {
       "id": "terminal-demo-render-props",
@@ -112,5 +109,9 @@
       "path": "design/visual-library/styles/terminal-command-center/artifacts/terminal-demo-video-map.json",
       "usage": "validation_spec"
     }
-  ]
+  ],
+  "domain": "visual-style",
+  "generatedAt": "2026-07-12T00:00:00.000Z",
+  "packageId": "terminal-command-center",
+  "schemaVersion": "lucida-artifact-manifest/v1"
 }

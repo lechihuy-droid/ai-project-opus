@@ -99,7 +99,7 @@
   },
   "sourceReferences": [
     {
-      "id": "primer-style",
+      "id": "w8-dashboard-primer-docs",
       "url": "https://primer.style/",
       "selectedConcepts": [
         "semantic status colors",
@@ -108,7 +108,7 @@
       ]
     },
     {
-      "id": "primer-react",
+      "id": "w8-dashboard-primer-react",
       "url": "https://github.com/primer/react",
       "selectedConcepts": [
         "stateful data surfaces",
@@ -117,7 +117,7 @@
       ]
     },
     {
-      "id": "remotion-animating-properties",
+      "id": "w8-dashboard-remotion-animation",
       "url": "https://www.remotion.dev/docs/animating-properties",
       "selectedConcepts": [
         "frame-driven motion",

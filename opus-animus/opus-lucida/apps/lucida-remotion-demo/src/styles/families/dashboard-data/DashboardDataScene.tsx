@@ -49,6 +49,26 @@ const layoutProfiles: Record<
     kpiHeight: 326,
     midHeight: 538,
   },
+  "operations-monitor": {
+    kpiHeight: 350,
+    midHeight: 456,
+  },
+  "comparison-dashboard": {
+    kpiHeight: 350,
+    midHeight: 456,
+  },
+  "benchmark-grid": {
+    kpiHeight: 350,
+    midHeight: 420,
+  },
+  "trend-panel": {
+    kpiHeight: 350,
+    midHeight: 456,
+  },
+  scorecard: {
+    kpiHeight: 350,
+    midHeight: 420,
+  },
 };
 
 const drawText = (style: CSSProperties): CSSProperties => ({

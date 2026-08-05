@@ -3,6 +3,7 @@ import path from "node:path";
 import {
   collectAsciicast,
   collectCommand,
+  collectContentBrief,
   collectImageReference,
   collectRepository,
   collectScript,
@@ -40,7 +41,9 @@ const collected = [];
 const warnings = [];
 for (const source of config.sources) {
   try {
-    if (source.type === "script")
+    if (source.type === "content_brief")
+      collected.push(collectContentBrief({ source, projectRoot, runEnvelope: config.run }));
+    else if (source.type === "script")
       collected.push(collectScript({ source, projectRoot }));
     else if (source.type === "asciicast")
       collected.push(collectAsciicast({ source, projectRoot }));
@@ -67,13 +70,18 @@ for (const source of config.sources) {
 }
 
 if (collected.length === 0) throw new Error("No visual sources were collected");
+const hasContentBrief = collected.some((source) => source.sourceType === "content_brief");
+const compatibilityWarning = hasContentBrief
+  ? null
+  : "DEPRECATION legacy script input: no ContentBrief was collected; output is compatibility-only and non-production.";
 const artifact = {
   schemaVersion: "raw-visual-input/v1",
   projectId: config.projectId,
   generatedAt: new Date().toISOString(),
   configPath: path.relative(projectRoot, configPath).replaceAll("\\", "/"),
   sources: collected,
-  warnings,
+  ...(hasContentBrief ? { inputMode: "content-brief" } : { inputMode: "legacy-compatibility", compatibility: { deprecated: true, reason: compatibilityWarning } }),
+  warnings: compatibilityWarning ? [...warnings, compatibilityWarning] : warnings,
 };
 const outputPath = path.join(outDir, "01-raw-input.json");
 fs.writeFileSync(outputPath, JSON.stringify(artifact, null, 2) + "\n");

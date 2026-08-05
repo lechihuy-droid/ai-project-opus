@@ -1,0 +1,11 @@
+{
+  "packageId": "news-rundown",
+  "registration": "pending",
+  "scenes": [
+    {"sceneKey":"breaking-update","fixture":"pipeline/fixtures/styles/news-rundown/breaking-update.fixture.ts"},
+    {"sceneKey":"headline-stack","fixture":"pipeline/fixtures/styles/news-rundown/headline-stack.fixture.ts"},
+    {"sceneKey":"top-stories","fixture":"pipeline/fixtures/styles/news-rundown/top-stories.fixture.ts"},
+    {"sceneKey":"bulletin-grid","fixture":"pipeline/fixtures/styles/news-rundown/bulletin-grid.fixture.ts"},
+    {"sceneKey":"weekly-roundup","fixture":"pipeline/fixtures/styles/news-rundown/weekly-roundup.fixture.ts"}
+  ]
+}

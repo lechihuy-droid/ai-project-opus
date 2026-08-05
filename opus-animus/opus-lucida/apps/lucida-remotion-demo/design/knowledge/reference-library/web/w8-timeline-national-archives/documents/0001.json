@@ -1,0 +1,29 @@
+{
+  "contentChecksum": "2a5f49f6b65f9b157555ba6d6c7329f1ec0c0a49d3c9ad73fad64a30cc693599",
+  "domain": "visual-style",
+  "mediaType": "web",
+  "observations": [
+    {
+      "definition": {
+        "packageId": "timeline-documentary",
+        "tags": [
+          "timeline-documentary",
+          "w8-candidate",
+          "link-only"
+        ]
+      },
+      "kind": "layout_reference",
+      "reviewStatus": "approved"
+    }
+  ],
+  "rawText": "# US National Archives catalog review note\n\nSource: https://catalog.archives.gov/\nTarget package: timeline-documentary\n\nReviewer-authored concepts:\n- record provenance\n- chronological context\n- missing-record transparency\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts.",
+  "schemaVersion": "lucida-reference-document/v1",
+  "sourceRef": "https://catalog.archives.gov/",
+  "tags": [
+    "link-only",
+    "timeline-documentary",
+    "w8-candidate",
+    "web"
+  ],
+  "title": "w8-timeline-national-archives record 0001"
+}

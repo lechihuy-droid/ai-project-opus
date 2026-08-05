@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "normalized-visual-input/v1",
+  "projectId": "flow-fixture",
+  "fps": 30,
+  "contentBrief": {
+    "schemaVersion": "lucida-content-brief/v1",
+    "title": "Bản tin AI tuần này",
+    "audience": "Người làm sản phẩm AI tại Việt Nam",
+    "intent": "explain",
+    "styleMode": "auto",
+    "factualSourceIds": ["fact-gpt-5-6", "fact-adoption"],
+    "visualConstraints": {
+      "forbiddenFamilies": ["terminal"],
+      "assets": { "allowedClassifications": ["editorial", "product-ui"] },
+      "density": { "preferred": "medium" },
+      "layout": { "minDistinct": 2, "maxConsecutive": 2 }
+    },
+    "beats": [
+      { "id": "hook-vn", "title": "GPT-5.6 thay đổi cách đội ngũ lập kế hoạch", "body": "Không chỉ nhanh hơn.\nNó buộc đội ngũ tách bằng chứng khỏi giả định.", "intent": "hook", "role": "hook", "actors": ["nhóm sản phẩm", "người vận hành"], "factRefs": ["fact-gpt-5-6"] },
+      { "id": "evidence-vn", "title": "Bằng chứng cần nằm trong quyết định", "body": "Tiêu đề này cố ý dài và tách biệt hoàn toàn khỏi phần thân.\nPhần thân giữ nguyên xuống dòng để Director nhận đúng nhịp kể chuyện.\nDữ kiện phải truy về nguồn đã phê duyệt.", "role": "evidence", "actors": ["biên tập viên", "người phê duyệt"], "factRefs": ["fact-gpt-5-6", "fact-adoption"] }
+    ]
+  },
+  "events": []
+}

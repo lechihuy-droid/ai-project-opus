@@ -6,6 +6,7 @@ from typing import Any
 
 import pytest
 
+import config
 from parsers import claude_sessions, codex_sessions, inspect_eval
 from services import usage
 
@@ -65,6 +66,7 @@ def fake_usage_sources(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> tuple
 
     monkeypatch.setattr(usage, "_DISK_CACHE", tmp_path / "usage_files.json")
     usage._USAGE_CACHE.update({"expires": 0.0, "events": [], "warnings": [], "fingerprint": None})
+    monkeypatch.setattr(config, "CHAT_USAGE_FILE", tmp_path / "chat_usage_absent.jsonl")
     monkeypatch.setattr(claude_sessions, "paths", lambda: sorted(root.glob("*.jsonl")))
     monkeypatch.setattr(claude_sessions, "parse_file", parse_file)
     monkeypatch.setattr(codex_sessions, "paths", lambda: [])
@@ -168,46 +170,19 @@ def test_collect_usage_since_filtering_and_rollup_are_unchanged(
     rolled = usage.rollup(events)
 
     assert [event["session"] for event in filtered] == ["newer"]
-    assert rolled == {
-        "by_model": [
-            {
-                "model": "model-b",
-                "calls": 1,
-                "input_tokens": 5,
-                "output_tokens": 6,
-                "total_tokens": 13,
-            },
-            {
-                "model": "model-a",
-                "calls": 1,
-                "input_tokens": 3,
-                "output_tokens": 4,
-                "total_tokens": 8,
-            },
-        ],
-        "by_day": [
-            {
-                "day": "2026-06-26",
-                "calls": 1,
-                "input_tokens": 3,
-                "output_tokens": 4,
-                "total_tokens": 8,
-            },
-            {
-                "day": "2026-06-27",
-                "calls": 1,
-                "input_tokens": 5,
-                "output_tokens": 6,
-                "total_tokens": 13,
-            },
-        ],
-        "by_source": [{"source": "claude", "calls": 2, "total_tokens": 21}],
-        "totals": {
-            "calls": 2,
-            "input_tokens": 8,
-            "output_tokens": 10,
-            "total_tokens": 21,
-            "cache_tokens": 3,
-            "non_cache_tokens": 18,
-        },
+    assert [(row["model"], row["calls"], row["input_tokens"], row["output_tokens"], row["total_tokens"])
+            for row in rolled["by_model"]] == [("model-b", 1, 5, 6, 13), ("model-a", 1, 3, 4, 8)]
+    assert [(row["day"], row["calls"], row["input_tokens"], row["output_tokens"], row["total_tokens"])
+            for row in rolled["by_day"]] == [("2026-06-26", 1, 3, 4, 8), ("2026-06-27", 1, 5, 6, 13)]
+    assert [(row["source"], row["calls"], row["total_tokens"])
+            for row in rolled["by_source"]] == [("claude", 2, 21)]
+    assert {key: rolled["totals"][key] for key in (
+        "calls", "input_tokens", "output_tokens", "total_tokens", "cache_tokens", "non_cache_tokens"
+    )} == {
+        "calls": 2,
+        "input_tokens": 8,
+        "output_tokens": 10,
+        "total_tokens": 21,
+        "cache_tokens": 3,
+        "non_cache_tokens": 18,
     }

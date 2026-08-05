@@ -1,0 +1,1051 @@
+{
+  "language": "vi",
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 4.98,
+      "text": " viết e-mail kính ngữ tiến nhật vẫn là việc nguồn thời gian nhất của dân văn phòng nước ngoài.",
+      "words": [
+        {
+          "word": " viết",
+          "start": 0.0,
+          "end": 0.28
+        },
+        {
+          "word": " e",
+          "start": 0.28,
+          "end": 0.44
+        },
+        {
+          "word": "-mail",
+          "start": 0.44,
+          "end": 0.66
+        },
+        {
+          "word": " kính",
+          "start": 0.66,
+          "end": 0.9
+        },
+        {
+          "word": " ngữ",
+          "start": 0.9,
+          "end": 1.16
+        },
+        {
+          "word": " tiến",
+          "start": 1.16,
+          "end": 1.42
+        },
+        {
+          "word": " nhật",
+          "start": 1.42,
+          "end": 1.66
+        },
+        {
+          "word": " vẫn",
+          "start": 1.66,
+          "end": 1.92
+        },
+        {
+          "word": " là",
+          "start": 1.92,
+          "end": 2.1
+        },
+        {
+          "word": " việc",
+          "start": 2.1,
+          "end": 2.24
+        },
+        {
+          "word": " nguồn",
+          "start": 2.24,
+          "end": 2.62
+        },
+        {
+          "word": " thời",
+          "start": 2.62,
+          "end": 2.78
+        },
+        {
+          "word": " gian",
+          "start": 2.78,
+          "end": 3.0
+        },
+        {
+          "word": " nhất",
+          "start": 3.0,
+          "end": 3.24
+        },
+        {
+          "word": " của",
+          "start": 3.24,
+          "end": 3.78
+        },
+        {
+          "word": " dân",
+          "start": 3.78,
+          "end": 4.06
+        },
+        {
+          "word": " văn",
+          "start": 4.06,
+          "end": 4.24
+        },
+        {
+          "word": " phòng",
+          "start": 4.24,
+          "end": 4.46
+        },
+        {
+          "word": " nước",
+          "start": 4.46,
+          "end": 4.66
+        },
+        {
+          "word": " ngoài.",
+          "start": 4.66,
+          "end": 4.98
+        }
+      ]
+    },
+    {
+      "start": 5.44,
+      "end": 9.96,
+      "text": " Một e-mail xin lỗi khách hàng có thể mất 30 phút để viết cho đúng lễ.",
+      "words": [
+        {
+          "word": " Một",
+          "start": 5.44,
+          "end": 5.72
+        },
+        {
+          "word": " e",
+          "start": 5.72,
+          "end": 5.92
+        },
+        {
+          "word": "-mail",
+          "start": 5.92,
+          "end": 6.18
+        },
+        {
+          "word": " xin",
+          "start": 6.18,
+          "end": 6.62
+        },
+        {
+          "word": " lỗi",
+          "start": 6.62,
+          "end": 6.8
+        },
+        {
+          "word": " khách",
+          "start": 6.8,
+          "end": 7.0
+        },
+        {
+          "word": " hàng",
+          "start": 7.0,
+          "end": 7.22
+        },
+        {
+          "word": " có",
+          "start": 7.22,
+          "end": 7.68
+        },
+        {
+          "word": " thể",
+          "start": 7.68,
+          "end": 7.86
+        },
+        {
+          "word": " mất",
+          "start": 7.86,
+          "end": 8.1
+        },
+        {
+          "word": " 30",
+          "start": 8.1,
+          "end": 8.46
+        },
+        {
+          "word": " phút",
+          "start": 8.46,
+          "end": 8.78
+        },
+        {
+          "word": " để",
+          "start": 8.78,
+          "end": 9.12
+        },
+        {
+          "word": " viết",
+          "start": 9.12,
+          "end": 9.38
+        },
+        {
+          "word": " cho",
+          "start": 9.38,
+          "end": 9.58
+        },
+        {
+          "word": " đúng",
+          "start": 9.58,
+          "end": 9.74
+        },
+        {
+          "word": " lễ.",
+          "start": 9.74,
+          "end": 9.96
+        }
+      ]
+    },
+    {
+      "start": 10.56,
+      "end": 15.72,
+      "text": " AI xử lý tốt việc này nếu bạn đưa đúng ngữ cảnh cách làm gồm 3 bước.",
+      "words": [
+        {
+          "word": " AI",
+          "start": 10.56,
+          "end": 10.88
+        },
+        {
+          "word": " xử",
+          "start": 10.88,
+          "end": 11.4
+        },
+        {
+          "word": " lý",
+          "start": 11.4,
+          "end": 11.56
+        },
+        {
+          "word": " tốt",
+          "start": 11.56,
+          "end": 11.72
+        },
+        {
+          "word": " việc",
+          "start": 11.72,
+          "end": 11.88
+        },
+        {
+          "word": " này",
+          "start": 11.88,
+          "end": 12.14
+        },
+        {
+          "word": " nếu",
+          "start": 12.14,
+          "end": 12.78
+        },
+        {
+          "word": " bạn",
+          "start": 12.78,
+          "end": 12.96
+        },
+        {
+          "word": " đưa",
+          "start": 12.96,
+          "end": 13.16
+        },
+        {
+          "word": " đúng",
+          "start": 13.16,
+          "end": 13.34
+        },
+        {
+          "word": " ngữ",
+          "start": 13.34,
+          "end": 13.48
+        },
+        {
+          "word": " cảnh",
+          "start": 13.48,
+          "end": 13.76
+        },
+        {
+          "word": " cách",
+          "start": 13.76,
+          "end": 14.34
+        },
+        {
+          "word": " làm",
+          "start": 14.34,
+          "end": 14.64
+        },
+        {
+          "word": " gồm",
+          "start": 14.64,
+          "end": 15.32
+        },
+        {
+          "word": " 3",
+          "start": 15.32,
+          "end": 15.52
+        },
+        {
+          "word": " bước.",
+          "start": 15.52,
+          "end": 15.72
+        }
+      ]
+    },
+    {
+      "start": 16.2,
+      "end": 20.16,
+      "text": " Bước 1, rán e-mail cần trả lời vào, kèm quan hệ với người nhận.",
+      "words": [
+        {
+          "word": " Bước",
+          "start": 16.2,
+          "end": 16.32
+        },
+        {
+          "word": " 1,",
+          "start": 16.32,
+          "end": 16.52
+        },
+        {
+          "word": " rán",
+          "start": 17.0,
+          "end": 17.12
+        },
+        {
+          "word": " e",
+          "start": 17.12,
+          "end": 17.36
+        },
+        {
+          "word": "-mail",
+          "start": 17.36,
+          "end": 17.56
+        },
+        {
+          "word": " cần",
+          "start": 17.56,
+          "end": 17.76
+        },
+        {
+          "word": " trả",
+          "start": 17.76,
+          "end": 18.02
+        },
+        {
+          "word": " lời",
+          "start": 18.02,
+          "end": 18.16
+        },
+        {
+          "word": " vào,",
+          "start": 18.16,
+          "end": 18.44
+        },
+        {
+          "word": " kèm",
+          "start": 18.96,
+          "end": 19.14
+        },
+        {
+          "word": " quan",
+          "start": 19.14,
+          "end": 19.3
+        },
+        {
+          "word": " hệ",
+          "start": 19.3,
+          "end": 19.54
+        },
+        {
+          "word": " với",
+          "start": 19.54,
+          "end": 19.74
+        },
+        {
+          "word": " người",
+          "start": 19.74,
+          "end": 19.88
+        },
+        {
+          "word": " nhận.",
+          "start": 19.88,
+          "end": 20.16
+        }
+      ]
+    },
+    {
+      "start": 20.56,
+      "end": 24.62,
+      "text": " Ví dụ, khách hàng lâu năm, cấp trên, hay đồng nghiệp phòng khác.",
+      "words": [
+        {
+          "word": " Ví",
+          "start": 20.56,
+          "end": 20.82
+        },
+        {
+          "word": " dụ,",
+          "start": 20.82,
+          "end": 21.0
+        },
+        {
+          "word": " khách",
+          "start": 21.46,
+          "end": 21.6
+        },
+        {
+          "word": " hàng",
+          "start": 21.6,
+          "end": 21.84
+        },
+        {
+          "word": " lâu",
+          "start": 21.84,
+          "end": 22.08
+        },
+        {
+          "word": " năm,",
+          "start": 22.08,
+          "end": 22.3
+        },
+        {
+          "word": " cấp",
+          "start": 22.76,
+          "end": 22.82
+        },
+        {
+          "word": " trên,",
+          "start": 22.82,
+          "end": 23.06
+        },
+        {
+          "word": " hay",
+          "start": 23.56,
+          "end": 23.68
+        },
+        {
+          "word": " đồng",
+          "start": 23.68,
+          "end": 23.94
+        },
+        {
+          "word": " nghiệp",
+          "start": 23.94,
+          "end": 24.14
+        },
+        {
+          "word": " phòng",
+          "start": 24.14,
+          "end": 24.34
+        },
+        {
+          "word": " khác.",
+          "start": 24.34,
+          "end": 24.62
+        }
+      ]
+    },
+    {
+      "start": 24.96,
+      "end": 29.38,
+      "text": " Bước 2, nói rõ mục đích xin lỗi từ chối, hay nhắc tiến độ.",
+      "words": [
+        {
+          "word": " Bước",
+          "start": 24.96,
+          "end": 25.26
+        },
+        {
+          "word": " 2,",
+          "start": 25.26,
+          "end": 25.52
+        },
+        {
+          "word": " nói",
+          "start": 25.96,
+          "end": 26.06
+        },
+        {
+          "word": " rõ",
+          "start": 26.06,
+          "end": 26.34
+        },
+        {
+          "word": " mục",
+          "start": 26.34,
+          "end": 26.56
+        },
+        {
+          "word": " đích",
+          "start": 26.56,
+          "end": 26.76
+        },
+        {
+          "word": " xin",
+          "start": 26.76,
+          "end": 27.24
+        },
+        {
+          "word": " lỗi",
+          "start": 27.24,
+          "end": 27.48
+        },
+        {
+          "word": " từ",
+          "start": 27.48,
+          "end": 27.72
+        },
+        {
+          "word": " chối,",
+          "start": 27.72,
+          "end": 28.06
+        },
+        {
+          "word": " hay",
+          "start": 28.46,
+          "end": 28.7
+        },
+        {
+          "word": " nhắc",
+          "start": 28.7,
+          "end": 28.98
+        },
+        {
+          "word": " tiến",
+          "start": 28.98,
+          "end": 29.18
+        },
+        {
+          "word": " độ.",
+          "start": 29.18,
+          "end": 29.38
+        }
+      ]
+    },
+    {
+      "start": 29.38,
+      "end": 33.6,
+      "text": " Bước 3, yêu cầu hai phiên bản, một tranh trọng và một ngắn gọn.",
+      "words": [
+        {
+          "word": " Bước",
+          "start": 29.38,
+          "end": 30.1
+        },
+        {
+          "word": " 3,",
+          "start": 30.1,
+          "end": 30.36
+        },
+        {
+          "word": " yêu",
+          "start": 30.7,
+          "end": 30.86
+        },
+        {
+          "word": " cầu",
+          "start": 30.86,
+          "end": 31.08
+        },
+        {
+          "word": " hai",
+          "start": 31.08,
+          "end": 31.32
+        },
+        {
+          "word": " phiên",
+          "start": 31.32,
+          "end": 31.52
+        },
+        {
+          "word": " bản,",
+          "start": 31.52,
+          "end": 31.74
+        },
+        {
+          "word": " một",
+          "start": 32.26,
+          "end": 32.42
+        },
+        {
+          "word": " tranh",
+          "start": 32.42,
+          "end": 32.7
+        },
+        {
+          "word": " trọng",
+          "start": 32.7,
+          "end": 32.92
+        },
+        {
+          "word": " và",
+          "start": 32.92,
+          "end": 33.04
+        },
+        {
+          "word": " một",
+          "start": 33.04,
+          "end": 33.22
+        },
+        {
+          "word": " ngắn",
+          "start": 33.22,
+          "end": 33.36
+        },
+        {
+          "word": " gọn.",
+          "start": 33.36,
+          "end": 33.6
+        }
+      ]
+    },
+    {
+      "start": 34.0,
+      "end": 37.72,
+      "text": " Rồi chọn bản phù hợp và chỉnh lại tên riêng, còn số ngày tháng.",
+      "words": [
+        {
+          "word": " Rồi",
+          "start": 34.0,
+          "end": 34.36
+        },
+        {
+          "word": " chọn",
+          "start": 34.36,
+          "end": 34.6
+        },
+        {
+          "word": " bản",
+          "start": 34.6,
+          "end": 34.84
+        },
+        {
+          "word": " phù",
+          "start": 34.84,
+          "end": 35.06
+        },
+        {
+          "word": " hợp",
+          "start": 35.06,
+          "end": 35.28
+        },
+        {
+          "word": " và",
+          "start": 35.28,
+          "end": 35.44
+        },
+        {
+          "word": " chỉnh",
+          "start": 35.44,
+          "end": 35.66
+        },
+        {
+          "word": " lại",
+          "start": 35.66,
+          "end": 35.84
+        },
+        {
+          "word": " tên",
+          "start": 35.84,
+          "end": 36.06
+        },
+        {
+          "word": " riêng,",
+          "start": 36.06,
+          "end": 36.36
+        },
+        {
+          "word": " còn",
+          "start": 36.58,
+          "end": 36.72
+        },
+        {
+          "word": " số",
+          "start": 36.72,
+          "end": 37.0
+        },
+        {
+          "word": " ngày",
+          "start": 37.0,
+          "end": 37.4
+        },
+        {
+          "word": " tháng.",
+          "start": 37.4,
+          "end": 37.72
+        }
+      ]
+    },
+    {
+      "start": 38.32,
+      "end": 42.3,
+      "text": " AI, đôi khi dùng kính ngữ quá mức nên đọc lại luôn là bước bắt buộc.",
+      "words": [
+        {
+          "word": " AI,",
+          "start": 38.32,
+          "end": 38.56
+        },
+        {
+          "word": " đôi",
+          "start": 39.0,
+          "end": 39.1
+        },
+        {
+          "word": " khi",
+          "start": 39.1,
+          "end": 39.3
+        },
+        {
+          "word": " dùng",
+          "start": 39.3,
+          "end": 39.56
+        },
+        {
+          "word": " kính",
+          "start": 39.56,
+          "end": 39.7
+        },
+        {
+          "word": " ngữ",
+          "start": 39.7,
+          "end": 39.9
+        },
+        {
+          "word": " quá",
+          "start": 39.9,
+          "end": 40.08
+        },
+        {
+          "word": " mức",
+          "start": 40.08,
+          "end": 40.3
+        },
+        {
+          "word": " nên",
+          "start": 40.3,
+          "end": 40.86
+        },
+        {
+          "word": " đọc",
+          "start": 40.86,
+          "end": 41.2
+        },
+        {
+          "word": " lại",
+          "start": 41.2,
+          "end": 41.4
+        },
+        {
+          "word": " luôn",
+          "start": 41.4,
+          "end": 41.62
+        },
+        {
+          "word": " là",
+          "start": 41.62,
+          "end": 41.78
+        },
+        {
+          "word": " bước",
+          "start": 41.78,
+          "end": 41.9
+        },
+        {
+          "word": " bắt",
+          "start": 41.9,
+          "end": 42.08
+        },
+        {
+          "word": " buộc.",
+          "start": 42.08,
+          "end": 42.3
+        }
+      ]
+    },
+    {
+      "start": 42.78,
+      "end": 46.12,
+      "text": " 30 phút mỗi e-mail có thể rút xuống còn 5 phút.",
+      "words": [
+        {
+          "word": " 30",
+          "start": 42.78,
+          "end": 43.06
+        },
+        {
+          "word": " phút",
+          "start": 43.06,
+          "end": 43.38
+        },
+        {
+          "word": " mỗi",
+          "start": 43.38,
+          "end": 43.66
+        },
+        {
+          "word": " e",
+          "start": 43.66,
+          "end": 43.86
+        },
+        {
+          "word": "-mail",
+          "start": 43.86,
+          "end": 44.08
+        },
+        {
+          "word": " có",
+          "start": 44.08,
+          "end": 44.46
+        },
+        {
+          "word": " thể",
+          "start": 44.46,
+          "end": 44.68
+        },
+        {
+          "word": " rút",
+          "start": 44.68,
+          "end": 44.94
+        },
+        {
+          "word": " xuống",
+          "start": 44.94,
+          "end": 45.3
+        },
+        {
+          "word": " còn",
+          "start": 45.3,
+          "end": 45.54
+        },
+        {
+          "word": " 5",
+          "start": 45.54,
+          "end": 45.82
+        },
+        {
+          "word": " phút.",
+          "start": 45.82,
+          "end": 46.12
+        }
+      ]
+    },
+    {
+      "start": 46.62,
+      "end": 49.26,
+      "text": " Thời gian tiết kiệm được dành cho việc mà chỉ bạn làm được.",
+      "words": [
+        {
+          "word": " Thời",
+          "start": 46.62,
+          "end": 46.72
+        },
+        {
+          "word": " gian",
+          "start": 46.72,
+          "end": 46.92
+        },
+        {
+          "word": " tiết",
+          "start": 46.92,
+          "end": 47.1
+        },
+        {
+          "word": " kiệm",
+          "start": 47.1,
+          "end": 47.34
+        },
+        {
+          "word": " được",
+          "start": 47.34,
+          "end": 47.5
+        },
+        {
+          "word": " dành",
+          "start": 47.5,
+          "end": 47.72
+        },
+        {
+          "word": " cho",
+          "start": 47.72,
+          "end": 47.92
+        },
+        {
+          "word": " việc",
+          "start": 47.92,
+          "end": 48.12
+        },
+        {
+          "word": " mà",
+          "start": 48.12,
+          "end": 48.4
+        },
+        {
+          "word": " chỉ",
+          "start": 48.4,
+          "end": 48.6
+        },
+        {
+          "word": " bạn",
+          "start": 48.6,
+          "end": 48.8
+        },
+        {
+          "word": " làm",
+          "start": 48.8,
+          "end": 49.06
+        },
+        {
+          "word": " được.",
+          "start": 49.06,
+          "end": 49.26
+        }
+      ]
+    },
+    {
+      "start": 49.74,
+      "end": 52.82,
+      "text": " Lưu lại quy chỉnh 3 bước này để thử ngay trong tuần.",
+      "words": [
+        {
+          "word": " Lưu",
+          "start": 49.74,
+          "end": 50.0
+        },
+        {
+          "word": " lại",
+          "start": 50.0,
+          "end": 50.16
+        },
+        {
+          "word": " quy",
+          "start": 50.16,
+          "end": 50.36
+        },
+        {
+          "word": " chỉnh",
+          "start": 50.36,
+          "end": 50.66
+        },
+        {
+          "word": " 3",
+          "start": 50.66,
+          "end": 50.84
+        },
+        {
+          "word": " bước",
+          "start": 50.84,
+          "end": 51.02
+        },
+        {
+          "word": " này",
+          "start": 51.02,
+          "end": 51.26
+        },
+        {
+          "word": " để",
+          "start": 51.26,
+          "end": 51.72
+        },
+        {
+          "word": " thử",
+          "start": 51.72,
+          "end": 52.02
+        },
+        {
+          "word": " ngay",
+          "start": 52.02,
+          "end": 52.32
+        },
+        {
+          "word": " trong",
+          "start": 52.32,
+          "end": 52.54
+        },
+        {
+          "word": " tuần.",
+          "start": 52.54,
+          "end": 52.82
+        }
+      ]
+    },
+    {
+      "start": 53.36,
+      "end": 57.8,
+      "text": " Theo dõi lucida để biết thay đổi AI nào thực sự đáng quan tâm.",
+      "words": [
+        {
+          "word": " Theo",
+          "start": 53.36,
+          "end": 53.54
+        },
+        {
+          "word": " dõi",
+          "start": 53.54,
+          "end": 53.9
+        },
+        {
+          "word": " lucida",
+          "start": 53.9,
+          "end": 54.5
+        },
+        {
+          "word": " để",
+          "start": 54.5,
+          "end": 55.14
+        },
+        {
+          "word": " biết",
+          "start": 55.14,
+          "end": 55.3
+        },
+        {
+          "word": " thay",
+          "start": 55.3,
+          "end": 55.54
+        },
+        {
+          "word": " đổi",
+          "start": 55.54,
+          "end": 55.72
+        },
+        {
+          "word": " AI",
+          "start": 55.72,
+          "end": 56.14
+        },
+        {
+          "word": " nào",
+          "start": 56.14,
+          "end": 56.42
+        },
+        {
+          "word": " thực",
+          "start": 56.42,
+          "end": 56.68
+        },
+        {
+          "word": " sự",
+          "start": 56.68,
+          "end": 57.0
+        },
+        {
+          "word": " đáng",
+          "start": 57.0,
+          "end": 57.32
+        },
+        {
+          "word": " quan",
+          "start": 57.32,
+          "end": 57.54
+        },
+        {
+          "word": " tâm.",
+          "start": 57.54,
+          "end": 57.8
+        }
+      ]
+    }
+  ]
+}

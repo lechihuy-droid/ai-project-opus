@@ -6,29 +6,139 @@
   "status": "experimental",
   "visualFamily": "timeline-documentary",
   "description": "Production package for deterministic chronology scenes with a dated spine, original archival framing, explicit source labels, and honest missing-image handling.",
-  "tags": ["timeline", "documentary", "history", "chronology", "archive"],
-  "supportedIntents": ["process", "summarize", "takeaway", "case-study"],
-  "recommendedIntents": ["process", "summarize", "takeaway"],
-  "avoidFor": ["non-chronological lists without dates", "live dashboards that depend on current metrics", "asset-led product demonstrations"],
-  "aspectRatios": ["9:16", "16:9"],
-  "contentCapacity": { "headlineChars": 100, "bodyChars": 520, "bulletsMaxItems": 8, "maxDataSeries": 0, "maxCodeLines": 0 },
-  "renderCost": { "tier": "medium", "estimatedSceneComplexity": 6, "notes": "The renderer composes three to eight dated events, source labels, archival treatments, and deterministic missing-image placeholders." },
-  "reducedMotion": { "strategy": "reduced-motion-fade", "notes": "Reduced mode shortens event travel; static mode presents the complete dated spine without animated displacement." },
-  "accessibility": { "contrast": "AA", "notes": "High-contrast serif headlines, sans-serif body copy, bounded text fitting, and persistent source labels support documentary reading." },
+  "tags": [
+    "timeline",
+    "documentary",
+    "history",
+    "chronology",
+    "archive"
+  ],
+  "supportedIntents": [
+    "process",
+    "summarize",
+    "takeaway",
+    "case-study"
+  ],
+  "recommendedIntents": [
+    "process",
+    "summarize",
+    "takeaway"
+  ],
+  "avoidFor": [
+    "non-chronological lists without dates",
+    "live dashboards that depend on current metrics",
+    "asset-led product demonstrations"
+  ],
+  "aspectRatios": [
+    "9:16",
+    "16:9"
+  ],
+  "contentCapacity": {
+    "headlineChars": 100,
+    "bodyChars": 520,
+    "bulletsMaxItems": 8,
+    "maxDataSeries": 0,
+    "maxCodeLines": 0
+  },
+  "renderCost": {
+    "tier": "medium",
+    "estimatedSceneComplexity": 6,
+    "notes": "The renderer composes three to eight dated events, source labels, archival treatments, and deterministic missing-image placeholders."
+  },
+  "reducedMotion": {
+    "strategy": "reduced-motion-fade",
+    "notes": "Reduced mode shortens event travel; static mode presents the complete dated spine without animated displacement."
+  },
+  "accessibility": {
+    "contrast": "AA",
+    "notes": "High-contrast serif headlines, sans-serif body copy, bounded text fitting, and persistent source labels support documentary reading."
+  },
   "directorCompatibility": {
     "selectionReason": "Choose when narration depends on chronological evidence, named dates, source attribution, and a defensible historical conclusion.",
-    "preferredNeighborFamilies": ["technical-editorial", "paper-notebook", "cinematic-type"],
-    "bridgeFamilies": ["technical-editorial", "cinematic-type"],
-    "hardBlocks": ["fewer than three dated events", "more than eight events without editorial reduction", "chronology cannot be sourced"]
+    "preferredNeighborFamilies": [
+      "technical-editorial",
+      "paper-notebook",
+      "cinematic-type"
+    ],
+    "bridgeFamilies": [
+      "technical-editorial",
+      "cinematic-type"
+    ],
+    "hardBlocks": [
+      "fewer than three dated events",
+      "more than eight events without editorial reduction",
+      "chronology cannot be sourced"
+    ]
   },
-  "files": { "visual": "./visual.json", "tokens": "./tokens.json", "componentMap": "./component-map.json", "provenance": "./provenance.md", "artifactManifest": "./artifact-manifest.json" },
-  "sourcePolicy": { "copyStatus": "principles-only", "registeredMedia": "none", "notes": "All review visuals are original CSS compositions or deliberate placeholders. No third-party photograph, logo, font binary, or brand identity is registered." },
-  "sourceArtifacts": { "normalizedInput": "./artifacts/review-scenes.json", "mappedScenes": "./artifacts/review-scenes.json", "compiledVideoMap": "./artifacts/demo-video-map.json", "sourceReviewReport": "./artifacts/source-review-report.json" },
-  "validationArtifacts": { "demoVideoMap": "./artifacts/demo-video-map.json", "renderProps": "./artifacts/render-props.json", "previewFrames": ["./artifacts/frames/scene-01.png", "./artifacts/frames/scene-02.png", "./artifacts/frames/scene-03.png"], "renderReport": "./artifacts/render-report.json", "videoBinaryRegistered": false },
+  "files": {
+    "visual": "./visual.json",
+    "tokens": "./tokens.json",
+    "componentMap": "./component-map.json",
+    "provenance": "./provenance.md",
+    "artifactManifest": "./artifact-manifest.json"
+  },
+  "sourcePolicy": {
+    "copyStatus": "principles-only",
+    "registeredMedia": "none",
+    "notes": "All review visuals are original CSS compositions or deliberate placeholders. No third-party photograph, logo, font binary, or brand identity is registered."
+  },
+  "sourceArtifacts": {
+    "normalizedInput": "./artifacts/review-scenes.json",
+    "mappedScenes": "./artifacts/review-scenes.json",
+    "compiledVideoMap": "./artifacts/demo-video-map.json",
+    "sourceReviewReport": "./artifacts/source-review-report.json"
+  },
+  "validationArtifacts": {
+    "demoVideoMap": "./artifacts/demo-video-map.json",
+    "renderProps": "./artifacts/render-props.json",
+    "previewFrames": [
+      "./artifacts/frames/scene-01.png",
+      "./artifacts/frames/scene-02.png",
+      "./artifacts/frames/scene-03.png"
+    ],
+    "renderReport": "./artifacts/render-report.json",
+    "videoBinaryRegistered": false
+  },
   "sourceReferences": [
-    { "id": "loc-timeline", "url": "https://www.loc.gov/pictures/", "selectedConcepts": ["archive caption discipline", "date-forward cataloging", "visible source context"] },
-    { "id": "nara-catalog", "url": "https://catalog.archives.gov/", "selectedConcepts": ["record identifiers", "chronological browsing", "missing-record transparency"] },
-    { "id": "remotion-animation", "url": "https://www.remotion.dev/docs/animating-properties", "selectedConcepts": ["frame-driven motion", "deterministic still output", "reduced-motion fallback"] }
+    {
+      "id": "w8-timeline-citizen-dj",
+      "url": "https://github.com/LibraryOfCongress/citizen-dj",
+      "selectedConcepts": [
+        "source-forward chronology",
+        "dated record navigation"
+      ]
+    },
+    {
+      "id": "w8-timeline-loc-pictures",
+      "url": "https://www.loc.gov/pictures/",
+      "selectedConcepts": [
+        "visible source context",
+        "catalog identifiers"
+      ]
+    },
+    {
+      "id": "w8-timeline-national-archives",
+      "url": "https://catalog.archives.gov/",
+      "selectedConcepts": [
+        "record provenance",
+        "missing-record transparency"
+      ]
+    }
   ],
-  "qualityGate": { "validated": true, "checks": ["visual package validator --strict", "TypeScript noEmit", "Remotion still renders", "portrait preview frames", "signalstats nonblank check", "repeat-render SHA-256 determinism"], "knownLimitations": ["Shared registry and app-root availability remain outside this ownership slice.", "16:9 support is metadata-ready only.", "Review imagery uses original archival abstractions instead of third-party historical photographs."] }
+  "qualityGate": {
+    "validated": true,
+    "checks": [
+      "visual package validator --strict",
+      "TypeScript noEmit",
+      "Remotion still renders",
+      "portrait preview frames",
+      "signalstats nonblank check",
+      "repeat-render SHA-256 determinism"
+    ],
+    "knownLimitations": [
+      "Shared registry and app-root availability remain outside this ownership slice.",
+      "16:9 support is metadata-ready only.",
+      "Review imagery uses original archival abstractions instead of third-party historical photographs."
+    ]
+  }
 }

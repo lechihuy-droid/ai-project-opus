@@ -1,0 +1,128 @@
+{
+  "report": "STYLE_RAG_PHASE1_GLOBAL_DATA_LUNA_AUDIT",
+  "schemaVersion": "luna-style-rag-global-data-audit/v3",
+  "owner": "Luna",
+  "repo": "C:/Users/HUY/workspace/ai-project-opus/opus-animus/opus-lucida/apps/lucida-remotion-demo",
+  "overall": "PASS",
+  "scope": {
+    "stylesRoot": "design/visual-library/styles",
+    "auditedFilesPerStyle": ["variants.json", "visual-patterns.json", "style-package.json"],
+    "expected": {"packages": 14, "variants": 70, "patterns": 420, "patternsPerVariant": 6},
+    "packageDataEdited": false,
+    "approvalOrPromotionPerformed": false
+  },
+  "method": {
+    "boundedEvidenceSources": [
+      "design/knowledge/reference-library/**/source.json where domain=visual-style, approval.status=approved, and rights.status=approved",
+      "design/reports/STYLE_RAG_PHASE1_HUMAN_REVIEW_QUEUE.json sourceQueue[].sourceId (102 IDs)"
+    ],
+    "allowedEvidenceRule": "Union of the two bounded sets; namespaced canonical source IDs also match their terminal bare ID when records use that ID form.",
+    "auditedStyleDirectories": 14,
+    "strictValidatorCommand": "npm run validate:visual-packages -- --strict",
+    "strictValidatorRuns": 1
+  },
+  "counts": {
+    "packages": {"observed": 14, "expected": 14, "status": "PASS"},
+    "variants": {"observed": 70, "expected": 70, "uniquePackageScopedKeys": 70, "status": "PASS"},
+    "patterns": {"observed": 420, "expected": 420, "uniqueGlobalPatternIds": 420, "status": "PASS"},
+    "patternsPerPackage": {"observed": 30, "expected": 30, "status": "PASS"},
+    "patternsPerVariant": {"observed": 6, "expected": 6, "variantsChecked": 70, "status": "PASS"},
+    "canonicalApprovedVisualStyleSources": 16,
+    "lunaReviewEligibleQueueIds": 102,
+    "boundedAllowedEvidenceUnion": 118
+  },
+  "exactIds": {
+    "packageIds": [
+      "cinematic-type", "claim-evidence", "code-walkthrough", "dashboard-data",
+      "editorial-collage", "interface-walkthrough", "minimal-education", "news-rundown",
+      "paper-notebook", "product-showcase", "system-architecture", "technical-editorial",
+      "terminal-command-center", "timeline-documentary"
+    ],
+    "variantIdsByPackage": {
+      "cinematic-type": ["cta", "hook", "quote", "takeaway", "transition"],
+      "claim-evidence": ["benchmark-audit", "claim-proof", "myth-reality", "pro-con", "source-triangulation"],
+      "code-walkthrough": ["api-sequence", "code-focus", "debugging-trace", "diff-review", "terminal-code-split"],
+      "dashboard-data": ["alert-triage", "capacity-plan", "cohort-compare", "handoff-queue", "sla-watch"],
+      "editorial-collage": ["archive-ledger", "dense", "edge", "normal", "signal-thread"],
+      "interface-walkthrough": ["dashboard-orientation", "data-table-inspect", "mobile-flow", "settings-spotlight", "workflow-stepper"],
+      "minimal-education": ["aligned-tradeoff", "cue-action-loop", "definition-spotlight", "guided-routine", "progress-check"],
+      "news-rundown": ["breaking-brief", "context-grid", "data-watch", "headline-stack", "live-update"],
+      "paper-notebook": ["checklist", "derivation", "lecture-outline", "notes", "revision-pass"],
+      "product-showcase": ["desktop-tour", "launch-reveal", "mobile-feature", "outcome-recap", "workflow-compare"],
+      "system-architecture": ["agent-graph", "data-pipeline", "dependency-map", "layered-stack", "request-flow"],
+      "technical-editorial": ["code-contract", "decision-recap", "evidence-ledger", "mechanism-flow", "risk-register"],
+      "terminal-command-center": ["agent-runtime", "clean-cli", "cyberdeck", "retro-crt", "system-monitor"],
+      "timeline-documentary": ["archive-gap", "closing-record", "origin-ledger", "parallel-threads", "turning-point"]
+    },
+    "patternIds": {
+      "recordsChecked": 420,
+      "uniqueGlobalPatternIds": 420,
+      "source": "design/visual-library/styles/*/visual-patterns.json"
+    }
+  },
+  "checks": {
+    "requiredFiles": {"status": "PASS", "missing": []},
+    "variantSchema": {"status": "PASS", "recordsChecked": 70},
+    "patternSchema": {"status": "PASS", "recordsChecked": 420},
+    "globalIds": {"status": "PASS", "duplicateVariantKeys": [], "duplicatePatternIds": []},
+    "sixPatternsPerVariant": {"status": "PASS", "failures": []},
+    "sourceEvidenceIdsAllowed": {
+      "status": "PASS",
+      "recordsChecked": 490,
+      "invalidCount": 0,
+      "emptyCount": 0,
+      "draftLocalCount": 0
+    },
+    "allRecordsProposed": {
+      "status": "PASS",
+      "variants": {"proposed": 70, "nonProposed": 0},
+      "patterns": {"proposed": 420, "nonProposed": 0}
+    },
+    "eligibilityPromotionApprovalKeys": {"status": "PASS", "observed": []},
+    "sourceReferencesNonEmpty": {"status": "PASS", "packagesChecked": 14, "emptyPackages": []},
+    "sourceReferencesAllowedIds": {
+      "status": "PASS",
+      "packagesChecked": 14,
+      "invalidCount": 0,
+      "failures": [],
+      "boundedUnionCount": 118,
+      "terminalBareCanonicalAliasesAccepted": true
+    },
+    "allEvidenceRefs": {
+      "status": "PASS",
+      "variantRecordsChecked": 70,
+      "patternRecordsChecked": 420,
+      "invalidCount": 0,
+      "emptyCount": 0,
+      "source": "design/visual-library/styles/*/{variants.json,visual-patterns.json}"
+    },
+    "strictVisualPackageValidator": {
+      "status": "PASS",
+      "exitCode": 0,
+      "validPackages": 14,
+      "migrationGapCount": 0,
+      "packageErrors": 0,
+      "failures": []
+    }
+  },
+  "evidence": {
+    "boundedAllowedEvidenceUnion": 118,
+    "canonicalApprovedVisualStyleSources": 16,
+    "lunaReviewEligibleQueueIds": 102,
+    "allVariantAndPatternEvidenceRefsAudited": true,
+    "allPackageSourceReferencesAudited": true,
+    "sourceFiles": [
+      "design/knowledge/reference-library/**/source.json",
+      "design/reports/STYLE_RAG_PHASE1_HUMAN_REVIEW_QUEUE.json",
+      "design/visual-library/styles/*/variants.json",
+      "design/visual-library/styles/*/visual-patterns.json",
+      "design/visual-library/styles/*/style-package.json"
+    ]
+  },
+  "nonActions": [
+    "No package, variant, pattern, or artifact data was edited.",
+    "No eligibility, approval, promotion, canonical ingest, or retrieval credit was performed.",
+    "Only this report was overwritten with the v3 audit."
+  ],
+  "decision": "PASS: bounded evidence, exact 14/70/420 IDs, schema checks, six patterns per variant, all evidence refs, all sourceReferences, proposed-only/no eligibility, artifact checks, and the single strict visual-package validator run pass."
+}

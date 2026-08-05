@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "lucida-run/v1",
+  "runId": "production-w2-fixture",
+  "lane": "production",
+  "styleMode": "auto",
+  "publicationStatus": "promotion_pending",
+  "approvalRefs": ["treatment-w2", "map-w2"]
+}

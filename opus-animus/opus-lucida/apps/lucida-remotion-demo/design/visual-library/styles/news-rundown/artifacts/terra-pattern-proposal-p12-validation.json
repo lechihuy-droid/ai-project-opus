@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "terra-pattern-proposal-p12-validation/v1",
+  "proposalId": "terra-pattern-proposal-p12",
+  "packageId": "news-rundown",
+  "proposalStatus": "pending-human-approval",
+  "humanPatternReview": "pending",
+  "compilerEligibility": "ineligible",
+  "canonicalPromotion": false,
+  "approvalAction": "none",
+  "scope": {
+    "patterns": "design/visual-library/styles/news-rundown/visual-patterns.json",
+    "validator": "design/visual-library/styles/news-rundown/validate-terra-pattern-proposals.mjs",
+    "ownership": "package-local only",
+    "collectionEdited": false,
+    "rendererEdited": false,
+    "globalEdited": false
+  },
+  "checks": {
+    "schemaValid": true,
+    "referencesValid": true,
+    "exactPatternCount": true,
+    "uniquePatternIds": true,
+    "patternsPerVariant": {
+      "breaking-update": 6,
+      "bulletin-grid": 6,
+      "headline-stack": 6,
+      "top-stories": 6,
+      "weekly-roundup": 6
+    },
+    "sixPatternsPerVariant": true,
+    "distinctRecipeTypesPerVariant": {
+      "breaking-update": [
+        "component",
+        "content-density",
+        "layout",
+        "motion",
+        "palette",
+        "typography"
+      ],
+      "bulletin-grid": [
+        "component",
+        "content-density",
+        "layout",
+        "motion",
+        "palette",
+        "typography"
+      ],
+      "headline-stack": [
+        "component",
+        "content-density",
+        "layout",
+        "motion",
+        "palette",
+        "typography"
+      ],
+      "top-stories": [
+        "component",
+        "content-density",
+        "layout",
+        "motion",
+        "palette",
+        "typography"
+      ],
+      "weekly-roundup": [
+        "component",
+        "content-density",
+        "layout",
+        "motion",
+        "palette",
+        "typography"
+      ]
+    },
+    "allReviewStatusesProposed": true,
+    "verifiedEvidence": [
+      {
+        "evidenceId": "w8-dashboard-primer-docs",
+        "artifact": "design/knowledge/reference-library/web/w8-dashboard-primer-docs/source.json",
+        "sourceId": "source:reference:w8-dashboard-primer-docs",
+        "sourceRef": "https://primer.style/",
+        "approved": true,
+        "schemaValid": true
+      },
+      {
+        "evidenceId": "w8-dashboard-remotion-animation",
+        "artifact": "design/knowledge/reference-library/web/w8-dashboard-remotion-animation/source.json",
+        "sourceId": "source:reference:w8-dashboard-remotion-animation",
+        "sourceRef": "https://www.remotion.dev/docs/animating-properties",
+        "approved": true,
+        "schemaValid": true
+      },
+      {
+        "evidenceId": "w8-minimal-nng-aesthetic",
+        "artifact": "design/knowledge/reference-library/web/w8-minimal-nng-aesthetic/source.json",
+        "sourceId": "source:reference:w8-minimal-nng-aesthetic",
+        "sourceRef": "https://www.nngroup.com/articles/aesthetic-minimalist-design/",
+        "approved": true,
+        "schemaValid": true
+      },
+      {
+        "evidenceId": "w8-minimal-nng-hierarchy",
+        "artifact": "design/knowledge/reference-library/web/w8-minimal-nng-hierarchy/source.json",
+        "sourceId": "source:reference:w8-minimal-nng-hierarchy",
+        "sourceRef": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/",
+        "approved": true,
+        "schemaValid": true
+      }
+    ]
+  },
+  "result": "PASS",
+  "errors": []
+}

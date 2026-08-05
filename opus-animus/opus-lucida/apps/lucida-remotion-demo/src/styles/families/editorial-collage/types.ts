@@ -1,8 +1,17 @@
 import type { MediaKind, MotionPolicy, SemanticTone, TextDensity } from "../../core";
 
-export type EditorialCollageFixtureKey = "normal" | "dense" | "edge";
+export const editorialCollageVariantIds = [
+  "source-montage",
+  "culture-recap",
+  "visual-essay",
+  "quote-collage",
+  "multi-source-evidence",
+] as const;
 
-export type EditorialCollageSceneType = "montage" | "evidence" | "recap";
+export type EditorialCollageFixtureKey =
+  (typeof editorialCollageVariantIds)[number];
+
+export type EditorialCollageSceneType = EditorialCollageFixtureKey;
 
 export type EditorialCollageAssetClassification =
   | "embed_asset"

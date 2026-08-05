@@ -42,3 +42,12 @@ export class JsonKnowledgeRepository {
 }
 
 export const createJsonRepository = (options) => new JsonKnowledgeRepository(options);
+<<<<<<< HEAD
+
+// Compatibility boundary for the former visual-only API. Production callers
+// must provide domain directly; only explicitly legacy callers may use this.
+export const createLegacyVisualJsonRepository = (options) => ({
+  query: (input = {}) => new JsonKnowledgeRepository(options).query({ ...input, domain: "visual-style" }),
+});
+=======
+>>>>>>> origin/main

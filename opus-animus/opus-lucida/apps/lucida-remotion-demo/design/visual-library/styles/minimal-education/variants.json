@@ -1,0 +1,297 @@
+[
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "single-concept",
+    "packageId": "minimal-education",
+    "label": "Single concept",
+    "description": "A focused term, plain-language meaning, and three supporting cues for a first-principles teaching beat.",
+    "intentTags": [
+      "explain",
+      "list"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "term-meaning-split",
+      "three-cue-rail"
+    ],
+    "typographyTraits": [
+      "dominant-teaching-headline",
+      "compact-term-label"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "blue-semantic-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 88,
+      "bodyChars": 360,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "single concept definition"
+    ],
+    "antiPatterns": [
+      "multiple competing terms"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound proposed single concept variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "step-sequence",
+    "packageId": "minimal-education",
+    "label": "Step sequence",
+    "description": "A calm three-step teaching rail for showing an adult or learner the next observable action.",
+    "intentTags": [
+      "process",
+      "list"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "numbered-action-rail",
+      "single-active-step"
+    ],
+    "typographyTraits": [
+      "dominant-teaching-headline",
+      "readable-step-titles"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "gold-progress-focus"
+    ],
+    "motionTraits": [
+      "staggered-rows",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 88,
+      "bodyChars": 360,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "short guided sequence"
+    ],
+    "antiPatterns": [
+      "more than one active instruction"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound proposed step sequence variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "comparison-cards",
+    "packageId": "minimal-education",
+    "label": "Comparison cards",
+    "description": "A compact comparison board that keeps two teaching choices aligned against the same decision points.",
+    "intentTags": [
+      "comparison",
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "aligned-decision-rows",
+      "two-choice-comparison"
+    ],
+    "typographyTraits": [
+      "compact-criterion-labels",
+      "readable-comparison-values"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "blue-and-gold-semantic-focus"
+    ],
+    "motionTraits": [
+      "staggered-rows",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 88,
+      "bodyChars": 360,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "teaching format comparison"
+    ],
+    "antiPatterns": [
+      "unmatched comparison criteria"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-material-web"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound proposed comparison cards variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "checklist",
+    "packageId": "minimal-education",
+    "label": "Checklist",
+    "description": "A compact checklist that turns a learning checkpoint into three named observations and one next action.",
+    "intentTags": [
+      "takeaway",
+      "process"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "checkpoint-action-rail",
+      "single-active-observation"
+    ],
+    "typographyTraits": [
+      "dominant-teaching-headline",
+      "readable-step-titles"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "coral-checkpoint-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 88,
+      "bodyChars": 360,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "learning review checklist"
+    ],
+    "antiPatterns": [
+      "grading without a next action"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound proposed checklist variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "takeaway",
+    "packageId": "minimal-education",
+    "label": "Takeaway",
+    "description": "A focused takeaway that names the signal, smallest action, and completion cue for a repeatable learning routine.",
+    "intentTags": [
+      "takeaway",
+      "explain"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "loop-definition-split",
+      "repeatable-cue-rail"
+    ],
+    "typographyTraits": [
+      "dominant-teaching-headline",
+      "readable-process-labels"
+    ],
+    "paletteTraits": [
+      "light-neutral-canvas",
+      "teal-semantic-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "headline-stack",
+      "semantic-callout",
+      "teaching-rail"
+    ],
+    "contentCapacity": {
+      "headlineChars": 88,
+      "bodyChars": 360,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "repeatable learning takeaway"
+    ],
+    "antiPatterns": [
+      "unsequenced habit advice"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound proposed takeaway variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  }
+]

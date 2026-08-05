@@ -20,7 +20,8 @@ import {
   stableJson,
   writeStableJson,
 } from "./index-utils.mjs";
-import { compileReferences } from "./compile-references.mjs";
+import { compileReferences, compileStylePatterns } from "./compile-references.mjs";
+import { domainCounts } from "./evidence-domain.mjs";
 
 const appRoot = process.cwd();
 const templatesDir = path.join(appRoot, "design", "template-library");
@@ -40,6 +41,7 @@ if (validation.status !== 0) {
 }
 
 const referenceIndex = compileReferences({ appRoot });
+const stylePatternIndex = compileStylePatterns({ appRoot });
 
 const templateEntries = fs
   .readdirSync(templatesDir, { withFileTypes: true })
@@ -52,6 +54,7 @@ const templateEntries = fs
     const adapterPath = resolveProjectPath(appRoot, template.adapter.path, `template ${template.id} adapter`);
     const familyPath = resolveProjectPath(appRoot, template.familyRef, `template ${template.id} family`);
     const entryWithoutHash = {
+      domain: "visual-style",
       id: template.id,
       logicalId: template.logicalId,
       version: template.version,
@@ -141,6 +144,7 @@ try {
     "director-index.json": directorIndex,
     "compatibility-index.json": compatibilityIndex,
     "reference-index.json": referenceIndex,
+    "style-pattern-index.json": stylePatternIndex,
   };
   for (const [file, value] of Object.entries(artifacts)) {
     writeStableJson(path.join(stagingDir, file), value);
@@ -157,7 +161,22 @@ try {
       referenceChunks: referenceIndex.chunks.length,
       referenceDocuments: referenceIndex.documents.length,
       referenceSources: referenceIndex.sources.length,
+      stylePatternPackages: stylePatternIndex.packages.length,
+      stylePatternVariants: stylePatternIndex.variants.length,
+      stylePatterns: stylePatternIndex.patterns.length,
       templates: templateEntries.length,
+    },
+    domainCounts: {
+      templates: domainCounts(templateEntries, "template"),
+      referenceSources: referenceIndex.domainCounts.sources,
+      referenceDocuments: referenceIndex.domainCounts.documents,
+      referenceChunks: referenceIndex.domainCounts.chunks,
+    },
+    domainHashes: {
+      templates: sha256(stableJson(templateEntries.map(({ id, domain }) => ({ id, domain })))),
+      referenceSources: sha256(stableJson(referenceIndex.sources.map(({ sourceId, domain }) => ({ id: sourceId, domain })))),
+      referenceDocuments: sha256(stableJson(referenceIndex.documents.map(({ documentId, domain }) => ({ id: documentId, domain })))),
+      referenceChunks: sha256(stableJson(referenceIndex.chunks.map(({ chunkId, domain }) => ({ id: chunkId, domain })))),
     },
   };
   writeStableJson(path.join(stagingDir, "manifest.json"), {
@@ -170,4 +189,4 @@ try {
   throw error;
 }
 
-console.log(`Knowledge compile passed: ${templateEntries.length} template(s), ${adapterEntries.length} adapter(s), ${referenceIndex.sources.length} approved reference source(s).`);
+console.log(`Knowledge compile passed: ${templateEntries.length} template(s), ${adapterEntries.length} adapter(s), ${referenceIndex.sources.length} approved reference source(s), ${stylePatternIndex.patterns.length} eligible style pattern(s).`);

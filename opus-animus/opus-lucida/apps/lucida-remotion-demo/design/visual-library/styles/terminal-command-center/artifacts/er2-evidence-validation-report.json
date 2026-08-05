@@ -1,0 +1,271 @@
+{
+  "schemaVersion": "lucida-er2-evidence-validation/v1",
+  "packageId": "terminal-command-center",
+  "lunaRule": "A sourceEvidenceId passes only when it resolves to a canonical source with domain visual-style, approval.status approved, and rights.status approved, or to an exact source ID listed as eligible by a PASS Luna review artifact. A review PNG or generic completed ingest report is not sufficient.",
+  "counts": {
+    "variants": 5,
+    "patterns": 30,
+    "evidenceReferences": 35
+  },
+  "allowedEvidence": {
+    "approvedCanonicalCount": 16,
+    "lunaReviewEligibleCount": 88
+  },
+  "checks": {
+    "allSourceEvidenceIdsResolveUnderLunaRule": true,
+    "interfaceSourceReferencesResolveUnderLunaRule": true,
+    "allVariantsProposed": true,
+    "allPatternsProposed": true
+  },
+  "resolvedRecords": [
+    {
+      "kind": "variant",
+      "id": "clean-cli",
+      "sourceEvidenceIds": [
+        "repo-microsoft-terminal"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "agent-runtime",
+      "sourceEvidenceIds": [
+        "web-zellij"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "system-monitor",
+      "sourceEvidenceIds": [
+        "web-wezterm"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "cyberdeck",
+      "sourceEvidenceIds": [
+        "repo-charmbracelet-vhs"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "retro-crt",
+      "sourceEvidenceIds": [
+        "repo-charmbracelet-vhs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-clean-cli-command-result-stack",
+      "sourceEvidenceIds": [
+        "repo-microsoft-terminal"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-clean-cli-prompt-path-chrome",
+      "sourceEvidenceIds": [
+        "repo-microsoft-terminal"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-clean-cli-tokenized-typing-reveal",
+      "sourceEvidenceIds": [
+        "repo-microsoft-terminal"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-clean-cli-command-output-contrast",
+      "sourceEvidenceIds": [
+        "repo-microsoft-terminal"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-clean-cli-inline-exit-summary",
+      "sourceEvidenceIds": [
+        "repo-microsoft-terminal"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-clean-cli-short-transcript-budget",
+      "sourceEvidenceIds": [
+        "repo-microsoft-terminal"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-agent-runtime-active-queue-done-lanes",
+      "sourceEvidenceIds": [
+        "web-zellij"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-agent-runtime-task-row-contract",
+      "sourceEvidenceIds": [
+        "web-zellij"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-agent-runtime-progressive-status-transition",
+      "sourceEvidenceIds": [
+        "web-zellij"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-agent-runtime-command-and-queue-split",
+      "sourceEvidenceIds": [
+        "web-zellij"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-agent-runtime-bounded-worker-roster",
+      "sourceEvidenceIds": [
+        "web-zellij"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-agent-runtime-handoff-checkpoint",
+      "sourceEvidenceIds": [
+        "web-zellij"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-system-monitor-metric-strip-trace",
+      "sourceEvidenceIds": [
+        "web-wezterm"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-system-monitor-severity-row",
+      "sourceEvidenceIds": [
+        "web-wezterm"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-system-monitor-threshold-crossing",
+      "sourceEvidenceIds": [
+        "web-wezterm"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-system-monitor-triage-columns",
+      "sourceEvidenceIds": [
+        "web-wezterm"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-system-monitor-incident-to-remediation",
+      "sourceEvidenceIds": [
+        "web-wezterm"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-system-monitor-four-signal-budget",
+      "sourceEvidenceIds": [
+        "web-wezterm"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-cyberdeck-launch-command-module-grid",
+      "sourceEvidenceIds": [
+        "repo-charmbracelet-vhs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-cyberdeck-module-card-contract",
+      "sourceEvidenceIds": [
+        "repo-charmbracelet-vhs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-cyberdeck-accent-role-limiter",
+      "sourceEvidenceIds": [
+        "repo-charmbracelet-vhs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-cyberdeck-pulse-on-actionable-state",
+      "sourceEvidenceIds": [
+        "repo-charmbracelet-vhs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-cyberdeck-command-to-system-bridge",
+      "sourceEvidenceIds": [
+        "repo-charmbracelet-vhs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-cyberdeck-operator-launch-use-case",
+      "sourceEvidenceIds": [
+        "repo-charmbracelet-vhs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-retro-crt-phosphor-diagnostic-frame",
+      "sourceEvidenceIds": [
+        "repo-charmbracelet-vhs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-retro-crt-phosphor-hierarchy",
+      "sourceEvidenceIds": [
+        "repo-charmbracelet-vhs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-retro-crt-amber-noise-budget",
+      "sourceEvidenceIds": [
+        "repo-charmbracelet-vhs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-retro-crt-one-shot-boot-reveal",
+      "sourceEvidenceIds": [
+        "repo-charmbracelet-vhs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-retro-crt-diagnosis-and-verdict",
+      "sourceEvidenceIds": [
+        "repo-charmbracelet-vhs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "tcc-retro-crt-readable-effect-guardrail",
+      "sourceEvidenceIds": [
+        "repo-charmbracelet-vhs"
+      ]
+    }
+  ],
+  "sourceReferences": [],
+  "failures": [],
+  "sourceReferenceFailures": [],
+  "result": "PASS"
+}

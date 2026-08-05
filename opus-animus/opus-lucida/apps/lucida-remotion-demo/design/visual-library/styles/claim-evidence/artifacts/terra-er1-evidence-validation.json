@@ -1,0 +1,297 @@
+{
+  "schemaVersion": "terra-er1-package-evidence-validation/v1",
+  "packageId": "claim-evidence",
+  "lunaEvidenceRule": "canonical visual-style source with approved approval and rights, or exact LUNA_VERIFIED_REVIEW_ELIGIBLE queue source ID.",
+  "status": "PASS",
+  "variantCount": 5,
+  "patternCount": 30,
+  "proposedVariantCount": 5,
+  "proposedPatternCount": 30,
+  "records": [
+    {
+      "recordType": "sourceReference",
+      "recordId": "w8-minimal-nng-hierarchy",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "sourceReference",
+      "recordId": "w8-dashboard-primer-react",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "sourceReference",
+      "recordId": "w8-technical-primer-foundations",
+      "sourceEvidenceId": "w8-technical-primer-foundations",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "sourceReference",
+      "recordId": "w8-dashboard-remotion-animation",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "claim-proof",
+      "sourceEvidenceId": "w8-technical-primer-foundations",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "pro-con",
+      "sourceEvidenceId": "w8-technical-primer-foundations",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "benchmark-audit",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "myth-reality",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "variant",
+      "recordId": "source-triangulation",
+      "sourceEvidenceId": "w8-dashboard-primer-react",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-claim-proof-claim-ledger-layout",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-claim-proof-claim-weight-typography",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-claim-proof-confidence-role-palette",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-claim-proof-proof-before-verdict-motion",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-claim-proof-source-verdict-component",
+      "sourceEvidenceId": "w8-technical-primer-foundations",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-claim-proof-bounded-proof-composition",
+      "sourceEvidenceId": "w8-technical-primer-foundations",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-pro-con-balanced-evidence-layout",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-pro-con-direction-label-typography",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-pro-con-direction-role-palette",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-pro-con-paired-evidence-motion",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-pro-con-matched-evidence-row-component",
+      "sourceEvidenceId": "w8-technical-primer-foundations",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-pro-con-conditional-verdict-composition",
+      "sourceEvidenceId": "w8-technical-primer-foundations",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-benchmark-audit-metric-threshold-layout",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-benchmark-audit-metric-value-typography",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-benchmark-audit-threshold-role-palette",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-benchmark-audit-stable-row-motion",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-benchmark-audit-source-metric-component",
+      "sourceEvidenceId": "w8-technical-primer-foundations",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-benchmark-audit-audit-to-verdict-composition",
+      "sourceEvidenceId": "w8-technical-primer-foundations",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-myth-reality-correction-stack-layout",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-myth-reality-replacement-typography",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-myth-reality-correction-role-palette",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-myth-reality-correction-sequence-motion",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-myth-reality-scoped-correction-component",
+      "sourceEvidenceId": "w8-technical-primer-foundations",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-myth-reality-scope-first-composition",
+      "sourceEvidenceId": "w8-technical-primer-foundations",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-source-triangulation-three-source-layout",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-source-triangulation-three-source-layout",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-source-triangulation-three-source-layout",
+      "sourceEvidenceId": "w8-technical-primer-foundations",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-source-triangulation-source-first-typography",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-source-triangulation-source-first-typography",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-source-triangulation-source-first-typography",
+      "sourceEvidenceId": "w8-technical-primer-foundations",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-source-triangulation-scope-role-palette",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-source-triangulation-scope-role-palette",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-source-triangulation-scope-role-palette",
+      "sourceEvidenceId": "w8-technical-primer-foundations",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-source-triangulation-stable-source-motion",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-source-triangulation-cited-source-cell-component",
+      "sourceEvidenceId": "w8-technical-primer-foundations",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-source-triangulation-provisional-synthesis-composition",
+      "sourceEvidenceId": "w8-minimal-nng-hierarchy",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-source-triangulation-provisional-synthesis-composition",
+      "sourceEvidenceId": "w8-dashboard-remotion-animation",
+      "resolvedBy": "canonical-approved"
+    },
+    {
+      "recordType": "pattern",
+      "recordId": "ce-source-triangulation-provisional-synthesis-composition",
+      "sourceEvidenceId": "w8-technical-primer-foundations",
+      "resolvedBy": "canonical-approved"
+    }
+  ],
+  "failures": [],
+  "approvalOrPromotionPerformed": false,
+  "compilerEligibility": false
+}

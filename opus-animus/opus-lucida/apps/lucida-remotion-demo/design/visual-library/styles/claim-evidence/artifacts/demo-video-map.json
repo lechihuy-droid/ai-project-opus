@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "lucida-claim-evidence-demo/v1",
+  "packageId": "claim-evidence",
+  "compositionId": "ClaimEvidenceFamilyReview",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "scenes": [
+    {"id":"scene-01","sceneKey":"claim-proof","frame":42,"output":"frames/scene-01.png"},
+    {"id":"scene-02","sceneKey":"pro-con","frame":42,"output":"frames/scene-02.png"},
+    {"id":"scene-03","sceneKey":"benchmark-audit","frame":42,"output":"frames/scene-03.png"},
+    {"id":"scene-04","sceneKey":"myth-reality","frame":42,"output":"frames/scene-04.png"},
+    {"id":"scene-05","sceneKey":"source-triangulation","frame":42,"output":"frames/scene-05.png"}
+  ]
+}

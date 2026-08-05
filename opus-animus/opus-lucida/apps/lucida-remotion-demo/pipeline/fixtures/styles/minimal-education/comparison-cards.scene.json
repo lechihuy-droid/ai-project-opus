@@ -1,0 +1,46 @@
+{
+  "sceneId": "comparison-cards-scene",
+  "sceneType": "comparison",
+  "durationInFrames": 210,
+  "motionPolicy": "reduce",
+  "density": "dense",
+  "accentTone": "blue",
+  "eyebrow": "Compare the choices",
+  "title": "Use comparison cards when two teaching choices must answer the same learner need side by side.",
+  "summary": "The comparison stays useful because each row asks one decision question before either choice is described.",
+  "footer": "When one option clearly fits every row, use a short step sequence instead.",
+  "callout": {
+    "label": "Selection rule",
+    "value": "Compare only choices that share the same decision points."
+  },
+  "comparison": {
+    "leftTitle": "Model first",
+    "rightTitle": "Prompt first",
+    "criteria": [
+      {
+        "label": "Learner has not seen the target action before",
+        "leftValue": "Show one complete example so the expected move is visible.",
+        "rightValue": "Use only after the learner has a clear reference to recall.",
+        "emphasis": "left"
+      },
+      {
+        "label": "Learner can already begin but needs a small reminder",
+        "leftValue": "A full model may take over an action the learner can start alone.",
+        "rightValue": "Ask one focused question that directs attention back to the next move.",
+        "emphasis": "right"
+      },
+      {
+        "label": "Adult needs to notice where the routine breaks down",
+        "leftValue": "The model makes the intended sequence explicit for later comparison.",
+        "rightValue": "The prompt reveals which step the learner can retrieve independently.",
+        "emphasis": "both"
+      },
+      {
+        "label": "Time is short and the next action must stay visible",
+        "leftValue": "Use the shortest possible demonstration with no extra explanation.",
+        "rightValue": "Use one cue when the learner already knows the routine.",
+        "emphasis": "neutral"
+      }
+    ]
+  }
+}

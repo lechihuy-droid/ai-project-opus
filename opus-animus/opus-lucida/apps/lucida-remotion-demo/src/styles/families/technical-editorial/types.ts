@@ -1,6 +1,21 @@
 import type { MotionPolicy, SemanticTone, TextDensity } from "../../core";
 
-export type TechnicalEditorialFixtureKey = "normal" | "dense" | "edge";
+export const technicalEditorialVariantIds = [
+  "technical-brief",
+  "annotated-explainer",
+  "data-essay",
+  "research-digest",
+  "evidence-grid",
+] as const;
+
+export type TechnicalEditorialVariantId =
+  (typeof technicalEditorialVariantIds)[number];
+
+export type TechnicalEditorialFixtureKey =
+  | "normal"
+  | "dense"
+  | "edge"
+  | TechnicalEditorialVariantId;
 
 export type TechnicalEditorialAnnotation = {
   label: string;

@@ -8,6 +8,18 @@
       "enum": ["slides", "continuous"],
       "default": "slides"
     },
+    "actors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "target"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "target": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
     "environment": {
       "type": "object",
       "required": ["component", "variant", "props"],
@@ -23,7 +35,17 @@
             "vietnameseText": { "type": "string" },
             "state": { "enum": ["draft", "sent"] },
             "showCursor": { "type": "boolean" },
-            "cursorBlinkFrames": { "type": "number", "exclusiveMinimum": 0 }
+            "cursorBlinkFrames": { "type": "number", "exclusiveMinimum": 0 },
+            "position": {
+              "type": "object",
+              "required": ["left", "top"],
+              "properties": {
+                "left": { "type": "number" },
+                "top": { "type": "number" }
+              },
+              "additionalProperties": false
+            },
+            "scale": { "type": "number", "exclusiveMinimum": 0 }
           },
           "additionalProperties": false
         }
@@ -140,6 +162,7 @@
             "enum": [
               "hook",
               "problem",
+              "explain",
               "comparison",
               "process",
               "system_architecture",
@@ -165,7 +188,7 @@
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["target", "action", "props"],
+              "required": ["target", "action"],
               "properties": {
                 "target": { "type": "string", "minLength": 1 },
                 "action": { "enum": ["add", "update", "remove"] },
@@ -176,9 +199,77 @@
                 },
                 "props": {
                   "type": "object",
+                  "properties": {
+                    "component": {
+                      "enum": [
+                        "ContextChip",
+                        "TimerMorph",
+                        "DiffHighlight",
+                        "MechanismWindow"
+                      ]
+                    },
+                    "variant": { "enum": ["email", "chat", "doc"] },
+                    "title": { "type": "string" },
+                    "japaneseText": { "type": "string" },
+                    "vietnameseText": { "type": "string" },
+                    "state": { "enum": ["draft", "sent"] },
+                    "showCursor": { "type": "boolean" },
+                    "cursorBlinkFrames": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "position": {
+                      "type": "object",
+                      "required": ["left", "top"],
+                      "properties": {
+                        "left": { "type": "number" },
+                        "top": { "type": "number" }
+                      },
+                      "additionalProperties": false
+                    },
+                    "scale": { "type": "number", "exclusiveMinimum": 0 }
+                  },
                   "additionalProperties": true
                 }
               },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "action": { "enum": ["add", "update"] }
+                    }
+                  },
+                  "then": { "required": ["props"] }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "action": { "const": "add" },
+                      "props": {
+                        "required": ["component"],
+                        "properties": {
+                          "component": { "const": "MechanismWindow" }
+                        }
+                      }
+                    },
+                    "required": ["props"]
+                  },
+                  "then": {
+                    "properties": {
+                      "props": {
+                        "required": [
+                          "component",
+                          "variant",
+                          "title",
+                          "japaneseText",
+                          "vietnameseText",
+                          "position"
+                        ]
+                      }
+                    }
+                  }
+                }
+              ],
               "additionalProperties": false
             }
           },

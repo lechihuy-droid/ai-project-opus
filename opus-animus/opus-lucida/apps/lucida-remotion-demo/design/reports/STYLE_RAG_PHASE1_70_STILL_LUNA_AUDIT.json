@@ -1,0 +1,130 @@
+{
+  "report": "Luna R70 technical audit",
+  "schemaVersion": "lucida-style-rag-phase1-luna-r70-audit/v1",
+  "generatedAt": "2026-07-18T07:12:53.8172927Z",
+  "owner": "Luna",
+  "repo": "apps/lucida-remotion-demo",
+  "scope": {
+    "registry": "src/styles/review/renderer-registry.mjs",
+    "manifest": "design/reports/style-rag-phase1-stills/manifest.json",
+    "variantSources": "design/visual-library/styles/*/variants.json",
+    "stillRoot": "design/reports/style-rag-phase1-stills/stills",
+    "technicalOnly": true
+  },
+  "overall": {
+    "status": "PASS",
+    "technicalAuditPassed": true,
+    "approvalOrPromotion": "NOT_PERFORMED"
+  },
+  "checks": {
+    "registry": {
+      "recordCount": 70,
+      "uniquePackageVariantMappings": 70,
+      "packageCount": 14,
+      "recordsPerPackage": 5,
+      "duplicateKeys": [],
+      "registryTest": {
+        "command": "node --test tests/styles/review-renderer-registry.test.mjs",
+        "status": "PASS",
+        "tests": 3,
+        "passed": 3,
+        "failed": 0
+      },
+      "harnessValidateOnly": {
+        "command": "node scripts/render-style-variant-stills.mjs --validate-only",
+        "status": "PASS",
+        "validatedRecords": 70,
+        "selectedRecords": 70
+      }
+    },
+    "variants": {
+      "variantsFileCount": 14,
+      "packageCount": 14,
+      "totalDeclaredVariants": 70,
+      "exactRegistryVariantSetMatch": true,
+      "packages": [
+        {"packageId": "cinematic-type", "variantIds": ["cta", "hook", "quote", "takeaway", "transition"], "registryCount": 5, "variantsJsonCount": 5, "exactMatch": true},
+        {"packageId": "claim-evidence", "variantIds": ["benchmark-audit", "claim-proof", "myth-reality", "pro-con", "source-triangulation"], "registryCount": 5, "variantsJsonCount": 5, "exactMatch": true},
+        {"packageId": "code-walkthrough", "variantIds": ["api-sequence", "code-focus", "debugging-trace", "diff-review", "terminal-code-split"], "registryCount": 5, "variantsJsonCount": 5, "exactMatch": true},
+        {"packageId": "dashboard-data", "variantIds": ["alert-triage", "capacity-plan", "cohort-compare", "handoff-queue", "sla-watch"], "registryCount": 5, "variantsJsonCount": 5, "exactMatch": true},
+        {"packageId": "editorial-collage", "variantIds": ["archive-ledger", "dense", "edge", "normal", "signal-thread"], "registryCount": 5, "variantsJsonCount": 5, "exactMatch": true},
+        {"packageId": "interface-walkthrough", "variantIds": ["dashboard-orientation", "data-table-inspect", "mobile-flow", "settings-spotlight", "workflow-stepper"], "registryCount": 5, "variantsJsonCount": 5, "exactMatch": true},
+        {"packageId": "minimal-education", "variantIds": ["aligned-tradeoff", "cue-action-loop", "definition-spotlight", "guided-routine", "progress-check"], "registryCount": 5, "variantsJsonCount": 5, "exactMatch": true},
+        {"packageId": "news-rundown", "variantIds": ["breaking-brief", "context-grid", "data-watch", "headline-stack", "live-update"], "registryCount": 5, "variantsJsonCount": 5, "exactMatch": true},
+        {"packageId": "paper-notebook", "variantIds": ["checklist", "derivation", "lecture-outline", "notes", "revision-pass"], "registryCount": 5, "variantsJsonCount": 5, "exactMatch": true},
+        {"packageId": "product-showcase", "variantIds": ["desktop-tour", "launch-reveal", "mobile-feature", "outcome-recap", "workflow-compare"], "registryCount": 5, "variantsJsonCount": 5, "exactMatch": true},
+        {"packageId": "system-architecture", "variantIds": ["agent-graph", "data-pipeline", "dependency-map", "layered-stack", "request-flow"], "registryCount": 5, "variantsJsonCount": 5, "exactMatch": true},
+        {"packageId": "technical-editorial", "variantIds": ["code-contract", "decision-recap", "evidence-ledger", "mechanism-flow", "risk-register"], "registryCount": 5, "variantsJsonCount": 5, "exactMatch": true},
+        {"packageId": "terminal-command-center", "variantIds": ["agent-runtime", "clean-cli", "cyberdeck", "retro-crt", "system-monitor"], "registryCount": 5, "variantsJsonCount": 5, "exactMatch": true},
+        {"packageId": "timeline-documentary", "variantIds": ["archive-gap", "closing-record", "origin-ledger", "parallel-threads", "turning-point"], "registryCount": 5, "variantsJsonCount": 5, "exactMatch": true}
+      ]
+    },
+    "manifest": {
+      "recordCount": 70,
+      "uniquePackageVariantMappings": 70,
+      "duplicateKeys": [],
+      "registryKeySetExactMatch": true,
+      "manifestOutputPathsMatchRegistry": 70
+    },
+    "pngOutputs": {
+      "expectedCount": 70,
+      "actualPngCount": 70,
+      "missingOutputs": [],
+      "extraOutputs": [],
+      "extraNonPngFiles": [],
+      "positiveFileBytes": 70,
+      "sha256": {
+        "method": "Recomputed SHA256 from each PNG byte stream and compared with manifest.sha256.",
+        "verified": 70,
+        "mismatches": []
+      },
+      "fileBytes": {
+        "method": "Compared filesystem byte length with manifest.fileBytes.",
+        "verified": 70,
+        "mismatches": []
+      },
+      "dimensions": {
+        "method": "Parsed PNG signature and IHDR width/height directly from each PNG.",
+        "expected": {"width": 1080, "height": 1920},
+        "verified": 70,
+        "invalidPngSignatures": [],
+        "mismatches": []
+      },
+      "nonBlank": {
+        "method": "Ran ffprobe signalstats for every PNG; pass when YHIGH-YLOW >= 8 or SATAVG >= 3, matching harness logic.",
+        "verified": 70,
+        "failures": [],
+        "dynamicRangeMinimum": 6,
+        "dynamicRangeMaximum": 182,
+        "saturationAverageMinimum": 2.14255,
+        "saturationAverageMaximum": 10.3054
+      }
+    },
+    "productionIsolation": {
+      "status": "PASS",
+      "forbiddenReviewReferences": [],
+      "checkedModules": [
+        "src/Composition.tsx",
+        "src/styles/runtime/RuntimeStyleRenderer.tsx",
+        "src/styles/runtime/index.ts",
+        "pipeline/director/load-production-director.mjs",
+        "pipeline/director/evaluate-candidates.mjs",
+        "pipeline/director/style-identifiers.mjs",
+        "pipeline/mappers/map-scenes.mjs"
+      ],
+      "forbiddenPattern": "styles/review | reviewRendererRegistry | review-renderer-registry"
+    }
+  },
+  "evidence": {
+    "registryTest": "tests/styles/review-renderer-registry.test.mjs",
+    "validateOnlyHarness": "scripts/render-style-variant-stills.mjs",
+    "registrySource": "src/styles/review/renderer-registry.mjs",
+    "manifestSource": "design/reports/style-rag-phase1-stills/manifest.json"
+  },
+  "nonActions": [
+    "No aesthetic quality assessment.",
+    "No PNG or render edits.",
+    "No approval, promotion, canonical ingest, or retrieval credit.",
+    "No production runtime or Director changes."
+  ]
+}

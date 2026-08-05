@@ -1,0 +1,170 @@
+{
+  "schemaVersion": "lucida-style-package/v1",
+  "id": "code-walkthrough",
+  "label": "Code Walkthrough",
+  "version": "0.1.0",
+  "status": "draft",
+  "visualFamily": "code-walkthrough",
+  "description": "Draft portrait package for readable code explanations, semantic diffs, API sequences, debugging traces, and terminal-to-code comparisons.",
+  "tags": [
+    "code",
+    "diff",
+    "api",
+    "debugging",
+    "terminal"
+  ],
+  "supportedIntents": [
+    "code-explanation",
+    "compare",
+    "process",
+    "debugging"
+  ],
+  "recommendedIntents": [
+    "code-explanation",
+    "compare",
+    "process"
+  ],
+  "avoidFor": [
+    "image-led product reveals",
+    "emotion-led testimonials",
+    "unstructured lifestyle montage"
+  ],
+  "aspectRatios": [
+    "9:16"
+  ],
+  "contentCapacity": {
+    "headlineChars": 86,
+    "bodyChars": 220,
+    "bulletsMaxItems": 3,
+    "maxCodeLines": 12,
+    "maxPanels": 2
+  },
+  "renderCost": {
+    "tier": "medium",
+    "estimatedSceneComplexity": 5,
+    "notes": "Two fixed portrait surfaces and lightweight frame-driven entrances."
+  },
+  "reducedMotion": {
+    "strategy": "simplified-motion",
+    "notes": "Reduce and static policies preserve layout and use only restrained entrances."
+  },
+  "accessibility": {
+    "contrast": "AA",
+    "notes": "High contrast code, fixed line gutters, textual diff markers, and a caption-safe surface."
+  },
+  "directorCompatibility": {
+    "selectionReason": "Use when source code or an execution trace is the primary evidence.",
+    "hardBlocks": [
+      "Registration remains pending outside this package ownership."
+    ]
+  },
+  "files": {
+    "visual": "./visual.json",
+    "tokens": "./tokens.json",
+    "componentMap": "./component-map.json",
+    "provenance": "./provenance.md",
+    "artifactManifest": "./artifact-manifest.json"
+  },
+  "sourcePolicy": {
+    "copyStatus": "not-assessed",
+    "registeredMedia": "none",
+    "notes": "Draft implementation uses local fixtures and Lucida shared primitives. No source approval or pattern claim is made."
+  },
+  "tokens": {
+    "palette": "neutral charcoal with cyan focus, green additions, red removals, and amber warnings",
+    "typography": "UI sans for explanation and system monospace for code",
+    "surface": "fixed line geometry with low-radius code panels"
+  },
+  "layoutGrammar": [
+    "Keep code as the dominant readable surface.",
+    "Use fixed line-number and semantic-marker gutters.",
+    "Use plus and minus markers with color for diffs.",
+    "Reserve a stable lower caption-safe panel.",
+    "Do not animate layout dimensions or line positions."
+  ],
+  "componentPrimitives": [
+    {
+      "id": "code-surface",
+      "role": "content",
+      "notes": "Fixed code lines, line numbers, and semantic markers."
+    },
+    {
+      "id": "trace-rail",
+      "role": "support",
+      "notes": "Ordered review state or sequence context."
+    },
+    {
+      "id": "caption-safe-panel",
+      "role": "caption",
+      "notes": "Lower safe-area explanation panel."
+    }
+  ],
+  "templateBindings": {
+    "preferredTemplates": [
+      "code-focus",
+      "diff-review",
+      "api-sequence",
+      "debugging-trace",
+      "terminal-code-split"
+    ],
+    "layouts": [
+      "code-rail",
+      "terminal-split"
+    ],
+    "backgroundEffects": [
+      "quiet-line-grid"
+    ],
+    "motionPreset": "code-entrance"
+  },
+  "sourceArtifacts": {
+    "sourceReviewReport": "./artifacts/source-review-report.json"
+  },
+  "validationArtifacts": {
+    "demoVideoMap": "./artifacts/demo-video-map.json",
+    "renderProps": "./artifacts/render-props.json",
+    "previewFrames": [
+      "./artifacts/frames/scene-01.png",
+      "./artifacts/frames/scene-02.png",
+      "./artifacts/frames/scene-03.png",
+      "./artifacts/frames/scene-04.png",
+      "./artifacts/frames/scene-05.png"
+    ],
+    "renderReport": "./artifacts/render-report.json",
+    "videoBinaryRegistered": false
+  },
+  "sourceReferences": [
+    {
+      "id": "w8-technical-reveal-code",
+      "url": "https://www.remotion.dev/docs/",
+      "selectedConcepts": [
+        "local renderer API reference only"
+      ]
+    },
+    {
+      "id": "w8-technical-primer-primitives",
+      "url": "https://www.remotion.dev/docs/",
+      "selectedConcepts": [
+        "local renderer API reference only"
+      ]
+    },
+    {
+      "id": "fixture-terminal-repo",
+      "url": "https://www.remotion.dev/docs/",
+      "selectedConcepts": [
+        "local renderer API reference only"
+      ]
+    }
+  ],
+  "qualityGate": {
+    "validated": false,
+    "checks": [
+      "targeted TypeScript check pending",
+      "local still render pending",
+      "registration intentionally pending"
+    ],
+    "knownLimitations": [
+      "This draft is not registered for runtime selection.",
+      "No source approval or visual-pattern claim is included."
+    ]
+  }
+}

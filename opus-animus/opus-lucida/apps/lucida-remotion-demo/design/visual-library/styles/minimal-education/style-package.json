@@ -75,7 +75,7 @@
   },
   "sourceReferences": [
     {
-      "id": "nng-visual-hierarchy",
+      "id": "w8-minimal-nng-hierarchy",
       "url": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/",
       "selectedConcepts": [
         "grouping through spacing",
@@ -84,7 +84,7 @@
       ]
     },
     {
-      "id": "nng-aesthetic-minimalist",
+      "id": "w8-minimal-nng-aesthetic",
       "url": "https://www.nngroup.com/articles/aesthetic-minimalist-design/",
       "selectedConcepts": [
         "reduce interface noise",
@@ -92,8 +92,8 @@
       ]
     },
     {
-      "id": "material-color-roles",
-      "url": "https://m3.material.io/styles/color/roles",
+      "id": "w8-minimal-material-web",
+      "url": "https://github.com/material-components/material-web",
       "selectedConcepts": [
         "semantic color roles",
         "accessible color pairings"

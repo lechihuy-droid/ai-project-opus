@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { relativePath, sha256, sha256File, stableJson, writeStableJson } from "./index-utils.mjs";
+import { assertEvidenceDomain } from "./evidence-domain.mjs";
 
 const usage = "Usage: npm run knowledge:promote -- --input <sanitized-approved.json> --source <source-id> --package <canonical-id>";
 const supportedTypes = new Map([
@@ -40,6 +41,7 @@ export const promoteReference = ({ appRoot = process.cwd(), inputPath, sourceId,
   }
   const source = raw.sources?.find((candidate) => candidate.sourceId === sourceId);
   if (!source) throw new Error(`Source ${sourceId} was not found in the sanitized artifact.`);
+  const domain = assertEvidenceDomain(source.domain, `Source ${sourceId} domain`);
   const sourceType = supportedTypes.get(source.sourceType);
   if (!sourceType) throw new Error(`Source ${sourceId} is not a repository, web, image, or theme collector artifact.`);
   const rights = source.rights ?? raw.rights;
@@ -76,11 +78,17 @@ export const promoteReference = ({ appRoot = process.cwd(), inputPath, sourceId,
   }
   const sourceRef = source.metadata?.url ?? source.records[0].provenance.sourceRef;
   const canonicalSourceId = `source:reference:${packageId}`;
+  const canonicalApproval = {
+    ...approval,
+    approvedAt: String(approval.approvedAt).slice(0, 10),
+  };
   const approvalArtifact = {
     ...raw,
+    approval: canonicalApproval,
     sources: [{
       ...source,
       sourceId: canonicalSourceId,
+      rights,
       metadata: { ...source.metadata, url: sourceRef },
     }],
   };
@@ -88,12 +96,13 @@ export const promoteReference = ({ appRoot = process.cwd(), inputPath, sourceId,
     schemaVersion: "lucida-reference-source/v1",
     sourceId: canonicalSourceId,
     sourceType,
+    domain,
     sourceRef,
     sourceRevision: source.sourceRevision,
     snapshotChecksum,
     collectorVersion: source.collectorVersion,
     rights,
-    approval,
+    approval: canonicalApproval,
     provenance: {
       sanitizedArtifactChecksum: null,
       collectorArtifact: relativePath(appRoot, approvalArtifactPath),
@@ -111,6 +120,7 @@ export const promoteReference = ({ appRoot = process.cwd(), inputPath, sourceId,
       sourceRef: record.provenance.sourceRef,
       title: `${sourceId} record ${String(index + 1).padStart(4, "0")}`,
       mediaType: sourceType,
+      domain,
       rawText,
       contentChecksum: sha256(rawText),
       tags: [...new Set([sourceType, ...(record.data?.tags ?? [])])].sort((left, right) => left.localeCompare(right, "en")),

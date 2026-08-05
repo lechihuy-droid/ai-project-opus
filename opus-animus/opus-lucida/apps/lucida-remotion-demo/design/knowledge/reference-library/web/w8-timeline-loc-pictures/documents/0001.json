@@ -1,0 +1,29 @@
+{
+  "contentChecksum": "7bfd4cb54469f10fc5382fb12251b750191de737fe79d13617972593fabd85a1",
+  "domain": "visual-style",
+  "mediaType": "web",
+  "observations": [
+    {
+      "definition": {
+        "packageId": "timeline-documentary",
+        "tags": [
+          "timeline-documentary",
+          "w8-candidate",
+          "link-only"
+        ]
+      },
+      "kind": "layout_reference",
+      "reviewStatus": "approved"
+    }
+  ],
+  "rawText": "# Library of Congress picture catalog review note\n\nSource: https://www.loc.gov/pictures/\nTarget package: timeline-documentary\n\nReviewer-authored concepts:\n- visible source context\n- catalog identifiers\n- date-forward evidence\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts.",
+  "schemaVersion": "lucida-reference-document/v1",
+  "sourceRef": "https://www.loc.gov/pictures/",
+  "tags": [
+    "link-only",
+    "timeline-documentary",
+    "w8-candidate",
+    "web"
+  ],
+  "title": "w8-timeline-loc-pictures record 0001"
+}

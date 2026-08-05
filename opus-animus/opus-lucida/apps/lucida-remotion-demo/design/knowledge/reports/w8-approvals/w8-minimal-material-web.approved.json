@@ -1,0 +1,55 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-16T15:00:00.000Z",
+    "approvedBy": "HUY",
+    "status": "approved"
+  },
+  "generatedAt": "2026-07-16T00:00:00.000Z",
+  "projectId": "lucida-remotion-demo-w8-evidence",
+  "rights": {
+    "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
+  "sanitization": {
+    "findings": [
+      "Link-only reviewer notes; no third-party source body or media is stored."
+    ],
+    "redactions": 0,
+    "status": "passed"
+  },
+  "schemaVersion": "sanitized-visual-input/v1",
+  "sources": [
+    {
+      "checksum": "f83f54910bda206ffd70ca0d83357ba161e6101255aebf24bc5f75faa21e51b5",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "minimal-education",
+        "url": "https://github.com/material-components/material-web"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "minimal-education",
+            "tags": [
+              "minimal-education",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "f83f54910bda206ffd70ca0d83357ba161e6101255aebf24bc5f75faa21e51b5",
+            "sourceRef": "https://github.com/material-components/material-web"
+          },
+          "text": "# Material Web minimal education review note\n\nSource: https://github.com/material-components/material-web\nTarget package: minimal-education\n\nReviewer-authored concepts:\n- semantic component roles\n- accessible teaching controls\n- systematic spacing\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "sourceId": "w8-minimal-material-web",
+      "sourceRevision": "git:b4de401eb665ec63474f39319a4ba8f2145974cc",
+      "sourceType": "repository"
+    }
+  ]
+}

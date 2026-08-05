@@ -1,0 +1,174 @@
+{
+  "schemaVersion": "lucida-style-package/v1",
+  "id": "news-rundown",
+  "label": "News Rundown",
+  "version": "0.1.0",
+  "status": "draft",
+  "visualFamily": "news-rundown",
+  "description": "Draft portrait package for concise AI and technology news rundowns with distinct breaking, ranked, live, context, and data-led layouts.",
+  "tags": [
+    "news",
+    "ai",
+    "technology",
+    "briefing",
+    "rundown"
+  ],
+  "supportedIntents": [
+    "news-rundown",
+    "comparison",
+    "explain"
+  ],
+  "recommendedIntents": [
+    "news-rundown",
+    "explain"
+  ],
+  "avoidFor": [
+    "source-dependent investigative claims",
+    "emotion-led testimonials",
+    "long-form technical walkthroughs"
+  ],
+  "aspectRatios": [
+    "9:16"
+  ],
+  "contentCapacity": {
+    "headlineChars": 74,
+    "bodyChars": 210,
+    "bulletsMaxItems": 4,
+    "maxItems": 4,
+    "maxPanels": 4,
+    "maxMetrics": 2
+  },
+  "renderCost": {
+    "tier": "medium",
+    "estimatedSceneComplexity": 5,
+    "notes": "Five fixed portrait news layouts with restrained frame-driven entrances."
+  },
+  "reducedMotion": {
+    "strategy": "simplified-motion",
+    "notes": "Reduce and static policies preserve each reading order with only restrained entrances."
+  },
+  "accessibility": {
+    "contrast": "AA",
+    "notes": "High contrast labels, textual source context, and stable caption-safe lower area."
+  },
+  "directorCompatibility": {
+    "selectionReason": "Use for compact news summaries where a clear editorial hierarchy is the primary evidence.",
+    "hardBlocks": [
+      "Registration remains pending outside this package ownership."
+    ]
+  },
+  "files": {
+    "visual": "./visual.json",
+    "tokens": "./tokens.json",
+    "componentMap": "./component-map.json",
+    "provenance": "./provenance.md",
+    "artifactManifest": "./artifact-manifest.json"
+  },
+  "sourcePolicy": {
+    "copyStatus": "not-assessed",
+    "registeredMedia": "none",
+    "notes": "Draft implementation uses local fixtures and shared Lucida primitives. No source approval or visual-pattern claim is made."
+  },
+  "tokens": {
+    "palette": "ink, paper white, signal red, amber, cyan, and muted slate",
+    "typography": "UI sans for headlines and compact labels",
+    "surface": "low-radius editorial panels with stable reading order"
+  },
+  "layoutGrammar": [
+    "Keep one headline hierarchy per scene.",
+    "Show source context as text, never as an approval claim.",
+    "Reserve a stable lower caption-safe panel.",
+    "Do not animate layout dimensions or reorder news items."
+  ],
+  "componentPrimitives": [
+    {
+      "id": "news-header",
+      "role": "content",
+      "notes": "Section, timestamp, and headline hierarchy."
+    },
+    {
+      "id": "news-list",
+      "role": "support",
+      "notes": "Ranked, live, or contextual news units."
+    },
+    {
+      "id": "caption-safe-panel",
+      "role": "caption",
+      "notes": "Reserved safe-area explanation panel."
+    }
+  ],
+  "templateBindings": {
+    "preferredTemplates": [
+      "breaking-update",
+      "headline-stack",
+      "top-stories",
+      "bulletin-grid",
+      "weekly-roundup"
+    ],
+    "layouts": [
+      "hero-stack",
+      "ranked-list",
+      "live-rail",
+      "bulletin-grid",
+      "metric-led"
+    ],
+    "backgroundEffects": [
+      "quiet-news-rule"
+    ],
+    "motionPreset": "news-entrance"
+  },
+  "sourceArtifacts": {
+    "sourceReviewReport": "./artifacts/source-review-report.json"
+  },
+  "validationArtifacts": {
+    "demoVideoMap": "./artifacts/demo-video-map.json",
+    "renderProps": "./artifacts/render-props.json",
+    "previewFrames": [
+      "./artifacts/frames/scene-01.png",
+      "./artifacts/frames/scene-02.png",
+      "./artifacts/frames/scene-03.png",
+      "./artifacts/frames/scene-04.png",
+      "./artifacts/frames/scene-05.png"
+    ],
+    "renderReport": "./artifacts/terra-render-report.json",
+    "videoBinaryRegistered": false
+  },
+  "sourceReferences": [
+    {
+      "id": "w8-minimal-nng-hierarchy",
+      "url": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/",
+      "selectedConcepts": [
+        "editorial reading order",
+        "headline hierarchy"
+      ]
+    },
+    {
+      "id": "w8-dashboard-remotion-animation",
+      "url": "https://www.remotion.dev/docs/animating-properties",
+      "selectedConcepts": [
+        "deterministic property animation",
+        "stable update geometry"
+      ]
+    },
+    {
+      "id": "w8-dashboard-primer-docs",
+      "url": "https://primer.style/",
+      "selectedConcepts": [
+        "scannable information grouping",
+        "metric and context surfaces"
+      ]
+    }
+  ],
+  "qualityGate": {
+    "validated": false,
+    "checks": [
+      "targeted schema validation pending",
+      "local still render pending",
+      "registration intentionally pending"
+    ],
+    "knownLimitations": [
+      "This draft is not registered for runtime selection.",
+      "No source approval or visual-pattern claim is included."
+    ]
+  }
+}

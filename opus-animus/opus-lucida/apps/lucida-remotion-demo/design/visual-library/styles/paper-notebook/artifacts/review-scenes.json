@@ -1,8 +1,30 @@
 {
   "packageId": "paper-notebook",
   "scenes": [
-    { "sceneKey": "notes", "sceneLabel": "Normal notes", "sceneType": "notes", "fixture": "pipeline/fixtures/styles/paper-notebook/notes.fixture.ts", "density": "balanced", "motionPolicy": "full" },
-    { "sceneKey": "derivation", "sceneLabel": "Dense derivation", "sceneType": "derivation", "fixture": "pipeline/fixtures/styles/paper-notebook/derivation.fixture.ts", "density": "dense", "motionPolicy": "reduce" },
-    { "sceneKey": "checklist", "sceneLabel": "Edge checklist", "sceneType": "checklist", "fixture": "pipeline/fixtures/styles/paper-notebook/checklist.fixture.ts", "density": "balanced", "motionPolicy": "static", "openGateCount": 1 }
+    {
+      "sceneKey": "research-notes",
+      "sceneLabel": "Research notes",
+      "sceneType": "research-notes",
+      "fixture": "pipeline/fixtures/styles/paper-notebook/research-notes.fixture.ts",
+      "density": "balanced",
+      "motionPolicy": "full"
+    },
+    {
+      "sceneKey": "derivation",
+      "sceneLabel": "Dense derivation",
+      "sceneType": "derivation",
+      "fixture": "pipeline/fixtures/styles/paper-notebook/derivation.fixture.ts",
+      "density": "dense",
+      "motionPolicy": "reduce"
+    },
+    {
+      "sceneKey": "checklist",
+      "sceneLabel": "Edge checklist",
+      "sceneType": "checklist",
+      "fixture": "pipeline/fixtures/styles/paper-notebook/checklist.fixture.ts",
+      "density": "balanced",
+      "motionPolicy": "static",
+      "openGateCount": 1
+    }
   ]
 }

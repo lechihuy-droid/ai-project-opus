@@ -1,6 +1,21 @@
 import type { MediaKind, MotionPolicy, TextDensity } from "../../core";
 
-export type ProductShowcaseFixtureKey = "normal" | "dense" | "edge";
+export const productShowcaseVariantIds = [
+  "product-hero",
+  "feature-reveal",
+  "before-after",
+  "capability-grid",
+  "launch-summary",
+] as const;
+
+export type ProductShowcaseVariantId =
+  (typeof productShowcaseVariantIds)[number];
+
+export type ProductShowcaseFixtureKey =
+  | "normal"
+  | "dense"
+  | "edge"
+  | ProductShowcaseVariantId;
 
 export type ProductShowcaseSceneType =
   | "product-reveal"

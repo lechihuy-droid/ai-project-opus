@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "terra-pattern-proposal-p8-validation/v1",
+  "packageId": "timeline-documentary",
+  "proposalBatch": "terra-pattern-proposal-p8",
+  "proposalStatus": "proposed",
+  "humanPatternReview": "pending",
+  "compilerEligibility": {
+    "eligible": false,
+    "reason": "All 30 patterns remain proposed; source-evidence approval does not approve or promote patterns."
+  },
+  "canonicalPromotion": false,
+  "scope": {
+    "patterns": "design/visual-library/styles/timeline-documentary/visual-patterns.json",
+    "ownership": "package-local only",
+    "collectionEdited": false,
+    "rendererEdited": false,
+    "globalEdited": false
+  },
+  "checks": {
+    "schemaValid": true,
+    "referencesValid": true,
+    "exactPatternCount": true,
+    "uniquePatternIds": true,
+    "patternsPerVariant": {
+      "case-study": 6,
+      "chronology": 6,
+      "evolution": 6,
+      "milestones": 6,
+      "roadmap": 6
+    },
+    "sixPatternsPerVariant": true,
+    "distinctRecipeTypesPerVariant": {
+      "case-study": [
+        "component",
+        "composition",
+        "content-density",
+        "layout",
+        "motion",
+        "palette"
+      ],
+      "chronology": [
+        "component",
+        "composition",
+        "content-density",
+        "layout",
+        "motion",
+        "typography"
+      ],
+      "evolution": [
+        "component",
+        "composition",
+        "content-density",
+        "layout",
+        "motion",
+        "typography"
+      ],
+      "milestones": [
+        "component",
+        "composition",
+        "content-density",
+        "layout",
+        "motion",
+        "typography"
+      ],
+      "roadmap": [
+        "component",
+        "content-density",
+        "layout",
+        "motion",
+        "typography",
+        "use-case"
+      ]
+    },
+    "allReviewStatusesProposed": true,
+    "verifiedEvidence": [
+      {
+        "evidenceId": "w8-timeline-citizen-dj",
+        "artifact": "design/knowledge/reference-library/repository/w8-timeline-citizen-dj/source.json",
+        "sourceId": "source:reference:w8-timeline-citizen-dj",
+        "sourceRef": "https://github.com/LibraryOfCongress/citizen-dj",
+        "approved": true,
+        "schemaValid": true
+      },
+      {
+        "evidenceId": "w8-timeline-loc-pictures",
+        "artifact": "design/knowledge/reference-library/web/w8-timeline-loc-pictures/source.json",
+        "sourceId": "source:reference:w8-timeline-loc-pictures",
+        "sourceRef": "https://www.loc.gov/pictures/",
+        "approved": true,
+        "schemaValid": true
+      },
+      {
+        "evidenceId": "w8-timeline-national-archives",
+        "artifact": "design/knowledge/reference-library/web/w8-timeline-national-archives/source.json",
+        "sourceId": "source:reference:w8-timeline-national-archives",
+        "sourceRef": "https://catalog.archives.gov/",
+        "approved": true,
+        "schemaValid": true
+      }
+    ]
+  },
+  "result": "PASS",
+  "errors": []
+}

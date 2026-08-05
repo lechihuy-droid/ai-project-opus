@@ -58,7 +58,15 @@ function main() {
   const options = parseArgs(process.argv.slice(2));
   const schemaPath = path.join(PROJECT_ROOT, 'design', 'schemas', 'visual-package.schema.json');
   const schema = readJsonFile(schemaPath, 'schema');
-  if (schema.error) {
+  const variantSchema = readJsonFile(
+    path.join(PROJECT_ROOT, 'design', 'schemas', 'style-variant.schema.json'),
+    'style variant schema',
+  );
+  const patternSchema = readJsonFile(
+    path.join(PROJECT_ROOT, 'design', 'schemas', 'visual-pattern.schema.json'),
+    'visual pattern schema',
+  );
+  if (schema.error || variantSchema.error || patternSchema.error) {
     printFatal(`Không đọc được schema: ${schema.error}`);
     process.exit(1);
   }
@@ -66,9 +74,13 @@ function main() {
   const ajv = new Ajv({
     allErrors: true,
   });
-  let validateProduction;
+  let validators;
   try {
-    validateProduction = ajv.compile(schema.data);
+    validators = {
+      production: ajv.compile(schema.data),
+      variant: ajv.compile(variantSchema.data),
+      pattern: ajv.compile(patternSchema.data),
+    };
   } catch (error) {
     printFatal(`Schema không compile được: ${error.message}`);
     process.exit(1);
@@ -87,7 +99,7 @@ function main() {
 
   const dedupedPackageFiles = [...new Set(packageFiles)].sort();
   const results = dedupedPackageFiles.map((stylePackagePath) =>
-    analyzePackage(stylePackagePath, validateProduction),
+    analyzePackage(stylePackagePath, validators),
   );
 
   const summary = summarize(results, rootErrors);
@@ -181,7 +193,7 @@ function findStylePackageFiles(rootDir) {
   return discovered;
 }
 
-function analyzePackage(stylePackagePath, validateProduction) {
+function analyzePackage(stylePackagePath, validators) {
   const packageDir = path.dirname(stylePackagePath);
   const packageLabel = toProjectRelative(stylePackagePath);
   const result = {
@@ -223,8 +235,8 @@ function analyzePackage(stylePackagePath, validateProduction) {
     });
   }
 
-  const isProductionValid = validateProduction(pkg);
-  const schemaErrors = isProductionValid ? [] : (validateProduction.errors ?? []).map((error) => ({...error}));
+  const isProductionValid = validators.production(pkg);
+  const schemaErrors = isProductionValid ? [] : (validators.production.errors ?? []).map((error) => ({...error}));
   const isLegacyPackage = looksLikeLegacyPackage(pkg);
 
   if (!isProductionValid) {
@@ -245,7 +257,7 @@ function analyzePackage(stylePackagePath, validateProduction) {
   if (isLegacyPackage) {
     validateLegacyPackage(result, pkg, packageDir, stylePackagePath);
   } else if (isProductionValid) {
-    validateProductionPackage(result, pkg, packageDir, stylePackagePath);
+    validateProductionPackage(result, pkg, packageDir, stylePackagePath, validators);
   }
 
   if (result.errors.length > 0) {
@@ -321,7 +333,7 @@ function validateLegacyPackage(result, pkg, packageDir, stylePackagePath) {
   }
 }
 
-function validateProductionPackage(result, pkg, packageDir, stylePackagePath) {
+function validateProductionPackage(result, pkg, packageDir, stylePackagePath, validators) {
   if (Array.isArray(pkg.recommendedIntents)) {
     const supported = new Set(pkg.supportedIntents);
     const unsupported = pkg.recommendedIntents.filter((intent) => !supported.has(intent));
@@ -372,6 +384,8 @@ function validateProductionPackage(result, pkg, packageDir, stylePackagePath) {
       referencedArtifactRefs: collectArtifactCoverageTargets(pkg, packageDir),
     });
   }
+
+  validateStyleRagReferences(result, pkg, packageDir, validators);
 }
 
 function validateArtifactRefCollection(result, value, packageDir, labelPrefix) {
@@ -382,6 +396,284 @@ function validateArtifactRefCollection(result, value, packageDir, labelPrefix) {
       ownerScope: 'project',
       expectedType,
       parseJson,
+    });
+  }
+}
+
+function validateStyleRagReferences(result, pkg, packageDir, validators) {
+  const hasVariantRefs = Object.hasOwn(pkg, 'variantRefs');
+  const hasPatternRefs = Object.hasOwn(pkg, 'visualPatternRefs');
+  if (!hasVariantRefs && !hasPatternRefs) {
+    return;
+  }
+
+  const variants = loadStyleRagRecords(
+    result,
+    pkg.variantRefs,
+    packageDir,
+    'variantRefs',
+    validators.variant,
+    'VARIANT',
+  );
+  const patterns = loadStyleRagRecords(
+    result,
+    pkg.visualPatternRefs,
+    packageDir,
+    'visualPatternRefs',
+    validators.pattern,
+    'PATTERN',
+  );
+
+  const variantIds = new Set();
+  for (const {label, record} of variants) {
+    if (record.packageId !== pkg.id) {
+      result.errors.push({
+        code: 'VARIANT_PACKAGE_ID',
+        message: `${label}: packageId "${record.packageId}" must match package "${pkg.id}".`,
+      });
+    }
+    if (variantIds.has(record.variantId)) {
+      result.errors.push({
+        code: 'VARIANT_ID_DUPLICATE',
+        message: `${label}: duplicate variantId "${record.variantId}".`,
+      });
+    }
+    variantIds.add(record.variantId);
+  }
+
+  const packageSourceIds = new Set(pkg.sourceReferences.map((reference) => reference.id));
+  const patternIds = new Set();
+  for (const {label, record} of patterns) {
+    if (record.packageId !== pkg.id) {
+      result.errors.push({
+        code: 'PATTERN_PACKAGE_ID',
+        message: `${label}: packageId "${record.packageId}" must match package "${pkg.id}".`,
+      });
+    }
+    if (patternIds.has(record.patternId)) {
+      result.errors.push({
+        code: 'PATTERN_ID_DUPLICATE',
+        message: `${label}: duplicate patternId "${record.patternId}".`,
+      });
+    }
+    patternIds.add(record.patternId);
+    for (const variantId of record.variantIds) {
+      if (!variantIds.has(variantId)) {
+        result.errors.push({
+          code: 'PATTERN_VARIANT_ID',
+          message: `${label}: variantId "${variantId}" is not declared by variantRefs.`,
+        });
+      }
+    }
+    for (const sourceEvidenceId of record.sourceEvidenceIds) {
+      if (!packageSourceIds.has(sourceEvidenceId)) {
+        result.errors.push({
+          code: 'PATTERN_SOURCE_EVIDENCE',
+          message: `${label}: sourceEvidenceId "${sourceEvidenceId}" is absent from package sourceReferences.`,
+        });
+      }
+    }
+  }
+
+  validateCanonicalEvidenceEligibility(result, packageSourceIds);
+  validateRendererRegistration(result, pkg.id);
+}
+
+function loadStyleRagRecords(result, refs, packageDir, labelPrefix, validate, kind) {
+  if (!Array.isArray(refs)) {
+    return [];
+  }
+
+  const records = [];
+  refs.forEach((ref, index) => {
+    const label = `${labelPrefix}[${index}]`;
+    const resolved = validatePathReference(result, label, ref, packageDir, {
+      ownerScope: 'package',
+      expectedType: 'file',
+      parseJson: false,
+    });
+    if (!resolved) {
+      return;
+    }
+    const parsed = readJsonFile(resolved.absolutePath, label);
+    if (parsed.error) {
+      result.errors.push({code: `${kind}_PARSE`, message: `${label}: ${parsed.error}`});
+      return;
+    }
+    if (!isPlainObject(parsed.data)) {
+      result.errors.push({code: `${kind}_TYPE`, message: `${label} must resolve to a JSON object.`});
+      return;
+    }
+    if (!validate(parsed.data)) {
+      for (const error of validate.errors ?? []) {
+        result.errors.push({
+          code: `${kind}_SCHEMA`,
+          message: `${label}: ${formatSchemaError(error)}`,
+        });
+      }
+      return;
+    }
+    records.push({label, record: parsed.data});
+  });
+  return records;
+}
+
+function validateCanonicalEvidenceEligibility(result, packageSourceIds) {
+  const referenceRoot = path.join(PROJECT_ROOT, 'design', 'knowledge', 'reference-library');
+  if (!fs.existsSync(referenceRoot)) {
+    return;
+  }
+
+  const canonicalSources = findCanonicalSources(referenceRoot);
+  for (const sourceId of packageSourceIds) {
+    for (const source of canonicalSources.get(sourceId) ?? []) {
+      if (
+        source.domain !== 'visual-style' ||
+        source.approval?.status !== 'approved' ||
+        source.rights?.status !== 'approved'
+      ) {
+        result.errors.push({
+          code: 'CANONICAL_EVIDENCE_INELIGIBLE',
+          message: `sourceReferences id "${sourceId}" resolves to ineligible canonical evidence.`,
+        });
+      }
+    }
+  }
+}
+
+function findCanonicalSources(rootDir) {
+  const sources = new Map();
+  const walk = (currentDir) => {
+    for (const entry of safeReadDir(currentDir) ?? []) {
+      const entryPath = path.join(currentDir, entry.name);
+      if (entry.isDirectory()) {
+        walk(entryPath);
+        continue;
+      }
+      if (!entry.isFile() || entry.name !== 'source.json') {
+        continue;
+      }
+      const parsed = readJsonFile(entryPath, 'canonical source');
+      if (!isPlainObject(parsed.data) || typeof parsed.data.sourceId !== 'string') {
+        continue;
+      }
+      for (const alias of [parsed.data.sourceId, parsed.data.sourceId.split(':').at(-1)]) {
+        const existing = sources.get(alias) ?? [];
+        existing.push(parsed.data);
+        sources.set(alias, existing);
+      }
+    }
+  };
+  walk(rootDir);
+  return sources;
+}
+
+function tokenizeTypeScript(source) {
+  const tokens = [];
+  let index = 0;
+  while (index < source.length) {
+    const current = source[index];
+    const next = source[index + 1];
+    if (/\s/u.test(current)) {
+      index += 1;
+      continue;
+    }
+    if (current === '/' && next === '/') {
+      index = source.indexOf('\n', index + 2);
+      if (index === -1) break;
+      continue;
+    }
+    if (current === '/' && next === '*') {
+      const end = source.indexOf('*/', index + 2);
+      if (end === -1) break;
+      index = end + 2;
+      continue;
+    }
+    if (current === '"' || current === "'" || current === '`') {
+      const quote = current;
+      let value = '';
+      index += 1;
+      while (index < source.length) {
+        if (source[index] === '\\') {
+          value += source[index + 1] ?? '';
+          index += 2;
+          continue;
+        }
+        if (source[index] === quote) {
+          index += 1;
+          break;
+        }
+        value += source[index];
+        index += 1;
+      }
+      tokens.push({type: 'string', value});
+      continue;
+    }
+    if (/[A-Za-z_$]/u.test(current)) {
+      let end = index + 1;
+      while (end < source.length && /[\w$]/u.test(source[end])) end += 1;
+      tokens.push({type: 'identifier', value: source.slice(index, end)});
+      index = end;
+      continue;
+    }
+    tokens.push({type: 'punctuation', value: current});
+    index += 1;
+  }
+  return tokens;
+}
+
+function registeredRendererPackageIds(registryPath) {
+  const tokens = tokenizeTypeScript(fs.readFileSync(registryPath, 'utf8'));
+  const stylesRoot = path.join(PROJECT_ROOT, 'design', 'visual-library', 'styles');
+  const importedVisuals = new Map();
+  for (let index = 0; index < tokens.length - 3; index += 1) {
+    const [keyword, binding, from, specifier] = tokens.slice(index, index + 4);
+    if (
+      keyword.value !== 'import' ||
+      binding.type !== 'identifier' ||
+      from.value !== 'from' ||
+      specifier.type !== 'string'
+    ) {
+      continue;
+    }
+    const importedPath = path.resolve(path.dirname(registryPath), specifier.value);
+    if (path.basename(importedPath) !== 'visual.json' || !isWithinDirectory(importedPath, stylesRoot)) {
+      continue;
+    }
+    importedVisuals.set(binding.value, path.basename(path.dirname(importedPath)));
+  }
+
+  const registered = new Set();
+  for (let index = 0; index < tokens.length - 2; index += 1) {
+    const [callee, openParen, binding] = tokens.slice(index, index + 3);
+    const previous = tokens[index - 1];
+    if (
+      callee.value === 'definePackage' &&
+      openParen.value === '(' &&
+      binding.type === 'identifier' &&
+      previous?.value !== '.' &&
+      previous?.value !== 'function'
+    ) {
+      const packageId = importedVisuals.get(binding.value);
+      if (packageId) registered.add(packageId);
+    }
+  }
+  return registered;
+}
+
+function validateRendererRegistration(result, packageId) {
+  const registryPath = path.join(PROJECT_ROOT, 'src', 'styles', 'runtime', 'packages.ts');
+  if (!fs.existsSync(registryPath)) {
+    result.errors.push({
+      code: 'RENDERER_UNSUPPORTED',
+      message: `Package "${packageId}" has no runtime renderer registration.`,
+    });
+    return;
+  }
+  if (!registeredRendererPackageIds(registryPath).has(packageId)) {
+    result.errors.push({
+      code: 'RENDERER_UNSUPPORTED',
+      message: `Package "${packageId}" has no runtime renderer registration.`,
     });
   }
 }
@@ -597,6 +889,18 @@ function validatePathReference(
       message: `${label}: không tìm thấy ${ref} (${toProjectRelative(resolved.absolutePath)}).`,
     });
     return null;
+  }
+
+  if (ownerScope === 'package') {
+    const realPackageDir = fs.realpathSync(packageDir);
+    const realTargetPath = fs.realpathSync(resolved.absolutePath);
+    if (!isWithinDirectory(realTargetPath, realPackageDir)) {
+      result.errors.push({
+        code: 'PACKAGE_SCOPE',
+        message: `${label}: "${ref}" must remain inside package directory ${toProjectRelative(packageDir)}.`,
+      });
+      return null;
+    }
   }
 
   const stats = fs.statSync(resolved.absolutePath);

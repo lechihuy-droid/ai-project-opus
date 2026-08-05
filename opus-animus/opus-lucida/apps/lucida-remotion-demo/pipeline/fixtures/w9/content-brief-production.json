@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "lucida-content-brief/v1",
+  "title": "GPT-5.6: from model release to operating model",
+  "audience": "AI product and engineering leaders",
+  "intent": "explain",
+  "styleMode": "auto",
+  "factualSourceIds": ["source:reference:openai-gpt-5-6-official"],
+  "visualConstraints": {
+    "assets": { "allowedClassifications": ["context_only"] },
+    "density": { "preferred": "medium" },
+    "layout": { "minDistinct": 3, "maxConsecutive": 2 }
+  },
+  "beats": [
+    {
+      "id": "hook",
+      "title": "GPT-5.6 launched as a three-tier family",
+      "body": "The release introduces Sol, Terra, and Luna for different capability, cost, and latency needs.",
+      "intent": "hook",
+      "role": "hook",
+      "actors": ["OpenAI", "AI teams"],
+      "factRefs": ["source:reference:openai-gpt-5-6-official"]
+    },
+    {
+      "id": "availability",
+      "title": "The family reaches three product surfaces",
+      "body": "OpenAI lists availability across ChatGPT, Codex, and the OpenAI API.",
+      "intent": "explain",
+      "role": "evidence",
+      "actors": ["ChatGPT", "Codex", "API developers"],
+      "factRefs": ["source:reference:openai-gpt-5-6-official"]
+    },
+    {
+      "id": "comparison",
+      "title": "Model choice becomes routing policy",
+      "body": "Teams can reserve Sol for ambiguous work, use Terra for balanced implementation, and route bounded checks to Luna.",
+      "intent": "comparison",
+      "role": "comparison",
+      "actors": ["Sol", "Terra", "Luna"],
+      "factRefs": ["source:reference:openai-gpt-5-6-official"]
+    },
+    {
+      "id": "process",
+      "title": "Evidence and approvals make routing operational",
+      "body": "A production workflow binds factual sources, style evidence, timing, QA, and final approval to exact artifacts.",
+      "intent": "process",
+      "role": "process",
+      "actors": ["RAG service", "Director", "QA"],
+      "factRefs": []
+    },
+    {
+      "id": "takeaway",
+      "title": "The release matters when the workflow changes",
+      "body": "The decision is not only which model to call, but which evidence and control gates surround each class of work.",
+      "intent": "takeaway",
+      "role": "takeaway",
+      "actors": ["AI lead", "production owner"],
+      "factRefs": ["source:reference:openai-gpt-5-6-official"]
+    }
+  ]
+}

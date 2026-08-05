@@ -1,0 +1,297 @@
+[
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "benchmark-grid",
+    "packageId": "dashboard-data",
+    "label": "Benchmark grid",
+    "description": "A benchmark grid that compares committed and available capacity across explicit planning windows and owner rows.",
+    "intentTags": [
+      "benchmark",
+      "comparison"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "capacity-kpi-strip",
+      "planning-trend-grid"
+    ],
+    "typographyTraits": [
+      "compact-system-labels",
+      "dense-table-alignment"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "capacity-status-contrast"
+    ],
+    "motionTraits": [
+      "reduced-motion",
+      "deterministic-review"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "trend-panel",
+      "operations-table"
+    ],
+    "contentCapacity": {
+      "maxItems": 4,
+      "maxPanels": 4,
+      "maxMetrics": 4,
+      "maxDataSeries": 2
+    },
+    "positiveUseCases": [
+      "capacity planning review"
+    ],
+    "antiPatterns": [
+      "forecast values not present in the fixture"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound draft variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "operations-monitor",
+    "packageId": "dashboard-data",
+    "label": "Operations monitor",
+    "description": "An operations monitor that prioritizes severity, current signal movement, and assigned response work.",
+    "intentTags": [
+      "operations",
+      "monitor"
+    ],
+    "beatRoles": [
+      "monitor"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "severity-led-kpi-strip",
+      "triage-operations-table"
+    ],
+    "typographyTraits": [
+      "compact-system-labels",
+      "high-contrast-status-values"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "semantic-alert-colors"
+    ],
+    "motionTraits": [
+      "static-review",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "trend-panel",
+      "operations-table"
+    ],
+    "contentCapacity": {
+      "maxItems": 4,
+      "maxPanels": 4,
+      "maxMetrics": 4,
+      "maxDataSeries": 2
+    },
+    "positiveUseCases": [
+      "service alert triage"
+    ],
+    "antiPatterns": [
+      "unowned remediation promises"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound draft variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "comparison-dashboard",
+    "packageId": "dashboard-data",
+    "label": "Comparison dashboard",
+    "description": "A comparison dashboard that keeps two fixture-bound cohorts legible across KPIs, a dual series, and a short decision rail.",
+    "intentTags": [
+      "comparison",
+      "summarize"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "comparison-kpi-strip",
+      "dual-series-trend"
+    ],
+    "typographyTraits": [
+      "compact-system-labels",
+      "aligned-metric-values"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "two-series-semantic-contrast"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "trend-panel",
+      "watchlist-rail"
+    ],
+    "contentCapacity": {
+      "maxItems": 4,
+      "maxPanels": 4,
+      "maxMetrics": 4,
+      "maxDataSeries": 2
+    },
+    "positiveUseCases": [
+      "cohort outcome comparison"
+    ],
+    "antiPatterns": [
+      "more than two implied cohorts"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound draft variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "trend-panel",
+    "packageId": "dashboard-data",
+    "label": "Trend panel",
+    "description": "A trend panel that keeps service-level movement, threshold exposure, and owner follow-ups visible in one bounded review frame.",
+    "intentTags": [
+      "trend",
+      "summarize"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "service-level-kpi-strip",
+      "threshold-trend-review"
+    ],
+    "typographyTraits": [
+      "compact-system-labels",
+      "status-first-values"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "semantic-threshold-colors"
+    ],
+    "motionTraits": [
+      "static-review",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "trend-panel",
+      "watchlist-rail"
+    ],
+    "contentCapacity": {
+      "maxItems": 4,
+      "maxPanels": 4,
+      "maxMetrics": 4,
+      "maxDataSeries": 2
+    },
+    "positiveUseCases": [
+      "service-level review"
+    ],
+    "antiPatterns": [
+      "status without an owner or review window"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound draft variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "scorecard",
+    "packageId": "dashboard-data",
+    "label": "Scorecard",
+    "description": "A scorecard that keeps delivery handoff health, queue age, and the next review action visible together.",
+    "intentTags": [
+      "scorecard",
+      "summarize"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "queue-kpi-strip",
+      "handoff-operations-ledger"
+    ],
+    "typographyTraits": [
+      "compact-system-labels",
+      "dense-table-alignment"
+    ],
+    "paletteTraits": [
+      "dark-neutral-canvas",
+      "semantic-queue-colors"
+    ],
+    "motionTraits": [
+      "reduced-motion",
+      "deterministic-review"
+    ],
+    "componentTraits": [
+      "kpi-strip",
+      "watchlist-rail",
+      "operations-table"
+    ],
+    "contentCapacity": {
+      "maxItems": 4,
+      "maxPanels": 4,
+      "maxMetrics": 4,
+      "maxDataSeries": 2
+    },
+    "positiveUseCases": [
+      "cross-team work handoff"
+    ],
+    "antiPatterns": [
+      "handoff rows without accountable owners"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound draft variant; no approved pattern claim."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  }
+]

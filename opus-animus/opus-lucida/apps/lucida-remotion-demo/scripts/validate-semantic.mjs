@@ -74,6 +74,19 @@ const claimTexts = (scene) => {
 
 export const validateSemantic = (videoMap, { final = false } = {}) => {
   const results = [];
+  const actorsDeclared =
+    Object.prototype.hasOwnProperty.call(videoMap, "actors") &&
+    Array.isArray(videoMap.actors);
+  const actorTargets = new Set(
+    (videoMap.scenes ?? []).flatMap((scene) =>
+      (scene.transitions ?? [])
+        .filter(
+          (transition) =>
+            transition.action === "add" || transition.action === "update",
+        )
+        .map((transition) => transition.target),
+    ),
+  );
 
   for (const scene of videoMap.scenes ?? []) {
     const collection = Array.isArray(scene.content?.steps)
@@ -122,7 +135,19 @@ export const validateSemantic = (videoMap, { final = false } = {}) => {
         ? Array.isArray(scene.transitions) && scene.transitions.length > 0
         : Boolean(scene.transitionIn || scene.transitionOut) ||
           (Array.isArray(scene.motion) && scene.motion.length > 0);
-    if (Number(scene.durationSec) > 8 && !hasTransition) {
+    if (
+      videoMap.mode === "continuous" &&
+      actorsDeclared &&
+      !hasTransition
+    ) {
+      addResult(
+        results,
+        "FAIL",
+        "beat-coverage",
+        scene.id,
+        "Continuous scenes must contain at least one transition when actors are declared.",
+      );
+    } else if (Number(scene.durationSec) > 8 && !hasTransition) {
       addResult(
         results,
         "WARN",
@@ -130,6 +155,22 @@ export const validateSemantic = (videoMap, { final = false } = {}) => {
         scene.id,
         `Scene lasts ${scene.durationSec}s without a transition or motion instruction (limit: 8s).`,
         { durationSec: scene.durationSec },
+      );
+    }
+  }
+
+  if (actorsDeclared) {
+    for (const actor of videoMap.actors) {
+      if (actor.target === "environment" || actorTargets.has(actor.target)) {
+        continue;
+      }
+      addResult(
+        results,
+        "FAIL",
+        "actor-coverage",
+        null,
+        `Actor ${JSON.stringify(actor.id)} targets ${JSON.stringify(actor.target)}, but that target never appears in an add/update transition.`,
+        { actorId: actor.id, target: actor.target },
       );
     }
   }
@@ -144,8 +185,12 @@ export const validateSemantic = (videoMap, { final = false } = {}) => {
     );
   }
 
+  const enabledChecks =
+    4 +
+    (actorsDeclared ? 1 : 0) +
+    (actorsDeclared && videoMap.mode === "continuous" ? 1 : 0);
   const counts = {
-    pass: 4 - new Set(results.map((result) => result.check)).size,
+    pass: enabledChecks - new Set(results.map((result) => result.check)).size,
     warn: results.filter((result) => result.severity === "WARN").length,
     fail: results.filter((result) => result.severity === "FAIL").length,
   };

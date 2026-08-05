@@ -287,20 +287,47 @@ export const CinematicTypeScene = ({
   );
   const leftWide = spanColumns(columns, 0, 7);
   const rightNarrow = spanColumns(columns, 7, 5);
+  const isQuote = fixture.sceneType === "quote";
+  const isChapterReset = fixture.sceneType === "chapter-reset";
+  const isManifesto = fixture.sceneType === "manifesto";
+  const isOutro = fixture.sceneType === "outro";
   const headlineBox =
-    fixture.sceneType === "transition"
+    isChapterReset
       ? makeBox(
           layout.content.x,
           layout.content.y + 150,
           layout.content.width,
           620,
         )
+      : isManifesto
+        ? makeBox(
+            layout.content.x,
+            layout.content.y + 690,
+            layout.content.width,
+            410,
+          )
+        : isOutro
+          ? makeBox(
+              layout.content.x + 70,
+              layout.content.y + 520,
+              layout.content.width - 140,
+              470,
+            )
       : makeBox(leftWide.x, layout.content.y + 156, leftWide.width - 20, 760);
   const supportBox =
-    fixture.sceneType === "quote"
+    isQuote
       ? makeBox(leftWide.x, layout.content.y + 1000, leftWide.width - 120, 180)
-      : fixture.sceneType === "transition"
+      : isChapterReset
         ? makeBox(layout.content.x, layout.content.y + 830, 560, 150)
+        : isManifesto
+          ? makeBox(layout.content.x, layout.content.y + 1140, 720, 130)
+          : isOutro
+            ? makeBox(
+                layout.content.x + 120,
+                layout.content.y + 1060,
+                layout.content.width - 240,
+                130,
+              )
         : makeBox(
             leftWide.x,
             layout.content.y + 1080,
@@ -308,14 +335,28 @@ export const CinematicTypeScene = ({
             180,
           );
   const textureBox =
-    fixture.sceneType === "transition"
+    isChapterReset
       ? makeBox(
           layout.content.x,
           layout.content.y + 1040,
           layout.content.width,
           360,
         )
-      : fixture.sceneType === "quote"
+      : isManifesto
+        ? makeBox(
+            layout.content.x,
+            layout.content.y + 174,
+            layout.content.width,
+            430,
+          )
+        : isOutro
+          ? makeBox(
+              layout.content.x + 70,
+              layout.content.y + 1280,
+              layout.content.width - 140,
+              160,
+            )
+      : isQuote
         ? makeBox(
             rightNarrow.x,
             layout.content.y + 214,
@@ -336,16 +377,16 @@ export const CinematicTypeScene = ({
   );
   const headlineFit = fitTypographyToBox({
     tokens: cinematicTypeTokens,
-    role: fixture.sceneType === "quote" ? "headline" : "display",
+    role: isQuote || isOutro ? "headline" : "display",
     text: fixture.headline,
     width:
-      fixture.sceneType === "transition"
+      isChapterReset
         ? headlineBox.width - 110
         : headlineBox.width - 28,
     height: headlineBox.height,
-    maxLines: fixture.sceneType === "transition" ? 6 : 5,
+    maxLines: isChapterReset ? 6 : isOutro ? 4 : 5,
     density: fixture.density,
-    minScale: fixture.sceneType === "transition" ? 0.56 : 0.66,
+    minScale: isChapterReset ? 0.56 : isOutro ? 0.72 : 0.66,
   });
   const supportFit = fitTypographyToBox({
     tokens: cinematicTypeTokens,
@@ -360,13 +401,13 @@ export const CinematicTypeScene = ({
     density: "balanced",
     minScale: 0.84,
   });
-  const headlineWidth = fixture.sceneType === "transition" ? "86%" : "100%";
+  const headlineWidth = isChapterReset ? "86%" : "100%";
   const headlineFontSize =
-    fixture.sceneType === "transition"
+    isChapterReset
       ? Math.min(headlineFit.style.fontSize, 64)
       : headlineFit.style.fontSize;
   const headlineLineHeight =
-    fixture.sceneType === "transition" ? 0.96 : headlineFit.style.lineHeight;
+    isChapterReset ? 0.96 : headlineFit.style.lineHeight;
 
   return (
     <AbsoluteFill
@@ -383,7 +424,9 @@ export const CinematicTypeScene = ({
           left: layout.content.x,
           top: layout.content.y + 86,
           width:
-            fixture.sceneType === "transition" ? layout.content.width : 460,
+            isChapterReset || isManifesto || isOutro
+              ? layout.content.width
+              : 460,
           height: 60,
         }}
       >
@@ -395,7 +438,7 @@ export const CinematicTypeScene = ({
             ...buildEntranceStyle({
               frame,
               durationInFrames: cinematicTypeTokens.motion.slowFrames,
-              preset: fixture.sceneType === "quote" ? "fade-right" : "fade-up",
+              preset: isQuote ? "fade-right" : "fade-up",
               distance: cinematicTypeTokens.motion.distanceLg,
               delayFrames: 3,
               policy: fixture.motionPolicy,
@@ -403,8 +446,11 @@ export const CinematicTypeScene = ({
             clipPath: "none",
             display: "flex",
             alignItems:
-              fixture.sceneType === "transition" ? "flex-end" : "flex-start",
+              isChapterReset || isManifesto || isOutro
+                ? "flex-end"
+                : "flex-start",
             minHeight: "100%",
+            textAlign: isOutro ? "center" : "left",
           }}
         >
           <div
@@ -455,25 +501,26 @@ export const CinematicTypeScene = ({
             clipPath: "none",
             paddingLeft: fixture.sceneType === "quote" ? 22 : 0,
             borderLeft:
-              fixture.sceneType === "quote"
+              isQuote
                 ? `2px solid ${withAlpha(cinematicTypeTokens.color.accent, 0.62)}`
                 : "none",
+            textAlign: isOutro ? "center" : "left",
           }}
         >
           <div
             style={drawText({
               color:
-                fixture.sceneType === "quote"
+                isQuote
                   ? cinematicTypeTokens.color.textMuted
                   : cinematicTypeTokens.color.textStrong,
               fontFamily: supportFit.style.fontFamily,
               fontSize: supportFit.style.fontSize,
               lineHeight: supportFit.style.lineHeight,
               fontWeight: supportFit.style.fontWeight,
-              maxWidth: fixture.sceneType === "transition" ? 470 : "100%",
+              maxWidth: isChapterReset ? 470 : "100%",
             })}
           >
-            {fixture.sceneType === "quote"
+            {isQuote
               ? fixture.attribution
               : fixture.supportingText}
           </div>

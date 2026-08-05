@@ -148,3 +148,41 @@ Open questions RD đã chốt (2026-07-14): **font JP = `@remotion/google-fonts/
 - Video-map v2 continuous: `input/scripts/ai-email-keigo/video-map.v2.json` (builder: scratchpad `build-email-keigo-v2.mjs`). 6 scene / 1 environment email window / 13 transitions; offset chip tính từ timed-script v1 (voice 58s giữ nguyên); sửa lỗi 3/4 bước (3 chip dữ kiện; "chỉnh chi tiết" = beat kiểm tra ở caution); DiffHighlight dùng email JP từ `email-jp-sample.md` (draft, chờ user review); CTA = follow chip 4s cuối, không end-card tĩnh.
 - Validate: **semantic PASS 0 fail / 0 warn** (v1 cùng checker: 1 FAIL + 4 WARN) · brand score 1.00.
 - Đang render 6 still gate-2 (Sonnet) → trình user duyệt video-map (gate 2) → apply-timing + render full 58s → gate 3.
+- **Gate 2: user duyệt 2026-07-15** (6 still storyboard + fix layout 4 lỗi Sonnet phát hiện: chip chồng nhau, timer đè subtitle, follow chip đè header — xếp lại vị trí, thêm `remove` cho diff trước khi timer vào, remove timer trước khi follow chip vào).
+- **Bug thật phát hiện khi apply-timing trên map thật:** schema bắt buộc `props` cho MỌI transition (kể cả `remove`, vốn không cần) + type `MechanismTransition` thiếu hẳn variant `remove` cho element target — lọt qua toàn bộ test Phase C2.1 vì builder map là `.mjs` không qua tsc. Vá bằng Codex (C2.3) — xem block bên dưới. Claude verify lại: tsc PASS, test:mechanism 13/13, test:semantic 15/15, validate:semantic map v2 PASS 0/0.
+- Render full 58s: run-id `email-keigo-v2`, voice copy từ run `email-keigo` (checksum giữ nguyên) — ✅ hoàn tất 2026-07-16. `output/render/flow-runs/email-keigo-v2/video.mp4` (8.1MB) + publish bundle `output/publish/email-keigo-v2/`.
+- Render report: audioStream=true, voiceChecksum khớp v1, captionDriftMs=13.33 (bằng v1), **semanticQa 4 pass / 0 warn / 0 fail** (v1: 1 fail + 4 warn).
+- Claude tự QA 6 still trên video-map ĐÃ apply-timing thật (không phải map trước timing) — tất cả PASS: hook (email nháp + timer 29:58), steps (3 chip xếp cột dọc không chồng), caution (email keigo + chip Kiểm tra), payoff diff (TRƯỚC/SAU highlight đúng), payoff timer (05:00 không đè subtitle), cta (SENT + follow chip sạch, không đè header).
+- **Gate 3 (video final) trình user 2026-07-16.**
+
+### Kết quả build — Phase C2.3 fix (Codex)
+
+- Files changed: `src/data.ts`, `src/mechanism/continuousState.ts`, `schemas/video-map.schema.json`, `scripts/__tests__/continuous-mode.test.mjs`, `tests/fixtures/continuous-video-map.json`, `tests/mechanism/mechanism-types.test.ts`, và `docs/BD-visual-mechanism.md`.
+- `MechanismTransition` có variant remove đúng contract `{ target: string; action: "remove"; offsetSec?: number }`, không có `props`; type của element state lấy props từ variant `add`, giữ nguyên runtime add/update/remove.
+- Schema chỉ require `props` khi action là `add` hoặc `update`; remove không cần props. Regression tests xác nhận remove không props PASS, còn add/update thiếu props đều FAIL schema.
+- Repro trước fix bằng đúng flow command: FAIL schema với 7 lỗi `missing required property "props"` tại các remove transition trong `input/scripts/ai-email-keigo/video-map.v2.json`.
+- Sau fix, cùng flow command tạo `output/render/flow-runs/repro/video-map.json`; stage `validate:videomap` PASS (6 scenes), brand PASS 1.00, semantic PASS 4/4 (0 warn, 0 fail), không còn schema error. Stage render phía sau exit code 1 sau khoảng 584.7s; lỗi render này độc lập với schema acceptance.
+- Kết quả test: `npx tsc --noEmit` PASS; `npm run test:mechanism` PASS 13/13; `npm run test:semantic` PASS 15/15; direct `node scripts/validate-video-map.mjs output/render/flow-runs/repro/video-map.json` PASS.
+- Không sửa `input/scripts/ai-email-keigo/video-map.v2.json`.
+
+## Phase E — M6.1 Dual-window + Fidelity (Codex batch 5) — từ treatment email-keigo v3
+
+Nguồn yêu cầu: `input/scripts/ai-email-keigo/visual-treatment.v3.md` (APPROVED 2026-07-16, user chốt scope gồm cả 2 gap) + action ③④ của `docs/review-design-before-render.md`.
+
+| Bước | Việc |
+|---|---|
+| E1 | **Window addable làm element**: `MechanismWindow` thêm được qua transitions (`action: add`, `props.component: "MechanismWindow"`, variant `email\|chat\|doc` + đủ props hiện có + `position {left, top}` + `scale?`). Type union `AddableMechanism` + schema + `ContinuousEnvironment.renderElement` hỗ trợ. Cursor chỉ blink ở window "active" (window element mới nhất được add/update — quy ước đơn giản). |
+| E2 | **Environment window transform**: environment update nhận `position {left, top}` + `scale` (default hiện tại left:80 top:250 scale:1) — animate mượt từ giá trị cũ sang mới trong ~20 frame kể từ đầu scene chứa update (không nhảy cắt). Backward compatible: map cũ không có position/scale render y hệt. |
+| E3 | **Fidelity checks** vào `validate:semantic`: video-map optional `actors: [{id, target}]` (target = element target id hoặc "environment"); check (5) **actor-coverage**: mọi actor.target phải xuất hiện trong ≥1 transition add/update hoặc environment — thiếu → FAIL; check (6) **beat-coverage**: mode continuous, mọi scene phải có ≥1 transition — thiếu → FAIL (nâng từ WARN static-scene khi có `actors` khai báo). |
+| E4 | Tests: (a) map 2 window (env email + element chat) tsc + schema PASS; (b) env transform position/scale animate đúng frame; (c) map cũ không position/scale không đổi hành vi; (d) actor khai báo nhưng target không bao giờ xuất hiện → FAIL; (e) map không có `actors` → validator giữ hành vi cũ (backward compatible). |
+
+**Ràng buộc:** không sửa `input/scripts/`; không đổi hành vi mode slides; không remotion render (Claude/Sonnet verify still sau).
+
+## Kết quả build — Phase E (Codex)
+
+- Files changed: `src/data.ts`, `src/mechanism/continuousState.ts`, `src/mechanism/ContinuousEnvironment.tsx`, `schemas/video-map.schema.json`, `scripts/validate-semantic.mjs`, `tests/mechanism/continuous-mode.test.mjs`, `tests/mechanism/mechanism-types.test.ts`, `scripts/__tests__/continuous-mode.test.mjs`, và `docs/BD-visual-mechanism.md`.
+- E1: export `AddableMechanism` và thêm variant element `MechanismWindow` với đủ props renderer hiện có, `position {left, top}` bắt buộc và `scale?`; continuous renderer dispatch window element qua transitions. Chỉ window còn tồn tại có lần add/update mới nhất được phép nhận cursor blink; environment là window active ban đầu và có thể active lại khi được update.
+- E2: environment nhận `position`/`scale` ở initial props và update; transform nội suy từ giá trị trước sang giá trị mới trong 20 frame kể từ scene start. Default `{left: 80, top: 250, scale: 1}` giữ pixel behavior của map cũ không khai báo transform; các props nội dung window vẫn update theo behavior cũ.
+- E3: schema/type thêm optional `actors: [{id, target}]`; semantic QA thêm `actor-coverage` cho target không xuất hiện trong add/update và `beat-coverage` cho scene continuous không có transition khi `actors` được khai báo. Map không có `actors` giữ nguyên static-scene WARN và bộ đếm 4 check cũ.
+- E4: regression tests cover map 2 window (environment email + element chat) qua TypeScript/schema, midpoint/endpoints animation transform, legacy defaults, actor target thiếu → FAIL, scene thiếu beat → FAIL khi có actors, và no-actors backward compatibility.
+- Kết quả: `npx tsc --noEmit` PASS; `npm run test:mechanism` PASS 15/15; `npm run test:semantic` PASS 19/19. Không chạy Remotion render; không sửa file nào dưới `input/scripts/`.

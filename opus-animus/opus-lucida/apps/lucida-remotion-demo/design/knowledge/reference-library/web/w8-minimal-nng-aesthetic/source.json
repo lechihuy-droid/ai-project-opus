@@ -1,0 +1,24 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-16",
+    "approvedBy": "HUY",
+    "status": "approved"
+  },
+  "collectorVersion": "w8-link-note-collector/1",
+  "domain": "visual-style",
+  "provenance": {
+    "collectorArtifact": "design/knowledge/reference-approvals/web/w8-minimal-nng-aesthetic.sanitized-approved.json",
+    "sanitizedArtifactChecksum": "83b9e49b6166460e9ca9d983c3da554e915d4b1c00a206fccb62e503abc36718"
+  },
+  "rights": {
+    "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
+  "schemaVersion": "lucida-reference-source/v1",
+  "snapshotChecksum": "03bf2b417c0270f5a713099490bcb3cc99a9d76549bac14f1cf73bd9382a6593",
+  "sourceId": "source:reference:w8-minimal-nng-aesthetic",
+  "sourceRef": "https://www.nngroup.com/articles/aesthetic-minimalist-design/",
+  "sourceRevision": "link-note:2026-07-16",
+  "sourceType": "web"
+}

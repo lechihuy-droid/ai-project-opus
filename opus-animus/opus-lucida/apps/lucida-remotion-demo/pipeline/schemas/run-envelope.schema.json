@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "lucida-run/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "runId", "lane", "styleMode", "publicationStatus", "approvalRefs"],
+  "properties": {
+    "schemaVersion": { "const": "lucida-run/v1" },
+    "runId": { "type": "string", "minLength": 1 },
+    "lane": { "enum": ["production", "rapid-visual-pilot"] },
+    "styleMode": { "enum": ["auto", "locked"] },
+    "lockedStyle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["family", "lockedBy", "reason"],
+      "properties": {
+        "family": { "$ref": "#/$defs/styleReference" },
+        "lockedBy": { "type": "string", "minLength": 1 },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "publicationStatus": { "enum": ["non_publishable", "promotion_pending", "publishable"] },
+    "approvalRefs": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "styleMode": { "const": "locked" } } },
+      "then": { "required": ["lockedStyle"] },
+      "else": { "not": { "required": ["lockedStyle"] } }
+    },
+    {
+      "if": { "properties": { "lane": { "const": "rapid-visual-pilot" } } },
+      "then": { "properties": { "publicationStatus": { "const": "non_publishable" } } }
+    },
+    {
+      "if": { "properties": { "publicationStatus": { "const": "publishable" } } },
+      "then": { "properties": { "lane": { "const": "production" }, "approvalRefs": { "minItems": 1 } } }
+    }
+  ],
+  "$defs": {
+    "visualFamily": {
+      "enum": ["terminal", "dashboard", "editorial", "infographic", "code", "data_visualization", "product_demo", "cinematic_typography"]
+    },
+    "styleReference": {
+      "anyOf": [
+        { "$ref": "#/$defs/visualFamily" },
+        {
+          "enum": [
+            "terminal-command-center",
+            "technical-editorial",
+            "minimal-education",
+            "cinematic-type",
+            "dashboard-data",
+            "paper-notebook",
+            "product-showcase",
+            "editorial-collage",
+            "timeline-documentary"
+          ]
+        }
+      ]
+    }
+  }
+}

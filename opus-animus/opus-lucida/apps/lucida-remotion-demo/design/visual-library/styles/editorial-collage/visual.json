@@ -9,14 +9,14 @@
   "tags": ["editorial", "collage", "culture", "evidence", "recap"],
   "recommendedIntents": ["summarize", "takeaway", "evidence"],
   "avoidFor": ["proprietary screenshots", "logo-led product reveals", "metric dashboards"],
-  "supportedSceneTypes": ["montage", "evidence", "recap"],
+  "supportedSceneTypes": ["source-montage", "culture-recap", "visual-essay", "quote-collage", "multi-source-evidence"],
   "supportedTemplateRoles": ["scene"],
   "aspectRatios": ["9:16", "16:9"],
   "density": "balanced",
   "renderCost": "medium",
   "contentCapacity": { "headlineChars": 108, "bodyChars": 620, "maxItems": 4, "maxAnnotations": 4, "maxMediaAssets": 3 },
   "preferredLayouts": ["layered-crops", "captioned-evidence", "recap-rail"],
-  "preferredTemplates": ["culture-montage", "evidence-stack", "asset-policy-recap"],
+  "preferredTemplates": ["source-montage", "culture-recap", "visual-essay", "quote-collage", "multi-source-evidence"],
   "backgroundEffects": ["editorial-grid", "print-texture"],
   "motionPreset": "collage-layer-reveal",
   "layoutGrammar": [
@@ -29,7 +29,7 @@
   "sourcePolicy": {
     "copyStatus": "original",
     "registeredMedia": "embed_asset only",
-    "notes": "Review assets are local original SVG fixtures. Edge cases intentionally exercise rejected context_only material and missing embeddable media."
+    "notes": "Review assets are local original SVG fixtures. Quote-collage cases intentionally exercise rejected context_only material and missing embeddable media."
   },
-  "notes": ["The dedicated family composition avoids shared registry edits.", "The edge fixture validates placeholder behavior for missing and rejected assets."]
+  "notes": ["The dedicated family composition avoids shared registry edits.", "The quote-collage fixture validates placeholder behavior for missing and rejected assets."]
 }

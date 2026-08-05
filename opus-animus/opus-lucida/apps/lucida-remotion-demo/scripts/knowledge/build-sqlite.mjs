@@ -63,31 +63,31 @@ const templateEntity = (template) => ({
 
 const insertReferenceProjection = (database, references) => {
   const insertSource = database.prepare(
-    "INSERT INTO sources(source_id, source_type, rights_policy) VALUES (?, ?, ?)",
+    "INSERT INTO sources(source_id, source_type, rights_policy, domain) VALUES (?, ?, ?, ?)",
   );
   const insertSnapshot = database.prepare(
     "INSERT INTO source_snapshots(snapshot_id, source_id, revision, checksum, collector_version) VALUES (?, ?, ?, ?, ?)",
   );
   const insertDocument = database.prepare(
-    "INSERT INTO documents(document_id, snapshot_id, source_ref, media_type) VALUES (?, ?, ?, ?)",
+    "INSERT INTO documents(document_id, snapshot_id, source_ref, media_type, domain) VALUES (?, ?, ?, ?, ?)",
   );
   const insertChunk = database.prepare(
-    `INSERT INTO chunks(chunk_id, document_id, ordinal, raw_text, search_text, search_folded, content_hash)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO chunks(chunk_id, document_id, ordinal, raw_text, search_text, search_folded, content_hash, domain)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
   );
   const insertObservation = database.prepare(
     "INSERT INTO observations(observation_id, chunk_id, kind, review_status, definition_json) VALUES (?, ?, ?, ?, ?)",
   );
   const insertSearchDocument = database.prepare(
     `INSERT INTO search_documents(
-      owner_type, owner_id, chunk_id, title, body, tags, provenance, search_text, search_folded
-    ) VALUES ('chunk', ?, ?, ?, ?, ?, ?, ?, ?)`,
+      owner_type, owner_id, chunk_id, title, body, tags, provenance, search_text, search_folded, domain
+    ) VALUES ('chunk', ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   );
   const sourcesBySnapshot = new Map(references.sources.map((source) => [source.snapshotId, source]));
   const documentsById = new Map(references.documents.map((document) => [document.documentId, document]));
 
   for (const source of references.sources) {
-    insertSource.run(source.sourceId, source.sourceType, source.rights.policy);
+    insertSource.run(source.sourceId, source.sourceType, source.rights.policy, source.domain);
     insertSnapshot.run(
       source.snapshotId,
       source.sourceId,
@@ -97,7 +97,7 @@ const insertReferenceProjection = (database, references) => {
     );
   }
   for (const document of references.documents) {
-    insertDocument.run(document.documentId, document.snapshotId, document.sourceRef, document.mediaType);
+    insertDocument.run(document.documentId, document.snapshotId, document.sourceRef, document.mediaType, document.domain);
   }
   for (const chunk of references.chunks) {
     const document = documentsById.get(chunk.documentId);
@@ -110,6 +110,7 @@ const insertReferenceProjection = (database, references) => {
       chunk.searchText,
       chunk.searchFolded,
       chunk.contentHash,
+      chunk.domain,
     );
     for (const [index, observation] of chunk.observations.entries()) {
       insertObservation.run(
@@ -131,6 +132,7 @@ const insertReferenceProjection = (database, references) => {
       provenance,
       chunk.searchText,
       chunk.searchFolded,
+      chunk.domain,
     );
   }
 };
@@ -142,8 +144,8 @@ const insertProjection = (database, input) => {
   );
   const insertEntity = database.prepare(
     `INSERT INTO canonical_entities(
-      entity_id, entity_type, logical_id, version, package_path, content_hash, definition_json, build_id
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      entity_id, entity_type, logical_id, version, package_path, content_hash, definition_json, build_id, domain
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   );
   const insertCapability = database.prepare(
     "INSERT INTO entity_capabilities(entity_id, capability_type, capability_value) VALUES (?, ?, ?)",
@@ -156,7 +158,7 @@ const insertProjection = (database, input) => {
      VALUES (?, 'generated-index', 'passed', ?, ?)`,
   );
   const insertSource = database.prepare(
-    "INSERT INTO sources(source_id, source_type, rights_policy) VALUES (?, 'canonical-package', 'canonical-review-required')",
+    "INSERT INTO sources(source_id, source_type, rights_policy, domain) VALUES (?, 'canonical-package', 'canonical-review-required', ?)",
   );
   const insertSnapshot = database.prepare(
     "INSERT INTO source_snapshots(snapshot_id, source_id, revision, checksum, collector_version) VALUES (?, ?, ?, ?, 'compiler-v1')",
@@ -168,8 +170,8 @@ const insertProjection = (database, input) => {
   );
   const insertSearchDocument = database.prepare(
     `INSERT INTO search_documents(
-      owner_type, owner_id, entity_id, title, body, tags, provenance, search_text, search_folded
-    ) VALUES ('entity', ?, ?, ?, ?, ?, ?, ?, ?)`,
+      owner_type, owner_id, entity_id, title, body, tags, provenance, search_text, search_folded, domain
+    ) VALUES ('entity', ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   );
 
   insertBuild.run(buildId, SQLITE_SCHEMA_VERSION, input.manifest.manifestHash);
@@ -187,6 +189,7 @@ const insertProjection = (database, input) => {
       entity.contentHash,
       entity.definitionJson,
       buildId,
+      "visual-style",
     );
   }
 
@@ -205,6 +208,7 @@ const insertProjection = (database, input) => {
       entity.contentHash,
       entity.definitionJson,
       buildId,
+      template.domain,
     );
 
     const capabilities = [
@@ -232,7 +236,7 @@ const insertProjection = (database, input) => {
 
     const sourceId = `source:template:${template.id}`;
     const snapshotId = `snapshot:${sourceId}:${entity.contentHash.slice(0, 16)}`;
-    insertSource.run(sourceId);
+    insertSource.run(sourceId, template.domain);
     insertSnapshot.run(snapshotId, sourceId, template.version, entity.contentHash);
     insertProvenance.run(entity.entityId, sourceId, snapshotId, template.paths.provenance);
 
@@ -259,6 +263,7 @@ const insertProjection = (database, input) => {
       provenance,
       searchText,
       foldSearchText(searchText),
+      template.domain,
     );
   }
 };

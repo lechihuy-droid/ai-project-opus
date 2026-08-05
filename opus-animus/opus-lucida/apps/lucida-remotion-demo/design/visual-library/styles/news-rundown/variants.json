@@ -1,0 +1,290 @@
+[
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "breaking-update",
+    "packageId": "news-rundown",
+    "label": "Breaking update",
+    "description": "Single urgent update with a dominant signal band and compact supporting context.",
+    "intentTags": [
+      "news-rundown"
+    ],
+    "beatRoles": [
+      "headline"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dominant-headline",
+      "signal-band"
+    ],
+    "typographyTraits": [
+      "large-editorial-headline",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "signal-red",
+      "ink-canvas"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "news-header",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 2,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "one consequential AI news update"
+    ],
+    "antiPatterns": [
+      "multiple equal-priority stories"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound breaking-update draft variant."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "headline-stack",
+    "packageId": "news-rundown",
+    "label": "Headline stack",
+    "description": "Ranked headline stack with a clear lead story and numbered supporting updates.",
+    "intentTags": [
+      "news-rundown",
+      "comparison"
+    ],
+    "beatRoles": [
+      "headline",
+      "compare"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "ranked-list",
+      "lead-story"
+    ],
+    "typographyTraits": [
+      "editorial-headline",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "paper-text",
+      "cyan-accent"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "news-header",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "daily AI headline stack"
+    ],
+    "antiPatterns": [
+      "unranked unrelated facts"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound headline-stack draft variant."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "top-stories",
+    "packageId": "news-rundown",
+    "label": "Top stories",
+    "description": "Timestamped top-story rail that keeps a bounded set of developments in explicit reading order.",
+    "intentTags": [
+      "news-rundown",
+      "process"
+    ],
+    "beatRoles": [
+      "context",
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "timestamp-rail",
+      "ordered-updates"
+    ],
+    "typographyTraits": [
+      "editorial-headline",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "amber-active",
+      "ink-canvas"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "news-header",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "daily AI top-stories briefing"
+    ],
+    "antiPatterns": [
+      "unordered event recaps"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound top-stories draft variant."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "bulletin-grid",
+    "packageId": "news-rundown",
+    "label": "Bulletin grid",
+    "description": "Four-cell bulletin grid separating what changed, scope, impact, and the next check.",
+    "intentTags": [
+      "news-rundown",
+      "explain"
+    ],
+    "beatRoles": [
+      "context",
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "two-by-two-grid",
+      "context-led"
+    ],
+    "typographyTraits": [
+      "editorial-headline",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "cyan-accent",
+      "paper-text"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "news-header",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 4,
+      "maxPanels": 4
+    },
+    "positiveUseCases": [
+      "AI policy or platform update bulletin"
+    ],
+    "antiPatterns": [
+      "single urgent alert"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound bulletin-grid draft variant."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-style-variant/v1",
+    "variantId": "weekly-roundup",
+    "packageId": "news-rundown",
+    "label": "Weekly roundup",
+    "description": "Metric-led weekly roundup combining one large signal, trend direction, and supporting news implications.",
+    "intentTags": [
+      "news-rundown",
+      "comparison"
+    ],
+    "beatRoles": [
+      "headline",
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "metric-led",
+      "signal-strip"
+    ],
+    "typographyTraits": [
+      "large-numeric-display",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "success-green",
+      "ink-canvas"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "news-header",
+      "news-list",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 3,
+      "maxMetrics": 2
+    },
+    "positiveUseCases": [
+      "weekly AI market or adoption recap"
+    ],
+    "antiPatterns": [
+      "unsupported precision claims"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Local fixture-bound weekly-roundup draft variant."
+    ],
+    "classifierVersion": "draft-0.1.0",
+    "reviewStatus": "proposed"
+  }
+]

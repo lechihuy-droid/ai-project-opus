@@ -1,0 +1,24 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-16",
+    "approvedBy": "HUY",
+    "status": "approved"
+  },
+  "collectorVersion": "w8-link-note-collector/1",
+  "domain": "visual-style",
+  "provenance": {
+    "collectorArtifact": "design/knowledge/reference-approvals/web/w8-technical-primer-foundations.sanitized-approved.json",
+    "sanitizedArtifactChecksum": "c0e6bb2035a93530214ea031798d3700f0238c36c9bf6ce0e9df48eed634b90a"
+  },
+  "rights": {
+    "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
+  "schemaVersion": "lucida-reference-source/v1",
+  "snapshotChecksum": "e5256d08f1c37969d87efffc3d6dc1923f310432950d65c9ea5af132ed5194d3",
+  "sourceId": "source:reference:w8-technical-primer-foundations",
+  "sourceRef": "https://primer.style/foundations/",
+  "sourceRevision": "link-note:2026-07-16",
+  "sourceType": "web"
+}

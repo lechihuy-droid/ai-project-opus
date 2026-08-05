@@ -1,0 +1,60 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-16",
+    "approvedBy": "HUY",
+    "status": "approved"
+  },
+  "generatedAt": "2026-07-16T00:00:00.000Z",
+  "projectId": "lucida-remotion-demo-w8-evidence",
+  "rights": {
+    "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
+  "sanitization": {
+    "findings": [
+      "Link-only reviewer notes; no third-party source body or media is stored."
+    ],
+    "redactions": 0,
+    "status": "passed"
+  },
+  "schemaVersion": "sanitized-visual-input/v1",
+  "sources": [
+    {
+      "checksum": "8541e5e284eb44489002c97c1da2c2787ef3bd6c648f1422827f2af30614b838",
+      "collectorVersion": "w8-link-note-collector/1",
+      "domain": "visual-style",
+      "metadata": {
+        "targetPackageId": "minimal-education",
+        "url": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/"
+      },
+      "records": [
+        {
+          "data": {
+            "packageId": "minimal-education",
+            "tags": [
+              "minimal-education",
+              "w8-candidate",
+              "link-only"
+            ]
+          },
+          "kind": "layout_reference",
+          "provenance": {
+            "collectorVersion": "w8-link-note-collector/1",
+            "sourceChecksum": "8541e5e284eb44489002c97c1da2c2787ef3bd6c648f1422827f2af30614b838",
+            "sourceRef": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/"
+          },
+          "text": "# Visual hierarchy education review note\n\nSource: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/\nTarget package: minimal-education\n\nReviewer-authored concepts:\n- spacing-driven grouping\n- clear reading order\n- single-concept emphasis\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts."
+        }
+      ],
+      "rights": {
+        "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+        "policy": "link-and-review-note-only",
+        "status": "approved"
+      },
+      "sourceId": "source:reference:w8-minimal-nng-hierarchy",
+      "sourceRevision": "link-note:2026-07-16",
+      "sourceType": "web_reference"
+    }
+  ]
+}

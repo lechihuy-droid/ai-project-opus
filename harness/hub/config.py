@@ -4,10 +4,16 @@ import json
 from pathlib import Path
 from typing import Any
 
+from dotenv import load_dotenv
+
 
 HUB_DIR = Path(__file__).resolve().parent
 HARNESS_DIR = HUB_DIR.parent
 ROOT = HARNESS_DIR.parent
+
+# Loads NVIDIA_API_KEY and friends from the repo-root .env. Does not override
+# a value already set in the environment (e.g. by the shell or a supervisor).
+load_dotenv(ROOT / ".env")
 RUNS_DIR = HARNESS_DIR / "runs"
 SUITES_DIR = HARNESS_DIR / "suites"
 JOBS_DIR = HUB_DIR / "jobs"
@@ -15,7 +21,10 @@ RUNTIME_DIR = HUB_DIR / "runtime"
 RUNTIME_THREADS_DIR = RUNTIME_DIR / "threads"
 RUNTIME_RUNS_DIR = RUNTIME_DIR / "runs"
 RUNTIME_STORE_DIR = RUNTIME_DIR / "store"
+RUNTIME_FILE_MAX_BYTES = 10 * 1024 * 1024
+RUNTIME_FILES_MAX_BYTES = 100 * 1024 * 1024
 PORT = 8799
+VGOV_BASE_URL = "http://127.0.0.1:8810"
 STEP_CAP = 50
 JOB_AGENT_CMD = "codex"
 JOB_TIME_CAP_SECONDS = 1800
@@ -23,8 +32,21 @@ JOB_MAX_RUNS = 3
 RUNTIME_MAX_CHILD_RUNS = 3
 RUNTIME_CHILD_TIMEOUT_SECONDS = 900
 JOB_BLOCKED_TIERS = ["destructive"]
+RENDER_TARGETS: dict[str, dict[str, Any]] = {
+    "lucida-remotion": {
+        "cwd": ROOT / "opus-animus" / "opus-lucida" / "apps" / "lucida-remotion-demo",
+        "command": ["node", "scripts/render-run.mjs", "--props", "{props}"],
+        "timeout_seconds": 1800,
+        "risk_tier": "execute",
+        "env": {},
+        "output_hint": "output/render/flow-runs",
+    },
+}
 JOB_TTL_SECONDS = 3600
 JOB_ALLOW_AGENTS = {"codex"}
+RETENTION_DAYS_DEFAULT = 7
+RETENTION_DAYS_MIN = 1
+RETENTION_DAYS_MAX = 365
 GOV_RECOVERY_STEPS = 5
 LOOP_CONSECUTIVE_THRESHOLD = 12
 ENTROPY_WINDOW = 20
@@ -330,6 +352,62 @@ CHAT_REASONING: list[dict[str, Any]] = [
         "system": "detailed thinking on",
     },
 ]
+
+
+# --- Hub v2: Command Center (Phase A) ---
+CHAT_USAGE_FILE = HUB_DIR / ".cache" / "chat_usage.jsonl"
+SKILL_DEPLOY_LOG = HUB_DIR / ".cache" / "skill_deploy_log.jsonl"
+
+# CLI provider layer
+MAX_CONCURRENT_CLI = 3
+CHAT_CLI_TIMEOUT = 300
+QUOTA_WARN_PER_DAY = 200
+
+# User-editable shadow estimates, not official billing rates or invoices.
+# Exact model ids are preferred; services.pricing.py also supports prefixes.
+PRICING_USD_PER_MTOK: dict[str, dict[str, float]] = {
+    # Anthropic public API pricing (standard global, 5-minute cache writes).
+    "claude-opus-4-8": {
+        "input": 5.0,
+        "output": 25.0,
+        "cache_read": 0.5,
+        "cache_write": 6.25,
+    },
+    # Introductory public API pricing through 2026-08-31.
+    "claude-sonnet-5": {
+        "input": 2.0,
+        "output": 10.0,
+        "cache_read": 0.2,
+        "cache_write": 2.5,
+    },
+}
+PROVIDERS: dict[str, Any] = {
+    "claude": {"cmd": ["claude"]},
+    "codex": {"cmd": [str(Path.home() / "AppData" / "Local" / "pnpm" / "codex")]},
+    "nvidia": {},
+}
+
+MODEL_CLASS_ROUTING: dict[str, dict[str, Any]] = {
+    "cheap": {"provider": "nvidia", "model": None},
+    "code": {"provider": "codex", "model": None},
+    "smart": {"provider": "claude", "model": None},
+}
+
+# Skill library sources (read + deploy targets)
+SKILL_SOURCES: dict[str, Path] = {
+    "hub_builtin": HUB_DIR / "skills",
+    "claude_user": Path.home() / ".claude" / "skills",
+    "claude_project": ROOT / ".claude" / "skills",
+    "codex_user": Path.home() / ".codex" / "skills",
+}
+
+# CSRF guard (local-only origins)
+ALLOWED_ORIGINS = (
+    "http://127.0.0.1:8799",
+    "http://localhost:8799",
+)
+HUB_CLIENT_HEADER = "x-hub-client"
+HUB_CLIENT_VALUE = "harness-hub"
 
 
 if __name__ == "__main__":

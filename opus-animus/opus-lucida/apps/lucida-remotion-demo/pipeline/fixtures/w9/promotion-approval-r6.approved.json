@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "lucida-approval/v1",
+  "approvalId": "w9-auto-pilot-promotion-huy-r6",
+  "runId": "w9-ai-weekly-auto-20260716",
+  "kind": "promotion",
+  "status": "approved",
+  "artifactHash": "sha256:ddcc517c4edbec8b8d0f355c26161fc57a36b0023b2c1f3900aad5f18e1c9f2c",
+  "approvedBy": "HUY",
+  "approvedAt": "2026-07-17T00:00:00+09:00"
+}

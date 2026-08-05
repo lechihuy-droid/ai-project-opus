@@ -1,0 +1,299 @@
+{
+  "schemaVersion": "lucida-er2-evidence-validation/v1",
+  "packageId": "interface-walkthrough",
+  "lunaRule": "A sourceEvidenceId passes only when it resolves to a canonical source with domain visual-style, approval.status approved, and rights.status approved, or to an exact source ID listed as eligible by a PASS Luna review artifact. A review PNG or generic completed ingest report is not sufficient.",
+  "counts": {
+    "variants": 5,
+    "patterns": 30,
+    "evidenceReferences": 35
+  },
+  "allowedEvidence": {
+    "approvedCanonicalCount": 16,
+    "lunaReviewEligibleCount": 88
+  },
+  "checks": {
+    "allSourceEvidenceIdsResolveUnderLunaRule": true,
+    "interfaceSourceReferencesResolveUnderLunaRule": true,
+    "allVariantsProposed": true,
+    "allPatternsProposed": true
+  },
+  "resolvedRecords": [
+    {
+      "kind": "variant",
+      "id": "annotated-screen",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-react"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "step-flow",
+      "sourceEvidenceIds": [
+        "source:reference:w8-technical-primer-primitives"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "feature-tour",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-react"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "before-after-ui",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-react"
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "state-transition",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-react"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-annotated-screen-fixed-app-shell-layout",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-react"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-annotated-screen-metric-action-type",
+      "sourceEvidenceIds": [
+        "source:reference:w8-minimal-nng-hierarchy"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-annotated-screen-semantic-metric-palette",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-docs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-annotated-screen-toolbar-then-focus-motion",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-remotion-animation"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-annotated-screen-first-control-callout-component",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-react"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-annotated-screen-metric-to-action-composition",
+      "sourceEvidenceIds": [
+        "source:reference:w8-minimal-nng-aesthetic"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-step-flow-fixed-decision-layout",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-react"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-step-flow-current-next-type",
+      "sourceEvidenceIds": [
+        "source:reference:w8-minimal-nng-hierarchy"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-step-flow-progress-state-palette",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-docs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-step-flow-decision-then-confirmation-motion",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-remotion-animation"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-step-flow-stateful-step-component",
+      "sourceEvidenceIds": [
+        "source:reference:w8-technical-primer-primitives"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-step-flow-state-to-submit-composition",
+      "sourceEvidenceIds": [
+        "source:reference:w8-minimal-nng-aesthetic"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-feature-tour-single-setting-layout",
+      "sourceEvidenceIds": [
+        "source:reference:w8-minimal-nng-aesthetic"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-feature-tour-label-value-consequence-type",
+      "sourceEvidenceIds": [
+        "source:reference:w8-minimal-nng-hierarchy"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-feature-tour-value-consequence-palette",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-docs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-feature-tour-focus-then-consequence-motion",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-remotion-animation"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-feature-tour-explicit-state-control-component",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-react"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-feature-tour-value-to-consequence-composition",
+      "sourceEvidenceIds": [
+        "source:reference:w8-minimal-nng-aesthetic"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-before-after-ui-stable-row-layout",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-docs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-before-after-ui-row-field-type",
+      "sourceEvidenceIds": [
+        "source:reference:w8-minimal-nng-hierarchy"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-before-after-ui-row-status-palette",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-docs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-before-after-ui-filter-then-row-motion",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-remotion-animation"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-before-after-ui-selected-record-component",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-react"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-before-after-ui-filter-to-record-composition",
+      "sourceEvidenceIds": [
+        "source:reference:w8-minimal-nng-aesthetic"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-state-transition-primary-action-layout",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-react"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-state-transition-action-confirmation-type",
+      "sourceEvidenceIds": [
+        "source:reference:w8-minimal-nng-hierarchy"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-state-transition-action-result-palette",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-primer-docs"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-state-transition-action-then-confirmation-motion",
+      "sourceEvidenceIds": [
+        "source:reference:w8-dashboard-remotion-animation"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-state-transition-primary-action-callout-component",
+      "sourceEvidenceIds": [
+        "source:reference:w8-technical-primer-primitives"
+      ]
+    },
+    {
+      "kind": "pattern",
+      "id": "iw-state-transition-action-to-result-composition",
+      "sourceEvidenceIds": [
+        "source:reference:w8-minimal-nng-aesthetic"
+      ]
+    }
+  ],
+  "sourceReferences": [
+    {
+      "id": "web-primer",
+      "url": "https://primer.style/",
+      "selectedConcepts": [
+        "application-shell hierarchy",
+        "focus-state clarity",
+        "compact control labels"
+      ]
+    },
+    {
+      "id": "web-mui",
+      "url": "https://mui.com/material-ui/getting-started/",
+      "selectedConcepts": [
+        "explicit component states",
+        "responsive interface composition",
+        "accessible interaction labels"
+      ]
+    },
+    {
+      "id": "web-tremor",
+      "url": "https://www.tremor.so/",
+      "selectedConcepts": [
+        "dashboard information hierarchy",
+        "data-table readability",
+        "action-oriented UI composition"
+      ]
+    }
+  ],
+  "failures": [],
+  "sourceReferenceFailures": [],
+  "result": "PASS"
+}

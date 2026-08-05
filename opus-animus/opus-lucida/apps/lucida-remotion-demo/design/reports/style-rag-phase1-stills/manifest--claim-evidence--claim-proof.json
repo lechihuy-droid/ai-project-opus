@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "lucida-style-rag-phase1-stills/v1",
+  "recordCount": 1,
+  "selection": {
+    "packageId": "claim-evidence",
+    "variantId": "claim-proof"
+  },
+  "outputRoot": "design/reports/style-rag-phase1-stills",
+  "renderTempRoot": "D:/lucida-remotion-artifacts/temp",
+  "bounds": {
+    "bundleTimeoutMs": 120000,
+    "selectTimeoutMs": 30000,
+    "renderTimeoutMs": 60000,
+    "analysisTimeoutMs": 20000
+  },
+  "stills": [
+    {
+      "key": "claim-evidence:claim-proof",
+      "packageId": "claim-evidence",
+      "variantId": "claim-proof",
+      "entryPoint": "src/styles/families/claim-evidence/renderRoot.tsx",
+      "compositionId": "ClaimEvidenceFamilyReview",
+      "fixturePath": "pipeline/fixtures/styles/claim-evidence/claim-proof.fixture.ts",
+      "input": {
+        "kind": "scene-key",
+        "sceneKey": "claim-proof"
+      },
+      "frame": 42,
+      "output": "design/reports/style-rag-phase1-stills/stills/claim-evidence/claim-proof.png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "sha256": "55ebf44494b1f6b7f08bcc399f9b27231f9d5fbdc25bcc8953721f5e37800630",
+      "fileBytes": 178987,
+      "nonBlank": {
+        "passed": true,
+        "dynamicRange": 16,
+        "signalStats": {
+          "yAverage": 29.5132,
+          "yLow": 20,
+          "yHigh": 36,
+          "saturationAverage": 3.45139
+        }
+      }
+    }
+  ]
+}

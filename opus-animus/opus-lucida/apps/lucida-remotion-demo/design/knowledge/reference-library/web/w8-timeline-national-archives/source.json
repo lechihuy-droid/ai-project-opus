@@ -1,0 +1,24 @@
+{
+  "approval": {
+    "approvedAt": "2026-07-16",
+    "approvedBy": "HUY",
+    "status": "approved"
+  },
+  "collectorVersion": "w8-link-note-collector/1",
+  "domain": "visual-style",
+  "provenance": {
+    "collectorArtifact": "design/knowledge/reference-approvals/web/w8-timeline-national-archives.sanitized-approved.json",
+    "sanitizedArtifactChecksum": "5a32f493a32a359d96ab7ab1242930ae848f2a55a464dc9e9679dcb05d4ffdc2"
+  },
+  "rights": {
+    "evidence": "HUY approved these reviewer-authored link notes on 2026-07-17; no third-party source bodies or media are vendored.",
+    "policy": "link-and-review-note-only",
+    "status": "approved"
+  },
+  "schemaVersion": "lucida-reference-source/v1",
+  "snapshotChecksum": "2a5f49f6b65f9b157555ba6d6c7329f1ec0c0a49d3c9ad73fad64a30cc693599",
+  "sourceId": "source:reference:w8-timeline-national-archives",
+  "sourceRef": "https://catalog.archives.gov/",
+  "sourceRevision": "link-note:2026-07-16",
+  "sourceType": "web"
+}

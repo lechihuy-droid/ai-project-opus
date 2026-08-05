@@ -13,7 +13,7 @@ const RemotionCinematicTypeRoot = () => {
       height={1920}
       fps={30}
       durationInFrames={90}
-      defaultProps={{ sceneKey: "hook" }}
+      defaultProps={{ sceneKey: "kinetic-hook" }}
     />
   );
 };

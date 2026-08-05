@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "visual-flow/v1",
+  "projectId": "ai-weekly-gpt-5-6",
+  "fps": 30,
+  "themeId": "lucida-ai-weekly/v1",
+  "knowledge": {
+    "enabled": true,
+    "repository": "sqlite",
+    "refreshProjection": true,
+    "limit": 3,
+    "maxQueryCharacters": 600
+  },
+  "sources": [
+    {
+      "id": "gpt-5-6-weekly-script",
+      "type": "script",
+      "required": true,
+      "path": "input/news/gpt-5-6-weekly/script.vi.md",
+      "family": "terminal",
+      "tags": ["terminal", "ai-news", "coding-agent"]
+    }
+  ],
+  "mapping": {
+    "allowedFamilies": ["terminal", "dashboard", "editorial", "code"],
+    "allowedPresets": ["command", "headline-stat-grid", "progress-steps"],
+    "defaultFamily": "editorial",
+    "defaultPreset": "headline-stat-grid",
+    "minSceneSeconds": 3.5,
+    "maxSceneSeconds": 5.5,
+    "maxItemsPerScene": 1
+  }
+}

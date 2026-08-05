@@ -172,7 +172,7 @@
   },
   "sourceReferences": [
     {
-      "id": "quarto-revealjs-terminal",
+      "id": "repo-microsoft-terminal",
       "url": "https://github.com/rpodcast/quarto-revealjs-terminal",
       "selectedConcepts": [
         "terminal slide chrome",
@@ -182,7 +182,7 @@
       ]
     },
     {
-      "id": "letieu-terminal-css",
+      "id": "web-zellij",
       "url": "https://github.com/letieu/terminal.css",
       "selectedConcepts": [
         "terminal UI components",
@@ -191,7 +191,7 @@
       ]
     },
     {
-      "id": "gioni-terminal-css",
+      "id": "web-wezterm",
       "url": "https://github.com/Gioni06/terminal.css",
       "selectedConcepts": [
         "minimal terminal typography",
@@ -199,19 +199,11 @@
       ]
     },
     {
-      "id": "panr-terminal-css",
+      "id": "repo-charmbracelet-vhs",
       "url": "https://github.com/panr/terminal-css",
       "selectedConcepts": [
         "classless terminal editorial treatment",
         "preset color thinking"
-      ]
-    },
-    {
-      "id": "terminalcss-web",
-      "url": "https://terminalcss.xyz/",
-      "selectedConcepts": [
-        "live component documentation",
-        "terminal documentation layout"
       ]
     }
   ],

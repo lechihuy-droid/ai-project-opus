@@ -1,0 +1,1796 @@
+[
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-code-focus-fixed-gutter",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "code-focus"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dominant-source-panel",
+      "fixed-line-number-gutter"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "neutral-canvas",
+      "cyan-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "stable-line-geometry"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 12,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Explain one eligibility or branching decision from a compact source excerpt."
+    ],
+    "antiPatterns": [
+      "Do not split a short implementation across competing code panes."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-technical-reveal-code"
+    ],
+    "classificationReasons": [
+      "Render the source excerpt as the primary surface with a permanently reserved line-number gutter."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-code-focus-decision-type-scale",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "code-focus"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "single-code-reading-order",
+      "compact-review-rail"
+    ],
+    "typographyTraits": [
+      "system-monospace-code",
+      "ui-sans-annotation",
+      "two-level-decision-hierarchy"
+    ],
+    "paletteTraits": [
+      "neutral-canvas",
+      "cyan-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 10,
+      "bodyChars": 150,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Name the selected branch in a terse rail without replacing code with prose."
+    ],
+    "antiPatterns": [
+      "Do not use display-scale copy inside the source panel."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Use monospace for source and a smaller UI-sans hierarchy for the review decision and supporting labels."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-code-focus-cyan-active-line",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "code-focus"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dominant-source-panel",
+      "lower-caption-safe-area"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "charcoal-code-surface",
+      "cyan-active-line",
+      "muted-annotation-rail"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "stable-line-geometry"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 12,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Mark the one implementation line that changes the result."
+    ],
+    "antiPatterns": [
+      "Do not assign a different accent color to every source line."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:local-reference-theme"
+    ],
+    "classificationReasons": [
+      "Apply one cyan focus treatment to the active line while keeping the remaining source text neutral and readable."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-code-focus-line-first-entrance",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "code-focus"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "fixed-code-bounds",
+      "compact-review-rail"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "neutral-canvas",
+      "cyan-focus"
+    ],
+    "motionTraits": [
+      "source-first-entrance",
+      "rail-fade-after-source",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 12,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Reveal a focused implementation decision without changing any line position."
+    ],
+    "antiPatterns": [
+      "Do not type-on, resize, or reflow source lines during explanation."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Stage the source panel before the supporting rail; reduced motion preserves the completed static composition."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-code-focus-three-state-rail",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "code-focus"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "dominant-source-panel",
+      "narrow-support-rail"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "neutral-canvas",
+      "cyan-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "three-state-trace-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 10,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Pair source with input, gate, and output labels for a deterministic reading path."
+    ],
+    "antiPatterns": [
+      "Do not turn the rail into an unbounded checklist."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Use a bounded three-item trace rail as a reusable support component beside the code surface."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-code-focus-code-rail-caption-stack",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "code-focus"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "source-panel-over-rail",
+      "reserved-lower-caption-band"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "neutral-canvas",
+      "cyan-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "stable-line-geometry"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 12,
+      "bodyChars": 160,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Compose a code decision, short rail, and spoken-caption-safe takeaway in a portrait frame."
+    ],
+    "antiPatterns": [
+      "Do not let caption copy overlap line numbers or the active code line."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:technical-editorial-frame"
+    ],
+    "classificationReasons": [
+      "Keep the code surface dominant, align the rail to its top edge, and reserve a separate lower explanatory band."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-diff-review-semantic-gutters",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "diff-review"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "compare",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-diff-lines",
+      "repeated-plus-minus-gutters"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "green-additions",
+      "red-removals"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "stable-line-geometry"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 12,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Review a behavior change with explicit additions and removals in one aligned source surface."
+    ],
+    "antiPatterns": [
+      "Do not rely on green and red backgrounds without plus and minus markers."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-technical-reveal-code"
+    ],
+    "classificationReasons": [
+      "Render added and removed lines in fixed vertical slots with repeated textual markers in the gutter."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-diff-review-marker-first-type",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "diff-review"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "compare",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "semantic-gutters",
+      "stable-diff-lines"
+    ],
+    "typographyTraits": [
+      "monospace-diff-lines",
+      "bold-plus-minus-markers",
+      "compact-review-labels"
+    ],
+    "paletteTraits": [
+      "green-additions",
+      "red-removals"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 12,
+      "bodyChars": 130,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Keep the changed token and its semantic marker legible at phone viewing size."
+    ],
+    "antiPatterns": [
+      "Do not shrink removed lines or render markers as icon-only decoration."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Set code lines in a stable monospace scale and strengthen the textual plus or minus marker before its color treatment."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-diff-review-dual-semantic-color",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "diff-review"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "compare",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "semantic-gutters",
+      "stable-diff-lines"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "muted-red-removal",
+      "muted-green-addition",
+      "neutral-unchanged-context"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "stable-line-geometry"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 12,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Distinguish removed cache behavior from added freshness logic while preserving unchanged context."
+    ],
+    "antiPatterns": [
+      "Do not use saturated fills that reduce source-text contrast."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:local-reference-theme"
+    ],
+    "classificationReasons": [
+      "Use restrained red and green semantic layers behind text while leaving unchanged context on the neutral code surface."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-diff-review-change-before-outcome",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "diff-review"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "compare",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-diff-lines",
+      "compact-review-rail"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "green-additions",
+      "red-removals"
+    ],
+    "motionTraits": [
+      "removed-added-pair-reveal",
+      "outcome-rail-fade",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 12,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Reveal a removed and added line pair before naming the behavioral outcome."
+    ],
+    "antiPatterns": [
+      "Do not slide diff lines into new positions or hide the removed context after reveal."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Animate semantic emphasis only; all diff line slots remain fixed before, during, and after the review."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-diff-review-review-result-rail",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "diff-review"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "compare",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "semantic-gutters",
+      "narrow-support-rail"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "green-additions",
+      "red-removals"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "removed-added-outcome-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 12,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "State removed behavior, added behavior, and the resulting contract in exactly three rail items."
+    ],
+    "antiPatterns": [
+      "Do not duplicate every diff line in the review rail."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Use a bounded structured rail whose three labels map to removed, added, and outcome review states."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-diff-review-context-change-outcome",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "diff-review"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "compare",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "compare"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "unchanged-context-above-change",
+      "outcome-rail-aligned-to-change"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "green-additions",
+      "red-removals"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "stable-line-geometry"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 12,
+      "bodyChars": 140,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Show enough unchanged context to make a cache-contract change auditable."
+    ],
+    "antiPatterns": [
+      "Do not crop the condition that gives the changed return value meaning."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Place unchanged context before the paired diff and align the outcome rail to the changed block rather than the frame edge."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-api-sequence-code-ordered-rail",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "api-sequence"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "process",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "handler-code-rail",
+      "top-to-bottom-request-order"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "neutral-canvas",
+      "cyan-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "stable-line-geometry"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 12,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Explain parse, validate, dispatch, and response shaping from one handler excerpt."
+    ],
+    "antiPatterns": [
+      "Do not represent a request lifecycle as an unlabeled network topology."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Pair one handler surface with a fixed vertical rail whose item order follows the source call order."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-api-sequence-boundary-type-hierarchy",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "api-sequence"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "process",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "handler-code-rail",
+      "ordered-sequence"
+    ],
+    "typographyTraits": [
+      "monospace-handler-code",
+      "numbered-boundary-labels",
+      "compact-transition-copy"
+    ],
+    "paletteTraits": [
+      "neutral-canvas",
+      "cyan-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 12,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Use numbered labels to distinguish request boundaries from code implementation lines."
+    ],
+    "antiPatterns": [
+      "Do not add paragraph-length descriptions to each lifecycle state."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Use concise numbered UI labels for request phases and retain a readable monospace hierarchy inside the handler."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-api-sequence-active-boundary-color",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "api-sequence"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "process",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "handler-code-rail",
+      "ordered-sequence"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "neutral-request-context",
+      "cyan-active-boundary",
+      "muted-completed-states"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "stable-line-geometry"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 12,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Emphasize validation or dispatch while the earlier and later lifecycle states remain visible."
+    ],
+    "antiPatterns": [
+      "Do not encode request ordering with a rainbow of unrelated state colors."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:local-reference-theme"
+    ],
+    "classificationReasons": [
+      "Use one cyan active state against neutral completed and upcoming states so sequence position remains immediately scannable."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-api-sequence-stepwise-emphasis",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "api-sequence"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "process",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "handler-code-rail",
+      "ordered-sequence"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "neutral-canvas",
+      "cyan-focus"
+    ],
+    "motionTraits": [
+      "ordered-state-emphasis",
+      "static-layout",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 12,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Move emphasis from parse through response without moving the lifecycle rail."
+    ],
+    "antiPatterns": [
+      "Do not animate request arrows through a simulated distributed-system diagram."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Advance only the active state treatment in source order; the source and rail geometry remain static."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-api-sequence-four-boundary-rail",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "api-sequence"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "process",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "handler-code-rail",
+      "ordered-sequence"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "neutral-canvas",
+      "cyan-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "four-boundary-trace-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 12,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Present parse, validate, dispatch, and response as four stable inspector states."
+    ],
+    "antiPatterns": [
+      "Do not expose more than four lifecycle boundaries in this portrait component."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-dashboard-primer-react"
+    ],
+    "classificationReasons": [
+      "Use a bounded four-state support component with consistent labels, status treatments, and reading order."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-api-sequence-source-to-response-stack",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "api-sequence"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "process",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "source-left-rail-right",
+      "caption-below-sequence"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "neutral-canvas",
+      "cyan-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "stable-line-geometry"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 12,
+      "bodyChars": 150,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Connect the handler call order with a concise response-contract takeaway."
+    ],
+    "antiPatterns": [
+      "Do not place the response explanation before the validation and dispatch evidence."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Compose source, lifecycle rail, and caption in the same top-to-bottom order as request processing."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-debugging-trace-fault-branch-anchor",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "debugging-trace"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "debugging",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "fault-line-anchor",
+      "ordered-diagnostic-rail"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "amber-warning",
+      "neutral-canvas"
+    ],
+    "motionTraits": [
+      "static-review",
+      "stable-line-geometry"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 10,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Anchor a retry-limit diagnosis on the branch that returns before rescheduling."
+    ],
+    "antiPatterns": [
+      "Do not scatter fault markers across unrelated implementation lines."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-technical-reveal-code"
+    ],
+    "classificationReasons": [
+      "Keep the marked fault branch visible at the center of the source surface with ordered diagnosis states beside it."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-debugging-trace-observed-hypothesis-next-type",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "debugging-trace"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "debugging",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "fault-line-anchor",
+      "stable-diagnostic-rail"
+    ],
+    "typographyTraits": [
+      "monospace-fault-source",
+      "observed-hypothesis-next-labels",
+      "compact-diagnostic-copy"
+    ],
+    "paletteTraits": [
+      "amber-warning",
+      "neutral-canvas"
+    ],
+    "motionTraits": [
+      "static-review",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 10,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Separate what was observed, the active hypothesis, and the next verification step."
+    ],
+    "antiPatterns": [
+      "Do not render a hypothesis with the same hierarchy as a verified observation."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Use concise diagnostic label tiers so source evidence, inference, and follow-up action remain distinguishable."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-debugging-trace-amber-fault-state",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "debugging-trace"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "debugging",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "fault-line-anchor",
+      "stable-diagnostic-rail"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "amber-fault-branch",
+      "neutral-observed-state",
+      "muted-next-step"
+    ],
+    "motionTraits": [
+      "static-review",
+      "stable-line-geometry"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 10,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Make the terminating retry condition visible without coloring the entire code pane as an error."
+    ],
+    "antiPatterns": [
+      "Do not use red as the only indicator of a blocking state."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:local-reference-theme"
+    ],
+    "classificationReasons": [
+      "Apply a single amber warning treatment to the fault branch and retain neutral contrast for supporting diagnostic evidence."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-debugging-trace-static-fault-review",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "debugging-trace"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "debugging",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "fault-line-anchor",
+      "stable-diagnostic-rail"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "amber-warning",
+      "neutral-canvas"
+    ],
+    "motionTraits": [
+      "static-diagnostic-frame",
+      "fault-pulse-disabled",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 10,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Hold a failure-isolation frame long enough for still review and narration."
+    ],
+    "antiPatterns": [
+      "Do not simulate a live incident with flashing error animation."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Use a static diagnostic composition; any full-motion entrance resolves immediately to the same stable review state."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-debugging-trace-three-state-diagnosis",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "debugging-trace"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "debugging",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "fault-line-anchor",
+      "stable-diagnostic-rail"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "amber-warning",
+      "neutral-canvas"
+    ],
+    "motionTraits": [
+      "static-review",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "observed-hypothesis-next-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 10,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Provide an explicit three-state diagnostic rail next to the failing branch."
+    ],
+    "antiPatterns": [
+      "Do not mix symptoms, causes, and fixes into an unstructured rail."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Use a reusable three-item diagnostic component with distinct observed, hypothesis, and next-action slots."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-debugging-trace-fault-evidence-next-step",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "debugging-trace"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "debugging",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "source-evidence-first",
+      "next-step-caption-below"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "amber-warning",
+      "neutral-canvas"
+    ],
+    "motionTraits": [
+      "static-review",
+      "stable-line-geometry"
+    ],
+    "componentTraits": [
+      "code-surface",
+      "trace-rail",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 10,
+      "bodyChars": 150,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Frame the fault line, diagnostic rail, and next investigation step as a single auditable explanation."
+    ],
+    "antiPatterns": [
+      "Do not place a speculative fix above the source evidence that motivates it."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:technical-editorial-frame"
+    ],
+    "classificationReasons": [
+      "Order the portrait frame from marked source evidence to diagnosis rail to a concise lower next-step caption."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-terminal-code-split-fixed-evidence-halves",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "terminal-code-split"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "debugging",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "fixed-terminal-left",
+      "compact-source-right"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "neutral-terminal",
+      "cyan-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "stable-split-geometry"
+    ],
+    "componentTraits": [
+      "terminal-surface",
+      "code-surface",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 8,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Connect a command, its warning or error output, and the source deciding its exit state."
+    ],
+    "antiPatterns": [
+      "Do not render terminal output as decorative texture with no executable reading order."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:fixture-terminal-repo"
+    ],
+    "classificationReasons": [
+      "Use two fixed portrait halves: terminal evidence on the left and compact implementation context on the right."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-terminal-code-split-command-output-type",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "terminal-code-split"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "debugging",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "fixed-terminal-left",
+      "compact-source-right"
+    ],
+    "typographyTraits": [
+      "terminal-monospace-output",
+      "command-prompt-label",
+      "compact-source-monospace"
+    ],
+    "paletteTraits": [
+      "neutral-terminal",
+      "cyan-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "terminal-surface",
+      "code-surface"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 8,
+      "maxItems": 4,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Make the invoked command, reported issue, and exit code separately readable in terminal evidence."
+    ],
+    "antiPatterns": [
+      "Do not use a proportional font for command output or collapse warnings into body copy."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:terminalcss-catalog-link"
+    ],
+    "classificationReasons": [
+      "Use stable terminal monospace for prompt and output, with compact UI labels only for the adjacent source context."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-terminal-code-split-exit-status-semantic-color",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "terminal-code-split"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "debugging",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "fixed-terminal-left",
+      "compact-source-right"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "neutral-terminal-base",
+      "amber-warning-output",
+      "cyan-exit-decision"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "stable-split-geometry"
+    ],
+    "componentTraits": [
+      "terminal-surface",
+      "code-surface",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 8,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Differentiate command output issues from the code line that determines process exit."
+    ],
+    "antiPatterns": [
+      "Do not color every terminal line or use color without an explicit exit-code label."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:fixture-terminal-repo"
+    ],
+    "classificationReasons": [
+      "Keep terminal output neutral except for issue lines and use a distinct cyan focus on the source line that decides exit status."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-terminal-code-split-evidence-then-source",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "terminal-code-split"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "debugging",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "fixed-terminal-left",
+      "compact-source-right"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "neutral-terminal",
+      "cyan-focus"
+    ],
+    "motionTraits": [
+      "terminal-evidence-first",
+      "source-decision-second",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "terminal-surface",
+      "code-surface",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 8,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Reveal command evidence before emphasizing the adjacent implementation decision."
+    ],
+    "antiPatterns": [
+      "Do not simulate streaming terminal text or resize either split half during playback."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Sequence emphasis from completed terminal output to the fixed source decision; reduced motion presents the completed split immediately."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-terminal-code-split-exit-contract-component",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "terminal-code-split"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "debugging",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "fixed-terminal-left",
+      "compact-source-right"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "neutral-terminal",
+      "cyan-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "terminal-surface",
+      "code-surface",
+      "exit-contract-caption"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 8,
+      "maxItems": 3,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Bind load, validate, and exit states to the terminal result in a compact contract component."
+    ],
+    "antiPatterns": [
+      "Do not add a generic terminal control bar that consumes code readability space."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:terminalcss-catalog-link"
+    ],
+    "classificationReasons": [
+      "Use a bounded exit-contract component that connects terminal status to the validating source path."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "cw-terminal-code-split-command-to-exit-composition",
+    "packageId": "code-walkthrough",
+    "variantIds": [
+      "terminal-code-split"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "debugging",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "command-to-code-reading-order",
+      "exit-caption-below-split"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "compact-ui-labels"
+    ],
+    "paletteTraits": [
+      "neutral-terminal",
+      "cyan-focus"
+    ],
+    "motionTraits": [
+      "entrance-only",
+      "stable-split-geometry"
+    ],
+    "componentTraits": [
+      "terminal-surface",
+      "code-surface",
+      "caption-safe-panel"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 8,
+      "bodyChars": 140,
+      "maxPanels": 2
+    },
+    "positiveUseCases": [
+      "Compose observed command output and source-side exit logic into one debugging explanation."
+    ],
+    "antiPatterns": [
+      "Do not leave terminal output and source context as unrelated parallel panels."
+    ],
+    "sourceEvidenceIds": [
+      "source:reference:w8-dashboard-primer-docs"
+    ],
+    "classificationReasons": [
+      "Establish a clear left-to-right evidence-to-implementation path and reserve the lower caption for the exit-contract conclusion."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p10/1.0",
+    "reviewStatus": "proposed"
+  }
+]

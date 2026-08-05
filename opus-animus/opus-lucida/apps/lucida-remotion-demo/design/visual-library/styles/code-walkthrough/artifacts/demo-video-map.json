@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "lucida-code-walkthrough-demo/v1",
+  "packageId": "code-walkthrough",
+  "compositionId": "CodeWalkthroughFamilyReview",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "scenes": [
+    {"id":"scene-01","sceneKey":"code-focus","frame":42,"output":"frames/scene-01.png"},
+    {"id":"scene-02","sceneKey":"diff-review","frame":42,"output":"frames/scene-02.png"},
+    {"id":"scene-03","sceneKey":"api-sequence","frame":42,"output":"frames/scene-03.png"},
+    {"id":"scene-04","sceneKey":"debugging-trace","frame":42,"output":"frames/scene-04.png"},
+    {"id":"scene-05","sceneKey":"terminal-code-split","frame":42,"output":"frames/scene-05.png"}
+  ]
+}

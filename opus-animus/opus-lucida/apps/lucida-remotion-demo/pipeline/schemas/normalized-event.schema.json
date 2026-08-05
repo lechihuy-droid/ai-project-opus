@@ -43,6 +43,15 @@
     "text": {
       "type": "string"
     },
+    "beatId": { "type": "string", "minLength": 1 },
+    "title": { "type": "string" },
+    "body": { "type": "string" },
+    "intent": { "type": "string" },
+    "beatRole": { "enum": ["hook", "context", "problem", "insight", "explanation", "evidence", "process", "comparison", "example", "turning-point", "takeaway", "call-to-action", "transition"] },
+    "actors": { "type": "array", "items": { "type": "string" } },
+    "factRefs": { "type": "array", "items": { "type": "string" } },
+    "factualSourceIds": { "type": "array", "items": { "type": "string" } },
+    "visualConstraints": { "type": "object" },
     "level": {
       "enum": ["info", "success", "warning", "error"]
     },

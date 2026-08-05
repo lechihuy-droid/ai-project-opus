@@ -1,0 +1,1871 @@
+[
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-research-notes-ruled-claim-rail",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "research-notes"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "explain",
+      "summarize"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "continuous-ruled-paper",
+      "208px-margin-rail",
+      "three-claim-reading-order"
+    ],
+    "typographyTraits": [
+      "ink-hierarchy",
+      "readable-note-baselines"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "navy-primary-ink",
+      "blue-structure"
+    ],
+    "motionTraits": [
+      "line-group-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "ruled-paper-field",
+      "ink-note-row",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "headlineChars": 72,
+      "bodyChars": 300,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "show three evidence-backed study claims with one annotation rail"
+    ],
+    "antiPatterns": [
+      "split the notebook into competing card columns"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Render research notes as one ruled paper field with a fixed 208px annotation rail; the three claim rows occupy successive baselines and no secondary panel is introduced. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-research-notes-numbered-claim-steps",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "research-notes"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "explain",
+      "list"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "ruled-page",
+      "numbered-claim-sequence"
+    ],
+    "typographyTraits": [
+      "number-marker-emphasis",
+      "graphite-support-copy"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "blue-number-markers",
+      "navy-ink"
+    ],
+    "motionTraits": [
+      "row-by-row-reveal",
+      "reduced-motion-fade"
+    ],
+    "componentTraits": [
+      "ink-note-row",
+      "number-marker",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "bodyChars": 330,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "render a numbered claim, its concise support, and an optional margin cue per row"
+    ],
+    "antiPatterns": [
+      "place unsupported claims in unlabeled decorative callouts"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Each research-note DOM row renders an ordinal, one claim line, and one support line on fixed ruled baselines; the ordinal is structural rather than a badge. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-research-notes-ink-role-hierarchy",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "research-notes"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "explain",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "explain",
+      "takeaway"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "title-then-note-rows",
+      "margin-rail"
+    ],
+    "typographyTraits": [
+      "serif-title",
+      "navy-claim-line",
+      "graphite-explanation-line"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "navy-ink",
+      "graphite-support"
+    ],
+    "motionTraits": [
+      "title-first-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "ruled-paper-field",
+      "ink-note-row",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "headlineChars": 64,
+      "bodyChars": 220,
+      "maxItems": 2,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "separate the teaching claim from its supporting explanation without changing the page geometry"
+    ],
+    "antiPatterns": [
+      "use identical weight and color for title claim and evidence"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Reserve the serif display face for the research title, navy for claim lines, and graphite for support lines so hierarchy is visible before animation. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-research-notes-sparse-correction-accent",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "research-notes"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "explain",
+      "summarize"
+    ],
+    "beatRoles": [
+      "correct"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "ruled-page",
+      "one-corrected-term"
+    ],
+    "typographyTraits": [
+      "navy-claim-line",
+      "red-correction-label"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "navy-default-ink",
+      "red-reserved-for-correction"
+    ],
+    "motionTraits": [
+      "correction-accent-fade",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "ink-note-row",
+      "correction-mark",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "bodyChars": 260,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "mark one corrected assumption while keeping the rest of the note calm"
+    ],
+    "antiPatterns": [
+      "apply red ink to every heading or supporting sentence"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Use red only for one research correction mark and its replacement cue; all normal instructional copy remains navy or graphite on the same ruled page. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-research-notes-three-beat-ink-reveal",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "research-notes"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "explain",
+      "process"
+    ],
+    "beatRoles": [
+      "setup",
+      "explain",
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-ruled-baselines",
+      "fixed-margin-rail"
+    ],
+    "typographyTraits": [
+      "readable-note-baselines",
+      "ink-hierarchy"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "navy-ink",
+      "blue-structure"
+    ],
+    "motionTraits": [
+      "title-then-three-row-reveal",
+      "static-reduced-motion-state"
+    ],
+    "componentTraits": [
+      "ruled-paper-field",
+      "ink-note-row",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "headlineChars": 60,
+      "bodyChars": 300,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "reveal a title and three notes without moving completed rows"
+    ],
+    "antiPatterns": [
+      "animate paper rules or shift note baselines after they appear"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Keep paper rules and rail static, reveal the title once, then reveal at most three complete research-note rows in reading order; reduced motion presents the final hierarchy. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-research-notes-claim-context-annotation-composition",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "research-notes"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "explain",
+      "summarize"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "main-reasoning-column",
+      "fixed-annotation-rail",
+      "one-page-composition"
+    ],
+    "typographyTraits": [
+      "navy-claim-line",
+      "compact-margin-hand"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "navy-ink",
+      "blue-annotation"
+    ],
+    "motionTraits": [
+      "main-column-before-annotation",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "ink-note-row",
+      "margin-annotation",
+      "ruled-paper-field"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 300,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "pair a main reasoning sequence with short non-competing annotation cues"
+    ],
+    "antiPatterns": [
+      "turn margin annotations into a second equal-priority text column"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Render the research claim/support sequence in the main column and limit the rail to three short annotations aligned to their corresponding rules. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-derivation-equation-baseline-stack",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "derivation"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "explain",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "ruled-page",
+      "five-step-equation-stack",
+      "aligned-equality-column"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "equation-step-labels"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "navy-ink",
+      "red-term-labels"
+    ],
+    "motionTraits": [
+      "stepwise-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "ruled-paper-field",
+      "derivation-step",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "headlineChars": 52,
+      "maxCodeLines": 5,
+      "maxItems": 5,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "show up to five transformations with their equality signs on a stable vertical axis"
+    ],
+    "antiPatterns": [
+      "wrap one equation across multiple inconsistent baselines"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-reveal-code"
+    ],
+    "classificationReasons": [
+      "Render no more than five derivation rows, align each equation operator to one vertical column, and reserve the rail for audit notes. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-derivation-numbered-transformation-step",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "derivation"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "explain",
+      "process"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "equation-sequence",
+      "step-number-gutter"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "plain-language-audit-note"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "navy-expression",
+      "red-term-emphasis"
+    ],
+    "motionTraits": [
+      "one-step-per-beat",
+      "reduced-motion-fade"
+    ],
+    "componentTraits": [
+      "derivation-step",
+      "step-number",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "bodyChars": 240,
+      "maxCodeLines": 5,
+      "maxItems": 5,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "render one numbered expression with one adjacent audit explanation"
+    ],
+    "antiPatterns": [
+      "show a transformation without explaining what changed"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "A derivation-step DOM component contains a fixed-width numeral, one unwrapped expression, and a short rail explanation tied to that row. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-derivation-equation-audit-type-rhythm",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "derivation"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "explain",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain",
+      "evidence"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "equation-sequence",
+      "rail-audit-notes"
+    ],
+    "typographyTraits": [
+      "monospace-expression",
+      "smaller-graphite-audit-copy",
+      "consistent-equation-leading"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "navy-ink",
+      "graphite-audit-copy"
+    ],
+    "motionTraits": [
+      "equation-before-audit-note",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "derivation-step",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "bodyChars": 250,
+      "maxCodeLines": 5,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "keep formal expressions readable while the human-readable audit note stays subordinate"
+    ],
+    "antiPatterns": [
+      "set audit notes at the same visual weight as equations"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Use a readable monospace expression on the ruled baseline and a smaller graphite audit note in the rail, preserving an unambiguous expression-first scan. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-derivation-term-emphasis-role-map",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "derivation"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "explain",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "equation-sequence",
+      "single-term-callout"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "term-label-emphasis"
+    ],
+    "paletteTraits": [
+      "navy-default-expression",
+      "red-one-term-label",
+      "blue-structure"
+    ],
+    "motionTraits": [
+      "term-emphasis-fade",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "derivation-step",
+      "term-label",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 4,
+      "maxItems": 4,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "trace one changed term across a compact derivation"
+    ],
+    "antiPatterns": [
+      "color every token in the expression like syntax highlighting"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Keep expressions navy by default and mark only the term under discussion with red plus a rail label; do not introduce multicolor syntax treatment. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-derivation-stepwise-proof-reveal",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "derivation"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "explain",
+      "process"
+    ],
+    "beatRoles": [
+      "setup",
+      "explain",
+      "takeaway"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-equation-stack",
+      "fixed-equality-column"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "plain-language-audit-note"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "navy-ink",
+      "red-term-labels"
+    ],
+    "motionTraits": [
+      "one-complete-transformation-per-beat",
+      "static-reduced-motion-state"
+    ],
+    "componentTraits": [
+      "derivation-step",
+      "margin-annotation",
+      "ruled-paper-field"
+    ],
+    "contentCapacity": {
+      "maxCodeLines": 5,
+      "maxItems": 5,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "expose a proof step by step while keeping prior transformations fixed for comparison"
+    ],
+    "antiPatterns": [
+      "replace earlier proof rows as later rows appear"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Reveal each complete derivation step once in top-to-bottom order and leave all previous rows fixed; reduced motion renders the finished stack immediately. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-derivation-five-step-capacity-guardrail",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "derivation"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "explain",
+      "code-explanation"
+    ],
+    "beatRoles": [
+      "explain"
+    ],
+    "contentDensity": "dense",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "five-row-maximum",
+      "single-page-derivation"
+    ],
+    "typographyTraits": [
+      "readable-monospace",
+      "unwrapped-equation-lines"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "navy-ink",
+      "graphite-audit-copy"
+    ],
+    "motionTraits": [
+      "bounded-step-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "derivation-step",
+      "margin-annotation",
+      "ruled-paper-field"
+    ],
+    "contentCapacity": {
+      "headlineChars": 48,
+      "bodyChars": 240,
+      "maxCodeLines": 5,
+      "maxItems": 5,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "keep a derivation within five auditable steps in a portrait safe area"
+    ],
+    "antiPatterns": [
+      "shrink a sixth transformation until expressions become unreadable"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-reveal-code"
+    ],
+    "classificationReasons": [
+      "Cap the scene at five unwrapped transformation rows with one sentence of audit context per row; split longer proofs into another scene. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-checklist-review-gate-sequence",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "checklist"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "summarize",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "summarize"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "ruled-page",
+      "five-gate-sequence",
+      "open-gate-last"
+    ],
+    "typographyTraits": [
+      "readable-checklist-labels",
+      "gate-state-emphasis"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "green-completed-checks",
+      "red-open-gate"
+    ],
+    "motionTraits": [
+      "static-review-state",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "ruled-paper-field",
+      "notebook-check",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "headlineChars": 60,
+      "maxItems": 5,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "show four completed controls followed by one explicit human review gate"
+    ],
+    "antiPatterns": [
+      "hide an open approval gate below the visible page"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Render up to five checkbox rows on successive rules and reserve the final visible row for any open gate so review state is never implied. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-checklist-checkbox-state-row",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "checklist"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "summarize",
+      "list"
+    ],
+    "beatRoles": [
+      "evidence"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "checklist-sequence",
+      "fixed-checkbox-gutter"
+    ],
+    "typographyTraits": [
+      "readable-checklist-labels",
+      "compact-gate-note"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "green-completion-state",
+      "red-open-state"
+    ],
+    "motionTraits": [
+      "state-cut-only",
+      "reduced-motion-static-state"
+    ],
+    "componentTraits": [
+      "notebook-check",
+      "gate-label",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "bodyChars": 250,
+      "maxItems": 5,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "render a DOM-drawn checkbox, a criterion label, and a concise evidence note"
+    ],
+    "antiPatterns": [
+      "substitute decorative icons for explicit checked and open control states"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "Each row uses the local notebook-check primitive in a fixed gutter, followed by a readable criterion label and an optional rail note. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-checklist-action-evidence-type-order",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "checklist"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "summarize",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "evidence",
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "checklist-sequence",
+      "criterion-then-evidence"
+    ],
+    "typographyTraits": [
+      "navy-action-label",
+      "smaller-graphite-evidence",
+      "red-open-gate-label"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "navy-ink",
+      "graphite-evidence"
+    ],
+    "motionTraits": [
+      "label-before-evidence",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "notebook-check",
+      "gate-label",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "bodyChars": 300,
+      "maxItems": 5,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "make the action criterion scannable while evidence remains visibly supporting detail"
+    ],
+    "antiPatterns": [
+      "make a long evidence note dominate the checklist criterion"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Set the criterion label in navy at the row baseline and any evidence note in smaller graphite text; an open gate label remains red. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-checklist-completed-open-state-roles",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "checklist"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "summarize",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "evidence",
+      "correct"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "checklist-sequence",
+      "one-visible-open-gate"
+    ],
+    "typographyTraits": [
+      "gate-state-emphasis",
+      "readable-checklist-labels"
+    ],
+    "paletteTraits": [
+      "navy-default-labels",
+      "green-completed-only",
+      "red-open-only"
+    ],
+    "motionTraits": [
+      "static-review-state",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "notebook-check",
+      "gate-label",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "maxItems": 5,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "distinguish completed controls from one pending human decision without a legend"
+    ],
+    "antiPatterns": [
+      "use green for an unreviewed or pending approval"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Use navy for ordinary labels, green exclusively for checked controls, and red exclusively for the open review gate; no other semantic color is introduced. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-checklist-static-state-preserving-reveal",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "checklist"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "summarize",
+      "process"
+    ],
+    "beatRoles": [
+      "summarize",
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-checklist-order",
+      "open-gate-last"
+    ],
+    "typographyTraits": [
+      "readable-checklist-labels",
+      "gate-state-emphasis"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "green-completed-checks",
+      "red-open-gate"
+    ],
+    "motionTraits": [
+      "row-fade-with-fixed-state",
+      "static-reduced-motion-state"
+    ],
+    "componentTraits": [
+      "notebook-check",
+      "gate-label",
+      "ruled-paper-field"
+    ],
+    "contentCapacity": {
+      "maxItems": 5,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "reveal a review checklist without animating a pending gate into a completed state"
+    ],
+    "antiPatterns": [
+      "morph unchecked controls to checked without actual review evidence"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Rows may fade in sequentially, but checkbox values are static fixture data and never transition from open to checked during the scene. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-checklist-evidence-and-open-gate-summary",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "checklist"
+    ],
+    "patternType": "composition",
+    "intentTags": [
+      "summarize",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "evidence",
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "four-evidence-rows",
+      "bottom-open-gate-summary",
+      "one-page-composition"
+    ],
+    "typographyTraits": [
+      "readable-checklist-labels",
+      "open-gate-emphasis"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "green-completed-checks",
+      "red-open-gate"
+    ],
+    "motionTraits": [
+      "evidence-before-gate",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "notebook-check",
+      "open-gate-summary",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "bodyChars": 280,
+      "maxItems": 5,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "close a review scene by preserving the evidence rows above the still-pending human decision"
+    ],
+    "antiPatterns": [
+      "present the human decision as if it were automated evidence"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Compose up to four evidence rows above one explicitly open final gate, with the open gate remaining in the visible safe area. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-lab-log-heading-indent",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "lab-log"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "explain",
+      "process"
+    ],
+    "beatRoles": [
+      "setup"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "ruled-page",
+      "three-heading-outline",
+      "definition-indent"
+    ],
+    "typographyTraits": [
+      "scannable-outline-headings",
+      "readable-definition-copy"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "blue-structure",
+      "navy-ink"
+    ],
+    "motionTraits": [
+      "heading-then-definition-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "ruled-paper-field",
+      "ink-note-row",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "headlineChars": 64,
+      "bodyChars": 260,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "introduce three lesson topics, each followed by one indented definition"
+    ],
+    "antiPatterns": [
+      "show a dense multi-column curriculum in a portrait page"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Render three lab-log observations on separate ruled baselines and place one concise method note beneath each, leaving the margin rail for run cues rather than duplicate text. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-lab-log-heading-definition-row",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "lab-log"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "explain",
+      "list"
+    ],
+    "beatRoles": [
+      "setup",
+      "explain"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "ordered-outline",
+      "heading-definition-pair"
+    ],
+    "typographyTraits": [
+      "outline-number-marker",
+      "indented-definition"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "blue-heading",
+      "graphite-definition"
+    ],
+    "motionTraits": [
+      "pair-reveal",
+      "reduced-motion-fade"
+    ],
+    "componentTraits": [
+      "outline-row",
+      "definition-row",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "bodyChars": 270,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "pair a numbered lecture heading with one short definition on adjacent paper rules"
+    ],
+    "antiPatterns": [
+      "place definitions in detached callout cards"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "An observation-method pair uses a fixed number gutter, blue observation line, and indented graphite method note within the continuous paper field. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-lab-log-heading-definition-hierarchy",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "lab-log"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "explain",
+      "summarize"
+    ],
+    "beatRoles": [
+      "setup",
+      "explain"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "ordered-outline",
+      "definition-indent"
+    ],
+    "typographyTraits": [
+      "blue-heading-weight",
+      "smaller-graphite-definition",
+      "serif-lesson-title"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "blue-structure",
+      "graphite-support"
+    ],
+    "motionTraits": [
+      "title-then-outline-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "outline-row",
+      "definition-row",
+      "ruled-paper-field"
+    ],
+    "contentCapacity": {
+      "headlineChars": 62,
+      "bodyChars": 250,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "make lesson headings scannable while definitions remain clearly subordinate"
+    ],
+    "antiPatterns": [
+      "use equal sizing and color for headings and definitions"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Use the serif display title for the run, blue weighted text for observations, and smaller graphite text for method notes to preserve log depth. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-lab-log-blue-structure-red-correction",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "lab-log"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "explain",
+      "process"
+    ],
+    "beatRoles": [
+      "setup",
+      "correct"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "ordered-outline",
+      "one-correction-cue"
+    ],
+    "typographyTraits": [
+      "blue-heading-weight",
+      "red-correction-label"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "blue-structural-headings",
+      "red-single-correction"
+    ],
+    "motionTraits": [
+      "outline-static-correction-fade",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "outline-row",
+      "correction-mark",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "bodyChars": 240,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "flag one revised definition in a lesson outline without changing the structural reading order"
+    ],
+    "antiPatterns": [
+      "add decorative red marks to every outline topic"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Blue communicates log structure and a single red mark identifies a corrected observation; all other method notes remain graphite. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-lab-log-line-group-reveal",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "lab-log"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "explain",
+      "process"
+    ],
+    "beatRoles": [
+      "setup",
+      "explain",
+      "takeaway"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-outline-order",
+      "fixed-definition-indent"
+    ],
+    "typographyTraits": [
+      "scannable-outline-headings",
+      "readable-definition-copy"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "blue-structure",
+      "navy-ink"
+    ],
+    "motionTraits": [
+      "heading-before-definition",
+      "three-pair-maximum",
+      "static-reduced-motion-state"
+    ],
+    "componentTraits": [
+      "outline-row",
+      "definition-row",
+      "ruled-paper-field"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "introduce a lesson outline one topic-definition pair at a time without reflow"
+    ],
+    "antiPatterns": [
+      "move prior topics to make room for later definitions"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Reveal each observation then its indented method note as a pair, keeping earlier pairs fixed and rendering all pairs statically in reduced motion. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-lab-log-three-topic-budget",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "lab-log"
+    ],
+    "patternType": "content-density",
+    "intentTags": [
+      "explain",
+      "summarize"
+    ],
+    "beatRoles": [
+      "setup"
+    ],
+    "contentDensity": "sparse",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "three-topic-maximum",
+      "single-page-outline"
+    ],
+    "typographyTraits": [
+      "scannable-outline-headings",
+      "readable-definition-copy"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "blue-structure",
+      "graphite-support"
+    ],
+    "motionTraits": [
+      "bounded-pair-reveal",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "outline-row",
+      "definition-row",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "headlineChars": 64,
+      "bodyChars": 270,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "keep a lecture setup to three concepts with one definition each"
+    ],
+    "antiPatterns": [
+      "compress four or more topics into a single portrait outline"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Cap the portrait lab log at three observation-method pairs and one margin cue per pair; continue the run in another scene when more records are needed. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-annotated-paper-before-after-correction-track",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "annotated-paper"
+    ],
+    "patternType": "layout",
+    "intentTags": [
+      "summarize",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "correct"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "ruled-page",
+      "three-before-after-rows",
+      "replacement-aligned-below"
+    ],
+    "typographyTraits": [
+      "struck-assumption",
+      "replacement-emphasis"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "navy-replacement",
+      "red-correction-focus"
+    ],
+    "motionTraits": [
+      "correction-then-replacement",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "ruled-paper-field",
+      "correction-row",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "headlineChars": 64,
+      "bodyChars": 300,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "show three corrected assumptions with each replacement on the next ruled baseline"
+    ],
+    "antiPatterns": [
+      "overlay original and replacement copy until neither is readable"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "For each of at most three annotations, render the prior assumption with a restrained red strike and the annotated replacement in navy on the immediately following rule. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-annotated-paper-correction-replacement-row",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "annotated-paper"
+    ],
+    "patternType": "component",
+    "intentTags": [
+      "summarize",
+      "process"
+    ],
+    "beatRoles": [
+      "correct",
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "correction-pass",
+      "paired-old-new-lines"
+    ],
+    "typographyTraits": [
+      "struck-assumption",
+      "navy-replacement-line",
+      "compact-reason-note"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "red-correction-mark",
+      "navy-replacement"
+    ],
+    "motionTraits": [
+      "paired-line-reveal",
+      "reduced-motion-fade"
+    ],
+    "componentTraits": [
+      "correction-row",
+      "correction-mark",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "bodyChars": 280,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "render the old statement, explicit replacement, and short reason as one auditable correction unit"
+    ],
+    "antiPatterns": [
+      "delete the original statement without exposing what changed"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-primitives"
+    ],
+    "classificationReasons": [
+      "An annotation-row component owns one prior line, one visible replacement line, and an optional rail reason so the paper annotation remains inspectable. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-annotated-paper-struck-assumption-replacement-hierarchy",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "annotated-paper"
+    ],
+    "patternType": "typography",
+    "intentTags": [
+      "summarize",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "correct",
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "paired-old-new-lines",
+      "rail-reason-note"
+    ],
+    "typographyTraits": [
+      "muted-struck-old-copy",
+      "navy-weighted-replacement",
+      "smaller-graphite-reason"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "navy-ink",
+      "graphite-support"
+    ],
+    "motionTraits": [
+      "replacement-after-old",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "correction-row",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "bodyChars": 260,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "make the corrected replacement easier to scan than the superseded assumption"
+    ],
+    "antiPatterns": [
+      "give struck copy more visual weight than the accepted replacement"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-hierarchy"
+    ],
+    "classificationReasons": [
+      "Render superseded copy muted with a thin strike, the accepted annotation in weighted navy, and the rationale in smaller graphite rail text. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-annotated-paper-correction-semantic-ink-limiter",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "annotated-paper"
+    ],
+    "patternType": "palette",
+    "intentTags": [
+      "summarize",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "correct"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "correction-pass",
+      "one-highlight-per-row"
+    ],
+    "typographyTraits": [
+      "navy-replacement-line",
+      "red-correction-label"
+    ],
+    "paletteTraits": [
+      "navy-default-ink",
+      "red-for-superseded-copy",
+      "graphite-reason-copy"
+    ],
+    "motionTraits": [
+      "correction-accent-fade",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "correction-row",
+      "correction-mark",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "use red solely to locate the superseded assumption and navy to establish the replacement"
+    ],
+    "antiPatterns": [
+      "color every word in a revised note red"
+    ],
+    "sourceEvidenceIds": [
+      "w8-minimal-nng-aesthetic"
+    ],
+    "classificationReasons": [
+      "Limit each annotation row to one red strike or correction label; replacement text is navy and rationale remains graphite to keep semantic roles legible. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-annotated-paper-correction-to-replacement-reveal",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "annotated-paper"
+    ],
+    "patternType": "motion",
+    "intentTags": [
+      "summarize",
+      "process"
+    ],
+    "beatRoles": [
+      "correct",
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "stable-correction-rows",
+      "replacement-aligned-below"
+    ],
+    "typographyTraits": [
+      "muted-struck-old-copy",
+      "navy-weighted-replacement"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "red-correction-focus",
+      "navy-replacement"
+    ],
+    "motionTraits": [
+      "old-line-then-replacement-reveal",
+      "static-reduced-motion-state"
+    ],
+    "componentTraits": [
+      "correction-row",
+      "correction-mark",
+      "ruled-paper-field"
+    ],
+    "contentCapacity": {
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "show the correction before the accepted replacement without reordering completed rows"
+    ],
+    "antiPatterns": [
+      "animate a replacement over old text so the before state becomes unreadable"
+    ],
+    "sourceEvidenceIds": [
+      "w8-dashboard-remotion-animation"
+    ],
+    "classificationReasons": [
+      "Reveal the muted prior line and its red annotation cue, then reveal the corrected replacement line below; reduced motion shows both states at once. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  },
+  {
+    "schemaVersion": "lucida-visual-pattern/v1",
+    "patternId": "pn-annotated-paper-bounded-recap-use-case",
+    "packageId": "paper-notebook",
+    "variantIds": [
+      "annotated-paper"
+    ],
+    "patternType": "use-case",
+    "intentTags": [
+      "summarize",
+      "takeaway"
+    ],
+    "beatRoles": [
+      "takeaway"
+    ],
+    "contentDensity": "balanced",
+    "aspectRatios": [
+      "9:16"
+    ],
+    "layoutTraits": [
+      "three-correction-maximum",
+      "bottom-recap-line",
+      "one-page-composition"
+    ],
+    "typographyTraits": [
+      "navy-replacement-line",
+      "compact-recap-label"
+    ],
+    "paletteTraits": [
+      "warm-paper",
+      "navy-ink",
+      "red-correction-focus"
+    ],
+    "motionTraits": [
+      "corrections-before-recap",
+      "reduced-motion-compatible"
+    ],
+    "componentTraits": [
+      "correction-row",
+      "recap-line",
+      "margin-annotation"
+    ],
+    "contentCapacity": {
+      "headlineChars": 56,
+      "bodyChars": 280,
+      "maxItems": 3,
+      "maxPanels": 1
+    },
+    "positiveUseCases": [
+      "close a bounded revision pass with up to three corrections and one accepted takeaway"
+    ],
+    "antiPatterns": [
+      "present an unbounded edit history as a single notebook scene"
+    ],
+    "sourceEvidenceIds": [
+      "w8-technical-primer-foundations"
+    ],
+    "classificationReasons": [
+      "Use this only for an annotated paper with at most three correction units plus one bottom takeaway line; longer annotation histories require another scene. Proposal only; human review is pending."
+    ],
+    "classifierVersion": "terra-pattern-proposal-p5/1.0",
+    "reviewStatus": "proposed"
+  }
+]

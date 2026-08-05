@@ -1,0 +1,195 @@
+{
+  "schemaVersion": "style-rag-phase1-runtime-luna-audit/v3",
+  "auditId": "STYLE_RAG_PHASE1_RUNTIME_LUNA_AUDIT_F",
+  "generatedAt": "2026-07-18",
+  "owner": "Luna",
+  "scope": {
+    "project": "apps/lucida-remotion-demo",
+    "domain": "visual-style",
+    "ownership": "This report only.",
+    "implementationModified": false,
+    "dataModified": false,
+    "approvalOrPromotionPerformed": false
+  },
+  "verdict": {
+    "status": "PASS_WITH_ENVIRONMENTAL_SKIPS",
+    "phase1Credit": {
+      "approvedPatterns": 0,
+      "eligiblePatterns": 0,
+      "promotedPatterns": 0,
+      "renderablePackages": 0
+    },
+    "conclusion": "The runtime compiler excludes the full proposed corpus: 420 proposed patterns and 70 proposed variants produce 0 eligible variants and 0 eligible patterns. All requested validation gates pass. knowledge:test completed with 91 passes, 0 failures, and 3 Windows EPERM skips for symlink-based realpath cases. No implementation edit, approval, promotion, or retrieval-credit mutation was performed."
+  },
+  "inventory": {
+    "packageCount": 14,
+    "variantCount": 70,
+    "patternCount": 420,
+    "proposedVariantCount": 70,
+    "proposedPatternCount": 420,
+    "allVariantReviewStatuses": [
+      "proposed"
+    ],
+    "allPatternReviewStatuses": [
+      "proposed"
+    ],
+    "proposedCorpusVerification": "PASS: read-only inventory found 14 packages, 70 variants, and 420 patterns; every variant and pattern is proposed.",
+    "eligibilityVerification": "PASS: 420 proposed patterns and 70 proposed variants produce 0 eligible variants and 0 eligible patterns.",
+    "generatedCounts": {
+      "packages": 14,
+      "variants": 0,
+      "patterns": 0,
+      "schemaVersion": "lucida-style-pattern-index/v1",
+      "status": "PASS: generated retrieval projection excludes all proposed records."
+    },
+    "generatedIndex": {
+      "validation": "PASS: knowledge:validate-index recomputed the canonical projection and manifest hash.",
+      "stylePatternIndexSha256": "d4e9aa8c1a7689d6d5eca270710d0436df19e21969e68f2364663c8f3abadfcd",
+      "manifestHashMatches": true
+    },
+    "globalVariantIdDuplicates": [],
+    "globalPatternIdDuplicates": []
+  },
+  "compilerReview": {
+    "status": "PASS",
+    "source": "scripts/knowledge/compile-references.mjs",
+    "approvedCandidateSchemaFiltering": "Approved variant and pattern candidates are selected by reviewStatus=approved and schema-validated before projection.",
+    "gatePreservation": {
+      "packageAndRecordOwnership": "PASS: style package directories, style-package.json, explicit refs, and default files are realpath-checked inside the owned style package directory.",
+      "explicitRefs": "PASS: explicit refs require non-empty relative forward-slash paths, existing files, package containment, and realpath containment; the targeted explicit-ref test passed 1/1.",
+      "duplicateIds": "PASS: duplicate variantId and patternId values are checked within and across the complete package catalog before approved-candidate filtering.",
+      "approvedOnly": "PASS: proposed and rejected records are excluded from the canonical retrieval projection.",
+      "invalidApprovedData": "PASS: approved variants and patterns are schema-validated before projection.",
+      "evidenceEligibility": "PASS: projected records require package-declared evidence IDs that resolve to approved canonical visual sources.",
+      "rendererSupportAndLinkage": "PASS: patterns require a registered runtime renderer, approved evidence, and variantIds that resolve to eligible variants.",
+      "tamperDetection": "PASS: source hashes are computed from resolved record files; tamper, generated-index, and manifest regression coverage passed.",
+      "leakage": "PASS: projection uses allowlisted retrieval fields; source metadata and renderer-like text do not confer eligibility.",
+      "generatedIndexAuthority": "PASS: validate-index compares the generated style-pattern index with the compiler output and checks the manifest artifact hash."
+    },
+    "reviewLimit": "This audit reviewed the current compiler source and executed its targeted regression gates; no implementation, source-data, approval, promotion, or generated-artifact repair was attempted."
+  },
+  "validationRuns": [
+    {
+      "name": "targeted explicit-ref compiler test",
+      "command": "node --test --test-name-pattern=\"style-pattern compiler resolves explicit refs and leaves draft packages without patterns out of retrieval\" tests/knowledge/compiler-runtime-index.test.mjs",
+      "exitCode": 0,
+      "status": "PASS",
+      "summary": {
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "durationMs": 8758.6179
+      }
+    },
+    {
+      "name": "knowledge compiler runtime tests",
+      "command": "npm run knowledge:test",
+      "exitCode": 0,
+      "status": "PASS_WITH_ENVIRONMENTAL_SKIPS",
+      "summary": {
+        "tests": 94,
+        "passed": 91,
+        "failed": 0,
+        "cancelled": 0,
+        "skipped": 3,
+        "durationMs": 140605.2238
+      },
+      "environmentalSkips": [
+        {
+          "test": "style-pattern compiler requires registered imports and rejects realpath escapes",
+          "case": "style package file",
+          "reason": "Windows denied the required file symlink with EPERM"
+        },
+        {
+          "test": "style-pattern compiler requires registered imports and rejects realpath escapes",
+          "case": "variants file",
+          "reason": "Windows denied the required file symlink with EPERM"
+        },
+        {
+          "test": "style-pattern compiler requires registered imports and rejects realpath escapes",
+          "case": "patterns file",
+          "reason": "Windows denied the required file symlink with EPERM"
+        }
+      ],
+      "regressionCoverageObserved": [
+        "approved-only style-pattern projection",
+        "explicit refs and draft packages without patterns",
+        "duplicate IDs within and across packages",
+        "tampered source/package/manifest/generated-index rejection",
+        "source metadata and renderer-like leakage exclusion",
+        "unsafe or unapproved evidence invisibility",
+        "invalid approved Style RAG data rejection"
+      ]
+    },
+    {
+      "name": "knowledge index validation",
+      "command": "npm run knowledge:validate-index",
+      "exitCode": 0,
+      "status": "PASS",
+      "summary": "Generated knowledge index validation passed: 1 template(s), 1 adapter(s), 17 approved reference source(s)."
+    },
+    {
+      "name": "strict visual-package validator",
+      "command": "npm run validate:visual-packages",
+      "exitCode": 0,
+      "status": "PASS",
+      "summary": {
+        "validPackages": 14,
+        "migrationGaps": 0,
+        "errors": 0,
+        "strict": true
+      }
+    },
+    {
+      "name": "TypeScript",
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "review renderer registry test",
+      "command": "node --test tests/styles/review-renderer-registry.test.mjs",
+      "exitCode": 0,
+      "status": "PASS",
+      "summary": {
+        "tests": 3,
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0,
+        "records": 70,
+        "packages": 14
+      }
+    },
+    {
+      "name": "sync style review artifact test",
+      "command": "node --test tests/scripts/sync-style-review-artifacts.test.mjs",
+      "exitCode": 0,
+      "status": "PASS",
+      "summary": {
+        "tests": 2,
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0,
+        "validatedPlans": 20,
+        "writes": 0
+      }
+    }
+  ],
+  "unfinished": {
+    "status": "NONE_FOR_REQUESTED_COMMANDS",
+    "items": []
+  },
+  "environment": {
+    "nodeContract": "Package declares Node >=24.14 <25; requested commands completed under the available Node runtime.",
+    "windowsSkips": "Three symlink-based realpath escape cases were skipped because Windows denied symlink creation with EPERM; the style package directory escape case passed.",
+    "generatedIndex": "Current: compiler output equals .generated/knowledge/style-pattern-index.json and its manifest hash.",
+    "hardStop": "No commands remain running after the requested audit gates completed."
+  },
+  "nonActions": [
+    "Only this report was overwritten.",
+    "No implementation files modified.",
+    "No source, package, or knowledge data modified.",
+    "No approval, promotion, publish, or retrieval-credit mutation performed."
+  ]
+}

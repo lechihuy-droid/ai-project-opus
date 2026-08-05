@@ -1,0 +1,249 @@
+{
+  "actualPassingPackages": 5,
+  "candidatesAreApproved": true,
+  "gate": {
+    "minimumPackages": 5,
+    "minimumSourcesPerPackage": 3,
+    "minimumSourceTypesPerPackage": 2
+  },
+  "generatedAt": "2026-07-16T00:00:00.000Z",
+  "humanApprovalRequired": false,
+  "packages": [
+    {
+      "approved": {
+        "sourceCount": 3,
+        "sourceIds": [
+          "source:reference:fixture-terminal-repo",
+          "source:reference:local-reference-theme",
+          "source:reference:terminalcss-catalog-link"
+        ],
+        "sourceTypes": [
+          "repository",
+          "theme",
+          "web"
+        ]
+      },
+      "gaps": [],
+      "gatePassed": true,
+      "ifCandidatesApproved": {
+        "sourceCount": 3,
+        "sourceIds": [
+          "source:reference:fixture-terminal-repo",
+          "source:reference:local-reference-theme",
+          "source:reference:terminalcss-catalog-link"
+        ],
+        "sourceTypes": [
+          "repository",
+          "theme",
+          "web"
+        ]
+      },
+      "packageId": "terminal-command-center",
+      "projectedGatePassed": true
+    },
+    {
+      "approved": {
+        "sourceCount": 4,
+        "sourceIds": [
+          "source:reference:technical-editorial-frame",
+          "source:reference:w8-technical-primer-foundations",
+          "source:reference:w8-technical-primer-primitives",
+          "source:reference:w8-technical-reveal-code"
+        ],
+        "sourceTypes": [
+          "image",
+          "repository",
+          "web"
+        ]
+      },
+      "gaps": [],
+      "gatePassed": true,
+      "ifCandidatesApproved": {
+        "sourceCount": 4,
+        "sourceIds": [
+          "source:reference:technical-editorial-frame",
+          "source:reference:w8-technical-primer-foundations",
+          "source:reference:w8-technical-primer-primitives",
+          "source:reference:w8-technical-reveal-code"
+        ],
+        "sourceTypes": [
+          "image",
+          "repository",
+          "web"
+        ]
+      },
+      "packageId": "technical-editorial",
+      "projectedGatePassed": true
+    },
+    {
+      "approved": {
+        "sourceCount": 3,
+        "sourceIds": [
+          "source:reference:w8-minimal-material-web",
+          "source:reference:w8-minimal-nng-aesthetic",
+          "source:reference:w8-minimal-nng-hierarchy"
+        ],
+        "sourceTypes": [
+          "repository",
+          "web"
+        ]
+      },
+      "gaps": [],
+      "gatePassed": true,
+      "ifCandidatesApproved": {
+        "sourceCount": 3,
+        "sourceIds": [
+          "source:reference:w8-minimal-material-web",
+          "source:reference:w8-minimal-nng-aesthetic",
+          "source:reference:w8-minimal-nng-hierarchy"
+        ],
+        "sourceTypes": [
+          "repository",
+          "web"
+        ]
+      },
+      "packageId": "minimal-education",
+      "projectedGatePassed": true
+    },
+    {
+      "approved": {
+        "sourceCount": 0,
+        "sourceIds": [],
+        "sourceTypes": []
+      },
+      "gaps": [
+        "needs 3 more approved source(s)",
+        "needs 2 more approved source type(s)"
+      ],
+      "gatePassed": false,
+      "ifCandidatesApproved": {
+        "sourceCount": 0,
+        "sourceIds": [],
+        "sourceTypes": []
+      },
+      "packageId": "cinematic-type",
+      "projectedGatePassed": false
+    },
+    {
+      "approved": {
+        "sourceCount": 4,
+        "sourceIds": [
+          "source:reference:fixture-terminal-repo",
+          "source:reference:w8-dashboard-primer-docs",
+          "source:reference:w8-dashboard-primer-react",
+          "source:reference:w8-dashboard-remotion-animation"
+        ],
+        "sourceTypes": [
+          "repository",
+          "web"
+        ]
+      },
+      "gaps": [],
+      "gatePassed": true,
+      "ifCandidatesApproved": {
+        "sourceCount": 4,
+        "sourceIds": [
+          "source:reference:fixture-terminal-repo",
+          "source:reference:w8-dashboard-primer-docs",
+          "source:reference:w8-dashboard-primer-react",
+          "source:reference:w8-dashboard-remotion-animation"
+        ],
+        "sourceTypes": [
+          "repository",
+          "web"
+        ]
+      },
+      "packageId": "dashboard-data",
+      "projectedGatePassed": true
+    },
+    {
+      "approved": {
+        "sourceCount": 0,
+        "sourceIds": [],
+        "sourceTypes": []
+      },
+      "gaps": [
+        "needs 3 more approved source(s)",
+        "needs 2 more approved source type(s)"
+      ],
+      "gatePassed": false,
+      "ifCandidatesApproved": {
+        "sourceCount": 0,
+        "sourceIds": [],
+        "sourceTypes": []
+      },
+      "packageId": "paper-notebook",
+      "projectedGatePassed": false
+    },
+    {
+      "approved": {
+        "sourceCount": 0,
+        "sourceIds": [],
+        "sourceTypes": []
+      },
+      "gaps": [
+        "needs 3 more approved source(s)",
+        "needs 2 more approved source type(s)"
+      ],
+      "gatePassed": false,
+      "ifCandidatesApproved": {
+        "sourceCount": 0,
+        "sourceIds": [],
+        "sourceTypes": []
+      },
+      "packageId": "product-showcase",
+      "projectedGatePassed": false
+    },
+    {
+      "approved": {
+        "sourceCount": 0,
+        "sourceIds": [],
+        "sourceTypes": []
+      },
+      "gaps": [
+        "needs 3 more approved source(s)",
+        "needs 2 more approved source type(s)"
+      ],
+      "gatePassed": false,
+      "ifCandidatesApproved": {
+        "sourceCount": 0,
+        "sourceIds": [],
+        "sourceTypes": []
+      },
+      "packageId": "editorial-collage",
+      "projectedGatePassed": false
+    },
+    {
+      "approved": {
+        "sourceCount": 3,
+        "sourceIds": [
+          "source:reference:w8-timeline-citizen-dj",
+          "source:reference:w8-timeline-loc-pictures",
+          "source:reference:w8-timeline-national-archives"
+        ],
+        "sourceTypes": [
+          "repository",
+          "web"
+        ]
+      },
+      "gaps": [],
+      "gatePassed": true,
+      "ifCandidatesApproved": {
+        "sourceCount": 3,
+        "sourceIds": [
+          "source:reference:w8-timeline-citizen-dj",
+          "source:reference:w8-timeline-loc-pictures",
+          "source:reference:w8-timeline-national-archives"
+        ],
+        "sourceTypes": [
+          "repository",
+          "web"
+        ]
+      },
+      "packageId": "timeline-documentary",
+      "projectedGatePassed": true
+    }
+  ],
+  "projectedPassingPackages": 5,
+  "schemaVersion": "lucida-evidence-breadth-report/v1"
+}

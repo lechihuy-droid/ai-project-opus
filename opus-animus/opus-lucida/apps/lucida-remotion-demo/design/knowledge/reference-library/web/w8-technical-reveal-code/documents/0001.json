@@ -1,0 +1,29 @@
+{
+  "contentChecksum": "12bcde6e9db55924c1202e6f3575744e04f9c3c9aa55939d15478112baf35c04",
+  "domain": "visual-style",
+  "mediaType": "web",
+  "observations": [
+    {
+      "definition": {
+        "packageId": "technical-editorial",
+        "tags": [
+          "technical-editorial",
+          "w8-candidate",
+          "link-only"
+        ]
+      },
+      "kind": "layout_reference",
+      "reviewStatus": "approved"
+    }
+  ],
+  "rawText": "# Reveal.js code presentation review note\n\nSource: https://revealjs.com/code/\nTarget package: technical-editorial\n\nReviewer-authored concepts:\n- progressive code focus\n- line-level evidence\n- presentation-safe technical density\n\nStore reviewer-authored link notes only. Do not vendor third-party page text, code, images, logos, screenshots, or fonts.",
+  "schemaVersion": "lucida-reference-document/v1",
+  "sourceRef": "https://revealjs.com/code/",
+  "tags": [
+    "link-only",
+    "technical-editorial",
+    "w8-candidate",
+    "web"
+  ],
+  "title": "w8-technical-reveal-code record 0001"
+}

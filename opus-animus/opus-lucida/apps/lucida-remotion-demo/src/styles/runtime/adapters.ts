@@ -8,6 +8,7 @@ import type {
   MinimalEducationAccentTone,
   MinimalEducationScene,
 } from "../families/minimal-education/types";
+import type { TechnicalEditorialFixture } from "../families/technical-editorial/types";
 
 const textForItem = (item: SceneContentItem): string =>
   item.title ?? item.label ?? item.body ?? item.note ?? "";
@@ -33,7 +34,64 @@ const accentToneFor = (scene: VideoScene): MinimalEducationAccentTone => {
 };
 
 const summaryFor = (scene: VideoScene): string =>
-  scene.content.subtitle ?? scene.subtitle.text ?? scene.narration[0] ?? "";
+  [scene.content.subtitle, scene.subtitle.text, scene.narration[0]]
+    .find((value) => typeof value === "string" && value.trim()) ?? "";
+
+export const buildTechnicalEditorialScene = (
+  scene: VideoScene,
+): TechnicalEditorialFixture => {
+  const items = sceneItems(scene).filter((item) => textForItem(item)).slice(0, 5);
+  const sourceItems = items.length > 0 ? items : [{ title: scene.title, body: summaryFor(scene) }];
+  const actorItems = sourceItems.filter((item) => item.label === "Actor");
+  const structuralItems = actorItems.length > 0 ? actorItems : sourceItems;
+  const codeLines = scene.content.lines?.length
+    ? scene.content.lines
+    : summaryFor(scene).split(/\r?\n/).filter(Boolean);
+  return {
+    key: scene.style.density === "high" ? "dense" : "normal",
+    sceneLabel: scene.intent.replace(/_/g, " "),
+    eyebrow: scene.kicker,
+    title: scene.title,
+    summary: summaryFor(scene),
+    density: scene.style.density === "high" ? "dense" : scene.style.density === "low" ? "sparse" : "balanced",
+    motionPolicy: "full",
+    annotations: sourceItems.slice(0, 3).map((item, index) => ({
+      label: item.label ?? `Evidence ${String(index + 1).padStart(2, "0")}`,
+      value: textForItem(item),
+      note: detailForItem(item) === textForItem(item) ? undefined : detailForItem(item),
+      tone: index === 0 ? "accent" : "neutral",
+    })),
+    metrics: [
+      { label: "Intent", value: scene.intent.replace(/_/g, " "), detail: "Director-selected scene role", tone: "accent" },
+      { label: "Density", value: scene.style.density, detail: "VideoMap content density", tone: "neutral" },
+    ],
+    diagram: {
+      title: scene.content.kicker ?? scene.kicker,
+      subtitle: scene.content.subtitle ?? scene.subtitle.text,
+      nodes: structuralItems.slice(0, 3).map((item, index) => ({
+        kicker: String(index + 1).padStart(2, "0"),
+        label: textForItem(item),
+        detail: detailForItem(item) === textForItem(item) ? summaryFor(scene) : detailForItem(item),
+        tone: index === 0 ? "accent" : "neutral",
+      })),
+      connectors: structuralItems.slice(1, 3).map((_, index) => `0${index + 1} -> 0${index + 2}`),
+    },
+    code: {
+      filename: scene.content.codeTitle ?? `${scene.id}.txt`,
+      language: scene.content.lines ? "text" : "evidence",
+      lines: (codeLines.length > 0 ? codeLines : [scene.title]).slice(0, 5),
+    },
+    steps: structuralItems.slice(0, 4).map((item, index) => ({
+      index: String(index + 1).padStart(2, "0"),
+      label: textForItem(item),
+      detail: detailForItem(item) === textForItem(item) ? summaryFor(scene) : detailForItem(item),
+    })),
+    footer: {
+      left: scene.visualFamily ?? "technical-editorial",
+      right: scene.reason,
+    },
+  };
+};
 
 export const buildMinimalEducationScene = (
   scene: VideoScene,
@@ -57,20 +115,26 @@ export const buildMinimalEducationScene = (
 
   if (scene.intent === "comparison" && items.length >= 2) {
     const [left, right, ...criteria] = items;
+    const comparisonCriteria = criteria.length > 0
+      ? criteria.slice(0, 5).map((item, index) => ({
+          label: item.label ?? `Point ${index + 1}`,
+          leftValue: item.title ?? item.body ?? textForItem(left),
+          rightValue: item.note ?? item.body ?? textForItem(right),
+          emphasis: index === 0 ? "right" as const : "neutral" as const,
+        }))
+      : [{
+          label: "Decision point",
+          leftValue: detailForItem(left),
+          rightValue: detailForItem(right),
+          emphasis: "right" as const,
+        }];
     return {
       ...base,
       sceneType: "comparison",
       comparison: {
         leftTitle: textForItem(left),
         rightTitle: textForItem(right),
-        criteria: (criteria.length > 0 ? criteria : items).slice(0, 5).map(
-          (item, index) => ({
-            label: item.label ?? `Point ${index + 1}`,
-            leftValue: item.title ?? item.body ?? textForItem(left),
-            rightValue: item.note ?? item.body ?? textForItem(right),
-            emphasis: index === 0 ? "right" : "neutral",
-          }),
-        ),
+        criteria: comparisonCriteria,
       },
     };
   }

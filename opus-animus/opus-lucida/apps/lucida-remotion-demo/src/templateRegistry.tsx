@@ -1379,7 +1379,11 @@ const CodePanelAdapter: React.FC<TemplateAdapterProps> = ({
   const skin = useSkin();
   const lines = scene.content.lines ?? [];
   const highlighted = new Set(scene.content.highlights ?? []);
-  const lineHeight = lines.length > 6 ? 66 : 78;
+  const longestLine = Math.max(0, ...lines.map((line) => normalizeText(line).length));
+  const lineFontSize = longestLine > 70 ? 30 : longestLine > 48 ? 34 : 38;
+  const lineHeight = lines.length > 6
+    ? 66
+    : Math.min(170, Math.max(78, Math.floor(520 / Math.max(lines.length, 1))));
   const activeLine = Math.min(
     Math.max(1, lines.length - 1),
     Math.floor(
@@ -1467,13 +1471,13 @@ const CodePanelAdapter: React.FC<TemplateAdapterProps> = ({
               <div
                 key={`${scene.id}-line-${index}`}
                 style={{
-                  height: lineHeight,
+                  minHeight: lineHeight,
                   display: "flex",
-                  alignItems: "center",
+                  alignItems: "flex-start",
                   opacity: isActive ? lineIn : lineIn * 0.45,
                   transform: `translateX(${interpolate(lineIn, [0, 1], [-24, isActive ? 8 : 0])}px)`,
                   fontFamily: skin.palette.fontMono,
-                  fontSize: 38,
+                  fontSize: lineFontSize,
                   color: isActive
                     ? skin.palette.textPrimary
                     : withAlpha(skin.palette.textPrimaryRgb, 0.6),
@@ -1484,13 +1488,15 @@ const CodePanelAdapter: React.FC<TemplateAdapterProps> = ({
                   borderLeft: isActive
                     ? `4px solid ${skin.palette.accent}`
                     : "4px solid transparent",
-                  paddingLeft: 18,
+                  padding: "12px 0 12px 18px",
                 }}
               >
-                <span style={{ color: "rgba(255,255,255,0.28)", width: 46 }}>
+                <span style={{ color: "rgba(255,255,255,0.28)", flex: "0 0 52px", lineHeight: 1.35 }}>
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <span>{normalizeText(line)}</span>
+                <span style={{ flex: 1, minWidth: 0, lineHeight: 1.35, overflowWrap: "anywhere", paddingRight: 18 }}>
+                  {normalizeText(line)}
+                </span>
               </div>
             );
           })}

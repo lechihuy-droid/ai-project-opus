@@ -1,7 +1,4 @@
 {
-  "schemaVersion": "lucida-artifact-manifest/v1",
-  "packageId": "minimal-education",
-  "generatedAt": "2026-07-12T00:00:00.000Z",
   "artifacts": [
     {
       "id": "style-package",
@@ -111,5 +108,9 @@
       "path": "./artifacts/render-report.json",
       "usage": "validation_report"
     }
-  ]
+  ],
+  "domain": "visual-style",
+  "generatedAt": "2026-07-12T00:00:00.000Z",
+  "packageId": "minimal-education",
+  "schemaVersion": "lucida-artifact-manifest/v1"
 }

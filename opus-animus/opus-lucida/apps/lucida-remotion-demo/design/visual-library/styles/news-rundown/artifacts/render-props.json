@@ -1,0 +1,7 @@
+{
+  "packageId": "news-rundown",
+  "compositionId": "NewsRundownFamilyReview",
+  "entryPoint": "src/styles/families/news-rundown/renderRoot.tsx",
+  "imageFormat": "png",
+  "qualityChecks": ["dimensions", "repeat-render-sha256", "signalstats-nonblank"]
+}

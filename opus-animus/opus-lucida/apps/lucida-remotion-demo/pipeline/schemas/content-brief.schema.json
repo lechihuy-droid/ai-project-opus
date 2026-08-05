@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "lucida-content-brief/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "title", "audience", "intent", "beats", "factualSourceIds", "visualConstraints", "styleMode"],
+  "properties": {
+    "schemaVersion": { "const": "lucida-content-brief/v1" },
+    "title": { "$ref": "#/$defs/nonEmptyText" },
+    "audience": { "$ref": "#/$defs/nonEmptyText" },
+    "intent": { "$ref": "#/$defs/nonEmptyText" },
+    "styleMode": { "enum": ["auto", "locked"] },
+    "factualSourceIds": { "$ref": "#/$defs/stringList" },
+    "visualConstraints": { "$ref": "#/$defs/visualConstraints" },
+    "beats": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "body", "role", "actors", "factRefs"],
+        "properties": {
+          "id": { "$ref": "#/$defs/nonEmptyText" },
+          "title": { "$ref": "#/$defs/nonEmptyText" },
+          "body": { "$ref": "#/$defs/nonEmptyText" },
+          "intent": { "$ref": "#/$defs/nonEmptyText" },
+          "role": { "enum": ["hook", "context", "problem", "insight", "explanation", "evidence", "process", "comparison", "example", "turning-point", "takeaway", "call-to-action", "transition"] },
+          "actors": { "$ref": "#/$defs/stringList" },
+          "factRefs": { "$ref": "#/$defs/stringList" }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "styleMode": { "const": "auto" } } },
+      "then": {
+        "properties": {
+          "visualConstraints": {
+            "not": {
+              "anyOf": [
+                { "properties": { "requiredPackages": { "minItems": 1 } }, "required": ["requiredPackages"] },
+                { "properties": { "requiredFamilies": { "minItems": 1 } }, "required": ["requiredFamilies"] }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "nonEmptyText": { "type": "string", "minLength": 1 },
+    "stringList": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/nonEmptyText" } },
+    "visualFamily": { "enum": ["terminal", "dashboard", "editorial", "infographic", "code", "data_visualization", "product_demo", "cinematic_typography"] },
+    "stylePackage": { "enum": ["terminal-command-center", "technical-editorial", "minimal-education", "cinematic-type", "dashboard-data", "paper-notebook", "product-showcase", "editorial-collage", "timeline-documentary"] },
+    "density": { "enum": ["low", "medium", "high"] },
+    "visualConstraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requiredPackages": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/stylePackage" } },
+        "forbiddenPackages": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/stylePackage" } },
+        "requiredFamilies": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/visualFamily" } },
+        "forbiddenFamilies": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/visualFamily" } },
+        "assets": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "requiredClassifications": { "$ref": "#/$defs/stringList" },
+            "allowedClassifications": { "$ref": "#/$defs/stringList" },
+            "forbiddenClassifications": { "$ref": "#/$defs/stringList" }
+          }
+        },
+        "density": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "preferred": { "$ref": "#/$defs/density" },
+            "minimum": { "$ref": "#/$defs/density" },
+            "maximum": { "$ref": "#/$defs/density" }
+          }
+        },
+        "layout": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "required": { "$ref": "#/$defs/stringList" },
+            "forbidden": { "$ref": "#/$defs/stringList" },
+            "minDistinct": { "type": "integer", "minimum": 1 },
+            "maxConsecutive": { "type": "integer", "minimum": 1 }
+          }
+        }
+      }
+    }
+  }
+}

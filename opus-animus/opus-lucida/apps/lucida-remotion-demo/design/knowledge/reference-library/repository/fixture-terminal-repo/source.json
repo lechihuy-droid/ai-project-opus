@@ -1,12 +1,32 @@
 {
+  "approval": {
+    "approvedAt": "2026-07-14",
+    "approvedBy": "Lucida reference review",
+    "status": "approved"
+  },
+  "collectorVersion": "repository-collector/1",
+  "domain": "visual-style",
+  "provenance": {
+    "collectorArtifact": "design/knowledge/reference-approvals/repository/fixture-terminal-repo.sanitized-approved.json",
+    "sanitizedArtifactChecksum": "0ff64a425e8cc3fc1f3b7ed8b9ad1ee2d9084f5e85b443fdb89e7d4b178855b9"
+  },
+  "rights": {
+    "evidence": "Project-owned fixture under pipeline/fixtures/reference-repo.",
+    "policy": "internal-fixture",
+    "status": "approved"
+  },
   "schemaVersion": "lucida-reference-source/v1",
+  "snapshotChecksum": "1b858442c579c78ebeaffb21acfdce567933c003c41caabac890b9bc45baf092",
   "sourceId": "source:reference:fixture-terminal-repo",
-  "sourceType": "repository",
   "sourceRef": "pipeline/fixtures/reference-repo",
   "sourceRevision": "fixture-2026-07-14",
+<<<<<<< HEAD
+  "sourceType": "repository"
+=======
   "snapshotChecksum": "1b858442c579c78ebeaffb21acfdce567933c003c41caabac890b9bc45baf092",
   "collectorVersion": "repository-collector/1",
   "rights": { "policy": "internal-fixture", "status": "approved", "evidence": "Project-owned fixture under pipeline/fixtures/reference-repo." },
   "approval": { "status": "approved", "approvedBy": "Lucida reference review", "approvedAt": "2026-07-14" },
   "provenance": { "sanitizedArtifactChecksum": "0ff64a425e8cc3fc1f3b7ed8b9ad1ee2d9084f5e85b443fdb89e7d4b178855b9", "collectorArtifact": "design/knowledge/reference-approvals/repository/fixture-terminal-repo.sanitized-approved.json" }
+>>>>>>> origin/main
 }
