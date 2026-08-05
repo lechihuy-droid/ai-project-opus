@@ -1,5 +1,5 @@
 STEP B0 — Fix codex provider detection (Hub v2 Phase B).
-Spec: harness/hub/BD-hub-v2-phaseB.md (Step B0). Read it first.
+Spec: harness/hub/docs/BD-hub-v2-phaseB.md (Step B0). Read it first.
 
 PROBLEM: GET /api/providers shows codex available:false detail:"not_installed"
 although pnpm codex-cli 0.144.3 exists. claude detection already works via

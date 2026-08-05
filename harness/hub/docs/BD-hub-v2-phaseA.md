@@ -137,7 +137,7 @@
 
 ## Brief giao Codex (copy vào codex exec)
 ```
-FRESH START. Implement Phase A theo harness/hub/BD-hub-v2-phaseA.md, tuần tự Step 1→11.
+FRESH START. Implement Phase A theo harness/hub/docs/BD-hub-v2-phaseA.md, tuần tự Step 1→11.
 Sau mỗi step chạy: .ih\Scripts\python.exe -m pytest harness/hub/tests -q (phải xanh).
 KHÔNG sửa services/chat.py. KHÔNG đổi contract SSE v1. Test dùng fake CLI, không gọi
 claude/codex thật. Dùng đúng cờ CLI đã verify ghi trong BD. Frontend giữ vanilla JS,

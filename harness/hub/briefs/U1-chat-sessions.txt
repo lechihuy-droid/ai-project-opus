@@ -1,7 +1,7 @@
 STEP U1 — UI v3: Chat đa cửa sổ + Phiên đã lưu (SD-ui-v3-rebuild.md §5 Phase U1)
 
 READ FIRST:
-1. harness/hub/SD-ui-v3-rebuild.md §3 tokens, §4 page map
+1. harness/hub/docs/SD-ui-v3-rebuild.md §3 tokens, §4 page map
 2. harness/hub/mockups/ui-v3-mockup.html — chat screen reference (2 panes side by side,
    pane head with provider dot + session id + READ-ONLY/FREE badge, bubbles, composer)
 3. harness/hub/server.py lines 144-196 — the ONLY chat API you use:

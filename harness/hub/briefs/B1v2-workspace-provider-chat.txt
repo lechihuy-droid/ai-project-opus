@@ -1,5 +1,5 @@
 STEP B1v2 — Provider chat in Workspace UI (Hub v2 Phase B).
-Spec: harness/hub/BD-hub-v2-phaseB.md Step B1 (rewritten 2026-07-16 — read it).
+Spec: harness/hub/docs/BD-hub-v2-phaseB.md Step B1 (rewritten 2026-07-16 — read it).
 Study first: harness/hub/web/workspace.js (whole file — chat state, renderChatPanel,
 send flow, model selector, persistence), harness/hub/docs/workspace.md,
 harness/hub/web/styles-workspace.css.

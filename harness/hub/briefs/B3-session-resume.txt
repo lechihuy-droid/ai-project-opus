@@ -1,5 +1,5 @@
 STEP B3 — Durable session resume (Hub v2 Phase B).
-Spec: harness/hub/BD-hub-v2-phaseB.md Step B3. Read it + SD §3.2/3.3.
+Spec: harness/hub/docs/BD-hub-v2-phaseB.md Step B3. Read it + SD §3.2/3.3.
 Study: harness/hub/web/workspace.js (chat state: provider/sessionId per chat,
 streamChatResponse, done handler), harness/hub/services/providers/claude_cli.py,
 codex_cli.py, harness/hub/tests/test_providers.py.

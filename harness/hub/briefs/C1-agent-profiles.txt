@@ -1,5 +1,5 @@
 STEP C1 — Agent profile schema + CRUD (Hub v2 Phase C).
-Spec: harness/hub/BD-hub-v2-phaseC.md Step C1. Read it + ARCHITECTURE.md §9
+Spec: harness/hub/docs/BD-hub-v2-phaseC.md Step C1. Read it + ARCHITECTURE.md §9
 (Super Agent principles: config-first, budget cap mandatory) + RD FR-121→124.
 Study: harness/hub/services/runtime_agents.py (current stub — AGENTS list +
 list_agents/get_agent, to be replaced by real yaml loading), harness/hub/

@@ -1,8 +1,8 @@
 STEP U0 — UI v3: scaffold Vite + React + Tailwind, app shell, FastAPI serving
-(Upstream: harness/hub/SD-ui-v3-rebuild.md §5 Phase U0 — APPROVED 2026-07-20)
+(Upstream: harness/hub/docs/SD-ui-v3-rebuild.md §5 Phase U0 — APPROVED 2026-07-20)
 
 READ FIRST (in this order):
-1. harness/hub/SD-ui-v3-rebuild.md — §3 design tokens, §4 page map (source of truth)
+1. harness/hub/docs/SD-ui-v3-rebuild.md — §3 design tokens, §4 page map (source of truth)
 2. harness/hub/mockups/ui-v3-mockup.html — visual reference: replicate sidebar/topbar
    look (colors, spacing, zone labels, provider chips) as close as practical
 3. harness/hub/server.py — the two route changes you will make (see STEP 6)

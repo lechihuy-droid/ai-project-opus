@@ -397,6 +397,32 @@ def test_procs_raises_busy_error_at_max_concurrent(monkeypatch: pytest.MonkeyPat
         registry.kill_all()
 
 
+def test_batch_shim_keeps_metacharacters_as_one_opaque_argument(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Regression: a batch shim must never put a chat prompt through cmd.exe."""
+    shim = tmp_path / "fake-cli.cmd"
+    script = tmp_path / "runner.js"
+    args_file = tmp_path / "args.json"
+    marker = tmp_path / "pwned.txt"
+    script.write_text(
+        "import json, sys\n"
+        f"open({str(args_file)!r}, 'w', encoding='utf-8').write(json.dumps(sys.argv[1:]))\n",
+        encoding="utf-8",
+    )
+    shim.write_text('@"%~dp0node.exe" "%~dp0runner.js" %*\n', encoding="utf-8")
+    monkeypatch.setattr(procs.shutil, "which", lambda name: sys.executable if name in {"node", "node.exe"} else None)
+    prompt = f'hello&echo pwned>{marker}|more^caret'
+
+    registry = procs.ProcessRegistry()
+    proc_id = registry.spawn([str(shim), prompt], timeout=5)
+    process = registry.get(proc_id)
+    assert process is not None
+    assert process.wait(timeout=5) == 0
+
+    assert json.loads(args_file.read_text(encoding="utf-8")) == [prompt]
+    assert not marker.exists()
+    registry.unregister(proc_id)
+
+
 # ---------------------------------------------------------------------------
 # registry — get_provider / list_providers
 # ---------------------------------------------------------------------------

@@ -5,7 +5,7 @@ MỤC TIÊU: trang Usage hiện tại là một đống phẳng, bỏ mất 4 th
 bộ lọc điều khiển toàn trang → KPI → xu hướng theo ngày → breakdown kèm chi phí → nhật ký event thô.
 
 ĐỌC TRƯỚC:
-1. harness/hub/SD-usage-cost-canvas.md §2 (chi phí là ƯỚC TÍNH, không phải hoá đơn), §3 (bố cục).
+1. harness/hub/docs/SD-usage-cost-canvas.md §2 (chi phí là ƯỚC TÍNH, không phải hoá đơn), §3 (bố cục).
 2. web-v3/src/pages/UsagePage.tsx hiện tại (sẽ viết lại), và các trang khác để khớp style/token.
 3. web-v3/src/lib/{api.ts, Table.tsx} — DÙNG LẠI. Không tự viết fetch.
 

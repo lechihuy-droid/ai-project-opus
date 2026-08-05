@@ -1,6 +1,6 @@
 STEP C2c — Child-run / sub-agent packet + governance (Hub v2 Phase C). Runs
 AFTER C2b lands (depends on it — extends services/workflow_exec.py). Spec:
-harness/hub/BD-hub-v2-phaseC.md Step C2c. Read it + ARCHITECTURE.md §9 (Super
+harness/hub/docs/BD-hub-v2-phaseC.md Step C2c. Read it + ARCHITECTURE.md §9 (Super
 Agent principles: sub-agents never self-spawn, only via child task packet +
 governance check; blackboard append-only/replayable) + RD FR-121→124.
 

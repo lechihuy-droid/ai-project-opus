@@ -8,6 +8,7 @@ from typing import Any
 
 import config
 from services import gitjobs, runtime_state
+from services.boundary import resolve_in_root
 
 
 _FILE = config.RUNTIME_STORE_DIR / "hooks.json"
@@ -93,7 +94,7 @@ def _run(hook: dict[str, Any], event: dict[str, Any]) -> None:
             request = urllib.request.Request(action["url"], data=json.dumps(event).encode(), headers={"Content-Type": "application/json"}, method="POST")
             with urllib.request.urlopen(request, timeout=10): pass
         elif action["type"] == "append_log_file":
-            path = Path(action["path"]); path.parent.mkdir(parents=True, exist_ok=True)
+            path = resolve_in_root(action["path"], _LOG.parent); path.parent.mkdir(parents=True, exist_ok=True)
             with path.open("a", encoding="utf-8") as handle: handle.write(json.dumps(event, ensure_ascii=False) + "\n")
         else:
             job = gitjobs.create_hook_job(list(action["command"]), event)

@@ -1,6 +1,6 @@
 STEP C3 — Workflow run view UI (Hub v2 Phase C, size M). Depends on C2b
 (services/workflow_exec.py + its two routes) already landed. Spec:
-harness/hub/BD-hub-v2-phaseC.md Step C3. Read it first.
+harness/hub/docs/BD-hub-v2-phaseC.md Step C3. Read it first.
 
 Study: harness/hub/briefs/C2b-workflow-executor.txt (read in full — it is the
 CONTRACT reference for every route/event name below; C3 must match it exactly,
