@@ -7,7 +7,7 @@ import pytest
 
 import config
 from services import runtime_agents, runtime_checkpoint, runtime_interrupts, runtime_state, skill_library, workflow_exec
-from services.providers import registry
+from services.providers import claude_cli, codex_cli, registry
 
 
 @pytest.fixture()
@@ -24,12 +24,14 @@ class FakeProvider:
     def __init__(self, scripts: list[list[dict[str, Any]]]) -> None:
         self.scripts = scripts
         self.messages: list[list[dict[str, str]]] = []
+        self.tool_policies: list[dict[str, Any] | None] = []
 
     def status(self) -> dict[str, Any]:
         return {"id": "fake", "available": True}
 
-    def stream_chat(self, messages: list[dict[str, str]], session_id: str | None = None, model: str | None = None, **_: Any) -> Iterator[dict[str, Any]]:
+    def stream_chat(self, messages: list[dict[str, str]], session_id: str | None = None, model: str | None = None, **kwargs: Any) -> Iterator[dict[str, Any]]:
         self.messages.append(messages)
+        self.tool_policies.append(kwargs.get("tool_policy"))
         yield from self.scripts.pop(0)
 
 
@@ -38,6 +40,46 @@ def _agent(*, max_calls: int = 5) -> dict[str, Any]:
         "id": "reviewer", "provider": "fake", "model": None, "system_prompt": "Review carefully.",
         "budget": {"seconds": 60, "max_calls": max_calls}, "skills": [], "permission": "read_only", "risk_tier": "read_only",
     }
+
+
+def test_workspace_dir_policy_separates_read_from_write() -> None:
+    agent = _agent() | {"allowed_paths": ["profile-path"]}
+
+    assert workflow_exec._tool_policy(agent) == {
+        "permission": "read_only", "allowed_tools": [], "allowed_paths": ["profile-path"], "writable_paths": ["profile-path"],
+    }
+    read_policy = workflow_exec._tool_policy(agent, "external-folder", False)
+    assert read_policy["allowed_paths"] == ["profile-path", "external-folder"]
+    assert "cwd" not in read_policy
+    assert read_policy["writable_paths"] == ["profile-path"]
+    write_policy = workflow_exec._tool_policy(agent, "external-folder", True)
+    assert write_policy["cwd"] == "external-folder"
+    assert write_policy["writable_paths"] == ["profile-path", "external-folder"]
+
+
+def test_cli_commands_exclude_read_only_workspace_dir() -> None:
+    policy = workflow_exec._tool_policy(_agent() | {"permission": "workspace_write"}, "external-folder", False)
+
+    assert "external-folder" not in claude_cli._build_cmd("do", None, tool_policy=policy)
+    assert "external-folder" not in " ".join(codex_cli._build_cmd("do", None, tool_policy=policy))
+
+
+def test_resume_restores_workspace_scope_from_metadata(runtime_tmp: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    fake = FakeProvider([[{"type": "done", "usage": {}}]])
+    monkeypatch.setitem(registry, "fake", fake)
+    ir = [{"id": "approve", "agent": _agent(), "prompt": "Do {{objective}}", "gate": "approval", "order": 0}]
+    run_id = _pinned_run(ir, {"id": "demo", "nodes": [], "edges": [], "stop": {"max_nodes": 1, "max_seconds": 60}})
+    runtime_state.update_run_state(run_id, {"metadata": {"workspace_dir": "external-folder", "workspace_write": True}})
+
+    list(workflow_exec.run_workflow(ir, stop={"max_nodes": 1, "max_seconds": 60}, objective="ship", run_id=run_id))
+    interrupt = runtime_state.read_run(run_id)["interrupts"][0]
+    runtime_interrupts.resolve_interrupt(run_id, interrupt["interrupt_id"], resume_payload={"approved": True})
+    list(workflow_exec.run_workflow([], stop={}, objective="", run_id=run_id))
+
+    assert fake.tool_policies == [{
+        "permission": "read_only", "allowed_tools": [], "allowed_paths": ["external-folder"],
+        "writable_paths": ["external-folder"], "cwd": "external-folder",
+    }]
 
 
 def _run() -> str:

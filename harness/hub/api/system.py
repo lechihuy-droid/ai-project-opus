@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse, JSONResponse, Response
 
 import config
 from api._shared import _http_error
-from services import behavior, board, governance, inspect_evals, integrity, runtime_policy, usage
+from services import behavior, board, fsbrowse, governance, inspect_evals, integrity, runtime_policy, usage
 from services.providers import list_providers
 
 router = APIRouter()
@@ -29,6 +29,19 @@ def health() -> dict[str, object]:
         "runs_dir": str(config.RUNS_DIR),
         "port": config.PORT,
     }
+
+
+@router.get("/api/fs/drives")
+def api_fs_drives() -> list[str]:
+    return fsbrowse.list_drives()
+
+
+@router.get("/api/fs/dirs")
+def api_fs_dirs(path: str | None = None, show_hidden: bool = False) -> dict[str, object]:
+    try:
+        return fsbrowse.list_dirs(path, show_hidden=show_hidden)
+    except (PermissionError, ValueError) as exc:
+        raise _http_error(exc, 400) from exc
 
 
 @router.get("/api/guardrails/decisions")

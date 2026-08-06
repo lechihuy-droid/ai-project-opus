@@ -28,6 +28,8 @@ class ToolPolicy(TypedDict, total=False):
     permission: str
     allowed_tools: list[str]
     allowed_paths: list[str]
+    cwd: str
+    writable_paths: list[str]
 
 
 class Provider(Protocol):

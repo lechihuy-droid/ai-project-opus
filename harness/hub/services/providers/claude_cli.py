@@ -48,7 +48,7 @@ def _build_cmd(
         cmd += ["--permission-mode", "acceptEdits" if tool_policy.get("permission") == "workspace_write" else "plan"]
         for tool in tool_policy.get("allowed_tools", []):
             cmd += ["--allowedTools", tool]
-        for path in tool_policy.get("allowed_paths", []):
+        for path in tool_policy.get("writable_paths", tool_policy.get("allowed_paths", [])):
             cmd += ["--add-dir", path]
     if model:
         cmd += ["--model", model]
@@ -207,7 +207,7 @@ def stream_chat(
     try:
         proc_id = procs.registry.spawn(
             cmd,
-            cwd=getattr(config, "ROOT", None),
+            cwd=(tool_policy or {}).get("cwd") or getattr(config, "ROOT", None),
             env=env,
             timeout=timeout,
             provider=PROVIDER_ID,

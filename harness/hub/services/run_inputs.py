@@ -1,8 +1,13 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
-from services import chat_files, runtime_artifacts
+from services import chat_files, fsbrowse, runtime_artifacts
+
+
+_FOLDER_MAX_DEPTH = 3
+_FOLDER_MAX_FILES = 50
 
 
 def _reference(item: dict[str, Any]) -> dict[str, str]:
@@ -17,7 +22,39 @@ def _reference(item: dict[str, Any]) -> dict[str, str]:
         if not isinstance(chat_id, str) or not chat_id or not isinstance(name, str) or not name:
             raise ValueError("chat_file input requires chat_id and name")
         return {"kind": "chat_file", "chat_id": chat_id, "name": name}
+    if kind == "folder":
+        path = fsbrowse.resolve_workspace_dir(item.get("path"))
+        if path is None:
+            raise ValueError("folder input requires a path")
+        return {"kind": "folder", "path": str(path)}
     raise ValueError(f"Unsupported input kind: {kind!r}")
+
+
+def _folder_files(root: Path) -> tuple[list[Path], bool]:
+    files: list[Path] = []
+
+    def visit(directory: Path, depth: int) -> bool:
+        try:
+            children = sorted(directory.iterdir(), key=lambda path: path.name.lower())
+        except PermissionError:
+            return False
+        for path in children:
+            try:
+                resolved = path.resolve()
+                if fsbrowse.is_denied(resolved) or not resolved.is_relative_to(root):
+                    continue
+                if resolved.is_file():
+                    if len(files) >= _FOLDER_MAX_FILES:
+                        return True
+                    files.append(resolved)
+                elif resolved.is_dir() and depth < _FOLDER_MAX_DEPTH and path.name not in fsbrowse.IGNORED_DIR_NAMES and not path.name.startswith("."):
+                    if visit(resolved, depth + 1):
+                        return True
+            except (OSError, PermissionError):
+                continue
+        return False
+
+    return files, visit(root, 0)
 
 
 def resolve_inputs(value: object) -> tuple[list[dict[str, str]], str]:
@@ -50,7 +87,7 @@ def resolve_inputs(value: object) -> tuple[list[dict[str, str]], str]:
                 raise ValueError(f"Input artifact has no readable content: {artifact_id}")
             title = str(artifact.get("title") or artifact_id)
             label = f'[Input: artifact "{title}"]'
-        else:
+        elif reference["kind"] == "chat_file":
             chat_id, name = reference["chat_id"], reference["name"]
             try:
                 path = chat_files.download(chat_id, name)
@@ -62,6 +99,30 @@ def resolve_inputs(value: object) -> tuple[list[dict[str, str]], str]:
             except UnicodeDecodeError:
                 parts.append(f"{label}\n[Binary content is not included in the prompt]")
                 continue
+
+        else:
+            folder = Path(reference["path"])
+            parts.append(f"[Input: folder {folder}]")
+            files, listing_truncated = _folder_files(folder)
+            for path in files:
+                if remaining <= 0:
+                    truncated = True
+                    break
+                # Read at most the remaining budget rather than the whole file:
+                # the folder is anywhere on disk, so a single large text file
+                # would otherwise be loaded into memory just to be sliced away.
+                try:
+                    with path.open(encoding="utf-8") as handle:
+                        excerpt = handle.read(remaining)
+                        has_more = bool(handle.read(1))
+                except (UnicodeDecodeError, OSError):
+                    continue
+                parts.append(f"[File: {path.relative_to(folder)}]\n{excerpt}")
+                remaining -= len(excerpt)
+                truncated = truncated or has_more
+            if listing_truncated:
+                parts.append(f"[Folder listing truncated at {_FOLDER_MAX_FILES} files]")
+            continue
 
         if remaining <= 0:
             truncated = True

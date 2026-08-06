@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 
 import config
 import server
-from services import boundary, chat_files, execution, gitjobs, hooks, run_inputs, runtime_agents, runtime_artifacts, runtime_state, workflow, workflow_exec
+from services import boundary, chat_files, execution, fsbrowse, gitjobs, hooks, run_inputs, runtime_agents, runtime_artifacts, runtime_state, workflow, workflow_exec
 
 
 @pytest.fixture()
@@ -162,6 +162,34 @@ def test_run_inputs_resolve_bound_truncate_and_reject_missing(storage_tmp: Path,
     monkeypatch.setattr(chat_files, "CHAT_FILE_CONTEXT_MAX_CHARS", 4)
     _, truncated = run_inputs.resolve_inputs([{"kind": "artifact", "id": artifact["id"]}])
     assert "truncated at 4 characters" in truncated
+
+
+def test_fs_browse_endpoints_validate_paths(client: TestClient) -> None:
+    root = client.get("/api/fs/dirs")
+    assert root.status_code == 200 and "entries" in root.json()
+    assert client.get("/api/fs/drives").status_code == 200
+    assert client.get("/api/fs/dirs", params={"path": str(fsbrowse.DENIED_ROOTS[0])}).status_code == 400
+    assert client.get("/api/fs/dirs", params={"path": "C:/definitely-not-a-real-folder"}).status_code == 400
+
+
+def test_workflow_run_workspace_payload_is_validated_and_defaults_off(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    captured: list[tuple[object, ...]] = []
+    monkeypatch.setattr(workflow, "parse_workflow", lambda _source: {})
+    monkeypatch.setattr(workflow, "validate_workflow", lambda _data: [])
+    monkeypatch.setattr(workflow, "workflow_path", lambda _workflow_id: tmp_path / "demo.workflow.yaml")
+    (tmp_path / "demo.workflow.yaml").write_text("ignored", encoding="utf-8")
+
+    def stream(*args: object):
+        captured.append(args)
+        yield "event: done\\ndata: {}\\n\\n"
+
+    monkeypatch.setattr(workflow_exec, "create_workflow_run_stream", stream)
+    assert client.post("/api/workflows/demo/runs", json={"objective": "run", "workspace_dir": "C:/not-real"}).status_code == 400
+    response = client.post("/api/workflows/demo/runs", json={"objective": "run", "workspace_write": True})
+    assert response.status_code == 200
+    assert captured[0][-2:] == (None, False)
 
 
 def test_inputs_token_is_valid_template_reference() -> None:

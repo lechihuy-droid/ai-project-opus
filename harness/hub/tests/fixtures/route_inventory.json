@@ -115,6 +115,18 @@
     ]
   ],
   [
+    "/api/fs/dirs",
+    [
+      "GET"
+    ]
+  ],
+  [
+    "/api/fs/drives",
+    [
+      "GET"
+    ]
+  ],
+  [
     "/api/governance",
     [
       "GET"

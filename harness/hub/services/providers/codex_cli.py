@@ -44,8 +44,10 @@ def _build_cmd(
         "workspace-write" if tool_policy.get("permission") == "workspace_write" else "read-only"
     )
     options = ["-s", sandbox, "--skip-git-repo-check", "--json"]
-    if tool_policy and tool_policy.get("allowed_paths"):
-        options += ["-c", f"sandbox_workspace_write.writable_roots={json.dumps(tool_policy['allowed_paths'])}"]
+    if tool_policy:
+        writable_paths = tool_policy.get("writable_paths", tool_policy.get("allowed_paths", []))
+        if writable_paths:
+            options += ["-c", f"sandbox_workspace_write.writable_roots={json.dumps(writable_paths)}"]
     if model:
         options += ["-m", model]
     if session_id:
@@ -196,7 +198,7 @@ def stream_chat(
     try:
         proc_id = procs.registry.spawn(
             cmd,
-            cwd=getattr(config, "ROOT", None),
+            cwd=(tool_policy or {}).get("cwd") or getattr(config, "ROOT", None),
             env=env,
             timeout=timeout,
             provider=PROVIDER_ID,

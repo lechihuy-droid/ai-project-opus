@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import Response, StreamingResponse
 
 from api._shared import _check_if_match, _etag, _http_error
-from services import run_inputs, runtime_artifacts, runtime_interrupts, runtime_state, workflow, workflow_exec
+from services import fsbrowse, run_inputs, runtime_artifacts, runtime_interrupts, runtime_state, workflow, workflow_exec
 
 router = APIRouter()
 
@@ -140,6 +140,9 @@ def api_workflow_run(workflow_id: str, payload: dict[str, object]):
     if not isinstance(objective, str):
         raise HTTPException(status_code=400, detail="objective must be a string")
     try:
+        workspace_path = fsbrowse.resolve_workspace_dir(payload.get("workspace_dir"))
+        workspace_dir = str(workspace_path) if workspace_path is not None else None
+        workspace_write = bool(payload.get("workspace_write")) if workspace_dir else False
         references, inputs = run_inputs.resolve_inputs(payload.get("inputs"))
         source = workflow.workflow_path(workflow_id).read_text(encoding="utf-8")
         errors = workflow.validate_workflow(workflow.parse_workflow(source))
@@ -149,7 +152,10 @@ def api_workflow_run(workflow_id: str, payload: dict[str, object]):
         raise _http_error(exc, 400) from exc
     if errors:
         raise _http_error(ValueError("Workflow validation failed"), 422)
-    return StreamingResponse(workflow_exec.create_workflow_run_stream(workflow_id, objective, inputs, references), media_type="text/event-stream")
+    return StreamingResponse(
+        workflow_exec.create_workflow_run_stream(workflow_id, objective, inputs, references, workspace_dir, workspace_write),
+        media_type="text/event-stream",
+    )
 
 
 @router.get("/api/workflows/runs/{run_id}/artifacts")
