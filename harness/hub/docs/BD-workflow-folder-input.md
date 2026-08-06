@@ -35,6 +35,19 @@ Mở rộng ra ngoài `config.ROOT` nghĩa là agent chạy trong hub đọc đ�
 2. **Không có mặc định.** `workspace_dir` mặc định `null` = giữ nguyên hành vi hôm nay (chỉ `config.ROOT`). Người dùng phải chọn chủ động từng run.
 3. **Ghi audit.** Mỗi run có `workspace_dir` nằm ngoài `config.ROOT` → ghi một event `workspace_scope` qua `services/audit.py` kèm đường dẫn tuyệt đối, và hiện cảnh báo màu warning trong UI trước khi bấm Run.
 4. **Chỉ liệt kê thư mục, không bao giờ trả nội dung file** qua endpoint duyệt.
+5. **Quyền ghi tách khỏi quyền chọn folder** (chốt với user 2026-08-06). Chọn folder chỉ cho **đọc**; muốn agent ghi vào đó phải tick thêm một ô riêng, mặc định tắt. Chi tiết ở §7.
+6. **Chặn folder quá rộng:** gốc ổ đĩa (`C:\`, `D:\`, `/`) và gốc profile user (`%USERPROFILE%`) không chọn được — duyệt vào thì được, chọn thì không. Thư mục con của profile thì được.
+
+### Vì sao lớp chặn hiện tại yếu hơn tên gọi
+
+Đã verify trong code, ghi lại để người thực thi không hiểu nhầm phạm vi:
+
+- `boundary.resolve_in_root` **chỉ** gác tool layer của hub (`services/tools.py` → `services/execution.py`), tức chỉ agent chạy qua **NVIDIA API**. Registry có đúng 3 tool và **tất cả chỉ đọc** — không có tool ghi nào.
+- Agent chạy qua **Claude Code / Codex CLI chưa bao giờ đi qua lớp này**. Chúng nhận `allowed_paths` nguyên văn rồi đổ vào cờ sandbox của chính CLI:
+  - `claude_cli.py:51` → `--add-dir <path>`; `permission: workspace_write` → `--permission-mode acceptEdits`
+  - `codex_cli.py:48` → `sandbox_workspace_write.writable_roots=[...]`; `workspace_write` → `-s workspace-write`
+- Nghĩa là **quyền ghi nằm ở nhánh CLI**, không nằm ở `boundary`. Phần rủi ro thật của BD này là Step 4 (đẩy `workspace_dir` vào `cwd` + `writable_roots`), không phải Step 3.
+- `config.ROOT` vốn đã chứa `.env` (`config.py` gọi `load_dotenv(ROOT / ".env")`) và theo CLAUDE.md là `finance.db` + `data/_local/`. Lớp chặn hiện tại không phải tường cao.
 
 ---
 
@@ -92,7 +105,7 @@ Chi tiết:
 - Sort theo `name.lower()`, deterministic.
 - `PermissionError` khi đọc một thư mục con → bỏ qua thư mục đó, không làm hỏng cả response.
 - `parent` = `None` khi đang ở gốc.
-- `resolve_workspace_dir`: `None`/chuỗi rỗng → `None`; ngược lại phải là đường dẫn tồn tại, `is_dir()`, không nằm trong deny-list, resolve symlink trước khi kiểm tra (chống symlink trỏ vào `C:\Windows`). Sai → `ValueError`.
+- `resolve_workspace_dir`: `None`/chuỗi rỗng → `None`; ngược lại phải là đường dẫn tồn tại, `is_dir()`, không nằm trong deny-list, **không phải gốc ổ đĩa** (`path.parent == path`) và **không phải chính `%USERPROFILE%`** (thư mục con của profile thì được), resolve symlink trước khi kiểm tra (chống symlink trỏ vào `C:\Windows`). Sai → `ValueError` với thông báo nói rõ lý do nào trong số trên.
 
 **Test mới `tests/test_fsbrowse.py`:** liệt kê tmp_path đúng · bỏ `node_modules` · deny-list chặn cả thư mục con · symlink trỏ vào deny-root bị chặn · `resolve_workspace_dir(None)` trả `None` · đường dẫn là file → `ValueError`.
 
@@ -130,22 +143,41 @@ if not any(_is_allowed(resolved, root) for root in allowed_paths):
 
 **Ngữ nghĩa giữ nguyên khi `allowed_paths` đều nằm trong ROOT** — đó là toàn bộ agent hiện có, nên test cũ phải xanh y nguyên. Nếu bất kỳ test nào trong `tests/test_boundary.py` / `test_runtime.py` đỏ, dừng lại báo cáo chứ **không** sửa test.
 
-## 7. Step 4 — `workspace_dir` chảy xuống executor
+## 7. Step 4 — `workspace_dir` chảy xuống executor, đọc tách khỏi ghi
 
-1. `services/providers/base.py` — `ToolPolicy` thêm `cwd: str`.
-2. `services/workflow_exec.py:302` — `_tool_policy(agent)` thành `_tool_policy(agent, workspace_dir: str | None)`:
+**Quy tắc trung tâm — đây là phần dễ làm sai nhất của BD:**
+
+| Tick "cho phép ghi" | Hub read tools (`allowed_paths`) | CLI `cwd` | claude `--add-dir` | codex `writable_roots` |
+|---|---|---|---|---|
+| **tắt** (mặc định) | có `workspace_dir` | giữ `config.ROOT` | không | không |
+| **bật** | có `workspace_dir` | `workspace_dir` | có | có |
+
+Lý do `cwd` cũng phải gác sau tick: Codex ở chế độ `workspace-write` mặc định coi **cwd là writable root**. Đặt `cwd=workspace_dir` mà không đặt `writable_roots` thì folder vẫn ghi được — tick sẽ thành vô nghĩa. Tương tự, `claude --add-dir` cộng với `--permission-mode acceptEdits` (do `permission: workspace_write` của agent sinh ra) là ghi được; không có cách diễn đạt "thêm dir chỉ để đọc" cho claude CLI. Nên khi tick tắt, **không truyền `workspace_dir` cho nhánh CLI chút nào**.
+
+Hub read tools thì luôn nhận `workspace_dir` — registry chỉ có 3 tool đọc, không ghi được.
+
+1. `services/providers/base.py` — `ToolPolicy` thêm `cwd: str` và `writable_paths: list[str]`.
+2. `services/workflow_exec.py:302` — `_tool_policy(agent)` thành `_tool_policy(agent, workspace_dir: str | None, workspace_write: bool)`:
    ```python
    paths = list(agent.get("allowed_paths") or [])
    if workspace_dir: paths.append(workspace_dir)
-   return {"permission": ..., "allowed_tools": ..., "allowed_paths": paths, **({"cwd": workspace_dir} if workspace_dir else {})}
+   policy = {"permission": ..., "allowed_tools": ..., "allowed_paths": paths}
+   if workspace_dir and workspace_write:
+       policy["cwd"] = workspace_dir
+       policy["writable_paths"] = [workspace_dir]
+   return policy
    ```
    Hai chỗ gọi: dòng 333 và 549.
-3. `run_workflow` đọc `workspace_dir` từ `_metadata(state)`, truyền xuống — đi cùng đường với `inputs` ở `_snapshot_inputs` (dòng 284–294) để resume/replay lấy lại đúng giá trị đã đóng băng.
-4. `create_workflow_run_stream(workflow_id, objective, inputs, input_references, workspace_dir=None)` — ghi `metadata["workspace_dir"]` cạnh `metadata["inputs"]` (dòng 648).
+3. `run_workflow` đọc `workspace_dir` + `workspace_write` từ `_metadata(state)`, truyền xuống — đi cùng đường với `inputs` ở `_snapshot_inputs` (dòng 284–294) để resume/replay lấy lại đúng giá trị đã đóng băng.
+4. `create_workflow_run_stream(workflow_id, objective, inputs, input_references, workspace_dir=None, workspace_write=False)` — ghi cả hai vào `metadata` cạnh `metadata["inputs"]` (dòng 648).
 5. `services/providers/claude_cli.py:210` và `codex_cli.py:199` — `cwd=getattr(config, "ROOT", None)` thành `cwd=tool_policy.get("cwd") or getattr(config, "ROOT", None)`.
-6. Audit: khi `workspace_dir` không nằm trong `config.ROOT`, gọi `audit.append("workspace_scope", subject_id=run_id, context={"workspace_dir": str(path)})` ngay trong `create_workflow_run_stream`, trước khi node đầu chạy. `audit.append` là chuỗi hash-chain (`_digest`) nên gọi đúng một lần cho mỗi run, không gọi lại khi resume.
+6. `claude_cli.py:51` — `--add-dir` lặp trên `tool_policy.get("writable_paths", [])` **cộng với** `allowed_paths` cũ đã có sẵn của agent profile. Đừng đưa `workspace_dir` vào nhánh này qua `allowed_paths`, vì `allowed_paths` giờ đã chứa nó cho hub tools.
 
-**Test:** thêm vào `tests/test_workflow_exec.py` — `workspace_dir=None` cho `_tool_policy` giống hệt hôm nay · có `workspace_dir` thì nó xuất hiện trong `allowed_paths` và `cwd` · resume một run có `workspace_dir` lấy lại đúng giá trị từ metadata.
+   Cụ thể: đổi vòng lặp `--add-dir` sang một danh sách riêng = `agent.allowed_paths` (giá trị gốc từ profile) + `writable_paths`. Không dùng `tool_policy["allowed_paths"]` cho `--add-dir` nữa, vì nó đã bị workspace_dir làm bẩn.
+7. `codex_cli.py:48` — `writable_roots` lấy từ `tool_policy.get("writable_paths")` gộp với `allowed_paths` gốc của profile, theo cùng lý do trên.
+8. Audit: khi `workspace_dir` không nằm trong `config.ROOT`, gọi `audit.append("workspace_scope", subject_id=run_id, context={"workspace_dir": str(path), "writable": workspace_write})` ngay trong `create_workflow_run_stream`, trước khi node đầu chạy. `audit.append` là chuỗi hash-chain (`_digest`) nên gọi đúng một lần cho mỗi run, không gọi lại khi resume.
+
+**Test:** thêm vào `tests/test_workflow_exec.py` — `workspace_dir=None` cho `_tool_policy` giống hệt hôm nay · `workspace_dir` + `workspace_write=False` thì có trong `allowed_paths` nhưng **không** có `cwd`, **không** có `writable_paths` · `workspace_write=True` thì có đủ ba · argv của `claude_cli`/`codex_cli` **không** chứa workspace_dir khi tick tắt · resume một run lấy lại đúng cả hai giá trị từ metadata.
 
 ## 8. Step 5 — input kind `folder` trong `run_inputs.py`
 
@@ -180,7 +212,7 @@ Trong `resolve_inputs`, nhánh `folder` duyệt cây và ghép nội dung:
 
 `ValueError` → 400, `PermissionError` → dùng `_http_error` sẵn có.
 
-`api/workflows.py:137` — `api_workflow_run` đọc thêm `payload.get("workspace_dir")`, chạy qua `fsbrowse.resolve_workspace_dir`, `ValueError` → 400, rồi truyền vào `create_workflow_run_stream`.
+`api/workflows.py:137` — `api_workflow_run` đọc thêm `payload.get("workspace_dir")` và `payload.get("workspace_write")`, chạy `workspace_dir` qua `fsbrowse.resolve_workspace_dir` (`ValueError` → 400), ép `workspace_write` về `bool` và **buộc `False` khi `workspace_dir` là `None`**, rồi truyền cả hai vào `create_workflow_run_stream`.
 
 **Cập nhật `tests/fixtures/route_inventory.json` ngay ở step này.**
 
@@ -197,20 +229,23 @@ File mới `src/components/FolderPicker.tsx`, dựng theo khuôn `RunInputPicker
   - `Input` gõ đường dẫn trực tiếp, Enter để nhảy (đây là cách nhanh nhất cho đường dẫn sâu, và là lý do không cần cây đệ quy).
   - Danh sách thư mục con, mỗi dòng một `Button variant="ghost"` để đi vào.
   - Footer: `Button variant="primary"` **Chọn thư mục này** + `Button variant="ghost"` Huỷ.
-  - Hai checkbox: `t('workflows.folderAsScope')` và `t('workflows.folderAsContext')`, **mặc định bật cả hai**. Tách riêng vì hai cái khác mức rủi ro — scope cho ghi, context chỉ đọc.
+  - Ba checkbox, đúng thứ tự rủi ro tăng dần:
+    1. `t('workflows.folderAsContext')` — nạp file trong folder vào prompt. **Mặc định bật.**
+    2. `t('workflows.folderAsScope')` — cho agent đọc thư mục này. **Mặc định bật.**
+    3. `t('workflows.folderWritable')` — cho agent **ghi** vào thư mục này. **Mặc định TẮT.** Khi bật, hiện ngay dòng cảnh báo `text-warning` bên dưới nó, không đợi tới lúc bấm Run.
 - Lỗi từ API hiện inline trong popover, không nuốt.
 
 ## 11. Step 8 — Nối vào `WorkflowsPage`
 
-- State: `workspaceDir: string | null`, `folderAsScope: boolean`, `folderAsContext: boolean`.
+- State: `workspaceDir: string | null`, `folderAsContext: boolean` (mặc định `true`), `folderAsScope: boolean` (mặc định `true`), `folderWritable: boolean` (mặc định `false`).
 - Đặt `FolderPicker` trong header, **ngay sau ô objective** (đúng chỗ user mô tả "cho mục tiêu chạy"), trước `RunInputPicker`.
 - Đã chọn folder → `Chip` hiện đường dẫn rút gọn, có nút xoá.
 - Folder nằm ngoài `config.ROOT` → banner warning (dùng lớp `border-warning bg-warning-subtle text-warning` sẵn có ở dòng 107) với `t('workflows.folderOutsideWorkspace')`. Frontend biết được nhờ response `/api/fs/dirs` trả thêm `inside_root: boolean`.
 - `start()`:
   ```ts
-  await startRun(selected.id, objective.trim(), folderAsContext && workspaceDir ? [...inputs, { kind: 'folder', path: workspaceDir }] : inputs, controller.current.signal, folderAsScope ? workspaceDir : null)
+  await startRun(selected.id, objective.trim(), folderAsContext && workspaceDir ? [...inputs, { kind: 'folder', path: workspaceDir }] : inputs, controller.current.signal, folderAsScope ? workspaceDir : null, folderAsScope && folderWritable)
   ```
-- `src/lib/runsApi.ts` — `startRun` thêm tham số thứ 5 `workspaceDir: string | null = null`, đưa vào body. `RunInput` union thêm `| { kind: 'folder'; path: string }`.
+- `src/lib/runsApi.ts` — `startRun` thêm tham số thứ 5 `workspaceDir: string | null = null` và thứ 6 `workspaceWrite = false`, đưa cả hai vào body. `RunInput` union thêm `| { kind: 'folder'; path: string }`.
 - `RunInputPicker` hiển thị chip cho kind `folder` (hàm `keyFor` và `name` phải xử lý, nếu không sẽ crash khi input folder được truyền vào).
 
 ---
@@ -265,6 +300,8 @@ cd harness/hub/web-v3 && pnpm lint && pnpm build
 5. Gõ thẳng đường dẫn vào ô, Enter → nhảy đúng.
 6. Bỏ tick "nạp làm context", chạy run → prompt không có nội dung file (kiểm trong run log / `metadata.inputs`).
 7. Tick lại, chạy run trên folder nhỏ → prompt có `[Input: folder …]` và các `[File: …]`.
+7b. Thử chọn `C:\` → 400. Thử chọn đúng `C:\Users\HUY` → 400. Chọn `C:\Users\HUY\Documents` → được.
+7c. **Tick "cho phép ghi" tắt** (mặc định), chạy run bằng agent `workspace_write` provider `code` → kiểm `metadata` không có `workspace_dir` trong `writable_paths`, và argv của codex **không** chứa `writable_roots` trỏ tới folder. Bật tick lên, chạy lại → argv có.
 8. Chạy run trên folder ~200 file → dừng ở 50 file, có dòng truncate, không treo.
 9. Không chọn folder, chạy run → hành vi y hệt trước BD này.
 10. Run có folder ngoài root → có event audit ghi lại đường dẫn.
