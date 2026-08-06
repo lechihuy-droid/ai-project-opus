@@ -5,7 +5,7 @@
 - **Chạy:** `.ih\Scripts\python.exe harness\hub\server.py` → `http://127.0.0.1:8799`
 - **Stack:** FastAPI + Uvicorn (backend) · React 19 + TypeScript + Vite 6 + Tailwind v4 (frontend `web-v3/`). Có build step; server phục vụ bundle đã build trong `web-v3/dist`.
 - **Build frontend:** `cd harness/hub/web-v3 && pnpm build` (= check-encoding → `tsc -b` → `vite build`). Lint: `pnpm lint` (**oxlint**, không phải eslint).
-- **Kiểm thử backend:** `.ih\Scripts\python.exe -m pytest harness/hub/tests -q` (235 test, provider luôn được mock).
+- **Kiểm thử backend:** `.ih\Scripts\python.exe -m pytest harness/hub/tests -q` (339 test, provider luôn được mock).
 
 ---
 
@@ -19,10 +19,16 @@
 └───────────────┬─────────────────────────────────────────────┘
                 │  HTTP / Server-Sent Events (text/event-stream)
 ┌───────────────▼─────────────────────────────────────────────┐
-│  server.py  (FastAPI)                                        │
-│  - REST /api/* + StaticFiles /assets (bundle Vite)           │
-│  - GET / → FileResponse(web-v3/dist/index.html)              │
-│  - startup: warm cache (usage + behavior) trên daemon thread │
+│  server.py  (composition root)                               │
+│  - lifespan (warm cache) · StaticFiles /assets               │
+│  - middleware CSRF/correlation-id · exception handlers       │
+│  - 8x app.include_router(api/*)                              │
+└───────────────┬─────────────────────────────────────────────┘
+                │  include_router(...)
+┌───────────────▼─────────────────────────────────────────────┐
+│  api/*.py  (REST /api/*, GET / → index.html)                 │
+│  chat · runs · workflows · system · jobs · agents · skills · │
+│  memory                                                      │
 └───────────────┬─────────────────────────────────────────────┘
                 │  gọi trực tiếp (in-process)
 ┌───────────────▼─────────────────────────────────────────────┐
@@ -42,37 +48,37 @@ Kiến trúc **monolith in-process**: server import thẳng module `services`, k
 
 ---
 
-## 2. Backend — `server.py`
+## 2. Backend — `server.py` & `api/*`
 
-FastAPI app, mount `web-v3/dist/assets` tại `/assets`, phục vụ SPA tại `/`. Nhóm endpoint chính:
+`server.py` (145 dòng) là **composition root**: tạo `app = FastAPI(...)`, lifespan warm cache, mount `web-v3/dist/assets` tại `/assets`, middleware `_csrf_guard` (CSRF + correlation-id + idempotency replay + decorate SSE), 3 exception handler, và 8 lệnh `app.include_router(...)`. Toàn bộ route thật (106 endpoint) nằm trong 8 module dưới `api/*.py`, mỗi module gom theo domain; `api/_shared.py` giữ các helper thuần (`_error_code`, `_http_error`, `_etag`, `_sse`...) dùng chung, không đụng app state. Nhóm endpoint chính:
 
-| Nhóm | Endpoint | Service |
-|---|---|---|
-| Health | `GET /api/health` | (config) |
-| **Chat** | `GET /api/chat/models`, `POST /api/chat` (SSE) | `chat` |
-| Runs | `GET /api/runs`, `/api/runs/{id}`, `/artifact`, `/api/runs/compare` | `runs` |
-| Trigger run | `POST /api/runs/trigger`, `GET /stream/{id}` (SSE), `/budget/{id}` | `trigger` |
-| **Git-jobs** | `GET/POST /api/jobs`, `/{id}`, `/approve` `/accept` `/reject` `/rollback`, `/stream` (SSE), `/diff` | `gitjobs` |
-| Suites | `GET /api/suites`, `/{id}`, `GET /api/integrity` | `suites`, `integrity` |
-| Governance | `GET /api/governance` | `governance` |
-| Usage | `GET /api/usage`, `/api/usage/rollup`, `/api/tools` | `usage`, `behavior` |
-| Sessions | `GET /api/sessions`, `/loops`, `/entropy`, `/{id}/replay` | `replay`, `behavior` |
-| Inspect | `GET /api/inspect/logs`, `/api/inspect/mep` | `inspect_evals` |
-| Board | `GET /api/board` | `board` |
-| **Workflows** | `GET /api/workflows`, `/{id}/source`, `/{id}/layout`; `PUT /{id}`, `/{id}/model`, `/{id}/layout`; `POST /api/workflows/validate` | `workflow` |
-| **Workflow runs** | `POST /api/workflows/{id}/runs` (SSE), `GET /api/workflows/runs/{id}/artifacts[/{name}]`, `POST .../interrupts/{id}/resume` | `workflow_exec`, `runtime_*` |
-| **Agent runs** | `GET/POST /api/agent/runs`, `/{id}`, `/{id}/events`, `POST /{id}/interrupts/{id}/resume` | `runtime_pipeline`, `runtime_children` |
-| **Agents** | `GET/POST /api/agents`, `DELETE /api/agents/{id}` | `runtime_agents` |
-| **Providers** | `GET /api/providers`, `/api/model-classes`, `/api/risk-tiers` | `services/providers/*`, `config` |
-| **Skills** | `GET /api/skills`, `/names`, `/{id}`, `/{id}/usage` | `runtime_skills` |
-| **Skill library** | `GET /api/skill-library`, `/drift`, `/deploy-log`, `/{id}`; `POST /{id}/deploy` | `skill_library` |
-| **Memory** | `GET /api/memory`, `/candidates`; `POST /candidates/{id}/accept|reject` | `runtime_memory` |
-| **Guardrails** | `GET /api/guardrails/decisions`, `POST /api/guardrails/decisions/command` | `runtime_policy` |
-| Usage cockpit | `GET /api/usage/cockpit` | `usage`, `pricing` |
+| Nhóm | Endpoint | Service | Module (`api/`) |
+|---|---|---|---|
+| Health | `GET /api/health` | (config) | `system.py` |
+| **Chat** | `GET /api/chat/models`, `POST /api/chat` (SSE) | `chat` | `chat.py` |
+| Runs | `GET /api/runs`, `/api/runs/{id}`, `/artifact`, `/api/runs/compare` | `runs` | `runs.py` |
+| Trigger run | `POST /api/runs/trigger`, `GET /stream/{id}` (SSE), `/budget/{id}` | `trigger` | `runs.py` |
+| **Git-jobs** | `GET/POST /api/jobs`, `/{id}`, `/approve` `/accept` `/reject` `/rollback`, `/stream` (SSE), `/diff` | `gitjobs` | `jobs.py` |
+| Suites | `GET /api/suites`, `/{id}`, `GET /api/integrity` | `suites`, `integrity` | `runs.py`, `system.py` |
+| Governance | `GET /api/governance` | `governance` | `system.py` |
+| Usage | `GET /api/usage`, `/api/usage/rollup`, `/api/tools` | `usage`, `behavior` | `system.py`, `skills.py` |
+| Sessions | `GET /api/sessions`, `/loops`, `/entropy`, `/{id}/replay` | `replay`, `behavior` | `chat.py` |
+| Inspect | `GET /api/inspect/logs`, `/api/inspect/mep` | `inspect_evals` | `system.py` |
+| Board | `GET /api/board` | `board` | `system.py` |
+| **Workflows** | `GET /api/workflows`, `/{id}/source`, `/{id}/layout`; `PUT /{id}`, `/{id}/model`, `/{id}/layout`; `POST /api/workflows/validate` | `workflow` | `workflows.py` |
+| **Workflow runs** | `POST /api/workflows/{id}/runs` (SSE), `GET /api/workflows/runs/{id}/artifacts[/{name}]`, `POST .../interrupts/{id}/resume` | `workflow_exec`, `runtime_*` | `workflows.py` |
+| **Agent runs** | `GET/POST /api/agent/runs`, `/{id}`, `/{id}/events`, `POST /{id}/interrupts/{id}/resume` | `runtime_pipeline`, `runtime_children` | `agents.py` |
+| **Agents** | `GET/POST /api/agents`, `DELETE /api/agents/{id}` | `runtime_agents` | `agents.py` |
+| **Providers** | `GET /api/providers`, `/api/model-classes`, `/api/risk-tiers` | `services/providers/*`, `config` | `agents.py` |
+| **Skills** | `GET /api/skills`, `/names`, `/{id}`, `/{id}/usage` | `runtime_skills` | `skills.py` |
+| **Skill library** | `GET /api/skill-library`, `/drift`, `/deploy-log`, `/{id}`; `POST /{id}/deploy` | `skill_library` | `skills.py` |
+| **Memory** | `GET /api/memory`, `/candidates`; `POST /candidates/{id}/accept|reject` | `runtime_memory` | `memory.py` |
+| **Guardrails** | `GET /api/guardrails/decisions`, `POST /api/guardrails/decisions/command` | `runtime_policy` | `system.py` |
+| Usage cockpit | `GET /api/usage/cockpit` | `usage`, `pricing` | `system.py` |
 
 **Quy ước lỗi:** `_http_error()` map `PermissionError→403`, `FileNotFoundError→404`, còn lại `500`. Stream (SSE) không trả 500 — lỗi được bọc thành `event: error`.
 
-**Startup:** hook `@app.on_event("startup")` chạy `usage.warm()` + `behavior.warm()` trên daemon thread → cache ấm sẵn để trang Dashboard load nhanh.
+**Startup:** `lifespan` (asynccontextmanager truyền vào `FastAPI(...)`) chạy `usage.warm()` + `behavior.warm()` + `skill_library.list_skills()` + `list_providers()` trên daemon thread → cache ấm sẵn để trang Dashboard load nhanh; sau đó `gitjobs.reconcile_orphans()` và `retention.sweep()`. Lúc shutdown gọi `procs.kill_all()`.
 
 ---
 
@@ -361,7 +367,9 @@ lần. Build Declarative Harness Core trước; khi core chạy được bằng 
 
 ```
 harness/hub/
-├─ server.py            # FastAPI app + routes + startup warm
+├─ server.py            # composition root: app, lifespan, middleware, include_router
+├─ api/                 # route layer (REST /api/*): chat, runs, workflows,
+│                       #   system, jobs, agents, skills, memory (+ _shared)
 ├─ config.py            # paths, CHAT_MODEL_CATALOG, guardrails
 ├─ risk_tiers.json      # phân tầng rủi ro
 ├─ services/            # logic: chat, usage, behavior, runs, trigger,
@@ -378,7 +386,7 @@ harness/hub/
 ├─ workflows/           # *.yaml + *.layout.json
 ├─ agents/              # agent profile
 ├─ runtime/             # state/events/artifact của agent + workflow run
-├─ tests/               # pytest 235 test (provider mock, không gọi API thật)
+├─ tests/               # pytest 339 test (provider mock, không gọi API thật)
 ├─ docs/                # chat.md, safeharness-*.md, harness_hub_backend_docs_v0_1/
 ├─ jobs/                # git-job state (runtime)
 └─ .cache/              # cache incremental + usage chat (gitignore)
