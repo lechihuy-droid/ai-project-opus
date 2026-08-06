@@ -4,6 +4,8 @@ import ctypes
 import os
 from pathlib import Path
 
+import config
+
 
 _USER_PROFILE = Path(os.environ.get("USERPROFILE", Path.home())).resolve()
 DENIED_ROOTS: tuple[Path, ...] = tuple(
@@ -78,7 +80,16 @@ def list_dirs(path: str | None, *, show_hidden: bool = False) -> dict[str, objec
     entries.sort(key=lambda entry: entry["name"].lower())
 
     parent = None if resolved.parent == resolved else str(resolved.parent)
-    return {"path": str(resolved), "parent": parent, "entries": entries}
+    return {"path": str(resolved), "parent": parent, "entries": entries, "inside_root": is_inside_root(resolved)}
+
+
+def is_inside_root(path: Path) -> bool:
+    """Whether a directory sits inside the project workspace.
+
+    The picker warns before a run is scoped outside it — the client cannot
+    work this out on its own without hardcoding a server path.
+    """
+    return _inside(path.resolve(), config.ROOT.resolve())
 
 
 def resolve_workspace_dir(value: object) -> Path | None:

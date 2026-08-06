@@ -8,8 +8,8 @@ export type Artifact = { name: string; chars: number }
 
 export const listWorkflows = () => api<Workflow[]>('/api/workflows')
 export const validateWorkflow = (target: string | { yaml_text: string }) => api<{ ok: boolean; errors: string[]; ir: IrNode[] | null }>('/api/workflows/validate', { method: 'POST', body: JSON.stringify(typeof target === 'string' ? { id: target } : target) })
-export type RunInput = { kind: 'artifact'; id: string } | { kind: 'chat_file'; chat_id: string; name: string }
-export const startRun = (id: string, objective: string, inputs: RunInput[] = [], signal?: AbortSignal) => apiRequest(`/api/workflows/${encodeURIComponent(id)}/runs`, { method: 'POST', body: JSON.stringify({ objective, inputs }), signal })
+export type RunInput = { kind: 'artifact'; id: string } | { kind: 'chat_file'; chat_id: string; name: string } | { kind: 'folder'; path: string }
+export const startRun = (id: string, objective: string, inputs: RunInput[] = [], signal?: AbortSignal, workspaceDir: string | null = null, workspaceWrite = false) => apiRequest(`/api/workflows/${encodeURIComponent(id)}/runs`, { method: 'POST', body: JSON.stringify({ objective, inputs, workspace_dir: workspaceDir, workspace_write: workspaceWrite }), signal })
 export const listRuns = () => api<RunState[]>('/api/agent/runs')
 export const getRun = (id: string) => api<RunState>(`/api/agent/runs/${encodeURIComponent(id)}`)
 export const getRunEvents = (id: string) => api<RunEvent[]>(`/api/agent/runs/${encodeURIComponent(id)}/events`)
