@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from services import execution, tools
@@ -64,6 +65,22 @@ def test_dispatch_refuses_unallowed_tool_and_path_traversal() -> None:
     assert denied_tool["tool_output"] == {"refused": "tool not allowed: read_file"}
     assert "refused" in denied_path["tool_output"]
     assert "refused" in traversal["tool_output"]
+
+
+def test_dispatch_refuses_denied_root_even_when_the_profile_names_it() -> None:
+    # allowed_paths is editable from the Agents page. Widening dispatch past
+    # config.ROOT removed the old implicit workspace check, so the deny-list
+    # has to hold here too — otherwise a profile reaches ~/.ssh directly,
+    # skipping the per-run folder picker and its audit entry.
+    denied = str(Path(os.environ.get("USERPROFILE", Path.home())) / ".ssh")
+    result = tools.dispatch("list_dir", {"path": denied}, "call-1", {"allowed_tools": ["list_dir"], "allowed_paths": [denied]})
+    assert result["tool_output"] == {"refused": "no usable allowed paths"}
+
+
+def test_dispatch_allows_an_absolute_root_outside_the_workspace(tmp_path: Path) -> None:
+    (tmp_path / "note.txt").write_text("picked folder", encoding="utf-8")
+    result = tools.dispatch("read_file", {"path": str(tmp_path / "note.txt")}, "call-1", {"allowed_tools": ["read_file"], "allowed_paths": [str(tmp_path)]})
+    assert result["tool_output"] == "picked folder"
 
 
 def test_nvidia_tool_loop_stops_at_cap_and_cli_path_is_unchanged() -> None:
