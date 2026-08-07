@@ -2,227 +2,224 @@
 
 Tài liệu này là **hợp đồng cho coding agent**: đọc xong là làm được migration mà không cần xem lại bản review gốc. Token, tên component, class string đều giữ nguyên tiếng Anh để agent copy-paste chính xác; phần giải thích viết tiếng Việt.
 
+> **2026-08 redesign.** Bảng màu đổi từ *dark workbench + violet* sang **dark-navy + cyan**, kích thước control giảm ~25% (control chuẩn 40px → 32px). Mục 1–4 dưới đây phản ánh trạng thái hiện tại (đã áp dụng trong `tokens.css` / `index.css` / `ui.tsx`). Mục 5–7 giữ lại lịch sử migration cũ, chỉ sửa những chỗ giá trị màu/kích thước đã đổi.
+
 ## 1. Định hướng thị giác (3-4 câu)
 
-Hướng thiết kế là **dark technical workbench** — dày đặc thông tin, ít trang trí, trạng thái luôn rõ ràng bằng label (không chỉ màu sắc). Mỗi vùng màn hình (region) chỉ có **một hành động chính** (primary button) — mọi hành động khác là secondary/ghost. Màu tím accent (`--hub-accent`) là màu hành động/chọn lựa duy nhất trong toàn bộ app; màu provider (claude/codex/nvidia/gemini) chỉ còn vai trò **chấm nhận diện 6-8px**, không tô màu nút, điều hướng, selection hay chữ nội dung. Bốn cấp bề mặt (app/sidebar/surface/elevated) tạo phân tầng thị giác rõ, thay cho hai cấp `panel`/`panel2` hiện tại vốn dùng lẫn lộn cho nhiều vai trò khác nhau.
+Hướng thiết kế là **compact desktop productivity** — dày đặc thông tin nhưng gọn (Linear/Figma/GitHub Desktop/IDE toolbar), không phải mobile, không gaming, không neon cyberpunk. Mỗi vùng màn hình (region) chỉ có **một hành động chính** (primary button) — mọi hành động khác là secondary/ghost. Màu **cyan** (`--hub-accent`) là màu hành động/chọn lựa/focus duy nhất trong toàn bộ control system; màu provider (claude/codex/nvidia) chỉ còn vai trò **chấm nhận diện 6-8px**, không tô màu nút, điều hướng, selection hay chữ nội dung. Bốn cấp bề mặt (app/sidebar-surface/elevated/hover) tạo phân tầng thị giác rõ.
 
 ## 2. Bảng token (tokens.css)
 
-File: `src/styles/tokens.css`. Tất cả token có prefix `--hub-` để **không đụng** namespace `--color-*` / `--font-*` hiện có trong `src/index.css`. Đã kiểm tra: không có xung đột tên nào giữa `--hub-*` và các custom property hiện có.
+File: `src/styles/tokens.css`, mirror sang Tailwind `@theme` trong `src/index.css` (`--hub-*` ↔ `--color-*`/`--radius-*`/`--spacing-*`/`--text-*`). Cả hai file phải đổi cùng lúc khi một giá trị đổi — không có script tự sync, sửa tay.
 
 ### Surfaces
 
-| Token | Giá trị | Vai trò |
-|---|---|---|
-| `--hub-bg-app` | `#0d1016` | nền toàn app |
-| `--hub-bg-sidebar` | `#141821` | sidebar + topbar |
-| `--hub-bg-surface` | `#11151c` | pane / card |
-| `--hub-bg-elevated` | `#1a202b` | modal / dropdown / menu / nền input |
-| `--hub-bg-hover` | `#202734` | hover row/item/button |
-| `--hub-border-subtle` | `#262d39` | border mặc định |
-| `--hub-border-strong` | `#343d4c` | border nhấn mạnh (phân tách cột, outline trước focus ring) |
+| Token | Giá trị cũ | Giá trị mới | Vai trò |
+|---|---|---|---|
+| `--hub-bg-app` | `#0d1016` | **`#0b1018`** | nền toàn app |
+| `--hub-bg-sidebar` | `#141821` | **`#111827`** | sidebar + topbar (palette gọi là "panel background") |
+| `--hub-bg-surface` | `#11151c` | **`#111827`** | pane / card — dùng chung giá trị với sidebar (palette chỉ cho 1 giá trị "panel background" cho cả hai vai trò; xem "Quyết định hợp nhất surface" bên dưới) |
+| `--hub-bg-elevated` | `#1a202b` | **`#162033`** | modal / dropdown / menu / nền input ("elevated surface") |
+| `--hub-bg-hover` | `#202734` | **`#1a2436`** | hover row/item/button — **không có trong palette gốc**, suy ra nằm giữa elevated và border-hover; xem quyết định bên dưới |
+| `--hub-border-subtle` | `#262d39` | **`#2b3952`** | border mặc định ("border default") |
+| `--hub-border-strong` | `#343d4c` | **`#3d5877`** | border nhấn mạnh — **dùng chung giá trị với "border hover"** của palette gốc; xem quyết định bên dưới |
+
+**Quyết định hợp nhất surface:** palette user cung cấp chỉ có 3 mức bề mặt tên riêng (app / panel / elevated), nhưng hệ thống cũ có 4 mức (app/sidebar/surface/elevated) để tách vai trò "thanh điều hướng" khỏi "nội dung pane". Quyết định: giữ 4 token (không xoá `--hub-bg-surface` để tránh phải sửa mọi chỗ đang dùng `bg-surface`), nhưng cho `--hub-bg-sidebar` và `--hub-bg-surface` **cùng giá trị** `#111827` — đúng tinh thần "panel background" là một màu duy nhất, trong khi vẫn giữ được 2 class riêng biệt (`bg-sidebar`, `bg-surface`) cho khả năng tách lại sau này nếu cần.
+
+**Quyết định `--hub-bg-hover`:** palette không liệt kê hover-surface riêng. Chọn `#1a2436` — một bước sáng hơn `elevated` (`#162033`), tối hơn `border-hover` (`#3d5877`) — để hover vẫn đọc được là "sáng hơn nền xung quanh" mà không cạnh tranh với border cyan hay border-hover.
+
+**Quyết định hợp nhất border:** palette tách "border default" và "border hover" thành 2 giá trị, nhưng hệ thống cũ chỉ có "subtle" (mặc định) và "strong" (nhấn mạnh — dùng cho cả divider đậm lẫn "outline trước focus"). Hai khái niệm "border nhấn mạnh" và "border khi hover" về bản chất cùng một vai trò (viền nổi bật hơn mức mặc định), nên `--hub-border-strong` nhận thẳng giá trị "border hover" (`#3d5877`) và phục vụ cả hai vai trò — không thêm token thứ 3 (giữ đúng "chỉ 4 token radius / N token border" theo tinh thần tối giản của tài liệu này).
 
 ### Text
 
-| Token | Giá trị |
-|---|---|
-| `--hub-text-primary` | `#eef2f8` |
-| `--hub-text-secondary` | `#9ba7b8` |
-| `--hub-text-muted` | `#667085` |
-
-### Brand accent (tím, duy nhất)
-
-| Token | Giá trị | Dùng cho |
+| Token | Giá trị cũ | Giá trị mới |
 |---|---|---|
-| `--hub-accent` | `#8b7cf6` | selection, focus ring, primary action |
-| `--hub-accent-hover` | `#9a8df7` | hover trên primary |
-| `--hub-accent-subtle` | `rgba(139,124,246,.12)` | nền nhạt khi cần highlight nhẹ |
+| `--hub-text-primary` | `#eef2f8` | **`#f3f7fc`** |
+| `--hub-text-secondary` | `#9ba7b8` | **`#9aaac0`** |
+| `--hub-text-muted` | `#667085` | **`#9aaac0`** (== secondary, xem "Quyết định contrast" bên dưới) |
+| `--hub-text-disabled` *(mới)* | *(không có)* | **`#536178`** — chỉ dùng cho control disabled |
+
+### Brand accent (cyan, duy nhất)
+
+| Token | Giá trị cũ (violet) | Giá trị mới (cyan) | Dùng cho |
+|---|---|---|---|
+| `--hub-accent` | `#8b7cf6` | **`#29c7f3`** | selection, focus ring, primary action |
+| `--hub-accent-hover` | `#9a8df7` | **`#55d5f7`** | hover trên primary |
+| `--hub-accent-pressed` *(mới)* | *(không có)* | **`#16a9d4`** | `:active` trên primary button, active segment nhấn giữ |
+| `--hub-accent-subtle` | `rgba(139,124,246,.12)` | **`rgba(41,199,243,.12)`** | nền nhạt khi cần highlight nhẹ (selected row/chip) |
 
 ### Semantic
 
-| Token | Giá trị |
-|---|---|
-| `--hub-success` | `#3ecf8e` |
-| `--hub-warning` | `#f5b942` |
-| `--hub-warning-subtle` | `rgba(245,185,66,.12)` (mới, xem mục 5) |
-| `--hub-error` | `#f26d6d` |
-| `--hub-error-subtle` | `rgba(242,109,109,.12)` (mới) |
-| `--hub-info` | `#63a4ff` |
-
-### Radius — chỉ 4 giá trị
-
-| Token | Giá trị | Dùng cho |
+| Token | Giá trị cũ | Giá trị mới |
 |---|---|---|
-| `--hub-radius-sm` | 6px | inline code, checkbox, badge nhỏ |
-| `--hub-radius-md` | 8px | input / button / menu item |
-| `--hub-radius-lg` | 12px | pane / card / modal |
-| `--hub-radius-full` | 999px | status chip, provider chip, pill, dot |
+| `--hub-success` | `#3ecf8e` | *(không đổi)* |
+| `--hub-warning` | `#f5b942` | *(không đổi — trùng giá trị palette mới)* |
+| `--hub-error` | `#f26d6d` | **`#ff657a`** |
+| `--hub-info` | `#63a4ff` | *(không đổi — không nằm trong palette mới, giữ nguyên vì không phải violet và không xung đột với "cyan is the only accent" — info badge vẫn cần tách biệt khỏi accent)* |
 
-Không còn giá trị 3/4/9/10px tuỳ tiện (xem mục 5).
+### Radius / Spacing
 
-### Spacing (lưới 4px)
+Không đổi giá trị (`sm`=6 / `md`=8 / `lg`=12 / `full`=999; spacing 4px grid `space-1..8` = 4/8/12/16/24/32).
 
-`--hub-space-1..8` = 4 / 8 / 12 / 16 / 24 / 32px.
+### Kích thước cố định — **giảm ~25%, đây là thay đổi chính của đợt redesign này**
 
-### Kích thước cố định
-
-`--hub-size-sidebar-item` 40px · `--hub-size-context-strip` 32px · `--hub-size-pane-header` 52px · `--hub-size-toolbar` 48px · `--hub-size-input` 40px · `--hub-size-composer-min` 56px · `--hub-size-drawer` 360px · `--hub-card-padding` 16px · `--hub-pane-gap` 12px.
-
-### Progressive disclosure
-
-Chức năng phụ **không** được chiếm chỗ cố định trên màn hình chính. Bối cảnh chung, tình
-trạng provider, chọn agent/model đều nằm sau một `Popover` hoặc drawer 360px; trên mặt
-tiền chỉ còn một dòng tóm tắt.
-
-Mỗi dữ liệu có **một nơi sở hữu duy nhất**: `ProviderDot` giữ provider, nhãn giữ model,
-`Status` giữ trạng thái chạy, `Chip` giữ quyền tool. Không lặp cùng một thông tin dưới
-hai hình thức khác nhau.
-
-### Quyền sở hữu scroll
-
-Mỗi pane là ba vùng: header, thân hội thoại, composer — và **chỉ thân hội thoại được
-cuộn**. Header với composer đứng yên; trang không bao giờ có thanh cuộn riêng.
-
-### AI Workspace — bố cục 3-panel (trang Chat)
-
-Trang Chat theo design "AI Chat Workspace" (import từ claude.ai/design, map sang token
-hub — light-theme gốc #3654D6 dịch sang accent violet hub, giữ dark theme-aware). CSS
-đặt trong `index.css` dưới tiền tố `.cw-*`.
-
-- **Top bar 56px**: tên workspace + badge Active · `ModelSelector` (thẻ provider, không
-  hiện raw model ID) · Export · Cài đặt · avatar.
-- **Sidebar 220px**: New chat + tab Chats/Files/Artifacts. Thu về icon-rail rồi ẩn theo
-  breakpoint.
-- **Center (flex, min 280px)**: context bar (chỉ khi có hội thoại) · vùng tin nhắn (cuộn
-  duy nhất) · command chips · composer **luôn hiện** kể cả lúc rỗng.
-- **Artifact panel 380px**: header (status/version/type + history/export/copy) + các section
-  có menu `⋯` sửa theo từng phần. Trống thì hiện empty state.
-- Responsive: `≤1180px` ẩn artifact panel; `≤820px` ẩn sidebar.
-
-`ModelSelector` không bịa speed/cost per-model: mỗi thẻ chỉ nêu vai trò provider + fact thật
-(stream/resume/số model/version) và trạng thái khả dụng. Một dữ liệu vẫn một chủ sở hữu.
-
-Chưa có backend (đánh dấu `TODO(backend)` trong `ChatPage.tsx`): Files, versioning artifact,
-export PDF/share link. Các phần này để UI thật + thông báo trung thực, không giả lập dữ liệu.
-
-### Typography
-
-| Style | size/line/weight | Token prefix |
-|---|---|---|
-| display | 20/28/600 | `--hub-display-*` |
-| page title | 16/24/600 | `--hub-title-*` |
-| section (uppercase, +0.08em) | 12/16/600 | `--hub-section-*` |
-| body | 14/20/400 | `--hub-body-*` |
-| label | 13/18/500 | `--hub-label-*` |
-| caption | 12/16/400 | `--hub-caption-*` |
-
-Font family không đổi — vẫn dùng `--font-sans` / `--font-mono` đã có trong `index.css`. **Mono chỉ dùng cho:** model id, CLI version, token count, command, technical identifier. **Không dùng mono cho** tên provider khi nó đóng vai trò navigation label.
-
-## 3. OLD → NEW token mapping (mọi token đang dùng trong code)
-
-| OLD (index.css `@theme`) | Giá trị cũ | NEW (tokens.css) | Ghi chú |
+| Token | Giá trị cũ | Giá trị mới | Dùng cho |
 |---|---|---|---|
-| `--color-ink` (`bg-ink`) | `#14161B` | `--hub-bg-app` | `#0d1016`, giá trị đổi (tối hơn) |
-| `--color-panel` (`bg-panel`) | `#1B1E25` | `--hub-bg-sidebar` **hoặc** `--hub-bg-surface` | **Không 1:1** — `bg-panel` hiện dùng cho cả topbar/sidebar VÀ card/pane. Phải xét theo vai trò từng chỗ khi migrate. |
-| `--color-panel2` (`bg-panel2`) | `#20242D` | `--hub-bg-elevated` **hoặc** `--hub-bg-hover` | **Không 1:1** — `panel2` hiện vừa là nền input, vừa là hover, vừa là surface phụ. Input/dropdown → elevated; hover row/button → hover. |
-| `--color-line` (`border-line`) | `#2B303B` | `--hub-border-subtle` **hoặc** `--hub-border-strong` | Đa số → subtle; dùng strong chỉ khi cần tách biệt mạnh hơn. |
-| `--color-text` (`text-text`) | `#E8EAF0` | `--hub-text-primary` | `#eef2f8` |
-| `--color-dim` (`text-dim`) | `#8B92A3` | `--hub-text-secondary` | `#9ba7b8` |
-| `--color-faint` (`text-faint`) | `#5A6172` | `--hub-text-muted` | `#667085` |
-| `--color-gate` (`bg-gate`/`text-gate`/`border-gate`) | `#E4B15E` | `--hub-warning` (status/badge) | `#f5b942`. Khi dùng làm **nút hành động chính** (GateCard "Duyệt") — xem mục 5, cần quyết định riêng vì vi phạm luật "1 accent cho primary action". |
-| `--color-ok` (`text-ok`) | `#5FBF77` | `--hub-success` | `#3ecf8e` |
-| `--color-err` (`text-err`/`border-err`) | `#E06C75` | `--hub-error` | `#f26d6d` |
-| `--color-claude/codex/nvidia/gemini` | không đổi | **giữ nguyên tên**, chỉ giới hạn cách dùng | Chỉ còn hợp lệ qua component `ProviderDot`. Mọi chỗ tô màu button/border/selection/text bằng 4 màu này là vi phạm — xem mục 5. |
-| *(không có)* | bare `rounded` = 4px | `--hub-radius-sm` (6px) | ví dụ: inline code trong `markdown.tsx`, progress bar trong `UsagePage.tsx` |
-| *(không có)* | `rounded-lg` = 8px | `--hub-radius-md` **hoặc** `--hub-radius-lg` | **Không 1:1** — `rounded-lg` hiện dùng chung cho button/input (nên là md=8px, giữ nguyên) VÀ cho pane/card/modal (nên nâng lên lg=12px). Đây là phát hiện chính về "radius không có quan hệ" — cùng 1 class Tailwind đang cõng 2 vai trò khác nhau. |
-| *(không có)* | `rounded-[3px]` | `--hub-radius-sm` (6px) | badge hình thoi "gate" xoay 45° trong `RunSpine.tsx:17`, `WorkflowsPage.tsx:56` |
-| *(không có)* | `rounded-[9px]` | `--hub-radius-lg` (12px) | logo box trong `Sidebar.tsx:12` |
-| *(không có)* | `rounded-[10px]` | `--hub-radius-lg` (12px) | container trong `GateCard.tsx:3`, node card + output box trong `RunSpine.tsx:17`, node button trong `WorkflowsPage.tsx:56` |
-| *(không có, raw CSS)* | `.app > aside a { border-radius: 8px }` (`index.css:33`) | `--hub-radius-md` | Đã trùng giá trị với `rounded-lg` hiện tại trên cùng element (Sidebar NavLink) — dư thừa, không phải bug nhưng nên dọn khi sửa `index.css`. |
-| *(không có)* | `text-[10px]` + `tracking-[.14em]` (eyebrow/section label, ví dụ "ĐIỀU PHỐI") | `--hub-section-size` (12px) + `--hub-section-tracking` (0.08em) | Kích thước và tracking đều cần chỉnh khi migrate — xem mục 5. |
-| *(không có)* | `text-xl font-semibold` (h1 trang, ví dụ `WorkflowsPage.tsx`) | `--hub-title-*` (16/24/600) | h1 hiện tại (20px) thực ra trùng với `--hub-display-*`, không phải `--hub-title-*` — cần **giảm kích thước** khi migrate để đúng vai trò "page title". |
-| *(không có)* | `text-xs` (12px, dùng khắp nơi cho meta/badge/button) | `--hub-caption-*` (12/16/400) | Đã khớp sẵn, không cần đổi giá trị. |
-| *(không có)* | *(chưa tồn tại — Tailwind không có scale 13px)* | `--hub-label-*` (13/18/500) | Token mới; áp dụng khi dùng `Button`/`Input`/`Chip` từ `ui.tsx`. |
+| `--hub-size-sidebar-item` | 40px | **40px (không đổi)** | full-width nav row (icon+label), không phải toolbar control nên không chịu trần 32px |
+| `--hub-size-toolbar` | 48px | **48px (không đổi)** | thanh header của pane/canvas |
+| `--hub-size-control-sm` *(mới)* | — | **30px** | `Button size="sm"`, segment trong SegmentedControl |
+| `--hub-size-control-md` *(mới)* | — | **32px** | `Button size="md"` (mặc định), `IconButton` visible box |
+| `--hub-size-hit-min` *(mới)* | — | **40px** | sàn hit-area vô hình cho control icon-only vuông |
+| `--hub-size-input` | 40px | **36px** | Input / Select |
+| `--hub-size-composer-min` | 56px | 56px (không đổi) | textarea composer |
 
-## 4. Component API (`src/lib/ui.tsx`)
+Tỉ lệ chữ/control (áp dụng khi thêm control mới): **13px text → 30-34px control; 14px text → tối đa 36px; 16px icon → 32px button. Không control nào ≥44px trong một toolbar desktop.** Không phải mọi control đều là pill — chỉ Chip/Status/SegmentedControl-track mới dùng `radius-full`/radius lớn, còn lại `radius-md` (8px) hoặc `radius-sm` (6px).
 
-Cách style: **Tailwind arbitrary-value class tham chiếu CSS variable** (`bg-[var(--hub-accent)]`), không dùng inline `style`. Giữ nhất quán cách này khi mở rộng thêm component.
+### Contrast decisions
 
-| Component | Props chính | Khi dùng |
-|---|---|---|
-| `Button` | `variant: primary\|secondary\|ghost\|destructive`, `size: sm\|md`, `icon?`, `disabled?` | `primary` — đúng 1 lần mỗi region (xem mục 4b). `secondary` — hành động phụ có khung. `ghost` — hành động rất phụ, không khung. `destructive` — xoá/huỷ/reject. |
-| `IconButton` | `icon`, `aria-label` (bắt buộc) | Nút chỉ có icon (đóng pane, menu "…", copy). Hit-area tối thiểu 32×32. |
-| `Input` / `Select` / `Textarea` | chuẩn HTML attrs | Mọi ô nhập liệu. Input/Select cao 40px, Textarea tối thiểu 48px. |
-| `Chip` | `children`, `onRemove?`, `removeLabel?` | Có `onRemove` → chip xoá được (× ở cuối). Không có → chip tĩnh (hiển thị model/tag). |
-| `Status` | `kind` (8 giá trị: ready/running/paused/setup-required/not-installed/rate-limited/error/offline), `label?` | Mọi hiển thị trạng thái provider/pane/run. Label luôn hiện — màu chỉ là tín hiệu phụ. |
-| `ProviderDot` | `provider: claude\|codex\|nvidia\|gemini` | Chấm nhận diện 7px. Đây là **CÁCH DUY NHẤT HỢP LỆ** để hiện màu provider. |
-| `EmptyState` | `icon?`, `title`, `description?`, `actions?` (tối đa 4, dư bị cắt) | Danh sách rỗng (chưa có workflow, chưa có run, v.v.) |
-| `Popover` | `label`, `children` (hoặc `close => children`), `align: start\|end`, `aria-label` | Mọi control phụ: đổi model/agent, tình trạng provider, menu pane. Tự đóng khi click ra ngoài hoặc bấm Escape. Dùng thay cho việc xếp thêm một hàng control cố định. |
+- **Cyan trên nền tối:** `#29c7f3` trên `#0b1018` đạt **~9.9:1**, trên `#111827` đạt **~8.4:1** — vượt xa AA (4.5:1) kể cả cho text nhỏ.
+- **`--hub-text-secondary` (`#9aaac0`) trên `--hub-bg-surface` (`#111827`):** **~7.5:1** — pass AA thoải mái, kể cả dùng cho caption 12px.
+- **`--hub-text-disabled` (`#536178`) trên `--hub-bg-surface` (`#111827`):** **~2.8:1** — **dưới AA 4.5:1**. Đây là quyết định có chủ đích, không phải sai sót: WCAG 1.4.3 miễn yêu cầu contrast cho *nội dung của control đang inactive/disabled*. Token này **chỉ** được dùng qua `disabled:` state (button/input đã tắt tương tác) — không bao giờ dùng cho text đang có thể đọc/tương tác. Vì lý do này, hệ 4 cấp text cũ (primary/secondary/muted/disabled-ngầm-định-qua-opacity) được gộp lại thành đúng 3 cấp mà palette yêu cầu: primary, secondary (thay luôn vai trò "muted" cũ), disabled.
 
-### 4b. Luật "1 primary button / region"
+## 3. Component sizing (`src/lib/ui.tsx`)
 
-Mỗi region (toolbar, card, modal, form) chỉ được có **đúng một** `Button variant="primary"` tại một thời điểm. Các hành động còn lại trong cùng region dùng `secondary` hoặc `ghost`. Ví dụ vi phạm hiện tại cần sửa khi migrate: `AgentsPage.tsx` header có cả nút "Lưu" (`bg-codex`) và tab-bar cũng tô `border-codex` cho tab active trong cùng khung nhìn — sau migrate, chỉ "Lưu" là primary, tab active dùng underline `--hub-accent` nhưng không phải kiểu button.
+### Button
 
-## 5. Migration checklist — file cụ thể, class string cụ thể
+| Prop | Giá trị |
+|---|---|
+| `variant` | `primary` \| `secondary` \| `ghost` \| `destructive` |
+| `size` | `sm` (30px, dùng cho control dày đặc/EmptyState) \| `md` (32px, **mặc định**) \| `list` *(mới)* — `h-auto min-h-[52px]`, dùng cho item chọn được hai dòng (workflow list item) |
+| `selected` | viền cyan 1px + nền `accent-subtle`, không đổi chiều cao |
+| `icon` | icon 16px, gap 6px với label |
+| `loading` *(mới)* | thay `icon` bằng spinner quay (`Loader2` 16px), `aria-busy`, chặn `onClick` — **không** dim bằng `opacity-40` như `disabled` (chỉ disabled thật mới dim) |
 
-### 5.1 Provider-colour dùng sai vai trò (action/selection/status thay vì chỉ identity dot)
+Trước đây `sm`/`md` **đều là `h-10` (40px)** — đây chính là nguyên nhân "button quá cao". Đã sửa: `sm` → `h-[30px]`, `md` → `h-8` (32px). Gap icon-text đổi từ `gap-space-2` (8px) sang `gap-[6px]` theo đúng spec.
 
-Tổng cộng phát hiện **19 vị trí** trên **6 file**. Quy tắc thay thế chung: đổi `bg-codex`/`border-codex`/... dùng làm accent hành động → `bg-[var(--hub-accent)]` (hoặc tương đương secondary/ghost theo variant); đổi khi dùng làm "loại node"/"trạng thái" → semantic token (`--hub-info`, `--hub-warning`...), không phải màu provider.
+States đầy đủ cho mỗi variant: `default` / `hover` / `active` (pressed — primary dùng `--hub-accent-pressed`, các variant khác dùng `bg-hover` + đổi border/text) / `focus-visible` (ring cyan 2px, offset 2px) / `disabled` (`opacity-40` + `cursor-not-allowed`) / `loading` (spinner, `cursor-wait`, không dim).
 
-| # | File | Class string hiện tại | Vai trò sai | Sửa thành |
-|---|---|---|---|---|
-| 1 | `src/pages/WorkflowsPage.tsx:56` | `selected?.id === row.id ? 'border-codex bg-panel2' : ...` (workflow list item) | selection | `Button`/hàng chọn dùng `border-[var(--hub-accent)]` |
-| 2 | `src/pages/WorkflowsPage.tsx:56` | `className="ml-auto rounded bg-codex px-3 py-1.5 text-xs font-semibold text-ink"` (nút "Chạy") | primary action | `<Button variant="primary">Chạy</Button>` |
-| 3 | `src/pages/WorkflowsPage.tsx:56` | `selectedNode === node.id ? 'border-codex ring-1 ring-codex' : ...` (chọn node trên canvas) | selection | `border-[var(--hub-accent)] ring-1 ring-[var(--hub-accent)]` |
-| 4 | `src/pages/WorkflowsPage.tsx:56` | `isValidate(node) ? 'border-claude' : 'border-line'` (khung node loại "validate") | node-type indicator, không phải provider | dùng `--hub-info` hoặc `--hub-border-strong`, không phải màu claude |
-| 5 | `src/pages/WorkflowsPage.tsx:56` | `<span className="rounded-full border border-claude px-1.5 text-[10px] text-claude">validate</span>` | badge loại node | `border-[var(--hub-info)] text-[var(--hub-info)]` (hoặc `Chip` tĩnh) |
-| 6 | `src/pages/WorkflowsPage.tsx:56` | `<div className="flex h-10 flex-col items-center text-codex">` + `<span className="h-6 w-px bg-codex" />` (đường nối giữa node) | trang trí | `text-[var(--hub-border-strong)]` / `bg-[var(--hub-border-strong)]` |
-| 7 | `src/pages/RunsPage.tsx:93` | `className="rounded-lg bg-codex px-5 py-2 text-xs font-semibold text-ink disabled:opacity-40"` (nút "Chạy" launch) | primary action | `<Button variant="primary">` |
-| 8 | `src/pages/RunsPage.tsx:100` | `hover:border-codex` (card run gần đây) | hover accent | `hover:border-[var(--hub-accent)]` |
-| 9 | `src/pages/AgentsPage.tsx:17` | `className="mb-3 w-full rounded bg-codex px-3 py-2 text-xs font-semibold text-ink"` (nút "+ Agent mới") | primary action | `<Button variant="primary">` |
-| 10 | `src/pages/AgentsPage.tsx:17` | `agent.id === row.id ? 'border-codex bg-panel2' : ...` (chọn agent trong list) | selection | `border-[var(--hub-accent)]` |
-| 11 | `src/pages/AgentsPage.tsx:17` | `tab === name ? 'border-codex text-text' : ...` (tab active) | active state | `border-[var(--hub-accent)]` |
-| 12 | `src/pages/AgentsPage.tsx:17` | `className="ml-auto rounded bg-codex px-3 py-1.5 text-xs font-semibold text-ink"` (nút "Lưu") | primary action | `<Button variant="primary">` |
-| 13 | `src/pages/SettingsPage.tsx:5` | `<span className="rounded-full border border-codex px-1.5 text-[10px] text-codex">default</span>` (badge model mặc định) | semantic "default", không phải provider | `border-[var(--hub-accent)] text-[var(--hub-accent)]` hoặc `Chip` tĩnh |
-| 14 | `src/pages/ApprovalsPage.tsx:17` | `className="rounded bg-codex px-3 py-1.5 text-xs font-semibold text-ink disabled:opacity-40"` (nút duyệt/chấp nhận) | primary action | `<Button variant="primary">` |
-| 15 | `src/components/RunSpine.tsx:17` | `node.state === 'running' ? 'border-claude text-claude node-pulse' : ...` (marker trạng thái node) | **status "running" đang tô cứng bằng màu Claude bất kể node chạy bằng provider nào** | `border-[var(--hub-accent)] text-[var(--hub-accent)]` (dùng `Status kind="running"` nếu hợp) |
-| 16 | `src/components/RunSpine.tsx:17` | `node.state === 'running' ? 'border-l-2 border-l-claude' : ''` (viền trái box output) | status | `border-l-[var(--hub-accent)]` |
-| 17 | `src/components/RunSpine.tsx:17` | `<i className="ml-1 inline-block h-3 w-1.5 animate-pulse bg-claude" />` (con trỏ streaming) | status/decor | `bg-[var(--hub-accent)]` |
-| 18 | `src/components/RunSpine.tsx:8` | `providerClass = (agent) => ... `text-${p} border-${p}`` — chip hiện provider bằng text+border màu | **đây chính là identity, nhưng sai hình thức** (tô text/border thay vì chỉ chấm) | Thay chip bằng `<ProviderDot provider={p} />` + text màu `--hub-text-secondary` |
-| 19 | `src/components/Sidebar.tsx:12` | `bg-gradient-to-br from-claude to-codex` (logo "H") | dùng 2 màu provider làm gradient trang trí, không liên quan lựa chọn provider nào | Đổi sang gradient/màu dựa trên `--hub-accent` (hoặc màu trung tính), không mượn màu provider |
+### IconButton — visible 32×32, hit-area 40×40
 
-Các vị trí **ĐÚNG** cần giữ nguyên làm mẫu (không phải lỗi): `ChatPage.tsx` dòng 104/113/126, `AgentsPage.tsx:17`, `SettingsPage.tsx:5` — các `<i className="h-2 w-2 rounded-full ${colors[provider]}" />` chấm nhận diện nhỏ cạnh tên provider. Khi migrate, thay object `colors` cục bộ bằng `<ProviderDot provider={...} />` từ `ui.tsx` để thống nhất kích thước (7px) và tránh định nghĩa lại map màu ở mỗi file.
+Xem giải thích đầy đủ trong mục 4 "40×40 hit-area". API không đổi (`icon`, `variant: 'default'|'handle'`, `aria-label` bắt buộc).
 
-### 5.2 Hex literal cần thay bằng token
+### Input / Select / Textarea
 
-| File | Literal | Thay bằng |
-|---|---|---|
-| `src/components/ArtifactRail.tsx:10` | `bg-[#181B21]` (nền aside) | `bg-[var(--hub-bg-surface)]` |
-| `src/components/GateCard.tsx:3` | `border-[#4A3A20]` | `border-[var(--hub-warning-subtle)]` hoặc token border riêng nếu cần đậm hơn |
-| `src/components/GateCard.tsx:3` | `bg-[#221C12]` | `bg-[var(--hub-warning-subtle)]` |
-| `src/components/GateCard.tsx:3` | `text-[#1A1508]` (chữ trên nút "Duyệt" nền vàng) | giữ nguyên ý định (chữ tối trên nền warning) nhưng định nghĩa qua token, ví dụ `text-[var(--hub-bg-app)]` nếu độ tương phản đủ, hoặc thêm token `--hub-warning-ink` nếu cần riêng |
+Cao 36px (`--spacing-input`, trước là 40px), font đổi từ `text-body` (14px) sang **`text-label` (13px)** theo đúng spec "Inputs: font 13px". Focus đổi từ `:focus` sang `:focus-visible` (ring 2px cyan) để nhất quán với Button — chuột click không còn giữ ring thường trực, chỉ bàn phím mới trigger.
 
-### 5.3 Vấn đề cần quyết định thêm (không tự ý sửa)
+### Chip
 
-- **`GateCard.tsx` nút "Duyệt" dùng `bg-gate` (màu warning) làm primary action.** Luật mới nói primary action = `--hub-accent` (tím), nhưng "Duyệt/Từ chối" là hành động gate có ý nghĩa cảnh báo riêng (khác các nút thường). Đề xuất: giữ style riêng cho gate-approve (không phải `Button variant="primary"` chuẩn) nhưng định nghĩa rõ ràng là **variant thứ 5 nằm ngoài `ui.tsx`** hoặc chấp nhận nó là ngoại lệ có chủ đích — cần người review quyết, không migrate máy móc.
-- **`bg-panel` / `bg-panel2` không 1:1** (mục 3) — cần xét từng vị trí. Danh sách file dùng nhiều nhất để ưu tiên khi sửa `index.css`/pages sau này: `ChatPage.tsx`, `WorkflowsPage.tsx`, `RunsPage.tsx`, `UsagePage.tsx`, `Sidebar.tsx`, `Topbar.tsx`.
-- **`.app > aside a { border-radius: 8px }`** trong `index.css:33` trùng giá trị với `rounded-lg` Tailwind trên cùng phần tử — dư thừa, dọn khi có dịp sửa `index.css`.
-- **Eyebrow/section label** (`text-[10px] font-semibold uppercase tracking-[.14em] text-faint`, xuất hiện lặp lại ở `WorkflowsPage.tsx`, `AgentsPage.tsx`, `UsagePage.tsx`, `ApprovalsPage.tsx`, `SkillsPage.tsx`, `SessionsPage.tsx`, `RunsPage.tsx` không có — kiểm tra lại) cần đổi sang `--hub-section-*` (12px, tracking 0.08em thay vì 0.14em).
-- **h1 trang** (`text-xl font-semibold`, ví dụ `WorkflowsPage.tsx:56`, `AgentsPage.tsx:17`, `SkillsPage.tsx:14`, `ApprovalsPage.tsx:17`, `SessionsPage.tsx:6`) hiện to bằng scale `display` (20px) — theo quyết định mới nó phải nhỏ lại đúng scale `title` (16px).
+Không đổi API. Nút remove (×) thu nhỏ từ 40×40px xuống **18×18px** (`min-w-0` để thoát rule `button{min-width:40px}` toàn cục) — 40px trên một chip cao ~22px sẽ tràn ra ngoài viên chip và đè lên chip lân cận khi chip xuống dòng; đây không phải là control cần "hit-area lớn" theo spec.
+
+### SegmentedControl *(component mới)*
+
+```tsx
+import { SegmentedControl } from '../lib/ui'
+
+<SegmentedControl
+  aria-label="Chế độ canvas"
+  options={[
+    { value: 'design', label: 'Design' },
+    { value: 'run', label: 'Run' },
+  ]}
+  value={mode}
+  onChange={setMode}
+/>
+```
+
+- **Track**: `h-9` (36px), `rounded-[18px]`, `border border-border-subtle`, `bg-surface`, padding `p-[3px]`, gap `4px` giữa các segment.
+- **Segment active**: `h-[30px]`, `rounded-[15px]`, `border-2 border-accent`, `bg-app` (tối hơn track — tạo layering "đục lỗ" thay vì tô đè), `text-accent`, `font-semibold`, glow rất nhẹ (`shadow` blur 6px alpha 0.35, không phải glow gắt).
+- **Segment inactive**: `border-2 border-transparent` (giữ cùng kích thước với active để không giật layout khi chuyển), `text-secondary`, `font-medium`, hover nâng nhẹ `bg-hover`/`text-primary`, không glow.
+- **Bàn phím/semantics**: `role="tablist"` trên track, `role="tab"` + `aria-selected` + roving `tabIndex` trên từng segment, `ArrowLeft`/`ArrowRight` di chuyển + chọn có wraparound — **giống hệt pattern `moveTab` đã lặp lại ở `WorkflowsPage.tsx` và `ChatPage.tsx`** (không dùng `radiogroup` để nhất quán với phần còn lại của app).
+
+**Nơi cần gắn (2 chỗ, cả hai đều nằm trong `src/pages/WorkflowsPage.tsx` — file đang bị khoá ghi lúc component này được viết):**
+
+1. **Design/Run switch** — dòng ~127, hiện tại là tablist tay:
+   ```tsx
+   <div role="tablist" className="flex rounded-md border border-border-subtle p-0.5">
+     <button role="tab" aria-selected={mode === 'design'} onClick={() => setMode('design')} className={...}>{t('workflows.design')}</button>
+     <button role="tab" aria-selected={mode === 'run'} onClick={() => { setMode('run'); setTab('runs'); setRunLogOpen(true) }} className={...}>{t('workflows.runMode')}</button>
+   </div>
+   ```
+   Thay bằng:
+   ```tsx
+   <SegmentedControl
+     aria-label={t('workflows.orchestration')}
+     value={mode}
+     onChange={next => { setMode(next); if (next === 'run') { setTab('runs'); setRunLogOpen(true) } }}
+     options={[
+       { value: 'design', label: t('workflows.design') },
+       { value: 'run', label: t('workflows.runMode') },
+     ]}
+   />
+   ```
+   Lưu ý: logic phụ khi chuyển sang `run` (set tab + mở run log) phải chuyển vào `onChange`, vì `SegmentedControl` chỉ có một callback thay vì hai `onClick` riêng.
+
+2. **Workflows/Components tabs** (trong `WorkflowSidebar`, dòng ~135) — hiện tại là underline-tab (`border-b-2`), **không phải segmented pill**. Cân nhắc trước khi đổi: underline-tab hợp với 2 tab đứng đầu một panel hẹp (248px) hơn là capsule; nếu vẫn muốn đồng bộ hoá:
+   ```tsx
+   <SegmentedControl
+     aria-label={t('workflows.components')}
+     className="m-2"
+     value={tab}
+     onChange={setTab}
+     options={[
+       { value: 'workflows', label: t('nav.workflows') },
+       { value: 'components', label: t('workflows.components') },
+     ]}
+   />
+   ```
+   thay cho khối `<div role="tablist" className="grid grid-cols-2 ...">`. Việc này là tuỳ chọn — task gốc chỉ yêu cầu SegmentedControl "possibly" cho cặp tab này; quyết định cuối để lại cho người mở khoá file.
+
+3. **Không đổi** (không phải ứng viên SegmentedControl): tab console/errors trong `RunLog` và tab overview/contracts/runs/alerts trong `Inspector` — đều là underline-tab 2-4 mục trong panel hẹp, giữ nguyên pattern hiện có.
+
+Cả `WorkflowSidebar`'s selected-item `Button` cũng nên đổi `size="md"` (ngầm định) → **`size="list"`** để đạt đúng 52-56px hai dòng theo spec — hiện tại nó bị ép về 32px vì `buttonSizes.md` áp `h-8`, nên item hai dòng đang bị cắt. Đây là thay đổi 1 prop, không cần sửa gì khác (style `selected` đã đúng: viền cyan mỏng + nền cyan nhạt, không glow).
+
+## 4. 40×40 hit-area vs 32×32 visible box
+
+`src/index.css` có rule toàn cục `button { min-width: 40px; min-height: 40px; }` — tồn tại để đảm bảo tap target, nhưng `min-height:40px` ép MỌI button cao tối thiểu 40px, trực tiếp phá mục tiêu 32px. Giải pháp:
+
+- **Xoá `min-height: 40px` khỏi rule toàn cục, giữ lại `min-width: 40px`** (vô hại với text button — padding+label đã vượt 40px tự nhiên; icon-only control tự định nghĩa hit-box riêng nên cũng không cần rule này).
+- **`IconButton`**: `<button>` chính là hit-box thật 40×40 (`h-10 w-10`, trong suốt, không border/background của riêng nó); một `<span>` con ở giữa mang box thị giác thật 32×32 (`h-8 w-8`, có background/border/radius/màu). Hover dùng `group-hover:` trên span (không phải `:hover` trần) để hover ở bất kỳ đâu trong 40px đều kích hoạt đúng box 32px. Focus ring cũng scope vào span qua Tailwind arbitrary variant `[&:focus-visible>span]:outline-2 ...` — ring ôm sát 32px, không ôm hit-box vô hình.
+- **`.topbar-nav-toggle` / `.cw-drawer-toggle`** (raw CSS trong `index.css`, dùng chung bởi `Topbar.tsx` và `ChatPage.tsx`): áp kỹ thuật tương đương bằng `::before` — nút thật vẫn 40×40, `::before` với `inset: 4px` tạo box thị giác 32×32 chỉ tô màu khi hover; `outline-offset: -2px` kéo focus ring vào ôm sát box 32px.
+- **`.sidebar-collapse`**: trước đây khai `height/width: 28px` nhưng bị rule toàn cục ép lên 40×40 trên thực tế (`min-height` luôn thắng `height` khi lớn hơn) — nay rule toàn cục không còn ép nữa nên 28px sẽ thật sự render ra 28px, thấp hơn mục tiêu 32px (icon 16px → chuẩn 32px theo tỉ lệ). Đã bump lên **32×32** để khớp tỉ lệ.
+- **`Chip`'s remove button**: không dùng kỹ thuật 40/32 (chip quá nhỏ, 40px hit-area sẽ tràn ra ngoài) — dùng `min-w-0` để thoát hẳn rule toàn cục, hit-box thật ~18×18px.
+
+## 5. Migration checklist cũ — vẫn còn hiệu lực, chỉ đổi giá trị màu
+
+Các mục dưới đây được viết ở đợt review trước (đổi *provider-colour → accent token*, đổi *hex literal → token*). Chúng **vẫn đúng về việc phải đổi cái gì**, chỉ khác: "accent" giờ là cyan `#29c7f3` thay vì violet `#8b7cf6`. Không lặp lại toàn bộ bảng ở đây — xem lịch sử git của file này cho bảng đầy đủ 19 vị trí provider-colour-sai-vai-trò và 3 vị trí hex-literal; các file liên quan (`WorkflowsPage.tsx`, `RunsPage.tsx`, `AgentsPage.tsx`, `RunSpine.tsx`, ...) đều nằm ngoài phạm vi sở hữu của đợt redesign này (chỉ `tokens.css`/`index.css`/`ui.tsx`/`Sidebar.tsx`/`Topbar.tsx`/`Layout.tsx`).
+
+### 5.1 Hardcoded size/colour còn sót lại ngoài phạm vi sở hữu (để người khác sửa sau)
+
+Quét toàn repo cho các pattern `text-[10px]`, `text-[9px]`, `bg-accent/15`, `var(--hub-accent)` trực tiếp (thay vì class `bg-accent`/`text-accent`), `border-codex`/`bg-codex`/`text-codex`, `border-claude`/`bg-claude`/`text-claude` dùng làm accent/action (không phải `ProviderDot`):
+
+| File:line | Vấn đề |
+|---|---|
+| `src/pages/WorkflowsPage.tsx` (nhiều dòng — bị khoá ghi lúc viết tài liệu này) | mode switch tay + workflow-list Button size, xem mục 3 "SegmentedControl" ở trên |
+| `src/pages/RunsPage.tsx:99,104` | provider-colour dùng làm primary action / hover accent |
+| `src/pages/AgentsPage.tsx` (dòng chứa `bg-codex`/`border-codex`) | primary action + tab active + selection dùng màu codex |
+| `src/pages/SettingsPage.tsx:18` | badge "default" dùng màu codex |
+| `src/pages/ApprovalsPage.tsx:19` | nút duyệt dùng màu codex làm primary action |
+| `src/pages/SkillsPage.tsx:27` | tương tự |
+| `src/pages/UsagePage.tsx:38,40,42` | `text-[10px]` (eyebrow label, KPI card) cần lên `text-section` (12px) |
+| `src/lib/Table.tsx:4` | `text-[10px]` header cần lên `text-section` |
+| `src/lib/markdown.tsx:9` | `text-[var(--hub-accent)]` — **đã tự động thành cyan** vì token đổi giá trị, không cần sửa code, chỉ cần biết là nó *đang* migrate đúng cách (tham chiếu token, không phải literal) |
+| `src/components/RunSpine.tsx:13` (và các dòng `border-claude`/`bg-claude` khác trong file) | trạng thái "running" đang tô cứng bằng màu Claude — nên đổi sang `border-accent`/`text-accent` (cyan) |
+| `src/components/ArtifactRail.tsx:12,13` | hex literal `bg-[#181B21]` — đổi sang `bg-surface` |
+
+Toàn bộ các vị trí trên nằm ngoài 6 file thuộc sở hữu của đợt redesign này (`tokens.css`, `index.css`, `ui.tsx`, `Sidebar.tsx`, `Topbar.tsx`, `Layout.tsx`) nên **không được sửa** ở đây — liệt kê để người tiếp theo xử lý.
 
 ## 6. Trạng thái file
 
-- `src/styles/tokens.css` — mới, không import ở đâu (theo constraint không được sửa `main.tsx`/`index.css`). Khi migrate, thêm `import './styles/tokens.css'` sau `import './index.css'` trong entrypoint.
-- `src/lib/ui.tsx` — mới, không được page nào import (theo constraint không sửa `src/pages/*`). Khi migrate từng page, import các component cần từ `../lib/ui`.
-- Không file nào đang tồn tại bị sửa. Mọi thay đổi mô tả ở mục 5 là việc cần làm **sau** khi constraint tách file được gỡ.
-## 7. Quyết định G1
+- `src/styles/tokens.css`, `src/index.css`, `src/lib/ui.tsx` — cập nhật đầy đủ theo palette + size mới trong đợt redesign 2026-08.
+- `src/components/Sidebar.tsx`, `Topbar.tsx`, `Layout.tsx` — không có hex literal hay control quá khổ; hưởng lợi tự động từ đổi token (logo, focus ring, hover, v.v. đều tham chiếu `--color-*`/`--hub-*`). Chỉnh tay duy nhất: gap giữa các control trong Topbar header (`gap-space-1` → `gap-space-2`, đúng spec "6-8px apart").
+- `src/pages/*.tsx`, `src/components/{ArtifactRail,GateCard,RunSpine}.tsx`, `src/lib/{markdown,Table}.tsx` — **không sửa** (ngoài phạm vi sở hữu / một số bị khoá ghi). Xem mục 5.1 cho danh sách vị trí cần xử lý sau.
 
-- Nút **Duyệt** = `Button variant="primary"` violet; **Từ chối** = `Button variant="destructive"`.
+## 7. Quyết định G1 (giữ nguyên từ review trước, chỉ đổi tên màu)
+
+- Nút **Duyệt** = `Button variant="primary"` (giờ là cyan, trước là violet); **Từ chối** = `Button variant="destructive"`.
 - Amber chỉ dành cho trạng thái gate (`Status kind="setup-required"`), không dùng cho action.
 - Pane có agent hiển thị quyền agent; không hiển thị badge provider `READ-ONLY` song song.
 
 ### Workflow Canvas
 
-- Canvas dùng token dark workbench hiện có; node agent dùng `--hub-node-agent`, node validate dùng `--hub-node-validate`, edge dùng `--hub-edge-normal` hoặc `--hub-edge-selected`.
+- Canvas dùng token dark-navy hiện có; node agent dùng `--hub-node-agent` (nay = cyan, trước = violet), node validate dùng `--hub-node-validate` (`--hub-info`, không đổi), edge dùng `--hub-edge-normal` (nay = cyan) hoặc `--hub-edge-selected`.
 - Canvas dày và vận hành được: lưới chấm, node card gọn, port trái/phải, cạnh cong, inspector bốn tab. Không thêm runtime, role, contract hoặc run-history giả.
-- Trạng thái chạy/lỗi lấy từ backend; node đang chạy dùng accent, node hoàn tất dùng success, lỗi validate/run luôn hiện thành banner có nội dung hành động được.
+- Trạng thái chạy/lỗi lấy từ backend; node đang chạy dùng accent (cyan), node hoàn tất dùng success, lỗi validate/run luôn hiện thành banner có nội dung hành động được.

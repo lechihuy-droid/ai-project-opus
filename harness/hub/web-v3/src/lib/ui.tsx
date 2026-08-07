@@ -9,13 +9,16 @@
  * See DESIGN.md for the full component contract, when-to-use rules, and
  * the migration checklist that points existing pages at these primitives.
  */
-import { X } from 'lucide-react'
-import { forwardRef, useEffect, useRef, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
+import { Loader2, X } from 'lucide-react'
+import { forwardRef, isValidElement, useEffect, useRef, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
 import { t } from './i18n'
 import type { ProviderId } from './uiHelpers'
 
 const cx = (...parts: Array<string | false | undefined>) => parts.filter(Boolean).join(' ')
 
+// Ring hugs the visible control (offset 2px out from it) and is the only
+// required focus signal — glow, if any, is decoration on top of this, never
+// a replacement for it.
 const focusRing = 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent'
 
 // ---------------------------------------------------------------------------
@@ -23,54 +26,78 @@ const focusRing = 'focus-visible:outline focus-visible:outline-2 focus-visible:o
 // ---------------------------------------------------------------------------
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'destructive'
-export type ButtonSize = 'sm' | 'md'
+/**
+ * sm  — 30px, compact/dense contexts (inline toolbar rows, EmptyState actions).
+ * md  — 32px, the standard control height. Default.
+ * list — auto height, min 52px, for two-line selectable rows (e.g. the
+ *   selected-workflow list item). Pairs with `selected` for the thin
+ *   cyan border + faint cyan tint treatment.
+ */
+export type ButtonSize = 'sm' | 'md' | 'list'
 
 export type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
   variant?: ButtonVariant
   size?: ButtonSize
   selected?: boolean
-  /** Optional leading icon slot, rendered before the label and marked decorative. */
+  /** Optional leading icon slot, rendered before the label and marked decorative. Replaced by a spinner while `loading`. */
   icon?: ReactNode
+  /** Shows a spinner in place of `icon`, marks the control busy, and blocks activation without dimming it the way `disabled` does. */
+  loading?: boolean
   children: ReactNode
 }
 
 const buttonBase = cx(
-  'inline-flex items-center justify-center gap-space-2',
+  'inline-flex items-center justify-center gap-[6px]',
   'rounded-md font-medium whitespace-nowrap transition-colors',
   'disabled:cursor-not-allowed disabled:opacity-40',
   focusRing,
 )
 
 const buttonVariants: Record<ButtonVariant, string> = {
-  primary: 'bg-accent text-app hover:bg-accent-hover',
+  primary: 'bg-accent text-app hover:bg-accent-hover active:bg-accent-pressed',
   secondary: cx(
     'border border-border-strong bg-elevated',
-    'text-primary hover:bg-hover',
+    'text-primary hover:bg-hover hover:border-border-strong active:bg-hover active:border-accent',
   ),
-  ghost: 'text-secondary hover:bg-hover hover:text-primary',
+  ghost: 'text-secondary hover:bg-hover hover:text-primary active:bg-hover active:text-primary',
   destructive: cx(
     'border border-error text-error',
-    'hover:bg-error-subtle',
+    'hover:bg-error-subtle active:bg-error/20',
   ),
 }
 
 const buttonSizes: Record<ButtonSize, string> = {
-  sm: 'h-10 px-space-3 text-caption leading-caption',
-  md: 'h-10 px-space-4 text-label leading-label',
+  sm: 'h-[30px] px-space-3 text-caption leading-caption',
+  md: 'h-8 px-space-3 text-label leading-label',
+  list: 'h-auto min-h-[52px] px-space-3 py-space-2 text-label leading-label',
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant = 'secondary', size = 'md', selected = false, icon, className, children, type = 'button', ...rest },
+  { variant = 'secondary', size = 'md', selected = false, icon, loading = false, disabled, onClick, className, children, type = 'button', ...rest },
   ref,
 ) {
   return (
     <button
       ref={ref}
       type={type}
-      className={cx(buttonBase, selected ? 'border border-accent bg-accent-subtle text-primary' : buttonVariants[variant], buttonSizes[size], className)}
+      disabled={disabled}
+      aria-busy={loading || undefined}
+      aria-disabled={loading && !disabled ? true : undefined}
+      onClick={loading ? undefined : onClick}
+      className={cx(
+        buttonBase,
+        selected ? 'border border-accent bg-accent-subtle text-primary' : buttonVariants[variant],
+        buttonSizes[size],
+        loading && 'cursor-wait pointer-events-none',
+        className,
+      )}
       {...rest}
     >
-      {icon ? <span aria-hidden="true" className="inline-flex shrink-0 items-center">{icon}</span> : null}
+      {loading ? (
+        <span aria-hidden="true" className="inline-flex shrink-0 items-center"><Loader2 size={16} strokeWidth={2} className="animate-spin" /></span>
+      ) : icon ? (
+        <span aria-hidden="true" className="inline-flex shrink-0 items-center">{icon}</span>
+      ) : null}
       {children}
     </button>
   )
@@ -87,6 +114,16 @@ export type IconButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'chi
   'aria-label': string
 }
 
+/**
+ * Visible box is 32×32 (icon ≈16-18px, radius 6px) but the real clickable
+ * button stays 40×40 — a transparent-padding hit area, not a visual one.
+ * Implementation: the <button> itself IS the 40×40 hit box (unstyled,
+ * transparent, no border/background of its own); a centred inner <span>
+ * carries the actual 32×32 visible box — background, border, radius, hover
+ * colour. The focus-visible ring is scoped to that inner span (via the
+ * `[&:focus-visible>span]:*` arbitrary variant below) so it hugs the 32px
+ * control instead of ringing the invisible 40px hit box.
+ */
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(
   { icon, variant = 'default', className, type = 'button', ...rest },
   ref,
@@ -96,20 +133,24 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
       ref={ref}
       type={type}
       className={cx(
-        variant === 'handle'
-          ? 'inline-flex h-10 w-10 min-h-10 min-w-10 items-center justify-center rounded-full border border-accent bg-app'
-          : cx(
-            'inline-flex h-10 w-10 min-h-10 min-w-10 items-center justify-center',
-            'rounded-md text-secondary transition-colors',
-            'hover:bg-hover hover:text-primary',
-            'disabled:cursor-not-allowed disabled:opacity-40',
-            focusRing,
-          ),
+        'group inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-transparent',
+        'outline-none disabled:cursor-not-allowed disabled:opacity-40',
+        '[&:focus-visible>span]:outline [&:focus-visible>span]:outline-2 [&:focus-visible>span]:outline-offset-2 [&:focus-visible>span]:outline-accent',
         className,
       )}
       {...rest}
     >
-      {icon}
+      <span
+        aria-hidden="true"
+        className={cx(
+          'inline-flex h-8 w-8 items-center justify-center rounded-md transition-colors',
+          variant === 'handle'
+            ? 'border border-accent bg-app text-primary'
+            : 'text-secondary group-hover:bg-hover group-hover:text-primary group-active:bg-hover group-active:text-accent',
+        )}
+      >
+        {icon}
+      </span>
     </button>
   )
 })
@@ -121,9 +162,9 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
 const controlBase = cx(
   'w-full rounded-md border border-border-subtle',
   'bg-elevated text-primary',
-  'text-body leading-body',
+  'text-label leading-label',
   'placeholder:text-muted',
-  'focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent',
+  'focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-accent',
   'disabled:cursor-not-allowed disabled:opacity-40',
 )
 
@@ -202,15 +243,99 @@ export function Chip({ children, selected = false, muted = false, onRemove, remo
           onClick={onRemove}
           aria-label={removeLabel}
           className={cx(
-            'ml-[2px] inline-flex h-10 w-10 items-center justify-center rounded-full leading-none',
+            // Opts out of the global button min-width:40px — a 40px invisible
+            // hit zone would spill outside a ~22px chip and overlap neighbours
+            // in a wrapped chip list, so this stays a small, honest hit box.
+            'ml-[2px] inline-flex h-[18px] w-[18px] min-w-0 items-center justify-center rounded-full leading-none',
             'text-muted hover:bg-hover hover:text-primary',
             focusRing,
           )}
         >
-          <X size={16} strokeWidth={1.75} aria-hidden="true" />
+          <X size={14} strokeWidth={1.75} aria-hidden="true" />
         </button>
       ) : null}
     </span>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// SegmentedControl
+// ---------------------------------------------------------------------------
+
+export type SegmentedControlOption<T extends string = string> = {
+  value: T
+  label: ReactNode
+  /** Overrides the accessible name for this segment; falls back to `label` when it's plain text. */
+  'aria-label'?: string
+}
+
+export type SegmentedControlProps<T extends string = string> = {
+  options: SegmentedControlOption<T>[]
+  value: T
+  onChange: (value: T) => void
+  /** Required — names the group for assistive tech, same contract as a native radiogroup label. */
+  'aria-label': string
+  className?: string
+}
+
+/**
+ * Capsule switch for a small, fixed set of mutually-exclusive views (Design/Run,
+ * Workflows/Components). Track renders as its own muted-navy surface; the
+ * active segment sits *darker* than the track (closer to --hub-bg-app) with a
+ * 2px cyan border, so selection reads as "punched through" the track rather
+ * than painted on top of it.
+ *
+ * Semantics/keyboard match the roving-tabindex `role="tablist"`/`role="tab"`
+ * pattern already used by every tab strip in this codebase (see the `moveTab`
+ * helper duplicated in WorkflowsPage.tsx / ChatPage.tsx): ArrowLeft/ArrowRight
+ * move and select with wraparound, Tab enters/exits the whole group once, and
+ * only the active segment is in the tab order.
+ */
+export function SegmentedControl<T extends string = string>({ options, value, onChange, className, ...rest }: SegmentedControlProps<T>) {
+  const move = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
+    const next = event.key === 'ArrowRight' ? (index + 1) % options.length
+      : event.key === 'ArrowLeft' ? (index + options.length - 1) % options.length
+      : -1
+    if (next < 0) return
+    event.preventDefault()
+    onChange(options[next].value)
+    ;(event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role=tab]')[next])?.focus()
+  }
+  return (
+    <div
+      role="tablist"
+      aria-label={rest['aria-label']}
+      className={cx(
+        'inline-flex h-9 items-center gap-[4px] rounded-[18px] border border-border-subtle bg-surface p-[3px]',
+        className,
+      )}
+    >
+      {options.map((option, index) => {
+        const selected = option.value === value
+        return (
+          <button
+            key={option.value}
+            type="button"
+            role="tab"
+            aria-selected={selected}
+            aria-label={option['aria-label']}
+            tabIndex={selected ? 0 : -1}
+            onClick={() => onChange(option.value)}
+            onKeyDown={event => move(event, index)}
+            className={cx(
+              'inline-flex h-[30px] items-center justify-center whitespace-nowrap rounded-[15px] px-space-4',
+              'text-label leading-label transition-colors',
+              focusRing,
+              selected
+                ? 'border-2 border-accent bg-app text-accent font-semibold shadow-[0_0_6px_-1px_rgba(41,199,243,0.35)]'
+                : 'border-2 border-transparent font-medium text-secondary hover:bg-hover hover:text-primary',
+            )}
+          >
+            {option.label}
+          </button>
+        )
+      })}
+    </div>
   )
 }
 
@@ -380,10 +505,21 @@ type PopoverProps = {
  * Click-to-open disclosure anchored to its trigger. Use it to keep secondary
  * controls — model pickers, provider health, pane settings — out of the layout
  * until asked for, instead of stacking them permanently above the content.
+ *
+ * Trigger shape auto-detects from `label`: a bare icon element with no
+ * children (e.g. `label={<Ellipsis size={16} />}`, as used by the topbar
+ * search/provider triggers and every "⋯" overflow menu) renders through
+ * `IconButton` — same 32×32 visible box in a 40×40 hit area, `group-hover`,
+ * focus ring scoped to the visible box. Anything else — a plain string, or
+ * an element that itself has children (icon+text wrapped in a Fragment or
+ * span, e.g. the model selector or FolderPicker's trigger) — keeps the
+ * original 32px-tall auto-width ghost text button, so it doesn't get forced
+ * into a square it doesn't fit.
  */
 export function Popover({ label, children, align = 'start', triggerClassName, className, ...rest }: PopoverProps) {
   const [open, setOpen] = useState(false)
   const root = useRef<HTMLDivElement>(null)
+  const iconOnly = isValidElement(label) && (label.props as { children?: ReactNode }).children === undefined
 
   useEffect(() => {
     if (!open) return
@@ -396,17 +532,28 @@ export function Popover({ label, children, align = 'start', triggerClassName, cl
 
   return (
     <div ref={root} className="relative">
-      <Button
-        variant="ghost"
-        size="sm"
-        aria-expanded={open}
-        aria-haspopup="dialog"
-        aria-label={rest['aria-label']}
-        onClick={() => setOpen(current => !current)}
-        className={triggerClassName}
-      >
-        {label}
-      </Button>
+      {iconOnly ? (
+        <IconButton
+          icon={label}
+          aria-label={rest['aria-label'] ?? ''}
+          aria-expanded={open}
+          aria-haspopup="dialog"
+          onClick={() => setOpen(current => !current)}
+          className={triggerClassName}
+        />
+      ) : (
+        <Button
+          variant="ghost"
+          size="sm"
+          aria-expanded={open}
+          aria-haspopup="dialog"
+          aria-label={rest['aria-label']}
+          onClick={() => setOpen(current => !current)}
+          className={triggerClassName}
+        >
+          {label}
+        </Button>
+      )}
       {open ? (
         <div
           className={cx(

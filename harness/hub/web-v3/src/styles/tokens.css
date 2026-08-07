@@ -8,54 +8,70 @@
  *
  * Namespacing: every token below is prefixed `--hub-` specifically so it
  * cannot collide with the existing `--color-*` / `--font-*` custom
- * properties defined in `src/index.css`'s `@theme` block. This file is
- * additive: importing it alongside index.css does not redefine or shadow
- * any existing name, so current rendering is unaffected until components
- * are migrated on purpose. See DESIGN.md for the old -> new token map and
- * the file-by-file migration checklist.
+ * properties defined in `src/index.css`'s `@theme` block. `index.css`
+ * mirrors the colour/radius/spacing values below as Tailwind theme
+ * variables (`--color-*`, `--radius-*`, `--spacing-*`) so components can
+ * use plain Tailwind utilities (`bg-app`, `text-accent`, `rounded-md`)
+ * instead of `bg-[var(--hub-bg-app)]` everywhere; keep both files in sync
+ * by hand when a value changes here. See DESIGN.md section 2 for the
+ * full palette rationale and section 3 for the old -> new token map.
  *
- * This file is NOT wired into main.tsx/index.css yet (see HARD CONSTRAINT
- * in the task that produced it) — import it explicitly once migration
- * begins, e.g. `import './styles/tokens.css'` near the top of main.tsx,
- * after `./index.css`.
+ * Palette generation (2026-08): dark-navy + cyan compact desktop system,
+ * replacing the previous dark-workbench + violet palette. Cyan
+ * (`--hub-accent`) is the only accent colour in the control system —
+ * provider identity colours (claude/codex/nvidia, defined in index.css's
+ * @theme only) are a separate system limited to the 7px `ProviderDot`.
  */
 
 :root {
-  /* ---- Surfaces (4 levels, dark technical workbench) ---- */
-  --hub-bg-app: #0d1016;       /* page/app background */
-  --hub-bg-sidebar: #141821;   /* sidebar + topbar */
-  --hub-bg-surface: #11151c;   /* pane / card body */
-  --hub-bg-elevated: #1a202b;  /* modal, dropdown, menu, input fill */
-  --hub-bg-hover: #202734;     /* hover state on rows/items/buttons */
-  --hub-border-subtle: #262d39;
-  --hub-border-strong: #343d4c;
+  /* ---- Surfaces (4 levels, dark navy) ---- */
+  --hub-bg-app: #0b1018;       /* page/app background */
+  --hub-bg-sidebar: #111827;   /* sidebar + topbar (panel background) */
+  --hub-bg-surface: #111827;   /* pane / card body (panel background) */
+  --hub-bg-elevated: #162033;  /* modal, dropdown, menu, input fill (elevated surface) */
+  --hub-bg-hover: #1a2436;     /* hover state on rows/items/buttons — between elevated and border-hover, no new palette entry given so derived to sit one step above elevated */
+  --hub-border-subtle: #2b3952;  /* border default */
+  --hub-border-strong: #3d5877;  /* border hover — also used as the "strong" divider/pre-focus outline; the old system had two separate concepts for this, the new palette gives one value for both */
 
   /* ---- Text ---- */
-  --hub-text-primary: #eef2f8;
-  --hub-text-secondary: #9ba7b8;
-  --hub-text-muted: #667085;
+  --hub-text-primary: #f3f7fc;
+  --hub-text-secondary: #9aaac0;
+  /* --hub-text-muted intentionally equals --hub-text-secondary. The old
+     4-tier system (primary/secondary/muted/disabled-via-opacity) is
+     collapsed to the palette's 3 tiers: primary, secondary, disabled.
+     "Muted" meta text (timestamps, counts, captions) must stay readable,
+     so it now reads at the secondary tone (7.5:1 on --hub-bg-surface,
+     comfortably AA) instead of a fourth, dimmer, unreadable-at-small-size
+     grey. See DESIGN.md section "Contrast decisions". */
+  --hub-text-muted: #9aaac0;
+  /* Disabled-only. 2.8:1 on --hub-bg-surface — below AA 4.5:1, but WCAG
+     1.4.3 exempts inactive/disabled UI components from the contrast
+     requirement, so this is a deliberate choice, not an oversight. Never
+     use on enabled/interactive text — use --hub-text-secondary instead. */
+  --hub-text-disabled: #536178;
 
-  /* ---- Brand accent (violet) — selection, focus rings, primary actions ---- */
-  --hub-accent: #8b7cf6;
-  --hub-accent-hover: #9a8df7;
-  --hub-accent-subtle: rgba(139, 124, 246, 0.12);
+  /* ---- Brand accent (cyan) — selection, focus rings, primary actions ---- */
+  --hub-accent: #29c7f3;
+  --hub-accent-hover: #55d5f7;
+  --hub-accent-pressed: #16a9d4;
+  --hub-accent-subtle: rgba(41, 199, 243, 0.12);
 
   /* ---- Semantic status colours ---- */
   --hub-success: #3ecf8e;
   --hub-warning: #f5b942;
   --hub-warning-subtle: rgba(245, 185, 66, 0.12);
-  --hub-error: #f26d6d;
-  --hub-error-subtle: rgba(242, 109, 109, 0.12);
+  --hub-error: #ff657a;
+  --hub-error-subtle: rgba(255, 101, 122, 0.12);
   --hub-info: #63a4ff;
 
   /* ---- Workflow canvas semantics ---- */
-  --hub-node-agent: #8b7cf6;
+  --hub-node-agent: #29c7f3;
   --hub-node-validate: #63a4ff;
-  --hub-edge-normal: #8b7cf6;
-  --hub-edge-selected: #eef2f8;
+  --hub-edge-normal: #29c7f3;
+  --hub-edge-selected: #f3f7fc;
 
   /* ---- Radius — four tokens only, nothing else ---- */
-  --hub-radius-sm: 6px;   /* small affordances: inline code, checkbox, tight badges */
+  --hub-radius-sm: 6px;   /* small affordances: inline code, checkbox, tight badges, segment (active) */
   --hub-radius-md: 8px;   /* input / button / menu item */
   --hub-radius-lg: 12px;  /* pane / card / modal */
   --hub-radius-full: 999px; /* status + provider chips, pills, dots */
@@ -68,10 +84,18 @@
   --hub-space-6: 24px;
   --hub-space-8: 32px;
 
-  /* ---- Fixed component sizes ---- */
+  /* ---- Fixed component sizes ----
+     Compact desktop-toolbar scale. --hub-size-sidebar-item stays 40px:
+     it is a full-row nav link (icon + label across the sidebar width),
+     not a toolbar control, so the 32px control ceiling doesn't apply to
+     it. Every *control* (button/input/icon-button) targets 30-36px —
+     see DESIGN.md section 2 "Sizes" for the full ratio table. */
   --hub-size-sidebar-item: 40px;
   --hub-size-toolbar: 48px;
-  --hub-size-input: 40px;
+  --hub-size-control-sm: 30px;   /* Button size="sm", segment height */
+  --hub-size-control-md: 32px;   /* Button size="md" (default), IconButton visible box, segmented-track segment */
+  --hub-size-hit-min: 40px;      /* invisible hit-area floor for icon-only controls, see IconButton */
+  --hub-size-input: 36px;
   --hub-size-composer-min: 56px;
   --hub-card-padding: 16px;
   --hub-pane-gap: 12px;

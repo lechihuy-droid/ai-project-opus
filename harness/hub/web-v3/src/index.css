@@ -1,24 +1,28 @@
 @import "tailwindcss";
 
 @theme {
-  --color-app: #0d1016;
-  --color-sidebar: #141821;
-  --color-surface: #11151c;
-  --color-elevated: #1a202b;
-  --color-hover: #202734;
-  --color-border-subtle: #262d39;
-  --color-border-strong: #343d4c;
-  --color-primary: #eef2f8;
-  --color-secondary: #9ba7b8;
-  --color-muted: #8993a4;
-  --color-accent: #8b7cf6;
-  --color-accent-hover: #9a8df7;
-  --color-accent-subtle: rgb(139 124 246 / 12%);
+  --color-app: #0b1018;
+  --color-sidebar: #111827;
+  --color-surface: #111827;
+  --color-elevated: #162033;
+  --color-hover: #1a2436;
+  --color-border-subtle: #2b3952;
+  --color-border-strong: #3d5877;
+  --color-primary: #f3f7fc;
+  --color-secondary: #9aaac0;
+  /* muted == secondary on purpose — see tokens.css for the rationale
+     (old 4-tier text system collapsed into the palette's 3 tiers). */
+  --color-muted: #9aaac0;
+  --color-disabled: #536178;
+  --color-accent: #29c7f3;
+  --color-accent-hover: #55d5f7;
+  --color-accent-pressed: #16a9d4;
+  --color-accent-subtle: rgb(41 199 243 / 12%);
   --color-success: #3ecf8e;
   --color-warning: #f5b942;
   --color-warning-subtle: rgb(245 185 66 / 12%);
-  --color-error: #f26d6d;
-  --color-error-subtle: rgb(242 109 109 / 12%);
+  --color-error: #ff657a;
+  --color-error-subtle: rgb(255 101 122 / 12%);
   --color-info: #63a4ff;
   --color-claude: #D97757;
   --color-codex: #A78BFA;
@@ -33,7 +37,10 @@
   --spacing-space-4: 16px;
   --spacing-space-6: 24px;
   --spacing-space-8: 32px;
-  --spacing-input: 40px;
+  --spacing-control-sm: 30px;
+  --spacing-control-md: 32px;
+  --spacing-hit-min: 40px;
+  --spacing-input: 36px;
   --spacing-composer-min: 56px;
   --spacing-toolbar: 48px;
   --text-caption: 12px;
@@ -62,7 +69,14 @@
 *::-webkit-scrollbar-thumb:hover { background: rgba(148,163,184,.52); }
 html, body, #root { height: 100%; margin: 0; overflow: hidden; }
 body { background: var(--color-app); color: var(--color-primary); color-scheme: dark; font-size: 14px; line-height: 1.5; }
-button { min-width: 40px; min-height: 40px; font: inherit; color: inherit; }
+/* min-height:40px used to force every button to at least 40px tall, fighting the
+   32px compact control target everywhere (buttons, icon buttons, tab controls).
+   min-width:40px is kept — it never binds on text buttons (padding+label already
+   exceed it) and icon-only controls now define their own real 40px hit box
+   explicitly (see IconButton in ui.tsx and .sidebar-collapse/.topbar-nav-toggle
+   below), so the tap-target floor is preserved deliberately, per control,
+   instead of via one blanket rule that also broke button height. */
+button { min-width: 40px; font: inherit; color: inherit; }
 button, a, input, select, textarea, [role="button"], [role="tab"] { -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [role="button"]:focus-visible, [role="tab"]:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 .app { position: relative; display: grid; grid-template-columns: var(--hub-sidebar-width, 240px) minmax(0, 1fr); height: 100dvh; min-width: 0; min-height: 0; overflow: hidden; }
@@ -83,7 +97,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .app > aside a[aria-current="page"] { background: var(--color-accent-subtle); box-shadow: inset 3px 0 0 var(--color-accent); color: var(--color-primary); }
 .app > aside > div:not(:first-child) > div { color: var(--color-muted); font-size: 10px; font-weight: 600; letter-spacing: .14em; padding: 14px 10px 5px; }
 .app > aside > div:last-child { margin-top: auto; border-top: 1px solid var(--color-border-subtle); color: var(--color-muted); font-size: 11px; padding: 12px 10px 4px; }
-.sidebar-collapse { display: grid; height: 28px; width: 28px; place-items: center; border: 0; border-radius: var(--radius-md); background: transparent; color: var(--color-secondary); cursor: pointer; }
+.sidebar-collapse { display: grid; height: 32px; width: 32px; place-items: center; border: 0; border-radius: var(--radius-md); background: transparent; color: var(--color-secondary); cursor: pointer; }
 .sidebar-collapse:hover { background: var(--color-hover); color: var(--color-primary); }
 .sidebar-collapse:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 /* Collapsed-rail look only makes sense when the sidebar is a docked grid column (>=1280px).
@@ -101,8 +115,18 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .main > header > div { margin-left: auto; display: flex; gap: 8px; }
 .main > header span { color: var(--color-secondary); }
 .main > header b { color: var(--color-primary); }
-.topbar-nav-toggle, .cw-drawer-toggle { display: none; height: 40px; width: 40px; align-items: center; justify-content: center; border: 0; border-radius: var(--radius-md); background: transparent; color: var(--color-secondary); }
-.topbar-nav-toggle:hover, .cw-drawer-toggle:hover { background: var(--color-hover); color: var(--color-primary); }
+/* Real hit box stays 40px (matches --spacing-hit-min); the painted hover/press
+   box is inset 4px on every side down to a 32px visible square via ::before,
+   so the control reads as a compact 32px icon button while keeping its full
+   tap target. Mirrors the pattern IconButton uses in ui.tsx. */
+.topbar-nav-toggle, .cw-drawer-toggle { position: relative; display: none; height: 40px; width: 40px; align-items: center; justify-content: center; border: 0; border-radius: var(--radius-md); background: transparent; color: var(--color-secondary); }
+.topbar-nav-toggle::before, .cw-drawer-toggle::before { content: ''; position: absolute; inset: 4px; border-radius: var(--radius-md); background: transparent; transition: background-color .12s ease; }
+.topbar-nav-toggle:hover, .cw-drawer-toggle:hover { color: var(--color-primary); }
+.topbar-nav-toggle:hover::before, .cw-drawer-toggle:hover::before { background: var(--color-hover); }
+/* Pull the shared button:focus-visible ring (outline-offset:2px from the real
+   40px box) in so it hugs the 32px visible box instead of the invisible hit
+   area — same "ring signals the control, not the tap target" rule as IconButton. */
+.topbar-nav-toggle:focus-visible, .cw-drawer-toggle:focus-visible { outline-offset: -2px; }
 .app-drawer-scrim, .cw-sidebar-scrim { display: none; }
 @media (max-width: 1279px) { .sidebar-resizer { display: none; } }
 .content > div { padding: 28px; }
