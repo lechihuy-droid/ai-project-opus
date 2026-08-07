@@ -199,7 +199,7 @@ Tầng A trước — rẻ, độc lập, giảm nhiễu trước khi đụng v�
 | # | Việc | Gate riêng |
 |---|---|---|
 | 1 | A4 sàn chữ + mono | Không còn `text-[10px]`/`text-[9px]` trong file; `font-mono` chỉ còn ở id/token/pre |
-| 2 | A5 từ ngữ | Giá trị YAML không đổi — Save một workflow rồi `git diff` phải trống |
+| 2 | A5 từ ngữ | Giá trị YAML không đổi — Save một workflow rồi `git diff` chỉ được thấy reflow của `yaml.safe_dump` (block style, quote đổi kiểu). Mọi `id`, `agent`, `prompt`, `gate`, `edges`, `stop` phải giữ nguyên giá trị. Diff **không** trống được: `PUT /model` ghi lại cả file mỗi lần Save, đó là hành vi có sẵn |
 | 3 | A3 overflow menu | Delete vẫn xoá được, vẫn có bước xác nhận |
 | 4 | A1 run log drawer | Chưa chạy gì thì canvas chiếm gần hết chiều cao; bấm Run thì drawer tự mở |
 | 5 | A2 sidebar tabs | Chỉ còn một ô search hiện tại một lúc |
@@ -236,7 +236,7 @@ Backend không được đổi ⇒ số test pass phải y hệt trước BD. L�
 9. Gõ `{{` trong prompt → danh sách hiện, chọn `{{brief_output}}` → chèn đúng chỗ con trỏ.
 10. Sửa prompt thành biến không tồn tại → node hiện viền error trên canvas, Inspector nói rõ lý do.
 11. Workflow ≥5 node → minimap hiện; bấm góc minimap → viewport nhảy tới.
-12. Save một workflow rồi `git diff harness/hub/workflows/` → chỉ đổi đúng thứ vừa sửa, không có thay đổi do đổi nhãn.
+12. Save một workflow rồi `git diff harness/hub/workflows/` → chỉ có reflow YAML; đối chiếu từng giá trị `gate`, `agent`, `prompt` phải khớp bản gốc.
 
 ### Regression
 13. Kéo thả từ palette vẫn rơi đúng con trỏ ở zoom 0.5 / 1.0 / 1.8 (bug đã sửa ở BD1, đừng làm hỏng lại).
