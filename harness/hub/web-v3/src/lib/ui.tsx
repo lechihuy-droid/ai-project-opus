@@ -342,6 +342,8 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs<T extend
 // ---------------------------------------------------------------------------
 
 export type PanelProps = HTMLAttributes<HTMLDivElement> & {
+  /** Landmark element. A docked sidebar should pass `aside` so it stays complementary content. */
+  as?: 'section' | 'aside' | 'div'
   header?: ReactNode
   footer?: ReactNode
   headerClassName?: string
@@ -351,15 +353,15 @@ export type PanelProps = HTMLAttributes<HTMLDivElement> & {
 
 /** Surface shell with optional header and footer slots; children render in the body slot. */
 export const Panel = forwardRef<HTMLDivElement, PanelProps>(function Panel(
-  { header, footer, headerClassName, bodyClassName, footerClassName, className, children, ...rest },
+  { as: Element = 'section', header, footer, headerClassName, bodyClassName, footerClassName, className, children, ...rest },
   ref,
 ) {
   return (
-    <section ref={ref} className={cx('rounded-lg border border-border-subtle bg-surface', className)} {...rest}>
+    <Element ref={ref} className={cx('rounded-lg border border-border-subtle bg-surface', className)} {...rest}>
       {header ? <div className={cx('border-b border-border-subtle p-space-3', headerClassName)}>{header}</div> : null}
       <div className={cx('p-space-4', bodyClassName)}>{children}</div>
       {footer ? <div className={cx('border-t border-border-subtle p-space-3', footerClassName)}>{footer}</div> : null}
-    </section>
+    </Element>
   )
 })
 
