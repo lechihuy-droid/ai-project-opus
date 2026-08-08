@@ -140,6 +140,18 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 /* Workflows measures its own content box, after page padding and the resizable
    app sidebar have taken their space. Viewport media queries cannot see either. */
 .workflow-page { container-type: inline-size; container-name: workflow-page; }
+.workflow-canvas-column { container-type: inline-size; container-name: workflow-canvas; }
+@container workflow-canvas (max-width: 620px) {
+  .validation-copy-wide, .validation-view-wide { display: none; }
+  .validation-copy-medium, .validation-view-medium { display: inline; }
+}
+@container workflow-canvas (max-width: 460px) {
+  .validation-copy-medium, .validation-view-medium { display: none; }
+  .validation-copy-narrow, .validation-view-narrow { display: inline; }
+  .validation-view-trigger { width: 32px; padding-inline: 0; }
+}
+.validation-highlight { animation: validation-highlight 1.2s ease-out; }
+@keyframes validation-highlight { 0%, 35% { filter: drop-shadow(0 0 5px var(--hub-warning)); } 100% { filter: none; } }
 @container workflow-page (max-width: 927px) {
   .workflow-grid[data-inspector="open"] { grid-template-columns: 248px minmax(360px, 1fr); }
   .workflow-grid[data-mode="run"][data-inspector="open"] { grid-template-columns: minmax(360px, 1fr); }
