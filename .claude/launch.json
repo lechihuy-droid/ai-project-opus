@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "hub-backend",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["harness/hub/server.py"],
+      "runtimeExecutable": "py",
+      "runtimeArgs": ["-3.11", "harness/hub/server.py"],
       "port": 8799
     },
     {

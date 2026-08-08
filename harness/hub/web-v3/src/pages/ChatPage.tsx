@@ -256,7 +256,7 @@ export default function ChatPage() {
         artifacts={artifactMessages} activeArtifactIndex={activeArtifactIndex} onSelectArtifact={i => { setActiveArtifactIndex(i); setSessionsDrawerOpen(false) }} files={chatFiles} onUploadFile={() => fileInput.current?.click()} onDeleteFile={async name => { await api(`/api/chats/${encodeURIComponent(activeChatId)}/files/${encodeURIComponent(name)}`, { method: 'DELETE' }); loadFiles() }} collapsed={sessionsCollapsedEffective} onToggle={() => setSessionsCollapsed(value => !value)} />
       <button type="button" className="cw-sidebar-scrim" aria-label={t('common.close')} onClick={() => setSessionsDrawerOpen(false)} />
 
-      <div className="cw-center">
+      <div className="cw-center" data-workspace="360" data-region-name="chat conversation">
         <button type="button" className="cw-drawer-toggle" aria-label={t('chat.expandChats')} onClick={() => setSessionsDrawerOpen(true)}><MessageCircle size={16} strokeWidth={1.75} aria-hidden="true" /></button>
         {/* Context bar only once a conversation exists; the composer is always present. */}
         {!isEmptyPhase && <div className="flex items-center gap-space-2 border-b border-border-subtle px-space-4 py-space-2 text-caption text-secondary">
@@ -280,7 +280,7 @@ export default function ChatPage() {
           onAttach={() => fileInput.current?.click()} skills={skills.map(skillName)} onActivateSkill={name => activateSkill(name)} activeSkills={activeSkills} onRemoveSkill={removeSkill} providerLabel={`${activeChat.provider} · ${modelShort(activeChat, catalog)}`} />
       </div>
 
-      <div className="cw-artifact">
+      <div className="cw-artifact" data-collapsible="1" data-region-name="chat artifact inspector">
         <div className="cw-artifact-resizer" role="separator" aria-orientation="vertical" aria-label={t('chat.resizeArtifact')} tabIndex={0} onMouseDown={beginArtifactResize} onKeyDown={event => { if (event.key === 'ArrowLeft') { event.preventDefault(); resizeArtifact(artifactWidth + 16) } if (event.key === 'ArrowRight') { event.preventDefault(); resizeArtifact(artifactWidth - 16) } }} />
         {activeArtifact
           ? <ArtifactPanel message={activeArtifact} comments={comments} focused={artifactFocus} onClose={closeArtifactPanel} onFocus={() => setArtifactFocus(v => !v)} onPopout={() => void popoutArtifact()} onHistory={() => setShowVersionHistory(true)} onExport={() => setShowExport(true)} onCopy={() => { void navigator.clipboard?.writeText(activeArtifact.content); showToast(t('chat.copied')) }} onEditSection={editSection} onResolveComment={setCommentResolved} onDeleteComment={deleteComment} onSelection={(text, action) => { if (action === t('chat.copy')) { void navigator.clipboard?.writeText(text); showToast(t('chat.selectionCopied')); return } if (action === t('chat.selection.comment')) { void addComment(text); return } void send(`${action} the following text:\n"${text}"`) }} />
@@ -362,7 +362,7 @@ function WorkspaceSidebar({ tab, onTab, chats, activeChatId, onNewChat, onSelect
     { id: 'artifacts', icon: <Archive aria-hidden="true" size={16} strokeWidth={1.75} />, label: t('chat.artifacts'), count: artifacts.length },
   ]
   const moveTab = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => { const next = event.key === 'ArrowRight' ? (index + 1) % tabs.length : event.key === 'ArrowLeft' ? (index + tabs.length - 1) % tabs.length : -1; if (next >= 0) { event.preventDefault(); onTab(tabs[next].id); (event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role=tab]')[next])?.focus() } }
-  return <div className={`cw-sidebar ${collapsed ? 'sessions-collapsed' : ''}`}>
+  return <div className={`cw-sidebar ${collapsed ? 'sessions-collapsed' : ''}`} data-collapsible="2" data-region-name="chat sessions sidebar">
     <div className="cw-sidebar-toggle"><button type="button" className="sidebar-collapse" aria-label={collapsed ? t('chat.expandChats') : t('chat.collapseChats')} title={collapsed ? t('chat.expandChats') : t('chat.collapseChats')} onClick={onToggle}>{collapsed ? <ChevronRight size={16} strokeWidth={1.75} /> : <ChevronLeft size={16} strokeWidth={1.75} />}</button></div>
     {!collapsed && <>
     <div className="p-space-3 pb-space-2">

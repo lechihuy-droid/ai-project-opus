@@ -242,3 +242,12 @@ Use only these three primitives—do **not** create a fourth `Badge`:
 - `RunStatusBadge`: compact run state with a mark and label.
 
 This batch documents taxonomy only. Replacing page-local badges belongs to page migration.
+
+## 15. Responsive invariants
+
+1. Vùng làm việc chính — workflow canvas, khung hội thoại Chat và bảng dữ liệu CRUD — có chiều rộng tối thiểu **360px**.
+2. Thứ tự nhường chỗ cố định: inspector thu trước (`data-collapsible="1"`) → sidebar thu (`data-collapsible="2"`) → sidebar ẩn thành drawer → workspace không thu dưới 360px.
+3. Trang không được tràn ngang: `document.documentElement.scrollWidth <= window.innerWidth` ở mọi kích thước hỗ trợ.
+4. Không phần tử tương tác nào được nằm ngoài biên nội dung của container cuộn gần nhất.
+
+Responsive theo bề rộng container, không theo viewport. Shell trang chịu trách nhiệm đặt `container-type: inline-size`; vùng làm việc khai báo `data-workspace="360"`, còn các vùng có thể thu khai báo thứ tự bằng `data-collapsible`.
