@@ -103,15 +103,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .app > aside a[aria-current="page"] { background: var(--color-accent-subtle); box-shadow: inset 3px 0 0 var(--color-accent); color: var(--color-primary); }
 .app > aside > div:not(:first-child) > div { color: var(--color-muted); font-size: 10px; font-weight: 600; letter-spacing: .14em; padding: 14px 10px 5px; }
 .app > aside > div:last-child { margin-top: auto; border-top: 1px solid var(--color-border-subtle); color: var(--color-muted); font-size: 11px; padding: 12px 10px 4px; }
-.sidebar-collapse { display: grid; height: 32px; width: 32px; place-items: center; border: 0; border-radius: var(--radius-md); background: transparent; color: var(--color-secondary); cursor: pointer; }
+.sidebar-collapse { display: grid; height: 32px; width: 32px; min-width: 32px; place-items: center; border: 0; border-radius: var(--radius-md); background: transparent; color: var(--color-secondary); cursor: pointer; }
 .sidebar-collapse:hover { background: var(--color-hover); color: var(--color-primary); }
 .sidebar-collapse:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
-/* Collapsed-rail look only makes sense when the sidebar is a docked grid column (>=1280px).
-   Below that it's a full-width drawer (position: fixed, see max-width:1279px below) and must
+/* Collapsed-rail look only makes sense when the sidebar is a docked grid column (>=640px).
+   Below that it's a full-width drawer (position: fixed, see max-width:639px below) and must
    render fully expanded regardless of the desktop-only `sidebar-collapsed` state. */
-@media (min-width: 1280px) {
-  .app.sidebar-collapsed > aside { overflow: hidden; padding-left: 6px; padding-right: 6px; }
-  .app.sidebar-collapsed > aside > div:first-child { flex-direction: column; justify-content: center; gap: 6px; padding-left: 0; padding-right: 0; }
+@media (min-width: 640px) {
+  .app.sidebar-collapsed > aside { overflow: hidden; padding-left: 0; padding-right: 0; border-right-width: 0; box-shadow: inset -1px 0 var(--color-border-subtle); scrollbar-gutter: auto; }
+  .app.sidebar-collapsed > aside > div:first-child { flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding-left: 0; padding-right: 0; }
   .app.sidebar-collapsed .sidebar-collapse { margin-left: 0; }
   .app.sidebar-collapsed .sidebar-label, .app.sidebar-collapsed .sidebar-zone, .app.sidebar-collapsed .sidebar-footer { display: none; }
   .app.sidebar-collapsed > aside a { justify-content: center; padding-left: 0; padding-right: 0; }
@@ -134,7 +134,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
    area — same "ring signals the control, not the tap target" rule as IconButton. */
 .topbar-nav-toggle:focus-visible, .cw-drawer-toggle:focus-visible { outline-offset: -2px; }
 .app-drawer-scrim, .cw-sidebar-scrim { display: none; }
-@media (max-width: 1279px) { .sidebar-resizer { display: none; } }
+@media (max-width: 639px) { .sidebar-resizer { display: none; } }
 .content > div { padding: 28px; }
 
 /* Workflows measures its own content box, after page padding and the resizable
@@ -191,7 +191,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .cw-system-event button:hover, .cw-system-event button:focus-visible { background: var(--color-hover); color: var(--color-primary); outline: 2px solid var(--color-accent); outline-offset: -2px; }
 @media (pointer: coarse) { .cw-message-actions { opacity: 1; pointer-events: auto; } }
 @media (min-width: 1280px) and (max-width: 1599px) { .cw-body[data-artifact="open"] { grid-template-columns: 280px minmax(640px, 1fr) var(--cw-artifact-width, 400px); } }
-@media (max-width: 1279px) { .app > aside .sidebar-collapse { display: none; } .cw-sidebar-toggle { display: none; } .app, .app.sidebar-collapsed { grid-template-columns: minmax(0, 1fr); } .app > aside { position: fixed; z-index: 50; top: 0; bottom: 0; left: 0; width: min(240px, 88vw); transform: translateX(-100%); transition: transform .15s ease; box-shadow: 12px 0 32px rgb(0 0 0 / .28); } .app.sidebar-drawer-open > aside { transform: translateX(0); } .app-drawer-scrim { position: fixed; z-index: 40; inset: 0; border: 0; background: rgb(0 0 0 / .4); } .app.sidebar-drawer-open .app-drawer-scrim { display: block; } .app.sidebar-drawer-open .topbar-nav-toggle { visibility: hidden; pointer-events: none; } .topbar-nav-toggle { display: inline-flex; } .cw-body, .cw-body[data-artifact="open"], .cw-body.sessions-collapsed, .cw-body.sessions-collapsed[data-artifact="open"] { grid-template-columns: minmax(0, 1fr); } .cw-sidebar { position: fixed; z-index: 30; top: var(--cw-drawer-inset); bottom: 0; left: 0; width: min(280px, 88vw); transform: translateX(-100%); transition: transform .15s ease; box-shadow: 12px 0 32px rgb(0 0 0 / .28); } .cw-body.sessions-drawer-open .cw-sidebar { transform: translateX(0); } .cw-sidebar-scrim { position: fixed; z-index: 20; top: var(--cw-drawer-inset); right: 0; bottom: 0; left: 0; border: 0; background: rgb(0 0 0 / .4); } .cw-body.sessions-drawer-open .cw-sidebar-scrim { display: block; } .cw-drawer-toggle { display: inline-flex; position: absolute; z-index: 2; top: 8px; left: 8px; } .cw-body.sessions-drawer-open .cw-drawer-toggle { visibility: hidden; pointer-events: none; } .cw-center { border-right: 0; } .cw-body[data-artifact="open"] .cw-artifact { position: fixed; z-index: 30; top: var(--cw-drawer-inset); right: 0; bottom: 0; width: min(var(--cw-artifact-width, 400px), 92vw); box-shadow: -12px 0 32px rgba(0, 0, 0, .28); } }
+@media (max-width: 1279px) { .cw-sidebar-toggle { display: none; } .cw-body, .cw-body[data-artifact="open"], .cw-body.sessions-collapsed, .cw-body.sessions-collapsed[data-artifact="open"] { grid-template-columns: minmax(0, 1fr); } .cw-sidebar { position: fixed; z-index: 30; top: var(--cw-drawer-inset); bottom: 0; left: 0; width: min(280px, 88vw); transform: translateX(-100%); transition: transform .15s ease; box-shadow: 12px 0 32px rgb(0 0 0 / .28); } .cw-body.sessions-drawer-open .cw-sidebar { transform: translateX(0); } .cw-sidebar-scrim { position: fixed; z-index: 20; top: var(--cw-drawer-inset); right: 0; bottom: 0; left: 0; border: 0; background: rgb(0 0 0 / .4); } .cw-body.sessions-drawer-open .cw-sidebar-scrim { display: block; } .cw-drawer-toggle { display: inline-flex; position: absolute; z-index: 2; top: 8px; left: 8px; } .cw-body.sessions-drawer-open .cw-drawer-toggle { visibility: hidden; pointer-events: none; } .cw-center { border-right: 0; } .cw-body[data-artifact="open"] .cw-artifact { position: fixed; z-index: 30; top: var(--cw-drawer-inset); right: 0; bottom: 0; width: min(var(--cw-artifact-width, 400px), 92vw); box-shadow: -12px 0 32px rgba(0, 0, 0, .28); } }
+@media (max-width: 639px) { .app, .app.sidebar-collapsed { grid-template-columns: minmax(0, 1fr); } .app > aside { position: fixed; z-index: 50; top: 0; bottom: 0; left: 0; width: min(240px, 88vw); transform: translateX(-100%); transition: transform .15s ease; box-shadow: 12px 0 32px rgb(0 0 0 / .28); } .app.sidebar-drawer-open > aside { transform: translateX(0); } .app-drawer-scrim { position: fixed; z-index: 40; inset: 0; border: 0; background: rgb(0 0 0 / .4); } .app.sidebar-drawer-open .app-drawer-scrim { display: block; } .app.sidebar-drawer-open .topbar-nav-toggle { visibility: hidden; pointer-events: none; } .topbar-nav-toggle { display: inline-flex; } }
 @media (max-width: 899px) { .content > div:not(.chat-workspace) { padding: 16px; } .cw-body[data-artifact="open"] .cw-artifact { top: var(--cw-drawer-inset); width: 100vw; } .cw-artifact-resizer { display: none; } .cw-reading-column { width: min(100% - 24px, 880px); padding-block: var(--spacing-space-4); } .cw-composer { padding: var(--spacing-space-2); } }
 .artifact-panel { min-height: 320px; }
 .artifact-panel h1, .artifact-panel h2, .artifact-panel h3 { scroll-margin-top: 12px; }

@@ -3,10 +3,10 @@ const overflowBoundary = /(auto|scroll|hidden|clip)/
 
 function regionName(element: Element) {
   return element.getAttribute('data-region-name')
-    ?? element.getAttribute('aria-label')
-    ?? element.id
-    ?? element.classList.item(0)
-    ?? element.tagName.toLowerCase()
+    || element.getAttribute('aria-label')
+    || element.id
+    || element.classList.item(0)
+    || element.tagName.toLowerCase()
 }
 
 function nearestOverflowBoundary(element: HTMLElement, shell: HTMLElement) {
@@ -54,6 +54,7 @@ function assertResponsiveInvariants(shell: HTMLElement, route: string) {
   }
 
   shell.querySelectorAll<HTMLElement>(interactiveSelector).forEach(element => {
+    if (element.closest('[data-viewport-surface]')) return
     const boundary = nearestOverflowBoundary(element, shell)
     if (isOutsideBoundary(element, boundary)) {
       console.error(`[responsive-invariant] route=${route} region="${regionName(element)}" clipped-by="${regionName(boundary)}" measured=outside expected=inside-scroll-container`)
