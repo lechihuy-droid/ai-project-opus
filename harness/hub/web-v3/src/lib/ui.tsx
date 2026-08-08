@@ -10,7 +10,7 @@
  * the migration checklist that points existing pages at these primitives.
  */
 import { CheckCircle2, Info, Loader2, Search, TriangleAlert, X } from 'lucide-react'
-import { forwardRef, isValidElement, useEffect, useRef, useState, type ButtonHTMLAttributes, type HTMLAttributes, type InputHTMLAttributes, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
+import { cloneElement, forwardRef, isValidElement, useEffect, useId, useRef, useState, type ButtonHTMLAttributes, type HTMLAttributes, type InputHTMLAttributes, type KeyboardEvent as ReactKeyboardEvent, type ReactElement, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
 import { t } from './i18n'
 import type { ProviderId } from './uiHelpers'
 
@@ -771,4 +771,194 @@ export function Popover({ label, children, align = 'start', triggerClassName, cl
       ) : null}
     </div>
   )
+}
+
+// ---------------------------------------------------------------------------
+// Dialog / Drawer
+// ---------------------------------------------------------------------------
+
+const focusableSelector = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+
+function useOverlayFocus(open: boolean, onOpenChange: (open: boolean) => void, surface: React.RefObject<HTMLDivElement | null>) {
+  const returnFocus = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    if (open) {
+      returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+      window.setTimeout(() => {
+        const root = surface.current
+        if (!root) return
+        const target = root.querySelector<HTMLElement>('[autofocus], ' + focusableSelector)
+        ;(target ?? root).focus()
+      }, 0)
+      return
+    }
+    if (returnFocus.current?.isConnected) returnFocus.current.focus()
+    returnFocus.current = null
+  }, [open, surface])
+
+  useEffect(() => () => {
+    if (returnFocus.current?.isConnected) returnFocus.current.focus()
+  }, [])
+
+  useEffect(() => {
+    if (!open) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onOpenChange(false)
+        return
+      }
+      if (event.key !== 'Tab') return
+      const root = surface.current
+      if (!root) return
+      const focusable = Array.from(root.querySelectorAll<HTMLElement>(focusableSelector))
+      if (!focusable.length) {
+        event.preventDefault()
+        root.focus()
+        return
+      }
+      const current = document.activeElement
+      const index = focusable.indexOf(current as HTMLElement)
+      const next = event.shiftKey ? (index <= 0 ? focusable.length - 1 : index - 1) : (index === focusable.length - 1 ? 0 : index + 1)
+      event.preventDefault()
+      focusable[next].focus()
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [open, onOpenChange, surface])
+}
+
+type OverlayProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  title: ReactNode
+  children: ReactNode
+  footer?: ReactNode
+  className?: string
+  headerClassName?: string
+  footerClassName?: string
+  closeOnScrimClick?: boolean
+}
+
+export type DialogProps = OverlayProps
+
+/** Controlled modal with scrim, focus trap, Escape close, and focus return. */
+export const Dialog = forwardRef<HTMLDivElement, DialogProps>(function Dialog(
+  { open, onOpenChange, title, children, footer, className, headerClassName, footerClassName, closeOnScrimClick = true }, ref,
+) {
+  const surface = useRef<HTMLDivElement>(null)
+  const titleId = useId()
+  useOverlayFocus(open, onOpenChange, surface)
+  if (!open) return null
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-space-4">
+      <div aria-hidden="true" onMouseDown={closeOnScrimClick ? () => onOpenChange(false) : undefined} className="absolute inset-0 bg-app/80" />
+      <div ref={node => { surface.current = node; if (typeof ref === 'function') ref(node); else if (ref) ref.current = node }} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1} className={cx('relative z-10 flex max-h-[calc(100vh-32px)] w-fit min-w-[min(320px,calc(100vw-32px))] max-w-[min(640px,calc(100vw-32px))] flex-col overflow-auto rounded-lg border border-border-subtle bg-elevated shadow-lg', className)}>
+        <div className={cx('flex shrink-0 items-center border-b border-border-subtle px-space-4 py-space-2', headerClassName)}><h2 id={titleId} className="text-label font-semibold text-primary">{title}</h2></div>
+        <div className="min-w-0 p-space-4 text-label text-secondary">{children}</div>
+        {footer ? <div className={cx('flex shrink-0 items-center justify-end gap-space-2 border-t border-border-subtle px-space-4 py-space-2', footerClassName)}>{footer}</div> : null}
+      </div>
+    </div>
+  )
+})
+
+export type DrawerProps = OverlayProps & { side?: 'right' | 'bottom' }
+
+/** Controlled edge panel with the same modal focus contract as Dialog. */
+export const Drawer = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
+  { side = 'right', open, onOpenChange, title, children, footer, className, headerClassName, footerClassName, closeOnScrimClick = true }, ref,
+) {
+  const surface = useRef<HTMLDivElement>(null)
+  const titleId = useId()
+  const [entered, setEntered] = useState(false)
+  useOverlayFocus(open, onOpenChange, surface)
+  useEffect(() => {
+    if (!open) { setEntered(false); return }
+    const frame = window.requestAnimationFrame(() => setEntered(true))
+    return () => window.cancelAnimationFrame(frame)
+  }, [open])
+  if (!open) return null
+  const isRight = side === 'right'
+  return (
+    <div className="fixed inset-0 z-50 flex">
+      <div aria-hidden="true" onMouseDown={closeOnScrimClick ? () => onOpenChange(false) : undefined} className="absolute inset-0 bg-app/80" />
+      <div ref={node => { surface.current = node; if (typeof ref === 'function') ref(node); else if (ref) ref.current = node }} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1} className={cx('relative z-10 flex overflow-auto rounded-lg border border-border-subtle bg-elevated shadow-lg transition-transform duration-200 ease-out', isRight ? cx('ml-auto h-full w-[min(420px,calc(100vw-16px))] flex-col rounded-r-none', entered ? 'translate-x-0' : 'translate-x-full') : cx('mt-auto max-h-[80vh] w-full flex-col rounded-b-none', entered ? 'translate-y-0' : 'translate-y-full'), className)}>
+        <div className={cx('flex shrink-0 items-center border-b border-border-subtle px-space-4 py-space-2', headerClassName)}><h2 id={titleId} className="text-label font-semibold text-primary">{title}</h2></div>
+        <div className="min-h-0 min-w-0 flex-1 overflow-auto p-space-4 text-label text-secondary">{children}</div>
+        {footer ? <div className={cx('flex shrink-0 items-center justify-end gap-space-2 border-t border-border-subtle px-space-4 py-space-2', footerClassName)}>{footer}</div> : null}
+      </div>
+    </div>
+  )
+})
+
+// ---------------------------------------------------------------------------
+// Menu / Tooltip
+// ---------------------------------------------------------------------------
+
+export type MenuItem = { id: string; label: ReactNode; onSelect: () => void; disabled?: boolean; destructive?: boolean; 'aria-label'?: string }
+export type MenuProps = { label: ReactNode; items: MenuItem[]; align?: 'start' | 'end'; className?: string; triggerClassName?: string; /** Required for an icon-only trigger. */ 'aria-label': string }
+
+/** Action menu: unlike Popover, this owns menu semantics and arrow-key navigation. */
+export function Menu({ label, items, align = 'start', className, triggerClassName, ...rest }: MenuProps) {
+  const [open, setOpen] = useState(false)
+  const root = useRef<HTMLDivElement>(null)
+  const trigger = useRef<HTMLButtonElement>(null)
+  const focusItem = (index: number) => window.setTimeout(() => root.current?.querySelectorAll<HTMLButtonElement>('[role=menuitem]')[index]?.focus(), 0)
+  const close = () => { setOpen(false); window.setTimeout(() => trigger.current?.focus(), 0) }
+  const openAt = (index: number) => { setOpen(true); focusItem(index) }
+  const move = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
+    const enabled = items.map((item, itemIndex) => !item.disabled ? itemIndex : -1).filter(itemIndex => itemIndex >= 0)
+    if (!enabled.length) return
+    let next: number | undefined
+    if (event.key === 'ArrowDown') next = enabled[(enabled.indexOf(index) + 1 + enabled.length) % enabled.length]
+    if (event.key === 'ArrowUp') next = enabled[(enabled.indexOf(index) - 1 + enabled.length) % enabled.length]
+    if (event.key === 'Home') next = enabled[0]
+    if (event.key === 'End') next = enabled[enabled.length - 1]
+    if (event.key === 'Escape') { event.preventDefault(); close(); return }
+    if (next === undefined) return
+    event.preventDefault()
+    root.current?.querySelectorAll<HTMLButtonElement>('[role=menuitem]')[next]?.focus()
+  }
+
+  useEffect(() => {
+    if (!open) return
+    const onPointerDown = (event: MouseEvent) => { if (!root.current?.contains(event.target as Node)) close() }
+    document.addEventListener('mousedown', onPointerDown)
+    return () => document.removeEventListener('mousedown', onPointerDown)
+  }, [open])
+
+  const iconOnly = isValidElement(label) && (label.props as { children?: ReactNode }).children === undefined
+  const triggerProps = { ref: trigger, 'aria-label': rest['aria-label'], 'aria-expanded': open, 'aria-haspopup': 'menu' as const, onClick: () => open ? close() : openAt(items.findIndex(item => !item.disabled)), onKeyDown: (event: ReactKeyboardEvent<HTMLButtonElement>) => { if (event.key === 'ArrowDown') { event.preventDefault(); openAt(items.findIndex(item => !item.disabled)) } if (event.key === 'ArrowUp') { event.preventDefault(); const last = [...items].map((item, index) => !item.disabled ? index : -1).filter(index => index >= 0).pop(); if (last !== undefined) openAt(last) } } }
+  return <div ref={root} className="relative">{iconOnly ? <IconButton icon={label} className={triggerClassName} {...triggerProps} /> : <Button variant="ghost" size="sm" className={triggerClassName} {...triggerProps}>{label}</Button>}{open ? <div role="menu" className={cx('absolute z-20 mt-space-1 min-w-[180px] rounded-lg border border-border-subtle bg-elevated p-[3px] shadow-lg', align === 'end' ? 'right-0' : 'left-0', className)}>{items.map((item, index) => <button key={item.id} type="button" role="menuitem" aria-label={item['aria-label']} disabled={item.disabled} onKeyDown={event => move(event, index)} onClick={() => { item.onSelect(); close() }} className={cx('flex h-8 w-full items-center rounded-md px-space-2 text-left text-label transition-colors', 'hover:bg-hover active:bg-accent-subtle disabled:cursor-not-allowed disabled:opacity-40', focusRing, item.destructive ? 'text-error hover:text-error' : 'text-secondary hover:text-primary')}>{item.label}</button>)}</div> : null}</div>
+}
+
+export type TooltipProps = { content: ReactNode; children: ReactElement; className?: string }
+
+/** Discovery text for an already-labelled control; it never replaces aria-label. */
+export function Tooltip({ content, children, className }: TooltipProps) {
+  const [open, setOpen] = useState(false)
+  const id = useId()
+  const described = isValidElement(children) ? cloneElement(children, { 'aria-describedby': open ? id : undefined } as never) : children
+  return <span className="relative inline-flex" onPointerEnter={() => setOpen(true)} onPointerLeave={() => setOpen(false)} onFocusCapture={event => { if ((event.target as HTMLElement).matches(':focus-visible')) setOpen(true) }} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setOpen(false) }} onKeyDown={event => { if (event.key === 'Escape') setOpen(false) }}>{described}{open ? <span id={id} role="tooltip" className={cx('pointer-events-none absolute bottom-full left-1/2 z-30 mb-space-1 w-max max-w-[240px] -translate-x-1/2 rounded-md border border-border-subtle bg-elevated px-space-2 py-space-1 text-caption leading-caption text-primary shadow-lg', className)}>{content}</span> : null}</span>
+}
+
+// ---------------------------------------------------------------------------
+// Checkbox / Pagination
+// ---------------------------------------------------------------------------
+
+export type CheckboxProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & { label?: ReactNode; labelClassName?: string }
+
+/** Native checkbox wrapped only for consistent visual states; native semantics stay intact. */
+export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox({ label, labelClassName, className, ...rest }, ref) {
+  const control = <input ref={ref} type="checkbox" className={cx('h-4 w-4 shrink-0 rounded border-border-strong bg-elevated text-accent accent-accent transition-colors hover:border-border-strong active:accent-accent-pressed disabled:cursor-not-allowed disabled:opacity-40', focusRing, className)} {...rest} />
+  return label ? <label className={cx('inline-flex items-center gap-[6px] text-label text-secondary', labelClassName)}>{control}<span>{label}</span></label> : control
+})
+
+export type PaginationProps = { page: number; pageCount: number; onChange: (page: number) => void; className?: string; 'aria-label'?: string; previousLabel?: string; nextLabel?: string }
+
+/** Compact previous/current/next navigation for pageable tables. Pages are one-based. */
+export function Pagination({ page, pageCount, onChange, className, 'aria-label': ariaLabel = t('misc.ui.pagination'), previousLabel = t('misc.ui.previous'), nextLabel = t('misc.ui.next') }: PaginationProps) {
+  const current = Math.min(Math.max(page, 1), Math.max(pageCount, 1))
+  return <nav aria-label={ariaLabel} className={cx('flex items-center gap-space-2 text-caption text-secondary', className)}><Button variant="secondary" size="sm" disabled={current <= 1} onClick={() => onChange(current - 1)}>{previousLabel}</Button><span aria-current="page">{current}/{Math.max(pageCount, 1)}</span><Button variant="secondary" size="sm" disabled={current >= pageCount} onClick={() => onChange(current + 1)}>{nextLabel}</Button></nav>
 }
