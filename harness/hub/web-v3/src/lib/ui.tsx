@@ -9,8 +9,8 @@
  * See DESIGN.md for the full component contract, when-to-use rules, and
  * the migration checklist that points existing pages at these primitives.
  */
-import { Loader2, X } from 'lucide-react'
-import { forwardRef, isValidElement, useEffect, useRef, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
+import { CheckCircle2, Info, Loader2, Search, TriangleAlert, X } from 'lucide-react'
+import { forwardRef, isValidElement, useEffect, useRef, useState, type ButtonHTMLAttributes, type HTMLAttributes, type InputHTMLAttributes, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
 import { t } from './i18n'
 import type { ProviderId } from './uiHelpers'
 
@@ -207,6 +207,210 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
       )}
       {...rest}
     />
+  )
+})
+
+// ---------------------------------------------------------------------------
+// Tabs
+// ---------------------------------------------------------------------------
+
+export type TabOption<T extends string = string> = {
+  value: T
+  label: ReactNode
+  disabled?: boolean
+  'aria-label'?: string
+}
+
+export type TabsProps<T extends string = string> = {
+  options: TabOption<T>[]
+  value: T
+  onChange: (value: T) => void
+  /** Required — names this navigation tab strip for assistive tech. */
+  'aria-label': string
+  className?: string
+}
+
+/** Underline navigation tabs. Use SegmentedControl for compact mode switches. */
+export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs<T extends string = string>(
+  { options, value, onChange, className, ...rest }: TabsProps<T>,
+  ref: React.ForwardedRef<HTMLDivElement>,
+) {
+  const selectAndFocus = (current: HTMLButtonElement, index: number) => {
+    const tabs = current.parentElement?.querySelectorAll<HTMLButtonElement>('[role=tab]')
+    if (!tabs) return
+    onChange(options[index].value)
+    tabs[index]?.focus()
+  }
+
+  const move = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (!options.length) return
+    const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0
+    const jump = event.key === 'Home' ? 0 : event.key === 'End' ? options.length - 1 : -1
+    if (!step && jump < 0) return
+    // Arrow keys move one tab and wrap; Home/End land on an end and then scan
+    // inward. The scan below only skips disabled tabs, so the step has to be
+    // applied here or the key would re-select the tab it started on.
+    let next = jump >= 0 ? jump : (index + step + options.length) % options.length
+    const direction = step || (jump === 0 ? 1 : -1)
+    for (let attempts = 0; attempts < options.length && options[next].disabled; attempts += 1) {
+      next = (next + direction + options.length) % options.length
+    }
+    if (options[next].disabled) return
+    event.preventDefault()
+    selectAndFocus(event.currentTarget, next)
+  }
+
+  return (
+    <div ref={ref} role="tablist" aria-label={rest['aria-label']} className={cx('flex h-9 items-end border-b border-border-subtle', className)}>
+      {options.map((option, index) => {
+        const selected = option.value === value
+        return (
+          <button
+            key={option.value}
+            type="button"
+            role="tab"
+            aria-selected={selected}
+            aria-label={option['aria-label']}
+            disabled={option.disabled}
+            tabIndex={selected && !option.disabled ? 0 : -1}
+            onClick={() => onChange(option.value)}
+            onKeyDown={event => move(event, index)}
+            className={cx(
+              'inline-flex h-9 items-center border-b-2 px-space-2',
+              'text-label leading-label transition-colors',
+              'disabled:cursor-not-allowed disabled:opacity-40',
+              focusRing,
+              selected
+                ? 'border-accent font-medium text-primary'
+                : 'border-transparent text-secondary hover:border-border-strong hover:text-primary active:border-accent active:text-primary',
+            )}
+          >
+            {option.label}
+          </button>
+        )
+      })}
+    </div>
+  )
+})
+
+// ---------------------------------------------------------------------------
+// Panel / Toolbar / Divider
+// ---------------------------------------------------------------------------
+
+export type PanelProps = HTMLAttributes<HTMLDivElement> & {
+  header?: ReactNode
+  footer?: ReactNode
+  headerClassName?: string
+  bodyClassName?: string
+  footerClassName?: string
+}
+
+/** Surface shell with optional header and footer slots; children render in the body slot. */
+export const Panel = forwardRef<HTMLDivElement, PanelProps>(function Panel(
+  { header, footer, headerClassName, bodyClassName, footerClassName, className, children, ...rest },
+  ref,
+) {
+  return (
+    <section ref={ref} className={cx('rounded-lg border border-border-subtle bg-surface', className)} {...rest}>
+      {header ? <div className={cx('border-b border-border-subtle p-space-3', headerClassName)}>{header}</div> : null}
+      <div className={cx('p-space-4', bodyClassName)}>{children}</div>
+      {footer ? <div className={cx('border-t border-border-subtle p-space-3', footerClassName)}>{footer}</div> : null}
+    </section>
+  )
+})
+
+export type ToolbarProps = HTMLAttributes<HTMLDivElement>
+
+/** Desktop control row. Put related controls in ToolbarGroup to retain wider group spacing. */
+export const Toolbar = forwardRef<HTMLDivElement, ToolbarProps>(function Toolbar({ className, ...rest }, ref) {
+  return <div ref={ref} className={cx('flex h-toolbar shrink-0 flex-nowrap items-center gap-space-3', className)} {...rest} />
+})
+
+export type ToolbarGroupProps = HTMLAttributes<HTMLDivElement>
+
+export const ToolbarGroup = forwardRef<HTMLDivElement, ToolbarGroupProps>(function ToolbarGroup({ className, ...rest }, ref) {
+  return <div ref={ref} className={cx('flex shrink-0 items-center gap-space-2', className)} {...rest} />
+})
+
+export type DividerProps = HTMLAttributes<HTMLDivElement> & { orientation?: 'horizontal' | 'vertical' }
+
+export const Divider = forwardRef<HTMLDivElement, DividerProps>(function Divider({ orientation = 'horizontal', className, ...rest }, ref) {
+  return <div ref={ref} role="separator" aria-orientation={orientation} className={cx(orientation === 'horizontal' ? 'h-px w-full bg-border-subtle' : 'h-full w-px self-stretch bg-border-subtle', className)} {...rest} />
+})
+
+// ---------------------------------------------------------------------------
+// SearchInput
+// ---------------------------------------------------------------------------
+
+export type SearchInputProps = Omit<InputProps, 'type' | 'value' | 'onChange'> & {
+  value: string
+  onChange: InputProps['onChange']
+  onClear: () => void
+  /** Accessible label for the clear icon button. */
+  clearLabel?: string
+}
+
+/** Controlled search field that composes Input rather than duplicating its control styling. */
+export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(function SearchInput(
+  { value, onChange, onClear, clearLabel = t('misc.ui.clear'), className, disabled, ...rest },
+  ref,
+) {
+  return (
+    <div className="relative">
+      <Search aria-hidden="true" size={16} strokeWidth={1.75} className="pointer-events-none absolute left-space-3 top-1/2 -translate-y-1/2 text-muted" />
+      <Input ref={ref} type="search" value={value} onChange={onChange} disabled={disabled} className={cx('pl-9', value ? 'pr-9' : undefined, className)} {...rest} />
+      {value ? (
+        <button
+          type="button"
+          disabled={disabled}
+          aria-label={clearLabel}
+          onClick={onClear}
+          className={cx('absolute right-[2px] top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md', 'text-secondary transition-colors hover:bg-hover hover:text-primary active:bg-accent-subtle active:text-accent disabled:cursor-not-allowed disabled:opacity-40', focusRing)}
+        >
+          <X aria-hidden="true" size={16} strokeWidth={1.75} />
+        </button>
+      ) : null}
+    </div>
+  )
+})
+
+// ---------------------------------------------------------------------------
+// Alert
+// ---------------------------------------------------------------------------
+
+export type AlertVariant = 'error' | 'warning' | 'info' | 'success'
+export type AlertProps = HTMLAttributes<HTMLDivElement> & {
+  variant?: AlertVariant
+  title?: ReactNode
+  onDismiss?: () => void
+  /** Accessible label for the optional dismiss icon button. */
+  dismissLabel?: string
+}
+
+const alertStyles: Record<AlertVariant, string> = {
+  error: 'border-error bg-error-subtle',
+  warning: 'border-warning bg-warning-subtle',
+  info: 'border-info bg-elevated',
+  success: 'border-success bg-elevated',
+}
+
+const alertIcon: Record<AlertVariant, ReactNode> = {
+  error: <TriangleAlert size={16} strokeWidth={1.75} />, warning: <TriangleAlert size={16} strokeWidth={1.75} />,
+  info: <Info size={16} strokeWidth={1.75} />, success: <CheckCircle2 size={16} strokeWidth={1.75} />,
+}
+
+const alertIconColor: Record<AlertVariant, string> = { error: 'text-error', warning: 'text-warning', info: 'text-info', success: 'text-success' }
+
+export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  { variant = 'info', title, onDismiss, dismissLabel = t('misc.ui.dismiss'), className, children, ...rest },
+  ref,
+) {
+  return (
+    <div ref={ref} role="alert" className={cx('flex items-start gap-space-2 rounded-md border p-space-3 text-caption leading-caption text-primary', alertStyles[variant], className)} {...rest}>
+      <span aria-hidden="true" className={cx('mt-px shrink-0', alertIconColor[variant])}>{alertIcon[variant]}</span>
+      <div className="min-w-0 flex-1">{title ? <div className="font-medium text-primary">{title}</div> : null}{children ? <div className={title ? 'mt-space-1 text-secondary' : 'text-secondary'}>{children}</div> : null}</div>
+      {onDismiss ? <button type="button" aria-label={dismissLabel} onClick={onDismiss} className={cx('inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-secondary transition-colors hover:bg-hover hover:text-primary active:bg-accent-subtle active:text-accent', focusRing)}><X aria-hidden="true" size={16} strokeWidth={1.75} /></button> : null}
+    </div>
   )
 })
 
