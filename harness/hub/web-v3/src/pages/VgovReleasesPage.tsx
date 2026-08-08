@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Button, Input } from '../lib/ui'
+import Table, { TableCell, TableRow } from '../lib/Table'
+import { Alert, Button, Input, Panel, Status, Toolbar } from '../lib/ui'
 import { vgov, type Release } from '../lib/vgovApi'
 
 export default function VgovReleasesPage() {
@@ -33,27 +34,23 @@ export default function VgovReleasesPage() {
           Publish then explicitly promote a workflow release. Technical manifest details stay with each output.
         </p>
       </div>
-      <div className="flex max-w-md gap-space-2">
+      <Toolbar className="h-auto min-h-8 max-w-md gap-space-2">
         <Input value={workflow} onChange={e => setWorkflow(e.target.value)} aria-label="Workflow ID" />
         <Button onClick={load}>Refresh</Button>
-      </div>
+      </Toolbar>
       <div className="grid gap-space-3 md:grid-cols-2">
         {(['DEV', 'PROD'] as const).map(name => (
-          <section key={name} className="rounded-lg border border-border-subtle bg-surface p-space-4">
+          <Panel key={name}>
             <div className="text-caption text-muted">{name} pointer</div>
             <div className="mt-space-1 text-label font-semibold text-primary">
               {env[name] ? `v${env[name].release_version}` : 'Not promoted'}
             </div>
-          </section>
+          </Panel>
         ))}
       </div>
-      {message && <p className="text-caption text-secondary">{message}</p>}
-      <section className="overflow-hidden rounded-lg border border-border-subtle bg-surface">
-        <div className="grid grid-cols-[1fr_auto_auto] gap-space-3 border-b border-border-subtle p-space-3 text-caption text-muted">
-          <span>Release</span>
-          <span>Status</span>
-          <span>Actions</span>
-        </div>
+      {message && <Alert variant="info">{message}</Alert>}
+      <Panel bodyClassName="p-0">
+        <Table headers={['Release', 'Status', 'Actions']} wrapperClassName="rounded-none border-0">
         {releases.map(release => (
           <ReleaseRow
             key={release.id}
@@ -62,20 +59,21 @@ export default function VgovReleasesPage() {
             onPromote={target => void promote(target, release)}
           />
         ))}
-      </section>
+        </Table>
+      </Panel>
     </div>
   )
 }
 
 function ReleaseRow({ release, onPublish, onPromote }: { release: Release; onPublish: () => void; onPromote: (target: 'DEV' | 'PROD') => void }) {
   return (
-    <div className="grid grid-cols-[1fr_auto_auto] items-center gap-space-3 border-b border-border-subtle p-space-3 last:border-0">
-      <div>
+    <TableRow>
+      <TableCell>
         <div className="text-label font-semibold text-primary">v{release.release_version}</div>
         <div className="text-caption text-muted">{release.workflow_id}</div>
-      </div>
-      <span className="text-caption text-secondary">{release.status}</span>
-      <div className="flex gap-space-2">
+      </TableCell>
+      <TableCell><Status kind="running" label={release.status} /></TableCell>
+      <TableCell><div className="flex gap-space-2">
         {release.status === 'DRAFT' && <Button size="sm" onClick={onPublish}>Publish</Button>}
         {release.status === 'PUBLISHED' && (
           <>
@@ -83,7 +81,7 @@ function ReleaseRow({ release, onPublish, onPromote }: { release: Release; onPub
             <Button size="sm" onClick={() => onPromote('PROD')}>Promote / rollback PROD</Button>
           </>
         )}
-      </div>
-    </div>
+      </div></TableCell>
+    </TableRow>
   )
 }

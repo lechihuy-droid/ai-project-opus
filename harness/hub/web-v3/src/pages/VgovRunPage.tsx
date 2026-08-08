@@ -1,8 +1,15 @@
 import { useEffect, useState } from 'react'
-import { Button, Input, Select } from '../lib/ui'
+import { Alert, Button, Input, Panel, RunStatusBadge, Select, Status, type RunStatusKind } from '../lib/ui'
 import { vgov, type InputRevision, type Release, type Run } from '../lib/vgovApi'
 
 const terminal = new Set(['SUCCEEDED', 'FAILED', 'FAILED_PRECONDITION', 'CANCELLED'])
+const runStatusKind = (status: string): RunStatusKind => {
+  if (status === 'SUCCEEDED') return 'success'
+  if (status === 'FAILED' || status === 'FAILED_PRECONDITION') return 'error'
+  if (status === 'CANCELLED') return 'interrupted'
+  if (status === 'QUEUED') return 'queued'
+  return 'running'
+}
 
 export default function VgovRunPage() {
   const [project, setProject] = useState('demo-api')
@@ -55,13 +62,11 @@ export default function VgovRunPage() {
           Choose imported RD, target environment, then name business output.
         </p>
       </div>
-      <section className="rounded-lg border border-border-subtle bg-surface p-space-4">
+      <Panel>
         <div className="text-caption text-muted">Release đang chạy · {environment}</div>
         {environmentRelease ? (
           <>
-            <div className="mt-space-1 text-label font-semibold text-primary">
-              v{environmentRelease.release_version} · {environmentRelease.status}
-            </div>
+            <div className="mt-space-1 text-label font-semibold text-primary">v{environmentRelease.release_version} · <Status kind="running" label={environmentRelease.status} /></div>
             <div className="mt-space-1 font-mono text-caption text-secondary">
               {environmentRelease.git_commit?.slice(0, 12) ?? 'Commit chưa được pin'}
             </div>
@@ -74,8 +79,8 @@ export default function VgovRunPage() {
         <a className="mt-space-3 inline-block text-caption text-accent hover:underline" href="#/vgov/releases">
           Quản lý release
         </a>
-      </section>
-      <div className="grid gap-space-3 rounded-lg border border-border-subtle bg-surface p-space-4">
+      </Panel>
+      <Panel bodyClassName="grid gap-space-3">
         <label className="text-label text-secondary">
           Project
           <Input value={project} onChange={e => setProject(e.target.value)} />
@@ -104,15 +109,15 @@ export default function VgovRunPage() {
           <Input value={businessKey} onChange={e => setBusinessKey(e.target.value)} placeholder="F001" />
         </label>
         <Button variant="primary" disabled={!input || !businessKey} onClick={() => void start()}>Run</Button>
-      </div>
+      </Panel>
       {run && (
-        <section className="rounded-lg border border-border-subtle bg-surface p-space-4">
+        <Panel>
           <div className="text-caption text-muted">Run {run.id}</div>
-          <div className="mt-space-1 text-label font-semibold text-primary">{run.status}</div>
+          <div className="mt-space-1"><RunStatusBadge kind={runStatusKind(run.status)} label={run.status} /></div>
           {run.error_code && <div className="mt-space-1 text-caption text-error">{run.error_code}</div>}
-        </section>
+        </Panel>
       )}
-      {error && <p className="text-caption text-error">{error}</p>}
+      {error && <Alert variant="error">{error}</Alert>}
     </div>
   )
 }

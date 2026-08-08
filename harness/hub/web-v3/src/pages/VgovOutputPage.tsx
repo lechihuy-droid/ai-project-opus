@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Input, Select, Textarea } from '../lib/ui'
+import { Alert, Button, Input, Panel, Select, Textarea, Toolbar } from '../lib/ui'
 import { vgov, type Artifact, type Revision } from '../lib/vgovApi'
 import { Markdown } from '../lib/markdown'
 
@@ -59,7 +59,7 @@ export default function VgovOutputPage() {
         <div className="text-section font-semibold uppercase tracking-section text-muted">Run → output → approve</div>
         <h1 className="text-title font-semibold text-primary">Output history</h1>
       </div>
-      <div className="flex flex-wrap gap-space-2">
+      <Toolbar className="h-auto min-h-toolbar flex-wrap">
         <Input className="max-w-xs" value={project} onChange={e => setProject(e.target.value)} aria-label="Project ID" />
         <Button onClick={loadArtifacts}>Refresh</Button>
         <Select
@@ -79,22 +79,22 @@ export default function VgovOutputPage() {
             <option key={r.id} value={r.id}>Revision {r.revision_no} · {r.origin}</option>
           ))}
         </Select>
-      </div>
-      <div className="flex gap-space-2">
+      </Toolbar>
+      <Toolbar className="h-auto min-h-8 gap-space-2">
         <Button onClick={() => setEditing(value => !value)} disabled={!revisionId}>{editing ? 'Preview' : 'Edit content'}</Button>
         <Button variant="primary" onClick={() => void approve()} disabled={!revisionId}>Approve</Button>
-      </div>
+      </Toolbar>
       {editing ? (
-        <div className="space-y-space-2">
+        <Panel className="space-y-space-2" bodyClassName="space-y-space-2">
           <Textarea value={content} onChange={e => setContent(e.target.value)} aria-label="Revision markdown" className="min-h-[420px] font-mono" />
           <Button variant="primary" onClick={() => void revise()}>Save human edit</Button>
-        </div>
+        </Panel>
       ) : (
-        <article className="rounded-lg border border-border-subtle bg-surface p-space-5 text-label text-secondary">
+        <Panel bodyClassName="p-space-5 text-label text-secondary">
           <Markdown source={content} />
-        </article>
+        </Panel>
       )}
-      {message && <p className="text-caption text-secondary">{message}</p>}
+      {message && <Alert variant="info">{message}</Alert>}
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Button, Input } from '../lib/ui'
+import Table, { TableCell, TableRow } from '../lib/Table'
+import { Alert, Button, Input, Panel } from '../lib/ui'
 import { vgov, type Diff } from '../lib/vgovApi'
 
 const render = (value: unknown) => value === undefined ? '—' : String(value)
@@ -28,11 +29,11 @@ export default function VgovComparePage() {
           Compare two output revisions across all seven provenance categories.
         </p>
       </div>
-      <div className="grid gap-space-2 md:grid-cols-[1fr_1fr_auto]">
+      <Panel bodyClassName="grid gap-space-2 md:grid-cols-[1fr_1fr_auto]">
         <Input value={left} onChange={e => setLeft(e.target.value)} placeholder="Left revision UUID" aria-label="Left revision UUID" />
         <Input value={right} onChange={e => setRight(e.target.value)} placeholder="Right revision UUID" aria-label="Right revision UUID" />
         <Button variant="primary" onClick={() => void compare()} disabled={!left || !right}>Compare</Button>
-      </div>
+      </Panel>
       {diff && (
         <>
           <div className="text-label font-semibold text-primary">{diff.verdict}</div>
@@ -40,29 +41,17 @@ export default function VgovComparePage() {
           <DiffTable title="Unchanged" rows={diff.unchanged} />
         </>
       )}
-      {error && <p className="text-caption text-error">{error}</p>}
+      {error && <Alert variant="error">{error}</Alert>}
     </div>
   )
 }
 
 function DiffTable({ title, rows, changed = false }: { title: string; rows: Diff['changed']; changed?: boolean }) {
   return (
-    <section className="overflow-hidden rounded-lg border border-border-subtle bg-surface">
-      <h2 className={`border-b border-border-subtle p-space-3 text-label font-semibold ${changed ? 'text-warning' : 'text-secondary'}`}>
-        {title}
-      </h2>
-      <div className="grid grid-cols-[140px_1fr_1fr] gap-space-2 p-space-3 text-caption text-muted">
-        <span>Category</span>
-        <span>{changed ? 'From' : 'Value'}</span>
-        <span>{changed ? 'To' : 'Facet'}</span>
-      </div>
-      {rows.map((row, index) => (
-        <div key={`${row.category}-${row.facet}-${index}`} className="grid grid-cols-[140px_1fr_1fr] gap-space-2 border-t border-border-subtle p-space-3 text-caption">
-          <span className="font-semibold text-primary">{row.category}</span>
-          <span className="break-all text-secondary">{changed ? render(row.from) : render(row.value)}</span>
-          <span className="break-all text-secondary">{changed ? render(row.to) : row.facet}</span>
-        </div>
-      ))}
-    </section>
+    <Panel header={<h2 className={`text-label font-semibold ${changed ? 'text-warning' : 'text-secondary'}`}>{title}</h2>} bodyClassName="p-0">
+      <Table headers={['Category', changed ? 'From' : 'Value', changed ? 'To' : 'Facet']} wrapperClassName="rounded-none border-0">
+        {rows.map((row, index) => <TableRow key={`${row.category}-${row.facet}-${index}`}><TableCell className="font-semibold text-primary">{row.category}</TableCell><TableCell className="break-all text-secondary">{changed ? render(row.from) : render(row.value)}</TableCell><TableCell className="break-all text-secondary">{changed ? render(row.to) : row.facet}</TableCell></TableRow>)}
+      </Table>
+    </Panel>
   )
 }

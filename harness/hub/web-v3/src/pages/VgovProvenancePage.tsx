@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Input } from '../lib/ui'
+import { Alert, Button, Input, Panel, Toolbar } from '../lib/ui'
 import { vgov, type Lineage } from '../lib/vgovApi'
 
 export default function VgovProvenancePage() {
@@ -33,17 +33,17 @@ export default function VgovProvenancePage() {
           Follow upstream chain from revision to input. Release and manifest remain collapsed technical details.
         </p>
       </div>
-      <div className="flex gap-space-2">
+      <Toolbar className="h-auto min-h-8 gap-space-2">
         <Input value={revisionId} onChange={e => setRevisionId(e.target.value)} placeholder="Output revision UUID" aria-label="Revision UUID" />
         <Button onClick={() => void load()} disabled={!revisionId}>Trace</Button>
-      </div>
+      </Toolbar>
       {nodes.length > 0 && (
         <ol className="space-y-space-2">
           {nodes.map(([label, value], index) => (
-            <li key={`${label}-${index}`} className="rounded-lg border border-border-subtle bg-surface p-space-4">
+            <li key={`${label}-${index}`}><Panel>
               <div className="text-caption text-muted">{label}</div>
               <div className="mt-space-1 break-all font-mono text-label text-primary">{value}</div>
-            </li>
+            </Panel></li>
           ))}
         </ol>
       )}
@@ -53,20 +53,20 @@ export default function VgovProvenancePage() {
             {showTechnical ? 'Hide technical details' : 'Show release & manifest'}
           </Button>
           {showTechnical && (
-            <section className="rounded-lg border border-border-subtle bg-surface p-space-4 text-caption text-secondary">
+            <Panel bodyClassName="text-caption text-secondary">
               <div>Workflow: {lineage.workflow_release?.workflow_id} v{lineage.workflow_release?.release_version}</div>
               <div className="mt-space-2 break-all">Manifest: {lineage.manifest?.manifest_hash}</div>
               <div className="mt-space-2 break-all">Git: {lineage.manifest?.git_commit}</div>
-              <ul className="mt-space-3 space-y-1">
+              <ul className="mt-space-3 space-y-space-1">
                 {lineage.components.map(item => (
                   <li key={`${item.kind}-${item.ref}`}>{item.kind}: {item.ref} @ {item.exact_version}</li>
                 ))}
               </ul>
-            </section>
+            </Panel>
           )}
         </>
       )}
-      {error && <p className="text-caption text-error">{error}</p>}
+      {error && <Alert variant="error">{error}</Alert>}
     </div>
   )
 }
