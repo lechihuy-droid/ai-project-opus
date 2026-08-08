@@ -104,6 +104,50 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 })
 
 // ---------------------------------------------------------------------------
+// ListItem
+// ---------------------------------------------------------------------------
+
+export type ListItemProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
+  /** Primary line. Consumer-provided visible strings must come from `t()`. */
+  title: ReactNode
+  /** Optional secondary line; omit it for a one-line row. */
+  description?: ReactNode
+  selected?: boolean
+  leading?: ReactNode
+  trailing?: ReactNode
+}
+
+/** Selectable list row; native button behaviour supplies Enter and Space activation. */
+export const ListItem = forwardRef<HTMLButtonElement, ListItemProps>(function ListItem(
+  { title, description, selected = false, leading, trailing, className, type = 'button', ...rest },
+  ref,
+) {
+  return (
+    <button
+      ref={ref}
+      type={type}
+      className={cx(
+        'flex min-h-[52px] w-full items-center gap-space-2 rounded-md border px-space-3 py-space-2 text-left transition-colors',
+        'disabled:cursor-not-allowed disabled:opacity-40',
+        focusRing,
+        selected
+          ? 'border-accent bg-accent-subtle text-primary hover:bg-accent-subtle active:bg-accent-subtle'
+          : 'border-transparent text-primary hover:bg-hover active:bg-hover',
+        className,
+      )}
+      {...rest}
+    >
+      {leading ? <span aria-hidden="true" className="inline-flex shrink-0">{leading}</span> : null}
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-label leading-label">{title}</span>
+        {description ? <span className="mt-[2px] block truncate text-caption leading-caption text-secondary">{description}</span> : null}
+      </span>
+      {trailing ? <span aria-hidden="true" className="inline-flex shrink-0">{trailing}</span> : null}
+    </button>
+  )
+})
+
+// ---------------------------------------------------------------------------
 // IconButton
 // ---------------------------------------------------------------------------
 

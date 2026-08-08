@@ -223,3 +223,22 @@ Toàn bộ các vị trí trên nằm ngoài 6 file thuộc sở hữu của đ�
 - Canvas dùng token dark-navy hiện có; node agent dùng `--hub-node-agent` (nay = cyan, trước = violet), node validate dùng `--hub-node-validate` (`--hub-info`, không đổi), edge dùng `--hub-edge-normal` (nay = cyan) hoặc `--hub-edge-selected`.
 - Canvas dày và vận hành được: lưới chấm, node card gọn, port trái/phải, cạnh cong, inspector bốn tab. Không thêm runtime, role, contract hoặc run-history giả.
 - Trạng thái chạy/lỗi lấy từ backend; node đang chạy dùng accent (cyan), node hoàn tất dùng success, lỗi validate/run luôn hiện thành banner có nội dung hành động được.
+## 8. Batch C — domain composition
+
+### ListItem
+
+`ListItem` is a native, `forwardRef` button for selectable list rows: `title`, `description?`, `leading?`, `trailing?`, `selected?`, plus normal button props. Minimum height is **52px**; padding is 8px vertical and 12px horizontal; radius is `rounded-md` (8px). Selected state uses a 1px cyan border with `bg-accent-subtle`, with no glow. It includes default, hover, pressed, focus-visible, selected, and disabled states. Use it for Artifacts, Skills, Workflow lists, and FolderPicker. Consumers provide localized visible strings with `t()` and own container-specific ARIA semantics.
+
+### Table recipe
+
+`src/lib/Table.tsx` retains `headers` + `children` and exports `TableRow`, `TableHeaderCell`, `TableCell`, `tableHeaderClass`, `tableRowClass`, and `tableCellClass` for complex tables. Headers are 12px, muted, uppercase; data rows are **40px**; hover uses `bg-hover`; selected rows set `data-selected="true"` for `bg-accent-subtle`. No cyan glow. AgentsPage and SkillsPage migration remains a later page batch.
+
+### Badge taxonomy
+
+Use only these three primitives—do **not** create a fourth `Badge`:
+
+- `Chip`: tag or filter; may be selectable or removable.
+- `Status`: lightweight status, always dot plus text; color never carries the signal alone.
+- `RunStatusBadge`: compact run state with a mark and label.
+
+This batch documents taxonomy only. Replacing page-local badges belongs to page migration.
