@@ -3,7 +3,7 @@ import { api, apiRequest } from '../lib/api'
 import { parseSse } from '../lib/sse'
 import { Markdown } from '../lib/markdown'
 import { artifactSummary, isArtifact } from '../lib/artifact'
-import { Button, Chip, IconButton, Popover, ProviderDot, Textarea } from '../lib/ui'
+import { Alert, Button, Checkbox, Chip, Dialog, Drawer, IconButton, ListItem, Menu, Popover, ProviderDot, Select, Status, Textarea, Tooltip } from '../lib/ui'
 import { asProviderId, providerIds } from '../lib/uiHelpers'
 import { t } from '../lib/i18n'
 import { Archive, ArrowLeft, ArrowRight, Check, ChevronDown, ChevronLeft, ChevronRight, Clipboard, Download, Ellipsis, ExternalLink, FileText, History, MessageCircle, Paperclip, Pin, PinOff, Plus, RotateCcw, Send, Settings, Square, X } from 'lucide-react'
@@ -260,7 +260,7 @@ export default function ChatPage() {
         <button type="button" className="cw-drawer-toggle" aria-label={t('chat.expandChats')} onClick={() => setSessionsDrawerOpen(true)}><MessageCircle size={16} strokeWidth={1.75} aria-hidden="true" /></button>
         {/* Context bar only once a conversation exists; the composer is always present. */}
         {!isEmptyPhase && <div className="flex items-center gap-space-2 border-b border-border-subtle px-space-4 py-space-2 text-caption text-secondary">
-          <span className="min-w-0 truncate">{contextSummary}</span>{activeArtifact && <button onClick={() => setArtifactContextEnabled(v => !v)} className={`shrink-0 rounded-full border px-space-2 py-[3px] ${artifactContextEnabled ? 'border-accent bg-accent-subtle text-accent' : 'border-border-subtle text-muted'}`}>{t('chat.contextArtifact', { artifact: artifactSummary(activeArtifact.content).title, chat: activeChat.title })}</button>}
+          <span className="min-w-0 truncate">{contextSummary}</span>{activeArtifact && <Button variant="ghost" size="sm" className="shrink-0" selected={artifactContextEnabled} aria-pressed={artifactContextEnabled} onClick={() => setArtifactContextEnabled(v => !v)}>{t('chat.contextArtifact', { artifact: artifactSummary(activeArtifact.content).title, chat: activeChat.title })}</Button>}
           <Button variant="ghost" size="sm" className="shrink-0" onClick={() => setContextOpen(true)}>{t('chat.manage')}</Button>
         </div>}
         <div className="cw-msgs">
@@ -274,7 +274,7 @@ export default function ChatPage() {
               {streaming && !activeChat.messages.at(-1)?.content && <ThinkingDots />}
             </div>}
         </div>
-        {!isEmptyPhase && activeArtifact && <div className="flex flex-wrap gap-space-2 px-space-4 pt-space-2">{artifactActionKeys.map(key => { const action = t(key); return <button key={key} onClick={() => void send(t('chat.openDocumentPrompt', { action }))} className="shrink-0 whitespace-nowrap rounded-full border border-border-strong bg-surface px-space-3 py-[6px] text-caption text-secondary transition-colors hover:border-accent hover:text-accent">{action}</button> })}</div>}
+        {!isEmptyPhase && activeArtifact && <div className="flex flex-wrap gap-space-2 px-space-4 pt-space-2">{artifactActionKeys.map(key => { const action = t(key); return <Button key={key} variant="secondary" size="sm" className="shrink-0 whitespace-nowrap" onClick={() => void send(t('chat.openDocumentPrompt', { action }))}>{action}</Button> })}</div>}
         <Composer value={promptText} onChange={changePrompt} onSubmit={() => { if (!streaming) submitPrompt() }} onStop={stop} streaming={streaming}
           placeholder={t('chat.messageProvider', { provider: activeChat.provider })} skillMatches={skillMatches.map(skillName)} onPickSkill={name => { activateSkill(name); setPromptText('') }}
           onAttach={() => fileInput.current?.click()} skills={skills.map(skillName)} onActivateSkill={name => activateSkill(name)} activeSkills={activeSkills} onRemoveSkill={removeSkill} providerLabel={`${activeChat.provider} · ${modelShort(activeChat, catalog)}`} />
@@ -312,7 +312,7 @@ function TopBar({ chat, catalog, providers, defaultModel, onChooseModel, exportD
       <ModelSelector chat={chat} catalog={catalog} providers={providers} defaultModel={defaultModel} triggerLabel={label} onChoose={onChooseModel} />
       <div className="h-5 w-px bg-border-subtle" />
       <Button variant="secondary" size="sm" disabled={exportDisabled} title={exportDisabled ? t('chat.noArtifactSelected') : undefined} onClick={onExport}>{t('chat.export')}</Button>
-      <IconButton icon={<Settings size={16} strokeWidth={1.75} />} aria-label={t('chat.settings')} title={t('chat.settings')} className="!h-10 !w-10" onClick={onSettings} />
+      <Tooltip content={t('chat.settings')}><IconButton icon={<Settings size={16} strokeWidth={1.75} />} aria-label={t('chat.settings')} onClick={onSettings} /></Tooltip>
     </div>
   </div>
 }
@@ -329,21 +329,21 @@ function ModelSelector({ chat, catalog, providers, defaultModel, triggerLabel, o
       {cards.map(p => {
         const state = providerState(p); const role = providerRole[p.id] ?? { role: '', note: '' }; const selected = chat.provider === p.id
         const caps = p.capabilities
-        return <div key={p.id} className={`rounded-[9px] border p-space-3 ${selected ? 'border-accent bg-accent-subtle' : 'border-transparent'}`}>
+        return <div key={p.id} className={`rounded-md border p-space-3 ${selected ? 'border-accent bg-accent-subtle' : 'border-transparent'}`}>
           <button disabled={!p.available} onClick={() => { onChoose(p.id, p.id === 'nvidia' ? (chat.model || defaultModel) : ''); if (p.id !== 'nvidia') close() }}
             className="block w-full text-left disabled:cursor-not-allowed disabled:opacity-50">
             <div className="flex items-center justify-between gap-space-2">
               <span className="flex items-center gap-space-2 text-label font-semibold text-primary"><ProviderDot provider={asKind(p.id)} />{p.id}{selected && <Check aria-hidden="true" size={16} strokeWidth={1.75} className="text-accent" />}</span>
-              <span className={`text-caption ${state.kind === 'ready' ? 'text-success' : state.kind === 'error' ? 'text-error' : 'text-muted'}`}>{state.label}</span>
+              <Status kind={state.kind} label={state.label} />
             </div>
             <div className="mt-[2px] text-caption text-secondary">{role.role}</div>
             <div className="mt-[2px] text-caption text-muted">{role.note}{p.version ? ` · ${p.version}` : ''}</div>
             {caps && <div className="mt-space-1 flex gap-space-3 text-caption text-muted">{caps.stream != null && <span>{t('chat.stream')}: <b className="text-secondary">{caps.stream ? <Check aria-label={t('provider.available')} size={16} strokeWidth={1.75} /> : t('common.notAvailable')}</b></span>}{caps.resume != null && <span>{t('chat.resume')}: <b className="text-secondary">{caps.resume ? <Check aria-label={t('provider.available')} size={16} strokeWidth={1.75} /> : t('common.notAvailable')}</b></span>}{caps.models != null && <span>{t('chat.model')}: <b className="text-secondary">{caps.models}</b></span>}</div>}
           </button>
           {selected && p.id === 'nvidia' && <label className="mt-space-2 block space-y-space-1 text-caption text-muted">{t('chat.specificModel')}
-            <select value={chat.model || defaultModel} onChange={e => onChoose('nvidia', e.target.value)} className="h-input w-full rounded-md border border-border-subtle bg-elevated px-space-3 text-body text-primary">
+            <Select value={chat.model || defaultModel} onChange={e => onChoose('nvidia', e.target.value)}>
               {Object.entries(grouped).map(([category, models]) => <optgroup key={category} label={category}>{models.map(m => <option key={m.id} value={m.id}>{m.shortName ?? m.label ?? m.id}</option>)}</optgroup>)}
-            </select></label>}
+            </Select></label>}
         </div>
       })}
     </div>}
@@ -369,29 +369,25 @@ function WorkspaceSidebar({ tab, onTab, chats, activeChatId, onNewChat, onSelect
       <Button variant="secondary" onClick={onNewChat} className="w-full justify-center" icon={<Plus aria-hidden="true" size={16} strokeWidth={1.75} />}>{t('chat.newChat')}</Button>
     </div>
     <div role="tablist" className="flex flex-col gap-[2px] px-space-2">
-      {tabs.map((t, index) => <button key={t.id} id={`chat-sidebar-tab-${t.id}`} role="tab" aria-selected={tab === t.id} tabIndex={tab === t.id ? 0 : -1} onKeyDown={event => moveTab(event, index)} onClick={() => onTab(t.id)} className={`flex items-center justify-between rounded-[7px] px-space-2 py-space-2 text-label ${tab === t.id ? 'bg-hover font-semibold text-primary' : 'text-secondary hover:bg-hover'}`}>
+      {tabs.map((t, index) => <button key={t.id} id={`chat-sidebar-tab-${t.id}`} role="tab" aria-selected={tab === t.id} tabIndex={tab === t.id ? 0 : -1} onKeyDown={event => moveTab(event, index)} onClick={() => onTab(t.id)} className={`flex items-center justify-between rounded-md px-space-2 py-space-2 text-label ${tab === t.id ? 'bg-hover font-semibold text-primary' : 'text-secondary hover:bg-hover'}`}>
         <span className="flex items-center gap-space-2"><span>{t.icon}</span>{t.label}</span><span className="text-caption text-muted">{t.count}</span>
       </button>)}
     </div>
     <div role="tabpanel" id="chat-sidebar-panel" aria-labelledby={`chat-sidebar-tab-${tab}`} className="min-h-0 flex-1 overflow-y-auto px-space-2 pb-space-3 pt-space-2">
       {tab === 'chats' && <>
         <SidebarHeading>{t('chat.chats')}</SidebarHeading>
-        {chats.map(c => <button key={c.id} onClick={() => onSelectChat(c.id)} className={`mb-[2px] block w-full rounded-md px-space-2 py-space-2 text-left ${c.id === activeChatId ? 'bg-hover' : 'hover:bg-hover'}`}>
-          <div className={`truncate text-label ${c.id === activeChatId ? 'font-semibold text-primary' : 'text-primary'}`}>{c.title}</div>
-          <div className="truncate text-caption text-muted">{chatSubtitle(c)}</div>
-        </button>)}
+        {chats.map(c => <ListItem key={c.id} className="mb-[2px]" selected={c.id === activeChatId} title={c.title} description={chatSubtitle(c)} onClick={() => onSelectChat(c.id)} />)}
       </>}
       {tab === 'files' && <>
-        <div className="flex items-center justify-between px-space-1 pb-space-2 pt-space-1"><SidebarHeading inline>{t('chat.files')}</SidebarHeading><button onClick={onUploadFile} className="text-caption font-semibold text-accent"><Plus aria-hidden="true" size={16} strokeWidth={1.75} className="inline" /> {t('chat.upload')}</button></div>
-        {files.length === 0 ? <p className="px-space-1 py-space-2 text-caption text-muted">{t('chat.noFiles')}</p> : files.map(file => <div key={file.name} className="flex items-center gap-space-2 px-space-1 py-space-2"><a className="min-w-0 flex-1 truncate text-label text-primary hover:text-accent" href={`/api/chats/${encodeURIComponent(activeChatId)}/files/${encodeURIComponent(file.name)}`}>{file.name}</a><span className="text-caption text-muted">{file.size} B</span><button onClick={() => void onDeleteFile(file.name)} className="text-caption text-muted hover:text-error">{t('common.delete')}</button></div>)}
+        <div className="flex items-center justify-between px-space-1 pb-space-2 pt-space-1"><SidebarHeading inline>{t('chat.files')}</SidebarHeading><Button variant="ghost" size="sm" icon={<Plus aria-hidden="true" size={16} strokeWidth={1.75} />} onClick={onUploadFile}>{t('chat.upload')}</Button></div>
+        {files.length === 0 ? <p className="px-space-1 py-space-2 text-caption text-muted">{t('chat.noFiles')}</p> : files.map(file => <div key={file.name} className="flex items-center gap-space-2 px-space-1 py-space-2"><a className="min-w-0 flex-1 truncate text-label text-primary hover:text-accent" href={`/api/chats/${encodeURIComponent(activeChatId)}/files/${encodeURIComponent(file.name)}`}>{file.name}</a><span className="text-caption text-muted">{file.size} B</span><Button variant="ghost" size="sm" onClick={() => void onDeleteFile(file.name)}>{t('common.delete')}</Button></div>)}
       </>}
       {tab === 'artifacts' && <>
         <SidebarHeading>{t('chat.artifacts')}</SidebarHeading>
         {artifacts.length === 0 && <p className="px-space-1 py-space-2 text-caption text-muted">{t('chat.artifactsEmpty')}</p>}
-        {artifacts.map(({ m, index }) => { const s = artifactSummary(m.content); return <button key={index} onClick={() => onSelectArtifact(index)} className={`mb-[2px] block w-full rounded-md px-space-2 py-space-2 text-left ${index === activeArtifactIndex ? 'bg-hover' : 'hover:bg-hover'}`}>
-          <div className="truncate text-label font-semibold text-primary">{s.title}</div>
-          <div className="mt-[3px] flex items-center gap-space-2"><span className="rounded-full bg-accent-subtle px-space-2 py-[2px] text-caption font-semibold text-accent">{t('chat.draft')}</span><span className="text-caption text-muted">{t('chat.characters', { count: s.chars })}</span></div>
-        </button> })}
+        {artifacts.map(({ m, index }) => { const s = artifactSummary(m.content); return <ListItem key={index} className="mb-[2px]" selected={index === activeArtifactIndex} title={s.title}
+          description={<span className="flex items-center gap-space-2"><Chip selected>{t('chat.draft')}</Chip><span>{t('chat.characters', { count: s.chars })}</span></span>}
+          onClick={() => onSelectArtifact(index)} /> })}
       </>}
     </div></>}
   </div>
@@ -428,11 +424,11 @@ function MessageView({ message, last, onOpenArtifact, onRetry, onCopy, pinned, o
   const mine = message.role === 'user'
   return <div className={`cw-message group flex ${mine ? 'justify-end' : 'justify-start'}`}>
     <div className={mine ? 'relative max-w-[70%]' : 'relative w-full'}>
-      <div className={`whitespace-pre-wrap px-space-4 py-space-3 text-label leading-[1.6] ${mine ? 'rounded-[12px] bg-accent-subtle pr-12 text-primary' : 'cw-assistant-message text-secondary'}`}>
+      <div className={`whitespace-pre-wrap px-space-4 py-space-3 text-label leading-[1.6] ${mine ? 'rounded-lg bg-accent-subtle pr-12 text-primary' : 'cw-assistant-message text-secondary'}`}>
         {message.role === 'assistant' && !message.streaming && !artifact ? <Markdown source={message.content} /> : message.content || (message.streaming ? '…' : '')}
       </div>
-      {artifact && summary && <button onClick={onOpenArtifact} className="mt-space-2 flex w-full max-w-[340px] items-center gap-space-3 rounded-[10px] border border-border-subtle bg-elevated px-space-3 py-space-3 text-left transition-colors hover:border-accent">
-        <span className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[7px] bg-accent-subtle text-accent"><Archive aria-hidden="true" size={16} strokeWidth={1.75} /></span>
+      {artifact && summary && <button onClick={onOpenArtifact} className="mt-space-2 flex w-full max-w-[340px] items-center gap-space-3 rounded-lg border border-border-subtle bg-elevated px-space-3 py-space-3 text-left transition-colors hover:border-accent">
+        <span className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-md bg-accent-subtle text-accent"><Archive aria-hidden="true" size={16} strokeWidth={1.75} /></span>
         <span className="min-w-0 flex-1"><span className="block truncate text-label font-semibold text-primary">{summary.title}</span><span className="block text-caption text-muted">{t('chat.characters', { count: summary.chars })} · {t('chat.items', { count: summary.items })}</span></span>
         <ArrowRight aria-hidden="true" size={16} strokeWidth={1.75} className="text-muted" />
       </button>}
@@ -453,15 +449,26 @@ function Composer({ value, onChange, onSubmit, onStop, streaming, placeholder, s
   return <div className="cw-composer p-space-4 pt-space-2">
     <div className="relative">
       {skillMatches.length > 0 && <div className="absolute bottom-full left-0 z-10 mb-space-1 w-full max-w-[280px] rounded-md border border-border-subtle bg-surface p-space-1">{skillMatches.map(name => <button key={name} onClick={() => onPickSkill(name)} className="block w-full rounded-sm px-space-2 py-space-1 text-left text-caption text-secondary hover:bg-hover">#{name}</button>)}</div>}
-      <div className="rounded-[12px] border border-border-strong bg-surface p-space-2">
+      <div className="rounded-lg border border-border-strong bg-surface p-space-2">
         {activeSkills.length > 0 && <div className="mb-space-2 flex flex-wrap gap-space-2">{activeSkills.map(skill => <Chip key={skill.id} onRemove={() => onRemoveSkill(skill.id)}>#{skill.id}</Chip>)}</div>}
         <div className="flex items-end gap-space-2 px-space-2">
           <textarea ref={textarea} aria-label={t('chat.enterMessage')} value={value} onChange={e => onChange(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); onSubmit() } }} placeholder={placeholder} rows={1} className="max-h-[180px] min-h-[52px] flex-1 resize-none overflow-y-auto border-none bg-transparent py-space-1 text-label text-primary outline-none placeholder:text-muted" />
-          {streaming ? <button aria-label={t('chat.stop')} title={t('chat.stop')} onClick={onStop} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-error text-error"><Square size={16} strokeWidth={1.75} /></button> : <button aria-label={t('chat.send')} title={t('chat.send')} onClick={onSubmit} disabled={!value.trim()} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent text-app disabled:opacity-40"><Send size={16} strokeWidth={1.75} /></button>}
+          {/* IconButton has no accent-filled/error-outlined variant, so the primary Send and
+             Stop affordances are hand-built with the same 40px hit-area / 32px visible-box
+             technique IconButton uses internally (DESIGN.md section 4), instead of editing ui.tsx. */}
+          <Tooltip content={streaming ? t('chat.stop') : t('chat.send')}>
+            {streaming
+              ? <button type="button" aria-label={t('chat.stop')} onClick={onStop} className="group inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+                  <span aria-hidden="true" className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-error text-error transition-colors group-hover:bg-error-subtle"><Square size={16} strokeWidth={1.75} /></span>
+                </button>
+              : <button type="button" aria-label={t('chat.send')} onClick={onSubmit} disabled={!value.trim()} className="group inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md outline-none disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+                  <span aria-hidden="true" className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-accent text-app transition-colors group-hover:bg-accent-hover"><Send size={16} strokeWidth={1.75} /></span>
+                </button>}
+          </Tooltip>
         </div>
         <div className="mt-space-1 flex items-center gap-space-1 border-t border-border-subtle pt-space-1">
-          <IconButton icon={<Paperclip size={16} strokeWidth={1.75} />} aria-label={t('chat.attachFile')} title={t('chat.attachFile')} onClick={onAttach} className="!h-10 !w-10" />
-          <Popover label={t('chat.skills')} aria-label={t('chat.selectSkill')} triggerClassName="!h-10 !px-space-2">{(close: () => void) => <div>{skills.map(name => <button key={name} type="button" onClick={() => { onActivateSkill(name); close() }} className="block w-full rounded-sm px-space-2 py-space-1 text-left text-caption text-primary hover:bg-hover">#{name}</button>)}</div>}</Popover>
+          <Tooltip content={t('chat.attachFile')}><IconButton icon={<Paperclip size={16} strokeWidth={1.75} />} aria-label={t('chat.attachFile')} onClick={onAttach} /></Tooltip>
+          <Menu label={t('chat.skills')} aria-label={t('chat.selectSkill')} items={skills.map(name => ({ id: name, label: `#${name}`, onSelect: () => onActivateSkill(name) }))} />
           <span className="ml-auto truncate px-space-2 text-caption text-muted">{providerLabel}</span>
         </div>
       </div>
@@ -472,8 +479,8 @@ function Composer({ value, onChange, onSubmit, onStop, streaming, placeholder, s
 // ── Right: artifact panel ──────────────────────────────────────────────────────
 function ArtifactEmpty({ onClose, onOpenLibrary, count }: { onClose: () => void; onOpenLibrary: () => void; count: number }) {
   return <div className="relative flex flex-1 flex-col items-center justify-center p-space-8 text-center">
-    <IconButton data-artifact-close icon={<X size={16} strokeWidth={1.75} />} aria-label={t('common.close')} title={t('common.close')} className="absolute right-space-3 top-space-3 !h-10 !w-10" onClick={onClose} />
-    <div className="mb-space-3 flex h-[44px] w-[44px] items-center justify-center rounded-[11px] bg-surface text-muted"><Archive aria-hidden="true" size={16} strokeWidth={1.75} /></div>
+    <Tooltip content={t('common.close')}><IconButton data-artifact-close icon={<X size={16} strokeWidth={1.75} />} aria-label={t('common.close')} className="absolute right-space-3 top-space-3" onClick={onClose} /></Tooltip>
+    <div className="mb-space-3 flex h-11 w-11 items-center justify-center rounded-lg bg-surface text-muted"><Archive aria-hidden="true" size={16} strokeWidth={1.75} /></div>
     <div className="mb-space-1 text-label font-semibold text-primary">{t('chat.noArtifactSelected')}</div>
     <div className="max-w-[220px] text-caption text-muted">{t('chat.artifactEmptyDescription')}</div>
     {count > 0 && <Button variant="secondary" size="sm" className="mt-space-4" onClick={onOpenLibrary}>{t('chat.openLibrary', { count })}</Button>}
@@ -489,18 +496,18 @@ function ArtifactPanel({ message, comments, focused, onClose, onFocus, onPopout,
     <div className="border-b border-border-subtle p-space-4">
       <div className="flex items-start justify-between gap-space-2">
         <div className="min-w-0 text-title font-bold text-primary">{summary.title}</div>
-        <div className="flex shrink-0 gap-space-1">
-          <button disabled className="rounded-md border border-border-subtle bg-elevated px-space-2 text-caption text-secondary">{t('chat.currentVersion')}</button>
-           <IconButton icon={focused ? <ArrowLeft size={16} strokeWidth={1.75} /> : <ArrowRight size={16} strokeWidth={1.75} />} aria-label={focused ? t('chat.splitView') : t('chat.focus')} title={focused ? t('chat.splitView') : t('chat.focus')} className="!h-10 !w-10" onClick={onFocus} />
-           <IconButton data-artifact-close icon={<X size={16} strokeWidth={1.75} />} aria-label={t('common.close')} title={t('common.close')} className="!h-10 !w-10" onClick={onClose} />
-          <IconButton icon={<ExternalLink size={16} strokeWidth={1.75} />} aria-label={t('chat.popOut')} title={t('chat.popOut')} className="!h-10 !w-10" onClick={onPopout} />
-          <IconButton icon={<History size={16} strokeWidth={1.75} />} aria-label={t('chat.versionHistory')} title={t('chat.versionHistory')} className="!h-10 !w-10" onClick={onHistory} />
-          <IconButton icon={<Download size={16} strokeWidth={1.75} />} aria-label={t('chat.export')} title={t('chat.export')} className="!h-10 !w-10" onClick={onExport} />
-          <IconButton icon={<Clipboard size={16} strokeWidth={1.75} />} aria-label={t('chat.copy')} title={t('chat.copy')} className="!h-10 !w-10" onClick={onCopy} />
+        <div className="flex shrink-0 items-center gap-space-1">
+          <Chip muted>{t('chat.currentVersion')}</Chip>
+          <Tooltip content={focused ? t('chat.splitView') : t('chat.focus')}><IconButton icon={focused ? <ArrowLeft size={16} strokeWidth={1.75} /> : <ArrowRight size={16} strokeWidth={1.75} />} aria-label={focused ? t('chat.splitView') : t('chat.focus')} onClick={onFocus} /></Tooltip>
+          <Tooltip content={t('common.close')}><IconButton data-artifact-close icon={<X size={16} strokeWidth={1.75} />} aria-label={t('common.close')} onClick={onClose} /></Tooltip>
+          <Tooltip content={t('chat.popOut')}><IconButton icon={<ExternalLink size={16} strokeWidth={1.75} />} aria-label={t('chat.popOut')} onClick={onPopout} /></Tooltip>
+          <Tooltip content={t('chat.versionHistory')}><IconButton icon={<History size={16} strokeWidth={1.75} />} aria-label={t('chat.versionHistory')} onClick={onHistory} /></Tooltip>
+          <Tooltip content={t('chat.export')}><IconButton icon={<Download size={16} strokeWidth={1.75} />} aria-label={t('chat.export')} onClick={onExport} /></Tooltip>
+          <Tooltip content={t('chat.copy')}><IconButton icon={<Clipboard size={16} strokeWidth={1.75} />} aria-label={t('chat.copy')} onClick={onCopy} /></Tooltip>
         </div>
       </div>
       <div className="mt-space-2 flex flex-wrap items-center gap-space-2">
-        <span className="rounded-full bg-accent-subtle px-space-2 py-[3px] text-caption font-semibold text-accent">{t('chat.draft')}</span>
+        <Chip selected>{t('chat.draft')}</Chip>
         <span className="text-caption text-muted">{t('chat.documentVersion')}</span>
         <span className="text-caption text-muted">· {t('chat.items', { count: summary.items })}</span>
       </div>
@@ -508,7 +515,7 @@ function ArtifactPanel({ message, comments, focused, onClose, onFocus, onPopout,
     <div className="relative min-h-0 flex-1 overflow-y-auto" onMouseUp={captureSelection}>
       {selectedText && <div className="fixed z-30 flex gap-1 rounded-md border border-border-strong bg-elevated p-1 shadow-lg" style={{ top: selectionPoint.top, left: selectionPoint.left }} onMouseDown={e => e.preventDefault()}>{selectionActionKeys.map(key => { const action = t(key); return <button key={key} onClick={() => { onSelection(selectedText, action); setSelectedText('') }} className="rounded-sm px-space-2 py-space-1 text-caption text-primary hover:bg-hover">{action}</button> })}</div>}
       {sections.map((sec, i) => <ArtifactSection key={i} heading={sec.heading} body={sec.body} onAction={action => onEditSection(sec.heading, action)} />)}
-      {comments.length > 0 && <div className="border-t border-border-subtle p-space-4"><div className="mb-space-2 text-section font-semibold uppercase tracking-section text-muted">{t('chat.comments')}</div>{comments.map(comment => <div key={comment.id} className="mb-space-2 rounded-md border border-border-subtle bg-elevated p-space-3"><div className="truncate text-caption text-muted">“{comment.quoted_text}”</div><div className={`mt-space-1 text-label ${comment.resolved ? 'text-muted line-through' : 'text-primary'}`}>{comment.author}: {comment.body}</div><div className="mt-space-2 flex gap-space-2"><button onClick={() => onResolveComment(comment, !comment.resolved)} className="text-caption text-accent">{comment.resolved ? t('chat.reopen') : t('chat.resolved')}</button><button onClick={() => onDeleteComment(comment)} className="text-caption text-muted hover:text-error">{t('common.delete')}</button></div></div>)}</div>}
+      {comments.length > 0 && <div className="border-t border-border-subtle p-space-4"><div className="mb-space-2 text-section font-semibold uppercase tracking-section text-muted">{t('chat.comments')}</div>{comments.map(comment => <div key={comment.id} className="mb-space-2 rounded-md border border-border-subtle bg-elevated p-space-3"><div className="truncate text-caption text-muted">“{comment.quoted_text}”</div><div className={`mt-space-1 text-label ${comment.resolved ? 'text-muted line-through' : 'text-primary'}`}>{comment.author}: {comment.body}</div><div className="mt-space-2 flex gap-space-2"><Button variant="ghost" size="sm" onClick={() => onResolveComment(comment, !comment.resolved)}>{comment.resolved ? t('chat.reopen') : t('chat.resolved')}</Button><Button variant="ghost" size="sm" onClick={() => onDeleteComment(comment)}>{t('common.delete')}</Button></div></div>)}</div>}
     </div>
   </>
 }
@@ -517,9 +524,8 @@ function ArtifactSection({ heading, body, onAction }: { heading: string; body: s
   return <div className="border-b border-border-subtle p-space-4">
     <div className="mb-space-1 flex items-center justify-between">
       <div className="text-label font-bold text-primary">{heading}</div>
-      <Popover align="end" label={<Ellipsis aria-hidden="true" size={16} strokeWidth={1.75} />} aria-label={t('chat.editSection', { heading })} triggerClassName="!h-10 !w-10 !px-0" className="w-[180px]">
-        {(close: () => void) => <div>{sectionActions.map(key => { const action = t(key); return <button key={key} onClick={() => { onAction(action); close() }} className="block w-full rounded-sm px-space-2 py-space-1 text-left text-caption text-primary hover:bg-hover">{action}</button> })}</div>}
-      </Popover>
+      <Menu align="end" label={<Ellipsis aria-hidden="true" size={16} strokeWidth={1.75} />} aria-label={t('chat.editSection', { heading })} className="w-[180px]"
+        items={sectionActions.map(key => { const action = t(key); return { id: key, label: action, onSelect: () => onAction(action) } })} />
     </div>
     <div className="whitespace-pre-wrap text-label text-secondary"><Markdown source={body} /></div>
   </div>
@@ -539,54 +545,45 @@ function splitSections(content: string): { heading: string; body: string }[] {
 
 // ── Context drawer ─────────────────────────────────────────────────────────────
 function ContextDrawer({ context, onChange, tooLarge, estimate, onClose }: { context: SharedContextState; onChange: (c: SharedContextState) => void; tooLarge: boolean; estimate: number; onClose: () => void }) {
-  useEffect(() => { const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }; document.addEventListener('keydown', onKey); return () => document.removeEventListener('keydown', onKey) }, [onClose])
   const toggleInstruction = (id: string) => onChange({ ...context, instructions: context.instructions.map(i => i.id === id ? { ...i, active: !i.active } : i) })
-  return <>
-    <div onClick={onClose} className="fixed inset-0 z-40 bg-black/40" />
-    <aside role="dialog" aria-modal="true" aria-label={t('chat.manageContext')} className="fixed inset-y-0 right-0 z-50 flex w-[420px] max-w-[92vw] flex-col bg-surface shadow-2xl">
-      <div className="flex items-center justify-between border-b border-border-subtle p-space-4">
-        <div className="text-title font-bold text-primary">{t('chat.manageContext')}</div>
-        <IconButton icon={<X size={16} strokeWidth={1.75} />} aria-label={t('common.close')} title={t('common.close')} className="!h-10 !w-10" onClick={onClose} />
-      </div>
-      <div className="min-h-0 flex-1 overflow-y-auto p-space-4">
-        {tooLarge && <div className="mb-space-4 rounded-[9px] border border-error bg-error-subtle p-space-3"><div className="mb-space-1 text-caption font-semibold text-error">{t('chat.contextTooLarge')}</div><div className="text-caption text-error">{t('chat.contextTooLargeDescription')}</div></div>}
-        <SidebarHeading>{t('chat.generalDescription')}</SidebarHeading>
-        <Textarea value={context.text} onChange={e => onChange({ ...context, text: e.target.value })} placeholder={t('chat.contextDescriptionPlaceholder')} rows={4} className="resize-y text-body" aria-label={t('chat.contextDescription')} />
-        <div className="mt-space-4"><SidebarHeading>{t('chat.pinnedMessages', { count: context.pinned.length })}</SidebarHeading></div>
-        {context.pinned.length === 0 && <p className="text-caption text-muted">{t('chat.noPinnedMessages')}</p>}
-        {context.pinned.map(item => <label key={item.id} className="flex items-center gap-space-2 py-space-2"><input type="checkbox" checked onChange={() => onChange({ ...context, pinned: context.pinned.filter(p => p.id !== item.id) })} className="h-[15px] w-[15px] shrink-0" /><span className="min-w-0 flex-1 truncate text-label text-primary">{item.content}</span></label>)}
-        <div className="mt-space-4"><SidebarHeading>Files</SidebarHeading></div>
-        <p className="text-caption text-muted">{t('chat.filesDescription')}</p>
-        <div className="mt-space-4"><SidebarHeading>{t('chat.instructions')}</SidebarHeading></div>
-        {context.instructions.map(i => <label key={i.id} className="flex items-center gap-space-2 py-space-2"><input type="checkbox" checked={i.active} onChange={() => toggleInstruction(i.id)} className="h-[15px] w-[15px] shrink-0" /><span className="text-label text-primary">{i.label}</span></label>)}
-        <div className="mt-space-4 flex items-center justify-between rounded-[9px] bg-elevated p-space-3 text-caption text-secondary"><span>{t('chat.contextEstimate')}</span><b className={tooLarge ? 'text-error' : 'text-success'}>~{formatTokens(estimate)} token</b></div>
-      </div>
-      <div className="flex gap-space-2 border-t border-border-subtle p-space-4">
-        <Button variant="secondary" className="flex-1 justify-center" onClick={() => onChange({ ...context, text: '', pinned: [] })}>{t('chat.clear')}</Button>
-        <Button variant="primary" className="flex-1 justify-center" onClick={onClose}>{t('chat.apply')}</Button>
-      </div>
-    </aside>
-  </>
+  return <Drawer open onOpenChange={() => onClose()} title={t('chat.manageContext')}
+    footer={<>
+      <Button variant="secondary" className="flex-1 justify-center" onClick={() => onChange({ ...context, text: '', pinned: [] })}>{t('chat.clear')}</Button>
+      <Button variant="primary" className="flex-1 justify-center" onClick={onClose}>{t('chat.apply')}</Button>
+    </>}>
+    {tooLarge && <Alert variant="error" title={t('chat.contextTooLarge')} className="mb-space-4">{t('chat.contextTooLargeDescription')}</Alert>}
+    <SidebarHeading>{t('chat.generalDescription')}</SidebarHeading>
+    <Textarea value={context.text} onChange={e => onChange({ ...context, text: e.target.value })} placeholder={t('chat.contextDescriptionPlaceholder')} rows={4} className="resize-y" aria-label={t('chat.contextDescription')} />
+    <div className="mt-space-4"><SidebarHeading>{t('chat.pinnedMessages', { count: context.pinned.length })}</SidebarHeading></div>
+    {context.pinned.length === 0 && <p className="text-caption text-muted">{t('chat.noPinnedMessages')}</p>}
+    {context.pinned.map(item => <Checkbox key={item.id} checked onChange={() => onChange({ ...context, pinned: context.pinned.filter(p => p.id !== item.id) })} labelClassName="py-space-2" label={<span className="min-w-0 flex-1 truncate text-label text-primary">{item.content}</span>} />)}
+    <div className="mt-space-4"><SidebarHeading>Files</SidebarHeading></div>
+    <p className="text-caption text-muted">{t('chat.filesDescription')}</p>
+    <div className="mt-space-4"><SidebarHeading>{t('chat.instructions')}</SidebarHeading></div>
+    {context.instructions.map(i => <Checkbox key={i.id} checked={i.active} onChange={() => toggleInstruction(i.id)} labelClassName="py-space-2" label={i.label} />)}
+    <div className="mt-space-4 flex items-center justify-between rounded-md bg-elevated p-space-3 text-caption text-secondary"><span>{t('chat.contextEstimate')}</span><b className={tooLarge ? 'text-error' : 'text-success'}>~{formatTokens(estimate)} token</b></div>
+  </Drawer>
 }
 
 function VersionHistoryModal({ message, onClose }: { message: Message; onClose: () => void }) {
-  useEffect(() => { const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }; document.addEventListener('keydown', onKey); return () => document.removeEventListener('keydown', onKey) }, [onClose])
   const summary = artifactSummary(message.content)
   const [artifact, setArtifact] = useState<StoredArtifact | null>(null); const [selectedVersion, setSelectedVersion] = useState<string | null>(null); const [loadError, setLoadError] = useState(false)
   useEffect(() => { if (!message.artifactId) return; setArtifact(null); setSelectedVersion(null); setLoadError(false); void api<StoredArtifact>(`/api/artifacts/${encodeURIComponent(message.artifactId)}`).then(saved => { setArtifact(saved); setSelectedVersion(saved.versions.at(-1)?.version ?? null) }).catch(() => setLoadError(true)) }, [message.artifactId])
   const selected = artifact?.versions.find(version => version.version === selectedVersion)
-  return <div onClick={onClose} className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-space-4">
-    <div role="dialog" aria-modal="true" onClick={e => e.stopPropagation()} className="flex h-[520px] max-h-[86vh] w-[880px] max-w-[92vw] flex-col overflow-hidden rounded-[14px] bg-surface shadow-2xl">
-      <div className="flex items-center justify-between border-b border-border-subtle p-space-4"><div className="text-title font-bold text-primary">{t('chat.versionHistoryTitle', { title: summary.title })}</div><IconButton icon={<X size={16} strokeWidth={1.75} />} aria-label={t('common.close')} title={t('common.close')} className="!h-10 !w-10" onClick={onClose} /></div>
-      <div className="flex min-h-0 flex-1">
-        <div className="w-[280px] shrink-0 overflow-y-auto border-r border-border-subtle p-space-3">{artifact?.versions.slice().reverse().map(version => <button key={version.version} onClick={() => setSelectedVersion(version.version)} className={`mb-space-2 w-full rounded-[9px] p-space-3 text-left ${version.version === selectedVersion ? 'bg-hover' : 'hover:bg-hover'}`}><div className="flex items-center gap-space-2"><span className="text-label font-bold text-primary">{version.version}</span>{version.version === artifact.versions.at(-1)?.version && <span className="rounded-full bg-accent-subtle px-space-2 py-[1px] text-caption font-semibold text-accent">{t('chat.current')}</span>}</div><div className="mt-[3px] text-caption text-secondary">{new Date(version.created_at).toLocaleString('en-US')}</div></button>)}</div>
-        <div className="min-h-0 flex-1 overflow-y-auto p-space-4">
-          {!message.artifactId ? <div className="rounded-[9px] border border-border-subtle bg-elevated p-space-4 text-caption text-muted">{t('chat.versionUnavailable')}</div> : loadError ? <div className="rounded-[9px] border border-border-subtle bg-elevated p-space-4 text-caption text-muted">{t('chat.versionLoadFailed')}</div> : !artifact ? <div className="text-caption text-muted">{t('chat.versionLoading')}</div> : artifact.versions.length === 1 ? <div className="rounded-[9px] border border-border-subtle bg-elevated p-space-4 text-caption text-muted">{t('chat.onlyOneVersion')}</div> : selected ? <div><div className="mb-space-3 text-label font-semibold text-primary">{selected.version} · {new Date(selected.created_at).toLocaleString('en-US')}</div><div className="artifact-panel text-label"><Markdown source={selected.content} /></div></div> : null}
-        </div>
+  return <Dialog open onOpenChange={() => onClose()} title={t('chat.versionHistoryTitle', { title: summary.title })} className="!w-[min(880px,calc(100vw-32px))] !max-w-[min(880px,calc(100vw-32px))]"
+    footer={<Button variant="secondary" onClick={onClose}>{t('common.close')}</Button>}>
+    <div className="flex h-[440px] max-h-[60vh] min-h-0 gap-space-4">
+      <div className="w-[240px] shrink-0 overflow-y-auto border-r border-border-subtle pr-space-3">
+        {artifact?.versions.slice().reverse().map(version => <ListItem key={version.version} className="mb-space-2" selected={version.version === selectedVersion} onClick={() => setSelectedVersion(version.version)}
+          title={version.version}
+          description={new Date(version.created_at).toLocaleString('en-US')}
+          trailing={version.version === artifact.versions.at(-1)?.version ? <Chip selected>{t('chat.current')}</Chip> : undefined} />)}
       </div>
-      <div className="flex justify-end border-t border-border-subtle p-space-4"><Button variant="secondary" onClick={onClose}>{t('common.close')}</Button></div>
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        {!message.artifactId ? <div className="rounded-md border border-border-subtle bg-elevated p-space-4 text-caption text-muted">{t('chat.versionUnavailable')}</div> : loadError ? <div className="rounded-md border border-border-subtle bg-elevated p-space-4 text-caption text-muted">{t('chat.versionLoadFailed')}</div> : !artifact ? <div className="text-caption text-muted">{t('chat.versionLoading')}</div> : artifact.versions.length === 1 ? <div className="rounded-md border border-border-subtle bg-elevated p-space-4 text-caption text-muted">{t('chat.onlyOneVersion')}</div> : selected ? <div><div className="mb-space-3 text-label font-semibold text-primary">{selected.version} · {new Date(selected.created_at).toLocaleString('en-US')}</div><div className="artifact-panel text-label"><Markdown source={selected.content} /></div></div> : null}
+      </div>
     </div>
-  </div>
+  </Dialog>
 }
 
 // ── Export modal (markdown/text/json/html are real; PDF + share are stubs) ──────
@@ -595,7 +592,6 @@ function ExportModal({ message, onClose, onToast }: { message: Message; onClose:
   const [format, setFormat] = useState('markdown')
   const [withTitle, setWithTitle] = useState(true)
   const summary = artifactSummary(message.content)
-  useEffect(() => { const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }; document.addEventListener('keydown', onKey); return () => document.removeEventListener('keydown', onKey) }, [onClose])
   const render = () => {
     const head = withTitle ? `${summary.title}\n\n` : ''
     if (format === 'json') return JSON.stringify({ title: summary.title, content: message.content }, null, 2)
@@ -605,23 +601,14 @@ function ExportModal({ message, onClose, onToast }: { message: Message; onClose:
   const mime = format === 'json' ? 'application/json' : format === 'html' ? 'text/html' : 'text/markdown'
   const ext = format === 'json' ? 'json' : format === 'html' ? 'html' : format === 'text' ? 'txt' : 'md'
   const download = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([render()], { type: mime })); a.download = `${summary.title.slice(0, 40) || 'artifact'}.${ext}`; a.click(); URL.revokeObjectURL(a.href); onToast(t('chat.downloaded')) }
-  return <div onClick={onClose} className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-space-4">
-    <div role="dialog" aria-modal="true" onClick={e => e.stopPropagation()} className="w-[480px] max-w-[92vw] overflow-hidden rounded-[14px] bg-surface shadow-2xl">
-      <div className="flex items-center justify-between border-b border-border-subtle p-space-4"><div className="text-title font-bold text-primary">{t('chat.exportArtifact')}</div><IconButton icon={<X size={16} strokeWidth={1.75} />} aria-label={t('common.close')} title={t('common.close')} className="!h-10 !w-10" onClick={onClose} /></div>
-      <div className="max-h-[60vh] overflow-y-auto p-space-4">
-        <div className="mb-space-4 text-label text-secondary">{summary.title} · document</div>
-        <SidebarHeading>{t('chat.format')}</SidebarHeading>
-        <div className="mb-space-4 grid grid-cols-2 gap-space-2">{exportFormats.map(f => <label key={f.id} className={`flex items-center gap-space-2 rounded-md border px-space-3 py-space-2 ${format === f.id ? 'border-accent bg-accent-subtle' : 'border-border-subtle'}`}><input type="radio" name="fmt" checked={format === f.id} onChange={() => setFormat(f.id)} className="h-[14px] w-[14px]" /><span className="text-caption text-primary">{f.label}</span></label>)}</div>
-        <SidebarHeading>{t('chat.options')}</SidebarHeading>
-        <label className="flex items-center gap-space-2 py-space-1"><input type="checkbox" checked={withTitle} onChange={() => setWithTitle(v => !v)} className="h-[15px] w-[15px]" /><span className="text-label text-primary">{t('chat.includeTitle')}</span></label>
-        <div className="mt-space-4"><SidebarHeading>{t('chat.preview')}</SidebarHeading></div>
-        <pre className="max-h-[120px] overflow-y-auto whitespace-pre-wrap rounded-md border border-border-subtle bg-elevated p-space-3 font-mono text-caption text-secondary">{render().slice(0, 600)}</pre>
-      </div>
-      <div className="flex gap-space-2 border-t border-border-subtle p-space-4">
-        <Button variant="secondary" onClick={() => { void navigator.clipboard?.writeText(render()); onToast(t('chat.copied')) }}>{t('chat.copy')}</Button>
-                <div className="flex-1" />
-        <Button variant="primary" onClick={download}>{t('chat.download')}</Button>
-      </div>
-    </div>
-  </div>
+  return <Dialog open onOpenChange={() => onClose()} title={t('chat.exportArtifact')} className="!w-[min(480px,calc(100vw-32px))]"
+    footer={<><Button variant="secondary" onClick={onClose}>{t('common.close')}</Button><Button variant="secondary" onClick={() => { void navigator.clipboard?.writeText(render()); onToast(t('chat.copied')) }}>{t('chat.copy')}</Button><div className="flex-1" /><Button variant="primary" onClick={download}>{t('chat.download')}</Button></>}>
+    <div className="mb-space-4 text-label text-secondary">{summary.title} · document</div>
+    <SidebarHeading>{t('chat.format')}</SidebarHeading>
+    <div className="mb-space-4 grid grid-cols-2 gap-space-2">{exportFormats.map(f => <label key={f.id} className={`flex items-center gap-space-2 rounded-md border px-space-3 py-space-2 ${format === f.id ? 'border-accent bg-accent-subtle' : 'border-border-subtle'}`}><input type="radio" name="fmt" checked={format === f.id} onChange={() => setFormat(f.id)} className="h-[14px] w-[14px]" /><span className="text-caption text-primary">{f.label}</span></label>)}</div>
+    <SidebarHeading>{t('chat.options')}</SidebarHeading>
+    <Checkbox checked={withTitle} onChange={() => setWithTitle(v => !v)} labelClassName="py-space-1" label={t('chat.includeTitle')} />
+    <div className="mt-space-4"><SidebarHeading>{t('chat.preview')}</SidebarHeading></div>
+    <pre className="max-h-[120px] overflow-y-auto whitespace-pre-wrap rounded-md border border-border-subtle bg-elevated p-space-3 font-mono text-caption text-secondary">{render().slice(0, 600)}</pre>
+  </Dialog>
 }
