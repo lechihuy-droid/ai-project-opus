@@ -405,7 +405,7 @@ const runStatusBadgeClass: Record<RunStatusKind, string> = {
 const runStatusBadgeMark: Record<RunStatusKind, string> = { running: '●', success: '✓', error: '!', interrupted: '◆', queued: '○', neutral: '?' }
 
 export function RunStatusBadge({ kind, label, className }: RunStatusBadgeProps) {
-  return <span className={cx('inline-flex items-center gap-[5px] rounded-full px-space-2 py-[2px] text-caption leading-caption', runStatusBadgeClass[kind], className)}><span aria-hidden="true" className="text-[10px] leading-none">{runStatusBadgeMark[kind]}</span>{label}</span>
+  return <span className={cx('inline-flex items-center gap-[5px] rounded-full px-space-2 py-[2px] text-caption leading-caption', runStatusBadgeClass[kind], className)}><span aria-hidden="true" className="text-caption leading-none">{runStatusBadgeMark[kind]}</span>{label}</span>
 }
 
 // ---------------------------------------------------------------------------
