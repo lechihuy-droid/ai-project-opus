@@ -423,6 +423,86 @@ def test_batch_shim_keeps_metacharacters_as_one_opaque_argument(tmp_path: Path, 
     registry.unregister(proc_id)
 
 
+def test_batch_shim_resolves_bundled_exe_via_dp0_variable(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Regression for the real-world 500: npm's Windows shim for a CLI bundled
+    as a native binary (no Node script at all) quotes a `.exe` target, and
+    current npm uses the two-step `CALL :find_dp0` style that sets the plain
+    batch variable `%dp0%` rather than the `%~dp0` parameter token. This is
+    the exact shape of the `@anthropic-ai/claude-code` npm shim on Windows —
+    `resolve_cmd` used to only understand `.js`/`.cjs`/`.mjs` targets and the
+    `%~dp0` token, so it raised instead of resolving this shim.
+    """
+    shim_dir = tmp_path / "npm"
+    bin_dir = shim_dir / "node_modules" / "@example" / "cli" / "bin"
+    bin_dir.mkdir(parents=True)
+    exe = bin_dir / "cli.exe"
+    exe.write_bytes(b"not a real PE; resolve_cmd only needs it to exist")
+    shim = shim_dir / "cli.CMD"
+    shim.write_text(
+        "@ECHO off\n"
+        "GOTO start\n"
+        ":find_dp0\n"
+        "SET dp0=%~dp0\n"
+        "EXIT /b\n"
+        ":start\n"
+        "SETLOCAL\n"
+        "CALL :find_dp0\n"
+        '"%dp0%\\node_modules\\@example\\cli\\bin\\cli.exe"   %*\n',
+        encoding="utf-8",
+    )
+    # node must never be required for the exe branch.
+    monkeypatch.setattr(procs.shutil, "which", lambda name: None)
+
+    resolved = procs.resolve_cmd([str(shim), "--version"])
+
+    assert resolved == [str(exe.resolve()), "--version"]
+
+
+def test_batch_shim_bundled_exe_keeps_metacharacters_as_one_opaque_argument(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Same shell-injection regression as the Node-script case, but for a shim
+    whose quoted target is a native `.exe` with no Node involved — the actual
+    shape of the Claude Code npm shim. cmd.exe must never see the prompt."""
+    shim = tmp_path / "fake-cli.cmd"
+    args_file = tmp_path / "args.json"
+    marker = tmp_path / "pwned.txt"
+    script = tmp_path / "runner.py"
+    script.write_text(
+        "import json, sys\n"
+        f"open({str(args_file)!r}, 'w', encoding='utf-8').write(json.dumps(sys.argv[1:]))\n",
+        encoding="utf-8",
+    )
+    # The shim's own quoted target is the interpreter binary itself (standing
+    # in for a bundled native .exe) — no Node script in the picture.
+    shim.write_text(f'@"{sys.executable}" %*\n', encoding="utf-8")
+    monkeypatch.setattr(procs.shutil, "which", lambda name: None)
+    prompt = f'hello&echo pwned>{marker}|more^caret'
+
+    registry = procs.ProcessRegistry()
+    proc_id = registry.spawn([str(shim), str(script), prompt], timeout=5)
+    process = registry.get(proc_id)
+    assert process is not None
+    assert process.wait(timeout=5) == 0
+
+    # sys.argv[0] is the script path itself, so runner.py's own sys.argv[1:]
+    # holds only the prompt — this is `python.exe runner.py <prompt>`.
+    assert json.loads(args_file.read_text(encoding="utf-8")) == [prompt]
+    assert not marker.exists()
+    registry.unregister(proc_id)
+
+
+def test_resolve_cmd_raises_for_unparseable_shim_instead_of_falling_back_to_cmd(tmp_path: Path) -> None:
+    """The safety contract: if a `.cmd`/`.bat` shim's real target can't be
+    pinned down, resolve_cmd must refuse rather than silently degrade to
+    `cmd /c <shim>` (which would reopen the shell-parsing hole)."""
+    shim = tmp_path / "mystery-cli.cmd"
+    shim.write_text("@ECHO off\r\necho nothing recognizable here\r\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="Cannot safely resolve entry point for batch shim"):
+        procs.resolve_cmd([str(shim), "--version"])
+
+
 # ---------------------------------------------------------------------------
 # registry — get_provider / list_providers
 # ---------------------------------------------------------------------------
@@ -443,6 +523,32 @@ def test_list_providers_returns_three_entries(monkeypatch: pytest.MonkeyPatch) -
     statuses = list_providers()
     assert len(statuses) == 3
     assert {item["id"] for item in statuses} == {"nvidia", "claude", "codex"}
+
+
+def test_list_providers_isolates_a_failing_provider(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Regression for the /api/providers 500: one provider's status() raising
+    (e.g. procs.resolve_cmd refusing an unparseable Windows batch shim) must
+    report that provider as unavailable with the reason, not break the whole
+    endpoint or drop the other providers' real status."""
+
+    def boom() -> dict[str, Any]:
+        raise ValueError("Cannot safely resolve entry point for batch shim: C:\\fake\\claude.CMD")
+
+    monkeypatch.setattr(claude_cli, "status", boom)
+    monkeypatch.setattr(
+        codex_cli,
+        "status",
+        lambda: {"id": "codex", "available": True, "version": "0.144.3", "detail": "ok", "capabilities": {}},
+    )
+
+    statuses = list_providers()
+
+    by_id = {item["id"]: item for item in statuses}
+    assert set(by_id) == {"nvidia", "claude", "codex"}
+    assert by_id["claude"]["available"] is False
+    assert "Cannot safely resolve entry point" in by_id["claude"]["detail"]
+    assert by_id["codex"]["available"] is True
+    assert by_id["codex"]["detail"] == "ok"
 
 
 def test_get_provider_unknown_raises() -> None:

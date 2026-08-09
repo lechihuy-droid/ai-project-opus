@@ -13,25 +13,49 @@ import uuid
 import config
 
 
-_NODE_SCRIPT = re.compile(r'"([^"\r\n]+\.(?:cjs|mjs|js))"', re.IGNORECASE)
+_SHIM_TARGET = re.compile(r'"([^"\r\n]+\.(?:cjs|mjs|js|exe))"', re.IGNORECASE)
+# npm's shim generator emits either the direct parameter-expansion token
+# (older npm: %~dp0) or, once it switched to a two-step CALL :find_dp0 dance
+# to dodge Windows' 260-char command-line limit, the plain batch variable
+# %dp0% set earlier in the file (current npm/pnpm). Both name "this shim's
+# own directory" and both must be expanded before the path is usable.
+_DP0_TOKEN = re.compile(r"%~dp0|%dp0%", re.IGNORECASE)
 
 
-def _batch_node_target(shim: str) -> tuple[str, str] | None:
-    """Return Node and the real script behind an npm/pnpm batch shim, if present."""
+def _batch_shim_target(shim: str) -> list[str] | None:
+    """Return the argv prefix that runs the real program behind an npm/pnpm
+    Windows batch shim, if — and only if — it can be pinned down unambiguously.
+
+    npm/pnpm generate ``.cmd``/``.bat`` shims for Windows; CreateProcess cannot
+    execute those directly. The shim's own body names its real target in a
+    quoted path: usually a ``.js``/``.cjs``/``.mjs`` file meant to run under
+    Node, but some packages (e.g. compiled CLIs bundled as a native binary)
+    point straight at a ``.exe``. Read that path out of the shim text and
+    return how to invoke it directly — never through cmd.exe, which would
+    reinterpret chat/job arguments as shell syntax.
+    """
     path = Path(shim)
     candidates: list[Path] = [path.with_suffix(".js")]
     try:
         content = path.read_text(encoding="utf-8", errors="replace")
     except OSError:
         content = ""
-    for match in _NODE_SCRIPT.finditer(content):
+    for match in _SHIM_TARGET.finditer(content):
         target = match.group(1)
-        target = target.replace("%~dp0", str(path.parent) + os.sep)
+        # A lambda replacement (not a plain string) so backslashes in the
+        # Windows path — e.g. "\U..." — are never parsed as regex escapes.
+        target = _DP0_TOKEN.sub(lambda _m: str(path.parent) + os.sep, target)
         candidate = Path(target)
         candidates.append(candidate if candidate.is_absolute() else path.parent / candidate)
     for candidate in candidates:
-        if candidate.is_file():
-            return shutil.which("node.exe") or shutil.which("node") or "node.exe", str(candidate.resolve())
+        if not candidate.is_file():
+            continue
+        if candidate.suffix.lower() == ".exe":
+            return [str(candidate.resolve())]
+        node_exe = shutil.which("node.exe") or shutil.which("node")
+        if node_exe is None:
+            continue
+        return [node_exe, str(candidate.resolve())]
     return None
 
 
@@ -39,8 +63,16 @@ def resolve_cmd(cmd: list[str]) -> list[str]:
     """Make cmd[0] runnable without handing untrusted argv to ``cmd.exe``.
 
     npm/pnpm Windows shims are batch files, which CreateProcess cannot execute
-    directly. Resolve their underlying Node entry point instead of using
+    directly. Resolve their underlying entry point instead of using
     ``cmd /c``: cmd.exe would parse chat/job arguments as shell syntax.
+
+    Raises ``ValueError`` if a ``.cmd``/``.bat`` shim's real target can't be
+    pinned down (no recognizable quoted path in its body, or that path
+    doesn't exist on disk). That failure is deliberate: silently falling back
+    to ``cmd /c <shim>`` would reopen the shell-parsing hole above. Callers
+    that probe multiple providers (see services/providers/__init__.py) must
+    catch this per provider so one unresolvable shim doesn't take the rest
+    down with it.
     """
     if not cmd:
         return cmd
@@ -52,11 +84,10 @@ def resolve_cmd(cmd: list[str]) -> list[str]:
                 resolved = resolved + ext
                 break
     if resolved.lower().endswith((".cmd", ".bat")):
-        target = _batch_node_target(resolved)
+        target = _batch_shim_target(resolved)
         if target is None:
-            raise ValueError(f"Cannot safely resolve Node entry point for batch shim: {resolved}")
-        node_exe, script = target
-        return [node_exe, script, *cmd[1:]]
+            raise ValueError(f"Cannot safely resolve entry point for batch shim: {resolved}")
+        return [*target, *cmd[1:]]
     return [resolved, *cmd[1:]]
 
 
