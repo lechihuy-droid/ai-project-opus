@@ -146,3 +146,14 @@ Stop: "stop caveman" or "normal mode"
 Auto-Clarity: drop caveman for security warnings, irreversible actions, user confused. Resume after.
 
 Boundaries: code/commits/PRs written normal.
+
+## Codex Skill Stack
+
+The Harness baseline is the Codex-native stack under `harness/codex-stack/skills/`.
+
+- Spec Kit owns WHAT: constitution, specification, clarification, plan, tasks, analysis, and implementation artifacts.
+- Superpowers owns HOW: brainstorming, planning, TDD, worktrees, subagent execution, review, and branch completion.
+- Anthropic and Codex document/UI skills provide capability; ECC supplies only backend, API, PostgreSQL, and security specialists.
+- Use `plan-review` before non-trivial implementation and `verification-before-completion` before any done claim.
+- Do not activate BMAD or OpenSpec alongside this baseline.
+- Keep the workflow single-conductor: use Spec Kit artifacts for lifecycle decisions and Superpowers only for execution discipline.

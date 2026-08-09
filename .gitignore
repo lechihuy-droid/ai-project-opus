@@ -10,6 +10,7 @@ VieNeu-TTS/
 ai-project-opus/harness/.venv-inspect/
 harness/.venv-inspect/
 harness/__pycache__/
+harness/vendor/
 opus-animus/opus-lucida/.venv-rvc/
 opus-animus/opus-lucida/.cache/
 node_modules/
