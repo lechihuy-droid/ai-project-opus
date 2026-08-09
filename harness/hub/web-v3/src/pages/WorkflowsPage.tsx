@@ -246,15 +246,25 @@ function Canvas({ workflow, layout, zoom, pan, selectedIds, selectedEdge, hoverE
 }
 
 // Overview of the whole graph plus the slice of it currently on screen.
-// Hidden under five nodes: below that the canvas already shows everything and
-// the overlay would only cover it.
+// Hidden while the content's bounding box (scaled by zoom) still fits inside
+// the canvas rect; shown once either dimension overflows it. A 24px hysteresis
+// band on the hide side (HIDE_MARGIN) stops the minimap from flickering on/off
+// when a node is dragged back and forth right at the boundary: once shown, the
+// content has to shrink 24px past the rect edge — well past ordinary pointer-move
+// jitter between frames — before it hides again.
 function Minimap({ layout, zoom, pan, canvasRef, onJump }: { layout: Layout; zoom: number; pan: { x: number; y: number }; canvasRef: React.RefObject<HTMLDivElement | null>; onJump: (pan: { x: number; y: number }) => void }) {
+  const HIDE_MARGIN = 24
   const box = { width: 160, height: 110, pad: 8 }
   const positions = Object.entries(layout)
   const rect = canvasRef.current?.getBoundingClientRect()
-  if (positions.length < 5 || !rect || !rect.width || !rect.height) return null
+  const [shown, setShown] = useState(false)
+  if (!rect || !rect.width || !rect.height) return null
   const minX = Math.min(...positions.map(([, p]) => p.x)), minY = Math.min(...positions.map(([, p]) => p.y))
   const maxX = Math.max(...positions.map(([, p]) => p.x + size.width)), maxY = Math.max(...positions.map(([, p]) => p.y + size.height))
+  const contentW = (maxX - minX) * zoom, contentH = (maxY - minY) * zoom
+  const visible = shown ? contentW > rect.width - HIDE_MARGIN || contentH > rect.height - HIDE_MARGIN : contentW > rect.width || contentH > rect.height
+  if (visible !== shown) setShown(visible)
+  if (!visible) return null
   // The viewport is part of the bounds: panning away from every node must still
   // show the frame moving instead of pinning it to an edge.
   const viewX = -pan.x / zoom, viewY = -pan.y / zoom, viewW = rect.width / zoom, viewH = rect.height / zoom
