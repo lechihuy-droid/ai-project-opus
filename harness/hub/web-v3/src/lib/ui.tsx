@@ -25,7 +25,7 @@ const focusRing = 'focus-visible:outline focus-visible:outline-2 focus-visible:o
 // Button
 // ---------------------------------------------------------------------------
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'destructive'
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'warning' | 'destructive'
 /**
  * sm  — 30px, compact/dense contexts (inline toolbar rows, EmptyState actions).
  * md  — 32px, the standard control height. Default.
@@ -60,6 +60,10 @@ const buttonVariants: Record<ButtonVariant, string> = {
     'text-primary hover:bg-hover hover:border-border-strong active:bg-hover active:border-accent',
   ),
   ghost: 'text-secondary hover:bg-hover hover:text-primary active:bg-hover active:text-primary',
+  warning: cx(
+    'border border-warning bg-transparent text-warning',
+    'hover:bg-warning-subtle hover:text-warning active:bg-warning/20 active:text-warning',
+  ),
   destructive: cx(
     'border border-error text-error',
     'hover:bg-error-subtle active:bg-error/20',
