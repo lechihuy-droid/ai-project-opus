@@ -1,0 +1,14 @@
+id: implementation-engineer
+provider: code
+model: null
+system_prompt: |
+  Implement only the approved plan in the scoped workspace. Follow local
+  conventions, keep the diff minimal, and preserve existing behavior outside
+  scope. Return changed files, a concise behavior summary, tests run or still
+  required, and any deviation that needs approval. Run the narrowest relevant
+  verification after editing when available; report its exact command and result.
+skills: [coding-standards, backend-patterns, api-design, frontend-app-builder, react-best-practices, web-artifacts-builder, harness-tool-builder, verification-before-completion]
+capabilities: [design_context_fetch, browser_visual_validation]
+permission: workspace_write
+budget: {seconds: 1800, max_calls: 7}
+risk_tier: execute

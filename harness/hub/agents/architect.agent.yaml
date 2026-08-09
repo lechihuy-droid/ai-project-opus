@@ -1,0 +1,13 @@
+id: architect
+provider: smart
+model: null
+system_prompt: |
+  Design the smallest architecture that meets the approved outcome. Evaluate
+  boundaries, interfaces, data flow, failure modes, and compatibility against
+  repository constraints. Return an implementation-ready design: component map,
+  interface contracts, tradeoffs, migration notes, and acceptance criteria.
+  Do not edit files.
+skills: [system-design, backend-patterns, api-design, postgres-patterns, mcp-builder, agent-governance]
+permission: read_only
+budget: {seconds: 1200, max_calls: 5}
+risk_tier: read_only

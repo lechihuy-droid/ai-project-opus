@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -7,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 import config
-from services import boundary, fsbrowse
+from services import boundary, capabilities, fsbrowse
 from services.providers.base import ChatEvent, ToolPolicy
 
 
@@ -65,18 +66,42 @@ REGISTRY: dict[str, Tool] = {
 }
 
 
-def schemas() -> list[dict[str, object]]:
-    return [{"type": "function", "function": {"name": tool.name, "parameters": tool.schema}} for tool in REGISTRY.values()]
+def schemas(policy: ToolPolicy | None = None) -> list[dict[str, object]]:
+    allowed_tools = set(policy.get("allowed_tools", [])) if policy is not None else set(REGISTRY)
+    concrete = [
+        {"type": "function", "function": {"name": tool.name, "parameters": tool.schema}}
+        for tool in REGISTRY.values() if tool.name in allowed_tools
+    ]
+    if policy is None:
+        return concrete
+    return concrete + capabilities.model_tool_schemas(policy.get("allowed_capabilities", []))
 
 
 def _refusal(tool_use_id: str, message: str) -> ChatEvent:
     return {"type": "tool_result", "tool_use_id": tool_use_id, "tool_output": {"refused": message}}
 
 
-def dispatch(tool_name: str, tool_input: object, tool_use_id: str, policy: ToolPolicy) -> ChatEvent:
+def dispatch(
+    tool_name: str, tool_input: object, tool_use_id: str, policy: ToolPolicy, *, correlation_id: str | None = None,
+) -> ChatEvent:
     """Run one registered read-only tool, returning refusals to the model instead of raising."""
     tool = REGISTRY.get(tool_name)
     if tool is None:
+        resolved = capabilities.resolve_tool_name(tool_name)
+        if resolved is not None:
+            contract, action = resolved
+            context = capabilities.CapabilityContext(
+                allowed_capabilities=frozenset(policy.get("allowed_capabilities", [])),
+                permission=policy.get("permission"), correlation_id=correlation_id,
+                metadata={"allowed_origins": list(policy.get("allowed_origins", []))},
+            )
+            try:
+                asyncio.get_running_loop()
+            except RuntimeError:
+                result = asyncio.run(capabilities.invoke(contract.id, action.name, tool_input, context))
+            else:
+                return _refusal(tool_use_id, "capability invocation is unavailable in this runtime context")
+            return {"type": "tool_result", "tool_use_id": tool_use_id, "tool_output": result.as_dict()}
         return _refusal(tool_use_id, f"unknown tool: {tool_name}")
     if tool_name not in policy.get("allowed_tools", []):
         return _refusal(tool_use_id, f"tool not allowed: {tool_name}")

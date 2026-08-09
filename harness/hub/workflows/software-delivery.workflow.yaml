@@ -1,0 +1,115 @@
+# Software-delivery reference: manager-controlled, auditable 15-profile pipeline.
+# Gates pause before the node that consumes the artifact needing human approval.
+id: software-delivery
+nodes:
+  - id: supervisor-intake
+    agent: supervisor
+    prompt: "Establish delivery scope for {{objective}}. Read {{inputs}}. Return an intake brief: outcome, non-goals, risk tier, required evidence, and approval points. Do not edit files."
+    gate: none
+  - id: triage
+    agent: triage-router
+    prompt: "Classify the approved intake for {{objective}}. Intake: {{supervisor-intake_output}}. Return a route envelope: work type, affected domains, required specialists, constraints, and unknowns. Do not hand off control or edit files."
+    gate: none
+  - id: explore
+    agent: explorer
+    prompt: "Inspect the repository for {{objective}} using this route envelope: {{triage_output}}. Return an evidence map with relevant files, existing behavior, constraints, and commands to verify. Do not edit files."
+    gate: none
+  - id: research-docs
+    agent: docs-researcher
+    prompt: "Research only documentation questions implied by {{triage_output}} and {{explore_output}}. Return cited API/version compatibility notes and unresolved questions; do not edit project files."
+    gate: none
+  - id: plan
+    agent: planner
+    prompt: "Produce a minimal executable plan for {{objective}} from repository evidence {{explore_output}} and documentation evidence {{research-docs_output}}. Include acceptance criteria, ordered changes, risks, and verification commands. Do not edit files."
+    gate: none
+  - id: validate-plan
+    type: validate
+    target: plan
+    checks:
+      - kind: min_length
+        value: 200
+      - kind: must_include
+        values: ["acceptance", "verification"]
+    on_fail: interrupt
+  - id: design
+    agent: architect
+    prompt: "Turn the approved plan into the smallest design decision record for {{objective}}. Plan: {{plan_output}}. Specify boundaries, interfaces/data changes, rollback concerns, and decisions explicitly. Do not edit files."
+    gate: approval
+  - id: validate-design
+    type: validate
+    target: design
+    checks:
+      - kind: min_length
+        value: 160
+      - kind: must_include
+        values: ["interface"]
+    on_fail: interrupt
+  - id: tdd
+    agent: tdd-engineer
+    prompt: "From the approved design {{design_output}}, modify test files only to capture the acceptance criteria for {{objective}}. Do not implement or change production code. Report changed test files, test cases, and command results or pending commands."
+    gate: approval
+  - id: implement
+    agent: implementation-engineer
+    prompt: "Implement {{objective}} exactly to the approved design {{design_output}} and test work {{tdd_output}}. Make surgical workspace changes only. Return changed files, commands run, results, and remaining risks."
+    gate: approval
+  - id: resolve-build
+    agent: build-error-resolver
+    prompt: "After approval, use only build, type, lint, test-compile, or test failures evidenced by TDD {{tdd_output}} and implementation {{implement_output}} for {{objective}}. If no supported failure is evidenced, make no source edit and return NO_SUPPORTED_FAILURE with the cited evidence and next verification command. Otherwise make the minimal repair, report changed files, rerun command/results, and residual risk. Do not redesign or scope-expand."
+    gate: approval
+  - id: database-review
+    agent: database-reviewer
+    prompt: "Review database and migration implications of the final workspace after repair {{resolve-build_output}} for {{objective}}. Use implementation report {{implement_output}}. Check schema, query, index, transaction, and rollback safety. Return findings with severity; do not edit files."
+    gate: none
+  - id: code-review
+    agent: code-reviewer
+    prompt: "Review the final workspace after repair {{resolve-build_output}} against plan {{plan_output}} and database findings {{database-review_output}}. Return only actionable correctness, regression, and maintainability findings with severity; do not edit files."
+    gate: none
+  - id: security-review
+    agent: security-reviewer
+    prompt: "Audit the final workspace after repair {{resolve-build_output}} for {{objective}}, considering {{code-review_output}}. Check auth, input handling, secrets, PII, injection, and trust boundaries. Return prioritized findings; do not edit files."
+    gate: none
+  - id: performance-review
+    agent: performance-analyzer
+    prompt: "Assess likely hot-path and resource risks in the final workspace after repair {{resolve-build_output}} for {{objective}}. Use {{database-review_output}} and {{code-review_output}}. Return evidence-backed performance findings; do not edit files."
+    gate: none
+  - id: ui-review
+    agent: ui-reviewer
+    prompt: "Assess UI/UX/accessibility impact of the final workspace after repair {{resolve-build_output}} for {{objective}}. Use acceptance criteria from {{plan_output}}. Return actionable findings only; do not edit files."
+    gate: none
+  - id: e2e
+    agent: e2e-runner
+    prompt: "Prepare and assess the end-to-end acceptance path for the final workspace after repair {{resolve-build_output}} for {{objective}}. Consider review findings: {{security-review_output}}; {{performance-review_output}}; {{ui-review_output}}. Run the narrowest allowed checks and report the command, supplied or observed evidence, failures, and coverage gaps; never claim unprovided execution results."
+    gate: none
+  - id: validate-e2e
+    type: validate
+    target: e2e
+    checks:
+      - kind: min_length
+        value: 120
+      - kind: must_include
+        values: ["command"]
+    on_fail: interrupt
+  - id: supervisor-finalize
+    agent: supervisor
+    prompt: "Finalize {{objective}} from evidence: plan={{plan_output}}; implementation={{implement_output}}; repair={{resolve-build_output}}; code={{code-review_output}}; security={{security-review_output}}; e2e={{e2e_output}}. Report delivered scope, verification evidence, waived findings, residual risk, and explicit next approval/rollback action. Do not edit files."
+    gate: approval
+edges:
+  - [supervisor-intake, triage]
+  - [triage, explore]
+  - [explore, research-docs]
+  - [research-docs, plan]
+  - [plan, validate-plan]
+  - [validate-plan, design]
+  - [design, validate-design]
+  - [validate-design, tdd]
+  - [tdd, implement]
+  - [implement, resolve-build]
+  - [resolve-build, database-review]
+  - [database-review, code-review]
+  - [code-review, security-review]
+  - [security-review, performance-review]
+  - [performance-review, ui-review]
+  - [ui-review, e2e]
+  - [e2e, validate-e2e]
+  - [validate-e2e, supervisor-finalize]
+stop: {max_nodes: 24, max_seconds: 7200}

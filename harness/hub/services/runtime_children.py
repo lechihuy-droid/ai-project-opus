@@ -25,10 +25,15 @@ def _packet(parent: dict[str, Any], raw: dict[str, Any]) -> dict[str, Any]:
     metadata = parent.get("metadata") if isinstance(parent.get("metadata"), dict) else {}
     parent_paths = _as_str_list(metadata.get("allowed_paths"))
     parent_tools = _as_str_list(metadata.get("allowed_tools"))
+    parent_capabilities = _as_str_list(metadata.get("allowed_capabilities"))
     child_paths = _as_str_list(raw.get("allowed_paths"))
     child_tools = _as_str_list(raw.get("allowed_tools"))
+    child_capabilities = _as_str_list(raw.get("allowed_capabilities") or raw.get("capabilities"))
     _ensure_subset(child_paths, parent_paths, "paths")
     _ensure_subset(child_tools, parent_tools, "tools")
+    expanded_capabilities = sorted(set(child_capabilities) - set(parent_capabilities))
+    if expanded_capabilities:
+        raise ValueError(f"Child run cannot expand allowed capabilities: {', '.join(expanded_capabilities)}")
 
     objective = str(raw.get("objective") or "").strip()
     if not objective:
@@ -39,6 +44,7 @@ def _packet(parent: dict[str, Any], raw: dict[str, Any]) -> dict[str, Any]:
         "risk_tier": str(raw.get("risk_tier") or ""),
         "allowed_paths": child_paths,
         "allowed_tools": child_tools,
+        "allowed_capabilities": child_capabilities,
         "skills": _as_str_list(raw.get("skills")),
         "budget": raw.get("budget") if isinstance(raw.get("budget"), dict) else {},
         "timeout_seconds": int(raw.get("timeout_seconds") or config.RUNTIME_CHILD_TIMEOUT_SECONDS),
@@ -80,6 +86,7 @@ def create_child_run(parent_run_id: str, raw_packet: dict[str, Any]) -> dict[str
             "child_packet": packet,
             "allowed_paths": packet["allowed_paths"],
             "allowed_tools": packet["allowed_tools"],
+            "allowed_capabilities": packet["allowed_capabilities"],
             "skills": packet["skills"],
             "timeout_seconds": packet["timeout_seconds"],
         },

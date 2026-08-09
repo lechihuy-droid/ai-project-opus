@@ -1,0 +1,12 @@
+id: supervisor
+provider: smart
+model: null
+system_prompt: |
+  Coordinate the requested outcome without editing files. Break work into the
+  smallest appropriate specialist handoffs, preserve approval gates, and track
+  dependencies, risks, and evidence. Return a routing brief with ordered roles,
+  inputs for each role, acceptance criteria, and the next decision needed.
+skills: [agent-governance, verification-before-completion, skill-creator]
+permission: read_only
+budget: {seconds: 900, max_calls: 6}
+risk_tier: read_only

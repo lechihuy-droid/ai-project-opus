@@ -1,0 +1,42 @@
+version: "2026-08-09"
+skills:
+  - {id: hub_builtin/agent-governance, domains: [platform, governance], intents: [govern_agents], compatible_agents: [], risk_level: high}
+  - {id: hub_builtin/analyze-data-quality, domains: [data, analytics], intents: [analyze_data], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/api-design, domains: [backend, api], intents: [build_backend], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/backend-patterns, domains: [backend], intents: [build_backend], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/build-dashboard, domains: [frontend, analytics], intents: [build_dashboard], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/claude-api, domains: [platform, api], intents: [build_agent], compatible_agents: [], risk_level: medium}
+  - {id: hub_builtin/clickhouse-io, domains: [data, database], intents: [database], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/coding-standards, domains: [engineering], intents: [implement], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/create-data-context, domains: [data, analytics], intents: [analyze_data], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/database-migrations, domains: [database, backend], intents: [database], compatible_agents: [], risk_level: medium}
+  - {id: hub_builtin/design-kpis, domains: [analytics, data], intents: [build_dashboard], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/doc-coauthoring, domains: [knowledge-work], intents: [write_document], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/documentation, domains: [knowledge-work, engineering], intents: [write_document], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/frontend-app-builder, domains: [frontend, uiux], intents: [build_dashboard, build_frontend], compatible_agents: [], required_capabilities: [browser_visual_validation], risk_level: low}
+  - {id: hub_builtin/frontend-design, domains: [frontend, uiux], intents: [build_dashboard, build_frontend, improve_ui], compatible_agents: [], optional_capabilities: [design_context_fetch, browser_visual_validation], risk_level: low}
+  - {id: hub_builtin/frontend-testing-debugging, domains: [frontend, engineering], intents: [verify], compatible_agents: [], required_capabilities: [browser_visual_validation], risk_level: low}
+  - {id: hub_builtin/harness-tool-builder, domains: [platform, engineering], intents: [build_agent], compatible_agents: [], risk_level: medium}
+  - {id: hub_builtin/hub-commit-message, domains: [engineering], intents: [implement], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/hub-diff-review, domains: [engineering], intents: [review], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/hub-run-artifact-summary, domains: [engineering], intents: [summarize_run], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/jupyter-notebooks, domains: [data, analytics], intents: [analyze_data], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/mcp-builder, domains: [platform, engineering], intents: [build_agent], compatible_agents: [], risk_level: medium}
+  - {id: hub_builtin/metric-diagnostics, domains: [data, analytics], intents: [analyze_data], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/postgres-patterns, domains: [database, backend], intents: [database], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/react-best-practices, domains: [frontend], intents: [build_dashboard, build_frontend], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/remotion-video-map, domains: [frontend, media], intents: [build_frontend], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/security-review, domains: [security], intents: [review_security], compatible_agents: [], risk_level: high}
+  - {id: hub_builtin/shadcn-best-practices, domains: [frontend, uiux], intents: [build_frontend], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/skill-creator, domains: [platform], intents: [build_agent], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/supabase-best-practices, domains: [backend, database], intents: [build_backend, database], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/systematic-debugging, domains: [engineering], intents: [verify], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/system-design, domains: [engineering, platform], intents: [design_system], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/tech-debt, domains: [engineering], intents: [review], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/testing-strategy, domains: [engineering], intents: [verify], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/validate-data, domains: [data, analytics], intents: [analyze_data, verify], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/verification-before-completion, domains: [engineering], intents: [verify], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/visualize-data, domains: [data, analytics], intents: [build_dashboard], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/webapp-testing, domains: [frontend, engineering], intents: [verify], compatible_agents: [], required_capabilities: [browser_visual_validation], risk_level: low}
+  - {id: hub_builtin/web-artifacts-builder, domains: [frontend], intents: [build_frontend], compatible_agents: [], risk_level: low}
+  - {id: hub_builtin/xlsx, domains: [data, knowledge-work], intents: [analyze_data], compatible_agents: [], risk_level: low}

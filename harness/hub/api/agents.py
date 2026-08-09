@@ -7,7 +7,7 @@ from fastapi.responses import Response, StreamingResponse
 
 import config
 from api._shared import _check_if_match, _etag, _http_error
-from services import execution, risk, run_inputs, runtime_agents, runtime_events, runtime_interrupts, runtime_pipeline, runtime_state
+from services import capabilities, execution, risk, run_inputs, runtime_agents, runtime_events, runtime_interrupts, runtime_pipeline, runtime_state
 from services.providers import list_providers
 
 router = APIRouter()
@@ -26,6 +26,11 @@ def api_model_classes() -> dict[str, dict[str, object]]:
 @router.get("/api/agents")
 def api_agents() -> list[dict[str, object]]:
     return runtime_agents.list_agents()
+
+
+@router.get("/api/capabilities")
+def api_capabilities() -> list[dict[str, object]]:
+    return capabilities.public_catalog()
 
 
 @router.get("/api/risk-tiers")
@@ -72,11 +77,16 @@ def api_agent_runs(agent_id: str | None = None) -> list[dict[str, object]]:
 def api_agent_test(agent_id: str) -> dict[str, object]:
     try:
         agent = runtime_agents.get_agent(agent_id)
+        route = runtime_agents.resolve_provider(agent)
         started = time.monotonic(); output: list[str] = []; usage: dict[str, object] = {}
         request = execution.ExecutionRequest(
-            correlation_id=f"agent-test-{agent_id}", provider_id=str(agent["provider"]), model=agent.get("model"),
+            correlation_id=f"agent-test-{agent_id}", provider_id=str(route["provider"]), model=route.get("model"),
             messages=[{"role": "user", "content": "Trả lời ngắn: kết nối agent hoạt động."}],
-            tool_policy={"permission": agent["permission"], "allowed_tools": agent.get("allowed_tools", []), "allowed_paths": agent.get("allowed_paths", [])},
+            tool_policy={
+                "permission": agent["permission"], "allowed_tools": agent.get("allowed_tools", []),
+                "allowed_paths": agent.get("allowed_paths", []), "allowed_origins": agent.get("allowed_origins", []),
+                "allowed_capabilities": agent.get("capabilities", []),
+            },
         )
         for item in execution.execute(request):
             if item.get("type") == "delta": output.append(str(item.get("text") or ""))
