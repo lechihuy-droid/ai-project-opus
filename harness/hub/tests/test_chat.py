@@ -238,6 +238,7 @@ def test_chat_surfaces_tool_events_and_threads_agent_policy(client: TestClient, 
         def stream_chat(self, _messages: list[dict[str, str]], **kwargs: object):
             assert kwargs["tool_policy"] == {
                 "permission": "workspace_write", "allowed_tools": ["Read"], "allowed_paths": ["harness/hub"],
+                "allowed_origins": [], "allowed_capabilities": [],
             }
             yield {"type": "tool_call", "tool_name": "Read", "tool_input": {"file_path": "x"}, "tool_use_id": "toolu_1"}
             yield {"type": "tool_result", "tool_use_id": "toolu_1", "tool_output": "ok"}
