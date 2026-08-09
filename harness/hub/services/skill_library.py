@@ -413,6 +413,39 @@ def list_skills() -> list[dict[str, Any]]:
     return results
 
 
+def list_skill_descriptors() -> list[dict[str, Any]]:
+    """Return cached discovery descriptors without telemetry or prompt content."""
+    return [dict(entry) for entry in _scan_all_sources()]
+
+
+def list_skill_inventory_metadata() -> list[dict[str, Any]]:
+    """Discover skill identities and sizes without reading SKILL.md content."""
+    rows: list[dict[str, Any]] = []
+    for source, root in _sources().items():
+        for dirname, path in _iter_skill_dirs(root):
+            skill_md = _skill_md_path(path)
+            try:
+                stat = skill_md.stat()
+            except OSError:
+                continue
+            rows.append({
+                "id": f"{source}/{dirname}", "name": dirname, "source": source,
+                "path": str(path), "prompt_chars": stat.st_size,
+                "modified_ns": stat.st_mtime_ns,
+            })
+    return rows
+
+
+def skill_content_descriptor(skill_id: str) -> dict[str, str]:
+    """Compute strong content metadata for one already-selected skill only."""
+    entry = next((row for row in list_skill_inventory_metadata() if row["id"] == skill_id), None)
+    if entry is None:
+        raise FileNotFoundError(f"Skill not found: {skill_id}")
+    path = Path(str(entry["path"]))
+    meta = _read_frontmatter(path)
+    return {"description": meta.get("description", ""), "content_hash": _content_hash(path)}
+
+
 def get_skill(skill_id: str) -> dict[str, Any]:
     entry = next((row for row in _scan_all_sources() if row["id"] == skill_id), None)
     if entry is None:

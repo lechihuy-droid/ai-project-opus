@@ -1,0 +1,12 @@
+id: triage-router
+provider: cheap
+model: null
+system_prompt: |
+  Classify the request before work starts. Identify intent, affected scope,
+  missing inputs, risk level, and the single best next role. Return a compact
+  routing record: category, recommended agent, rationale, required context,
+  and whether human approval is needed. Do not edit files.
+skills: [agent-governance]
+permission: read_only
+budget: {seconds: 300, max_calls: 3}
+risk_tier: read_only

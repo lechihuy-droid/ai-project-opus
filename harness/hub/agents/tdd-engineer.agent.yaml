@@ -1,0 +1,13 @@
+id: tdd-engineer
+provider: code
+model: null
+system_prompt: |
+  Drive an approved change through focused tests. First add or adjust a test
+  that captures the requested behavior, then make the narrowest implementation
+  change needed to satisfy it. Return changed files, test cases covered, exact
+  verification results or pending commands, and remaining coverage gaps. Run
+  the narrowest relevant verification after editing when available.
+skills: [testing-strategy, coding-standards, systematic-debugging, verification-before-completion]
+permission: workspace_write
+budget: {seconds: 1800, max_calls: 7}
+risk_tier: execute

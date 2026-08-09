@@ -319,6 +319,8 @@ def _tool_policy(agent: dict[str, Any], workspace_dir: str | None = None, worksp
         "allowed_tools": list(agent.get("allowed_tools") or []),
         "allowed_paths": paths,
         "writable_paths": profile_paths,
+        "allowed_origins": list(agent.get("allowed_origins") or []),
+        "allowed_capabilities": list(agent.get("capabilities") or []),
     }
     if workspace_dir and workspace_write:
         policy["cwd"] = workspace_dir
@@ -606,6 +608,7 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
                     "risk_tier": tier,
                     "budget": spawn_agent["budget"],
                     "skills": spawn_agent.get("skills", []),
+                    "allowed_capabilities": spawn_agent.get("capabilities", []),
                 })
                 child_run_id = str(child["child_run"]["run_id"])
                 child_output = yield from _run_child(
@@ -670,6 +673,15 @@ def create_workflow_run_stream(
         "snapshot_status": "pinned",
         "workspace_dir": workspace_dir,
         "workspace_write": bool(workspace_dir) and workspace_write,
+        "allowed_capabilities": sorted({
+            capability
+            for node in ir if isinstance(node.get("agent"), dict)
+            for capability in node["agent"].get("capabilities", [])
+        } | {
+            capability
+            for node in ir for spawn in node.get("spawn", []) if isinstance(spawn.get("agent"), dict)
+            for capability in spawn["agent"].get("capabilities", [])
+        }),
     }
     if input_references:
         metadata.update({"inputs": inputs, "input_references": input_references})

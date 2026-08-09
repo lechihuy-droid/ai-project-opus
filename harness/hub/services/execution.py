@@ -84,7 +84,7 @@ def execute(
         return
     messages = list(request.messages)
     for iteration in range(MAX_TOOL_ITERATIONS):
-        events = list(result.route.adapter.stream_chat(messages, **kwargs, tools=tools.schemas()))
+        events = list(result.route.adapter.stream_chat(messages, **kwargs, tools=tools.schemas(request.tool_policy)))
         calls = [event for event in events if event.get("type") == "tool_call"]
         for event in events:
             if event.get("type") != "done":
@@ -92,7 +92,10 @@ def execute(
         if not calls:
             yield from (event for event in events if event.get("type") == "done")
             return
-        results = [tools.dispatch(str(event.get("tool_name", "")), event.get("tool_input"), str(event.get("tool_use_id", "")), request.tool_policy) for event in calls]
+        results = [tools.dispatch(
+            str(event.get("tool_name", "")), event.get("tool_input"), str(event.get("tool_use_id", "")),
+            request.tool_policy, correlation_id=request.correlation_id,
+        ) for event in calls]
         for tool_result in results:
             yield tool_result
         if iteration + 1 == MAX_TOOL_ITERATIONS:

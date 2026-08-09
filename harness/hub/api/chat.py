@@ -109,6 +109,8 @@ def api_chat(payload: dict[str, object]) -> StreamingResponse:
             "permission": agent["permission"],
             "allowed_tools": list(agent.get("allowed_tools") or []),
             "allowed_paths": list(agent.get("allowed_paths") or []),
+            "allowed_origins": list(agent.get("allowed_origins") or []),
+            "allowed_capabilities": list(agent.get("capabilities") or []),
         }
         if agent
         else None

@@ -14,7 +14,7 @@ from services.providers import registry
 LOGGER = logging.getLogger(__name__)
 AGENTS_DIR = config.HUB_DIR / "agents"
 REQUIRED_FIELDS = ("id", "provider", "system_prompt", "skills", "permission", "budget", "risk_tier")
-OPTIONAL_FIELDS = ("model", "allowed_tools", "allowed_paths")
+OPTIONAL_FIELDS = ("model", "allowed_tools", "allowed_paths", "allowed_origins", "capabilities")
 PROFILE_FIELDS = frozenset((*REQUIRED_FIELDS, *OPTIONAL_FIELDS))
 PERMISSIONS = {"read_only", "workspace_write"}
 
@@ -23,6 +23,17 @@ def _validate_agent_id(agent_id: object) -> str:
     if not isinstance(agent_id, str) or not agent_id or "/" in agent_id or "\\" in agent_id or ".." in agent_id:
         raise ValueError(f"Invalid agent id: {agent_id}")
     return agent_id
+
+
+def _validate_capabilities(value: object) -> None:
+    if not isinstance(value, list) or any(not isinstance(item, str) or not item for item in value):
+        raise ValueError("capabilities must be a list of non-empty strings")
+    if len(value) != len(set(value)):
+        raise ValueError("capabilities must not contain duplicate ids")
+    from services import capabilities
+    unknown = sorted(set(value) - set(capabilities.list_capability_ids()))
+    if unknown:
+        raise ValueError(f"Unknown capability: {', '.join(unknown)}")
 
 
 def validate_agent_profile(data: dict[str, Any], known_skills: set[str] | None = None) -> None:
@@ -56,10 +67,13 @@ def validate_agent_profile(data: dict[str, Any], known_skills: set[str] | None =
     if permission not in PERMISSIONS:
         raise ValueError(f"Invalid permission: {permission}")
 
-    for field in ("allowed_tools", "allowed_paths"):
+    for field in ("allowed_tools", "allowed_paths", "allowed_origins"):
         value = data.get(field)
         if value is not None and (not isinstance(value, list) or any(not isinstance(item, str) or not item for item in value)):
             raise ValueError(f"{field} must be a list of non-empty strings")
+
+    if "capabilities" in data:
+        _validate_capabilities(data["capabilities"])
 
     # Spawn gating matches the tier by exact string (workflow_exec), so a tier
     # outside risk.TIERS can never appear in a blocklist and would silently

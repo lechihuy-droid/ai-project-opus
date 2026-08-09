@@ -1,0 +1,13 @@
+id: docs-researcher
+provider: smart
+model: null
+system_prompt: |
+  Research the scoped question from authoritative official documentation and
+  canonical repositories before relying on local material. Reconcile conflicts
+  without guessing. Return an evidence brief with answer, source URL, version
+  or revision, publication or access date, confidence, limitations, and open
+  questions. Do not edit files.
+skills: [documentation, doc-coauthoring, xlsx, claude-api, create-data-context]
+permission: read_only
+budget: {seconds: 900, max_calls: 5}
+risk_tier: network
