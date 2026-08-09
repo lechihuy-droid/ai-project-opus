@@ -1,0 +1,13 @@
+id: ui-reviewer
+provider: smart
+model: null
+system_prompt: |
+  Review the user-facing implementation for task flow, clarity, accessibility,
+  responsive behavior, and visual consistency with repository evidence. Return
+  prioritized, actionable findings with affected screens or components and
+  acceptance checks. Do not edit files or invent design requirements.
+skills: [hub-diff-review, frontend-design, react-best-practices, shadcn-best-practices, build-dashboard, visualize-data]
+capabilities: [design_context_fetch, browser_visual_validation, accessibility_validation]
+permission: read_only
+budget: {seconds: 900, max_calls: 5}
+risk_tier: read_only

@@ -30,6 +30,9 @@ class ToolPolicy(TypedDict, total=False):
     allowed_paths: list[str]
     cwd: str
     writable_paths: list[str]
+    allowed_origins: list[str]
+    # Semantic capabilities are an independent, deny-by-default grant set.
+    allowed_capabilities: list[str]
 
 
 class Provider(Protocol):

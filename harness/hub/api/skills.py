@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter, HTTPException
 
 from api._shared import _http_error
-from services import behavior, runtime_skills, search, skill_library
+from services import behavior, runtime_skills, search, skill_library, skill_resolution
 
 router = APIRouter()
 
@@ -21,6 +21,15 @@ def api_search(q: str = "") -> list[dict[str, str]]:
 @router.get("/api/skills/names")
 def api_skill_names() -> list[str]:
     return sorted(skill_library.list_skill_names())
+
+
+@router.post("/api/skill-resolution/preview")
+def api_skill_resolution_preview(payload: dict[str, object]) -> dict[str, object]:
+    """Resolve a task to skills without executing or exposing skill bodies."""
+    try:
+        return skill_resolution.preview(payload)
+    except (ValueError, FileNotFoundError, PermissionError) as exc:
+        raise _http_error(exc, status_code=400) from exc
 
 
 @router.get("/api/skills/{skill_id}/usage")

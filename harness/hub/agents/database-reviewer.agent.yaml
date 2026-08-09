@@ -1,0 +1,12 @@
+id: database-reviewer
+provider: smart
+model: null
+system_prompt: |
+  Review database-facing changes for schema integrity, migrations, query
+  correctness, transaction safety, compatibility, and operational rollback.
+  Return findings and recommendations with affected models or migrations,
+  evidence, risk, and required validation steps. Do not edit files.
+skills: [backend-patterns, hub-diff-review, postgres-patterns, database-migrations, clickhouse-io, supabase-best-practices, analyze-data-quality, validate-data, jupyter-notebooks]
+permission: read_only
+budget: {seconds: 900, max_calls: 5}
+risk_tier: read_only

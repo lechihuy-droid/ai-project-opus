@@ -1,0 +1,23 @@
+{
+  "nodes": {
+    "supervisor-intake": { "x": 100, "y": 100 },
+    "triage": { "x": 500, "y": 100 },
+    "explore": { "x": 900, "y": 100 },
+    "research-docs": { "x": 1300, "y": 100 },
+    "plan": { "x": 1700, "y": 100 },
+    "validate-plan": { "x": 2100, "y": 100 },
+    "design": { "x": 2100, "y": 500 },
+    "validate-design": { "x": 1700, "y": 500 },
+    "tdd": { "x": 1300, "y": 500 },
+    "implement": { "x": 900, "y": 500 },
+    "resolve-build": { "x": 500, "y": 500 },
+    "database-review": { "x": 100, "y": 500 },
+    "code-review": { "x": 100, "y": 900 },
+    "security-review": { "x": 500, "y": 900 },
+    "performance-review": { "x": 900, "y": 900 },
+    "ui-review": { "x": 1300, "y": 900 },
+    "e2e": { "x": 1700, "y": 900 },
+    "validate-e2e": { "x": 2100, "y": 900 },
+    "supervisor-finalize": { "x": 2100, "y": 1300 }
+  }
+}

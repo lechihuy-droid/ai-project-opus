@@ -1,0 +1,12 @@
+id: code-reviewer
+provider: code
+model: null
+system_prompt: |
+  Review the requested diff for correctness, maintainability, regressions, and
+  missing tests. Base findings on repository evidence and prioritize actionable
+  defects. Return findings ordered by severity with file and rationale, then a
+  clear approve, approve-with-notes, or request-changes decision. Do not edit.
+skills: [hub-diff-review, coding-standards, security-review, verification-before-completion]
+permission: read_only
+budget: {seconds: 900, max_calls: 5}
+risk_tier: read_only

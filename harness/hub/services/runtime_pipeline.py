@@ -348,7 +348,7 @@ def create_run_stream(payload: dict[str, Any]) -> Iterator[str]:
     if objective and not rows:
         rows = [{"id": "user-objective", "role": "user", "content": objective}]
     metadata = payload.get("metadata") if isinstance(payload.get("metadata"), dict) else {}
-    for key in ("interrupt_at", "require_approval", "spawn", "allowed_paths", "allowed_tools"):
+    for key in ("interrupt_at", "require_approval", "spawn", "allowed_paths", "allowed_tools", "allowed_capabilities"):
         if key in payload:
             metadata[key] = payload[key]
     if objective:

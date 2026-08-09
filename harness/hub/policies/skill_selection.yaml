@@ -1,0 +1,10 @@
+version: "2026-08-09"
+selection:
+  max_skills_per_agent_run: 4
+  max_prompt_chars: 12000
+  never_truncate_skill: true
+  strategy: [explicit_request, agent_required_skills, policy_force, intent_match, domain_match]
+  rules:
+    - if:
+        lifecycle_stage: verification
+      force: [hub_builtin/verification-before-completion]

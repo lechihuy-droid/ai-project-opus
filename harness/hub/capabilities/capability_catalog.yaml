@@ -1,0 +1,139 @@
+version: 1
+capabilities:
+  - id: design_context_fetch
+    contract_version: "1.0.0"
+    title: Fetch design context
+    description: Retrieve a vendor-neutral description of a design node or document for implementation and review.
+    plane: engineering
+    category: uiux
+    effects: {read_only: true, destructive: false, idempotent: true, open_world: true, network: true}
+    policy:
+      allowed_permissions: [read_only, workspace_write]
+      data_classification: design_metadata
+      approval_required: false
+      secrets_in_inputs: false
+      allowed_url_schemes: [https]
+      allowed_origins: ["https://figma.com", "https://www.figma.com"]
+      timeout_seconds: 30
+    binding:
+      adapter_id: figma_mcp
+      vendor: figma
+      transport: mcp
+      configured: false
+    actions:
+      - name: fetch
+        description: Fetch normalized context for one design URL or node reference.
+        input_schema:
+          type: object
+          properties:
+            design_url: {type: string, minLength: 1}
+            node_id: {type: string, minLength: 1}
+          required: [design_url]
+          additionalProperties: false
+        output_schema:
+          type: object
+          properties:
+            document: {type: object}
+            nodes: {type: array, items: {type: object}}
+          required: [document]
+          additionalProperties: false
+
+  - id: browser_visual_validation
+    contract_version: "1.0.0"
+    title: Browser visual validation
+    description: Deterministically validate browser rendering, interaction, and responsive behavior.
+    plane: engineering
+    category: uiux
+    effects: {read_only: true, destructive: false, idempotent: true, open_world: true, network: true}
+    policy:
+      allowed_permissions: [read_only, workspace_write]
+      data_classification: application_under_test
+      approval_required: false
+      secrets_in_inputs: false
+      allowed_url_schemes: [http, https]
+      require_allowed_origins: true
+      timeout_seconds: 90
+    binding:
+      adapter_id: playwright
+      vendor: playwright
+      transport: local_process
+      configured: false
+    actions:
+      - name: screenshot
+        description: Capture a screenshot at a pinned viewport.
+        input_schema:
+          type: object
+          properties:
+            url: {type: string, minLength: 1}
+            viewport: {type: object, properties: {width: {type: integer, minimum: 1}, height: {type: integer, minimum: 1}}, required: [width, height], additionalProperties: false}
+          required: [url, viewport]
+          additionalProperties: false
+        output_schema:
+          type: object
+          properties: {screenshot_artifact: {type: string, minLength: 1}}
+          required: [screenshot_artifact]
+          additionalProperties: false
+      - name: check_responsive
+        description: Check the application at declared viewports and return per-viewport findings.
+        input_schema:
+          type: object
+          properties:
+            url: {type: string, minLength: 1}
+            viewports: {type: array, minItems: 1, items: {type: object, properties: {width: {type: integer, minimum: 1}, height: {type: integer, minimum: 1}}, required: [width, height], additionalProperties: false}}
+          required: [url, viewports]
+          additionalProperties: false
+        output_schema:
+          type: object
+          properties: {passed: {type: boolean}, findings: {type: array, items: {type: object}}}
+          required: [passed, findings]
+          additionalProperties: false
+      - name: run_e2e
+        description: Execute a named deterministic browser test suite.
+        input_schema:
+          type: object
+          properties: {suite: {type: string, minLength: 1}, base_url: {type: string, minLength: 1}}
+          required: [suite, base_url]
+          additionalProperties: false
+        output_schema:
+          type: object
+          properties: {passed: {type: boolean}, tests: {type: array, items: {type: object}}}
+          required: [passed, tests]
+          additionalProperties: false
+
+  - id: accessibility_validation
+    contract_version: "1.0.0"
+    title: Accessibility validation
+    description: Run an accessibility scan and preserve the complete normalized axe result sets.
+    plane: engineering
+    category: uiux
+    effects: {read_only: true, destructive: false, idempotent: true, open_world: true, network: true}
+    policy:
+      allowed_permissions: [read_only, workspace_write]
+      data_classification: application_under_test
+      approval_required: false
+      secrets_in_inputs: false
+      allowed_url_schemes: [http, https]
+      require_allowed_origins: true
+      timeout_seconds: 60
+    binding:
+      adapter_id: axe_core
+      vendor: axe-core
+      transport: library
+      configured: false
+    actions:
+      - name: scan
+        description: Scan one rendered URL, optionally scoped by a CSS selector.
+        input_schema:
+          type: object
+          properties: {url: {type: string, minLength: 1}, include: {type: string, minLength: 1}}
+          required: [url]
+          additionalProperties: false
+        output_schema:
+          type: object
+          properties:
+            passes: {type: array, items: {type: object}}
+            violations: {type: array, items: {type: object}}
+            incomplete: {type: array, items: {type: object}}
+            inapplicable: {type: array, items: {type: object}}
+          required: [passes, violations, incomplete, inapplicable]
+          additionalProperties: false
