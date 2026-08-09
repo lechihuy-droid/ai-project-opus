@@ -47,6 +47,7 @@ def test_workspace_dir_policy_separates_read_from_write() -> None:
 
     assert workflow_exec._tool_policy(agent) == {
         "permission": "read_only", "allowed_tools": [], "allowed_paths": ["profile-path"], "writable_paths": ["profile-path"],
+        "allowed_origins": [], "allowed_capabilities": [],
     }
     read_policy = workflow_exec._tool_policy(agent, "external-folder", False)
     assert read_policy["allowed_paths"] == ["profile-path", "external-folder"]
@@ -55,6 +56,20 @@ def test_workspace_dir_policy_separates_read_from_write() -> None:
     write_policy = workflow_exec._tool_policy(agent, "external-folder", True)
     assert write_policy["cwd"] == "external-folder"
     assert write_policy["writable_paths"] == ["profile-path", "external-folder"]
+
+
+def test_workspace_dir_stays_read_only_without_write_consent_even_with_capabilities() -> None:
+    """Capability grants are not a second route to write access: without consent the
+    workspace folder stays out of writable_paths and cwd."""
+    agent = _agent() | {"allowed_paths": ["profile-path"], "capabilities": ["fs.search"]}
+
+    policy = workflow_exec._tool_policy(agent, "external-folder", False)
+
+    assert "external-folder" not in policy["writable_paths"]
+    assert "cwd" not in policy
+    assert policy["writable_paths"] == ["profile-path"]
+    assert policy["allowed_capabilities"] == ["fs.search"]
+    assert "external-folder" in policy["allowed_paths"]
 
 
 def test_cli_commands_exclude_read_only_workspace_dir() -> None:
@@ -78,7 +93,8 @@ def test_resume_restores_workspace_scope_from_metadata(runtime_tmp: Path, monkey
 
     assert fake.tool_policies == [{
         "permission": "read_only", "allowed_tools": [], "allowed_paths": ["external-folder"],
-        "writable_paths": ["external-folder"], "cwd": "external-folder",
+        "writable_paths": ["external-folder"], "allowed_origins": [], "allowed_capabilities": [],
+        "cwd": "external-folder",
     }]
 
 

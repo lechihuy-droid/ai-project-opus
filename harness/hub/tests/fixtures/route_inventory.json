@@ -83,6 +83,12 @@
     ]
   ],
   [
+    "/api/capabilities",
+    [
+      "GET"
+    ]
+  ],
+  [
     "/api/chat",
     [
       "POST"
@@ -413,6 +419,12 @@
   ],
   [
     "/api/skill-library/{skill_id}/deploy",
+    [
+      "POST"
+    ]
+  ],
+  [
+    "/api/skill-resolution/preview",
     [
       "POST"
     ]
