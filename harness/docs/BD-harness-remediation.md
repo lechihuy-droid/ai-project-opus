@@ -1,7 +1,7 @@
 # BD — Build Plan: Harness Remediation (Architecture + Security)
 
 **Date:** 2026-08-10
-**Status:** 🔵 Planning — chờ APPROVE trước khi giao Codex
+**Status:** 🟡 In Progress — APPROVED 2026-08-10, P0 đã đóng gói brief cho Codex (`harness/docs/codex-briefs/`)
 **Ref:** Architecture & Security Audit 2026-08-10 (5 parallel subagent audits)
 **Scope:** `harness/` — eval runner, hub backend, web-v3, version-governance, docs/governance
 **Estimate:** ~14–18 giờ Codex + ~3 giờ review (Opus)
