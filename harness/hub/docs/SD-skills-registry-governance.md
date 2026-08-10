@@ -7,7 +7,7 @@
 ## Verification evidence (2026-08-10)
 
 - `pnpm lint` in `harness/hub/web-v3`: pass (`oxlint`, exit 0).
-- Full backend verification: `429 passed, 1 skipped, 2 warnings in 133.04s`.
+- Full backend verification on final HEAD: `435 passed, 1 skipped, 2 warnings in 145.24s`.
 - Frontend build: the Task 4 builder recorded an elevated `pnpm build` pass in round 5 (`1862 modules`, `19.14 s`). The coordinator's independent build attempt remains blocked at Vite/esbuild `spawn EPERM` in this sandbox; that is environment provenance, not a failed source build.
 - Summary endpoint measurement with FastAPI `TestClient`, excluding server startup:
   cold `519.90 ms`; ten warm samples `71.10, 51.61, 47.44, 42.26, 51.08, 47.28, 46.90, 45.24, 47.56, 49.81 ms`; warm p95 `71.10 ms` (within the `<=200 ms` target).
