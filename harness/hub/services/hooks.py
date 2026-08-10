@@ -45,6 +45,8 @@ def _validate(payload: dict[str, Any], old: dict[str, Any] | None = None) -> dic
     if action["type"] == "shell":
         command = action.get("command")
         if not isinstance(command, list) or not command or not all(isinstance(part, str) and part for part in command): raise ValueError("action.command must be a non-empty command array")
+        if Path(command[0]).name.lower() not in config.HOOK_ALLOWED_COMMANDS:
+            raise ValueError(f"action.command[0] not in HOOK_ALLOWED_COMMANDS: {command[0]}")
         return row
     key = "url" if action["type"] == "webhook" else "path"
     if not isinstance(action.get(key), str) or not action[key]: raise ValueError(f"action.{key} is required")

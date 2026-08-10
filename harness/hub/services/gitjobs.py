@@ -499,6 +499,7 @@ def create_hook_job(command: list[str], event: dict[str, Any]) -> dict[str, Any]
     event_type = str(event.get("type") or "runtime_event")
     job = create_job(f"Hook shell action for event: {event_type}", agent="hook-shell", command=command)
     record = _read_job(str(job["id"]))
+    record["unattended"] = True
     record["hook_event"] = {"type": event_type, "run_id": str(event.get("run_id") or "")}
     record["approval_receipt"] = {
         "binding_hash": _binding_hash(record),

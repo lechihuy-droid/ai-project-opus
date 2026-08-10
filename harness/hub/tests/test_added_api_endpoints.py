@@ -67,6 +67,7 @@ def test_hooks_api_rejects_invalid_and_missing(client: TestClient, hooks_tmp: Pa
 
 
 def test_shell_hook_uses_gitjob_path_and_receipt(hooks_tmp: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(config, "HOOK_ALLOWED_COMMANDS", ("echo",))
     hook = hooks.create(hook_payload() | {"action": {"type": "shell", "command": ["echo", "safe"]}})
     created: dict[str, object] = {"id": "j-20260729-hook", "approval_receipt": {"binding_hash": "receipt"}}
     monkeypatch.setattr(gitjobs, "create_hook_job", lambda command, event: created | {"command": command, "event": event})

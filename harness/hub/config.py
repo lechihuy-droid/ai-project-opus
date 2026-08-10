@@ -30,6 +30,9 @@ PORT = 8799
 VGOV_BASE_URL = "http://127.0.0.1:8810"
 STEP_CAP = 50
 JOB_AGENT_CMD = "codex"
+HOOK_ALLOWED_COMMANDS: tuple[str, ...] = tuple(
+    item.strip().lower() for item in os.getenv("HOOK_ALLOWED_COMMANDS", "").split(",") if item.strip()
+)
 JOB_TIME_CAP_SECONDS = 1800
 JOB_MAX_RUNS = 3
 RUNTIME_MAX_CHILD_RUNS = 3
