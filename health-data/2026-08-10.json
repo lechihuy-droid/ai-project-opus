@@ -1,0 +1,52 @@
+{
+  "date": "2026-08-10",
+  "meals": [
+    {
+      "time": "09:25",
+      "name": "Breakfast",
+      "source": "photo",
+      "items": [
+        {
+          "name": "Morinaga aloe yogurt drink 200g",
+          "grams": 200,
+          "kcal": 98,
+          "protein": 7.4,
+          "carb": 15.6,
+          "fat": 0.7,
+          "sugar": 12.0,
+          "fiber": 0.0,
+          "saturated_fat": 0.2,
+          "sodium_mg": 79,
+          "alcohol": 0
+        },
+        {
+          "name": "Sweet bread 1 piece",
+          "grams": 80,
+          "kcal": 204,
+          "protein": 2.9,
+          "carb": 24.5,
+          "fat": 10.5,
+          "sugar": 10.0,
+          "fiber": 1.0,
+          "saturated_fat": 4.0,
+          "sodium_mg": 118,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 302,
+      "total_protein": 10.3,
+      "total_carb": 40.1,
+      "total_fat": 11.2,
+      "total_sugar": 22.0,
+      "total_fiber": 1.0,
+      "total_saturated_fat": 4.2,
+      "total_sodium_mg": 197,
+      "total_alcohol": 0
+    }
+  ],
+  "water_ml": 0,
+  "steps": 0,
+  "sleep_hours": 0,
+  "weight_kg": 0,
+  "notes": "Breakfast logged from photos. Yogurt drink label per 200g: 98 kcal, protein 7.4g, fat 0.7g, carb 15.6g. Bread label per piece: 204 kcal, protein 2.9g, fat 10.5g, carb 24.5g, salt equivalent 0.3g. Sugar/fiber/saturated fat are estimated where not visible."
+}
