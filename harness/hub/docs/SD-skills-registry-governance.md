@@ -1,8 +1,20 @@
 # Skills Registry and Deployment Governance Design
 
-**Status:** Proposed  
+**Status:** Implemented, browser evidence pending
 **Date:** 2026-08-10  
 **Surface:** Harness Hub `#/skills`
+
+## Verification evidence (2026-08-10)
+
+- `pnpm lint` in `harness/hub/web-v3`: pass (`oxlint`, exit 0).
+- Full backend verification: `429 passed, 1 skipped, 2 warnings in 133.04s`.
+- Frontend build: the Task 4 builder recorded an elevated `pnpm build` pass in round 5 (`1862 modules`, `19.14 s`). The coordinator's independent build attempt remains blocked at Vite/esbuild `spawn EPERM` in this sandbox; that is environment provenance, not a failed source build.
+- Summary endpoint measurement with FastAPI `TestClient`, excluding server startup:
+  cold `519.90 ms`; ten warm samples `71.10, 51.61, 47.44, 42.26, 51.08, 47.28, 46.90, 45.24, 47.56, 49.81 ms`; warm p95 `71.10 ms` (within the `<=200 ms` target).
+- A repeatable native Playwright acceptance script is present at `harness/hub/tests/ui_skills_registry_smoke.py`. It uses `HARNESS_UI_URL`, a `1440x960` viewport, holds telemetry and target-status independently to prove the registry table paints first, checks compare is read-only, and checks Escape focus restoration and console errors.
+- The browser smoke is the sole pending gate: the Harness server started successfully through `harness/codex-stack/skills/webapp-testing/scripts/with_server.py`, but the `.ih` runtime has no `playwright`; the available Python 3.11 runtime was blocked from launching the Playwright driver by sandbox `WinError 5`. The required elevated retry could not be approved because the environment reported its usage limit.
+
+The remaining fresh gate before this status can become fully `Implemented` is the Playwright smoke through `with_server.py` on a host allowed to launch browser subprocesses.
 
 ## 1. Goal
 
@@ -11,8 +23,8 @@ Turn Skills into a registry-first operational screen while preserving the fast m
 The screen must distinguish three concepts:
 
 - **Variant count:** inventory fact; never a warning by itself.
-- **Global consistency:** whether all discovered variants currently have equal content.
-- **Target comparison:** state of one source variant relative to one selected deployment target.
+- **Selected-target consistency:** state of one source variant relative to one selected deployment target.
+- **Target comparison:** the evidence and status used for that selected-target decision.
 
 ## 2. Usage
 
@@ -33,7 +45,7 @@ Search | Source | Consistency | Sort                Target: <source>
 Registry table (primary, always keeps usable height)
 Skill | Source | Variants | Target status | Used by | Last used
 
-Compact consistency banner: N differ across sources | Review
+Compact selected-target diagnostic: N differ from target <source> | Review
 
 Right inspector / responsive overlay
 identity | variants | source/target hashes | compare | sync | deploy evidence
@@ -42,7 +54,7 @@ identity | variants | source/target hashes | compare | sync | deploy evidence
 Rules:
 
 - Remove the duplicate source sidebar; source remains a toolbar filter.
-- Drift diagnostics never consume the table's primary vertical area.
+- Selected-target diagnostics never consume the table's primary vertical area.
 - Detail/compare opens beside or over the table, never below it.
 - Controls use existing compact primitives. Do not resize the shared primary button.
 - Status copy must be explicit: `Checking`, `In sync`, `Modified`, `Missing`, `Conflict`, or `Unavailable`.
@@ -161,8 +173,8 @@ Compare loads only the selected source detail and matching target detail, then r
 
 - Summary loading: table skeleton/explicit loading state.
 - Optional comparison/telemetry failure: local `Unavailable`; no global page failure.
-- Global consistency pending: neutral, never amber.
-- Amber only for `modified`, `missing`, or global content difference.
+- Selected-target consistency pending: neutral, never amber.
+- Amber only for `modified` or `missing` selected-target results.
 - Conflict uses error/critical styling and requires explicit review.
 - Inspector has dialog/complementary semantics as appropriate, Escape close, visible focus, and focus restoration.
 - Row and action controls remain keyboard reachable; status is never communicated by color alone.
@@ -176,7 +188,7 @@ Compare loads only the selected source detail and matching target detail, then r
 
 ## 9. Acceptance criteria
 
-- Registry remains visible with large drift data and when optional endpoints are delayed or fail.
+- Registry remains visible with large inventories and when optional endpoints are delayed or fail.
 - Filters name their dimensions and search covers name, description, and source.
 - Variant count is displayed independently from consistency and target status.
 - Unique one-variant skills are not warnings.
@@ -198,4 +210,4 @@ Compare loads only the selected source detail and matching target detail, then r
 
 ## 11. Rollback
 
-UI can fall back to metadata summary plus global drift. New telemetry and target-status endpoints are additive. Deploy request extensions are optional and preserve the existing backup/log path. Removing the new UI does not alter stored skills or agent manifests.
+UI can fall back to metadata summary plus selected-target diagnostic. New telemetry and target-status endpoints are additive. Deploy request extensions are optional and preserve the existing backup/log path. Removing the new UI does not alter stored skills or agent manifests.
