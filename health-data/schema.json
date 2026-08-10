@@ -1,0 +1,59 @@
+{
+  "schema_version": "health.v2",
+  "description": "Daily health log with explicit sugar tracking.",
+  "date_file_pattern": "health-data/YYYY-MM-DD.json",
+  "index_file": "health-data/index.json",
+  "sugar_policy": {
+    "track_total_sugar_g": true,
+    "track_added_sugar_estimated_g": true,
+    "target_total_sugar_g": 50,
+    "soft_limit_added_sugar_g": 25,
+    "note": "total_sugar_g is label/estimated total sugar. added_sugar_estimated_g approximates free/added sugar when label does not separate it."
+  },
+  "meal_item_fields": {
+    "name": "string",
+    "grams": "number",
+    "kcal": "number",
+    "protein": "number",
+    "carb": "number",
+    "fat": "number",
+    "sugar": "number, total sugar grams",
+    "added_sugar_estimated": "number, estimated added/free sugar grams",
+    "sugar_confidence": "high | medium | low",
+    "fiber": "number",
+    "saturated_fat": "number",
+    "sodium_mg": "number",
+    "alcohol": "number"
+  },
+  "daily_totals": {
+    "kcal": "sum meal kcal",
+    "protein": "sum protein g",
+    "carb": "sum carb g",
+    "fat": "sum fat g",
+    "sugar_g": "sum item sugar",
+    "added_sugar_estimated_g": "sum estimated added/free sugar",
+    "fiber": "sum fiber g",
+    "saturated_fat": "sum saturated fat g",
+    "sodium_mg": "sum sodium mg",
+    "alcohol": "sum alcohol g"
+  },
+  "sugar_tracking": {
+    "enabled": true,
+    "target_total_sugar_g": 50,
+    "soft_limit_added_sugar_g": 25,
+    "current_total_sugar_g": "number",
+    "current_added_sugar_estimated_g": "number",
+    "remaining_total_sugar_g": "number",
+    "remaining_added_sugar_g": "number",
+    "status": "good | watch | high",
+    "sources": [
+      {
+        "meal": "Breakfast | Lunch | Dinner | Snack",
+        "item": "string",
+        "sugar_g": "number",
+        "added_sugar_estimated_g": "number",
+        "confidence": "high | medium | low"
+      }
+    ]
+  }
+}

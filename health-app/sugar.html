@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#090A0F">
+<title>Opus Vita · Sugar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;background:#090A0F;color:#F7F8FA;min-height:100vh;-webkit-font-smoothing:antialiased}.app{max-width:430px;margin:0 auto;min-height:100vh;padding:calc(18px + env(safe-area-inset-top,0px)) 14px calc(24px + env(safe-area-inset-bottom,0px))}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.title{font-size:18px;font-weight:800;letter-spacing:-.2px}.sub{font-size:12px;color:#9BA1AE;margin-top:3px}.btn{border:0;border-radius:10px;background:rgba(255,255,255,.06);color:#9BA1AE;padding:10px 12px;font-family:inherit;font-weight:700}.card{background:#151720;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px;margin-bottom:10px}.hero{background:linear-gradient(135deg,#22120F,#130B09);border-color:rgba(255,69,58,.24)}.label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:#9BA1AE;margin-bottom:8px}.val{font-size:42px;font-weight:800;line-height:1;color:#FF453A;letter-spacing:-1px}.unit{font-size:14px;color:#9BA1AE;font-weight:700;margin-left:3px}.row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}.row:last-child{border-bottom:0}.name{font-size:13px;font-weight:700;min-width:0}.meta{font-size:11px;color:#9BA1AE;margin-top:2px}.amt{font-size:14px;font-weight:800;color:#FF9F0A;white-space:nowrap}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini .val{font-size:28px}.mini.good .val{color:#30D158}.mini.warn .val{color:#FF9F0A}.mini.bad .val{color:#FF453A}.bar{height:8px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden;margin-top:12px}.fill{height:100%;background:linear-gradient(90deg,#FF9F0A,#FF453A);border-radius:5px}.note{font-size:12px;color:#9BA1AE;line-height:1.55}.err{background:rgba(255,69,58,.1);border-left:3px solid #FF453A;color:#FF7B6E;border-radius:12px;padding:14px;font-size:13px;line-height:1.55}.input{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#fff;margin-top:10px}.primary{width:100%;background:#0A84FF;color:#fff;margin-top:10px}.loading{text-align:center;color:#9BA1AE;padding:48px 12px}.pill{display:inline-block;font-size:11px;font-weight:800;padding:4px 8px;border-radius:999px;background:rgba(255,159,10,.14);color:#FF9F0A}.pill.good{background:rgba(48,209,88,.14);color:#30D158}.pill.bad{background:rgba(255,69,58,.14);color:#FF453A}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div><div class="title">Opus Vita · Sugar</div><div class="sub" id="date-sub">Đang tải...</div></div>
+    <button class="btn" onclick="reload()">Sync</button>
+  </div>
+  <div id="content" class="loading">Đang tải dữ liệu đường...</div>
+</div>
+<script>
+const DATA_REPO='lechihuy-droid/ai-project-opus';
+const DATA_BRANCH='main';
+const TARGET_TOTAL=50;
+const TARGET_ADDED=25;
+let PAT=localStorage.getItem('ov_pat')||'';
+function todayStr(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function ghGet(path){const r=await fetch(`https://api.github.com/repos/${DATA_REPO}/contents/${path}?ref=${DATA_BRANCH}`,{headers:{Authorization:`Bearer ${PAT}`,Accept:'application/vnd.github.v3+json'}});if(!r.ok){if(r.status===404)return null;throw new Error(`${r.status}: ${path}`)}const d=await r.json();const bytes=Uint8Array.from(atob(d.content.replace(/\n/g,'')),c=>c.charCodeAt(0));return JSON.parse(new TextDecoder().decode(bytes))}
+function calcSugar(log){
+  const meals=log?.meals||[];
+  const total=Number(log?.daily_totals?.sugar_g ?? log?.sugar_tracking?.current_total_sugar_g ?? meals.reduce((s,m)=>s+Number(m.total_sugar||0),0));
+  const added=Number(log?.daily_totals?.added_sugar_estimated_g ?? log?.sugar_tracking?.current_added_sugar_estimated_g ?? meals.reduce((s,m)=>s+Number(m.total_added_sugar_estimated||0),0));
+  const sources=[];
+  if(log?.sugar_tracking?.sources?.length){
+    log.sugar_tracking.sources.forEach(x=>sources.push({meal:x.meal,item:x.item,sugar:Number(x.sugar_g||0),added:Number(x.added_sugar_estimated_g||0),confidence:x.confidence||'unknown'}));
+  } else {
+    meals.forEach(m=>(m.items||[]).forEach(it=>{const sugar=Number(it.sugar||0);const added=Number(it.added_sugar_estimated||0);if(sugar>0||added>0)sources.push({meal:m.name,item:it.name,sugar,added,confidence:it.sugar_confidence||'unknown'})}));
+  }
+  return {total,added,sources};
+}
+function status(total,added){if(total>TARGET_TOTAL||added>TARGET_ADDED)return ['bad','Cao'];if(total>TARGET_TOTAL*.7||added>TARGET_ADDED*.6)return ['warn','Cần chú ý'];return ['good','Ổn']}
+function render(log){
+  const date=log?.date||todayStr();document.getElementById('date-sub').textContent=`${date} · target ${TARGET_TOTAL}g total / ${TARGET_ADDED}g added`;
+  const {total,added,sources}=calcSugar(log);const [tone,label]=status(total,added);const pct=Math.min(100,total/TARGET_TOTAL*100);const addedPct=Math.min(100,added/TARGET_ADDED*100);
+  const rows=sources.sort((a,b)=>b.sugar-a.sugar).map(s=>`<div class="row"><div><div class="name">${esc(s.item)}</div><div class="meta">${esc(s.meal)} · added est ${s.added}g · confidence ${esc(s.confidence)}</div></div><div class="amt">${s.sugar}g</div></div>`).join('')||'<div class="note">Chưa có source đường chi tiết.</div>';
+  document.getElementById('content').className='';
+  document.getElementById('content').innerHTML=`
+    <div class="card hero"><div class="label">Total sugar <span class="pill ${tone}">${label}</span></div><span class="val">${total.toFixed(1).replace('.0','')}</span><span class="unit">/ ${TARGET_TOTAL}g</span><div class="bar"><div class="fill" style="width:${pct}%"></div></div><div class="sub">Còn ${(TARGET_TOTAL-total).toFixed(1).replace('.0','')}g total sugar trong ngày</div></div>
+    <div class="grid"><div class="card mini ${tone}"><div class="label">Added/free est.</div><span class="val">${added.toFixed(1).replace('.0','')}</span><span class="unit">/ ${TARGET_ADDED}g</span><div class="bar"><div class="fill" style="width:${addedPct}%"></div></div></div><div class="card mini"><div class="label">Remaining added</div><span class="val">${(TARGET_ADDED-added).toFixed(1).replace('.0','')}</span><span class="unit">g</span><div class="sub">ước tính</div></div></div>
+    <div class="card"><div class="label">Nguồn đường hôm nay</div>${rows}</div>
+    <div class="card"><div class="note">Total sugar đọc từ label hoặc estimate. Added/free sugar là ước tính vì nhãn Nhật thường không tách rõ đường tự nhiên và đường thêm.</div></div>`;
+}
+function renderPat(){document.getElementById('content').className='';document.getElementById('content').innerHTML=`<div class="card"><div class="label">GitHub PAT</div><div class="note">Nhập PAT giống app chính. Token lưu localStorage key <b>ov_pat</b>.</div><input id="pat" class="input" type="password" placeholder="github_pat_..."><button class="btn primary" onclick="savePat()">Kết nối</button></div>`}
+function savePat(){const v=document.getElementById('pat').value.trim();if(!v)return;PAT=v;localStorage.setItem('ov_pat',PAT);reload()}
+async function reload(){if(!PAT){renderPat();return}document.getElementById('content').className='loading';document.getElementById('content').textContent='Đang tải dữ liệu đường...';try{const today=todayStr();let log=await ghGet(`health-data/${today}.json`);if(!log){const idx=await ghGet('health-data/index.json');if(idx?.[0])log=await ghGet(`health-data/${idx[0]}.json`)}if(!log)throw new Error('Không có health log');render(log)}catch(e){document.getElementById('content').className='err';document.getElementById('content').innerHTML=`Lỗi tải dữ liệu: <b>${esc(e.message)}</b><br><br><span style="text-decoration:underline;cursor:pointer" onclick="localStorage.removeItem('ov_pat');PAT='';renderPat()">Đổi PAT</span>`}}
+reload();
+</script>
+</body>
+</html>
