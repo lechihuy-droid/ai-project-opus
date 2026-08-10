@@ -438,6 +438,21 @@ def _load_or_create_hub_token() -> str:
 
 HUB_TOKEN = _load_or_create_hub_token()
 
+# P0.2: shell hooks fire unattended (auto-approved), so the binary they may
+# invoke must be explicitly allowlisted. Default is empty (deny-all) until an
+# operator opts commands in via env.
+#
+# Never allowlist an interpreter or a shell here -- python, node, ruby, perl,
+# bash, sh, cmd, powershell, pwsh. Allowlisting one restores arbitrary code
+# execution through this path: the name passes the hooks._validate check, and
+# verify.rule_check classifies it as the "execute" tier, which warns rather
+# than denies, so the job runs. Allowlist only leaf commands that do one thing
+# (git, echo, curl to a fixed endpoint), and remember the argument list is
+# still attacker-controlled once the binary is permitted.
+HOOK_ALLOWED_COMMANDS: tuple[str, ...] = tuple(
+    part.strip().lower() for part in os.environ.get("HOOK_ALLOWED_COMMANDS", "").split(",") if part.strip()
+)
+
 
 if __name__ == "__main__":
     print(ROOT)
