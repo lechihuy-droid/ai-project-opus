@@ -352,7 +352,7 @@ def test_duplicate_logical_name_requires_a_namespaced_identity(
 def test_preview_endpoint_returns_the_same_public_decision_and_rejects_invalid_request(
     resolution_fixture: dict[str, Any],
 ) -> None:
-    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    client = TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN})
     payload = {
         "task": "Build a dashboard for requirements.",
         "agent_id": "frontend-engineer",

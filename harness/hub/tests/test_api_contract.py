@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
+import config
 import server
 from services import boundary, gitjobs, workflow
 
@@ -14,7 +15,7 @@ from services import boundary, gitjobs, workflow
 @pytest.fixture()
 def client() -> TestClient:
     server._IDEMPOTENCY_RESULTS.clear()
-    return TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    return TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN})
 
 
 def test_error_envelope_and_correlation_are_safe_and_uniform(client: TestClient) -> None:

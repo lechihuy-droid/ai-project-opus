@@ -170,7 +170,7 @@ def test_runtime_legacy_run_without_journal_remains_readable(runtime_tmp: Path) 
 
 
 def test_runtime_pipeline_api_create_interrupt_resume_and_404(runtime_tmp: Path) -> None:
-    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    client = TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN})
     response = client.post("/api/agent/runs", json={"objective": "api runtime smoke"})
     assert response.status_code == 200
     assert "event: node_update" in response.text
@@ -269,7 +269,7 @@ def test_runtime_skills_memory_and_guardrail_apis(runtime_tmp: Path, monkeypatch
     skill_library._clear_cache()
 
     candidate = runtime_memory.create_candidate("Remember explicit approvals only")
-    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    client = TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN})
 
     skills = client.get("/api/skills")
     assert skills.status_code == 200

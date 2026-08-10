@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import os
+import secrets
 from pathlib import Path
 from typing import Any
 
@@ -21,6 +23,7 @@ RUNTIME_DIR = HUB_DIR / "runtime"
 RUNTIME_THREADS_DIR = RUNTIME_DIR / "threads"
 RUNTIME_RUNS_DIR = RUNTIME_DIR / "runs"
 RUNTIME_STORE_DIR = RUNTIME_DIR / "store"
+HUB_TOKEN_FILE = RUNTIME_STORE_DIR / "hub-token"
 RUNTIME_FILE_MAX_BYTES = 10 * 1024 * 1024
 RUNTIME_FILES_MAX_BYTES = 100 * 1024 * 1024
 PORT = 8799
@@ -408,8 +411,27 @@ ALLOWED_ORIGINS = (
     "http://127.0.0.1:8799",
     "http://localhost:8799",
 )
-HUB_CLIENT_HEADER = "x-hub-client"
-HUB_CLIENT_VALUE = "harness-hub"
+def _load_hub_token() -> str:
+    token = os.getenv("HUB_TOKEN")
+    if token:
+        return token
+    try:
+        token = HUB_TOKEN_FILE.read_text(encoding="utf-8").strip()
+    except OSError:
+        token = ""
+    if token:
+        return token
+    token = secrets.token_urlsafe(32)
+    HUB_TOKEN_FILE.parent.mkdir(parents=True, exist_ok=True)
+    HUB_TOKEN_FILE.write_text(token, encoding="utf-8")
+    try:
+        os.chmod(HUB_TOKEN_FILE, 0o600)
+    except OSError:
+        pass
+    return token
+
+
+HUB_TOKEN = _load_hub_token()
 
 
 if __name__ == "__main__":

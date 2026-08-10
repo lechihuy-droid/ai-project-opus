@@ -14,7 +14,7 @@ from services import boundary, chat_files, execution, fsbrowse, gitjobs, hooks, 
 
 @pytest.fixture()
 def client() -> TestClient:
-    return TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    return TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN})
 
 
 @pytest.fixture()

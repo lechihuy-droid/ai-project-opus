@@ -6,6 +6,7 @@ import pytest
 import yaml
 from fastapi.testclient import TestClient
 
+import config
 import server
 from services import boundary, workflow
 
@@ -140,7 +141,7 @@ def test_validate_endpoint_reports_every_case(
 ) -> None:
     data = deepcopy(review_ui)
     change(data)
-    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    client = TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN})
     response = client.post("/api/workflows/validate", json={"yaml_text": yaml.safe_dump(data)})
     assert response.status_code == 200
     body = response.json()
@@ -150,7 +151,7 @@ def test_validate_endpoint_reports_every_case(
 
 
 def test_validate_endpoint_requires_yaml_text_or_id() -> None:
-    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    client = TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN})
     response = client.post("/api/workflows/validate", json={})
     assert response.status_code == 400
     assert response.json()["detail"] == "yaml_text or id is required"

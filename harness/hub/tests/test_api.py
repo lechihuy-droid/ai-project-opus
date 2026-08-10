@@ -42,7 +42,7 @@ def client(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> TestClient:
     )
     trigger._STREAMS.clear()
     gitjobs._STREAMS.clear()
-    return TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    return TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN})
 
 
 def test_health(client: TestClient) -> None:
