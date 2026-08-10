@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 
 import config
+from services import audit
 
 
 _USER_PROFILE = Path(os.environ.get("USERPROFILE", Path.home())).resolve()
@@ -109,4 +110,6 @@ def resolve_workspace_dir(value: object) -> Path | None:
         raise ValueError("Workspace directory cannot be a drive root")
     if path == _USER_PROFILE:
         raise ValueError("Workspace directory cannot be the user profile root")
+    if not is_inside_root(path):
+        audit.append("workspace_dir_outside_root", context={"workspace_dir": str(path)})
     return path
