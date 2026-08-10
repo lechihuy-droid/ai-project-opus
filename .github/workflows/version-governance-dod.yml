@@ -1,0 +1,78 @@
+name: Version Governance — Definition of Done
+
+# This gate stands up the harness/version-governance docker-compose stack (postgres, minio,
+# mlflow, vgov-api, vgov-runtime) and runs harness/version-governance/verify_dod.py against it.
+# That script seeds demo data, runs the test_immutability.py / test_freeze_order.py pytest
+# subset inside the vgov-api container, and asserts 12 Definition-of-Done invariants
+# (immutability, lineage, manifest freezing, hash chaining, etc.) via HTTP calls to the
+# running API. The job fails if verify_dod.py exits non-zero.
+#
+# IMPORTANT: DoD check #5 ("Output BD Markdown non-empty and produced by a real LLM call")
+# only means something if the repo secret NVIDIA_API_KEY is set. Without it, runtime/graph.py
+# falls back to a placeholder response and verify_dod.py correctly reports check #5 as FAILED
+# (this is intentional, not a bug in this workflow — see verify_dod.py's comment above check #5).
+
+on:
+  pull_request:
+    paths:
+      - 'harness/version-governance/**'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-dod:
+    runs-on: ubuntu-latest
+    env:
+      COMPOSE_FILE: harness/version-governance/deploy/docker-compose.yml
+      ENV_FILE: harness/version-governance/deploy/.env
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create .env for compose stack
+        env:
+          # Real secret: check #5 needs a genuine LLM call, so this must come from GitHub Secrets.
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+        run: |
+          cat > "$ENV_FILE" <<EOF
+          POSTGRES_USER=vgov
+          POSTGRES_PASSWORD=ci-only-postgres-pw
+          VGOV_DATABASE_URL=postgresql+psycopg://vgov:ci-only-postgres-pw@postgres:5432/vgov
+          MLFLOW_DATABASE_URL=postgresql://vgov:ci-only-postgres-pw@postgres:5432/mlflow
+          MINIO_ROOT_USER=ci-minio-user
+          MINIO_ROOT_PASSWORD=ci-only-minio-pw
+          VGOV_S3_ACCESS_KEY=ci-only-s3-access
+          VGOV_S3_SECRET_KEY=ci-only-s3-secret
+          NVIDIA_API_KEY=${NVIDIA_API_KEY}
+          VGOV_LLM_BASE_URL=https://integrate.api.nvidia.com/v1
+          VGOV_CALLBACK_GRACE_SECONDS=120
+          EOF
+
+      - name: Build and start compose stack
+        run: docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d --build
+
+      - name: Wait for vgov-api to be healthy
+        run: |
+          for i in $(seq 1 60); do
+            if curl -fsS http://localhost:8810/health >/dev/null 2>&1; then
+              echo "vgov-api is healthy"
+              exit 0
+            fi
+            echo "waiting for vgov-api ($i/60)..."
+            sleep 10
+          done
+          echo "vgov-api did not become healthy in time"
+          docker compose -f "$COMPOSE_FILE" ps
+          docker compose -f "$COMPOSE_FILE" logs
+          exit 1
+
+      - name: Run Definition of Done gate
+        run: python3 harness/version-governance/verify_dod.py
+
+      - name: Dump compose logs on failure
+        if: failure()
+        run: docker compose -f "$COMPOSE_FILE" logs
+
+      - name: Tear down compose stack
+        if: always()
+        run: docker compose -f "$COMPOSE_FILE" down -v
