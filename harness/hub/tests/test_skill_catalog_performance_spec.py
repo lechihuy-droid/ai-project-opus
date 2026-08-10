@@ -188,6 +188,39 @@ def test_summary_reuses_validated_fingerprint_without_stats_inside_ttl(
     assert second["items"] == first["items"]
 
 
+def test_changed_source_identities_bypass_fingerprint_ttl(
+    summary_sources: dict[str, Path], monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    clock = [100.0]
+    monkeypatch.setattr(sl.time, "monotonic", lambda: clock[0])
+    sl._clear_cache()
+    before = sl.list_skill_summary(limit=10)
+    assert {item["id"] for item in before["items"]} == {
+        "claude_user/skillspector",
+        "claude_project/skillspector",
+        "codex_user/lonewolf",
+    }
+
+    replacement = tmp_path / "replacement-skills"
+    skill_dir = replacement / "fresh-skill"
+    skill_dir.mkdir(parents=True)
+    (skill_dir / "SKILL.md").write_text("---\nname: fresh-skill\ndescription: replacement\n---\nbody", encoding="utf-8")
+    monkeypatch.setattr(config, "SKILL_SOURCES", {"replacement": replacement}, raising=False)
+
+    after = sl.list_skill_summary(limit=10)
+
+    assert after["items"] == [
+        {
+            "id": "replacement/fresh-skill",
+            "name": "fresh-skill",
+            "description": "replacement",
+            "source": "replacement",
+            "variants_count": 1,
+        }
+    ]
+    assert sl.list_skill_names() == {"fresh-skill"}
+
+
 def test_summary_revalidates_exactly_once_after_monotonic_ttl_expiry(
     summary_sources: dict[str, Path], monkeypatch: pytest.MonkeyPatch
 ) -> None:

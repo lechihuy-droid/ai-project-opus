@@ -45,6 +45,7 @@ _INDEX_CACHE: dict[str, Any] = {
     "fingerprint_expires": 0.0,
     "entries": [],
     "sources": None,
+    "source_identities": None,
     "revision": 0,
 }
 _SKILL_NAMES_CACHE: dict[str, Any] = {"fingerprint": None, "names": set()}
@@ -157,6 +158,11 @@ def _sources() -> dict[str, Path]:
     return dict(_DEFAULT_SKILL_SOURCES)
 
 
+def _source_identities() -> tuple[tuple[str, str], ...]:
+    """Return configured source identity without filesystem metadata access."""
+    return tuple(sorted((source, str(root)) for source, root in _sources().items()))
+
+
 def _deploy_log_path() -> Path:
     path = getattr(config, "SKILL_DEPLOY_LOG", None)
     if isinstance(path, Path):
@@ -166,7 +172,13 @@ def _deploy_log_path() -> Path:
 
 def _clear_cache() -> None:
     with _LOCK:
-        _INDEX_CACHE.update({"fingerprint": None, "fingerprint_expires": 0.0, "entries": [], "sources": None})
+        _INDEX_CACHE.update({
+            "fingerprint": None,
+            "fingerprint_expires": 0.0,
+            "entries": [],
+            "sources": None,
+            "source_identities": None,
+        })
         _SKILL_NAMES_CACHE.update({"fingerprint": None, "names": set()})
 
 
@@ -371,8 +383,10 @@ def _fingerprint_sources() -> tuple[tuple[str, str, int, tuple[tuple[str, str, i
 def _scan_all_sources() -> list[dict[str, Any]]:
     with _LOCK:
         now = time.monotonic()
+        source_identities = _source_identities()
         if (
             _INDEX_CACHE.get("fingerprint") is not None
+            and _INDEX_CACHE.get("source_identities") == source_identities
             and now < float(_INDEX_CACHE.get("fingerprint_expires", 0.0))
         ):
             return list(_INDEX_CACHE["entries"])
@@ -392,6 +406,7 @@ def _scan_all_sources() -> list[dict[str, Any]]:
             "fingerprint_expires": expires,
             "entries": tuple(entries),
             "sources": fingerprint,
+            "source_identities": source_identities,
             "revision": int(_INDEX_CACHE.get("revision", 0)) + 1,
         })
         return list(entries)
