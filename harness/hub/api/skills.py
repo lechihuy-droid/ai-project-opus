@@ -83,6 +83,14 @@ def api_skill_library_telemetry() -> dict[str, object]:
     return skill_library.list_skill_telemetry()
 
 
+@router.get("/api/skill-library/target-status")
+def api_skill_library_target_status(target: str) -> dict[str, object]:
+    try:
+        return skill_library.target_status(target)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail="Unknown target") from exc
+
+
 @router.post("/api/skill-library")
 def api_skill_library_create(payload: dict[str, object]) -> dict[str, object]:
     try: return skill_library.create_skill(payload)

@@ -42,6 +42,7 @@ _LOCK = threading.RLock()
 _TELEMETRY_LOCK = threading.RLock()
 _TELEMETRY_CACHE: dict[str, Any] = {"expires": 0.0, "fingerprint": None, "events": []}
 _SAFE_SKILL_NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
+_CONTENT_HASH = re.compile(r"^sha256:[0-9a-f]{64}$")
 
 
 def _sources() -> dict[str, Path]:
@@ -474,6 +475,80 @@ def list_skill_telemetry() -> dict[str, Any]:
         if last_used is not None:
             items.append({"name": name, "last_used": last_used, "use_count_30d": use_count_30d})
     return {"status": "ready", "items": items}
+
+
+def _latest_baseline_hashes() -> dict[tuple[str, str], str]:
+    """Return newest valid deploy baselines keyed by exact source variant and target."""
+    try:
+        lines = _deploy_log_path().read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return {}
+    baselines: dict[tuple[str, str], str] = {}
+    for line in reversed(lines):
+        try:
+            record = json.loads(line)
+        except (json.JSONDecodeError, TypeError):
+            continue
+        baseline_hash = record.get("baseline_hash_after") if isinstance(record, dict) else None
+        if (
+            isinstance(record, dict)
+            and isinstance(record.get("skill_id"), str)
+            and isinstance(record.get("target"), str)
+            and isinstance(baseline_hash, str)
+            and _CONTENT_HASH.fullmatch(baseline_hash)
+        ):
+            baselines.setdefault((record["skill_id"], record["target"]), baseline_hash)
+    return baselines
+
+
+def target_status(target: str) -> dict[str, Any]:
+    """Compare every namespaced skill variant against one registered target source."""
+    if target not in _sources():
+        raise ValueError("Unknown target")
+
+    entries = _scan_all_sources()
+    target_variants = {
+        (str(entry["source"]), str(entry["name"])): entry
+        for entry in entries
+    }
+    baseline_hashes = _latest_baseline_hashes()
+    items: list[dict[str, Any]] = []
+    for entry in entries:
+        source = str(entry["source"])
+        name = str(entry["name"])
+        target_entry = target_variants.get((target, name))
+        source_hash = _content_hash(Path(str(entry["path"])))
+        target_hash = _content_hash(Path(str(target_entry["path"]))) if target_entry else None
+        baseline_hash = baseline_hashes.get((str(entry["id"]), target))
+        source_changed = bool(baseline_hash and source_hash != baseline_hash)
+        target_changed = bool(baseline_hash and target_hash != baseline_hash)
+
+        if source == target:
+            status = "in_sync"
+        elif target_entry is None:
+            status = "missing"
+        elif source_hash == target_hash:
+            status = "in_sync"
+        elif baseline_hash and source_changed and target_changed:
+            status = "conflict"
+        else:
+            status = "modified"
+
+        items.append({
+            "skill_id": entry["id"],
+            "name": name,
+            "source": source,
+            "target": target,
+            "target_skill_id": target_entry["id"] if target_entry else None,
+            "status": status,
+            "source_hash": source_hash,
+            "target_hash": target_hash,
+            "baseline_hash": baseline_hash,
+            "source_changed": source_changed,
+            "target_changed": target_changed,
+        })
+    items.sort(key=lambda item: (str(item["name"]), str(item["source"])))
+    return {"target": target, "items": items}
 
 
 def list_skill_descriptors() -> list[dict[str, Any]]:
