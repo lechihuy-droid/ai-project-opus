@@ -46,6 +46,19 @@ DANGEROUS_EXECUTABLES = SHELL_LAUNCHERS | {
     "taskkill.exe",
 }
 INLINE_CODE_FLAGS = {"-c", "-m", "--command"}
+# Interpreter arg gate: default-deny, not a denylist. Only flags proven to be
+# side-effect-free may pass; anything else (including spellings/clusters not
+# enumerated anywhere, e.g. "-cimport os" or "-Ic") requires allow_inline_code.
+INTERPRETER_SAFE_FLAGS = {"-B", "-E", "-I", "-O", "-OO", "-q", "-s", "-S", "-u", "-v"}
+INTERPRETER_VALUE_FLAGS = {"-W", "-X"}
+# Identifies an interpreter by basename in addition to the safe_external_paths
+# match below, so the arg gate still applies to a python living inside root
+# (e.g. .ih/bin/python) or admitted via allowed_executables/
+# allow_system_executable. Unlike DANGEROUS_COMMAND_TOKENS, a missed spelling
+# here only *widens* enforcement back to the pre-existing containment checks
+# -- it never grants passage the way a missed denylist entry would. That
+# asymmetry is what makes name-matching acceptable here.
+INTERPRETER_NAME_PATTERN = re.compile(r"^(python\d*(\.\d+)?w?|py)(\.exe)?$")
 # Secondary defense-in-depth only: catches a few known-dangerous literal tokens
 # (rm, del, ...) in the raw argv. This is NOT the containment mechanism — that
 # is the executable allowlist + path containment above/below. Do not treat a
@@ -306,22 +319,65 @@ def _enforce_command_boundary(command: Any, cwd: Path, ctx: dict[str, str], chec
         _norm_path(Path(sys.executable)),
     }
 
+    executable_path = Path(executable)
+    if not executable_path.is_absolute():
+        executable_path = cwd / executable_path
+    # Trusted-path match only: governs whether the executable itself may live
+    # outside root. Kept exact (no name matching) so a random outside-root
+    # binary that merely happens to be called "python" can't use the gate
+    # widening below to grant itself passage.
+    executable_is_trusted_interpreter_path = _norm_path(executable_path) in safe_external_paths
+    # Gate-trigger match: also fires by basename, so the arg gate still
+    # applies to an interpreter reached via allowed_executables,
+    # allow_system_executable, or one that simply lives inside root (e.g.
+    # .ih/bin/python). A name this misses just falls back to the pre-existing
+    # containment checks below -- it never grants anything, unlike a miss in
+    # DANGEROUS_COMMAND_TOKENS.
+    executable_is_interpreter = executable_is_trusted_interpreter_path or bool(
+        INTERPRETER_NAME_PATTERN.match(executable_name)
+    )
+
     if Path(executable).is_absolute() or "/" in executable or "\\" in executable:
-        executable_path = Path(executable)
-        if not executable_path.is_absolute():
-            executable_path = cwd / executable_path
-        allowed_external = _norm_path(executable_path) in safe_external_paths
+        allowed_external = executable_is_trusted_interpreter_path
         allowed_external = allowed_external or _path_matches_allowed(executable_path, _allowed_outside_paths(check, ctx))
         if not (_inside_root(executable_path) or allowed_external):
             raise BoundaryPolicyError(f"executable outside project root is not allowlisted: {executable_path.resolve()}")
     elif executable_name not in allowed_names and not check.get("allow_system_executable"):
         raise BoundaryPolicyError(f"system executable is not allowlisted: {executable}")
 
-    if not check.get("allow_inline_code"):
-        inline_flags = {str(token) for token in command[1:]} & INLINE_CODE_FLAGS
-        if inline_flags:
+    # Limit of this gate: argv inspection cannot contain an interpreter. A
+    # script file inside root can call open("/absolute/path") or make network
+    # calls just as freely as -c can -- this only raises the cost of an
+    # accidental/casual escape via interpreter flags, it is not a containment
+    # boundary. Real containment for untrusted suite content is the Docker
+    # sandbox under harness/sandbox/.
+    if executable_is_interpreter and not check.get("allow_inline_code"):
+        skip_next = False
+        for token in command[1:]:
+            token = str(token)
+            if skip_next:
+                skip_next = False
+                continue
+            if not token.startswith("-"):
+                # First positional token is the script to run; Python's own
+                # option parsing stops here too, so everything after this is
+                # the script's argv, not interpreter flags.
+                break
+            if token == "-":
+                raise BoundaryPolicyError(
+                    f"interpreter reads code from stdin ('-') without explicit allow_inline_code: {command}"
+                )
+            if token in INTERPRETER_VALUE_FLAGS:
+                skip_next = True
+                continue
+            if token in INTERPRETER_SAFE_FLAGS:
+                continue
+            if token in INLINE_CODE_FLAGS:
+                raise BoundaryPolicyError(
+                    f"interpreter inline code flag {token!r} requires explicit allow_inline_code: {command}"
+                )
             raise BoundaryPolicyError(
-                f"inline code flag {sorted(inline_flags)} requires explicit allow_inline_code: {command}"
+                f"interpreter flag {token!r} is not in the safe allowlist; requires explicit allow_inline_code: {command}"
             )
 
     if not check.get("allow_dangerous_commands"):
