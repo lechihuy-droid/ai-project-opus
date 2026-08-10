@@ -25,6 +25,11 @@ try {
     exit $LASTEXITCODE
   }
 
+  & $Py311 "harness\run_harness.py" --suite security-regression
+  if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+  }
+
   if ($SkipInspect) {
     exit 0
   }
