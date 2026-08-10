@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 from pathlib import Path
 
@@ -68,25 +69,51 @@ def test_list_skills_warm_cache_does_not_recursively_walk_sources(
     assert probe == 0
 
 
-def test_list_skills_detects_external_add_and_delete(fixture_sources: dict[str, Path]) -> None:
+def test_list_skills_detects_external_add_and_delete_after_ttl_expiry(
+    fixture_sources: dict[str, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    clock = [100.0]
+    monkeypatch.setattr(sl.time, "monotonic", lambda: clock[0])
     sl._clear_cache()
     assert "claude_user/new-skill" not in {item["id"] for item in sl.list_skills()}
 
-    path = fixture_sources["claude_user"] / "new-skill"
+    root = fixture_sources["claude_user"]
+    root_mtime = root.stat().st_mtime_ns
+    path = root / "new-skill"
     path.mkdir()
     (path / "SKILL.md").write_text("---\nname: new-skill\n---\nnew", encoding="utf-8")
+    os.utime(root, ns=(root_mtime + 1_000_000_000, root_mtime + 1_000_000_000))
+    assert "claude_user/new-skill" not in {item["id"] for item in sl.list_skills()}
+
+    clock[0] += 1.01
     assert "claude_user/new-skill" in {item["id"] for item in sl.list_skills()}
 
+    root_mtime = root.stat().st_mtime_ns
     shutil.rmtree(path)
+    os.utime(root, ns=(root_mtime + 1_000_000_000, root_mtime + 1_000_000_000))
+    assert "claude_user/new-skill" in {item["id"] for item in sl.list_skills()}
+
+    clock[0] += 1.01
     assert "claude_user/new-skill" not in {item["id"] for item in sl.list_skills()}
 
 
-def test_list_skills_detects_external_skill_edit(fixture_sources: dict[str, Path]) -> None:
+def test_list_skills_detects_external_skill_edit_after_ttl_expiry(
+    fixture_sources: dict[str, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    clock = [100.0]
+    monkeypatch.setattr(sl.time, "monotonic", lambda: clock[0])
     sl._clear_cache()
     before = next(item for item in sl.list_skills() if item["id"] == "claude_user/skillspector")
     path = fixture_sources["claude_user"] / "skillspector" / "SKILL.md"
+    mtime = path.stat().st_mtime_ns
     path.write_text("---\nname: renamed\ndescription: changed\n---\nbody", encoding="utf-8")
+    os.utime(path, ns=(mtime + 1_000_000_000, mtime + 1_000_000_000))
 
+    inside_ttl = next(item for item in sl.list_skills() if item["id"] == "claude_user/skillspector")
+    # Full entries recompute strong content hashes, but index metadata is bounded by TTL.
+    assert inside_ttl["name"] == before["name"]
+
+    clock[0] += 1.01
     after = next(item for item in sl.list_skills() if item["id"] == "claude_user/skillspector")
     assert before["content_hash"] != after["content_hash"]
     assert after["name"] == "renamed"

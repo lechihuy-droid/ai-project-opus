@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import shutil
 from pathlib import Path
 
@@ -160,6 +161,155 @@ def test_summary_can_return_a_catalog_larger_than_its_default_page(summary_sourc
 
     assert data["total"] == 101
     assert len(data["items"]) == 101
+
+
+def test_summary_reuses_validated_fingerprint_without_stats_inside_ttl(
+    summary_sources: dict[str, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A warm summary must not re-stat catalog roots or known SKILL.md files."""
+    clock = [100.0]
+    monkeypatch.setattr(sl.time, "monotonic", lambda: clock[0])
+    sl._clear_cache()
+    first = sl.list_skill_summary(limit=10)
+
+    stat_paths: list[Path] = []
+    original_dir_mtime = sl._dir_mtime_ns
+
+    def counted_dir_mtime(path: Path) -> int:
+        stat_paths.append(path)
+        return original_dir_mtime(path)
+
+    monkeypatch.setattr(sl, "_dir_mtime_ns", counted_dir_mtime)
+
+    second = sl.list_skill_summary(limit=10)
+
+    assert stat_paths == []
+    assert second["revision"] == first["revision"]
+    assert second["items"] == first["items"]
+
+
+def test_summary_revalidates_exactly_once_after_monotonic_ttl_expiry(
+    summary_sources: dict[str, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    clock = [100.0]
+    monkeypatch.setattr(sl.time, "monotonic", lambda: clock[0])
+    sl._clear_cache()
+    sl.list_skill_summary(limit=10)
+
+    fingerprint_calls = 0
+    stat_paths: list[Path] = []
+    original_fingerprint = sl._fingerprint_sources
+    original_dir_mtime = sl._dir_mtime_ns
+
+    def counted_fingerprint() -> object:
+        nonlocal fingerprint_calls
+        fingerprint_calls += 1
+        return original_fingerprint()
+
+    def counted_dir_mtime(path: Path) -> int:
+        stat_paths.append(path)
+        return original_dir_mtime(path)
+
+    monkeypatch.setattr(sl, "_fingerprint_sources", counted_fingerprint)
+    monkeypatch.setattr(sl, "_dir_mtime_ns", counted_dir_mtime)
+    clock[0] += 1.01
+
+    sl.list_skill_summary(limit=10)
+
+    assert fingerprint_calls == 1
+    assert stat_paths
+
+
+def test_fingerprint_ttl_starts_after_successful_validation(
+    summary_sources: dict[str, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    clock = [100.0]
+    monkeypatch.setattr(sl.time, "monotonic", lambda: clock[0])
+    sl._clear_cache()
+    original_fingerprint = sl._fingerprint_sources
+
+    def delayed_fingerprint() -> object:
+        clock[0] = 100.75
+        return original_fingerprint()
+
+    monkeypatch.setattr(sl, "_fingerprint_sources", delayed_fingerprint)
+    sl.list_skill_summary(limit=10)
+
+    stat_paths: list[Path] = []
+    original_dir_mtime = sl._dir_mtime_ns
+
+    def counted_dir_mtime(path: Path) -> int:
+        stat_paths.append(path)
+        return original_dir_mtime(path)
+
+    monkeypatch.setattr(sl, "_dir_mtime_ns", counted_dir_mtime)
+    clock[0] = 101.1
+
+    sl.list_skill_summary(limit=10)
+
+    assert stat_paths == []
+
+
+def test_clear_cache_forces_fingerprint_validation_before_ttl_expiry(
+    summary_sources: dict[str, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    clock = [100.0]
+    monkeypatch.setattr(sl.time, "monotonic", lambda: clock[0])
+    sl._clear_cache()
+    sl.list_skill_summary(limit=10)
+
+    stat_paths: list[Path] = []
+    original_dir_mtime = sl._dir_mtime_ns
+
+    def counted_dir_mtime(path: Path) -> int:
+        stat_paths.append(path)
+        return original_dir_mtime(path)
+
+    monkeypatch.setattr(sl, "_dir_mtime_ns", counted_dir_mtime)
+    sl._clear_cache()
+
+    sl.list_skill_summary(limit=10)
+
+    assert stat_paths
+
+
+def test_out_of_band_skill_edit_is_visible_only_after_ttl_expiry(
+    summary_sources: dict[str, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    clock = [100.0]
+    monkeypatch.setattr(sl.time, "monotonic", lambda: clock[0])
+    sl._clear_cache()
+    before = sl.list_skill_summary(query="skillspector", limit=10)
+    path = summary_sources["claude_user"] / "skillspector" / "SKILL.md"
+    previous_mtime = path.stat().st_mtime_ns
+    path.write_text("---\nname: skillspector\ndescription: changed outside Hub\n---\nbody", encoding="utf-8")
+    # Force a deterministic metadata change without relying on filesystem clock resolution.
+    path.touch(exist_ok=True)
+    os.utime(path, ns=(previous_mtime + 1_000_000_000, previous_mtime + 1_000_000_000))
+
+    inside_ttl = sl.list_skill_summary(query="skillspector", limit=10)
+    clock[0] += 1.01
+    after_expiry = sl.list_skill_summary(query="skillspector", limit=10)
+
+    assert inside_ttl == before
+    assert after_expiry["revision"] == before["revision"] + 1
+    changed = next(item for item in after_expiry["items"] if item["id"] == "claude_user/skillspector")
+    assert changed["description"] == "changed outside Hub"
+
+
+def test_ttl_validation_without_catalog_change_keeps_revision_stable(
+    summary_sources: dict[str, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    clock = [100.0]
+    monkeypatch.setattr(sl.time, "monotonic", lambda: clock[0])
+    sl._clear_cache()
+    before = sl.list_skill_summary(limit=10)
+
+    clock[0] += 1.01
+    after = sl.list_skill_summary(limit=10)
+
+    assert after["revision"] == before["revision"]
+    assert after["items"] == before["items"]
 
 
 def test_skills_page_requests_a_complete_summary_not_the_default_first_page() -> None:

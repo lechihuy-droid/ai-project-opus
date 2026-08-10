@@ -27,6 +27,7 @@ SKILL_PROMPT_MAX_CHARS = 12000
 _SKILL_TOOL_NAME = "Skill"
 _TELEMETRY_WINDOW_DAYS = 30
 _TELEMETRY_CACHE_TTL_SECONDS = 30.0
+_FINGERPRINT_CACHE_TTL_SECONDS = 1.0
 _BOM = "\ufeff"
 _FRONTMATTER_RE = re.compile(rf"^{_BOM}?---\s*\n(.*?\n)---\s*\n?", re.DOTALL)
 
@@ -39,7 +40,13 @@ _DEFAULT_SKILL_SOURCES: dict[str, Path] = {
     "codex_user": Path.home() / ".codex" / "skills",
 }
 
-_INDEX_CACHE: dict[str, Any] = {"fingerprint": None, "entries": [], "sources": None, "revision": 0}
+_INDEX_CACHE: dict[str, Any] = {
+    "fingerprint": None,
+    "fingerprint_expires": 0.0,
+    "entries": [],
+    "sources": None,
+    "revision": 0,
+}
 _SKILL_NAMES_CACHE: dict[str, Any] = {"fingerprint": None, "names": set()}
 _LOCK = threading.RLock()
 _DEPLOY_LOCKS_LOCK = threading.RLock()
@@ -158,8 +165,9 @@ def _deploy_log_path() -> Path:
 
 
 def _clear_cache() -> None:
-    _INDEX_CACHE.update({"fingerprint": None, "entries": [], "sources": None})
-    _SKILL_NAMES_CACHE.update({"fingerprint": None, "names": set()})
+    with _LOCK:
+        _INDEX_CACHE.update({"fingerprint": None, "fingerprint_expires": 0.0, "entries": [], "sources": None})
+        _SKILL_NAMES_CACHE.update({"fingerprint": None, "names": set()})
 
 
 def create_skill(payload: dict[str, Any]) -> dict[str, Any]:
@@ -362,8 +370,17 @@ def _fingerprint_sources() -> tuple[tuple[str, str, int, tuple[tuple[str, str, i
 
 def _scan_all_sources() -> list[dict[str, Any]]:
     with _LOCK:
+        now = time.monotonic()
+        if (
+            _INDEX_CACHE.get("fingerprint") is not None
+            and now < float(_INDEX_CACHE.get("fingerprint_expires", 0.0))
+        ):
+            return list(_INDEX_CACHE["entries"])
+
         fingerprint = _fingerprint_sources()
+        expires = time.monotonic() + _FINGERPRINT_CACHE_TTL_SECONDS
         if _INDEX_CACHE["fingerprint"] == fingerprint:
+            _INDEX_CACHE["fingerprint_expires"] = expires
             return list(_INDEX_CACHE["entries"])
 
         entries: list[dict[str, Any]] = []
@@ -372,6 +389,7 @@ def _scan_all_sources() -> list[dict[str, Any]]:
 
         _INDEX_CACHE.update({
             "fingerprint": fingerprint,
+            "fingerprint_expires": expires,
             "entries": tuple(entries),
             "sources": fingerprint,
             "revision": int(_INDEX_CACHE.get("revision", 0)) + 1,
