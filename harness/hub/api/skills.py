@@ -78,6 +78,11 @@ def api_skill_library_summary(
     return skill_library.list_skill_summary(query=query, source=source, offset=offset, limit=limit)
 
 
+@router.get("/api/skill-library/telemetry")
+def api_skill_library_telemetry() -> dict[str, object]:
+    return skill_library.list_skill_telemetry()
+
+
 @router.post("/api/skill-library")
 def api_skill_library_create(payload: dict[str, object]) -> dict[str, object]:
     try: return skill_library.create_skill(payload)

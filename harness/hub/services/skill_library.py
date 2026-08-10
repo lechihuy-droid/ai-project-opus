@@ -377,10 +377,16 @@ def _telemetry(name: str, tool_events: list[dict[str, Any]]) -> tuple[str | None
     matches = [event for event in tool_events if _skill_invocation_matches(event["skill"], name)]
     if not matches:
         return None, None
-    timestamps = sorted(event["ts"] for event in matches)
+    timestamps: list[tuple[str, dt.datetime]] = []
+    for event in matches:
+        parsed = _parse_ts(event["ts"])
+        if parsed is not None:
+            timestamps.append((event["ts"], parsed))
+    if not timestamps:
+        return None, None
     cutoff = dt.datetime.now(dt.UTC) - dt.timedelta(days=_TELEMETRY_WINDOW_DAYS)
-    use_count_30d = sum(1 for ts in timestamps if (_parse_ts(ts) or cutoff) >= cutoff)
-    return timestamps[-1], use_count_30d
+    use_count_30d = sum(1 for _raw, parsed in timestamps if parsed >= cutoff)
+    return max(timestamps, key=lambda timestamp: timestamp[1])[0], use_count_30d
 
 
 # --------------------------------------------------------------------------
@@ -424,17 +430,28 @@ def list_skill_summary(
 ) -> dict[str, Any]:
     """Return the public, metadata-only snapshot used for the first catalog table."""
     rows = _scan_all_sources()
+    variants_count: dict[str, int] = {}
+    for row in rows:
+        name = str(row["name"])
+        variants_count[name] = variants_count.get(name, 0) + 1
     needle = query.strip().lower()
     if source:
         rows = [row for row in rows if row["source"] == source]
     if needle:
         rows = [
             row for row in rows
-            if needle in str(row["name"]).lower() or needle in str(row["description"]).lower()
+            if (
+                needle in str(row["name"]).lower()
+                or needle in str(row["description"]).lower()
+                or needle in str(row["source"]).lower()
+            )
         ]
     rows.sort(key=lambda row: (str(row["name"]), str(row["source"])))
     items = [
-        {key: row[key] for key in ("id", "name", "description", "source")}
+        {
+            **{key: row[key] for key in ("id", "name", "description", "source")},
+            "variants_count": variants_count[str(row["name"])],
+        }
         for row in rows[offset:offset + limit]
     ]
     return {
@@ -445,6 +462,18 @@ def list_skill_summary(
         "revision": int(_INDEX_CACHE.get("revision", 0)),
         "status": "ready",
     }
+
+
+def list_skill_telemetry() -> dict[str, Any]:
+    """Return bulk cached telemetry for indexed logical skill names only."""
+    names = sorted({str(entry["name"]) for entry in _scan_all_sources()})
+    tool_events = _safe_collect_skill_tool_events()
+    items = []
+    for name in names:
+        last_used, use_count_30d = _telemetry(name, tool_events)
+        if last_used is not None:
+            items.append({"name": name, "last_used": last_used, "use_count_30d": use_count_30d})
+    return {"status": "ready", "items": items}
 
 
 def list_skill_descriptors() -> list[dict[str, Any]]:

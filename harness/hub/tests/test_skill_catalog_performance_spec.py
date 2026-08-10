@@ -95,6 +95,29 @@ def test_summary_preserves_namespaced_identity_for_same_name_collisions(summary_
     }
 
 
+def test_summary_includes_variant_count_from_full_index_before_filtering_and_pagination(
+    summary_sources: dict[str, Path],
+) -> None:
+    data = _summary(TestClient(server.app), "source=claude_user&offset=0&limit=1")
+
+    assert data["items"] == [
+        {
+            "id": "claude_user/skillspector",
+            "name": "skillspector",
+            "description": "Fixture skill variant A used to test skill_library drift detection.",
+            "source": "claude_user",
+            "variants_count": 2,
+        }
+    ]
+
+
+def test_summary_search_matches_source_metadata(summary_sources: dict[str, Path]) -> None:
+    data = _summary(TestClient(server.app), "query=claude_project&offset=0&limit=10")
+
+    assert data["total"] == 1
+    assert data["items"][0]["id"] == "claude_project/skillspector"
+
+
 def test_summary_applies_server_side_pagination_and_filters_and_rejects_invalid_ranges(
     summary_sources: dict[str, Path]
 ) -> None:
@@ -115,6 +138,7 @@ def test_summary_applies_server_side_pagination_and_filters_and_rejects_invalid_
             "name": "lonewolf",
             "description": "Unique fixture skill with no coverage overlap in other sources.",
             "source": "codex_user",
+            "variants_count": 1,
         }
     ]
 
