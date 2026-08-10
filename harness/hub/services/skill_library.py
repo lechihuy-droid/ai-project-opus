@@ -3,12 +3,15 @@ from __future__ import annotations
 import datetime as dt
 import hashlib
 import json
+import os
 import re
 import shutil
 import threading
 import time
+import uuid
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 import config
 from services import replay
@@ -39,10 +42,79 @@ _DEFAULT_SKILL_SOURCES: dict[str, Path] = {
 _INDEX_CACHE: dict[str, Any] = {"fingerprint": None, "entries": [], "sources": None, "revision": 0}
 _SKILL_NAMES_CACHE: dict[str, Any] = {"fingerprint": None, "names": set()}
 _LOCK = threading.RLock()
+_DEPLOY_LOCKS_LOCK = threading.RLock()
+_DEPLOY_LOCKS: dict[str, threading.RLock] = {}
+_DEPLOY_LOCK_WAIT_SECONDS = 5.0
+_DEPLOY_LOCK_RETRY_SECONDS = 0.05
 _TELEMETRY_LOCK = threading.RLock()
 _TELEMETRY_CACHE: dict[str, Any] = {"expires": 0.0, "fingerprint": None, "events": []}
 _SAFE_SKILL_NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
 _CONTENT_HASH = re.compile(r"^sha256:[0-9a-f]{64}$")
+
+
+class SkillConflictError(RuntimeError):
+    """Raised when a deployment would overwrite divergent source and target variants."""
+
+
+class SkillPreconditionError(RuntimeError):
+    """Raised when a target changed after the operator compared it."""
+
+
+class SkillEvidenceError(RuntimeError):
+    """Raised when a deployment cannot be durably recorded for audit."""
+
+
+def _destination_lock(path: Path) -> threading.RLock:
+    """Return the process-local lock for one exact deployment destination."""
+    key = str(path.resolve(strict=False)).casefold()
+    with _DEPLOY_LOCKS_LOCK:
+        return _DEPLOY_LOCKS.setdefault(key, threading.RLock())
+
+
+@contextmanager
+def _filesystem_destination_lock(dest_path: Path) -> Iterator[None]:
+    """Hold a bounded cross-process advisory lock for one destination path."""
+    lock_path = dest_path.parent / f".{dest_path.name}.deploy.lock"
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    handle = lock_path.open("a+b")
+    acquired = False
+    try:
+        handle.seek(0, os.SEEK_END)
+        if handle.tell() == 0:
+            handle.write(b"0")
+            handle.flush()
+        deadline = time.monotonic() + _DEPLOY_LOCK_WAIT_SECONDS
+        while not acquired:
+            try:
+                handle.seek(0)
+                if os.name == "nt":
+                    import msvcrt
+
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+                else:  # pragma: no cover - Windows is the supported Hub runtime
+                    import fcntl
+
+                    fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                acquired = True
+            except OSError:
+                if time.monotonic() >= deadline:
+                    raise SkillPreconditionError("Deployment target is busy")
+                time.sleep(_DEPLOY_LOCK_RETRY_SECONDS)
+        yield
+    finally:
+        try:
+            if acquired:
+                handle.seek(0)
+                if os.name == "nt":
+                    import msvcrt
+
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+                else:  # pragma: no cover - Windows is the supported Hub runtime
+                    import fcntl
+
+                    fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+        finally:
+            handle.close()
 
 
 def _sources() -> dict[str, Path]:
@@ -501,52 +573,67 @@ def _latest_baseline_hashes() -> dict[tuple[str, str], str]:
     return baselines
 
 
+def _target_status_for_entry(
+    entry: dict[str, Any],
+    target: str,
+    target_variants: dict[tuple[str, str], dict[str, Any]],
+    baseline_hashes: dict[tuple[str, str], str],
+    *,
+    source_hash: str | None = None,
+    target_hash: str | None = None,
+    target_entry: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Return the public comparison record for one exact namespaced source entry."""
+    source = str(entry["source"])
+    name = str(entry["name"])
+    resolved_target = target_entry if target_entry is not None else target_variants.get((target, name))
+    resolved_source_hash = source_hash if source_hash is not None else _content_hash(Path(str(entry["path"])))
+    resolved_target_hash = target_hash
+    if resolved_target_hash is None and resolved_target is not None:
+        resolved_target_hash = _content_hash(Path(str(resolved_target["path"])))
+    baseline_hash = baseline_hashes.get((str(entry["id"]), target))
+    source_changed = bool(baseline_hash and resolved_source_hash != baseline_hash)
+    target_changed = bool(baseline_hash and resolved_target_hash != baseline_hash)
+
+    if source == target:
+        status = "in_sync"
+    elif resolved_target is None:
+        status = "missing"
+    elif resolved_source_hash == resolved_target_hash:
+        status = "in_sync"
+    elif baseline_hash and source_changed and target_changed:
+        status = "conflict"
+    else:
+        status = "modified"
+
+    return {
+        "skill_id": entry["id"],
+        "name": name,
+        "source": source,
+        "target": target,
+        "target_skill_id": resolved_target["id"] if resolved_target else None,
+        "status": status,
+        "source_hash": resolved_source_hash,
+        "target_hash": resolved_target_hash,
+        "baseline_hash": baseline_hash,
+        "source_changed": source_changed,
+        "target_changed": target_changed,
+    }
+
+
 def target_status(target: str) -> dict[str, Any]:
     """Compare every namespaced skill variant against one registered target source."""
     if target not in _sources():
         raise ValueError("Unknown target")
 
     entries = _scan_all_sources()
-    target_variants = {
-        (str(entry["source"]), str(entry["name"])): entry
-        for entry in entries
-    }
+    target_variants: dict[tuple[str, str], dict[str, Any]] = {}
+    for entry in entries:
+        target_variants.setdefault((str(entry["source"]), str(entry["name"])), entry)
     baseline_hashes = _latest_baseline_hashes()
     items: list[dict[str, Any]] = []
     for entry in entries:
-        source = str(entry["source"])
-        name = str(entry["name"])
-        target_entry = target_variants.get((target, name))
-        source_hash = _content_hash(Path(str(entry["path"])))
-        target_hash = _content_hash(Path(str(target_entry["path"]))) if target_entry else None
-        baseline_hash = baseline_hashes.get((str(entry["id"]), target))
-        source_changed = bool(baseline_hash and source_hash != baseline_hash)
-        target_changed = bool(baseline_hash and target_hash != baseline_hash)
-
-        if source == target:
-            status = "in_sync"
-        elif target_entry is None:
-            status = "missing"
-        elif source_hash == target_hash:
-            status = "in_sync"
-        elif baseline_hash and source_changed and target_changed:
-            status = "conflict"
-        else:
-            status = "modified"
-
-        items.append({
-            "skill_id": entry["id"],
-            "name": name,
-            "source": source,
-            "target": target,
-            "target_skill_id": target_entry["id"] if target_entry else None,
-            "status": status,
-            "source_hash": source_hash,
-            "target_hash": target_hash,
-            "baseline_hash": baseline_hash,
-            "source_changed": source_changed,
-            "target_changed": target_changed,
-        })
+        items.append(_target_status_for_entry(entry, target, target_variants, baseline_hashes))
     items.sort(key=lambda item: (str(item["name"]), str(item["source"])))
     return {"target": target, "items": items}
 
@@ -771,7 +858,13 @@ def deploy_log(limit: int = 50) -> list[dict[str, Any]]:
     return rows
 
 
-def deploy(skill_id: str, target: str) -> dict[str, Any]:
+def deploy(
+    skill_id: str,
+    target: str,
+    *,
+    expected_target_hash: str | None = None,
+    allow_conflict: bool = False,
+) -> dict[str, Any]:
     sources = _sources()
     if target not in sources:
         raise ValueError(f"Unknown deploy target: {target}")
@@ -779,42 +872,178 @@ def deploy(skill_id: str, target: str) -> dict[str, Any]:
     entry = next((row for row in _scan_all_sources() if row["id"] == skill_id), None)
     if entry is None:
         raise FileNotFoundError(f"Skill not found: {skill_id}")
+    if str(entry["source"]) == target:
+        raise ValueError("Cannot deploy a skill to its own source")
 
     source_path = Path(entry["path"])
     target_root = sources[target]
-    target_root.mkdir(parents=True, exist_ok=True)
     dest_path = target_root / source_path.name
 
-    if dest_path.exists():
-        timestamp = time.strftime("%Y%m%dT%H%M%S")
-        backup_path = dest_path.parent / f"{dest_path.name}.bak-{timestamp}"
-        suffix = 1
-        while backup_path.exists():
-            backup_path = dest_path.parent / f"{dest_path.name}.bak-{timestamp}-{suffix}"
-            suffix += 1
-        shutil.move(str(dest_path), str(backup_path))
+    with _destination_lock(dest_path):
+        with _filesystem_destination_lock(dest_path):
+            source_hash = _content_hash(source_path)
+            target_hash_before = _content_hash(dest_path) if dest_path.exists() else None
+            entries = _scan_all_sources()
+            target_variants: dict[tuple[str, str], dict[str, Any]] = {}
+            for candidate in entries:
+                target_variants.setdefault((str(candidate["source"]), str(candidate["name"])), candidate)
+            current_target_entry = target_variants.get((target, str(entry["name"])))
+            if dest_path.exists() and current_target_entry is None:
+                current_target_entry = {"id": f"{target}/{source_path.name}", "path": str(dest_path)}
+            comparison = _target_status_for_entry(
+                entry,
+                target,
+                target_variants,
+                _latest_baseline_hashes(),
+                source_hash=source_hash,
+                target_hash=target_hash_before,
+                target_entry=current_target_entry,
+            )
+            if expected_target_hash is not None and expected_target_hash != target_hash_before:
+                raise SkillPreconditionError("Target changed since comparison")
+            if comparison["status"] == "conflict" and not allow_conflict:
+                raise SkillConflictError("Conflict requires review")
 
+            staging_path = _staging_path(dest_path)
+            backup_path: Path | None = None
+            published = False
+            published_hash = source_hash
+            baseline_hash_after: str | None = None
+            try:
+                _copy_to_staging(source_path, staging_path)
+                if _content_hash(staging_path) != source_hash or _content_hash(source_path) != source_hash:
+                    raise SkillPreconditionError("Source changed during deployment")
+
+                if target_hash_before is not None:
+                    backup_path = _backup_path(dest_path)
+                    try:
+                        _backup_target_atomically(dest_path, backup_path)
+                    except FileNotFoundError as exc:
+                        raise SkillPreconditionError("Target changed since comparison") from exc
+                    if _content_hash(backup_path) != target_hash_before:
+                        _rollback_deployment_target(dest_path, backup_path, published, published_hash)
+                        raise SkillPreconditionError("Target changed since comparison")
+                elif dest_path.exists():
+                    raise SkillPreconditionError("Target changed since comparison")
+
+                try:
+                    _publish_staging_atomically(staging_path, dest_path)
+                except FileExistsError as exc:
+                    raise SkillPreconditionError("Target changed since comparison") from exc
+                published = True
+                baseline_hash_after = _content_hash(dest_path)
+                if baseline_hash_after != source_hash or _content_hash(source_path) != source_hash:
+                    raise SkillPreconditionError("Source changed during deployment")
+            except Exception:
+                _rollback_deployment_target(dest_path, backup_path, published, published_hash)
+                raise
+            finally:
+                _remove_path(staging_path)
+
+            try:
+                _append_deploy_log(
+                    skill_id,
+                    target,
+                    str(dest_path),
+                    source_hash=source_hash,
+                    target_hash_before=target_hash_before,
+                    baseline_hash_after=baseline_hash_after,
+                )
+            except OSError as exc:
+                _rollback_deployment_target(dest_path, backup_path, published, published_hash)
+                raise SkillEvidenceError("Deployment evidence could not be recorded") from exc
+
+            _clear_cache()
+            return {
+                "ok": True,
+                "target": target,
+                "path": str(dest_path),
+                "status": "in_sync",
+                "source_hash": source_hash,
+                "target_hash_before": target_hash_before,
+                "baseline_hash_after": baseline_hash_after,
+            }
+
+
+def _staging_path(dest_path: Path) -> Path:
+    return dest_path.parent / f".{dest_path.name}.staging-{os.getpid()}-{uuid.uuid4().hex}"
+
+
+def _backup_path(dest_path: Path) -> Path:
+    timestamp = time.strftime("%Y%m%dT%H%M%S")
+    backup_path = dest_path.parent / f"{dest_path.name}.bak-{timestamp}"
+    suffix = 1
+    while backup_path.exists():
+        backup_path = dest_path.parent / f"{dest_path.name}.bak-{timestamp}-{suffix}"
+        suffix += 1
+    return backup_path
+
+
+def _copy_to_staging(source_path: Path, staging_path: Path) -> None:
     if source_path.is_dir():
-        shutil.copytree(source_path, dest_path)
+        shutil.copytree(source_path, staging_path)
     else:
-        shutil.copy2(source_path, dest_path)
-
-    _clear_cache()
-    _append_deploy_log(skill_id, target, str(dest_path))
-    return {"ok": True, "target": target, "path": str(dest_path)}
+        shutil.copy2(source_path, staging_path)
 
 
-def _append_deploy_log(skill_id: str, target: str, dest_path: str) -> None:
+def _backup_target_atomically(dest_path: Path, backup_path: Path) -> None:
+    dest_path.replace(backup_path)
+
+
+def _publish_staging_atomically(staging_path: Path, dest_path: Path) -> None:
+    os.rename(staging_path, dest_path)
+
+
+def _remove_path(path: Path) -> None:
+    if not path.exists():
+        return
+    if path.is_dir():
+        shutil.rmtree(path)
+    else:
+        path.unlink()
+
+
+def _rollback_deployment_target(
+    dest_path: Path,
+    backup_path: Path | None,
+    published: bool,
+    transaction_hash: str | None,
+) -> None:
+    """Restore our verified backup without overwriting content created by another writer."""
+    try:
+        destination_is_ours = bool(
+            published and transaction_hash and dest_path.exists() and _content_hash(dest_path) == transaction_hash
+        )
+        if backup_path is not None and backup_path.exists():
+            if dest_path.exists() and destination_is_ours:
+                _remove_path(dest_path)
+            if not dest_path.exists():
+                backup_path.replace(dest_path)
+        elif destination_is_ours:
+            _remove_path(dest_path)
+    finally:
+        _clear_cache()
+
+
+def _append_deploy_log(
+    skill_id: str,
+    target: str,
+    dest_path: str,
+    *,
+    source_hash: str,
+    target_hash_before: str | None,
+    baseline_hash_after: str,
+) -> None:
     log_path = _deploy_log_path()
     record = {
         "ts": dt.datetime.now(dt.UTC).isoformat(),
         "skill_id": skill_id,
         "target": target,
         "path": dest_path,
+        "source_hash": source_hash,
+        "target_hash_before": target_hash_before,
+        "baseline_hash_after": baseline_hash_after,
     }
-    try:
-        log_path.parent.mkdir(parents=True, exist_ok=True)
-        with log_path.open("a", encoding="utf-8") as handle:
-            handle.write(json.dumps(record, sort_keys=True) + "\n")
-    except OSError:
-        pass
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    with log_path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(record, sort_keys=True) + "\n")

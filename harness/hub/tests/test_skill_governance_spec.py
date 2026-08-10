@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import multiprocessing
+import os
 import shutil
 from pathlib import Path
 
@@ -14,6 +16,14 @@ from services import skill_library as sl
 
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "skills"
+
+
+def _hold_destination_lock(lock_path: str, ready: object, release: object) -> None:
+    from services import skill_library
+
+    with skill_library._filesystem_destination_lock(Path(lock_path)):
+        ready.set()
+        release.wait(5)
 
 
 @pytest.fixture()
@@ -30,6 +40,7 @@ def governance_sources(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
         },
         raising=False,
     )
+    monkeypatch.setattr(config, "SKILL_DEPLOY_LOG", tmp_path / "skill_deploy_log.jsonl", raising=False)
     sl._clear_cache()
 
 
@@ -221,3 +232,256 @@ def test_target_status_rejects_unknown_target_without_exposing_configuration(
     assert response.status_code == 400
     assert response.json()["detail"] == "Unknown target"
     assert "not-a-source" not in response.text
+
+
+def _make_deploy_conflict(tmp_path: Path) -> tuple[Path, Path, str]:
+    sources = {
+        "claude_user": tmp_path / "conflict-sources" / "claude_user",
+        "codex_user": tmp_path / "conflict-sources" / "codex_user",
+    }
+    for source_root in sources.values():
+        source_root.mkdir(parents=True)
+    _write_skill(sources["claude_user"], "skillspector", "skillspector", "baseline")
+    shutil.copytree(sources["claude_user"] / "skillspector", sources["codex_user"] / "skillspector")
+    baseline_hash = sl._content_hash(sources["claude_user"] / "skillspector")
+    config.SKILL_DEPLOY_LOG.write_text(
+        json.dumps({
+            "skill_id": "claude_user/skillspector",
+            "target": "codex_user",
+            "baseline_hash_after": baseline_hash,
+        }) + "\n",
+        encoding="utf-8",
+    )
+    (sources["claude_user"] / "skillspector" / "SKILL.md").write_text(
+        "---\nname: skillspector\ndescription: fixture\n---\nsource changed\n",
+        encoding="utf-8",
+    )
+    (sources["codex_user"] / "skillspector" / "SKILL.md").write_text(
+        "---\nname: skillspector\ndescription: fixture\n---\ntarget changed\n",
+        encoding="utf-8",
+    )
+    return sources["claude_user"] / "skillspector", sources["codex_user"] / "skillspector", baseline_hash
+
+
+def test_deploy_rejects_stale_expected_target_hash(
+    governance_sources: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    sources = {"claude_user": tmp_path / "stale" / "claude_user", "codex_user": tmp_path / "stale" / "codex_user"}
+    for source_root in sources.values():
+        source_root.mkdir(parents=True)
+    _write_skill(sources["claude_user"], "skillspector", "skillspector", "source")
+    _write_skill(sources["codex_user"], "skillspector", "skillspector", "target")
+    monkeypatch.setattr(config, "SKILL_SOURCES", sources, raising=False)
+    sl._clear_cache()
+
+    with pytest.raises(sl.SkillPreconditionError, match="Target changed since comparison"):
+        sl.deploy("claude_user/skillspector", "codex_user", expected_target_hash="sha256:" + "0" * 64)
+
+
+def test_deploy_rechecks_target_inside_destination_lock_before_overwrite(
+    governance_sources: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    sources = {"claude_user": tmp_path / "locked" / "claude_user", "codex_user": tmp_path / "locked" / "codex_user"}
+    for source_root in sources.values():
+        source_root.mkdir(parents=True)
+    _write_skill(sources["claude_user"], "skillspector", "skillspector", "source")
+    _write_skill(sources["codex_user"], "skillspector", "skillspector", "target")
+    monkeypatch.setattr(config, "SKILL_SOURCES", sources, raising=False)
+    target_path = sources["codex_user"] / "skillspector"
+    expected_target_hash = sl._content_hash(target_path)
+
+    class MutatingLock:
+        def __enter__(self) -> None:
+            (target_path / "SKILL.md").write_text(
+                "---\nname: skillspector\ndescription: fixture\n---\nexternal change\n",
+                encoding="utf-8",
+            )
+
+        def __exit__(self, *_: object) -> None:
+            return None
+
+    monkeypatch.setattr(sl, "_destination_lock", lambda _path: MutatingLock())
+    sl._clear_cache()
+
+    with pytest.raises(sl.SkillPreconditionError, match="Target changed since comparison"):
+        sl.deploy("claude_user/skillspector", "codex_user", expected_target_hash=expected_target_hash)
+
+    assert "external change" in (target_path / "SKILL.md").read_text(encoding="utf-8")
+    assert not list(target_path.parent.glob("skillspector.bak-*"))
+
+
+def test_deploy_fails_closed_when_target_changes_immediately_before_atomic_backup(
+    governance_sources: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    sources = {"claude_user": tmp_path / "atomic" / "claude_user", "codex_user": tmp_path / "atomic" / "codex_user"}
+    for source_root in sources.values():
+        source_root.mkdir(parents=True)
+    _write_skill(sources["claude_user"], "skillspector", "skillspector", "source")
+    _write_skill(sources["codex_user"], "skillspector", "skillspector", "target")
+    monkeypatch.setattr(config, "SKILL_SOURCES", sources, raising=False)
+    target_path = sources["codex_user"] / "skillspector"
+    expected_target_hash = sl._content_hash(target_path)
+
+    def mutate_then_backup(dest_path: Path, backup_path: Path) -> None:
+        (dest_path / "SKILL.md").write_text(
+            "---\nname: skillspector\ndescription: fixture\n---\nexternal change\n",
+            encoding="utf-8",
+        )
+        dest_path.replace(backup_path)
+
+    monkeypatch.setattr(sl, "_backup_target_atomically", mutate_then_backup)
+    sl._clear_cache()
+
+    with pytest.raises(sl.SkillPreconditionError, match="Target changed since comparison"):
+        sl.deploy("claude_user/skillspector", "codex_user", expected_target_hash=expected_target_hash)
+
+    assert "external change" in (target_path / "SKILL.md").read_text(encoding="utf-8")
+    assert not list(target_path.parent.glob(".skillspector.staging-*"))
+
+
+def test_deploy_process_lock_prevents_second_process_from_overwriting_target(
+    governance_sources: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    sources = {"claude_user": tmp_path / "multiprocess" / "claude_user", "codex_user": tmp_path / "multiprocess" / "codex_user"}
+    for source_root in sources.values():
+        source_root.mkdir(parents=True)
+    _write_skill(sources["claude_user"], "skillspector", "skillspector", "source")
+    _write_skill(sources["codex_user"], "skillspector", "skillspector", "target")
+    monkeypatch.setattr(config, "SKILL_SOURCES", sources, raising=False)
+    target_path = sources["codex_user"] / "skillspector"
+    expected_target_hash = sl._content_hash(target_path)
+    context = multiprocessing.get_context("spawn")
+    ready = context.Event()
+    release = context.Event()
+    holder = context.Process(target=_hold_destination_lock, args=(str(target_path), ready, release))
+    holder.start()
+    assert ready.wait(5)
+    monkeypatch.setattr(sl, "_DEPLOY_LOCK_WAIT_SECONDS", 0.1)
+
+    try:
+        with pytest.raises(sl.SkillPreconditionError, match="Deployment target is busy"):
+            sl.deploy("claude_user/skillspector", "codex_user", expected_target_hash=expected_target_hash)
+    finally:
+        release.set()
+        holder.join(5)
+
+    assert holder.exitcode == 0
+    assert "target" in (target_path / "SKILL.md").read_text(encoding="utf-8")
+
+
+def test_deploy_rollback_preserves_foreign_destination_changed_after_publish(
+    governance_sources: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    sources = {"claude_user": tmp_path / "post-publish" / "claude_user", "codex_user": tmp_path / "post-publish" / "codex_user"}
+    for source_root in sources.values():
+        source_root.mkdir(parents=True)
+    _write_skill(sources["claude_user"], "skillspector", "skillspector", "source")
+    _write_skill(sources["codex_user"], "skillspector", "skillspector", "target")
+    monkeypatch.setattr(config, "SKILL_SOURCES", sources, raising=False)
+    target_path = sources["codex_user"] / "skillspector"
+    expected_target_hash = sl._content_hash(target_path)
+
+    def publish_then_mutate(staging_path: Path, dest_path: Path) -> None:
+        os.rename(staging_path, dest_path)
+        (dest_path / "SKILL.md").write_text(
+            "---\nname: skillspector\ndescription: fixture\n---\nforeign after publish\n",
+            encoding="utf-8",
+        )
+
+    monkeypatch.setattr(sl, "_publish_staging_atomically", publish_then_mutate)
+    sl._clear_cache()
+
+    with pytest.raises(sl.SkillPreconditionError):
+        sl.deploy("claude_user/skillspector", "codex_user", expected_target_hash=expected_target_hash)
+
+    assert "foreign after publish" in (target_path / "SKILL.md").read_text(encoding="utf-8")
+    backups = list(target_path.parent.glob("skillspector.bak-*"))
+    assert len(backups) == 1
+    assert "target" in (backups[0] / "SKILL.md").read_text(encoding="utf-8")
+
+
+def test_deploy_requires_explicit_override_for_conflict(
+    governance_sources: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    sources = {"claude_user": tmp_path / "conflict-sources" / "claude_user", "codex_user": tmp_path / "conflict-sources" / "codex_user"}
+    monkeypatch.setattr(config, "SKILL_SOURCES", sources, raising=False)
+    _make_deploy_conflict(tmp_path)
+    sl._clear_cache()
+
+    with pytest.raises(sl.SkillConflictError, match="Conflict requires review"):
+        sl.deploy("claude_user/skillspector", "codex_user")
+
+
+def test_deploy_conflict_override_preserves_backup_records_evidence_and_returns_in_sync(
+    governance_sources: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    sources = {"claude_user": tmp_path / "conflict-sources" / "claude_user", "codex_user": tmp_path / "conflict-sources" / "codex_user"}
+    monkeypatch.setattr(config, "SKILL_SOURCES", sources, raising=False)
+    source_path, target_path, _baseline_hash = _make_deploy_conflict(tmp_path)
+    target_before = target_path / "SKILL.md"
+    target_before_content = target_before.read_text(encoding="utf-8")
+    expected_target_hash = sl._content_hash(target_path)
+    sl._clear_cache()
+
+    result = sl.deploy(
+        "claude_user/skillspector",
+        "codex_user",
+        expected_target_hash=expected_target_hash,
+        allow_conflict=True,
+    )
+
+    assert result["ok"] is True
+    assert result["status"] == "in_sync"
+    assert result["source_hash"] == sl._content_hash(source_path)
+    assert result["target_hash_before"] == expected_target_hash
+    assert result["baseline_hash_after"] == result["source_hash"]
+    assert "content" not in result
+    backups = list(target_path.parent.glob("skillspector.bak-*"))
+    assert len(backups) == 1
+    assert (backups[0] / "SKILL.md").read_text(encoding="utf-8") == target_before_content
+    status = next(
+        item for item in sl.target_status("codex_user")["items"] if item["skill_id"] == "claude_user/skillspector"
+    )
+    assert status["status"] == "in_sync"
+    evidence = json.loads(config.SKILL_DEPLOY_LOG.read_text(encoding="utf-8").splitlines()[-1])
+    assert evidence["source_hash"] == result["source_hash"]
+    assert evidence["target_hash_before"] == expected_target_hash
+    assert evidence["baseline_hash_after"] == result["baseline_hash_after"]
+
+
+def test_deploy_api_validates_preconditions_and_maps_them_to_sanitized_conflicts(
+    governance_sources: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    sources = {"claude_user": tmp_path / "conflict-sources" / "claude_user", "codex_user": tmp_path / "conflict-sources" / "codex_user"}
+    monkeypatch.setattr(config, "SKILL_SOURCES", sources, raising=False)
+    _make_deploy_conflict(tmp_path)
+    sl._clear_cache()
+    client = TestClient(server.app, headers={config.HUB_CLIENT_HEADER: config.HUB_CLIENT_VALUE})
+    url = "/api/skill-library/claude_user/skillspector/deploy"
+
+    bad_expected = client.post(url, json={"target": "codex_user", "expected_target_hash": 42})
+    bad_override = client.post(url, json={"target": "codex_user", "allow_conflict": "yes"})
+    malformed = client.post(url, json={"target": "codex_user", "expected_target_hash": "sha256:stale"})
+    stale = client.post(url, json={"target": "codex_user", "expected_target_hash": "sha256:" + "0" * 64})
+    conflict = client.post(url, json={"target": "codex_user"})
+
+    assert bad_expected.status_code == 400
+    assert bad_expected.json()["detail"] == "expected_target_hash must be a string"
+    assert bad_override.status_code == 400
+    assert bad_override.json()["detail"] == "allow_conflict must be a boolean"
+    assert malformed.status_code == 400
+    assert malformed.json()["detail"] == "expected_target_hash must be a SHA-256 hash"
+    assert stale.status_code == 409
+    assert stale.json()["detail"] == "Target changed since comparison"
+    assert conflict.status_code == 409
+    assert conflict.json()["detail"] == "Conflict requires review"
+    assert str(tmp_path) not in stale.text
+    assert str(tmp_path) not in conflict.text
+    current_target_hash = sl._content_hash(sources["codex_user"] / "skillspector")
+    approved = client.post(url, json={
+        "target": "codex_user",
+        "expected_target_hash": current_target_hash,
+        "allow_conflict": True,
+    })
+    assert approved.status_code == 200
+    assert "path" not in approved.json()
