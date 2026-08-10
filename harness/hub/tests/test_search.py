@@ -10,7 +10,7 @@ from services import runtime_agents, runtime_artifacts, skill_library, workflow
 
 
 def test_search_returns_real_cross_type_matches(monkeypatch, tmp_path: Path) -> None:
-    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    client = TestClient(server.app)
     monkeypatch.setattr(workflow, "list_workflows", lambda: [{"id": "needle-flow", "nodes": []}])
     monkeypatch.setattr(runtime_agents, "list_agents", lambda: [{"id": "needle-agent", "provider": "nvidia", "system_prompt": ""}])
     monkeypatch.setattr(runtime_artifacts, "list_library_artifacts", lambda: [{"id": "needle-artifact", "title": "needle artifact", "source": "chat"}])
@@ -26,6 +26,6 @@ def test_search_returns_real_cross_type_matches(monkeypatch, tmp_path: Path) -> 
 
 
 def test_search_short_or_missing_query_is_empty() -> None:
-    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    client = TestClient(server.app)
     assert client.get("/api/search", params={"q": "n"}).json() == []
     assert client.get("/api/search", params={"q": "absent-search-value"}).json() == []

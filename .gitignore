@@ -24,6 +24,7 @@ __pycache__/
 *.local.json
 *.log
 .telegraph_token
+hub-token
 .last_error.json
 .wiki_tg_offset.json
 

@@ -102,7 +102,7 @@ def test_validate_agent_profile_rejects_invalid_profiles(
 
 
 def test_agent_profile_api_crud(agents_tmp: Path) -> None:
-    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    client = TestClient(server.app)
     profile = valid_profile()
 
     created = client.post("/api/agents", json=profile)
@@ -130,7 +130,7 @@ def test_agent_profile_api_crud(agents_tmp: Path) -> None:
 def test_agent_profile_api_rejects_tier_outside_blocklist_vocabulary(agents_tmp: Path) -> None:
     """Spawn gating matches risk_tier by exact string, so a tier that is not in
     risk.TIERS can never be blocked and would bypass every governance level."""
-    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    client = TestClient(server.app)
 
     rejected = client.post("/api/agents", json=valid_profile() | {"risk_tier": "low"})
     assert rejected.status_code == 400
@@ -145,7 +145,7 @@ def test_agent_profile_api_rejects_tier_outside_blocklist_vocabulary(agents_tmp:
 
 
 def test_risk_tiers_endpoint_serves_the_canonical_list() -> None:
-    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    client = TestClient(server.app)
 
     response = client.get("/api/risk-tiers")
     assert response.status_code == 200
@@ -153,7 +153,7 @@ def test_risk_tiers_endpoint_serves_the_canonical_list() -> None:
 
 
 def test_model_classes_api() -> None:
-    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    client = TestClient(server.app)
 
     response = client.get("/api/model-classes")
 

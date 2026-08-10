@@ -92,14 +92,13 @@ def test_artifact_api_rejects_bad_run_id(runtime_tmp: Path) -> None:
 
 def test_library_artifact_api_creates_reads_and_versions(runtime_tmp: Path) -> None:
     client = TestClient(server.app)
-    headers = {config.HUB_CLIENT_HEADER: config.HUB_CLIENT_VALUE}
-    created = client.post("/api/artifacts", headers=headers, json={"title": "Ghi chú", "content": "bản đầu", "source": "chat"})
+    created = client.post("/api/artifacts", json={"title": "Ghi chú", "content": "bản đầu", "source": "chat"})
     assert created.status_code == 200
     artifact = created.json()
     assert artifact["title"] == "Ghi chú"
     assert artifact["source"] == "chat"
     assert artifact["versions"] == [{"version": "v1", "created_at": artifact["created_at"], "content": "bản đầu"}]
-    updated = client.post("/api/artifacts", headers=headers, json={"id": artifact["id"], "content": "bản hai", "source": "chat"})
+    updated = client.post("/api/artifacts", json={"id": artifact["id"], "content": "bản hai", "source": "chat"})
     assert updated.status_code == 200
     assert [version["version"] for version in updated.json()["versions"]] == ["v1", "v2"]
     listed = client.get("/api/artifacts")
@@ -112,8 +111,7 @@ def test_library_artifact_api_creates_reads_and_versions(runtime_tmp: Path) -> N
 
 def test_library_artifact_api_rejects_unknown_traversal_and_oversized(runtime_tmp: Path) -> None:
     client = TestClient(server.app)
-    headers = {config.HUB_CLIENT_HEADER: config.HUB_CLIENT_VALUE}
     assert client.get("/api/artifacts/not-found").status_code == 404
     assert client.get("/api/artifacts/..%2Fartifacts.json").status_code == 404
-    oversized = client.post("/api/artifacts", headers=headers, json={"title": "Too large", "content": "x" * (runtime_artifacts.MAX_ARTIFACT_CONTENT_CHARS + 1), "source": "chat"})
+    oversized = client.post("/api/artifacts", json={"title": "Too large", "content": "x" * (runtime_artifacts.MAX_ARTIFACT_CONTENT_CHARS + 1), "source": "chat"})
     assert oversized.status_code == 400

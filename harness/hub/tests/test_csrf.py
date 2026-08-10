@@ -21,27 +21,28 @@ def test_get_allowed_without_header(raw_client: TestClient) -> None:
 
 
 def test_post_blocked_without_client_header(raw_client: TestClient) -> None:
-    resp = raw_client.post("/api/runs/trigger", json={"suite": "x"})
+    resp = raw_client.post("/api/runs/trigger", json={"suite": "x"}, headers={"X-Hub-Token": ""})
     assert resp.status_code == 403
-    assert resp.json()["detail"] == "missing hub client header"
+    assert resp.json()["detail"] == "missing or invalid hub token"
 
 
 def test_post_blocked_cross_origin(raw_client: TestClient) -> None:
     resp = raw_client.post(
         "/api/runs/trigger",
         json={"suite": "x"},
-        headers={"origin": "https://evil.example", "x-hub-client": "harness-hub"},
+        headers={"origin": "https://evil.example"},
     )
     assert resp.status_code == 403
     assert resp.json()["detail"] == "cross-origin blocked"
 
 
 def test_post_passes_csrf_with_header(raw_client: TestClient) -> None:
-    # Valid client header + local origin passes CSRF; handler then rejects unknown suite (not 403).
+    # Valid token (auto-injected by conftest.py) + local origin passes the auth
+    # guard; handler then rejects unknown suite (not 403).
     resp = raw_client.post(
         "/api/runs/trigger",
         json={"suite": "does-not-exist"},
-        headers={"origin": "http://127.0.0.1:8799", "x-hub-client": "harness-hub"},
+        headers={"origin": "http://127.0.0.1:8799"},
     )
     assert resp.status_code != 403
 

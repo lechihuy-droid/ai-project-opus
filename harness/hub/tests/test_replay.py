@@ -61,7 +61,7 @@ def test_replay_rejects_unknown_and_traversal_style_ids() -> None:
     with pytest.raises(FileNotFoundError):
         replay.session_replay("../secret")
 
-    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    client = TestClient(server.app)
     missing = client.get("/api/sessions/not-a-real-session/replay")
     traversal = client.get("/api/sessions/..%252Fsecret/replay")
 

@@ -42,7 +42,7 @@ def client(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> TestClient:
     )
     trigger._STREAMS.clear()
     gitjobs._STREAMS.clear()
-    return TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    return TestClient(server.app)
 
 
 def test_health(client: TestClient) -> None:
@@ -153,8 +153,8 @@ def test_workflow_create_and_delete_require_client_header(monkeypatch: pytest.Mo
     monkeypatch.setattr(boundary, "ROOT_RESOLVED", tmp_path.resolve())
     raw_client = TestClient(server.app)
 
-    assert raw_client.post("/api/workflows", json={"id": "blocked"}).status_code == 403
-    assert raw_client.delete("/api/workflows/blocked").status_code == 403
+    assert raw_client.post("/api/workflows", json={"id": "blocked"}, headers={"X-Hub-Token": ""}).status_code == 403
+    assert raw_client.delete("/api/workflows/blocked", headers={"X-Hub-Token": ""}).status_code == 403
 
 
 def test_runs_endpoints(client: TestClient) -> None:

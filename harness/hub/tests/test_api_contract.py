@@ -14,7 +14,7 @@ from services import boundary, gitjobs, workflow
 @pytest.fixture()
 def client() -> TestClient:
     server._IDEMPOTENCY_RESULTS.clear()
-    return TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    return TestClient(server.app)
 
 
 def test_error_envelope_and_correlation_are_safe_and_uniform(client: TestClient) -> None:

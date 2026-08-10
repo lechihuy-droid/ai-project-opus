@@ -16,7 +16,7 @@ Real backend wiring:
   only while the active chat has no messages. CLI providers show a read-only
   badge and version; the model selector is shown only for NVIDIA.
 - Chat: `POST /api/chat` sends `{ provider, messages, model? , session_id? }`
-  with `X-Hub-Client: harness-hub`; `model` is NVIDIA-only and `session_id` is
+  with `X-Hub-Token: <token>`; `model` is NVIDIA-only and `session_id` is
   included after a stream `done` event supplies one. Assistant output streams
   from SSE `reasoning`, `delta`, `done`, and `error` events.
 - Workspace chat state is in-memory only, so provider and session IDs are not

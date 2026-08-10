@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import os
+import secrets
 from pathlib import Path
 from typing import Any
 
@@ -403,13 +405,38 @@ SKILL_SOURCES: dict[str, Path] = {
     "codex_user": Path.home() / ".codex" / "skills",
 }
 
-# CSRF guard (local-only origins)
+# Auth guard (local-only origins + a real bearer token)
 ALLOWED_ORIGINS = (
     "http://127.0.0.1:8799",
     "http://localhost:8799",
 )
-HUB_CLIENT_HEADER = "x-hub-client"
-HUB_CLIENT_VALUE = "harness-hub"
+HUB_TOKEN_FILE = RUNTIME_STORE_DIR / "hub-token"
+
+
+def _load_or_create_hub_token() -> str:
+    env_token = os.environ.get("HUB_TOKEN")
+    if env_token:
+        return env_token
+    try:
+        existing = HUB_TOKEN_FILE.read_text(encoding="utf-8").strip()
+    except OSError:
+        existing = ""
+    if existing:
+        return existing
+    token = secrets.token_urlsafe(32)
+    try:
+        HUB_TOKEN_FILE.parent.mkdir(parents=True, exist_ok=True)
+        HUB_TOKEN_FILE.write_text(token, encoding="utf-8")
+    except OSError:
+        return token
+    try:
+        os.chmod(HUB_TOKEN_FILE, 0o600)
+    except OSError:
+        pass
+    return token
+
+
+HUB_TOKEN = _load_or_create_hub_token()
 
 
 if __name__ == "__main__":

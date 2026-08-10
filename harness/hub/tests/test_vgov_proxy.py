@@ -65,7 +65,7 @@ def test_vgov_proxy_forwards_request_and_response(monkeypatch) -> None:
 
     monkeypatch.setattr(config, "VGOV_BASE_URL", "http://vgov.test")
     monkeypatch.setattr(httpx.AsyncClient, "request", request)
-    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    client = TestClient(server.app)
     response = client.post("/api/vgov/runs?project_key=demo", content=b'{"x":1}', headers={"X-Actor": "tester", "Content-Type": "application/json"})
     assert response.status_code == 201 and response.json() == {"ok": True}
     # vgov-api mounts everything under /api/vgov; dropping the prefix 404s every functional route.

@@ -18,7 +18,7 @@ from services import chat as chat_service
 @pytest.fixture()
 def client(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> TestClient:
     monkeypatch.setattr(chat_service, "CHAT_USAGE_FILE", tmp_path / "chat_usage.jsonl")
-    return TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    return TestClient(server.app)
 
 
 def _messages() -> list[dict[str, str]]:
