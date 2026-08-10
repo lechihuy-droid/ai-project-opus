@@ -45,6 +45,12 @@ DANGEROUS_EXECUTABLES = SHELL_LAUNCHERS | {
     "taskkill",
     "taskkill.exe",
 }
+INLINE_CODE_FLAGS = {"-c", "-m", "--command"}
+# Secondary defense-in-depth only: catches a few known-dangerous literal tokens
+# (rm, del, ...) in the raw argv. This is NOT the containment mechanism — that
+# is the executable allowlist + path containment above/below. Do not treat a
+# passing check here as proof a command is safe, and do not "fix" a bypass by
+# adding more tokens to this set.
 DANGEROUS_COMMAND_TOKENS = {
     "bcdedit",
     "cipher",
@@ -294,7 +300,6 @@ def _enforce_command_boundary(command: Any, cwd: Path, ctx: dict[str, str], chec
         raise BoundaryPolicyError(f"dangerous executable requires explicit allowlist: {executable}")
 
     allowed_names = {str(item).lower() for item in _as_list(check.get("allowed_executables"))}
-    allowed_names.update({"py", "py.exe", "python", "python.exe"})
     safe_external_paths = {
         _norm_path(Path(ctx["python"])),
         _norm_path(Path(ctx["py311"])),
@@ -311,6 +316,13 @@ def _enforce_command_boundary(command: Any, cwd: Path, ctx: dict[str, str], chec
             raise BoundaryPolicyError(f"executable outside project root is not allowlisted: {executable_path.resolve()}")
     elif executable_name not in allowed_names and not check.get("allow_system_executable"):
         raise BoundaryPolicyError(f"system executable is not allowlisted: {executable}")
+
+    if not check.get("allow_inline_code"):
+        inline_flags = {str(token) for token in command[1:]} & INLINE_CODE_FLAGS
+        if inline_flags:
+            raise BoundaryPolicyError(
+                f"inline code flag {sorted(inline_flags)} requires explicit allow_inline_code: {command}"
+            )
 
     if not check.get("allow_dangerous_commands"):
         for token in command:

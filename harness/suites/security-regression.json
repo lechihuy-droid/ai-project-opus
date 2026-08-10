@@ -1,0 +1,37 @@
+{
+  "id": "security-regression",
+  "name": "Security Regression Harness",
+  "description": "Negative probes for the P0.3 boundary bypasses: interpreter inline code, path arguments outside root, and shell launchers without allow_shell. Pass means the boundary policy still blocks all three.",
+  "checks": [
+    {
+      "id": "reject-inline-code-interpreter",
+      "type": "command",
+      "command": ["{py311}", "harness/run_harness.py", "--suite", "harness/suites/probes/inline-code-interpreter.json", "--json"],
+      "cwd": "{root}",
+      "timeout_seconds": 60,
+      "expected_exit": 1,
+      "output_contains": ["Boundary policy violation", "inline code flag"],
+      "hint": "python -c/-m/--command must require explicit allow_inline_code; this was the P0.3 audit bypass (python -c ran unrestricted)."
+    },
+    {
+      "id": "reject-outside-command-arg",
+      "type": "command",
+      "command": ["{py311}", "harness/run_harness.py", "--suite", "harness/suites/probes/outside-command-arg.json", "--json"],
+      "cwd": "{root}",
+      "timeout_seconds": 60,
+      "expected_exit": 1,
+      "output_contains": ["Boundary policy violation", "command argument outside project root"],
+      "hint": "Command arguments that are path-like should stay inside the project root unless explicitly allowlisted."
+    },
+    {
+      "id": "reject-shell-launcher",
+      "type": "command",
+      "command": ["{py311}", "harness/run_harness.py", "--suite", "harness/suites/probes/shell-launcher.json", "--json"],
+      "cwd": "{root}",
+      "timeout_seconds": 60,
+      "expected_exit": 1,
+      "output_contains": ["Boundary policy violation", "shell launcher"],
+      "hint": "Raw shells should require explicit allow_shell because they bypass argv-level safety."
+    }
+  ]
+}
