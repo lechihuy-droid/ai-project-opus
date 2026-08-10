@@ -278,6 +278,39 @@ def test_deploy_rejects_stale_expected_target_hash(
         sl.deploy("claude_user/skillspector", "codex_user", expected_target_hash="sha256:" + "0" * 64)
 
 
+def test_deploy_explicit_null_expected_hash_requires_target_to_remain_missing(
+    governance_sources: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    sources = {"claude_user": tmp_path / "missing-cas" / "claude_user", "codex_user": tmp_path / "missing-cas" / "codex_user"}
+    for source_root in sources.values():
+        source_root.mkdir(parents=True)
+    _write_skill(sources["claude_user"], "skillspector", "skillspector", "source")
+    _write_skill(sources["codex_user"], "skillspector", "skillspector", "foreign target")
+    monkeypatch.setattr(config, "SKILL_SOURCES", sources, raising=False)
+    sl._clear_cache()
+
+    with pytest.raises(sl.SkillPreconditionError, match="Target changed since comparison"):
+        sl.deploy("claude_user/skillspector", "codex_user", expected_target_hash=None)
+
+    assert "foreign target" in (sources["codex_user"] / "skillspector" / "SKILL.md").read_text(encoding="utf-8")
+
+
+def test_deploy_omitted_expected_hash_preserves_legacy_overwrite_behavior(
+    governance_sources: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    sources = {"claude_user": tmp_path / "legacy-cas" / "claude_user", "codex_user": tmp_path / "legacy-cas" / "codex_user"}
+    for source_root in sources.values():
+        source_root.mkdir(parents=True)
+    _write_skill(sources["claude_user"], "skillspector", "skillspector", "source")
+    _write_skill(sources["codex_user"], "skillspector", "skillspector", "legacy target")
+    monkeypatch.setattr(config, "SKILL_SOURCES", sources, raising=False)
+    sl._clear_cache()
+
+    result = sl.deploy("claude_user/skillspector", "codex_user")
+
+    assert result["status"] == "in_sync"
+
+
 def test_deploy_rechecks_target_inside_destination_lock_before_overwrite(
     governance_sources: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
@@ -355,15 +388,18 @@ def test_deploy_process_lock_prevents_second_process_from_overwriting_target(
     release = context.Event()
     holder = context.Process(target=_hold_destination_lock, args=(str(target_path), ready, release))
     holder.start()
-    assert ready.wait(5)
-    monkeypatch.setattr(sl, "_DEPLOY_LOCK_WAIT_SECONDS", 0.1)
-
     try:
+        ready_received = ready.wait(30)
+        assert ready_received, f"spawn lock holder did not initialize (exitcode={holder.exitcode})"
+        monkeypatch.setattr(sl, "_DEPLOY_LOCK_WAIT_SECONDS", 0.1)
         with pytest.raises(sl.SkillPreconditionError, match="Deployment target is busy"):
             sl.deploy("claude_user/skillspector", "codex_user", expected_target_hash=expected_target_hash)
     finally:
         release.set()
-        holder.join(5)
+        holder.join(10)
+        if holder.is_alive():
+            holder.terminate()
+            holder.join(5)
 
     assert holder.exitcode == 0
     assert "target" in (target_path / "SKILL.md").read_text(encoding="utf-8")
@@ -485,3 +521,24 @@ def test_deploy_api_validates_preconditions_and_maps_them_to_sanitized_conflicts
     })
     assert approved.status_code == 200
     assert "path" not in approved.json()
+
+
+def test_deploy_api_explicit_null_expected_hash_is_missing_target_cas(
+    governance_sources: None, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    sources = {"claude_user": tmp_path / "api-missing-cas" / "claude_user", "codex_user": tmp_path / "api-missing-cas" / "codex_user"}
+    for source_root in sources.values():
+        source_root.mkdir(parents=True)
+    _write_skill(sources["claude_user"], "skillspector", "skillspector", "source")
+    _write_skill(sources["codex_user"], "skillspector", "skillspector", "foreign target")
+    monkeypatch.setattr(config, "SKILL_SOURCES", sources, raising=False)
+    sl._clear_cache()
+    client = TestClient(server.app, headers={config.HUB_CLIENT_HEADER: config.HUB_CLIENT_VALUE})
+
+    response = client.post(
+        "/api/skill-library/claude_user/skillspector/deploy",
+        json={"target": "codex_user", "expected_target_hash": None},
+    )
+
+    assert response.status_code == 409
+    assert response.json()["detail"] == "Target changed since comparison"

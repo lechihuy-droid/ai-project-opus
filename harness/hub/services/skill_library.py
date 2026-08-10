@@ -50,6 +50,7 @@ _TELEMETRY_LOCK = threading.RLock()
 _TELEMETRY_CACHE: dict[str, Any] = {"expires": 0.0, "fingerprint": None, "events": []}
 _SAFE_SKILL_NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
 _CONTENT_HASH = re.compile(r"^sha256:[0-9a-f]{64}$")
+_EXPECTED_TARGET_HASH_UNSET = object()
 
 
 class SkillConflictError(RuntimeError):
@@ -862,7 +863,7 @@ def deploy(
     skill_id: str,
     target: str,
     *,
-    expected_target_hash: str | None = None,
+    expected_target_hash: str | None | object = _EXPECTED_TARGET_HASH_UNSET,
     allow_conflict: bool = False,
 ) -> dict[str, Any]:
     sources = _sources()
@@ -899,7 +900,7 @@ def deploy(
                 target_hash=target_hash_before,
                 target_entry=current_target_entry,
             )
-            if expected_target_hash is not None and expected_target_hash != target_hash_before:
+            if expected_target_hash is not _EXPECTED_TARGET_HASH_UNSET and expected_target_hash != target_hash_before:
                 raise SkillPreconditionError("Target changed since comparison")
             if comparison["status"] == "conflict" and not allow_conflict:
                 raise SkillConflictError("Conflict requires review")

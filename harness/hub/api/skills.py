@@ -124,6 +124,7 @@ def api_skill_library_deploy_log() -> list[dict[str, object]]:
 @router.post("/api/skill-library/{skill_id:path}/deploy")
 def api_skill_library_deploy(skill_id: str, payload: dict[str, object]) -> dict[str, object]:
     target = payload.get("target")
+    has_expected_target_hash = "expected_target_hash" in payload
     expected_target_hash = payload.get("expected_target_hash")
     allow_conflict = payload.get("allow_conflict", False)
     if not isinstance(target, str) or not target:
@@ -135,12 +136,10 @@ def api_skill_library_deploy(skill_id: str, payload: dict[str, object]) -> dict[
     if not isinstance(allow_conflict, bool):
         raise HTTPException(status_code=400, detail="allow_conflict must be a boolean")
     try:
-        result = skill_library.deploy(
-            skill_id,
-            target,
-            expected_target_hash=expected_target_hash,
-            allow_conflict=allow_conflict,
-        )
+        deploy_options: dict[str, object] = {"allow_conflict": allow_conflict}
+        if has_expected_target_hash:
+            deploy_options["expected_target_hash"] = expected_target_hash
+        result = skill_library.deploy(skill_id, target, **deploy_options)
         return {key: value for key, value in result.items() if key != "path"}
     except (skill_library.SkillConflictError, skill_library.SkillPreconditionError) as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
