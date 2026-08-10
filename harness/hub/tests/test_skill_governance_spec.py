@@ -5,6 +5,7 @@ import json
 import multiprocessing
 import os
 import shutil
+import threading
 from pathlib import Path
 
 import pytest
@@ -24,6 +25,47 @@ def _hold_destination_lock(lock_path: str, ready: object, release: object) -> No
     with skill_library._filesystem_destination_lock(Path(lock_path)):
         ready.set()
         release.wait(5)
+
+
+def _write_partial_evidence_record(log_path: str, ready: object, release: object) -> None:
+    """Simulate an evidence writer paused between one record's two writes."""
+    from services import skill_library
+
+    record_tail = (
+        ' "source_hash": "sha256:' + "a" * 64 + '", '
+        '"baseline_hash_after": "sha256:' + "a" * 64 + '"}\n'
+    )
+    path = Path(log_path)
+    with skill_library._filesystem_evidence_lock(path):
+        with path.open("a", encoding="utf-8") as handle:
+            handle.write('{"skill_id": "claude_user/skillspector", "target": "codex_user",')
+            handle.flush()
+            os.fsync(handle.fileno())
+            ready.set()
+            release.wait(5)
+            handle.write(record_tail)
+            handle.flush()
+            os.fsync(handle.fileno())
+
+
+def _deploy_with_shared_evidence_log(
+    skill_id: str,
+    target: str,
+    sources: dict[str, str],
+    log_path: str,
+    ready: object,
+    start: object,
+) -> None:
+    """Run a real deploy in an isolated process using the same evidence log."""
+    import config as child_config
+    from services import skill_library
+
+    child_config.SKILL_SOURCES = {name: Path(path) for name, path in sources.items()}
+    child_config.SKILL_DEPLOY_LOG = Path(log_path)
+    skill_library._clear_cache()
+    ready.set()
+    start.wait(10)
+    skill_library.deploy(skill_id, target)
 
 
 @pytest.fixture()
@@ -483,6 +525,248 @@ def test_deploy_conflict_override_preserves_backup_records_evidence_and_returns_
     assert evidence["source_hash"] == result["source_hash"]
     assert evidence["target_hash_before"] == expected_target_hash
     assert evidence["baseline_hash_after"] == result["baseline_hash_after"]
+
+
+def test_parallel_deploys_to_distinct_targets_keep_two_complete_evidence_records(
+    governance_sources: None,
+) -> None:
+    """A shared audit log must remain complete when destination locks differ."""
+    barrier = threading.Barrier(2)
+    results: list[dict[str, object]] = []
+    errors: list[BaseException] = []
+
+    def deploy_after_barrier(skill_id: str, target: str) -> None:
+        try:
+            barrier.wait(timeout=5)
+            results.append(sl.deploy(skill_id, target))
+        except BaseException as exc:  # pragma: no cover - asserted below
+            errors.append(exc)
+
+    workers = [
+        threading.Thread(target=deploy_after_barrier, args=("claude_user/skillspector", "codex_user")),
+        threading.Thread(target=deploy_after_barrier, args=("codex_user/lonewolf", "claude_project")),
+    ]
+    for worker in workers:
+        worker.start()
+    for worker in workers:
+        worker.join(10)
+
+    assert not errors
+    assert len(results) == 2
+    records = [json.loads(line) for line in config.SKILL_DEPLOY_LOG.read_text(encoding="utf-8").splitlines()]
+    assert {(record["skill_id"], record["target"]) for record in records} == {
+        ("claude_user/skillspector", "codex_user"),
+        ("codex_user/lonewolf", "claude_project"),
+    }
+    assert all(record["source_hash"] == record["baseline_hash_after"] for record in records)
+
+
+def test_processes_deploying_to_distinct_targets_share_one_durable_evidence_log(
+    governance_sources: None,
+) -> None:
+    """Separate destination locks must still serialize audit evidence cross-process."""
+    context = multiprocessing.get_context("spawn")
+    start = context.Event()
+    first_ready = context.Event()
+    second_ready = context.Event()
+    sources = {name: str(path) for name, path in sl._sources().items()}
+    processes = [
+        context.Process(
+            target=_deploy_with_shared_evidence_log,
+            args=(
+                "claude_user/skillspector",
+                "codex_user",
+                sources,
+                str(config.SKILL_DEPLOY_LOG),
+                first_ready,
+                start,
+            ),
+        ),
+        context.Process(
+            target=_deploy_with_shared_evidence_log,
+            args=(
+                "codex_user/lonewolf",
+                "claude_project",
+                sources,
+                str(config.SKILL_DEPLOY_LOG),
+                second_ready,
+                start,
+            ),
+        ),
+    ]
+    for process in processes:
+        process.start()
+    try:
+        assert first_ready.wait(30)
+        assert second_ready.wait(30)
+        start.set()
+        for process in processes:
+            process.join(30)
+    finally:
+        start.set()
+        for process in processes:
+            if process.is_alive():
+                process.terminate()
+                process.join(10)
+
+    assert [process.exitcode for process in processes] == [0, 0]
+    records = [json.loads(line) for line in config.SKILL_DEPLOY_LOG.read_text(encoding="utf-8").splitlines()]
+    assert {(record["skill_id"], record["target"]) for record in records} == {
+        ("claude_user/skillspector", "codex_user"),
+        ("codex_user/lonewolf", "claude_project"),
+    }
+    assert all(record["source_hash"] == record["baseline_hash_after"] for record in records)
+
+
+def test_deploy_log_waits_for_cross_process_partial_evidence_writer(
+    governance_sources: None,
+) -> None:
+    """A reader must not silently drop an in-progress final JSONL record."""
+    context = multiprocessing.get_context("spawn")
+    ready = context.Event()
+    release = context.Event()
+    holder = context.Process(
+        target=_write_partial_evidence_record,
+        args=(str(config.SKILL_DEPLOY_LOG), ready, release),
+    )
+    holder.start()
+    result: list[dict[str, object]] = []
+    finished = threading.Event()
+
+    def read_log() -> None:
+        result.extend(sl.deploy_log())
+        finished.set()
+
+    try:
+        assert ready.wait(30), f"spawn evidence writer did not initialize (exitcode={holder.exitcode})"
+        reader = threading.Thread(target=read_log)
+        reader.start()
+        assert not finished.wait(0.2)
+        release.set()
+        reader.join(10)
+        assert finished.is_set()
+    finally:
+        release.set()
+        holder.join(10)
+        if holder.is_alive():
+            holder.terminate()
+            holder.join(10)
+
+    assert holder.exitcode == 0
+    assert result == [
+        {
+            "skill_id": "claude_user/skillspector",
+            "target": "codex_user",
+            "source_hash": "sha256:" + "a" * 64,
+            "baseline_hash_after": "sha256:" + "a" * 64,
+        }
+    ]
+
+
+def test_evidence_lock_timeout_fails_closed_and_restores_target(
+    governance_sources: None, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A busy shared evidence log cannot produce an un-audited deployment."""
+    target_path = Path(sl._sources()["codex_user"]) / "skillspector"
+    target_path.mkdir()
+    target_before = "---\nname: skillspector\n---\npre-existing target\n"
+    (target_path / "SKILL.md").write_text(target_before, encoding="utf-8")
+    context = multiprocessing.get_context("spawn")
+    ready = context.Event()
+    release = context.Event()
+    holder = context.Process(
+        target=_write_partial_evidence_record,
+        args=(str(config.SKILL_DEPLOY_LOG), ready, release),
+    )
+    holder.start()
+    try:
+        assert ready.wait(30), f"spawn evidence writer did not initialize (exitcode={holder.exitcode})"
+        monkeypatch.setattr(sl, "_DEPLOY_LOCK_WAIT_SECONDS", 0.1)
+        monkeypatch.setattr(sl, "_DEPLOY_LOCK_RETRY_SECONDS", 0.01)
+        with pytest.raises(sl.SkillEvidenceError):
+            sl.deploy("claude_user/skillspector", "codex_user")
+    finally:
+        release.set()
+        holder.join(10)
+        if holder.is_alive():
+            holder.terminate()
+            holder.join(10)
+
+    assert (target_path / "SKILL.md").read_text(encoding="utf-8") == target_before
+    assert not list(target_path.parent.glob("skillspector.bak-*"))
+
+
+def test_deploy_rolls_back_when_evidence_fsync_fails(
+    governance_sources: None, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A staging fsync failure cannot publish false evidence before target rollback."""
+    target_path = Path(sl._sources()["codex_user"]) / "skillspector"
+    target_path.mkdir()
+    target_before = "---\nname: skillspector\n---\npre-existing target\n"
+    (target_path / "SKILL.md").write_text(target_before, encoding="utf-8")
+    original_record = {
+        "ts": "2026-08-10T00:00:00+00:00",
+        "skill_id": "claude_user/previous-skill",
+        "target": "codex_user",
+        "path": "previous",
+        "source_hash": "sha256:" + "b" * 64,
+        "target_hash_before": None,
+        "baseline_hash_after": "sha256:" + "b" * 64,
+    }
+    original_bytes = (json.dumps(original_record, sort_keys=True) + "\n").encode("utf-8")
+    config.SKILL_DEPLOY_LOG.write_bytes(original_bytes)
+    expected_baselines = {("claude_user/previous-skill", "codex_user"): "sha256:" + "b" * 64}
+
+    def fail_fsync(_: int) -> None:
+        raise OSError("durable storage unavailable")
+
+    monkeypatch.setattr(sl.os, "fsync", fail_fsync)
+
+    with pytest.raises(sl.SkillEvidenceError, match="Deployment evidence could not be recorded"):
+        sl.deploy("claude_user/skillspector", "codex_user")
+
+    assert (target_path / "SKILL.md").read_text(encoding="utf-8") == target_before
+    assert not list(target_path.parent.glob("skillspector.bak-*"))
+    assert config.SKILL_DEPLOY_LOG.read_bytes() == original_bytes
+    assert sl._latest_baseline_hashes() == expected_baselines
+
+
+def test_deploy_rolls_back_when_atomic_evidence_replace_fails(
+    governance_sources: None, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A failed evidence publish keeps the old JSONL byte-for-byte unchanged."""
+    target_path = Path(sl._sources()["codex_user"]) / "skillspector"
+    target_path.mkdir()
+    target_before = "---\nname: skillspector\n---\npre-existing target\n"
+    (target_path / "SKILL.md").write_text(target_before, encoding="utf-8")
+    original_record = {
+        "ts": "2026-08-10T00:00:00+00:00",
+        "skill_id": "claude_user/previous-skill",
+        "target": "codex_user",
+        "path": "previous",
+        "source_hash": "sha256:" + "c" * 64,
+        "target_hash_before": None,
+        "baseline_hash_after": "sha256:" + "c" * 64,
+    }
+    original_bytes = (json.dumps(original_record, sort_keys=True) + "\n").encode("utf-8")
+    config.SKILL_DEPLOY_LOG.write_bytes(original_bytes)
+    expected_baselines = {("claude_user/previous-skill", "codex_user"): "sha256:" + "c" * 64}
+    original_replace = sl.os.replace
+
+    def fail_log_replace(source: str | os.PathLike[str], destination: str | os.PathLike[str]) -> None:
+        if Path(destination) == config.SKILL_DEPLOY_LOG:
+            raise OSError("atomic evidence replace unavailable")
+        original_replace(source, destination)
+
+    monkeypatch.setattr(sl.os, "replace", fail_log_replace)
+
+    with pytest.raises(sl.SkillEvidenceError, match="Deployment evidence could not be recorded"):
+        sl.deploy("claude_user/skillspector", "codex_user")
+
+    assert (target_path / "SKILL.md").read_text(encoding="utf-8") == target_before
+    assert not list(target_path.parent.glob("skillspector.bak-*"))
+    assert config.SKILL_DEPLOY_LOG.read_bytes() == original_bytes
+    assert sl._latest_baseline_hashes() == expected_baselines
 
 
 def test_deploy_api_validates_preconditions_and_maps_them_to_sanitized_conflicts(

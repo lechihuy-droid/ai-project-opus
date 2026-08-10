@@ -44,6 +44,8 @@ _SKILL_NAMES_CACHE: dict[str, Any] = {"fingerprint": None, "names": set()}
 _LOCK = threading.RLock()
 _DEPLOY_LOCKS_LOCK = threading.RLock()
 _DEPLOY_LOCKS: dict[str, threading.RLock] = {}
+_EVIDENCE_LOCKS_LOCK = threading.RLock()
+_EVIDENCE_LOCKS: dict[str, threading.RLock] = {}
 _DEPLOY_LOCK_WAIT_SECONDS = 5.0
 _DEPLOY_LOCK_RETRY_SECONDS = 0.05
 _TELEMETRY_LOCK = threading.RLock()
@@ -73,9 +75,8 @@ def _destination_lock(path: Path) -> threading.RLock:
 
 
 @contextmanager
-def _filesystem_destination_lock(dest_path: Path) -> Iterator[None]:
-    """Hold a bounded cross-process advisory lock for one destination path."""
-    lock_path = dest_path.parent / f".{dest_path.name}.deploy.lock"
+def _filesystem_path_lock(lock_path: Path, timeout_error: RuntimeError) -> Iterator[None]:
+    """Hold a bounded cross-process advisory lock for one stable lock file."""
     lock_path.parent.mkdir(parents=True, exist_ok=True)
     handle = lock_path.open("a+b")
     acquired = False
@@ -99,7 +100,7 @@ def _filesystem_destination_lock(dest_path: Path) -> Iterator[None]:
                 acquired = True
             except OSError:
                 if time.monotonic() >= deadline:
-                    raise SkillPreconditionError("Deployment target is busy")
+                    raise timeout_error
                 time.sleep(_DEPLOY_LOCK_RETRY_SECONDS)
         yield
     finally:
@@ -116,6 +117,30 @@ def _filesystem_destination_lock(dest_path: Path) -> Iterator[None]:
                     fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
         finally:
             handle.close()
+
+
+@contextmanager
+def _filesystem_destination_lock(dest_path: Path) -> Iterator[None]:
+    """Hold a bounded cross-process advisory lock for one destination path."""
+    lock_path = dest_path.parent / f".{dest_path.name}.deploy.lock"
+    with _filesystem_path_lock(lock_path, SkillPreconditionError("Deployment target is busy")):
+        yield
+
+
+def _evidence_lock(log_path: Path) -> threading.RLock:
+    """Return the process-local lock for one shared deploy evidence log."""
+    key = str(log_path.resolve(strict=False)).casefold()
+    with _EVIDENCE_LOCKS_LOCK:
+        return _EVIDENCE_LOCKS.setdefault(key, threading.RLock())
+
+
+@contextmanager
+def _filesystem_evidence_lock(log_path: Path) -> Iterator[None]:
+    """Serialize readers and writers of a deploy log across threads and processes."""
+    lock_path = log_path.parent / f".{log_path.name}.lock"
+    with _evidence_lock(log_path):
+        with _filesystem_path_lock(lock_path, SkillEvidenceError("Deployment evidence is busy")):
+            yield
 
 
 def _sources() -> dict[str, Path]:
@@ -552,10 +577,7 @@ def list_skill_telemetry() -> dict[str, Any]:
 
 def _latest_baseline_hashes() -> dict[tuple[str, str], str]:
     """Return newest valid deploy baselines keyed by exact source variant and target."""
-    try:
-        lines = _deploy_log_path().read_text(encoding="utf-8").splitlines()
-    except OSError:
-        return {}
+    lines = _read_deploy_log_lines()
     baselines: dict[tuple[str, str], str] = {}
     for line in reversed(lines):
         try:
@@ -837,12 +859,7 @@ def deploy_log(limit: int = 50) -> list[dict[str, Any]]:
     if limit <= 0:
         return []
 
-    try:
-        lines = _deploy_log_path().read_text(encoding="utf-8").splitlines()
-    except FileNotFoundError:
-        return []
-    except OSError:
-        return []
+    lines = _read_deploy_log_lines()
 
     rows: list[dict[str, Any]] = []
     for line in reversed(lines):
@@ -857,6 +874,19 @@ def deploy_log(limit: int = 50) -> list[dict[str, Any]]:
         if len(rows) >= limit:
             break
     return rows
+
+
+def _read_deploy_log_lines() -> list[str]:
+    """Read a complete evidence snapshot; never parse a writer's partial record."""
+    log_path = _deploy_log_path()
+    try:
+        with _filesystem_evidence_lock(log_path):
+            try:
+                return log_path.read_text(encoding="utf-8").splitlines()
+            except FileNotFoundError:
+                return []
+    except OSError:
+        return []
 
 
 def deploy(
@@ -950,7 +980,7 @@ def deploy(
                     target_hash_before=target_hash_before,
                     baseline_hash_after=baseline_hash_after,
                 )
-            except OSError as exc:
+            except (OSError, SkillEvidenceError) as exc:
                 _rollback_deployment_target(dest_path, backup_path, published, published_hash)
                 raise SkillEvidenceError("Deployment evidence could not be recorded") from exc
 
@@ -1026,6 +1056,23 @@ def _rollback_deployment_target(
         _clear_cache()
 
 
+def _fsync_parent_directory(path: Path) -> None:
+    """Best-effort directory sync for an atomic evidence-file replacement."""
+    if os.name == "nt":
+        return
+    flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0)
+    try:  # pragma: no cover - Windows is the supported Hub runtime
+        directory_fd = os.open(path.parent, flags)
+    except OSError:
+        return
+    try:  # pragma: no cover - Windows is the supported Hub runtime
+        os.fsync(directory_fd)
+    except OSError:
+        pass
+    finally:  # pragma: no cover - Windows is the supported Hub runtime
+        os.close(directory_fd)
+
+
 def _append_deploy_log(
     skill_id: str,
     target: str,
@@ -1046,5 +1093,27 @@ def _append_deploy_log(
         "baseline_hash_after": baseline_hash_after,
     }
     log_path.parent.mkdir(parents=True, exist_ok=True)
-    with log_path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(record, sort_keys=True) + "\n")
+    with _filesystem_evidence_lock(log_path):
+        try:
+            existing_bytes = log_path.read_bytes()
+            existing_mode = log_path.stat().st_mode & 0o777
+        except FileNotFoundError:
+            existing_bytes = b""
+            existing_mode = None
+
+        record_bytes = (json.dumps(record, sort_keys=True) + "\n").encode("utf-8")
+        separator = b"" if not existing_bytes or existing_bytes.endswith(b"\n") else b"\n"
+        staging_path = log_path.parent / f".{log_path.name}.staging-{os.getpid()}-{uuid.uuid4().hex}"
+        try:
+            with staging_path.open("xb") as handle:
+                handle.write(existing_bytes)
+                handle.write(separator)
+                handle.write(record_bytes)
+                handle.flush()
+                os.fsync(handle.fileno())
+            if existing_mode is not None:
+                os.chmod(staging_path, existing_mode)
+            os.replace(staging_path, log_path)
+            _fsync_parent_directory(log_path)
+        finally:
+            _remove_path(staging_path)
