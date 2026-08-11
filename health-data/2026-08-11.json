@@ -1,0 +1,115 @@
+{
+  "schema_version": "health.v2",
+  "date": "2026-08-11",
+  "meals": [
+    {
+      "time": "08:30",
+      "name": "Breakfast",
+      "source": "text",
+      "items": [
+        {
+          "name": "Yogurt drink 400ml",
+          "grams": 400,
+          "kcal": 196,
+          "protein": 14.8,
+          "carb": 31.2,
+          "fat": 1.4,
+          "sugar": 28.0,
+          "added_sugar_estimated": 20.0,
+          "sugar_confidence": "medium",
+          "fiber": 0.0,
+          "saturated_fat": 0.8,
+          "sodium_mg": 160,
+          "alcohol": 0
+        },
+        {
+          "name": "Shokupan bread 1 slice",
+          "grams": 60,
+          "kcal": 160,
+          "protein": 5.5,
+          "carb": 28.0,
+          "fat": 2.5,
+          "sugar": 4.0,
+          "added_sugar_estimated": 2.5,
+          "sugar_confidence": "medium",
+          "fiber": 1.5,
+          "saturated_fat": 0.8,
+          "sodium_mg": 300,
+          "alcohol": 0
+        },
+        {
+          "name": "Corned beef half can",
+          "grams": 50,
+          "kcal": 125,
+          "protein": 13.0,
+          "carb": 1.0,
+          "fat": 8.0,
+          "sugar": 0.5,
+          "added_sugar_estimated": 0.0,
+          "sugar_confidence": "low",
+          "fiber": 0.0,
+          "saturated_fat": 3.2,
+          "sodium_mg": 500,
+          "alcohol": 0
+        },
+        {
+          "name": "Protein powder 2 scoops",
+          "grams": 60,
+          "kcal": 240,
+          "protein": 50.0,
+          "carb": 6.0,
+          "fat": 3.0,
+          "sugar": 2.0,
+          "added_sugar_estimated": 1.0,
+          "sugar_confidence": "medium",
+          "fiber": 0.0,
+          "saturated_fat": 1.0,
+          "sodium_mg": 200,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 721,
+      "total_protein": 83.3,
+      "total_carb": 66.2,
+      "total_fat": 14.9,
+      "total_sugar": 34.5,
+      "total_added_sugar_estimated": 23.5,
+      "total_fiber": 1.5,
+      "total_saturated_fat": 5.8,
+      "total_sodium_mg": 1160,
+      "total_alcohol": 0
+    }
+  ],
+  "daily_totals": {
+    "kcal": 721,
+    "protein_g": 83.3,
+    "carb_g": 66.2,
+    "fat_g": 14.9,
+    "fiber_g": 1.5,
+    "sugar_g": 34.5,
+    "added_sugar_estimated_g": 23.5,
+    "sodium_mg": 1160,
+    "alcohol_g": 0
+  },
+  "sugar_tracking": {
+    "target_total_sugar_g": 50,
+    "target_added_sugar_g": 25,
+    "current_total_sugar_g": 34.5,
+    "current_added_sugar_estimated_g": 23.5,
+    "remaining_total_sugar_g": 15.5,
+    "remaining_added_sugar_g": 1.5,
+    "status": "watch",
+    "sources": [
+      {"meal": "Breakfast", "item": "Yogurt drink 400ml", "sugar_g": 28.0, "added_sugar_estimated_g": 20.0, "confidence": "medium"},
+      {"meal": "Breakfast", "item": "Shokupan bread 1 slice", "sugar_g": 4.0, "added_sugar_estimated_g": 2.5, "confidence": "medium"},
+      {"meal": "Breakfast", "item": "Corned beef half can", "sugar_g": 0.5, "added_sugar_estimated_g": 0.0, "confidence": "low"},
+      {"meal": "Breakfast", "item": "Protein powder 2 scoops", "sugar_g": 2.0, "added_sugar_estimated_g": 1.0, "confidence": "medium"}
+    ],
+    "notes": "Yogurt uses previous label baseline 98 kcal and 15.6g carb per 200g; sugar and added/free sugar are estimated because label does not clearly separate sugar."
+  },
+  "water_ml": 0,
+  "steps": 0,
+  "sleep_hours": 0,
+  "weight_kg": 0,
+  "notes": "Breakfast logged from text: 400ml yogurt, 1 slice shokupan, half can corned beef, 2 scoops protein powder. Protein powder assumes 2 scoops = 60g and about 50g protein total. Nutrition values are estimates except yogurt kcal/protein/carb/fat based on previous product label."
+}
