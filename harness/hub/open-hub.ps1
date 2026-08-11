@@ -2,9 +2,9 @@
 #
 # Every request except /api/health needs X-Hub-Token (server.py). The page picks
 # the token up from ?k=, stores it, and strips it from the address bar
-# (web-v3/src/lib/api.ts). That store is sessionStorage, so it is per-tab: a new
-# tab has no token and every call comes back 403 "missing hub token". This just
-# rebuilds the URL so you do not have to go find the token each time.
+# (web-v3/src/lib/api.ts). That store is localStorage, so one visit is normally
+# enough -- use this after clearing browser storage, on a fresh profile, or when
+# the server has written a new token.
 param(
     [int]$Port = 8799,
     [switch]$PrintOnly
