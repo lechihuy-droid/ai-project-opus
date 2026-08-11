@@ -168,14 +168,14 @@ def test_deploy_log_endpoint_returns_newest_rows_first() -> None:
         encoding="utf-8",
     )
 
-    response = TestClient(server.app).get("/api/skill-library/deploy-log")
+    response = TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN}).get("/api/skill-library/deploy-log")
 
     assert response.status_code == 200
     assert response.json() == list(reversed(records))
 
 
 def test_deploy_log_endpoint_returns_empty_list_when_file_missing() -> None:
-    response = TestClient(server.app).get("/api/skill-library/deploy-log")
+    response = TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN}).get("/api/skill-library/deploy-log")
 
     assert response.status_code == 200
     assert response.json() == []

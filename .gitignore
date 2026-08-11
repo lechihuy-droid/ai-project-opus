@@ -77,3 +77,4 @@ Thumbs.db
 
 # pnpm content-addressable store (side effect of codex pnpm install)
 .pnpm-store/
+hub-token
