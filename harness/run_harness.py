@@ -45,6 +45,8 @@ DANGEROUS_EXECUTABLES = SHELL_LAUNCHERS | {
     "taskkill",
     "taskkill.exe",
 }
+# Defense-in-depth only; primary containment is executable allowlisting plus path containment.
+# Keep this blacklist secondary so new agents do not mistake it for the boundary gate.
 DANGEROUS_COMMAND_TOKENS = {
     "bcdedit",
     "cipher",
@@ -83,6 +85,7 @@ PATHLIKE_SUFFIXES = {
     ".yaml",
     ".yml",
 }
+INLINE_CODE_FLAGS = {"-c", "-m", "--command"}
 
 
 class BoundaryPolicyError(ValueError):
@@ -294,7 +297,6 @@ def _enforce_command_boundary(command: Any, cwd: Path, ctx: dict[str, str], chec
         raise BoundaryPolicyError(f"dangerous executable requires explicit allowlist: {executable}")
 
     allowed_names = {str(item).lower() for item in _as_list(check.get("allowed_executables"))}
-    allowed_names.update({"py", "py.exe", "python", "python.exe"})
     safe_external_paths = {
         _norm_path(Path(ctx["python"])),
         _norm_path(Path(ctx["py311"])),
@@ -311,6 +313,14 @@ def _enforce_command_boundary(command: Any, cwd: Path, ctx: dict[str, str], chec
             raise BoundaryPolicyError(f"executable outside project root is not allowlisted: {executable_path.resolve()}")
     elif executable_name not in allowed_names and not check.get("allow_system_executable"):
         raise BoundaryPolicyError(f"system executable is not allowlisted: {executable}")
+
+    if not check.get("allow_inline_code"):
+        for token in command[1:]:
+            flag = str(token)
+            if flag in INLINE_CODE_FLAGS:
+                raise BoundaryPolicyError(
+                    f"inline code flag requires explicit allow_inline_code: {flag}"
+                )
 
     if not check.get("allow_dangerous_commands"):
         for token in command:

@@ -30,7 +30,7 @@ def test_vgov_proxy_preserves_api_vgov_prefix_for_every_functional_route(monkeyp
 
     monkeypatch.setattr(config, "VGOV_BASE_URL", "http://vgov.test")
     monkeypatch.setattr(httpx.AsyncClient, "request", request)
-    client = TestClient(server.app)
+    client = TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN})
     response = client.get(f"/api/vgov/{path}")
     assert response.status_code == 200
     assert seen["url"] == f"http://vgov.test/api/vgov/{path}"
@@ -45,7 +45,7 @@ def test_vgov_proxy_forwards_query_string_and_actor_header(monkeypatch) -> None:
 
     monkeypatch.setattr(config, "VGOV_BASE_URL", "http://vgov.test")
     monkeypatch.setattr(httpx.AsyncClient, "request", request)
-    client = TestClient(server.app)
+    client = TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN})
     response = client.get(
         "/api/vgov/runs?project_key=demo&workflow_id=wf-1",
         headers={"X-Actor": "reviewer"},
@@ -65,7 +65,7 @@ def test_vgov_proxy_forwards_request_and_response(monkeypatch) -> None:
 
     monkeypatch.setattr(config, "VGOV_BASE_URL", "http://vgov.test")
     monkeypatch.setattr(httpx.AsyncClient, "request", request)
-    client = TestClient(server.app, headers={"x-hub-client": "harness-hub"})
+    client = TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN})
     response = client.post("/api/vgov/runs?project_key=demo", content=b'{"x":1}', headers={"X-Actor": "tester", "Content-Type": "application/json"})
     assert response.status_code == 201 and response.json() == {"ok": True}
     # vgov-api mounts everything under /api/vgov; dropping the prefix 404s every functional route.
@@ -78,6 +78,6 @@ def test_vgov_proxy_returns_502_when_upstream_is_down(monkeypatch) -> None:
         raise httpx.ConnectError("down")
 
     monkeypatch.setattr(httpx.AsyncClient, "request", request)
-    response = TestClient(server.app).get("/api/vgov/health")
+    response = TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN}).get("/api/vgov/health")
     assert response.status_code == 502
     assert response.json()["error"]["code"] == "RUNTIME_UNAVAILABLE"

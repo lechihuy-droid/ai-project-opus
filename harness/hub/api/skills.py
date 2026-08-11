@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 
 from api._shared import _http_error
 from services import behavior, runtime_skills, search, skill_library, skill_resolution
@@ -66,6 +66,16 @@ def api_tools(
 @router.get("/api/skill-library")
 def api_skill_library() -> list[dict[str, object]]:
     return skill_library.list_skills()
+
+
+@router.get("/api/skill-library/summary")
+def api_skill_library_summary(
+    query: str = "",
+    source: str | None = None,
+    offset: int = Query(default=0, ge=0),
+    limit: int = Query(default=100, ge=1, le=500),
+) -> dict[str, object]:
+    return skill_library.list_skill_summary(query=query, source=source, offset=offset, limit=limit)
 
 
 @router.post("/api/skill-library")

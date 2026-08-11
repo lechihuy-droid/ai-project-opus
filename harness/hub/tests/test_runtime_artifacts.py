@@ -67,7 +67,7 @@ def test_fake_run_emits_artifact_written_event(runtime_tmp: Path, monkeypatch: p
 
 def test_artifact_api_lists_and_reads_node_artifact(runtime_tmp: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     run_id = _fake_run(monkeypatch, "api node output")
-    client = TestClient(server.app)
+    client = TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN})
     listed = client.get(f"/api/workflows/runs/{run_id}/artifacts")
     assert listed.status_code == 200
     assert listed.json()["artifacts"] == [{"name": "node-1.md", "chars": 15}]
@@ -78,7 +78,7 @@ def test_artifact_api_lists_and_reads_node_artifact(runtime_tmp: Path, monkeypat
 
 def test_artifact_api_rejects_traversal(runtime_tmp: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     run_id = _fake_run(monkeypatch)
-    client = TestClient(server.app)
+    client = TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN})
     for path in (f"/api/workflows/runs/{run_id}/artifacts/..%2f..%2frun.json", f"/api/workflows/runs/{run_id}/artifacts/../run.json"):
         response = client.get(path)
         assert response.status_code == 404
@@ -86,13 +86,13 @@ def test_artifact_api_rejects_traversal(runtime_tmp: Path, monkeypatch: pytest.M
 
 
 def test_artifact_api_rejects_bad_run_id(runtime_tmp: Path) -> None:
-    response = TestClient(server.app).get("/api/workflows/runs/not-a-run/artifacts")
+    response = TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN}).get("/api/workflows/runs/not-a-run/artifacts")
     assert response.status_code == 404
 
 
 def test_library_artifact_api_creates_reads_and_versions(runtime_tmp: Path) -> None:
-    client = TestClient(server.app)
-    headers = {config.HUB_CLIENT_HEADER: config.HUB_CLIENT_VALUE}
+    client = TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN})
+    headers = {"X-Hub-Token": config.HUB_TOKEN}
     created = client.post("/api/artifacts", headers=headers, json={"title": "Ghi chú", "content": "bản đầu", "source": "chat"})
     assert created.status_code == 200
     artifact = created.json()
@@ -111,8 +111,8 @@ def test_library_artifact_api_creates_reads_and_versions(runtime_tmp: Path) -> N
 
 
 def test_library_artifact_api_rejects_unknown_traversal_and_oversized(runtime_tmp: Path) -> None:
-    client = TestClient(server.app)
-    headers = {config.HUB_CLIENT_HEADER: config.HUB_CLIENT_VALUE}
+    client = TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN})
+    headers = {"X-Hub-Token": config.HUB_TOKEN}
     assert client.get("/api/artifacts/not-found").status_code == 404
     assert client.get("/api/artifacts/..%2Fartifacts.json").status_code == 404
     oversized = client.post("/api/artifacts", headers=headers, json={"title": "Too large", "content": "x" * (runtime_artifacts.MAX_ARTIFACT_CONTENT_CHARS + 1), "source": "chat"})

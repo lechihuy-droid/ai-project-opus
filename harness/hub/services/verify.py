@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from services import inform, risk
+from services import governance, inform, risk
 
 
 DESTRUCTIVE_TOKEN_REASON = "destructive token without allow_override"
@@ -25,11 +25,12 @@ def _command_tiers(job: dict[str, Any]) -> list[str]:
     diff_text = str(job.get("diff") or job.get("diff_text") or "")
     for line in _lines_from_diff(diff_text):
         tiers.append(risk.classify_command(line))
-    return [tier for tier in tiers if tier != risk.UNKNOWN]
+    return tiers
 
 
 def rule_check(job: dict[str, Any]) -> dict[str, Any]:
     reasons: list[str] = []
+    warnings: list[str] = []
     allow_override = bool(job.get("allow_override"))
     findings = job.get("inform_findings")
 
@@ -37,15 +38,26 @@ def rule_check(job: dict[str, Any]) -> dict[str, Any]:
         reasons.append(INJECTION_REASON)
 
     tiers = [str(job.get("max_tier") or "read_only"), *_command_tiers(job)]
+    if job.get("unattended") and risk.UNKNOWN in tiers:
+        unknown_reason = "unclassified command in unattended job"
+        if not allow_override:
+            return {"decision": "deny", "reasons": [unknown_reason]}
+        governance.record_denial(str(job.get("id") or ""), [unknown_reason])
+    elif risk.UNKNOWN in tiers:
+        warnings.append("unclassified command in interactive job")
+
     if not allow_override and any(tier == "destructive" for tier in tiers):
         reasons.append(DESTRUCTIVE_TOKEN_REASON)
 
     if reasons:
         return {"decision": "deny", "reasons": reasons}
 
-    warn_tiers = [tier for tier in tiers if tier in {"network", "execute"}]
+    warn_tiers = [tier for tier in tiers if tier != risk.UNKNOWN and tier in {"network", "execute"}]
     if warn_tiers:
         unique = sorted(set(warn_tiers), key=lambda item: risk.TIER_RANK[item])
-        return {"decision": "warn", "reasons": [f"tier warning: {', '.join(unique)}"]}
+        warnings.append(f"tier warning: {', '.join(unique)}")
+
+    if warnings:
+        return {"decision": "warn", "reasons": warnings}
 
     return {"decision": "allow", "reasons": []}

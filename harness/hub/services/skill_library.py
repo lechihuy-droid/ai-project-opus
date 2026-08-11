@@ -29,12 +29,14 @@ _FRONTMATTER_RE = re.compile(rf"^{_BOM}?---\s*\n(.*?\n)---\s*\n?", re.DOTALL)
 
 _DEFAULT_SKILL_SOURCES: dict[str, Path] = {
     "hub_builtin": config.HUB_DIR / "skills",
+    "codex_stack": config.ROOT / "harness" / "codex-stack" / "skills",
+    "codex_project": config.ROOT / ".agents" / "skills",
     "claude_user": Path.home() / ".claude" / "skills",
     "claude_project": config.ROOT / ".claude" / "skills",
     "codex_user": Path.home() / ".codex" / "skills",
 }
 
-_INDEX_CACHE: dict[str, Any] = {"fingerprint": None, "entries": [], "sources": None}
+_INDEX_CACHE: dict[str, Any] = {"fingerprint": None, "entries": [], "sources": None, "revision": 0}
 _SKILL_NAMES_CACHE: dict[str, Any] = {"fingerprint": None, "names": set()}
 _LOCK = threading.RLock()
 _TELEMETRY_LOCK = threading.RLock()
@@ -197,10 +199,20 @@ def _read_frontmatter(path: Path) -> dict[str, str]:
     return _parse_frontmatter(text)
 
 
+def _read_summary_frontmatter(path: Path) -> dict[str, str]:
+    """Read only a bounded frontmatter header for the catalog index."""
+    try:
+        with _skill_md_path(path).open("rb") as handle:
+            header = handle.read(16 * 1024)
+    except OSError:
+        return {}
+    return _parse_frontmatter(header.decode("utf-8", errors="replace"))
+
+
 def _scan_source(source: str, root: Path) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for dirname, path in _iter_skill_dirs(root):
-        meta = _read_frontmatter(path)
+        meta = _read_summary_frontmatter(path)
         name = meta.get("name") or dirname
         rows.append(
             {
@@ -209,7 +221,6 @@ def _scan_source(source: str, root: Path) -> list[dict[str, Any]]:
                 "description": meta.get("description", ""),
                 "source": source,
                 "path": str(path),
-                "content_hash": _content_hash(path),
             }
         )
     return rows
@@ -260,24 +271,18 @@ def _scan_all_sources() -> list[dict[str, Any]]:
         for source, root in _sources().items():
             entries.extend(_scan_source(source, root))
 
-        _INDEX_CACHE.update({"fingerprint": fingerprint, "entries": entries, "sources": fingerprint})
+        _INDEX_CACHE.update({
+            "fingerprint": fingerprint,
+            "entries": tuple(entries),
+            "sources": fingerprint,
+            "revision": int(_INDEX_CACHE.get("revision", 0)) + 1,
+        })
         return list(entries)
 
 
 def list_skill_names() -> set[str]:
     """Return discovered skill names without collecting session-log telemetry."""
-    with _LOCK:
-        fingerprint = _fingerprint_sources()
-        if _SKILL_NAMES_CACHE["fingerprint"] == fingerprint:
-            return set(_SKILL_NAMES_CACHE["names"])
-
-        names: set[str] = set()
-        for source, root in _sources().items():
-            for dirname, path in _iter_skill_dirs(root):
-                names.add(_read_frontmatter(path).get("name") or dirname)
-
-        _SKILL_NAMES_CACHE.update({"fingerprint": fingerprint, "names": names})
-        return set(names)
+    return {str(entry["name"]) for entry in _scan_all_sources()}
 
 
 # --------------------------------------------------------------------------
@@ -395,6 +400,7 @@ def list_skills() -> list[dict[str, Any]]:
     results: list[dict[str, Any]] = []
     for entry in raw_entries:
         last_used, use_count_30d = _telemetry(entry["name"], tool_events)
+        content_hash = _content_hash(Path(str(entry["path"])))
         results.append(
             {
                 "id": entry["id"],
@@ -402,7 +408,7 @@ def list_skills() -> list[dict[str, Any]]:
                 "description": entry["description"],
                 "source": entry["source"],
                 "path": entry["path"],
-                "content_hash": entry["content_hash"],
+                "content_hash": content_hash,
                 "coverage": sorted(by_name[entry["name"]]),
                 "last_used": last_used,
                 "use_count_30d": use_count_30d,
@@ -411,6 +417,34 @@ def list_skills() -> list[dict[str, Any]]:
 
     results.sort(key=lambda item: (str(item["name"]), str(item["source"])))
     return results
+
+
+def list_skill_summary(
+    *, query: str = "", source: str | None = None, offset: int = 0, limit: int = 100
+) -> dict[str, Any]:
+    """Return the public, metadata-only snapshot used for the first catalog table."""
+    rows = _scan_all_sources()
+    needle = query.strip().lower()
+    if source:
+        rows = [row for row in rows if row["source"] == source]
+    if needle:
+        rows = [
+            row for row in rows
+            if needle in str(row["name"]).lower() or needle in str(row["description"]).lower()
+        ]
+    rows.sort(key=lambda row: (str(row["name"]), str(row["source"])))
+    items = [
+        {key: row[key] for key in ("id", "name", "description", "source")}
+        for row in rows[offset:offset + limit]
+    ]
+    return {
+        "items": items,
+        "total": len(rows),
+        "offset": offset,
+        "limit": limit,
+        "revision": int(_INDEX_CACHE.get("revision", 0)),
+        "status": "ready",
+    }
 
 
 def list_skill_descriptors() -> list[dict[str, Any]]:
@@ -468,7 +502,7 @@ def get_skill(skill_id: str) -> dict[str, Any]:
         "description": entry["description"],
         "source": entry["source"],
         "path": entry["path"],
-        "content_hash": entry["content_hash"],
+        "content_hash": _content_hash(path),
         "content": content,
         "files": files,
     }
@@ -499,7 +533,7 @@ def pin_skill_prompt_contents(skill_names: list[str]) -> list[dict[str, str]]:
             content = _skill_md_path(Path(entry["path"])).read_text(encoding="utf-8", errors="replace")
         except OSError as exc:
             raise FileNotFoundError(f"Skill not readable: {name}") from exc
-        pins.append({"source": str(entry["source"]), "name": name, "content_hash": str(entry["content_hash"]), "content": content})
+        pins.append({"source": str(entry["source"]), "name": name, "content_hash": _content_hash(Path(str(entry["path"]))), "content": content})
     return pins
 
 
@@ -520,7 +554,7 @@ def load_pinned_skill_prompt_contents(skill_pins: list[dict[str, Any]]) -> tuple
             raise ValueError(f"Pinned skill missing: {name}")
         if resolved["source"] != pin.get("source"):
             raise ValueError(f"Pinned skill source drift: {name}")
-        if resolved["content_hash"] != pin.get("content_hash"):
+        if _content_hash(Path(str(resolved["path"]))) != pin.get("content_hash"):
             raise ValueError(f"Pinned skill content drift: {name}")
         content = pin.get("content")
         if not isinstance(content, str):
@@ -596,7 +630,7 @@ def drift() -> list[dict[str, Any]]:
                     "id": entry["id"],
                     "source": entry["source"],
                     "path": entry["path"],
-                    "content_hash": entry["content_hash"],
+                    "content_hash": _content_hash(Path(str(entry["path"]))),
                     "mtime": mtime,
                 }
             )

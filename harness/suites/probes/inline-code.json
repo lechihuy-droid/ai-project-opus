@@ -1,0 +1,14 @@
+{
+  "id": "probe-inline-code",
+  "name": "Probe Inline Interpreter Code",
+  "description": "Intentional policy violation used by security-regression.",
+  "checks": [
+    {
+      "id": "inline-code",
+      "type": "command",
+      "command": ["{py311}", "-c", "import shutil"],
+      "cwd": "{root}",
+      "expected_exit": 0
+    }
+  ]
+}

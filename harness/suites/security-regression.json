@@ -1,0 +1,37 @@
+{
+  "id": "security-regression",
+  "name": "Security Regression Harness",
+  "description": "Negative probes for interpreter inline code, outside-root command arguments, and shell launchers.",
+  "checks": [
+    {
+      "id": "reject-interpreter-inline-code",
+      "type": "command",
+      "command": ["{py311}", "harness/run_harness.py", "--suite", "harness/suites/probes/inline-code.json", "--json"],
+      "cwd": "{root}",
+      "timeout_seconds": 60,
+      "expected_exit": 1,
+      "output_contains": ["Boundary policy violation", "allow_inline_code"],
+      "hint": "Interpreter inline code must require explicit allow_inline_code."
+    },
+    {
+      "id": "reject-outside-command-arg",
+      "type": "command",
+      "command": ["{py311}", "harness/run_harness.py", "--suite", "harness/suites/probes/outside-command-arg.json", "--json"],
+      "cwd": "{root}",
+      "timeout_seconds": 60,
+      "expected_exit": 1,
+      "output_contains": ["Boundary policy violation", "command argument outside project root"],
+      "hint": "Path arguments outside the project root must remain blocked."
+    },
+    {
+      "id": "reject-shell-launcher",
+      "type": "command",
+      "command": ["{py311}", "harness/run_harness.py", "--suite", "harness/suites/probes/shell-launcher.json", "--json"],
+      "cwd": "{root}",
+      "timeout_seconds": 60,
+      "expected_exit": 1,
+      "output_contains": ["Boundary policy violation", "shell launcher"],
+      "hint": "Shell launchers must require explicit allow_shell."
+    }
+  ]
+}

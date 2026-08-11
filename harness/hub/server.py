@@ -1,5 +1,5 @@
 from __future__ import annotations
-import json, logging, re, sys, threading, uuid
+import json, logging, re, secrets, sys, threading, uuid
 from contextlib import asynccontextmanager
 from pathlib import Path
 HUB_DIR = Path(__file__).resolve().parent
@@ -65,15 +65,18 @@ def _is_idempotent_command(request: Request) -> bool:
         r"/api/(?:jobs/[^/]+/(?:approve|accept)|memory/candidates/[^/]+/accept|"
         r"(?:agent|workflows)/runs/[^/]+/interrupts/[^/]+/resume|workflows/[^/]+/runs)", request.url.path))
 @app.middleware("http")
-async def _csrf_guard(request: Request, call_next):
+async def _auth_guard(request: Request, call_next):
     correlation_id = request.headers.get("X-Correlation-ID") or f"corr-{uuid.uuid4().hex}"
     request.state.correlation_id = correlation_id
+    path = request.url.path
+    if path != "/api/health" and not path.startswith("/static/"):
+        provided_token = request.headers.get("X-Hub-Token") or request.query_params.get("k") or ""
+        if not secrets.compare_digest(provided_token, config.HUB_TOKEN):
+            return await _http_exception(request, _http_error(HTTPException(status_code=403, detail="missing hub token")))
     if request.method not in _CSRF_SAFE_METHODS:
         origin = request.headers.get("origin") or request.headers.get("referer")
         if origin and not any(origin.startswith(allowed) for allowed in config.ALLOWED_ORIGINS):
             return await _http_exception(request, _http_error(HTTPException(status_code=403, detail="cross-origin blocked")))
-        if request.headers.get(config.HUB_CLIENT_HEADER) != config.HUB_CLIENT_VALUE:
-            return await _http_exception(request, _http_error(HTTPException(status_code=403, detail="missing hub client header")))
     key = request.headers.get("Idempotency-Key")
     cache_key = (request.url.path, key) if key and _is_idempotent_command(request) else None
     if cache_key:
