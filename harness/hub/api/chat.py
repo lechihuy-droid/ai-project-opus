@@ -88,7 +88,7 @@ def api_chat(payload: dict[str, object]) -> StreamingResponse:
         except (FileNotFoundError, PermissionError) as exc:
             raise _http_error(exc) from exc
         if file_context:
-            messages = [{"role": "system", "content": f"[Tá»‡p Ä‘Ã­nh kÃ¨m cá»§a chat]\n{file_context}"}, *messages]
+            messages = [{"role": "system", "content": f"[Tệp đính kèm của chat]\n{file_context}"}, *messages]
     model = runtime_agents.resolve_provider(agent)["model"] if agent else payload.get("model")
     if agent and model is None:
         model = payload.get("model")
