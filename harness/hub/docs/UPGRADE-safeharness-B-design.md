@@ -1,5 +1,19 @@
 # Design Doc — Nhóm B: Agent-Execution Runtime (SAFEHARNESS lõi)
-**Date:** 2026-06-28 · **Author:** Claude (Opus 4.8) · **Status:** 🔵 Design (tiền-SDD)
+**Date:** 2026-06-28 · **Author:** Claude (Opus 4.8) · **Status:** 🔵 Design (tiền-SDD) — chưa build đúng như đặc tả dưới đây
+
+> **Cập nhật 2026-08-11 — đọc trước khi dùng doc này:** thiết kế đầy đủ bên dưới
+> (capability token, HMAC-signed tool descriptor riêng cho registry, entropy
+> degradation formal) **chưa được build** — không có `runtime/inform.py`,
+> `verify.py`, `constrain.py`, `correct.py`, `registry.py`, `memory.py`,
+> `orchestrator.py` nào trong repo khớp các đường dẫn doc này đặt ra.
+>
+> Nhưng khái niệm L1–L4 **đã có bản rule-based thu gọn đang chạy thật**, dùng
+> module đã tồn tại sẵn thay vì file mới: `services/inform.py` (L1),
+> `services/verify.py` (L2/L3), `services/gitjobs.py` + `services/governance.py`
+> (L3/L4 — degradation theo `GOV_RECOVERY_STEPS`). Xem
+> `safeharness-groupA.md` và `safeharness-L1L4-lite.md` trong cùng thư mục cho
+> đúng những gì đang chạy. Doc gốc bên dưới vẫn giữ nguyên làm tham chiếu thiết
+> kế đầy đủ nếu sau này mở rộng vượt bản lite.
 
 > Tài liệu thiết kế cho **Nhóm B** trong `UPGRADE-safeharness-plan.md`: biến harness thành **runtime điều phối vòng lặp agent**, gate mọi tool-call qua L1–L4. Đây là chokepoint duy nhất giữa model và môi trường. Doc này là tham chiếu để mở SDD từng item; chưa phải RD.
 

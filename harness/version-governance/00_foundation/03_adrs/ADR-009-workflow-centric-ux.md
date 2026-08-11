@@ -43,5 +43,5 @@ Version creation, manifest freezing, lineage registration, artifact revision cre
 
 ## References
 
-- `docs/40_architecture/version-governance-architecture.md`
-- `docs/40_architecture/version-governance-ux-principles.md`
+- `50_sdd/02_system_design.md` — system design this ADR's asset-centric backend model is built against (`docs/40_architecture/version-governance-architecture.md`, cited in the original ADR, was never authored — no file under that path exists anywhere in the repo)
+- No dedicated UX-principles document exists; the workflow-centric journey in the Decision section above is this ADR's full statement of it

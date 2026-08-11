@@ -101,11 +101,24 @@ Mỗi service là logic thuần, đọc filesystem, không giữ state toàn c�
 | `board` | Bảng task (parse `status.md`) |
 | `workflow` | Parse/validate `workflows/*.yaml` → IR. **Ràng buộc thật:** chỉ chấp nhận **một chuỗi tuyến tính** (`_walk_chain` bắt in/out-degree ≤ 1, đúng 1 start + 1 end); edge là tuple 2 phần tử `[from, to]`, không có field phụ; node type chỉ `agent` \| `validate` |
 | `workflow_exec` | Chạy IR, phát SSE (`debug`, `assistant_delta`, `reasoning`, `node_update`, `validation_pass/fail`, `artifact_written`, `child_run`, `interrupt`, `state_snapshot`, `done`, `error`). `gate: approval` tạo interrupt và **dừng trước** khi node đó chạy |
-| `runtime_*` (13 module) | Nền runtime: `agents` (profile + resolve provider/model-class), `pipeline`, `state`, `checkpoint`, `events`, `interrupts`, `children`, `skills`, `memory`, `policy`, `reducers`, `validate`, `artifacts` |
+| `runtime_*` (14 module) | Nền runtime: `agents` (profile + resolve provider/model-class), `pipeline`, `state`, `checkpoint`, `events`, `interrupts`, `children`, `skills`, `memory`, `policy`, `reducers`, `validate`, `artifacts`, `files` (upload/download/delete file đính kèm theo run, xem `files` bên trên) |
 | `skill_library` | Index skill đa nguồn (`claude_project`/`claude_user`/`codex_user`), phát hiện drift giữa các bản sao, deploy sang target + deploy-log |
+| `skill_resolution` | Chọn skill deterministic theo metadata (không lộ nội dung SKILL.md) cho control plane |
 | `providers/` | Adapter thực thi: `claude_cli`, `codex_cli`, `gemini_cli`, `nvidia_api` (+ `base`, `procs`). `provider` của agent có thể là id thật hoặc alias model-class (`cheap`/`code`/`smart`) — resolve phía server |
+| `execution` | Gateway chọn/khởi tạo provider cho một request chat/agent (`gateway`/`execute`), điểm nối duy nhất giữa `api/chat.py` và `providers/` |
 | `pricing` | Quy đổi token → chi phí cho usage cockpit |
 | `risk`, `boundary`, `inform`, `verify` | Phân tầng rủi ro, ranh giới, thông báo, kiểm định (dùng nội bộ) |
+| `hooks` | CRUD hook + fire theo runtime event; action `shell` giới hạn bởi `config.HOOK_ALLOWED_COMMANDS` |
+| `capabilities` | Contract vendor-neutral cho capability + adapter boundary (dùng bởi workflow/tool policy) |
+| `tools` | Định nghĩa tool schema nội bộ (`read`, `grep`, `list_dir`, ...) cấp cho agent theo policy |
+| `chat_files` | Upload/download/liệt kê file đính kèm theo chat (khác với `runtime_files` — đây scope theo `chat_id`) |
+| `artifact_comments` | Bình luận + resolve trên artifact trong thư viện artifact |
+| `run_inputs` | Resolve input reference (file/folder) cho một run trước khi thực thi |
+| `fsbrowse` | Duyệt thư mục cho workspace picker; allowlist gốc `config.FS_BROWSE_ROOTS` + denylist bổ sung (`.ssh`/`.aws`/...); ghi audit khi workspace được set ra ngoài root |
+| `audit` | Log hash-chained append-only (`services/audit.py::append`), dùng bởi `fsbrowse`, `governance`, và các luồng cần vết không sửa được |
+| `retention` | Cấu hình + quét dọn run cũ theo số ngày giữ lại |
+| `search` | Tìm kiếm chuỗi đơn giản trên tập dữ liệu nội bộ (agents/skills/...) |
+| `security` | Redact chuỗi có dạng secret trước khi log/audit; dựng `env` an toàn cho subprocess |
 
 ### Cache incremental (điểm hiệu năng cốt lõi)
 `usage.py` và `behavior.py` cache kết quả parse theo **từng file**, key = `(path, mtime_ns, size)`, lưu ở `.cache/usage_files.json` / `.cache/behavior_files.json`. Chỉ file mới/đổi mới được parse lại → endpoint nặng từ **>45s xuống ~0.6s** warm.
@@ -145,8 +158,12 @@ web-v3/
 - **`web-v3/DESIGN.md`** — hợp đồng thiết kế (dark technical workbench: 4 tầng bề mặt, accent tím duy nhất, màu provider chỉ dùng cho chấm 6-8px). Đọc trước khi sửa UI.
 - **Quy ước dữ liệu:** mọi số/hàng hiển thị phải đến từ API thật; thiếu nguồn thì hiện `—` hoặc empty-state ghi rõ `TODO(backend)`. Không dựng dữ liệu mẫu trông-như-thật.
 
-### Trang chưa có backend
-`hooks` và `files` hiện chỉ là vỏ giao diện (bảng 0 dòng + control disabled + empty-state `TODO(backend)`) — chưa có `/api/hooks` hay `/api/files`. Hub cũng **không có** khái niệm workspace hay storage-quota.
+### `hooks` và `files` — đã có backend
+
+Cả hai trang đều nối API thật, không còn là vỏ giao diện:
+
+- `hooks` → full CRUD tại `GET/POST /api/hooks`, `PUT/DELETE /api/hooks/{id}`, `GET /api/hooks/events`, `GET /api/hooks/{id}/log` (`api/jobs.py`, backing service `services/hooks.py`). Action type `shell` bị giới hạn bởi `config.HOOK_ALLOWED_COMMANDS` (mặc định rỗng — xem `services/verify.py` cho tầng chặn thứ hai khi job `unattended`).
+- `files` → CRUD theo từng run tại `GET/POST /api/runs/{run_id}/files`, `GET/DELETE /api/runs/{run_id}/files/{name}` (`api/runs.py`, backing service `services/runtime_files.py`). Đây là file đính kèm scope theo run, **không phải** một trình duyệt workspace top-level — Hub vẫn không có khái niệm workspace hay storage-quota chung.
 
 ### Trang Chat (`#/chat`)
 - Layout 3 panel: sidebar (Chats/Files/Artifacts) · khung hội thoại · panel artifact; có Focus mode ẩn panel giữa.
@@ -315,7 +332,10 @@ Sub-agent được tạo từ **child task packet**:
 
 `runtime_children.create_child_run` chỉ cho lead runtime spawn, giới hạn số child
 run, yêu cầu objective và chặn child mở rộng `allowed_paths`/`allowed_tools` so
-với parent. Hàm này **không** kiểm tra `risk_tier` hoặc HITL trước khi launch.
+với parent. Hàm này **có** kiểm tra `risk_tier` của agent (từ profile hoặc packet
+legacy): tier nằm trong `governance.effective_blocked_tiers()` → ghi denial và
+raise `PermissionError`, chặn launch. Vẫn **không có** gate HITL riêng (không ai
+duyệt tay từng child spawn) — chỉ có check tier tự động.
 Child ghi task packet, state, events và artifacts vào runtime; parent tổng hợp
 child summary/artifacts qua `runtime_state` và `runtime_events`.
 

@@ -1,6 +1,12 @@
 # SD — Harness Hub (System Design)
-**Date:** 2026-06-28 · **Status:** 🟡 In Review · **Author:** Claude (Opus 4.8)
+**Date:** 2026-06-28 · **Status:** 🟢 Approved — duyệt 2026-06-28, xem `TODO.md` ("Duyệt SD/BD → giao Codex") · **Author:** Claude (Opus 4.8)
 **Upstream:** `RD-harness-hub.md` (approved scope, cost-tracking dropped → tokens/calls only)
+
+> **Lưu ý (2026-08-11):** diagram bên dưới ghi đúng kiến trúc tại thời điểm duyệt
+> (`hub/web/*` — SPA vanilla JS). Từ đó `hub/web/` đã bị gỡ bỏ, thay bằng
+> `hub/web-v3/` (React + TS). Tài liệu này giữ nguyên làm record lịch sử của
+> quyết định đã duyệt; **`ARCHITECTURE.md` là nguồn as-is hiện tại**, không phải
+> file này.
 
 ---
 

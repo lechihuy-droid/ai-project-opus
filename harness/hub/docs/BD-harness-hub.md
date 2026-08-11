@@ -1,5 +1,5 @@
 # BD — Harness Hub (Build Plan, giao Codex)
-**Date:** 2026-06-28 · **Status:** 🟡 In Review · **Author:** Claude (Opus 4.8)
+**Date:** 2026-06-28 · **Status:** 🟢 Approved — duyệt 2026-06-28, xem `TODO.md` ("Duyệt SD/BD → giao Codex") · **Author:** Claude (Opus 4.8)
 **Upstream:** `RD-harness-hub.md`, `SD-harness-hub.md`
 **Thực thi:** Codex (`codex exec`) — implement + test. Claude review.
 

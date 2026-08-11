@@ -19,6 +19,13 @@ scope: local-first Harness Hub backend
 
 Coding agent MUST bắt đầu từ `02_REQUIREMENTS_BASELINE.md`, rồi dùng tài liệu sở hữu contract trong `design/` để triển khai và giải quyết chi tiết. Requirements baseline đang `In Review` nên chưa tự mở rộng scope hoặc thay thế owner approval. Nội dung trong `reference/` chỉ là lịch sử và nghiên cứu, không được dùng để tự mở rộng scope.
 
+> **Trước khi đọc tiếp (2026-08-11):** `../RD-hub-backend-v1.md` §"Quan hệ" (2026-07-28,
+> APPROVED) đã chốt phạm vi dùng bộ này — `00_INDEX`/`02_REQUIREMENTS_BASELINE`/
+> `04_IMPLEMENTATION_STATUS` vẫn là audit backlog chính xác; `basic-design/`/`design/`
+> mô tả hệ target lớn hơn nhiều, **ngoài phạm vi** RD hiện tại; `reference/legacy-v0.1/`
+> giả định stack khác hẳn thực tế (Postgres/Redis/object storage), **không dùng**. Cho
+> câu hỏi "backend hiện tại hoạt động thế nào", `../ARCHITECTURE.md` là nguồn as-is.
+
 ## 2. Danh mục chính thức
 
 | ID | Tài liệu | Vai trò | Trạng thái |

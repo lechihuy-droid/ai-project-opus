@@ -1,6 +1,6 @@
 # RD — Harness Hub (Cổng thông tin cho Opus Agent Harness)
 **Date:** 2026-06-28
-**Status:** 🟡 In Review
+**Status:** 🟢 Approved — duyệt 2026-06-28, xem `TODO.md` ("Duyệt SD/BD → giao Codex")
 **Author:** Claude (Opus 4.8) — main session
 
 ---
