@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from datetime import UTC, datetime
 from typing import Any
+from pathlib import Path
 
 import config
 from services import risk
@@ -21,6 +22,7 @@ def _default_state() -> dict[str, Any]:
         "clean_streak": 0,
         "recent_denials": [],
         "recent_findings": [],
+        "folder_grants": [],
     }
 
 
@@ -45,7 +47,67 @@ def _load_state() -> dict[str, Any]:
         state["recent_denials"] = []
     if not isinstance(state.get("recent_findings"), list):
         state["recent_findings"] = []
+    if not isinstance(state.get("folder_grants"), list):
+        state["folder_grants"] = []
     return state
+
+
+def _grant_path(path: str | Path) -> Path:
+    return Path(path).resolve()
+
+
+def list_folder_grants() -> list[dict[str, Any]]:
+    return [dict(item) for item in _load_state()["folder_grants"] if isinstance(item, dict)]
+
+
+def find_folder_grant(workflow_id: str, workspace_dir: str | Path) -> dict[str, Any] | None:
+    try:
+        requested = _grant_path(workspace_dir)
+    except OSError:
+        return None
+    for grant in list_folder_grants():
+        if str(grant.get("workflow_id") or "") != workflow_id:
+            continue
+        try:
+            granted = _grant_path(str(grant.get("path") or ""))
+            requested.relative_to(granted)
+        except (OSError, ValueError):
+            continue
+        if str(granted) == str(grant.get("path")):
+            return grant
+    return None
+
+
+def grant_folder(workflow_id: str, path: str | Path, granted_by: str = "ui") -> dict[str, Any]:
+    resolved = _grant_path(path)
+    if not resolved.exists() or not resolved.is_dir():
+        raise ValueError(f"Folder does not exist: {resolved}")
+    from services import fsbrowse
+    if fsbrowse.is_denied(resolved) or resolved.parent == resolved:
+        raise ValueError(f"Folder is denied: {resolved}")
+    if resolved == Path.home().resolve():
+        raise ValueError(f"Folder is denied: {resolved}")
+    state = _load_state()
+    grants = [item for item in state["folder_grants"] if not (isinstance(item, dict) and item.get("workflow_id") == workflow_id and item.get("path") == str(resolved))]
+    grant = {"workflow_id": workflow_id, "path": str(resolved), "granted_at": _now(), "granted_by": str(granted_by)}
+    state["folder_grants"] = [grant, *grants]
+    _save_state(state)
+    from services import audit
+    audit.append("folder_grant_created", subject_id=workflow_id, context=grant)
+    return grant
+
+
+def revoke_folder_grant(workflow_id: str, path: str) -> bool:
+    resolved = str(_grant_path(path))
+    state = _load_state()
+    before = len(state["folder_grants"])
+    state["folder_grants"] = [item for item in state["folder_grants"] if not (isinstance(item, dict) and item.get("workflow_id") == workflow_id and item.get("path") == resolved)]
+    changed = len(state["folder_grants"]) != before
+    if changed:
+        _save_state(state)
+        from services import audit
+        audit.append("folder_grant_revoked", subject_id=workflow_id, context={"path": resolved})
+    return changed
 
 
 def _save_state(state: dict[str, Any]) -> None:

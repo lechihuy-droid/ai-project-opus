@@ -281,18 +281,18 @@ def _workflow_snapshot(data: dict[str, Any], ir: list[dict[str, Any]]) -> dict[s
     return {"definition": deepcopy(data), "ir": frozen_ir, "stop": deepcopy(data["stop"]), "agent_profiles": profiles}
 
 
-def _snapshot_inputs(state: dict[str, Any], ir: list[dict[str, Any]], stop: dict[str, Any], objective: str) -> tuple[list[dict[str, Any]], dict[str, Any], str, str, str | None, bool]:
+def _snapshot_inputs(state: dict[str, Any], ir: list[dict[str, Any]], stop: dict[str, Any], objective: str) -> tuple[list[dict[str, Any]], dict[str, Any], str, str, str | None]:
     snapshot = _metadata(state).get("workflow_snapshot")
     if not isinstance(snapshot, dict):
         runtime_state.update_run_state(str(state["run_id"]), {"metadata": {"snapshot_status": "legacy_live_read"}})
         metadata = _metadata(state)
-        return ir, stop, objective, str(metadata.get("inputs") or ""), _workspace_dir(metadata), _workspace_write(metadata)
+        return ir, stop, objective, str(metadata.get("inputs") or ""), _workspace_dir(metadata)
     frozen_ir = snapshot.get("ir")
     frozen_stop = snapshot.get("stop")
     if not isinstance(frozen_ir, list) or not isinstance(frozen_stop, dict):
         raise ValueError("Invalid workflow snapshot")
     metadata = _metadata(state)
-    return frozen_ir, frozen_stop, str(metadata.get("objective") or objective), str(metadata.get("inputs") or ""), _workspace_dir(metadata), _workspace_write(metadata)
+    return frozen_ir, frozen_stop, str(metadata.get("objective") or objective), str(metadata.get("inputs") or ""), _workspace_dir(metadata)
 
 
 def _provider_route(agent: dict[str, Any]) -> dict[str, Any]:
@@ -305,15 +305,13 @@ def _workspace_dir(metadata: dict[str, Any]) -> str | None:
     return value if isinstance(value, str) and value else None
 
 
-def _workspace_write(metadata: dict[str, Any]) -> bool:
-    return bool(metadata.get("workspace_write")) and _workspace_dir(metadata) is not None
-
-
-def _tool_policy(agent: dict[str, Any], workspace_dir: str | None = None, workspace_write: bool = False) -> dict[str, Any]:
+def _tool_policy(agent: dict[str, Any], workflow_id: str | None = None, workspace_dir: str | None = None, run_id: str | None = None) -> dict[str, Any]:
     profile_paths = list(agent.get("allowed_paths") or [])
     paths = list(profile_paths)
-    if workspace_dir:
-        paths.append(workspace_dir)
+    grant = governance.find_folder_grant(workflow_id or "", workspace_dir) if workflow_id and workspace_dir else None
+    granted_path = str(Path(workspace_dir).resolve()) if grant and workspace_dir else None
+    if granted_path:
+        paths.append(granted_path)
     policy: dict[str, Any] = {
         "permission": agent["permission"],
         "allowed_tools": list(agent.get("allowed_tools") or []),
@@ -322,15 +320,15 @@ def _tool_policy(agent: dict[str, Any], workspace_dir: str | None = None, worksp
         "allowed_origins": list(agent.get("allowed_origins") or []),
         "allowed_capabilities": list(agent.get("capabilities") or []),
     }
-    if workspace_dir and workspace_write:
-        policy["cwd"] = workspace_dir
-        policy["writable_paths"] = [*profile_paths, workspace_dir]
+    if granted_path:
+        policy["cwd"] = granted_path
+        policy["writable_paths"] = [*profile_paths, granted_path]
     return policy
 
 
 def _run_child(
     *, parent_run_id: str, node_id: str, objective: str, agent: dict[str, Any], child_run_id: str,
-    workspace_dir: str | None, workspace_write: bool,
+    workspace_dir: str | None,
 ) -> Iterator[str]:
     """Run a child provider synchronously while preserving child failure isolation."""
     agent_id = str(agent["id"])
@@ -352,7 +350,7 @@ def _run_child(
         route = _provider_route(agent)
         request = execution.ExecutionRequest(
             correlation_id=child_run_id, provider_id=str(route["provider"]), model=route.get("model"),
-            messages=messages, tool_policy=_tool_policy(agent, workspace_dir, workspace_write), limits=dict(agent.get("budget") or {}),
+        messages=messages, tool_policy=_tool_policy(agent, str(runtime_state.read_run(parent_run_id).get("metadata", {}).get("workflow_id") or ""), workspace_dir, child_run_id), limits=dict(agent.get("budget") or {}),
         )
         for item in execution.execute(request):
             item_type = item.get("type")
@@ -397,7 +395,11 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
     """Execute a resolved linear workflow against an existing runtime run."""
     run_id = runtime_state.validate_id("run", run_id)
     state = runtime_state.read_run(run_id)
-    ir, stop, objective, inputs, workspace_dir, workspace_write = _snapshot_inputs(state, ir, stop, objective)
+    ir, stop, objective, inputs, workspace_dir = _snapshot_inputs(state, ir, stop, objective)
+    workflow_id = str(_metadata(state).get("workflow_id") or "")
+    if workspace_dir and governance.find_folder_grant(workflow_id, workspace_dir) and not _metadata(state).get("workspace_grant_audited"):
+        audit.append("folder_grant_used", subject_id=run_id, context={"workflow_id": workflow_id, "path": str(Path(workspace_dir).resolve())})
+        runtime_state.update_run_state(run_id, {"metadata": {"workspace_grant_audited": True}})
     metadata = _metadata(state)
     initial = {
         "node_index": int(metadata.get("node_index") or 0),
@@ -568,7 +570,7 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
             route = _provider_route(agent)
             request = execution.ExecutionRequest(
                 correlation_id=run_id, provider_id=str(route["provider"]), model=route.get("model"),
-                messages=messages, tool_policy=_tool_policy(agent, workspace_dir, workspace_write), limits=dict(agent.get("budget") or {}),
+                messages=messages, tool_policy=_tool_policy(agent, workflow_id, workspace_dir, run_id), limits=dict(agent.get("budget") or {}),
             )
             for item in execution.execute(request):
                 item_type = item.get("type")
@@ -618,7 +620,7 @@ def run_workflow(ir: list[dict[str, Any]], *, stop: dict[str, Any], objective: s
                     agent=spawn_agent,
                     child_run_id=child_run_id,
                     workspace_dir=workspace_dir,
-                    workspace_write=workspace_write,
+                    
                 )
                 if child_output is not None:
                     node_outputs[f"{node_id}_claims"] = child_output
@@ -672,7 +674,6 @@ def create_workflow_run_stream(
         "workflow_snapshot": snapshot,
         "snapshot_status": "pinned",
         "workspace_dir": workspace_dir,
-        "workspace_write": bool(workspace_dir) and workspace_write,
         "allowed_capabilities": sorted({
             capability
             for node in ir if isinstance(node.get("agent"), dict)
@@ -695,7 +696,7 @@ def create_workflow_run_stream(
         try:
             boundary.resolve_under_any(workspace_dir, [config.ROOT])
         except PermissionError:
-            audit.append("workspace_scope", subject_id=run_id, context={"workspace_dir": workspace_dir, "writable": bool(workspace_write)})
+            audit.append("workspace_scope", subject_id=run_id, context={"workspace_dir": workspace_dir})
     yield from _yield_event(run_id, "debug", message="workflow run created", thread_id=run["thread_id"])
     yield from run_workflow(ir, stop=data["stop"], objective=objective, run_id=run_id)
 

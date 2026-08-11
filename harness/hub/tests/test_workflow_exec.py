@@ -6,7 +6,7 @@ from typing import Any, Iterator
 import pytest
 
 import config
-from services import runtime_agents, runtime_checkpoint, runtime_interrupts, runtime_state, skill_library, workflow_exec
+from services import fsbrowse, governance, runtime_agents, runtime_checkpoint, runtime_interrupts, runtime_state, skill_library, workflow_exec
 from services.providers import claude_cli, codex_cli, registry
 
 
@@ -17,6 +17,7 @@ def runtime_tmp(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
     monkeypatch.setattr(config, "RUNTIME_THREADS_DIR", base / "threads")
     monkeypatch.setattr(config, "RUNTIME_RUNS_DIR", base / "runs")
     monkeypatch.setattr(config, "RUNTIME_STORE_DIR", base / "store")
+    monkeypatch.setattr(config, "GOVERNANCE_STATE_FILE", base / "governance.json")
     return base
 
 
@@ -42,20 +43,17 @@ def _agent(*, max_calls: int = 5) -> dict[str, Any]:
     }
 
 
-def test_workspace_dir_policy_separates_read_from_write() -> None:
+def test_workspace_dir_policy_without_grant_has_no_workspace_access() -> None:
     agent = _agent() | {"allowed_paths": ["profile-path"]}
 
     assert workflow_exec._tool_policy(agent) == {
         "permission": "read_only", "allowed_tools": [], "allowed_paths": ["profile-path"], "writable_paths": ["profile-path"],
         "allowed_origins": [], "allowed_capabilities": [],
     }
-    read_policy = workflow_exec._tool_policy(agent, "external-folder", False)
-    assert read_policy["allowed_paths"] == ["profile-path", "external-folder"]
-    assert "cwd" not in read_policy
-    assert read_policy["writable_paths"] == ["profile-path"]
-    write_policy = workflow_exec._tool_policy(agent, "external-folder", True)
-    assert write_policy["cwd"] == "external-folder"
-    assert write_policy["writable_paths"] == ["profile-path", "external-folder"]
+    policy = workflow_exec._tool_policy(agent, "demo", "external-folder")
+    assert "external-folder" not in policy["allowed_paths"]
+    assert "external-folder" not in policy["writable_paths"]
+    assert "cwd" not in policy
 
 
 def test_workspace_dir_stays_read_only_without_write_consent_even_with_capabilities() -> None:
@@ -63,17 +61,17 @@ def test_workspace_dir_stays_read_only_without_write_consent_even_with_capabilit
     workspace folder stays out of writable_paths and cwd."""
     agent = _agent() | {"allowed_paths": ["profile-path"], "capabilities": ["fs.search"]}
 
-    policy = workflow_exec._tool_policy(agent, "external-folder", False)
+    policy = workflow_exec._tool_policy(agent, "demo", "external-folder")
 
     assert "external-folder" not in policy["writable_paths"]
     assert "cwd" not in policy
     assert policy["writable_paths"] == ["profile-path"]
     assert policy["allowed_capabilities"] == ["fs.search"]
-    assert "external-folder" in policy["allowed_paths"]
+    assert "external-folder" not in policy["allowed_paths"]
 
 
 def test_cli_commands_exclude_read_only_workspace_dir() -> None:
-    policy = workflow_exec._tool_policy(_agent() | {"permission": "workspace_write"}, "external-folder", False)
+    policy = workflow_exec._tool_policy(_agent() | {"permission": "workspace_write"}, "demo", "external-folder")
 
     assert "external-folder" not in claude_cli._build_cmd("do", None, tool_policy=policy)
     assert "external-folder" not in " ".join(codex_cli._build_cmd("do", None, tool_policy=policy))
@@ -84,7 +82,10 @@ def test_resume_restores_workspace_scope_from_metadata(runtime_tmp: Path, monkey
     monkeypatch.setitem(registry, "fake", fake)
     ir = [{"id": "approve", "agent": _agent(), "prompt": "Do {{objective}}", "gate": "approval", "order": 0}]
     run_id = _pinned_run(ir, {"id": "demo", "nodes": [], "edges": [], "stop": {"max_nodes": 1, "max_seconds": 60}})
-    runtime_state.update_run_state(run_id, {"metadata": {"workspace_dir": "external-folder", "workspace_write": True}})
+    folder = Path("external-folder").resolve()
+    folder.mkdir(parents=True, exist_ok=True)
+    governance.grant_folder("demo", folder)
+    runtime_state.update_run_state(run_id, {"metadata": {"workflow_id": "demo", "workspace_dir": str(folder)}})
 
     list(workflow_exec.run_workflow(ir, stop={"max_nodes": 1, "max_seconds": 60}, objective="ship", run_id=run_id))
     interrupt = runtime_state.read_run(run_id)["interrupts"][0]
@@ -92,10 +93,44 @@ def test_resume_restores_workspace_scope_from_metadata(runtime_tmp: Path, monkey
     list(workflow_exec.run_workflow([], stop={}, objective="", run_id=run_id))
 
     assert fake.tool_policies == [{
-        "permission": "read_only", "allowed_tools": [], "allowed_paths": ["external-folder"],
-        "writable_paths": ["external-folder"], "allowed_origins": [], "allowed_capabilities": [],
-        "cwd": "external-folder",
+        "permission": "read_only", "allowed_tools": [], "allowed_paths": [str(folder)],
+        "writable_paths": [str(folder)], "allowed_origins": [], "allowed_capabilities": [],
+        "cwd": str(folder),
     }]
+
+
+def test_grant_policy_covers_children_not_parent(runtime_tmp: Path, tmp_path: Path) -> None:
+    folder = tmp_path / "A"; child = folder / "child"; folder.mkdir(); child.mkdir()
+    governance.grant_folder("demo", folder)
+    assert "cwd" not in workflow_exec._tool_policy(_agent(), "other", str(folder.parent))
+    assert workflow_exec._tool_policy(_agent(), "demo", str(child))["cwd"] == str(child.resolve())
+
+
+def test_grant_is_scoped_to_workflow(runtime_tmp: Path, tmp_path: Path) -> None:
+    folder = tmp_path / "A"; folder.mkdir()
+    governance.grant_folder("demo", folder)
+    assert "cwd" not in workflow_exec._tool_policy(_agent(), "other", str(folder))
+
+
+def test_deny_list_cannot_be_granted(runtime_tmp: Path, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    denied = tmp_path / ".ssh"; denied.mkdir()
+    monkeypatch.setattr(fsbrowse, "is_denied", lambda _path: True)
+    with pytest.raises(ValueError): governance.grant_folder("demo", denied)
+
+
+def test_grant_resolves_against_current_target(runtime_tmp: Path, tmp_path: Path) -> None:
+    original = tmp_path / "original"; replacement = tmp_path / "replacement"; original.mkdir(); replacement.mkdir()
+    governance.grant_folder("demo", original)
+    state = governance._load_state(); state["folder_grants"][0]["path"] = str(replacement.resolve()); governance._save_state(state)
+    assert "cwd" not in workflow_exec._tool_policy(_agent(), "demo", str(original))
+
+
+def test_revoke_removes_next_policy(runtime_tmp: Path, tmp_path: Path) -> None:
+    folder = tmp_path / "A"; folder.mkdir()
+    governance.grant_folder("demo", folder)
+    assert "cwd" in workflow_exec._tool_policy(_agent(), "demo", str(folder))
+    assert governance.revoke_folder_grant("demo", str(folder))
+    assert "cwd" not in workflow_exec._tool_policy(_agent(), "demo", str(folder))
 
 
 def _run() -> str:

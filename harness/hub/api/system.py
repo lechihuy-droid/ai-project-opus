@@ -44,6 +44,35 @@ def api_fs_dirs(path: str | None = None, show_hidden: bool = False) -> dict[str,
         raise _http_error(exc, 400) from exc
 
 
+@router.get("/api/workflows/{workflow_id}/folder-grants/check")
+def api_folder_grant_check(workflow_id: str, path: str) -> dict[str, object]:
+    try:
+        resolved = fsbrowse.resolve_workspace_dir(path)
+    except (PermissionError, ValueError) as exc:
+        raise _http_error(exc, 400) from exc
+    grant = governance.find_folder_grant(workflow_id, resolved) if resolved else None
+    return {"path": str(resolved), "granted": grant is not None, "grant": grant}
+
+
+@router.post("/api/workflows/{workflow_id}/folder-grants")
+def api_folder_grant_create(workflow_id: str, payload: dict[str, object]) -> dict[str, object]:
+    try:
+        grant = governance.grant_folder(workflow_id, payload.get("path", ""), str(payload.get("granted_by") or "ui"))
+    except (PermissionError, ValueError) as exc:
+        raise _http_error(exc, 400) from exc
+    return grant
+
+
+@router.get("/api/folder-grants")
+def api_folder_grants() -> list[dict[str, object]]:
+    return [{**grant, "exists": Path(str(grant.get("path") or "")).is_dir()} for grant in governance.list_folder_grants()]
+
+
+@router.delete("/api/workflows/{workflow_id}/folder-grants")
+def api_folder_grant_revoke(workflow_id: str, path: str) -> dict[str, bool]:
+    return {"ok": governance.revoke_folder_grant(workflow_id, path)}
+
+
 @router.get("/api/guardrails/decisions")
 def api_guardrail_decisions() -> list[dict[str, object]]:
     return runtime_policy.list_decisions()
