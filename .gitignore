@@ -77,3 +77,8 @@ Thumbs.db
 # pnpm content-addressable store (side effect of codex pnpm install)
 .pnpm-store/
 hub-token
+
+# Personal health logs — meals, weight, sleep. CLAUDE.md forbids committing these.
+# Note this only stops new files: the 19 already tracked here keep being committed
+# until they are untracked with `git rm --cached`.
+health-data/
