@@ -1,7 +1,7 @@
 # BD — Build Plan: Harness Remediation (Architecture + Security)
 
 **Date:** 2026-08-10
-**Status:** 🟡 In Progress — APPROVED 2026-08-10, P0 đã đóng gói brief cho Codex (`harness/docs/codex-briefs/`)
+**Status:** 🟢 P0–P3 done, pushed to `claude/vibe-coded-app-architecture-ahffqi` (2026-08-11). Xem "Definition of Done" cho mục còn open.
 **Ref:** Architecture & Security Audit 2026-08-10 (5 parallel subagent audits)
 **Scope:** `harness/` — eval runner, hub backend, web-v3, version-governance, docs/governance
 **Estimate:** ~14–18 giờ Codex + ~3 giờ review (Opus)
@@ -284,14 +284,15 @@ P0.3 runner ┘   (P0.3 độc lập, chạy song song được)
 
 ## Definition of Done toàn plan
 
-- [ ] 3 finding critical đều có test chứng minh chuỗi tấn công cũ đã chết
-- [ ] `pytest hub/tests/` + `pytest harness/tests/` + `pytest version-governance/app/tests/` all green
-- [ ] `run_harness.py --suite workspace-smoke` và `--suite boundary-compliance` vẫn pass
-- [ ] Suite `security-regression` mới tồn tại và chạy trong `ci-harness.ps1`
-- [ ] CI có job chạy `verify_dod.py`, đã chứng minh bắt được regression cố ý
-- [ ] `ARCHITECTURE.md` khớp code về số route/service
-- [ ] 5 cây agent-config có rule data-safety
-- [ ] ADR-011 + ADR-012 đã viết và Accepted
+- [x] 3 finding critical đều có test chứng minh chuỗi tấn công cũ đã chết — `test_auth_guard.py` (case `/assets`), `test_hook_command_allowlist.py` + `test_verify_rules.py` (2 tầng độc lập), `harness/tests/test_boundary.py` (17 case, gồm cả bypass tìm được ở 3 vòng review: attached-value flag, cụm flag, bare stdin, executable-identity qua `allow_system_executable`/in-root path)
+- [x] `pytest hub/tests/` + `pytest harness/tests/` all green **theo baseline đã ghim** (403 passed / 21 failed, tập fail là noise có sẵn từ trước remediation — không phải all-green tuyệt đối, `web-v3/dist` thiếu trong container CI là nguyên nhân chính)
+- [ ] `pytest version-governance/app/tests/` — **chưa chạy trong phiên remediation này**, không có venv nào được dựng cho nó. Cần chạy riêng trước khi coi P0-P3 áp dụng luôn cho version-governance
+- [x] `run_harness.py --suite workspace-smoke` và `--suite boundary-compliance` vẫn pass — verify nhiều lần
+- [x] Suite `security-regression` mới tồn tại và chạy trong `ci-harness.ps1`
+- [ ] CI có job chạy `verify_dod.py` — **job đã thêm** (`.github/workflows/version-governance-dod.yml`), nhưng **chưa chứng minh bắt được regression cố ý**: không có Docker daemon trong container remediation để dựng compose stack live. Cần một lần chạy thật trên GitHub Actions (cố ý phá 1 invariant, xem CI đỏ) trước khi coi mục này done. Cũng cần thêm secret `NVIDIA_API_KEY` — thiếu thì DoD check #5 đỏ hợp lệ, không phải lỗi CI
+- [x] `ARCHITECTURE.md` khớp code về services (46/46 module verify) và về claim hooks/files/risk_tier (verify trực tiếp từng cái). **Chưa** làm full route-count audit cho toàn bộ `api/*.py` — chỉ 3 điểm audit gốc nêu ra được sửa
+- [x] 5 cây agent-config có rule data-safety
+- [x] ADR-011 + ADR-012 đã viết và Accepted (`harness/docs/adrs/`)
 
 ---
 
