@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import secrets
+import shutil
 from pathlib import Path
 from typing import Any
 
@@ -26,7 +27,7 @@ RUNTIME_STORE_DIR = RUNTIME_DIR / "store"
 RUNTIME_FILE_MAX_BYTES = 10 * 1024 * 1024
 RUNTIME_FILES_MAX_BYTES = 100 * 1024 * 1024
 PORT = 8799
-VGOV_BASE_URL = "http://127.0.0.1:8810"
+VGOV_BASE_URL = os.environ.get("VGOV_BASE_URL", "http://127.0.0.1:8810")
 STEP_CAP = 50
 JOB_AGENT_CMD = "codex"
 JOB_TIME_CAP_SECONDS = 1800
@@ -365,6 +366,11 @@ MAX_CONCURRENT_CLI = 3
 CHAT_CLI_TIMEOUT = 300
 QUOTA_WARN_PER_DAY = 200
 
+# NVIDIA chat provider layer (mirrors the CLI provider bounds above)
+MAX_CONCURRENT_NVIDIA_CHAT = 3
+NVIDIA_CHAT_TIMEOUT = 300
+NVIDIA_CHAT_MAX_RETRIES = 2
+
 # User-editable shadow estimates, not official billing rates or invoices.
 # Exact model ids are preferred; services.pricing.py also supports prefixes.
 PRICING_USD_PER_MTOK: dict[str, dict[str, float]] = {
@@ -385,7 +391,7 @@ PRICING_USD_PER_MTOK: dict[str, dict[str, float]] = {
 }
 PROVIDERS: dict[str, Any] = {
     "claude": {"cmd": ["claude"]},
-    "codex": {"cmd": [str(Path.home() / "AppData" / "Local" / "pnpm" / "codex")]},
+    "codex": {"cmd": [shutil.which("codex") or str(Path.home() / "AppData" / "Local" / "pnpm" / "codex")]},
     "nvidia": {},
 }
 

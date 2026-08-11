@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import threading
 from collections.abc import Callable
 from pathlib import Path
 from types import SimpleNamespace
@@ -297,7 +298,12 @@ def test_chat_streams_delta_done_and_records_usage(
         "model": config.CHAT_DEFAULT_MODEL,
         "session_id": None,
     }
-    assert client_calls == [{"base_url": chat_service.NVIDIA_BASE_URL, "api_key": "test-key"}]
+    assert client_calls == [{
+        "base_url": chat_service.NVIDIA_BASE_URL,
+        "api_key": "test-key",
+        "timeout": config.NVIDIA_CHAT_TIMEOUT,
+        "max_retries": config.NVIDIA_CHAT_MAX_RETRIES,
+    }]
     assert calls == [
         {
             "model": config.CHAT_DEFAULT_MODEL,
@@ -508,3 +514,90 @@ def test_chat_upstream_status_error_streams_error_code_not_500(
     assert events[0][1]["code"] == status_code
     assert expected_message in str(events[0][1]["message"])
     assert detail in str(events[0][1]["message"])
+
+
+def _install_blocking_openai(
+    monkeypatch: pytest.MonkeyPatch, entered: threading.Event, release: threading.Event
+) -> None:
+    class FakeCompletions:
+        def create(self, **kwargs: object) -> object:
+            entered.set()
+            release.wait(timeout=5)
+            return iter([_chunk(content="ok")])
+
+    class FakeChat:
+        def __init__(self) -> None:
+            self.completions = FakeCompletions()
+
+    class FakeOpenAI:
+        def __init__(self, **kwargs: object) -> None:
+            self.chat = FakeChat()
+
+    monkeypatch.setenv("NVIDIA_API_KEY", "test-key")
+    monkeypatch.setattr(chat_service, "OpenAI", FakeOpenAI)
+
+
+def test_stream_chat_raises_busy_error_at_concurrency_cap(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(chat_service, "CHAT_USAGE_FILE", tmp_path / "chat_usage.jsonl")
+    monkeypatch.setattr(config, "MAX_CONCURRENT_NVIDIA_CHAT", 1)
+    entered = threading.Event()
+    release = threading.Event()
+    _install_blocking_openai(monkeypatch, entered, release)
+
+    first_result: list[dict[str, object]] = []
+
+    def run_first() -> None:
+        first_result.extend(chat_service.stream_chat(_messages(), config.CHAT_DEFAULT_MODEL, 100))
+
+    thread = threading.Thread(target=run_first)
+    thread.start()
+    try:
+        assert entered.wait(timeout=5), "first call never entered the fake completions API"
+
+        with pytest.raises(chat_service.ChatBusyError):
+            list(chat_service.stream_chat(_messages(), config.CHAT_DEFAULT_MODEL, 100))
+    finally:
+        release.set()
+        thread.join(timeout=5)
+    assert not thread.is_alive()
+    assert [event["type"] for event in first_result] == ["delta", "done"]
+
+    # The slot freed once the first call finished -- a third call must not raise.
+    third_result = list(chat_service.stream_chat(_messages(), config.CHAT_DEFAULT_MODEL, 100))
+    assert third_result[-1]["type"] == "done"
+
+
+def test_stream_chat_releases_slot_when_caller_stops_iterating_early(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(chat_service, "CHAT_USAGE_FILE", tmp_path / "chat_usage.jsonl")
+    monkeypatch.setattr(config, "MAX_CONCURRENT_NVIDIA_CHAT", 1)
+    calls: list[dict[str, object]] = []
+    _install_fake_openai(
+        monkeypatch, calls, chunks=[_chunk(content="a"), _chunk(content="b"), _chunk(content="c")]
+    )
+
+    generator = chat_service.stream_chat(_messages(), config.CHAT_DEFAULT_MODEL, 100)
+    first_event = next(generator)
+    assert first_event == {"type": "delta", "text": "a"}
+    generator.close()  # abandoned mid-stream, e.g. a client disconnect
+
+    # GeneratorExit through the finally block must have released the slot.
+    second_generator = chat_service.stream_chat(_messages(), config.CHAT_DEFAULT_MODEL, 100)
+    assert next(second_generator)["type"] == "delta"
+    second_generator.close()
+
+
+def test_stream_chat_passes_timeout_and_max_retries_to_client(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(chat_service, "CHAT_USAGE_FILE", tmp_path / "chat_usage.jsonl")
+    calls: list[dict[str, object]] = []
+    client_calls = _install_fake_openai(monkeypatch, calls)
+
+    list(chat_service.stream_chat(_messages(), config.CHAT_DEFAULT_MODEL, 100))
+
+    assert client_calls[0]["timeout"] == config.NVIDIA_CHAT_TIMEOUT
+    assert client_calls[0]["max_retries"] == config.NVIDIA_CHAT_MAX_RETRIES

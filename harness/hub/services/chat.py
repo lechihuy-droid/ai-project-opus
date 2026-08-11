@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime as dt
 import json
 import os
+import threading
 from collections.abc import Generator
 from copy import deepcopy
 from typing import Any
@@ -18,6 +19,14 @@ AUTH_ERROR_MESSAGE = "NVIDIA_API_KEY not set in environment"
 AUTH_INVALID_ERROR_MESSAGE = "NVIDIA_API_KEY not set / invalid"
 CHAT_USAGE_FILE = config.HUB_DIR / ".cache" / "chat_usage.jsonl"
 
+# In-flight cap on stream_chat, mirroring MAX_CONCURRENT_CLI in
+# services/providers/procs.py so one code path can't exhaust a shared
+# resource just because it happens to be an HTTP call instead of a
+# subprocess. A plain locked counter is enough here: unlike procs.py this
+# has no per-call state (timeout watcher, kill) to track, only a limit.
+_CONCURRENCY_LOCK = threading.Lock()
+_IN_FLIGHT = 0
+
 
 class ChatAuthError(RuntimeError):
     """Raised when chat cannot authenticate with NVIDIA."""
@@ -29,6 +38,10 @@ class ChatUpstreamError(RuntimeError):
     def __init__(self, message: str, code: int) -> None:
         super().__init__(message)
         self.code = code
+
+
+class ChatBusyError(RuntimeError):
+    """Raised when the concurrent NVIDIA chat cap (config.MAX_CONCURRENT_NVIDIA_CHAT) is reached."""
 
 
 def _detail_text(value: object) -> str:
@@ -184,69 +197,94 @@ def stream_chat(
     if not api_key:
         raise ChatAuthError(AUTH_ERROR_MESSAGE)
 
-    usage = _empty_usage()
+    global _IN_FLIGHT
+    with _CONCURRENCY_LOCK:
+        if _IN_FLIGHT >= config.MAX_CONCURRENT_NVIDIA_CHAT:
+            raise ChatBusyError(f"max concurrent NVIDIA chat requests reached ({config.MAX_CONCURRENT_NVIDIA_CHAT})")
+        _IN_FLIGHT += 1
+
     try:
-        client = OpenAI(base_url=NVIDIA_BASE_URL, api_key=api_key)
-        reasoning_plan = _reasoning_for_model(model)
-        reasoning_params = reasoning_plan["params"] if isinstance(reasoning_plan["params"], dict) else {}
-        messages_with_reasoning = _messages_with_reasoning_system(messages, reasoning_plan["system"])
-        messages_with_reasoning = _messages_with_reasoning_system(messages_with_reasoning, system_prompt)
-        request: dict[str, Any] = {
-            "model": model,
-            "messages": messages_with_reasoning,
-            "temperature": 1,
-            "top_p": 0.95,
-            "max_tokens": max_tokens,
-            "stream": True,
-            "stream_options": {"include_usage": True},
-        }
-        request.update(reasoning_params)
-        if tools:
-            request["tools"] = tools
-        extra_body = reasoning_plan["extra_body"]
-        if extra_body is not None:
-            request["extra_body"] = extra_body
-
-        completion = _create_completion_with_reasoning_fallback(client, request, set(reasoning_params))
-        tool_calls: dict[int, dict[str, str]] = {}
-        for chunk in completion:
-            chunk_usage = getattr(chunk, "usage", None)
-            if chunk_usage is not None:
-                usage = _usage_from_openai(chunk_usage)
-
-            if not getattr(chunk, "choices", None):
-                continue
-
-            delta = chunk.choices[0].delta
-            reasoning = getattr(delta, "reasoning", None) or getattr(delta, "reasoning_content", None)
-            content = getattr(delta, "content", None)
-            if reasoning:
-                yield {"type": "reasoning", "text": reasoning}
-            if content:
-                yield {"type": "delta", "text": content}
-            for call in getattr(delta, "tool_calls", None) or []:
-                index = int(getattr(call, "index", 0) or 0)
-                state = tool_calls.setdefault(index, {"id": "", "name": "", "arguments": ""})
-                if getattr(call, "id", None):
-                    state["id"] = call.id
-                function = getattr(call, "function", None)
-                if function is not None:
-                    if getattr(function, "name", None):
-                        state["name"] = function.name
-                    if getattr(function, "arguments", None):
-                        state["arguments"] += function.arguments
-    except openai.AuthenticationError as exc:
-        raise ChatAuthError(AUTH_INVALID_ERROR_MESSAGE) from exc
-    except openai.APIStatusError as exc:
-        code = _api_status_code(exc)
-        detail = _api_status_detail(exc)
-        raise ChatUpstreamError(_upstream_error_message(model, code, detail), code) from exc
-
-    for state in tool_calls.values():
+        usage = _empty_usage()
         try:
-            tool_input = json.loads(state["arguments"] or "{}")
-        except json.JSONDecodeError:
-            tool_input = {}
-        yield {"type": "tool_call", "tool_name": state["name"], "tool_input": tool_input, "tool_use_id": state["id"]}
-    _append_usage_event(_usage_event(model, usage))
-    yield {"type": "done", "usage": usage, "model": model}
+            # timeout/max_retries made explicit rather than left to the SDK's
+            # own defaults (connect=5s, read/write/pool=600s, 2 retries) --
+            # 600s is far too generous for a chat call, and an explicit value
+            # here is something this app controls instead of inheriting
+            # silently. The retry count matches the SDK default: it already
+            # retries connection errors and 429/5xx responses on its own, so
+            # there is no separate retry loop to write here.
+            client = OpenAI(
+                base_url=NVIDIA_BASE_URL,
+                api_key=api_key,
+                timeout=config.NVIDIA_CHAT_TIMEOUT,
+                max_retries=config.NVIDIA_CHAT_MAX_RETRIES,
+            )
+            reasoning_plan = _reasoning_for_model(model)
+            reasoning_params = reasoning_plan["params"] if isinstance(reasoning_plan["params"], dict) else {}
+            messages_with_reasoning = _messages_with_reasoning_system(messages, reasoning_plan["system"])
+            messages_with_reasoning = _messages_with_reasoning_system(messages_with_reasoning, system_prompt)
+            request: dict[str, Any] = {
+                "model": model,
+                "messages": messages_with_reasoning,
+                "temperature": 1,
+                "top_p": 0.95,
+                "max_tokens": max_tokens,
+                "stream": True,
+                "stream_options": {"include_usage": True},
+            }
+            request.update(reasoning_params)
+            if tools:
+                request["tools"] = tools
+            extra_body = reasoning_plan["extra_body"]
+            if extra_body is not None:
+                request["extra_body"] = extra_body
+
+            completion = _create_completion_with_reasoning_fallback(client, request, set(reasoning_params))
+            tool_calls: dict[int, dict[str, str]] = {}
+            for chunk in completion:
+                chunk_usage = getattr(chunk, "usage", None)
+                if chunk_usage is not None:
+                    usage = _usage_from_openai(chunk_usage)
+
+                if not getattr(chunk, "choices", None):
+                    continue
+
+                delta = chunk.choices[0].delta
+                reasoning = getattr(delta, "reasoning", None) or getattr(delta, "reasoning_content", None)
+                content = getattr(delta, "content", None)
+                if reasoning:
+                    yield {"type": "reasoning", "text": reasoning}
+                if content:
+                    yield {"type": "delta", "text": content}
+                for call in getattr(delta, "tool_calls", None) or []:
+                    index = int(getattr(call, "index", 0) or 0)
+                    state = tool_calls.setdefault(index, {"id": "", "name": "", "arguments": ""})
+                    if getattr(call, "id", None):
+                        state["id"] = call.id
+                    function = getattr(call, "function", None)
+                    if function is not None:
+                        if getattr(function, "name", None):
+                            state["name"] = function.name
+                        if getattr(function, "arguments", None):
+                            state["arguments"] += function.arguments
+        except openai.AuthenticationError as exc:
+            raise ChatAuthError(AUTH_INVALID_ERROR_MESSAGE) from exc
+        except openai.APIStatusError as exc:
+            code = _api_status_code(exc)
+            detail = _api_status_detail(exc)
+            raise ChatUpstreamError(_upstream_error_message(model, code, detail), code) from exc
+
+        for state in tool_calls.values():
+            try:
+                tool_input = json.loads(state["arguments"] or "{}")
+            except json.JSONDecodeError:
+                tool_input = {}
+            yield {"type": "tool_call", "tool_name": state["name"], "tool_input": tool_input, "tool_use_id": state["id"]}
+        _append_usage_event(_usage_event(model, usage))
+        yield {"type": "done", "usage": usage, "model": model}
+    finally:
+        # Runs on normal completion, on any raised exception above, and on
+        # GeneratorExit if the caller stops iterating early (client
+        # disconnect) -- the only three ways this generator can end.
+        with _CONCURRENCY_LOCK:
+            _IN_FLIGHT -= 1
