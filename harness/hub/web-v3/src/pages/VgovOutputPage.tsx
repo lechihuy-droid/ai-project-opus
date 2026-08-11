@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Alert, Button, Input, Panel, Select, Textarea, Toolbar } from '../lib/ui'
 import { vgov, type Artifact, type Revision } from '../lib/vgovApi'
 import { Markdown } from '../lib/markdown'
+import { ApiError } from '../lib/api'
+import { t } from '../lib/i18n'
 
 export default function VgovOutputPage() {
   const [project, setProject] = useState('demo-api')
@@ -12,24 +14,31 @@ export default function VgovOutputPage() {
   const [content, setContent] = useState('')
   const [editing, setEditing] = useState(false)
   const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
 
-  const loadArtifacts = () =>
+  const loadArtifacts = () => {
+    setError('')
     void vgov.artifacts(project).then(rows => {
       setArtifacts(rows)
       setArtifactId(current => current || rows[0]?.id || '')
-    }).catch(e => setMessage(String(e)))
+    }).catch(e => setError(e instanceof ApiError ? e.message : t('vgov.loadArtifactsFailed')))
+  }
   useEffect(loadArtifacts, [project])
 
   useEffect(() => {
     if (!artifactId) return
+    setError('')
     void vgov.revisions(artifactId).then(rows => {
       setRevisions(rows)
       setRevisionId(current => current || rows.at(-1)?.id || '')
-    }).catch(e => setMessage(String(e)))
+    }).catch(e => setError(e instanceof ApiError ? e.message : t('vgov.loadRevisionsFailed')))
   }, [artifactId])
 
   useEffect(() => {
-    if (revisionId) void vgov.content(revisionId).then(setContent).catch(e => setMessage(String(e)))
+    if (revisionId) {
+      setError('')
+      void vgov.content(revisionId).then(setContent).catch(e => setError(e instanceof ApiError ? e.message : t('vgov.loadContentFailed')))
+    }
   }, [revisionId])
 
   const revise = async () => {
@@ -38,18 +47,18 @@ export default function VgovOutputPage() {
       setRevisions(rows => [...rows, next])
       setRevisionId(next.id)
       setEditing(false)
-      setMessage(`Saved human revision ${next.revision_no}`)
+      setMessage(t('vgov.savedRevision', { revision: next.revision_no }))
     } catch (e) {
-      setMessage(String(e))
+      setError(e instanceof ApiError ? e.message : t('vgov.saveRevisionFailed'))
     }
   }
 
   const approve = async () => {
     try {
       await vgov.approve(artifactId, revisionId)
-      setMessage('Approved baseline updated')
+      setMessage(t('vgov.approvedBaselineUpdated'))
     } catch (e) {
-      setMessage(String(e))
+      setError(e instanceof ApiError ? e.message : t('vgov.approveBaselineFailed'))
     }
   }
 
@@ -84,7 +93,7 @@ export default function VgovOutputPage() {
         <Button onClick={() => setEditing(value => !value)} disabled={!revisionId}>{editing ? 'Preview' : 'Edit content'}</Button>
         <Button variant="primary" onClick={() => void approve()} disabled={!revisionId}>Approve</Button>
       </Toolbar>
-      {editing ? (
+      {!error && (editing ? (
         <Panel className="space-y-space-2" bodyClassName="space-y-space-2">
           <Textarea value={content} onChange={e => setContent(e.target.value)} aria-label="Revision markdown" className="min-h-[420px] font-mono" />
           <Button variant="primary" onClick={() => void revise()}>Save human edit</Button>
@@ -93,8 +102,9 @@ export default function VgovOutputPage() {
         <Panel bodyClassName="p-space-5 text-label text-secondary">
           <Markdown source={content} />
         </Panel>
-      )}
-      {message && <Alert variant="info">{message}</Alert>}
+      ))}
+      {error && <Alert variant="error">{error}</Alert>}
+      {!error && message && <Alert variant="info">{message}</Alert>}
     </div>
   )
 }

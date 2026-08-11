@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Alert, Button, Input, Panel, Toolbar } from '../lib/ui'
 import { vgov, type Lineage } from '../lib/vgovApi'
+import { ApiError } from '../lib/api'
+import { t } from '../lib/i18n'
 
 export default function VgovProvenancePage() {
   const [revisionId, setRevisionId] = useState('')
@@ -13,7 +15,7 @@ export default function VgovProvenancePage() {
       setError('')
       setLineage(await vgov.lineage(revisionId))
     } catch (e) {
-      setError(String(e))
+      setError(e instanceof ApiError ? e.message : t('vgov.loadLineageFailed'))
     }
   }
 

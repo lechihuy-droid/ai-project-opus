@@ -1,4 +1,4 @@
-import { api } from './api'
+import { api, apiRequest } from './api'
 
 const base = '/api/vgov'
 
@@ -96,10 +96,7 @@ export const vgov = {
     api<Revision[]>(`${base}/artifacts/${artifactId}/revisions`),
 
   content: (revisionId: string) =>
-    fetch(`${base}/revisions/${revisionId}/content`).then(async response => {
-      if (!response.ok) throw new Error(`Request failed (${response.status})`)
-      return response.text()
-    }),
+    apiRequest(`${base}/revisions/${revisionId}/content`).then(response => response.text()),
 
   edit: (revisionId: string, content: string) =>
     api<Revision>(`${base}/revisions/${revisionId}/edit`, { method: 'POST', body: JSON.stringify({ content }) }),
