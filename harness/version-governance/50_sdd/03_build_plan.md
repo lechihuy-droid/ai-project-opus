@@ -630,4 +630,29 @@ dùng fake adapter.
 
 ---
 
+## Known limitation — chạy stack phải từ main clone, không phải git worktree
+
+`vgov-api` bind-mount `../../..:/repo:ro` để đọc git ref của repo (`resolve_commit`). Nếu `docker compose up` chạy từ một **git worktree** (không phải checkout chính), `.git` ở gốc worktree không phải thư mục thật mà là file con trỏ:
+
+```
+gitdir: C:/Users/HUY/workspace/ai-project-opus/.git/worktrees/<tên-worktree>
+```
+
+Đường dẫn Windows tuyệt đối này vô nghĩa khi mount vào container Linux — mọi thao tác git bên trong container fail:
+
+```
+$ docker exec <vgov-api container> sh -c 'cd /repo && git rev-parse HEAD'
+fatal: not a git repository: /repo/C:/Users/HUY/workspace/ai-project-opus/.git/worktrees/<tên-worktree>
+```
+
+Biểu hiện ở tầng API: `POST /releases/{id}/publish` trả `500`, log có `ValueError: Cannot resolve git ref: HEAD` từ `app/adapters/git_source.py`.
+
+**Không sửa bằng cách mount thêm gitdir vào container** — git nối `/repo/` với nguyên chuỗi path Windows tuyệt đối đọc được từ file `.git`, nên mount ở bất kỳ đâu cũng không khớp; phải tạo cấu trúc thư mục giả `C:/Users/...` bên trong container mới né được, không đáng làm.
+
+**Cách đúng: luôn `docker compose up` từ main repo clone** (`C:\Users\HUY\workspace\ai-project-opus`, nơi `.git` là thư mục thật), không phải từ `.claude/worktrees/<tên>`.
+
+Xác nhận (2026-08-12): chạy từ main clone ở `7cdf987`, `git rev-parse HEAD` trong container trả đúng SHA, `verify_dod.py` **12/12 PASS**.
+
+---
+
 *Version Governance POC — BD v1.1 | 2026-08-02*
