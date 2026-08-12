@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Alert, Button, Input, Panel, RunStatusBadge, Select, Status, type RunStatusKind } from '../lib/ui'
 import { vgov, type InputRevision, type Release, type Run } from '../lib/vgovApi'
+import { ApiError } from '../lib/api'
+import { t } from '../lib/i18n'
 
 const terminal = new Set(['SUCCEEDED', 'FAILED', 'FAILED_PRECONDITION', 'CANCELLED'])
 const runStatusKind = (status: string): RunStatusKind => {
@@ -26,7 +28,7 @@ export default function VgovRunPage() {
     void vgov.inputs(project).then(rows => {
       setInputs(rows)
       setInput(current => current || rows[0]?.id || '')
-    }).catch(e => setError(String(e)))
+    }).catch(e => setError(e instanceof ApiError ? e.message : t('vgov.loadInputsFailed')))
   }, [project])
 
   useEffect(() => {
@@ -34,13 +36,13 @@ export default function VgovRunPage() {
       setEnvironmentRelease(rows[environment] ?? null)
     }).catch(e => {
       setEnvironmentRelease(null)
-      setError(String(e))
+      setError(e instanceof ApiError ? e.message : t('vgov.loadEnvironmentFailed'))
     })
   }, [environment, workflow])
 
   useEffect(() => {
     if (!run || terminal.has(run.status)) return
-    const timer = window.setTimeout(() => void vgov.run(run.id).then(setRun).catch(e => setError(String(e))), 1000)
+    const timer = window.setTimeout(() => void vgov.run(run.id).then(setRun).catch(e => setError(e instanceof ApiError ? e.message : t('vgov.loadRunFailed'))), 1000)
     return () => window.clearTimeout(timer)
   }, [run])
 
@@ -49,7 +51,7 @@ export default function VgovRunPage() {
       setError('')
       setRun(await vgov.runs({ project_key: project, workflow_id: workflow, input_revision_id: input, environment, output_business_key: businessKey }))
     } catch (e) {
-      setError(String(e))
+      setError(e instanceof ApiError ? e.message : t('vgov.startRunFailed'))
     }
   }
 
@@ -62,7 +64,7 @@ export default function VgovRunPage() {
           Choose imported RD, target environment, then name business output.
         </p>
       </div>
-      <Panel>
+      {!error && <Panel>
         <div className="text-caption text-muted">Release đang chạy · {environment}</div>
         {environmentRelease ? (
           <>
@@ -79,7 +81,7 @@ export default function VgovRunPage() {
         <a className="mt-space-3 inline-block text-caption text-accent hover:underline" href="#/vgov/releases">
           Quản lý release
         </a>
-      </Panel>
+      </Panel>}
       <Panel bodyClassName="grid gap-space-3">
         <label className="text-label text-secondary">
           Project

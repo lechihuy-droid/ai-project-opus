@@ -3,7 +3,7 @@ import { vgov } from './vgovApi'
 
 describe('vgov wrappers delegate to apiRequest (auth header, URL, method)', () => {
   beforeEach(() => {
-    window.sessionStorage.setItem('hubToken', 'secret-token')
+    window.localStorage.setItem('hubToken', 'secret-token')
     vi.stubGlobal('fetch', vi.fn())
   })
 

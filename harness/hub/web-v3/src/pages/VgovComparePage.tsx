@@ -2,6 +2,8 @@ import { useState } from 'react'
 import Table, { TableCell, TableRow } from '../lib/Table'
 import { Alert, Button, Input, Panel } from '../lib/ui'
 import { vgov, type Diff } from '../lib/vgovApi'
+import { ApiError } from '../lib/api'
+import { t } from '../lib/i18n'
 
 const render = (value: unknown) => value === undefined ? '—' : String(value)
 
@@ -16,7 +18,7 @@ export default function VgovComparePage() {
       setError('')
       setDiff(await vgov.compare(left, right))
     } catch (e) {
-      setError(String(e))
+      setError(e instanceof ApiError ? e.message : t('vgov.compareFailed'))
     }
   }
 

@@ -4,10 +4,12 @@ from pathlib import Path
 
 import pytest
 
+import config
 from services import chat_files, fsbrowse, run_inputs
 
 
-def test_folder_input_empty_and_ignored_directories(tmp_path: Path) -> None:
+def test_folder_input_empty_and_ignored_directories(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(config, "FS_BROWSE_ROOTS", (tmp_path,))
     folder = tmp_path / "folder"
     folder.mkdir()
     references, block = run_inputs.resolve_inputs([{"kind": "folder", "path": str(folder)}])
@@ -22,7 +24,8 @@ def test_folder_input_empty_and_ignored_directories(tmp_path: Path) -> None:
     assert "ignored.txt" not in block
 
 
-def test_folder_input_is_deterministic_skips_binary_and_caps_files(tmp_path: Path) -> None:
+def test_folder_input_is_deterministic_skips_binary_and_caps_files(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(config, "FS_BROWSE_ROOTS", (tmp_path,))
     folder = tmp_path / "folder"
     folder.mkdir()
     (folder / "z.txt").write_text("z", encoding="utf-8")
@@ -49,8 +52,9 @@ def test_folder_input_rejects_denied_path(tmp_path: Path, monkeypatch: pytest.Mo
 
 
 def test_folder_input_never_reads_more_than_the_remaining_budget(tmp_path, monkeypatch) -> None:
-    # The picked folder can be anywhere on disk, so a single oversized text
-    # file must not be pulled into memory just to be truncated afterwards.
+    # A single oversized text file must not be pulled into memory just to be
+    # truncated afterwards, however large the picked folder turns out to be.
+    monkeypatch.setattr(config, "FS_BROWSE_ROOTS", (tmp_path,))
     monkeypatch.setattr(chat_files, "CHAT_FILE_CONTEXT_MAX_CHARS", 32)
     big = tmp_path / "big.txt"
     big.write_text("x" * 5000, encoding="utf-8")

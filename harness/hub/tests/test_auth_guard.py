@@ -50,12 +50,12 @@ def test_get_fs_dirs_without_token_is_forbidden() -> None:
     assert response.status_code == 403
 
 
-def test_assets_are_reachable_without_token_while_root_and_api_stay_gated() -> None:
-    # The SPA's <script>/<link> tags fetch /assets/* with no custom header and
-    # no ?k=, so the static bundle mount must be exempt like /static/ - only
-    # its absence (never a 403) is asserted here since web-v3/dist isn't built
-    # in this environment. / (the entry point) and /api/* must stay gated.
+def test_shell_is_open_while_api_stays_gated() -> None:
+    # The browser cannot attach a header to a top-level navigation or to the
+    # <script>/<link> tags it pulls in, so gating / and /assets meant the page
+    # could never boot and store its token in the first place. The bundle
+    # holds no secrets; only /api/* (other than /api/health) needs the token.
     client = _client(headers={"X-Hub-Token": ""})
     assert client.get("/assets/index.js").status_code != 403
-    assert client.get("/").status_code == 403
+    assert client.get("/").status_code != 403
     assert client.get("/api/agent/runs").status_code == 403

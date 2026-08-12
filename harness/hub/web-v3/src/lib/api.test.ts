@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 describe('apiRequest error paths', () => {
   beforeEach(() => {
-    window.sessionStorage.clear()
+    window.localStorage.clear()
     vi.stubGlobal('fetch', vi.fn())
   })
 
@@ -36,8 +36,8 @@ describe('apiRequest error paths', () => {
     expect(response.ok).toBe(true)
   })
 
-  it('attaches X-Hub-Token from sessionStorage when present', async () => {
-    window.sessionStorage.setItem('hubToken', 'secret-token')
+  it('attaches X-Hub-Token from localStorage when present', async () => {
+    window.localStorage.setItem('hubToken', 'secret-token')
     const { apiRequest } = await import('./api')
     vi.mocked(fetch).mockResolvedValue(new Response('{}', { status: 200 }))
 
@@ -48,7 +48,7 @@ describe('apiRequest error paths', () => {
     expect(headers.get('X-Hub-Token')).toBe('secret-token')
   })
 
-  it('sends no X-Hub-Token header when sessionStorage has none', async () => {
+  it('sends no X-Hub-Token header when localStorage has none', async () => {
     const { apiRequest } = await import('./api')
     vi.mocked(fetch).mockResolvedValue(new Response('{}', { status: 200 }))
 
@@ -77,25 +77,25 @@ describe('apiRequest error paths', () => {
 
 describe('module-load token capture from the ?k= query param', () => {
   beforeEach(() => {
-    window.sessionStorage.clear()
+    window.localStorage.clear()
     vi.resetModules()
   })
 
-  it('stores the token from ?k= into sessionStorage and strips it from the URL', async () => {
+  it('stores the token from ?k= into localStorage and strips it from the URL', async () => {
     window.history.pushState({}, '', '/?k=url-token&other=1')
 
     await import('./api')
 
-    expect(window.sessionStorage.getItem('hubToken')).toBe('url-token')
+    expect(window.localStorage.getItem('hubToken')).toBe('url-token')
     expect(window.location.search).toBe('?other=1')
     expect(window.location.href).not.toContain('k=url-token')
   })
 
-  it('leaves sessionStorage untouched when there is no ?k= param', async () => {
+  it('leaves localStorage untouched when there is no ?k= param', async () => {
     window.history.pushState({}, '', '/?other=1')
 
     await import('./api')
 
-    expect(window.sessionStorage.getItem('hubToken')).toBeNull()
+    expect(window.localStorage.getItem('hubToken')).toBeNull()
   })
 })

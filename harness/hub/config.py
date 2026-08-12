@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 HUB_DIR = Path(__file__).resolve().parent
 HARNESS_DIR = HUB_DIR.parent
 ROOT = HARNESS_DIR.parent
+FS_BROWSE_ROOTS: tuple[Path, ...] = (ROOT,)
 
 # Loads NVIDIA_API_KEY and friends from the repo-root .env. Does not override
 # a value already set in the environment (e.g. by the shell or a supervisor).

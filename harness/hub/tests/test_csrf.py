@@ -23,7 +23,7 @@ def test_get_allowed_without_header(raw_client: TestClient) -> None:
 def test_post_blocked_without_client_header(raw_client: TestClient) -> None:
     resp = raw_client.post("/api/runs/trigger", json={"suite": "x"}, headers={"X-Hub-Token": ""})
     assert resp.status_code == 403
-    assert resp.json()["detail"] == "missing or invalid hub token"
+    assert resp.json()["detail"] == "missing hub token"
 
 
 def test_post_blocked_cross_origin(raw_client: TestClient) -> None:

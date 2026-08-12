@@ -142,7 +142,6 @@ def api_workflow_run(workflow_id: str, payload: dict[str, object]):
     try:
         workspace_path = fsbrowse.resolve_workspace_dir(payload.get("workspace_dir"))
         workspace_dir = str(workspace_path) if workspace_path is not None else None
-        workspace_write = bool(payload.get("workspace_write")) if workspace_dir else False
         references, inputs = run_inputs.resolve_inputs(payload.get("inputs"))
         source = workflow.workflow_path(workflow_id).read_text(encoding="utf-8")
         errors = workflow.validate_workflow(workflow.parse_workflow(source))
@@ -153,7 +152,7 @@ def api_workflow_run(workflow_id: str, payload: dict[str, object]):
     if errors:
         raise _http_error(ValueError("Workflow validation failed"), 422)
     return StreamingResponse(
-        workflow_exec.create_workflow_run_stream(workflow_id, objective, inputs, references, workspace_dir, workspace_write),
+        workflow_exec.create_workflow_run_stream(workflow_id, objective, inputs, references, workspace_dir, False),
         media_type="text/event-stream",
     )
 

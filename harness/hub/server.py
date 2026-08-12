@@ -53,7 +53,6 @@ WEB_V3_DIST = HUB_DIR / "web-v3" / "dist"
 if WEB_V3_DIST.exists():
     app.mount("/assets", StaticFiles(directory=str(WEB_V3_DIST / "assets")), name="assets-v3")
 _CSRF_SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
-_AUTH_EXEMPT_PATHS = {"/api/health"}
 _SCHEMA_VERSION = "1"
 _IDEMPOTENCY_LOCK = threading.Lock()
 _IDEMPOTENCY_RESULTS: dict[tuple[str, str], tuple[int, bytes, str]] = {}
@@ -70,14 +69,20 @@ async def _auth_guard(request: Request, call_next):
     correlation_id = request.headers.get("X-Correlation-ID") or f"corr-{uuid.uuid4().hex}"
     request.state.correlation_id = correlation_id
     path = request.url.path
-    if path not in _AUTH_EXEMPT_PATHS and not path.startswith("/static/") and not path.startswith("/assets/"):
-        if request.method not in _CSRF_SAFE_METHODS:
-            origin = request.headers.get("origin") or request.headers.get("referer")
-            if origin and not any(origin.startswith(allowed) for allowed in config.ALLOWED_ORIGINS):
-                return await _http_exception(request, _http_error(HTTPException(status_code=403, detail="cross-origin blocked")))
-        token = request.headers.get("X-Hub-Token") or request.query_params.get("k") or ""
-        if not secrets.compare_digest(token, config.HUB_TOKEN):
-            return await _http_exception(request, _http_error(HTTPException(status_code=403, detail="missing or invalid hub token")))
+    # Gate the API, not the shell. The browser cannot attach a header to a
+    # top-level navigation or to the <script> it pulls in, so gating index.html
+    # and /assets meant the page could never boot and store its token -- every
+    # visit answered 403 with JSON. The bundle holds no secrets; the token still
+    # guards every /api call the loaded page makes. (The old exemption named
+    # /static/, which nothing serves: the mount is /assets, see above.)
+    if path.startswith("/api/") and path != "/api/health":
+        provided_token = request.headers.get("X-Hub-Token") or request.query_params.get("k") or ""
+        if not secrets.compare_digest(provided_token, config.HUB_TOKEN):
+            return await _http_exception(request, _http_error(HTTPException(status_code=403, detail="missing hub token")))
+    if request.method not in _CSRF_SAFE_METHODS:
+        origin = request.headers.get("origin") or request.headers.get("referer")
+        if origin and not any(origin.startswith(allowed) for allowed in config.ALLOWED_ORIGINS):
+            return await _http_exception(request, _http_error(HTTPException(status_code=403, detail="cross-origin blocked")))
     key = request.headers.get("Idempotency-Key")
     cache_key = (request.url.path, key) if key and _is_idempotent_command(request) else None
     if cache_key:

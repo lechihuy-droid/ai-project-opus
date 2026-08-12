@@ -31,6 +31,10 @@ def summary_sources(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> dict[str
     return sources
 
 
+def _client() -> TestClient:
+    return TestClient(server.app, headers={"X-Hub-Token": config.HUB_TOKEN})
+
+
 def _summary(client: TestClient, query: str = "") -> dict[str, object]:
     response = client.get(f"/api/skill-library/summary?{query}".rstrip("?"))
     assert response.status_code == 200, response.text
@@ -69,7 +73,7 @@ def test_summary_listing_never_reads_full_skill_bodies_or_recursive_assets(
         lambda: (_ for _ in ()).throw(AssertionError("summary listing scanned telemetry")),
     )
 
-    data = _summary(TestClient(server.app), "offset=0&limit=10")
+    data = _summary(_client(), "offset=0&limit=10")
     items = data["items"]
     assert {item["id"] for item in items} == {
         "claude_user/skillspector",
@@ -82,7 +86,7 @@ def test_summary_listing_never_reads_full_skill_bodies_or_recursive_assets(
 
 
 def test_summary_preserves_namespaced_identity_for_same_name_collisions(summary_sources: dict[str, Path]) -> None:
-    data = _summary(TestClient(server.app), "query=skillspector&offset=0&limit=10")
+    data = _summary(_client(), "query=skillspector&offset=0&limit=10")
 
     assert data["total"] == 2
     assert {(item["id"], item["source"], item["name"]) for item in data["items"]} == {
@@ -94,7 +98,7 @@ def test_summary_preserves_namespaced_identity_for_same_name_collisions(summary_
 def test_summary_applies_server_side_pagination_and_filters_and_rejects_invalid_ranges(
     summary_sources: dict[str, Path]
 ) -> None:
-    client = TestClient(server.app)
+    client = _client()
 
     page = _summary(client, "query=skillspector&offset=1&limit=1")
     assert page["total"] == 2
@@ -128,7 +132,7 @@ def test_summary_can_return_a_catalog_larger_than_its_default_page(summary_sourc
         )
     sl._clear_cache()
 
-    data = _summary(TestClient(server.app), "offset=0&limit=500")
+    data = _summary(_client(), "offset=0&limit=500")
 
     assert data["total"] == 101
     assert len(data["items"]) == 101

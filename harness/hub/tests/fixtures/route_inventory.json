@@ -121,6 +121,12 @@
     ]
   ],
   [
+    "/api/folder-grants",
+    [
+      "GET"
+    ]
+  ],
+  [
     "/api/fs/dirs",
     [
       "GET"
@@ -546,6 +552,19 @@
     [
       "DELETE",
       "PUT"
+    ]
+  ],
+  [
+    "/api/workflows/{workflow_id}/folder-grants",
+    [
+      "DELETE",
+      "POST"
+    ]
+  ],
+  [
+    "/api/workflows/{workflow_id}/folder-grants/check",
+    [
+      "GET"
     ]
   ],
   [

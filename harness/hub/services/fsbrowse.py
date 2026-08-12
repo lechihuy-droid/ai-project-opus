@@ -9,6 +9,7 @@ from services import audit
 
 
 _USER_PROFILE = Path(os.environ.get("USERPROFILE", Path.home())).resolve()
+# Secondary defense-in-depth only; FS_BROWSE_ROOTS is the load-bearing allowlist.
 DENIED_ROOTS: tuple[Path, ...] = tuple(
     path.resolve()
     for path in (
@@ -41,6 +42,11 @@ def is_denied(path: Path) -> bool:
     return any(_inside(resolved, root) for root in DENIED_ROOTS)
 
 
+def _is_inside_browse_root(path: Path) -> bool:
+    resolved = path.resolve()
+    return any(_inside(resolved, Path(root).resolve()) for root in config.FS_BROWSE_ROOTS)
+
+
 def list_drives() -> list[str]:
     if os.name != "nt":
         return ["/"]
@@ -50,13 +56,19 @@ def list_drives() -> list[str]:
 
 def list_dirs(path: str | None, *, show_hidden: bool = False) -> dict[str, object]:
     if path is None:
+        # The top of the tree is the configured roots, not the machine's drives.
+        # Listing drives here would offer C:\ and D:\ and then refuse every one
+        # of them below, since nothing outside FS_BROWSE_ROOTS can be opened.
+        roots = [Path(root).resolve() for root in config.FS_BROWSE_ROOTS]
         return {
             "path": None,
             "parent": None,
-            "entries": [{"name": drive, "path": drive + "\\"} for drive in list_drives()],
+            "entries": [{"name": root.name or str(root), "path": str(root)} for root in roots],
         }
 
     resolved = Path(path).resolve()
+    if not _is_inside_browse_root(resolved):
+        raise PermissionError(f"Path is outside configured browse roots: {resolved}")
     if is_denied(resolved):
         raise PermissionError(f"Path is denied: {resolved}")
     if not resolved.exists():
@@ -90,16 +102,21 @@ def is_inside_root(path: Path) -> bool:
     The picker warns before a run is scoped outside it — the client cannot
     work this out on its own without hardcoding a server path.
     """
-    return _inside(path.resolve(), config.ROOT.resolve())
+    return _is_inside_browse_root(path)
 
 
-def resolve_workspace_dir(value: object) -> Path | None:
+def resolve_workspace_dir(value: object, *, allow_external: bool = False) -> Path | None:
     if value is None or value == "":
         return None
     if not isinstance(value, str):
         raise ValueError("Workspace directory must be a path string")
 
     path = Path(value).resolve()
+    if not _is_inside_browse_root(path):
+        if not allow_external:
+            audit.append("fsbrowse.denied", context={"path": str(path), "reason": "outside_configured_root"})
+            raise ValueError(f"Workspace directory is outside configured browse roots: {path}")
+        audit.append("fsbrowse.external_override", context={"path": str(path)})
     if not path.exists():
         raise ValueError(f"Workspace directory does not exist: {path}")
     if not path.is_dir():
@@ -110,6 +127,4 @@ def resolve_workspace_dir(value: object) -> Path | None:
         raise ValueError("Workspace directory cannot be a drive root")
     if path == _USER_PROFILE:
         raise ValueError("Workspace directory cannot be the user profile root")
-    if not is_inside_root(path):
-        audit.append("workspace_dir_outside_root", context={"workspace_dir": str(path)})
     return path
