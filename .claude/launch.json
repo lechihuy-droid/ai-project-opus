@@ -5,7 +5,8 @@
       "name": "hub-backend",
       "runtimeExecutable": "py",
       "runtimeArgs": ["-3.11", "harness/hub/server.py"],
-      "port": 8799
+      "port": 8799,
+      "autoPort": false
     },
     {
       "name": "hub-web-v3",
