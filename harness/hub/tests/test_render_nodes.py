@@ -28,7 +28,14 @@ def render_target(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> dict[str, 
     target = {
         "cwd": config.HUB_DIR,
         "command": [sys.executable, str(script), "--props", "{props}"],
-        "timeout_seconds": 1,
+        # Generous on purpose: only the "sleep" case in
+        # test_render_timeout_nonzero_block_and_default_gate exercises the
+        # timeout path, and it overrides this down to a tight value at the
+        # point of use. The "fail" and "ok" cases below don't assert on
+        # timing at all, so they shouldn't be racing a real Python cold
+        # start (import + interpreter startup) against a 1s budget -
+        # that race is what made this file flaky under load.
+        "timeout_seconds": 30,
         "risk_tier": "execute",
         "env": {},
         "output_hint": "render-output",
@@ -104,12 +111,20 @@ def test_render_success_uses_only_config_argv_and_registers_real_artifact(render
 
 
 def test_render_timeout_nonzero_block_and_default_gate(render_target: dict[str, Any], monkeypatch: pytest.MonkeyPatch) -> None:
+    # This is the only sub-case in this test that actually exercises the
+    # timeout path, so it gets its own tight timeout at the point of use
+    # instead of racing the shared fixture's timeout against a cold Python
+    # start. The script sleeps for 2s, so a 1s timeout still fires
+    # deterministically before the sleep would ever complete on its own -
+    # system load only makes the process take *longer* than 2s, never
+    # shorter, so the timeout always wins the race.
+    sleep_target = {**render_target, "timeout_seconds": 1}
     run_id = _run()
     runtime_state.update_run_state(run_id, {"metadata": {"node_outputs": {"map": '{"mode":"sleep"}'}}})
-    node = _ir(render_target, "")
-    list(workflow_exec.run_workflow([node], stop={"max_nodes": 4, "max_seconds": 60}, objective="x", run_id=run_id))
+    list(workflow_exec.run_workflow([_ir(sleep_target, "")], stop={"max_nodes": 4, "max_seconds": 60}, objective="x", run_id=run_id))
     assert runtime_state.read_run(run_id)["status"] == "failed"
 
+    node = _ir(render_target, "")
     run_id = _run()
     runtime_state.update_run_state(run_id, {"metadata": {"node_outputs": {"map": '{"mode":"fail"}'}}})
     list(workflow_exec.run_workflow([node], stop={"max_nodes": 4, "max_seconds": 60}, objective="x", run_id=run_id))
