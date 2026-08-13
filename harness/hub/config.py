@@ -17,7 +17,17 @@ FS_BROWSE_ROOTS: tuple[Path, ...] = (ROOT,)
 
 # Loads NVIDIA_API_KEY and friends from the repo-root .env. Does not override
 # a value already set in the environment (e.g. by the shell or a supervisor).
-load_dotenv(ROOT / ".env")
+#
+# A git worktree gets its own ROOT and .env is ignored, so it never carries one:
+# the hub then starts with no key and reports every provider unavailable, which
+# reads as a broken install rather than a missing file. Walk up to the checkout
+# the worktree was cut from and use its .env instead. GitHub repository secrets
+# do not help here -- those only exist inside Actions runners.
+for _candidate in (ROOT, *ROOT.parents):
+    _env_file = _candidate / ".env"
+    if _env_file.is_file():
+        load_dotenv(_env_file)
+        break
 RUNS_DIR = HARNESS_DIR / "runs"
 SUITES_DIR = HARNESS_DIR / "suites"
 JOBS_DIR = HUB_DIR / "jobs"
