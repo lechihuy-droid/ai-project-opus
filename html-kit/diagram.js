@@ -1,16 +1,12 @@
 /* diagram.js — self-contained SVG renderer (flowchart + sequence)
  * Usage: <div class="diagram" data-chart='{"type":"flow",...}'></div>
  * No dependencies. Works offline. Include after styles.css.
+ * Colors live in styles.css (dg-* classes) so diagrams follow the theme —
+ * never hard-code hex here.
  */
 (function () {
   'use strict';
 
-  const C = {
-    navy: '#051C2C', blue: '#0047AB', blueMid: '#2563EB',
-    blueLight: '#E8F1FB', teal: '#00968A', red: '#C9002B',
-    green: '#00875A', gray: '#6B7280', gray100: '#ECEEF1',
-    gray200: '#D0D4DB', white: '#FFFFFF',
-  };
   const FONT = 'Segoe UI,system-ui,sans-serif';
 
   /* ── SVG factory ─────────────────────────────────────── */
@@ -26,9 +22,9 @@
     return e;
   }
 
-  function arrowMarker(id, color) {
+  function arrowMarker(id, cls) {
     const m = el('marker', { id, markerWidth: '10', markerHeight: '7', refX: '9', refY: '3.5', orient: 'auto' });
-    m.appendChild(el('polygon', { points: '0 0,10 3.5,0 7', fill: color }));
+    m.appendChild(el('polygon', { points: '0 0,10 3.5,0 7', class: cls }));
     return m;
   }
 
@@ -46,7 +42,7 @@
     const queue = nodes.filter(n => !inDeg[n.id]).map(n => ({ id: n.id, lv: 0 }));
     while (queue.length) {
       const { id, lv } = queue.shift();
-      if (lvl[id] >= lv || lv >= nodes.length) continue; // lv cap: cycles must not loop forever
+      if (lvl[id] >= lv) continue;
       lvl[id] = lv;
       edges.filter(e => e.from === id).forEach(e => queue.push({ id: e.to, lv: lv + 1 }));
     }
@@ -71,7 +67,7 @@
 
     const root = el('svg', { width: svgW, height: svgH, xmlns: 'http://www.w3.org/2000/svg', style: 'display:block' });
     const defs = el('defs', {});
-    defs.appendChild(arrowMarker('fa', C.gray));
+    defs.appendChild(arrowMarker('fa', 'dg-arrow'));
     root.appendChild(defs);
 
     // Edges
@@ -82,12 +78,12 @@
       const cy1 = f.y + NH / 2 + dy * 0.35, cy2 = t.y - NH / 2 - dy * 0.35;
       root.appendChild(el('path', {
         d: `M${f.x},${f.y + NH / 2} C${f.x},${cy1} ${t.x},${cy2} ${t.x},${t.y - NH / 2 - 7}`,
-        fill: 'none', stroke: C.gray200, 'stroke-width': '1.5', 'marker-end': 'url(#fa)',
+        class: 'dg-edge', 'marker-end': 'url(#fa)',
       }));
       if (label) {
         const lx = (f.x + t.x) / 2, ly = (f.y + t.y) / 2;
-        root.appendChild(el('rect', { x: lx - 22, y: ly - 9, width: 44, height: 16, rx: 3, fill: C.white }));
-        root.appendChild(el('text', { x: lx, y: ly + 3, 'text-anchor': 'middle', fill: C.gray, 'font-size': '10', 'font-family': FONT }, label));
+        root.appendChild(el('rect', { x: lx - 22, y: ly - 9, width: 44, height: 16, rx: 3, class: 'dg-label-bg' }));
+        root.appendChild(el('text', { x: lx, y: ly + 3, 'text-anchor': 'middle', class: 'dg-edge-label', 'font-size': '10', 'font-family': FONT }, label));
       }
     });
 
@@ -99,18 +95,18 @@
       const shape = n.shape || 'rect';
 
       if (shape === 'terminal' || shape === 'oval') {
-        root.appendChild(el('rect', { x: x - NW / 2, y: y - NH / 2, width: NW, height: NH, rx: NH / 2, fill: C.navy }));
-        root.appendChild(el('text', { x, y: y + 4, 'text-anchor': 'middle', fill: C.white, 'font-size': '12', 'font-family': FONT, 'font-weight': '600' }, n.label));
+        root.appendChild(el('rect', { x: x - NW / 2, y: y - NH / 2, width: NW, height: NH, rx: NH / 2, class: 'dg-node-fill' }));
+        root.appendChild(el('text', { x, y: y + 4, 'text-anchor': 'middle', class: 'dg-node-label-inv', 'font-size': '12', 'font-family': FONT, 'font-weight': '600' }, n.label));
       } else if (shape === 'diamond') {
         root.appendChild(el('polygon', {
           points: `${x},${y - NH / 2} ${x + NW / 2},${y} ${x},${y + NH / 2} ${x - NW / 2},${y}`,
-          fill: C.blueLight, stroke: C.blue, 'stroke-width': '1.5',
+          class: 'dg-node',
         }));
-        root.appendChild(el('text', { x, y: y + 4, 'text-anchor': 'middle', fill: C.navy, 'font-size': '11', 'font-family': FONT, 'font-weight': '600' }, n.label));
+        root.appendChild(el('text', { x, y: y + 4, 'text-anchor': 'middle', class: 'dg-node-label', 'font-size': '11', 'font-family': FONT, 'font-weight': '600' }, n.label));
       } else {
-        const fill = { process: C.blueLight, io: '#F0FDF4', default: C.blueLight };
-        root.appendChild(el('rect', { x: x - NW / 2, y: y - NH / 2, width: NW, height: NH, rx: 4, fill: fill[shape] || fill.default, stroke: C.blue, 'stroke-width': '1.5' }));
-        root.appendChild(el('text', { x, y: y + 4, 'text-anchor': 'middle', fill: C.navy, 'font-size': '12', 'font-family': FONT, 'font-weight': '600' }, n.label));
+        const nodeCls = shape === 'io' ? 'dg-node-io' : 'dg-node';
+        root.appendChild(el('rect', { x: x - NW / 2, y: y - NH / 2, width: NW, height: NH, rx: 4, class: nodeCls }));
+        root.appendChild(el('text', { x, y: y + 4, 'text-anchor': 'middle', class: 'dg-node-label', 'font-size': '12', 'font-family': FONT, 'font-weight': '600' }, n.label));
       }
     });
 
@@ -125,8 +121,8 @@
 
     const root = el('svg', { width: W, height: H, xmlns: 'http://www.w3.org/2000/svg', style: 'display:block' });
     const defs = el('defs', {});
-    defs.appendChild(arrowMarker('sa', C.blue));
-    defs.appendChild(arrowMarker('sr', C.teal));
+    defs.appendChild(arrowMarker('sa', 'dg-arrow-seq'));
+    defs.appendChild(arrowMarker('sr', 'dg-arrow-return'));
     root.appendChild(defs);
 
     const cx = i => PX + i * CW + CW / 2;
@@ -134,13 +130,13 @@
     // Actor boxes
     actors.forEach((a, i) => {
       const x = cx(i);
-      root.appendChild(el('rect', { x: x - 60, y: 8, width: 120, height: 32, rx: 4, fill: C.navy }));
-      root.appendChild(el('text', { x, y: 29, 'text-anchor': 'middle', fill: C.white, 'font-size': '12', 'font-family': FONT, 'font-weight': '600' }, a));
+      root.appendChild(el('rect', { x: x - 60, y: 8, width: 120, height: 32, rx: 4, class: 'dg-node-fill' }));
+      root.appendChild(el('text', { x, y: 29, 'text-anchor': 'middle', class: 'dg-node-label-inv', 'font-size': '12', 'font-family': FONT, 'font-weight': '600' }, a));
     });
 
     // Lifelines
     actors.forEach((_, i) => {
-      root.appendChild(el('line', { x1: cx(i), y1: 40, x2: cx(i), y2: H - 16, stroke: C.gray200, 'stroke-width': '2', 'stroke-dasharray': '6,4' }));
+      root.appendChild(el('line', { x1: cx(i), y1: 40, x2: cx(i), y2: H - 16, class: 'dg-lifeline', 'stroke-dasharray': '6,4' }));
     });
 
     // Steps
@@ -151,25 +147,24 @@
       const y = PT + i * RH + RH / 2;
       const x1 = cx(fi), x2 = cx(ti);
       const isReturn = !!s.return;
-      const arrowColor = isReturn ? C.teal : C.blue;
+      const lineCls = isReturn ? 'dg-seq-line-return' : 'dg-seq-line';
       const markerId = isReturn ? 'url(#sr)' : 'url(#sa)';
 
       if (fi === ti) {
         root.appendChild(el('path', {
           d: `M${x1},${y} C${x1 + 50},${y} ${x1 + 50},${y + 28} ${x1},${y + 28}`,
-          fill: 'none', stroke: arrowColor, 'stroke-width': '1.5', 'marker-end': markerId,
+          fill: 'none', class: lineCls, 'marker-end': markerId,
         }));
       } else {
         const dir = x2 > x1 ? -8 : 8;
-        const dash = isReturn ? '5,3' : null;
-        const lineAttrs = { x1, y1: y, x2: x2 + dir, y2: y, stroke: arrowColor, 'stroke-width': '1.5', 'marker-end': markerId };
-        if (dash) lineAttrs['stroke-dasharray'] = dash;
+        const lineAttrs = { x1, y1: y, x2: x2 + dir, y2: y, class: lineCls, 'marker-end': markerId };
+        if (isReturn) lineAttrs['stroke-dasharray'] = '5,3';
         root.appendChild(el('line', lineAttrs));
       }
 
       const lx = fi === ti ? x1 + 28 : (x1 + x2) / 2;
-      root.appendChild(el('rect', { x: lx - 44, y: y - 17, width: 88, height: 14, rx: 2, fill: C.white }));
-      root.appendChild(el('text', { x: lx, y: y - 5, 'text-anchor': 'middle', fill: C.navy, 'font-size': '10', 'font-family': FONT, 'font-weight': '500' }, s.msg));
+      root.appendChild(el('rect', { x: lx - 44, y: y - 17, width: 88, height: 14, rx: 2, class: 'dg-label-bg' }));
+      root.appendChild(el('text', { x: lx, y: y - 5, 'text-anchor': 'middle', class: 'dg-seq-label', 'font-size': '10', 'font-family': FONT, 'font-weight': '500' }, s.msg));
     });
 
     container.appendChild(root);

@@ -4,10 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sprint 3 — Review Report</title>
+  <!-- Apply theme before paint to avoid flash -->
+  <script>
+    (function () {
+      var s = localStorage.getItem('theme');
+      var dark = s ? s === 'dark'
+        : matchMedia('(prefers-color-scheme: dark)').matches;
+      if (dark) document.documentElement.classList.add('dark');
+    })();
+  </script>
   <link rel="stylesheet" href="./styles.css">
   <script src="./diagram.js" defer></script>
 </head>
 <body>
+
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
 
   <header class="doc-header">
     <span class="badge navy">Report</span>
@@ -20,17 +31,17 @@
   <div class="card-grid">
     <div class="card">
       <h4>Velocity</h4>
-      <p style="font-size:2rem;font-weight:700;color:#051C2C;margin:0">34 <span style="font-size:1rem;color:#6B7280">/ 36 pts</span></p>
+      <p style="font-size:2rem;font-weight:700;color:var(--heading);margin:0">34 <span style="font-size:1rem;color:var(--text-muted)">/ 36 pts</span></p>
       <p class="text-muted text-small mt-1">94% completion · +8 vs Sprint 2</p>
     </div>
     <div class="card">
       <h4>Bugs Closed</h4>
-      <p style="font-size:2rem;font-weight:700;color:#00875A;margin:0">12</p>
+      <p style="font-size:2rem;font-weight:700;color:var(--green);margin:0">12</p>
       <p class="text-muted text-small mt-1">2 deferred to Sprint 4</p>
     </div>
     <div class="card">
       <h4>Blockers</h4>
-      <p style="font-size:2rem;font-weight:700;color:#C9002B;margin:0">1</p>
+      <p style="font-size:2rem;font-weight:700;color:var(--red);margin:0">1</p>
       <p class="text-muted text-small mt-1">Waiting on infra team · ETA May 12</p>
     </div>
   </div>
@@ -189,6 +200,10 @@
   </div>
 
   <script>
+    function toggleTheme() {
+      var dark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+    }
     function showTab(e, id) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
