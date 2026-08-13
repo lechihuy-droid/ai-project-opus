@@ -4,10 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{title}}</title>
+  <!-- Apply theme before paint to avoid flash -->
+  <script>
+    (function () {
+      var s = localStorage.getItem('theme');
+      var dark = s ? s === 'dark'
+        : matchMedia('(prefers-color-scheme: dark)').matches;
+      if (dark) document.documentElement.classList.add('dark');
+    })();
+  </script>
   <link rel="stylesheet" href="./styles.css">
   <script src="./diagram.js" defer></script>
 </head>
 <body>
+
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
 
   <header class="doc-header">
     <span class="badge">{{category}}</span>
@@ -110,6 +121,10 @@
   </main>
 
   <script>
+    function toggleTheme() {
+      var dark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+    }
     function showTab(e, id) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));

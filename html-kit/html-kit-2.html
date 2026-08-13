@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>html-kit — Skill Design (SD)</title>
+  <!-- Apply theme before paint to avoid flash -->
+  <script>
+    (function () {
+      var s = localStorage.getItem('theme');
+      var dark = s ? s === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+      if (dark) document.documentElement.classList.add('dark');
+    })();
+  </script>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./diagram.js" defer></script>
+</head>
+<body>
+
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Đổi sáng/tối">◐</button>
+
+  <header class="doc-header">
+    <span class="badge navy">System Design</span>
+    <h1>html-kit — Skill Design</h1>
+    <p class="lead">Bản thiết kế cho skill sinh deliverable HTML structured (report · diagram · plan · so sánh).</p>
+    <p class="meta">2026-06-14 · Huy Le · SDD gate: SD</p>
+  </header>
+
+  <main>
+
+    <h2>1. Mục đích &amp; phạm vi</h2>
+    <p>Một skill duy nhất sinh <strong>deliverable HTML structured</strong> thay cho markdown, ưu tiên <strong>deterministic</strong> + <strong>token-rẻ</strong> + nhất quán (McKinsey), có dark mode &amp; print.</p>
+    <div class="callout risk"><strong>Ngoài scope:</strong> app tương tác phức tạp, HTML nhiều trang, framework (React…), animation nặng.</div>
+
+    <h2>2. Kiến trúc — 2 lớp tách biệt</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h4>Lớp nội dung</h4>
+        <p>LLM sinh <strong>semantic HTML</strong> + JSON diagram trong <code>&lt;main&gt;</code>. Đây là phần duy nhất thay đổi theo yêu cầu.</p>
+      </div>
+      <div class="card">
+        <h4>Lớp trình bày</h4>
+        <p>Kit tĩnh, <strong>không sinh lại</strong>: <code>styles.css</code> (token + dark + print), <code>diagram.js</code> (JSON→SVG), <code>template.html</code> (khung).</p>
+      </div>
+    </div>
+    <p>Nguyên tắc lõi: <strong>LLM chỉ sinh nội dung</strong>; CSS/JS là hằng số link external → tiết kiệm token, output nhất quán, sửa brand 1 chỗ.</p>
+
+    <h2>3. Data flow</h2>
+    <div class="diagram" data-chart='{
+      "type":"flow",
+      "nodes":[
+        {"id":"req","label":"Yêu cầu user","shape":"terminal"},
+        {"id":"tpl","label":"Copy template","shape":"rect"},
+        {"id":"body","label":"Sinh semantic HTML","shape":"rect"},
+        {"id":"dia","label":"Diagram JSON?","shape":"diamond"},
+        {"id":"js","label":"diagram.js render SVG","shape":"io"},
+        {"id":"css","label":"styles.css tô màu","shape":"io"},
+        {"id":"out","label":"HTML deliverable","shape":"terminal"}
+      ],
+      "edges":[
+        {"from":"req","to":"tpl"},
+        {"from":"tpl","to":"body"},
+        {"from":"body","to":"dia"},
+        {"from":"dia","to":"js","label":"Có"},
+        {"from":"dia","to":"css","label":"Không"},
+        {"from":"js","to":"out"},
+        {"from":"css","to":"out"}
+      ]
+    }'></div>
+    <p class="diagram-caption">Diagram này render từ JSON bởi <code>diagram.js</code> — dogfood chính kit.</p>
+
+    <h2>4. Interface (contract)</h2>
+    <table>
+      <thead><tr><th>Mục</th><th>Chi tiết</th></tr></thead>
+      <tbody>
+        <tr><td>Trigger</td><td><code>/html [mô tả]</code> hoặc yêu cầu tự nhiên ("làm report/diagram… dạng HTML")</td></tr>
+        <tr><td>Input</td><td>mô tả nội dung + (ngầm) loại deliverable</td></tr>
+        <tr><td>Output — linked <span class="badge green">default</span></td><td><code>.html</code> + 3 asset đi kèm; <code>&lt;main&gt;</code> là semantic HTML</td></tr>
+        <tr><td>Output — self-contained</td><td>1 file, inline <code>styles.css</code>+<code>diagram.js</code> (khi user nói "1 file")</td></tr>
+        <tr><td>Diagram API</td><td><code>data-chart</code> JSON: <code>flow</code> (nodes/edges, shape rect·io·diamond·terminal) hoặc <code>sequence</code> (actors/steps, <code>return</code>)</td></tr>
+      </tbody>
+    </table>
+
+    <h2>5. Design decisions &amp; trade-off</h2>
+    <table>
+      <thead><tr><th>Quyết định</th><th>Vì sao</th><th>Đánh đổi</th></tr></thead>
+      <tbody>
+        <tr><td>Diagram từ JSON, không SVG freehand</td><td>reproducible, không lệ thuộc model mạnh</td><td>ít "nghệ thuật" hơn effective-html</td></tr>
+        <tr><td>CSS/JS link external mặc định</td><td>token-rẻ, 1 nguồn sự thật</td><td>không tự chứa → phải kèm asset</td></tr>
+        <tr><td>Semantic token layer cho document chrome</td><td>bật dark/print không sửa component</td><td>thêm 1 lớp abstraction</td></tr>
+        <tr><td>SVG diagram tô màu qua CSS class <code>dg-*</code></td><td>1 nguồn màu, diagram tự đổi theo theme</td><td>phải giữ kỷ luật: không hex trong <code>diagram.js</code></td></tr>
+        <tr><td>Gộp 3 năng lực (html/diagram/plan) vào 1 skill</td><td>1 chỗ maintain, khớp <code>/html</code></td><td>context skill dài hơn 3 skill tách</td></tr>
+      </tbody>
+    </table>
+
+    <h2>6. Rules bất biến</h2>
+    <ul style="padding-left:1.2rem">
+      <li>Không re-output <code>styles.css</code>/<code>diagram.js</code> ở chế độ linked.</li>
+      <li>Semantic HTML, tái dùng component class, không đẻ CSS mới.</li>
+      <li>Diagram JSON only, không vẽ SVG tay.</li>
+      <li>Màu = token <code>var(--…)</code>, không hex.</li>
+      <li>Phân vân → đối chiếu <code>demo.html</code>.</li>
+    </ul>
+
+    <h2>7. Rủi ro đã biết</h2>
+    <div class="callout warn">Chưa verify render bằng mắt trong session (thiếu browser headless) → mở <code>demo.html</code> để nghiệm thu dark mode + diagram.</div>
+    <div class="callout warn"><code>/html</code> bản trong repo là <strong>project-scoped</strong>; muốn global phải copy ra <code>~/.claude/commands/</code> trên máy.</div>
+
+    <details open>
+      <summary>Asset của skill</summary>
+      <p><code>styles.css</code> · <code>diagram.js</code> · <code>template.html</code> · <code>demo.html</code> (gold standard) · <code>SKILL.md</code> — tất cả trong <code>html-kit/</code>.</p>
+    </details>
+
+  </main>
+
+  <script>
+    function toggleTheme() {
+      var dark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+    }
+  </script>
+
+</body>
+</html>
