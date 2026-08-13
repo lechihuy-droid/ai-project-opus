@@ -5,7 +5,25 @@ import { Button, Dialog, EmptyState, Input, Popover } from '../lib/ui'
 
 type Directory = { name: string; path: string }
 type DirectoryListing = { path: string | null; parent: string | null; entries: Directory[]; inside_root?: boolean }
-type Copy = Record<string, any>
+// Every string this component renders, named. It used to be Record<string, any>,
+// which type-checks any caller and hands back `any` for keys nobody passed --
+// so a caller that forgot grantBody compiled cleanly and then threw
+// "Cannot read properties of undefined (reading 'replace')" the moment the
+// picker rendered, taking the whole Workflows page down with it.
+type Copy = {
+  choose: string
+  path: string
+  up: string
+  select: string
+  cancel: string
+  folderAsContext: string
+  folderAsScope: string
+  noFolders: string
+  grantTitle: string
+  grantBody: string
+  grantConfirm: string
+  grantCancel: string
+}
 
 const labelFor = (path: string) => path.replace(/[\\/]+$/, '').split(/[\\/]/).at(-1) || path
 const crumbsFor = (path: string) => { const normalized = path.replace(/\\/g, '/'); const parts = normalized.split('/').filter(Boolean); const windowsDrive = /^[A-Za-z]:$/.test(parts[0] ?? ''); let current = windowsDrive ? `${parts.shift()}\\` : normalized.startsWith('/') ? '/' : ''; return parts.map(part => { current = current === '/' ? `/${part}` : current ? `${current}${windowsDrive ? '\\' : '/'}${part}` : part; return { label: part, path: current } }) }
