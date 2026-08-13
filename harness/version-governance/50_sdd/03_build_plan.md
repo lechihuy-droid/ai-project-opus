@@ -651,6 +651,15 @@ Biểu hiện ở tầng API: `POST /releases/{id}/publish` trả `500`, log có
 
 **Cách đúng: luôn `docker compose up` từ main repo clone** (`C:\Users\HUY\workspace\ai-project-opus`, nơi `.git` là thư mục thật), không phải từ `.claude/worktrees/<tên>`.
 
+Không cần nhớ đường dẫn: `harness/version-governance/vgov.ps1` tự đi ngược lên tìm main clone rồi gọi compose với `-f` trỏ vào đó, nên chạy từ worktree cũng ra đúng chỗ. Nó dừng sớm kèm thông báo rõ nếu `.git` không phải thư mục thật hoặc thiếu `deploy/.env`.
+
+```powershell
+harness\version-governance\vgov.ps1              # up -d --build
+harness\version-governance\vgov.ps1 -Action status
+harness\version-governance\vgov.ps1 -Action down          # giữ dữ liệu đã seed
+harness\version-governance\vgov.ps1 -Action down -Wipe    # xoá cả volume
+```
+
 Xác nhận (2026-08-12): chạy từ main clone ở `7cdf987`, `git rev-parse HEAD` trong container trả đúng SHA, `verify_dod.py` **12/12 PASS**.
 
 **Lý do thứ hai, cùng một gốc:** `deploy/.env` nằm trong `.gitignore`, nên nó **không đi theo git sang worktree**. Chạy compose từ worktree thì `${POSTGRES_PASSWORD}` và bạn bè rỗng, container postgres init với mật khẩu trống, và lần `up` sau báo `password authentication failed` — lỗi trông như hỏng volume chứ không chỉ về biến thiếu. Tệ hơn nữa là nếu ai đó tạo một `.env` demo trong worktree cho qua chuyện: stack lên xanh nhưng chạy bằng credential khác hẳn main clone, và `NVIDIA_API_KEY` rỗng, không có gì báo cho biết.
