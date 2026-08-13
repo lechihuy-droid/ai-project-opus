@@ -76,7 +76,16 @@ async def _auth_guard(request: Request, call_next):
     # guards every /api call the loaded page makes. (The old exemption named
     # /static/, which nothing serves: the mount is /assets, see above.)
     if path.startswith("/api/") and path != "/api/health":
-        provided_token = request.headers.get("X-Hub-Token") or request.query_params.get("k") or ""
+        # The cookie is what makes this work without the user carrying a token
+        # around: GET / sets it (see api/system.py), and the browser then sends
+        # it on every call from that origin. Header and ?k= stay for curl, for
+        # tests, and for the dev server on another port, which shares no cookie.
+        provided_token = (
+            request.headers.get("X-Hub-Token")
+            or request.query_params.get("k")
+            or request.cookies.get("hub_token")
+            or ""
+        )
         if not secrets.compare_digest(provided_token, config.HUB_TOKEN):
             return await _http_exception(request, _http_error(HTTPException(status_code=403, detail="missing hub token")))
     if request.method not in _CSRF_SAFE_METHODS:

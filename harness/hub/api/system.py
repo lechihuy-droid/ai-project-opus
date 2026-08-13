@@ -18,7 +18,26 @@ WEB_V3_DIST = Path(__file__).resolve().parent.parent / "web-v3" / "dist"
 
 @router.get("/")
 def index() -> FileResponse:
-    return FileResponse(WEB_V3_DIST / "index.html")
+    """Serve the shell and hand it the token in a cookie.
+
+    The token used to reach the browser only through a ?k= parameter the user
+    pasted, stored in localStorage. localStorage is keyed by origin, so
+    127.0.0.1:8799 and localhost:8799 each needed their own paste, and a fresh
+    profile or a cleared store silently went back to 403 on every call. Setting
+    it here means every origin that can load the page is authenticated the
+    moment it does, with nothing to copy.
+
+    HttpOnly keeps page scripts from reading it; SameSite=Strict keeps the
+    browser from attaching it to requests started by another site, which is
+    what makes an auto-sent credential safe to use here. Non-safe methods are
+    still checked against ALLOWED_ORIGINS in the auth guard.
+    """
+    response = FileResponse(WEB_V3_DIST / "index.html")
+    response.set_cookie(
+        "hub_token", config.HUB_TOKEN,
+        httponly=True, samesite="strict", path="/",
+    )
+    return response
 
 
 @router.get("/api/health")
