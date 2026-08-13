@@ -653,6 +653,10 @@ Biểu hiện ở tầng API: `POST /releases/{id}/publish` trả `500`, log có
 
 Xác nhận (2026-08-12): chạy từ main clone ở `7cdf987`, `git rev-parse HEAD` trong container trả đúng SHA, `verify_dod.py` **12/12 PASS**.
 
+**Lý do thứ hai, cùng một gốc:** `deploy/.env` nằm trong `.gitignore`, nên nó **không đi theo git sang worktree**. Chạy compose từ worktree thì `${POSTGRES_PASSWORD}` và bạn bè rỗng, container postgres init với mật khẩu trống, và lần `up` sau báo `password authentication failed` — lỗi trông như hỏng volume chứ không chỉ về biến thiếu. Tệ hơn nữa là nếu ai đó tạo một `.env` demo trong worktree cho qua chuyện: stack lên xanh nhưng chạy bằng credential khác hẳn main clone, và `NVIDIA_API_KEY` rỗng, không có gì báo cho biết.
+
+Cùng bẫy này đã cắn ở phía hub: `config.py` giờ đi ngược lên tìm `.env` đầu tiên (commit `771d68c`). Compose **không** làm được thế — nó chỉ đọc `.env` cạnh file compose — nên với vgov, quy tắc "luôn chạy từ main clone" là cách duy nhất.
+
 ---
 
 *Version Governance POC — BD v1.1 | 2026-08-02*
