@@ -103,3 +103,83 @@ def get_github_token_status() -> dict[str, object]:
     )
     _cache_set("token_status", status)
     return status
+
+
+def _for_each_ref(ref_prefix: str) -> list[dict[str, str]]:
+    raw = _run_git([
+        "for-each-ref",
+        f"--format=%(refname:short){_SEP}%(committerdate:iso-strict){_SEP}%(contents:subject)",
+        ref_prefix,
+    ])
+    branches: list[dict[str, str]] = []
+    for line in raw.splitlines():
+        parts = line.split(_SEP)
+        if len(parts) != 3 or not parts[0]:
+            continue
+        name, date, subject = parts
+        if name.endswith("/HEAD"):
+            continue
+        branches.append({"name": name, "last_commit_date": date, "last_commit_subject": subject})
+    return branches
+
+
+def get_local_branches() -> list[dict[str, str]]:
+    return _for_each_ref("refs/heads")
+
+
+def get_remote_branches() -> list[dict[str, str]]:
+    return _for_each_ref("refs/remotes/origin")
+
+
+def get_current_branch() -> str:
+    return _run_git(["branch", "--show-current"])
+
+
+def get_branches() -> dict[str, object]:
+    return {
+        "local": get_local_branches(),
+        "remote": get_remote_branches(),
+        "current": get_current_branch(),
+    }
+
+
+def get_worktrees() -> list[dict[str, str]]:
+    """Parse `git worktree list --porcelain`. Blocks are separated by a blank
+    line; a block can omit `branch` (detached HEAD) or `HEAD` (prunable)."""
+    raw = _run_git(["worktree", "list", "--porcelain"])
+    worktrees: list[dict[str, str]] = []
+    current: dict[str, str] = {}
+    for line in raw.splitlines() + [""]:
+        if not line.strip():
+            if current.get("path"):
+                worktrees.append({
+                    "path": current.get("path", ""),
+                    "head": current.get("head", ""),
+                    "branch": current.get("branch", ""),
+                })
+            current = {}
+            continue
+        key, _, value = line.partition(" ")
+        if key == "worktree":
+            current["path"] = value
+        elif key == "HEAD":
+            current["head"] = value
+        elif key == "branch":
+            current["branch"] = value.removeprefix("refs/heads/")
+    return worktrees
+
+
+def get_recent_commits(limit: int = 10) -> list[dict[str, str]]:
+    raw = _run_git([
+        "log",
+        f"-n{max(1, min(limit, 100))}",
+        f"--format=%H{_SEP}%an{_SEP}%aI{_SEP}%s",
+    ])
+    commits: list[dict[str, str]] = []
+    for line in raw.splitlines():
+        parts = line.split(_SEP, 3)
+        if len(parts) != 4:
+            continue
+        sha, author_name, date, subject = parts
+        commits.append({"sha": sha, "author_name": author_name, "date": date, "subject": subject})
+    return commits

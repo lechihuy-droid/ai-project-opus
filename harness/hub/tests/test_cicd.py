@@ -70,3 +70,57 @@ def test_cache_expires_after_ttl(monkeypatch: pytest.MonkeyPatch) -> None:
     later = time.time() + config.CICD_CACHE_TTL_SECONDS + 1
     monkeypatch.setattr(cicd.time, "time", lambda: later)
     assert cicd._cache_get("k") is None
+
+
+def test_local_branches_lists_current_branch(temp_repo: Path) -> None:
+    branches = cicd.get_local_branches()
+    names = [branch["name"] for branch in branches]
+    assert "main" in names
+    entry = next(branch for branch in branches if branch["name"] == "main")
+    assert entry["last_commit_subject"] == "first commit"
+    assert entry["last_commit_date"]
+
+
+def test_remote_branches_empty_without_remote(temp_repo: Path) -> None:
+    assert cicd.get_remote_branches() == []
+
+
+def test_branches_bundle_shape(temp_repo: Path) -> None:
+    data = cicd.get_branches()
+    assert set(data) == {"local", "remote", "current"}
+    assert data["current"] == "main"
+
+
+def test_recent_commits_returns_newest_first(temp_repo: Path) -> None:
+    (temp_repo / "second.txt").write_text("x\n", encoding="utf-8")
+    run_git(temp_repo, "add", "second.txt")
+    run_git(temp_repo, "commit", "-m", "second commit")
+    cicd.refresh_cache()
+    commits = cicd.get_recent_commits(5)
+    assert commits[0]["subject"] == "second commit"
+    assert commits[0]["author_name"] == "Hub Tests"
+    assert len(commits[0]["sha"]) == 40
+
+
+def test_commit_subject_with_pipe_is_not_split(temp_repo: Path) -> None:
+    (temp_repo / "third.txt").write_text("x\n", encoding="utf-8")
+    run_git(temp_repo, "add", "third.txt")
+    run_git(temp_repo, "commit", "-m", "fix: a|b parsing")
+    cicd.refresh_cache()
+    assert cicd.get_recent_commits(1)[0]["subject"] == "fix: a|b parsing"
+
+
+def test_worktrees_lists_the_main_checkout(temp_repo: Path) -> None:
+    worktrees = cicd.get_worktrees()
+    assert len(worktrees) == 1
+    assert worktrees[0]["branch"] == "main"
+    assert len(worktrees[0]["head"]) == 40
+
+
+def test_git_functions_return_empty_outside_a_repo(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(config, "ROOT", tmp_path)
+    cicd.refresh_cache()
+    assert cicd.get_local_branches() == []
+    assert cicd.get_worktrees() == []
+    assert cicd.get_recent_commits(5) == []
+    assert cicd.get_current_branch() == ""
