@@ -124,3 +124,119 @@ def test_git_functions_return_empty_outside_a_repo(monkeypatch: pytest.MonkeyPat
     assert cicd.get_worktrees() == []
     assert cicd.get_recent_commits(5) == []
     assert cicd.get_current_branch() == ""
+
+
+class _FakeResponse:
+    def __init__(self, payload: object, status_code: int = 200) -> None:
+        self._payload = payload
+        self.status_code = status_code
+
+    def json(self) -> object:
+        return self._payload
+
+
+class _FakeClient:
+    """Stands in for httpx.Client. Records the paths it was asked for."""
+
+    calls: list[tuple[str, dict[str, object] | None]] = []
+    payload: object = {}
+    raises: Exception | None = None
+
+    def __init__(self, *args: object, **kwargs: object) -> None:
+        pass
+
+    def __enter__(self) -> "_FakeClient":
+        return self
+
+    def __exit__(self, *args: object) -> bool:
+        return False
+
+    def get(self, url: str, params: dict[str, object] | None = None, headers: object = None) -> _FakeResponse:
+        _FakeClient.calls.append((url, params))
+        if _FakeClient.raises is not None:
+            raise _FakeClient.raises
+        return _FakeResponse(_FakeClient.payload)
+
+
+@pytest.fixture()
+def fake_github(monkeypatch: pytest.MonkeyPatch) -> type[_FakeClient]:
+    monkeypatch.setattr(config, "GITHUB_TOKEN", "ghp_fake")
+    monkeypatch.setattr(config, "GITHUB_OWNER", "acme")
+    monkeypatch.setattr(config, "GITHUB_REPO", "widget")
+    monkeypatch.setattr(cicd.httpx, "Client", _FakeClient)
+    _FakeClient.calls = []
+    _FakeClient.payload = {}
+    _FakeClient.raises = None
+    cicd.refresh_cache()
+    return _FakeClient
+
+
+def test_workflows_are_mapped_to_the_ui_shape(fake_github: type[_FakeClient]) -> None:
+    fake_github.payload = {"workflows": [
+        {"id": 12, "name": "CI", "path": ".github/workflows/ci.yml",
+         "state": "active", "updated_at": "2026-08-01T00:00:00Z"},
+    ]}
+    workflows = cicd.get_workflows()
+    assert workflows == [{
+        "id": "12", "name": "CI", "path": ".github/workflows/ci.yml",
+        "state": "active", "updated_at": "2026-08-01T00:00:00Z",
+    }]
+
+
+def test_workflows_empty_without_token(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(config, "GITHUB_TOKEN", "")
+    monkeypatch.setattr(cicd, "_gh_cli_token", lambda: "")
+    cicd.refresh_cache()
+    assert cicd.get_workflows() == []
+
+
+def test_workflow_runs_use_the_repo_wide_endpoint_without_an_id(fake_github: type[_FakeClient]) -> None:
+    fake_github.payload = {"workflow_runs": []}
+    cicd.get_workflow_runs()
+    url, params = fake_github.calls[0]
+    assert url.endswith("/repos/acme/widget/actions/runs")
+    assert params == {"per_page": 30}
+
+
+def test_workflow_runs_use_the_workflow_scoped_endpoint_with_an_id(fake_github: type[_FakeClient]) -> None:
+    fake_github.payload = {"workflow_runs": []}
+    cicd.get_workflow_runs("12", 5)
+    url, params = fake_github.calls[0]
+    assert url.endswith("/repos/acme/widget/actions/workflows/12/runs")
+    assert params == {"per_page": 5}
+
+
+def test_workflow_run_duration_is_derived_from_timestamps(fake_github: type[_FakeClient]) -> None:
+    fake_github.payload = {"workflow_runs": [{
+        "id": 99, "name": "CI", "status": "completed", "conclusion": "success",
+        "head_branch": "main", "created_at": "2026-08-01T10:00:00Z",
+        "updated_at": "2026-08-01T10:02:30Z", "html_url": "https://example.test/99",
+    }]}
+    run = cicd.get_workflow_runs()[0]
+    assert run["id"] == "99"
+    assert run["branch"] == "main"
+    assert run["duration_seconds"] == 150.0
+
+
+def test_workflow_run_duration_is_none_when_still_running(fake_github: type[_FakeClient]) -> None:
+    fake_github.payload = {"workflow_runs": [{
+        "id": 100, "name": "CI", "status": "in_progress", "conclusion": None,
+        "head_branch": "main", "created_at": "2026-08-01T10:00:00Z",
+        "updated_at": "", "html_url": "",
+    }]}
+    run = cicd.get_workflow_runs()[0]
+    assert run["duration_seconds"] is None
+    assert run["conclusion"] == ""
+
+
+def test_github_errors_degrade_to_empty_lists(fake_github: type[_FakeClient]) -> None:
+    fake_github.raises = RuntimeError("boom")
+    assert cicd.get_workflows() == []
+    assert cicd.get_workflow_runs() == []
+
+
+def test_workflows_are_cached_between_calls(fake_github: type[_FakeClient]) -> None:
+    fake_github.payload = {"workflows": []}
+    cicd.get_workflows()
+    cicd.get_workflows()
+    assert len(fake_github.calls) == 1

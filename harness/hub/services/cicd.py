@@ -10,7 +10,10 @@ from __future__ import annotations
 import subprocess
 import threading
 import time
+from datetime import datetime
 from typing import Any
+
+import httpx
 
 import config
 from services import security
@@ -183,3 +186,88 @@ def get_recent_commits(limit: int = 10) -> list[dict[str, str]]:
         sha, author_name, date, subject = parts
         commits.append({"sha": sha, "author_name": author_name, "date": date, "subject": subject})
     return commits
+
+
+def _github_get(path: str, params: dict[str, str | int] | None = None) -> Any | None:
+    """GET https://api.github.com/repos/{owner}/{repo}{path}. Returns parsed
+    JSON, or None for any failure (no token, 4xx/5xx, timeout, bad JSON)."""
+    token = _get_github_token()
+    if not token:
+        return None
+    url = f"{config.GITHUB_API_BASE}/repos/{config.GITHUB_OWNER}/{config.GITHUB_REPO}{path}"
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    try:
+        with httpx.Client(timeout=15.0) as client:
+            response = client.get(url, params=params, headers=headers)
+            if response.status_code >= 400:
+                return None
+            return response.json()
+    except Exception:  # noqa: BLE001 - dashboard must render regardless
+        return None
+
+
+def _parse_iso(value: str) -> datetime | None:
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def _run_duration_seconds(run: dict[str, Any]) -> float | None:
+    started = _parse_iso(str(run.get("created_at") or ""))
+    finished = _parse_iso(str(run.get("updated_at") or ""))
+    if started is None or finished is None or run.get("status") != "completed":
+        return None
+    return (finished - started).total_seconds()
+
+
+def get_workflows() -> list[dict[str, object]]:
+    cached = _cache_get("workflows")
+    if cached is not None:
+        return cached
+    payload = _github_get("/actions/workflows", {"per_page": 100})
+    items = (payload or {}).get("workflows", []) if isinstance(payload, dict) else []
+    workflows = [
+        {
+            "id": str(item.get("id", "")),
+            "name": str(item.get("name", "")),
+            "path": str(item.get("path", "")),
+            "state": str(item.get("state", "")),
+            "updated_at": str(item.get("updated_at", "")),
+        }
+        for item in items
+    ]
+    _cache_set("workflows", workflows)
+    return workflows
+
+
+def get_workflow_runs(workflow_id: str = "", per_page: int = 30) -> list[dict[str, object]]:
+    per_page = max(1, min(per_page, 100))
+    cache_key = f"runs:{workflow_id}:{per_page}"
+    cached = _cache_get(cache_key)
+    if cached is not None:
+        return cached
+    path = f"/actions/workflows/{workflow_id}/runs" if workflow_id else "/actions/runs"
+    payload = _github_get(path, {"per_page": per_page})
+    items = (payload or {}).get("workflow_runs", []) if isinstance(payload, dict) else []
+    runs = [
+        {
+            "id": str(item.get("id", "")),
+            "name": str(item.get("name") or ""),
+            "status": str(item.get("status") or ""),
+            "conclusion": str(item.get("conclusion") or ""),
+            "branch": str(item.get("head_branch") or ""),
+            "duration_seconds": _run_duration_seconds(item),
+            "created_at": str(item.get("created_at") or ""),
+            "html_url": str(item.get("html_url") or ""),
+        }
+        for item in items
+    ]
+    _cache_set(cache_key, runs)
+    return runs
