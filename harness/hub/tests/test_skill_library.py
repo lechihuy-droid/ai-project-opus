@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 from pathlib import Path
 
@@ -68,25 +69,51 @@ def test_list_skills_warm_cache_does_not_recursively_walk_sources(
     assert probe == 0
 
 
-def test_list_skills_detects_external_add_and_delete(fixture_sources: dict[str, Path]) -> None:
+def test_list_skills_detects_external_add_and_delete_after_ttl_expiry(
+    fixture_sources: dict[str, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    clock = [100.0]
+    monkeypatch.setattr(sl.time, "monotonic", lambda: clock[0])
     sl._clear_cache()
     assert "claude_user/new-skill" not in {item["id"] for item in sl.list_skills()}
 
-    path = fixture_sources["claude_user"] / "new-skill"
+    root = fixture_sources["claude_user"]
+    root_mtime = root.stat().st_mtime_ns
+    path = root / "new-skill"
     path.mkdir()
     (path / "SKILL.md").write_text("---\nname: new-skill\n---\nnew", encoding="utf-8")
+    os.utime(root, ns=(root_mtime + 1_000_000_000, root_mtime + 1_000_000_000))
+    assert "claude_user/new-skill" not in {item["id"] for item in sl.list_skills()}
+
+    clock[0] += 1.01
     assert "claude_user/new-skill" in {item["id"] for item in sl.list_skills()}
 
+    root_mtime = root.stat().st_mtime_ns
     shutil.rmtree(path)
+    os.utime(root, ns=(root_mtime + 1_000_000_000, root_mtime + 1_000_000_000))
+    assert "claude_user/new-skill" in {item["id"] for item in sl.list_skills()}
+
+    clock[0] += 1.01
     assert "claude_user/new-skill" not in {item["id"] for item in sl.list_skills()}
 
 
-def test_list_skills_detects_external_skill_edit(fixture_sources: dict[str, Path]) -> None:
+def test_list_skills_detects_external_skill_edit_after_ttl_expiry(
+    fixture_sources: dict[str, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    clock = [100.0]
+    monkeypatch.setattr(sl.time, "monotonic", lambda: clock[0])
     sl._clear_cache()
     before = next(item for item in sl.list_skills() if item["id"] == "claude_user/skillspector")
     path = fixture_sources["claude_user"] / "skillspector" / "SKILL.md"
+    mtime = path.stat().st_mtime_ns
     path.write_text("---\nname: renamed\ndescription: changed\n---\nbody", encoding="utf-8")
+    os.utime(path, ns=(mtime + 1_000_000_000, mtime + 1_000_000_000))
 
+    inside_ttl = next(item for item in sl.list_skills() if item["id"] == "claude_user/skillspector")
+    # Full entries recompute strong content hashes, but index metadata is bounded by TTL.
+    assert inside_ttl["name"] == before["name"]
+
+    clock[0] += 1.01
     after = next(item for item in sl.list_skills() if item["id"] == "claude_user/skillspector")
     assert before["content_hash"] != after["content_hash"]
     assert after["name"] == "renamed"
@@ -146,6 +173,9 @@ def test_deploy_creates_backup_of_existing_target_and_appends_log(fixture_source
     assert record["skill_id"] == "claude_user/skillspector"
     assert record["target"] == "codex_user"
     assert record["path"] == str(dest)
+    assert record["source_hash"] == sl._content_hash(fixture_sources["claude_user"] / "skillspector")
+    assert record["target_hash_before"] is not None
+    assert record["baseline_hash_after"] == record["source_hash"]
 
 
 def test_deploy_rejects_target_outside_skill_sources(fixture_sources: dict[str, Path]) -> None:
@@ -156,6 +186,36 @@ def test_deploy_rejects_target_outside_skill_sources(fixture_sources: dict[str, 
 def test_deploy_rejects_unknown_skill_id(fixture_sources: dict[str, Path]) -> None:
     with pytest.raises(FileNotFoundError):
         sl.deploy("claude_user/does_not_exist", "codex_user")
+
+
+def test_deploy_rejects_its_own_source_without_mutating_skill(fixture_sources: dict[str, Path]) -> None:
+    source_path = fixture_sources["claude_user"] / "skillspector" / "SKILL.md"
+    source_before = source_path.read_text(encoding="utf-8")
+
+    with pytest.raises(ValueError, match="Cannot deploy a skill to its own source"):
+        sl.deploy("claude_user/skillspector", "claude_user")
+
+    assert source_path.read_text(encoding="utf-8") == source_before
+
+
+def test_deploy_restores_existing_target_when_evidence_write_fails(
+    fixture_sources: dict[str, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    target_path = fixture_sources["codex_user"] / "skillspector"
+    target_path.mkdir()
+    target_content = "---\nname: skillspector\n---\nold target"
+    (target_path / "SKILL.md").write_text(target_content, encoding="utf-8")
+
+    def fail_evidence(*_: object, **__: object) -> None:
+        raise OSError("log unavailable")
+
+    monkeypatch.setattr(sl, "_append_deploy_log", fail_evidence)
+
+    with pytest.raises(sl.SkillEvidenceError, match="Deployment evidence could not be recorded"):
+        sl.deploy("claude_user/skillspector", "codex_user")
+
+    assert (target_path / "SKILL.md").read_text(encoding="utf-8") == target_content
+    assert not list(target_path.parent.glob("skillspector.bak-*"))
 
 
 def test_deploy_log_endpoint_returns_newest_rows_first() -> None:

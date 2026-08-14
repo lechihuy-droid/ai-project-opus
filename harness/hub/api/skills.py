@@ -78,6 +78,19 @@ def api_skill_library_summary(
     return skill_library.list_skill_summary(query=query, source=source, offset=offset, limit=limit)
 
 
+@router.get("/api/skill-library/telemetry")
+def api_skill_library_telemetry() -> dict[str, object]:
+    return skill_library.list_skill_telemetry()
+
+
+@router.get("/api/skill-library/target-status")
+def api_skill_library_target_status(target: str) -> dict[str, object]:
+    try:
+        return skill_library.target_status(target)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail="Unknown target") from exc
+
+
 @router.post("/api/skill-library")
 def api_skill_library_create(payload: dict[str, object]) -> dict[str, object]:
     try: return skill_library.create_skill(payload)
@@ -108,22 +121,39 @@ def api_skill_library_deploy_log() -> list[dict[str, object]]:
     return skill_library.deploy_log()
 
 
-@router.get("/api/skill-library/{skill_id:path}")
-def api_skill_library_detail(skill_id: str) -> dict[str, object]:
+@router.post("/api/skill-library/{skill_id:path}/deploy")
+def api_skill_library_deploy(skill_id: str, payload: dict[str, object]) -> dict[str, object]:
+    target = payload.get("target")
+    has_expected_target_hash = "expected_target_hash" in payload
+    expected_target_hash = payload.get("expected_target_hash")
+    allow_conflict = payload.get("allow_conflict", False)
+    if not isinstance(target, str) or not target:
+        raise HTTPException(status_code=400, detail="target is required")
+    if expected_target_hash is not None and not isinstance(expected_target_hash, str):
+        raise HTTPException(status_code=400, detail="expected_target_hash must be a string")
+    if isinstance(expected_target_hash, str) and not skill_library._CONTENT_HASH.fullmatch(expected_target_hash):
+        raise HTTPException(status_code=400, detail="expected_target_hash must be a SHA-256 hash")
+    if not isinstance(allow_conflict, bool):
+        raise HTTPException(status_code=400, detail="allow_conflict must be a boolean")
     try:
-        return skill_library.get_skill(skill_id)
+        deploy_options: dict[str, object] = {"allow_conflict": allow_conflict}
+        if has_expected_target_hash:
+            deploy_options["expected_target_hash"] = expected_target_hash
+        result = skill_library.deploy(skill_id, target, **deploy_options)
+        return {key: value for key, value in result.items() if key != "path"}
+    except (skill_library.SkillConflictError, skill_library.SkillPreconditionError) as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except skill_library.SkillEvidenceError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
     except (FileNotFoundError, PermissionError) as exc:
         raise _http_error(exc) from exc
 
 
-@router.post("/api/skill-library/{skill_id:path}/deploy")
-def api_skill_library_deploy(skill_id: str, payload: dict[str, object]) -> dict[str, object]:
-    target = payload.get("target")
-    if not isinstance(target, str) or not target:
-        raise HTTPException(status_code=400, detail="target is required")
+@router.get("/api/skill-library/{skill_id:path}")
+def api_skill_library_detail(skill_id: str) -> dict[str, object]:
     try:
-        return skill_library.deploy(skill_id, target)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+        return skill_library.get_skill(skill_id)
     except (FileNotFoundError, PermissionError) as exc:
         raise _http_error(exc) from exc

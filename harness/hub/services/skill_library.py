@@ -3,12 +3,15 @@ from __future__ import annotations
 import datetime as dt
 import hashlib
 import json
+import os
 import re
 import shutil
 import threading
 import time
+import uuid
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 import config
 from services import replay
@@ -24,6 +27,7 @@ SKILL_PROMPT_MAX_CHARS = 12000
 _SKILL_TOOL_NAME = "Skill"
 _TELEMETRY_WINDOW_DAYS = 30
 _TELEMETRY_CACHE_TTL_SECONDS = 30.0
+_FINGERPRINT_CACHE_TTL_SECONDS = 1.0
 _BOM = "\ufeff"
 _FRONTMATTER_RE = re.compile(rf"^{_BOM}?---\s*\n(.*?\n)---\s*\n?", re.DOTALL)
 
@@ -36,12 +40,115 @@ _DEFAULT_SKILL_SOURCES: dict[str, Path] = {
     "codex_user": Path.home() / ".codex" / "skills",
 }
 
-_INDEX_CACHE: dict[str, Any] = {"fingerprint": None, "entries": [], "sources": None, "revision": 0}
+_INDEX_CACHE: dict[str, Any] = {
+    "fingerprint": None,
+    "fingerprint_expires": 0.0,
+    "entries": [],
+    "sources": None,
+    "source_identities": None,
+    "revision": 0,
+}
 _SKILL_NAMES_CACHE: dict[str, Any] = {"fingerprint": None, "names": set()}
 _LOCK = threading.RLock()
+_DEPLOY_LOCKS_LOCK = threading.RLock()
+_DEPLOY_LOCKS: dict[str, threading.RLock] = {}
+_EVIDENCE_LOCKS_LOCK = threading.RLock()
+_EVIDENCE_LOCKS: dict[str, threading.RLock] = {}
+_DEPLOY_LOCK_WAIT_SECONDS = 5.0
+_DEPLOY_LOCK_RETRY_SECONDS = 0.05
 _TELEMETRY_LOCK = threading.RLock()
 _TELEMETRY_CACHE: dict[str, Any] = {"expires": 0.0, "fingerprint": None, "events": []}
 _SAFE_SKILL_NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
+_CONTENT_HASH = re.compile(r"^sha256:[0-9a-f]{64}$")
+_EXPECTED_TARGET_HASH_UNSET = object()
+
+
+class SkillConflictError(RuntimeError):
+    """Raised when a deployment would overwrite divergent source and target variants."""
+
+
+class SkillPreconditionError(RuntimeError):
+    """Raised when a target changed after the operator compared it."""
+
+
+class SkillEvidenceError(RuntimeError):
+    """Raised when a deployment cannot be durably recorded for audit."""
+
+
+def _destination_lock(path: Path) -> threading.RLock:
+    """Return the process-local lock for one exact deployment destination."""
+    key = str(path.resolve(strict=False)).casefold()
+    with _DEPLOY_LOCKS_LOCK:
+        return _DEPLOY_LOCKS.setdefault(key, threading.RLock())
+
+
+@contextmanager
+def _filesystem_path_lock(lock_path: Path, timeout_error: RuntimeError) -> Iterator[None]:
+    """Hold a bounded cross-process advisory lock for one stable lock file."""
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    handle = lock_path.open("a+b")
+    acquired = False
+    try:
+        handle.seek(0, os.SEEK_END)
+        if handle.tell() == 0:
+            handle.write(b"0")
+            handle.flush()
+        deadline = time.monotonic() + _DEPLOY_LOCK_WAIT_SECONDS
+        while not acquired:
+            try:
+                handle.seek(0)
+                if os.name == "nt":
+                    import msvcrt
+
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+                else:  # pragma: no cover - Windows is the supported Hub runtime
+                    import fcntl
+
+                    fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                acquired = True
+            except OSError:
+                if time.monotonic() >= deadline:
+                    raise timeout_error
+                time.sleep(_DEPLOY_LOCK_RETRY_SECONDS)
+        yield
+    finally:
+        try:
+            if acquired:
+                handle.seek(0)
+                if os.name == "nt":
+                    import msvcrt
+
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+                else:  # pragma: no cover - Windows is the supported Hub runtime
+                    import fcntl
+
+                    fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+        finally:
+            handle.close()
+
+
+@contextmanager
+def _filesystem_destination_lock(dest_path: Path) -> Iterator[None]:
+    """Hold a bounded cross-process advisory lock for one destination path."""
+    lock_path = dest_path.parent / f".{dest_path.name}.deploy.lock"
+    with _filesystem_path_lock(lock_path, SkillPreconditionError("Deployment target is busy")):
+        yield
+
+
+def _evidence_lock(log_path: Path) -> threading.RLock:
+    """Return the process-local lock for one shared deploy evidence log."""
+    key = str(log_path.resolve(strict=False)).casefold()
+    with _EVIDENCE_LOCKS_LOCK:
+        return _EVIDENCE_LOCKS.setdefault(key, threading.RLock())
+
+
+@contextmanager
+def _filesystem_evidence_lock(log_path: Path) -> Iterator[None]:
+    """Serialize readers and writers of a deploy log across threads and processes."""
+    lock_path = log_path.parent / f".{log_path.name}.lock"
+    with _evidence_lock(log_path):
+        with _filesystem_path_lock(lock_path, SkillEvidenceError("Deployment evidence is busy")):
+            yield
 
 
 def _sources() -> dict[str, Path]:
@@ -49,6 +156,11 @@ def _sources() -> dict[str, Path]:
     if isinstance(sources, dict) and sources:
         return {str(key): Path(value) for key, value in sources.items()}
     return dict(_DEFAULT_SKILL_SOURCES)
+
+
+def _source_identities() -> tuple[tuple[str, str], ...]:
+    """Return configured source identity without filesystem metadata access."""
+    return tuple(sorted((source, str(root)) for source, root in _sources().items()))
 
 
 def _deploy_log_path() -> Path:
@@ -59,8 +171,15 @@ def _deploy_log_path() -> Path:
 
 
 def _clear_cache() -> None:
-    _INDEX_CACHE.update({"fingerprint": None, "entries": [], "sources": None})
-    _SKILL_NAMES_CACHE.update({"fingerprint": None, "names": set()})
+    with _LOCK:
+        _INDEX_CACHE.update({
+            "fingerprint": None,
+            "fingerprint_expires": 0.0,
+            "entries": [],
+            "sources": None,
+            "source_identities": None,
+        })
+        _SKILL_NAMES_CACHE.update({"fingerprint": None, "names": set()})
 
 
 def create_skill(payload: dict[str, Any]) -> dict[str, Any]:
@@ -263,8 +382,19 @@ def _fingerprint_sources() -> tuple[tuple[str, str, int, tuple[tuple[str, str, i
 
 def _scan_all_sources() -> list[dict[str, Any]]:
     with _LOCK:
+        now = time.monotonic()
+        source_identities = _source_identities()
+        if (
+            _INDEX_CACHE.get("fingerprint") is not None
+            and _INDEX_CACHE.get("source_identities") == source_identities
+            and now < float(_INDEX_CACHE.get("fingerprint_expires", 0.0))
+        ):
+            return list(_INDEX_CACHE["entries"])
+
         fingerprint = _fingerprint_sources()
+        expires = time.monotonic() + _FINGERPRINT_CACHE_TTL_SECONDS
         if _INDEX_CACHE["fingerprint"] == fingerprint:
+            _INDEX_CACHE["fingerprint_expires"] = expires
             return list(_INDEX_CACHE["entries"])
 
         entries: list[dict[str, Any]] = []
@@ -273,8 +403,10 @@ def _scan_all_sources() -> list[dict[str, Any]]:
 
         _INDEX_CACHE.update({
             "fingerprint": fingerprint,
+            "fingerprint_expires": expires,
             "entries": tuple(entries),
             "sources": fingerprint,
+            "source_identities": source_identities,
             "revision": int(_INDEX_CACHE.get("revision", 0)) + 1,
         })
         return list(entries)
@@ -377,10 +509,16 @@ def _telemetry(name: str, tool_events: list[dict[str, Any]]) -> tuple[str | None
     matches = [event for event in tool_events if _skill_invocation_matches(event["skill"], name)]
     if not matches:
         return None, None
-    timestamps = sorted(event["ts"] for event in matches)
+    timestamps: list[tuple[str, dt.datetime]] = []
+    for event in matches:
+        parsed = _parse_ts(event["ts"])
+        if parsed is not None:
+            timestamps.append((event["ts"], parsed))
+    if not timestamps:
+        return None, None
     cutoff = dt.datetime.now(dt.UTC) - dt.timedelta(days=_TELEMETRY_WINDOW_DAYS)
-    use_count_30d = sum(1 for ts in timestamps if (_parse_ts(ts) or cutoff) >= cutoff)
-    return timestamps[-1], use_count_30d
+    use_count_30d = sum(1 for _raw, parsed in timestamps if parsed >= cutoff)
+    return max(timestamps, key=lambda timestamp: timestamp[1])[0], use_count_30d
 
 
 # --------------------------------------------------------------------------
@@ -424,17 +562,28 @@ def list_skill_summary(
 ) -> dict[str, Any]:
     """Return the public, metadata-only snapshot used for the first catalog table."""
     rows = _scan_all_sources()
+    variants_count: dict[str, int] = {}
+    for row in rows:
+        name = str(row["name"])
+        variants_count[name] = variants_count.get(name, 0) + 1
     needle = query.strip().lower()
     if source:
         rows = [row for row in rows if row["source"] == source]
     if needle:
         rows = [
             row for row in rows
-            if needle in str(row["name"]).lower() or needle in str(row["description"]).lower()
+            if (
+                needle in str(row["name"]).lower()
+                or needle in str(row["description"]).lower()
+                or needle in str(row["source"]).lower()
+            )
         ]
     rows.sort(key=lambda row: (str(row["name"]), str(row["source"])))
     items = [
-        {key: row[key] for key in ("id", "name", "description", "source")}
+        {
+            **{key: row[key] for key in ("id", "name", "description", "source")},
+            "variants_count": variants_count[str(row["name"])],
+        }
         for row in rows[offset:offset + limit]
     ]
     return {
@@ -445,6 +594,104 @@ def list_skill_summary(
         "revision": int(_INDEX_CACHE.get("revision", 0)),
         "status": "ready",
     }
+
+
+def list_skill_telemetry() -> dict[str, Any]:
+    """Return bulk cached telemetry for indexed logical skill names only."""
+    names = sorted({str(entry["name"]) for entry in _scan_all_sources()})
+    tool_events = _safe_collect_skill_tool_events()
+    items = []
+    for name in names:
+        last_used, use_count_30d = _telemetry(name, tool_events)
+        if last_used is not None:
+            items.append({"name": name, "last_used": last_used, "use_count_30d": use_count_30d})
+    return {"status": "ready", "items": items}
+
+
+def _latest_baseline_hashes() -> dict[tuple[str, str], str]:
+    """Return newest valid deploy baselines keyed by exact source variant and target."""
+    lines = _read_deploy_log_lines()
+    baselines: dict[tuple[str, str], str] = {}
+    for line in reversed(lines):
+        try:
+            record = json.loads(line)
+        except (json.JSONDecodeError, TypeError):
+            continue
+        baseline_hash = record.get("baseline_hash_after") if isinstance(record, dict) else None
+        if (
+            isinstance(record, dict)
+            and isinstance(record.get("skill_id"), str)
+            and isinstance(record.get("target"), str)
+            and isinstance(baseline_hash, str)
+            and _CONTENT_HASH.fullmatch(baseline_hash)
+        ):
+            baselines.setdefault((record["skill_id"], record["target"]), baseline_hash)
+    return baselines
+
+
+def _target_status_for_entry(
+    entry: dict[str, Any],
+    target: str,
+    target_variants: dict[tuple[str, str], dict[str, Any]],
+    baseline_hashes: dict[tuple[str, str], str],
+    *,
+    source_hash: str | None = None,
+    target_hash: str | None = None,
+    target_entry: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Return the public comparison record for one exact namespaced source entry."""
+    source = str(entry["source"])
+    name = str(entry["name"])
+    resolved_target = target_entry if target_entry is not None else target_variants.get((target, name))
+    resolved_source_hash = source_hash if source_hash is not None else _content_hash(Path(str(entry["path"])))
+    resolved_target_hash = target_hash
+    if resolved_target_hash is None and resolved_target is not None:
+        resolved_target_hash = _content_hash(Path(str(resolved_target["path"])))
+    baseline_hash = baseline_hashes.get((str(entry["id"]), target))
+    source_changed = bool(baseline_hash and resolved_source_hash != baseline_hash)
+    target_changed = bool(baseline_hash and resolved_target_hash != baseline_hash)
+
+    if source == target:
+        status = "in_sync"
+    elif resolved_target is None:
+        status = "missing"
+    elif resolved_source_hash == resolved_target_hash:
+        status = "in_sync"
+    elif baseline_hash and source_changed and target_changed:
+        status = "conflict"
+    else:
+        status = "modified"
+
+    return {
+        "skill_id": entry["id"],
+        "name": name,
+        "source": source,
+        "target": target,
+        "target_skill_id": resolved_target["id"] if resolved_target else None,
+        "status": status,
+        "source_hash": resolved_source_hash,
+        "target_hash": resolved_target_hash,
+        "baseline_hash": baseline_hash,
+        "source_changed": source_changed,
+        "target_changed": target_changed,
+    }
+
+
+def target_status(target: str) -> dict[str, Any]:
+    """Compare every namespaced skill variant against one registered target source."""
+    if target not in _sources():
+        raise ValueError("Unknown target")
+
+    entries = _scan_all_sources()
+    target_variants: dict[tuple[str, str], dict[str, Any]] = {}
+    for entry in entries:
+        target_variants.setdefault((str(entry["source"]), str(entry["name"])), entry)
+    baseline_hashes = _latest_baseline_hashes()
+    items: list[dict[str, Any]] = []
+    for entry in entries:
+        items.append(_target_status_for_entry(entry, target, target_variants, baseline_hashes))
+    items.sort(key=lambda item: (str(item["name"]), str(item["source"])))
+    return {"target": target, "items": items}
 
 
 def list_skill_descriptors() -> list[dict[str, Any]]:
@@ -645,12 +892,7 @@ def deploy_log(limit: int = 50) -> list[dict[str, Any]]:
     if limit <= 0:
         return []
 
-    try:
-        lines = _deploy_log_path().read_text(encoding="utf-8").splitlines()
-    except FileNotFoundError:
-        return []
-    except OSError:
-        return []
+    lines = _read_deploy_log_lines()
 
     rows: list[dict[str, Any]] = []
     for line in reversed(lines):
@@ -667,7 +909,26 @@ def deploy_log(limit: int = 50) -> list[dict[str, Any]]:
     return rows
 
 
-def deploy(skill_id: str, target: str) -> dict[str, Any]:
+def _read_deploy_log_lines() -> list[str]:
+    """Read a complete evidence snapshot; never parse a writer's partial record."""
+    log_path = _deploy_log_path()
+    try:
+        with _filesystem_evidence_lock(log_path):
+            try:
+                return log_path.read_text(encoding="utf-8").splitlines()
+            except FileNotFoundError:
+                return []
+    except OSError:
+        return []
+
+
+def deploy(
+    skill_id: str,
+    target: str,
+    *,
+    expected_target_hash: str | None | object = _EXPECTED_TARGET_HASH_UNSET,
+    allow_conflict: bool = False,
+) -> dict[str, Any]:
     sources = _sources()
     if target not in sources:
         raise ValueError(f"Unknown deploy target: {target}")
@@ -675,42 +936,217 @@ def deploy(skill_id: str, target: str) -> dict[str, Any]:
     entry = next((row for row in _scan_all_sources() if row["id"] == skill_id), None)
     if entry is None:
         raise FileNotFoundError(f"Skill not found: {skill_id}")
+    if str(entry["source"]) == target:
+        raise ValueError("Cannot deploy a skill to its own source")
 
     source_path = Path(entry["path"])
     target_root = sources[target]
-    target_root.mkdir(parents=True, exist_ok=True)
     dest_path = target_root / source_path.name
 
-    if dest_path.exists():
-        timestamp = time.strftime("%Y%m%dT%H%M%S")
-        backup_path = dest_path.parent / f"{dest_path.name}.bak-{timestamp}"
-        suffix = 1
-        while backup_path.exists():
-            backup_path = dest_path.parent / f"{dest_path.name}.bak-{timestamp}-{suffix}"
-            suffix += 1
-        shutil.move(str(dest_path), str(backup_path))
+    with _destination_lock(dest_path):
+        with _filesystem_destination_lock(dest_path):
+            source_hash = _content_hash(source_path)
+            target_hash_before = _content_hash(dest_path) if dest_path.exists() else None
+            entries = _scan_all_sources()
+            target_variants: dict[tuple[str, str], dict[str, Any]] = {}
+            for candidate in entries:
+                target_variants.setdefault((str(candidate["source"]), str(candidate["name"])), candidate)
+            current_target_entry = target_variants.get((target, str(entry["name"])))
+            if dest_path.exists() and current_target_entry is None:
+                current_target_entry = {"id": f"{target}/{source_path.name}", "path": str(dest_path)}
+            comparison = _target_status_for_entry(
+                entry,
+                target,
+                target_variants,
+                _latest_baseline_hashes(),
+                source_hash=source_hash,
+                target_hash=target_hash_before,
+                target_entry=current_target_entry,
+            )
+            if expected_target_hash is not _EXPECTED_TARGET_HASH_UNSET and expected_target_hash != target_hash_before:
+                raise SkillPreconditionError("Target changed since comparison")
+            if comparison["status"] == "conflict" and not allow_conflict:
+                raise SkillConflictError("Conflict requires review")
 
+            staging_path = _staging_path(dest_path)
+            backup_path: Path | None = None
+            published = False
+            published_hash = source_hash
+            baseline_hash_after: str | None = None
+            try:
+                _copy_to_staging(source_path, staging_path)
+                if _content_hash(staging_path) != source_hash or _content_hash(source_path) != source_hash:
+                    raise SkillPreconditionError("Source changed during deployment")
+
+                if target_hash_before is not None:
+                    backup_path = _backup_path(dest_path)
+                    try:
+                        _backup_target_atomically(dest_path, backup_path)
+                    except FileNotFoundError as exc:
+                        raise SkillPreconditionError("Target changed since comparison") from exc
+                    if _content_hash(backup_path) != target_hash_before:
+                        _rollback_deployment_target(dest_path, backup_path, published, published_hash)
+                        raise SkillPreconditionError("Target changed since comparison")
+                elif dest_path.exists():
+                    raise SkillPreconditionError("Target changed since comparison")
+
+                try:
+                    _publish_staging_atomically(staging_path, dest_path)
+                except FileExistsError as exc:
+                    raise SkillPreconditionError("Target changed since comparison") from exc
+                published = True
+                baseline_hash_after = _content_hash(dest_path)
+                if baseline_hash_after != source_hash or _content_hash(source_path) != source_hash:
+                    raise SkillPreconditionError("Source changed during deployment")
+            except Exception:
+                _rollback_deployment_target(dest_path, backup_path, published, published_hash)
+                raise
+            finally:
+                _remove_path(staging_path)
+
+            try:
+                _append_deploy_log(
+                    skill_id,
+                    target,
+                    str(dest_path),
+                    source_hash=source_hash,
+                    target_hash_before=target_hash_before,
+                    baseline_hash_after=baseline_hash_after,
+                )
+            except (OSError, SkillEvidenceError) as exc:
+                _rollback_deployment_target(dest_path, backup_path, published, published_hash)
+                raise SkillEvidenceError("Deployment evidence could not be recorded") from exc
+
+            _clear_cache()
+            return {
+                "ok": True,
+                "target": target,
+                "path": str(dest_path),
+                "status": "in_sync",
+                "source_hash": source_hash,
+                "target_hash_before": target_hash_before,
+                "baseline_hash_after": baseline_hash_after,
+            }
+
+
+def _staging_path(dest_path: Path) -> Path:
+    return dest_path.parent / f".{dest_path.name}.staging-{os.getpid()}-{uuid.uuid4().hex}"
+
+
+def _backup_path(dest_path: Path) -> Path:
+    timestamp = time.strftime("%Y%m%dT%H%M%S")
+    backup_path = dest_path.parent / f"{dest_path.name}.bak-{timestamp}"
+    suffix = 1
+    while backup_path.exists():
+        backup_path = dest_path.parent / f"{dest_path.name}.bak-{timestamp}-{suffix}"
+        suffix += 1
+    return backup_path
+
+
+def _copy_to_staging(source_path: Path, staging_path: Path) -> None:
     if source_path.is_dir():
-        shutil.copytree(source_path, dest_path)
+        shutil.copytree(source_path, staging_path)
     else:
-        shutil.copy2(source_path, dest_path)
-
-    _clear_cache()
-    _append_deploy_log(skill_id, target, str(dest_path))
-    return {"ok": True, "target": target, "path": str(dest_path)}
+        shutil.copy2(source_path, staging_path)
 
 
-def _append_deploy_log(skill_id: str, target: str, dest_path: str) -> None:
+def _backup_target_atomically(dest_path: Path, backup_path: Path) -> None:
+    dest_path.replace(backup_path)
+
+
+def _publish_staging_atomically(staging_path: Path, dest_path: Path) -> None:
+    os.rename(staging_path, dest_path)
+
+
+def _remove_path(path: Path) -> None:
+    if not path.exists():
+        return
+    if path.is_dir():
+        shutil.rmtree(path)
+    else:
+        path.unlink()
+
+
+def _rollback_deployment_target(
+    dest_path: Path,
+    backup_path: Path | None,
+    published: bool,
+    transaction_hash: str | None,
+) -> None:
+    """Restore our verified backup without overwriting content created by another writer."""
+    try:
+        destination_is_ours = bool(
+            published and transaction_hash and dest_path.exists() and _content_hash(dest_path) == transaction_hash
+        )
+        if backup_path is not None and backup_path.exists():
+            if dest_path.exists() and destination_is_ours:
+                _remove_path(dest_path)
+            if not dest_path.exists():
+                backup_path.replace(dest_path)
+        elif destination_is_ours:
+            _remove_path(dest_path)
+    finally:
+        _clear_cache()
+
+
+def _fsync_parent_directory(path: Path) -> None:
+    """Best-effort directory sync for an atomic evidence-file replacement."""
+    if os.name == "nt":
+        return
+    flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0)
+    try:  # pragma: no cover - Windows is the supported Hub runtime
+        directory_fd = os.open(path.parent, flags)
+    except OSError:
+        return
+    try:  # pragma: no cover - Windows is the supported Hub runtime
+        os.fsync(directory_fd)
+    except OSError:
+        pass
+    finally:  # pragma: no cover - Windows is the supported Hub runtime
+        os.close(directory_fd)
+
+
+def _append_deploy_log(
+    skill_id: str,
+    target: str,
+    dest_path: str,
+    *,
+    source_hash: str,
+    target_hash_before: str | None,
+    baseline_hash_after: str,
+) -> None:
     log_path = _deploy_log_path()
     record = {
         "ts": dt.datetime.now(dt.UTC).isoformat(),
         "skill_id": skill_id,
         "target": target,
         "path": dest_path,
+        "source_hash": source_hash,
+        "target_hash_before": target_hash_before,
+        "baseline_hash_after": baseline_hash_after,
     }
-    try:
-        log_path.parent.mkdir(parents=True, exist_ok=True)
-        with log_path.open("a", encoding="utf-8") as handle:
-            handle.write(json.dumps(record, sort_keys=True) + "\n")
-    except OSError:
-        pass
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    with _filesystem_evidence_lock(log_path):
+        try:
+            existing_bytes = log_path.read_bytes()
+            existing_mode = log_path.stat().st_mode & 0o777
+        except FileNotFoundError:
+            existing_bytes = b""
+            existing_mode = None
+
+        record_bytes = (json.dumps(record, sort_keys=True) + "\n").encode("utf-8")
+        separator = b"" if not existing_bytes or existing_bytes.endswith(b"\n") else b"\n"
+        staging_path = log_path.parent / f".{log_path.name}.staging-{os.getpid()}-{uuid.uuid4().hex}"
+        try:
+            with staging_path.open("xb") as handle:
+                handle.write(existing_bytes)
+                handle.write(separator)
+                handle.write(record_bytes)
+                handle.flush()
+                os.fsync(handle.fileno())
+            if existing_mode is not None:
+                os.chmod(staging_path, existing_mode)
+            os.replace(staging_path, log_path)
+            _fsync_parent_directory(log_path)
+        finally:
+            _remove_path(staging_path)

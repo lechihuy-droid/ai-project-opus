@@ -422,6 +422,18 @@
     ]
   ],
   [
+    "/api/skill-library/target-status",
+    [
+      "GET"
+    ]
+  ],
+  [
+    "/api/skill-library/telemetry",
+    [
+      "GET"
+    ]
+  ],
+  [
     "/api/skill-library/{skill_id}",
     [
       "DELETE",
