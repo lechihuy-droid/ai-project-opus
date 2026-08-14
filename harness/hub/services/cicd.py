@@ -367,3 +367,95 @@ def get_recent_activity(limit: int = 20) -> list[dict[str, object]]:
     ]
     items.sort(key=lambda item: str(item["date"]), reverse=True)
     return items[:limit]
+
+
+# Workspace policy, not machine state: these are the rules the agents and the
+# user have agreed on. Kept as a constant so the dashboard has one place to
+# read them from; move to a JSON file only when they need to change at runtime.
+_MANAGEMENT_RULES: dict[str, list[dict[str, object]]] = {
+    "branch_naming": [
+        {"rule": "feat/<scope>-<slug>", "detail": "Feature work", "enforced": False},
+        {"rule": "fix/<scope>-<slug>", "detail": "Bug fixes", "enforced": False},
+        {"rule": "claude/<slug>", "detail": "Cloud agent branches", "enforced": False},
+    ],
+    "merge_rules": [
+        {"rule": "Fetch and merge origin/main before every push", "detail": "Remote usually leads local", "enforced": False},
+        {"rule": "Never force-push main", "detail": "Multiple agents share the branch", "enforced": False},
+    ],
+    "lifecycle": [
+        {"rule": "Delete the branch after merge", "detail": "Keeps the remote list readable", "enforced": False},
+        {"rule": "One worktree per active branch", "detail": "Avoids checkout collisions", "enforced": False},
+    ],
+    "age_policy": [
+        {"rule": "Review branches older than 30 days", "detail": "Rebase or delete", "enforced": False},
+        {"rule": "Delete merged branches older than 7 days", "detail": "Manual for now", "enforced": False},
+    ],
+    "deployment": [
+        {"rule": "Hub runs locally on 127.0.0.1:8799", "detail": "No public exposure", "enforced": True},
+        {"rule": "Secrets come from .env or GitHub Secrets", "detail": "Never committed", "enforced": True},
+    ],
+    "data_safety": [
+        {"rule": "Never commit finance.db or data/_local/", "detail": "Real financial data", "enforced": True},
+        {"rule": "Never commit personal health or profile data", "detail": "Private by policy", "enforced": True},
+    ],
+}
+
+
+def _workflow_files() -> list[Path]:
+    directory = config.ROOT / ".github" / "workflows"
+    try:
+        return sorted(path for path in directory.iterdir() if path.suffix in {".yml", ".yaml"})
+    except OSError:
+        return []
+
+
+def _workflow_display_name(path: Path) -> str:
+    """The workflow's `name:` field, falling back to the file stem."""
+    try:
+        for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+            if line.startswith("name:"):
+                return line.split(":", 1)[1].strip().strip("'\"") or path.stem
+    except OSError:
+        pass
+    return path.stem
+
+
+def get_quality_gates() -> dict[str, object]:
+    gates = [
+        {
+            "name": _workflow_display_name(path),
+            "description": f"GitHub Actions workflow ({path.name})",
+            "enabled": True,
+            "source": f".github/workflows/{path.name}",
+        }
+        for path in _workflow_files()
+    ]
+    runs = get_workflow_runs(per_page=30)
+    history = [
+        {
+            "gate": str(run["name"] or "workflow run"),
+            "result": str(run["conclusion"] or run["status"]),
+            "branch": str(run["branch"]),
+            "timestamp": str(run["created_at"]),
+        }
+        for run in runs
+    ]
+    failed = sum(1 for item in history if item["result"] == "failure")
+    return {
+        "gates": gates,
+        "history": history,
+        "enforcement": {
+            "enforced": bool(gates),
+            "gate_count": len(gates),
+            "failed_runs": failed,
+            "detail": (
+                f"{len(gates)} workflow gate(s) defined; {failed} failed run(s) in the last {len(history)}"
+                if gates
+                else "No workflow files found under .github/workflows"
+            ),
+        },
+    }
+
+
+def get_management_rules() -> dict[str, object]:
+    return {key: list(value) for key, value in _MANAGEMENT_RULES.items()}

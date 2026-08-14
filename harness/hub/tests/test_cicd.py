@@ -325,3 +325,57 @@ def test_project_health_survives_a_file_vanishing_mid_scan(
         project for project in cicd.get_project_health()["projects"] if project["name"] == "alpha"
     )
     assert alpha["file_count"] == 1
+
+
+def test_gates_are_derived_from_workflow_files(temp_repo: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    workflows_dir = temp_repo / ".github" / "workflows"
+    workflows_dir.mkdir(parents=True)
+    (workflows_dir / "ci.yml").write_text("name: Build and test\non: push\n", encoding="utf-8")
+    (workflows_dir / "nameless.yml").write_text("on: push\n", encoding="utf-8")
+    monkeypatch.setattr(cicd, "get_workflow_runs", lambda workflow_id="", per_page=30: [])
+    cicd.refresh_cache()
+
+    gates = cicd.get_quality_gates()["gates"]
+    assert {gate["name"] for gate in gates} == {"Build and test", "nameless"}
+    ci_gate = next(gate for gate in gates if gate["name"] == "Build and test")
+    assert ci_gate["source"] == ".github/workflows/ci.yml"
+    assert ci_gate["enabled"] is True
+
+
+def test_gate_history_and_enforcement_come_from_runs(temp_repo: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    (temp_repo / ".github" / "workflows").mkdir(parents=True)
+    (temp_repo / ".github" / "workflows" / "ci.yml").write_text("name: CI\n", encoding="utf-8")
+    monkeypatch.setattr(cicd, "get_workflow_runs", lambda workflow_id="", per_page=30: [
+        {"id": "1", "name": "CI", "status": "completed", "conclusion": "failure",
+         "branch": "main", "duration_seconds": 1.0, "created_at": "2026-08-01T00:00:00Z", "html_url": ""},
+        {"id": "2", "name": "CI", "status": "completed", "conclusion": "success",
+         "branch": "main", "duration_seconds": 1.0, "created_at": "2026-07-31T00:00:00Z", "html_url": ""},
+    ])
+    cicd.refresh_cache()
+
+    data = cicd.get_quality_gates()
+    assert data["history"][0] == {
+        "gate": "CI", "result": "failure", "branch": "main", "timestamp": "2026-08-01T00:00:00Z",
+    }
+    assert data["enforcement"]["failed_runs"] == 1
+    assert data["enforcement"]["enforced"] is True
+    assert data["enforcement"]["gate_count"] == 1
+
+
+def test_gates_empty_without_a_workflows_dir(temp_repo: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(cicd, "get_workflow_runs", lambda workflow_id="", per_page=30: [])
+    cicd.refresh_cache()
+    data = cicd.get_quality_gates()
+    assert data["gates"] == []
+    assert data["enforcement"]["enforced"] is False
+
+
+def test_management_rules_expose_all_six_categories() -> None:
+    rules = cicd.get_management_rules()
+    assert set(rules) == {
+        "branch_naming", "merge_rules", "lifecycle", "age_policy", "deployment", "data_safety",
+    }
+    for category in rules.values():
+        assert category
+        for item in category:
+            assert set(item) == {"rule", "detail", "enforced"}
