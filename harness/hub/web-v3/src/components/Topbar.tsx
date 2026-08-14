@@ -5,7 +5,7 @@ import { ApiError, api } from '../lib/api'
 import { t } from '../lib/i18n'
 import { Input, Popover, Status } from '../lib/ui'
 
-const titles = { overview: t('nav.overview'), chat: t('nav.chat'), sessions: t('nav.sessions'), workflows: t('nav.workflows'), artifacts: t('nav.artifacts'), runs: t('nav.runs'), agents: t('nav.agents'), skills: t('nav.skills'), hooks: t('nav.hooks'), files: t('nav.files'), approvals: t('nav.approvals'), usage: t('nav.usage'), settings: t('nav.settings') }
+const titles = { overview: t('nav.overview'), chat: t('nav.chat'), sessions: t('nav.sessions'), workflows: t('nav.workflows'), artifacts: t('nav.artifacts'), runs: t('nav.runs'), agents: t('nav.agents'), skills: t('nav.skills'), hooks: t('nav.hooks'), files: t('nav.files'), approvals: t('nav.approvals'), usage: t('nav.usage'), settings: t('nav.settings'), cicd: t('nav.cicd') }
 type SearchResult = { type: 'workflow' | 'agent' | 'skill' | 'artifact'; id: string; title: string; context: string; href: string }
 const typeLabels: Record<SearchResult['type'], string> = { workflow: 'Workflow', agent: 'Agent', skill: 'Skill', artifact: 'Artifact' }
 
