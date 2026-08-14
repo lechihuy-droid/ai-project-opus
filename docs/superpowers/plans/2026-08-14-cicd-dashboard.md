@@ -22,7 +22,7 @@
 - **Frontend i18n:** every user-visible string comes from `t('cicd.…')`. `nav.*` keys live in `lib/i18n/common.ts` (existing convention), domain keys in the new `lib/i18n/cicd.ts`.
 - **`Table` is a default export** (`lib/Table.tsx:17`). Import as `import Table, { TableRow, TableCell } from '../lib/Table'`.
 - **Source files must be ASCII-safe UTF-8, LF, no BOM** — `pnpm build` runs `scripts/check-encoding.mjs` first.
-- **Backend tests** run from `harness/hub/`: `python -m pytest tests/test_cicd.py -v`. **Frontend tests** from `harness/hub/web-v3/`: `pnpm test`.
+- **Backend tests** run from `harness/hub/`: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest tests/test_cicd.py -v`. The env var is required: a globally installed `hydra-core` registers a pytest plugin that crashes collection on Python 3.11. **Frontend tests** from `harness/hub/web-v3/`: `pnpm test`.
 - **Python:** `C:\Users\HUY\AppData\Local\Programs\Python\Python311\python.exe`
 
 ## Decisions Locked (resolving `/speckit-analyze` findings)
@@ -91,6 +91,7 @@ Create `harness/hub/tests/test_cicd.py`:
 from __future__ import annotations
 
 import subprocess
+import time
 from pathlib import Path
 
 import pytest
@@ -156,7 +157,8 @@ def test_cache_expires_after_ttl(monkeypatch: pytest.MonkeyPatch) -> None:
     cicd.refresh_cache()
     cicd._cache_set("k", 1)
     assert cicd._cache_get("k") == 1
-    monkeypatch.setattr(cicd.time, "time", lambda: 10_000_000.0)
+    later = time.time() + config.CICD_CACHE_TTL_SECONDS + 1
+    monkeypatch.setattr(cicd.time, "time", lambda: later)
     assert cicd._cache_get("k") is None
 ```
 
@@ -1724,7 +1726,7 @@ export default function CicdDashboardPage() {
         ? <Alert variant="warning" title={t('cicd.githubUnavailable')}>{t('cicd.githubReason', { reason: github.reason })}</Alert>
         : null}
 
-      <Tabs options={tabs} value={tab} onChange={setTab} aria-label={t('cicd.tabsLabel')} />
+      <Tabs options={tabs} value={tab} onChange={value => setTab(value as TabValue)} aria-label={t('cicd.tabsLabel')} />
 
       <div className="min-h-0 flex-1 overflow-auto">
         {tab === 'overview' ? (
