@@ -265,6 +265,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
 export type TabOption<T extends string = string> = {
   value: T
   label: ReactNode
+  id?: string
   disabled?: boolean
   'aria-label'?: string
 }
@@ -315,6 +316,7 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs<T extend
         return (
           <button
             key={option.value}
+            id={option.id}
             type="button"
             role="tab"
             aria-selected={selected}
@@ -581,7 +583,7 @@ export function SegmentedControl<T extends string = string>({ options, value, on
               'text-label leading-label transition-colors',
               focusRing,
               selected
-                ? 'border-2 border-accent bg-app text-accent font-semibold shadow-[0_0_6px_-1px_rgba(41,199,243,0.35)]'
+                ? 'border-2 border-accent bg-app text-accent font-semibold'
                 : 'border-2 border-transparent font-medium text-secondary hover:bg-hover hover:text-primary',
             )}
           >
@@ -601,6 +603,7 @@ export type StatusKind =
   | 'ready'
   | 'running'
   | 'paused'
+  | 'pending'
   | 'setup-required'
   | 'not-installed'
   | 'rate-limited'
@@ -618,6 +621,7 @@ const statusDotClass: Record<StatusKind, string> = {
   ready: 'bg-success',
   running: 'bg-accent',
   paused: 'bg-muted',
+  pending: 'bg-muted',
   'setup-required': 'bg-warning',
   'not-installed': 'bg-muted',
   'rate-limited': 'bg-warning',
@@ -629,6 +633,7 @@ const statusLabels: Record<StatusKind, string> = {
   ready: t('misc.status.ready'),
   running: t('misc.status.running'),
   paused: t('misc.status.paused'),
+  pending: t('misc.status.pending'),
   'setup-required': t('misc.status.setupRequired'),
   'not-installed': t('misc.status.notInstalled'),
   'rate-limited': t('misc.status.rateLimited'),
@@ -685,6 +690,28 @@ export function ProviderDot({ provider, className }: ProviderDotProps) {
     <span
       aria-hidden="true"
       className={cx('inline-block h-[7px] w-[7px] shrink-0 rounded-full', providerDotClass[provider], className)}
+    />
+  )
+}
+
+// ---------------------------------------------------------------------------
+// ProviderRail
+// ---------------------------------------------------------------------------
+
+export type ProviderRailProps = { provider: ProviderId | null; className?: string }
+
+const providerRailClass: Record<ProviderId, string> = {
+  claude: 'bg-claude',
+  codex: 'bg-codex',
+  nvidia: 'bg-nvidia',
+}
+
+export function ProviderRail({ provider, className }: ProviderRailProps) {
+  return (
+    <span
+      title={provider ?? ''}
+      aria-hidden="true"
+      className={cx('inline-block h-full w-[3px] shrink-0 rounded-full', provider ? providerRailClass[provider] : 'bg-border-subtle', className)}
     />
   )
 }
