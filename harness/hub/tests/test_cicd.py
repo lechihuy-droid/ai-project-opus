@@ -5,6 +5,7 @@ import time
 from pathlib import Path
 
 import pytest
+from fastapi.testclient import TestClient
 
 import config
 from services import cicd
@@ -379,3 +380,53 @@ def test_management_rules_expose_all_six_categories() -> None:
         assert category
         for item in category:
             assert set(item) == {"rule", "detail", "enforced"}
+
+
+@pytest.fixture()
+def client() -> TestClient:
+    from server import app
+
+    return TestClient(app)
+
+
+def test_every_get_endpoint_answers_200(client: TestClient) -> None:
+    paths = [
+        "/api/cicd/overview", "/api/cicd/github-status", "/api/cicd/workflows",
+        "/api/cicd/workflow-runs", "/api/cicd/branches", "/api/cicd/worktrees",
+        "/api/cicd/commits", "/api/cicd/activity", "/api/cicd/projects",
+        "/api/cicd/quality-gates", "/api/cicd/management-rules",
+    ]
+    for path in paths:
+        response = client.get(path)
+        assert response.status_code == 200, path
+
+
+def test_refresh_is_a_post_and_clears_the_cache(client: TestClient) -> None:
+    cicd._cache_set("k", 1)
+    response = client.post("/api/cicd/refresh")
+    assert response.status_code == 200
+    assert response.json() == {"ok": True}
+    assert cicd._cache_get("k") is None
+
+
+def test_commits_limit_is_validated(client: TestClient) -> None:
+    assert client.get("/api/cicd/commits", params={"limit": 0}).status_code == 422
+    assert client.get("/api/cicd/commits", params={"limit": 101}).status_code == 422
+    assert client.get("/api/cicd/commits", params={"limit": 10}).status_code == 200
+
+
+def test_workflow_runs_per_page_is_validated(client: TestClient) -> None:
+    assert client.get("/api/cicd/workflow-runs", params={"per_page": 0}).status_code == 422
+    assert client.get("/api/cicd/workflow-runs", params={"per_page": 101}).status_code == 422
+
+
+def test_endpoints_require_the_hub_token(client: TestClient) -> None:
+    response = client.get("/api/cicd/overview", headers={"X-Hub-Token": "wrong"})
+    assert response.status_code == 403
+
+
+def test_no_endpoint_leaks_the_token(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(config, "GITHUB_TOKEN", "ghp_supersecret")
+    cicd.refresh_cache()
+    body = client.get("/api/cicd/github-status").text
+    assert "ghp_supersecret" not in body

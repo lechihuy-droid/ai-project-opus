@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse, Response; from fastapi.staticfiles i
 import config
 from api._shared import _error_code, _http_error
 from api.agents import router as agents_router
+from api.cicd import router as cicd_router
 from api.chat import CHAT_SKILL_MAX_CHARS, _chat_skills, router as chat_router
 from api.jobs import router as jobs_router
 from api.memory import router as memory_router
@@ -158,6 +159,7 @@ app.include_router(workflows_router)
 app.include_router(skills_router)
 app.include_router(runs_router)
 app.include_router(chat_router)
+app.include_router(cicd_router)
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=config.PORT)
