@@ -33,7 +33,6 @@ export const cicd = {
   'cicd.pipelines.name': 'Workflow',
   'cicd.pipelines.state': 'State',
   'cicd.pipelines.path': 'File',
-  'cicd.pipelines.status': 'Status',
   'cicd.pipelines.conclusion': 'Result',
   'cicd.pipelines.branch': 'Branch',
   'cicd.pipelines.duration': 'Duration',
