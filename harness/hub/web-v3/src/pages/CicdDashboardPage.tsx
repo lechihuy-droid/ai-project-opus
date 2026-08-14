@@ -67,7 +67,7 @@ function StatTile({ label, value }: { label: string; value: number | string }) {
 
 function RuleTable({ title, items }: { title: string; items: RuleItem[] }) {
   return (
-    <Panel header={<span className="text-label font-semibold text-primary">{title}</span>}>
+    <Panel className="min-w-0" header={<span className="text-label font-semibold text-primary">{title}</span>}>
       <Table headers={[t('cicd.rules.rule'), t('cicd.rules.detail'), t('cicd.rules.enforced')]}>
         {items.map(item => (
           <TableRow key={item.rule}>
@@ -115,7 +115,7 @@ export default function CicdDashboardPage() {
   const overview = data.overview
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-space-4 p-space-6">
+    <div className="flex h-full min-h-0 min-w-0 flex-col gap-space-4 p-space-6">
       <header className="flex items-center gap-space-3">
         <h1 className="text-heading font-semibold text-primary">{t('cicd.title')}</h1>
         <Status
@@ -135,9 +135,9 @@ export default function CicdDashboardPage() {
 
       <Tabs options={tabs} value={tab} onChange={value => setTab(value as TabValue)} aria-label={t('cicd.tabsLabel')} />
 
-      <div className="min-h-0 flex-1 overflow-auto">
+      <div className="min-h-0 min-w-0 flex-1 overflow-auto">
         {tab === 'overview' ? (
-          <div className="flex flex-col gap-space-4">
+          <div className="flex min-w-0 flex-col gap-space-4">
             <div className="grid grid-cols-2 gap-space-3 md:grid-cols-3 xl:grid-cols-6">
               <StatTile label={t('cicd.overview.activeWorkflows')} value={overview?.active_workflows ?? 0} />
               <StatTile label={t('cicd.overview.projects')} value={overview?.total_projects ?? 0} />
@@ -146,7 +146,7 @@ export default function CicdDashboardPage() {
               <StatTile label={t('cicd.overview.remoteBranches')} value={overview?.remote_branches ?? 0} />
               <StatTile label={t('cicd.overview.worktrees')} value={overview?.worktrees ?? 0} />
             </div>
-            <Panel header={<span className="text-label font-semibold text-primary">{t('cicd.overview.recentActivity')}</span>}>
+            <Panel className="min-w-0" header={<span className="text-label font-semibold text-primary">{t('cicd.overview.recentActivity')}</span>}>
               {data.activity.length ? (
                 <Table headers={[t('cicd.activity.kind'), t('cicd.activity.title'), t('cicd.activity.detail'), t('cicd.activity.status'), t('cicd.activity.date')]}>
                   {data.activity.map((item, index) => (
@@ -165,8 +165,8 @@ export default function CicdDashboardPage() {
         ) : null}
 
         {tab === 'pipelines' ? (
-          <div className="flex flex-col gap-space-4">
-            <Panel header={<span className="text-label font-semibold text-primary">{t('cicd.pipelines.workflows')}</span>}>
+          <div className="flex min-w-0 flex-col gap-space-4">
+            <Panel className="min-w-0" header={<span className="text-label font-semibold text-primary">{t('cicd.pipelines.workflows')}</span>}>
               {data.workflows.length ? (
                 <Table headers={[t('cicd.pipelines.name'), t('cicd.pipelines.state'), t('cicd.pipelines.path')]}>
                   {data.workflows.map(workflow => (
@@ -179,7 +179,7 @@ export default function CicdDashboardPage() {
                 </Table>
               ) : <EmptyState title={t('cicd.pipelines.noWorkflows')} />}
             </Panel>
-            <Panel header={<span className="text-label font-semibold text-primary">{t('cicd.pipelines.runs')}</span>}>
+            <Panel className="min-w-0" header={<span className="text-label font-semibold text-primary">{t('cicd.pipelines.runs')}</span>}>
               {data.runs.length ? (
                 <Table headers={[t('cicd.pipelines.name'), t('cicd.pipelines.conclusion'), t('cicd.pipelines.branch'), t('cicd.pipelines.duration'), t('cicd.pipelines.started')]}>
                   {data.runs.map(run => (
@@ -198,8 +198,8 @@ export default function CicdDashboardPage() {
         ) : null}
 
         {tab === 'projects' ? (
-          <div className="flex flex-col gap-space-4">
-            <Panel header={<span className="text-label font-semibold text-primary">{t('cicd.projects.health')}</span>}>
+          <div className="flex min-w-0 flex-col gap-space-4">
+            <Panel className="min-w-0" header={<span className="text-label font-semibold text-primary">{t('cicd.projects.health')}</span>}>
               {data.projects?.projects.length ? (
                 <Table headers={[t('cicd.projects.name'), t('cicd.projects.tests'), t('cicd.projects.files'), t('cicd.projects.lastModified'), t('cicd.projects.hasGit'), t('cicd.projects.hasReadme')]}>
                   {data.projects.projects.map(project => (
@@ -215,7 +215,7 @@ export default function CicdDashboardPage() {
                 </Table>
               ) : <EmptyState title={t('cicd.projects.noProjects')} />}
             </Panel>
-            <Panel header={<span className="text-label font-semibold text-primary">{t('cicd.projects.branches')}</span>}>
+            <Panel className="min-w-0" header={<span className="text-label font-semibold text-primary">{t('cicd.projects.branches')}</span>}>
               <p className="mb-space-2 text-caption text-muted">{t('cicd.projects.current', { branch: data.branches?.current || t('cicd.none') })}</p>
               <Table headers={[t('cicd.projects.branchName'), t('cicd.projects.lastCommit'), t('cicd.projects.lastCommitDate')]}>
                 {[...(data.branches?.local ?? []), ...(data.branches?.remote ?? [])].map(branch => (
@@ -227,7 +227,7 @@ export default function CicdDashboardPage() {
                 ))}
               </Table>
             </Panel>
-            <Panel header={<span className="text-label font-semibold text-primary">{t('cicd.projects.worktrees')}</span>}>
+            <Panel className="min-w-0" header={<span className="text-label font-semibold text-primary">{t('cicd.projects.worktrees')}</span>}>
               <Table headers={[t('cicd.projects.worktreePath'), t('cicd.projects.branchName'), t('cicd.projects.worktreeHead')]}>
                 {data.worktrees.map(worktree => (
                   <TableRow key={worktree.path}>
@@ -242,8 +242,8 @@ export default function CicdDashboardPage() {
         ) : null}
 
         {tab === 'quality' ? (
-          <div className="flex flex-col gap-space-4">
-            <Panel header={<span className="text-label font-semibold text-primary">{t('cicd.quality.gates')}</span>}>
+          <div className="flex min-w-0 flex-col gap-space-4">
+            <Panel className="min-w-0" header={<span className="text-label font-semibold text-primary">{t('cicd.quality.gates')}</span>}>
               <p className="mb-space-2 text-caption text-muted">{t('cicd.quality.gatesNote')}</p>
               {data.gates?.gates.length ? (
                 <Table headers={[t('cicd.quality.name'), t('cicd.quality.description'), t('cicd.quality.enabled'), t('cicd.quality.source')]}>
@@ -258,10 +258,10 @@ export default function CicdDashboardPage() {
                 </Table>
               ) : <EmptyState title={t('cicd.quality.noGates')} />}
             </Panel>
-            <Panel header={<span className="text-label font-semibold text-primary">{t('cicd.quality.enforcement')}</span>}>
+            <Panel className="min-w-0" header={<span className="text-label font-semibold text-primary">{t('cicd.quality.enforcement')}</span>}>
               <Status kind={data.gates?.enforcement.enforced ? 'ready' : 'offline'} label={data.gates?.enforcement.detail ?? t('cicd.none')} />
             </Panel>
-            <Panel header={<span className="text-label font-semibold text-primary">{t('cicd.quality.history')}</span>}>
+            <Panel className="min-w-0" header={<span className="text-label font-semibold text-primary">{t('cicd.quality.history')}</span>}>
               <p className="mb-space-2 text-caption text-muted">{t('cicd.quality.historyNote')}</p>
               {data.gates?.history.length ? (
                 <Table headers={[t('cicd.quality.name'), t('cicd.quality.result'), t('cicd.pipelines.branch'), t('cicd.quality.timestamp')]}>
@@ -280,7 +280,7 @@ export default function CicdDashboardPage() {
         ) : null}
 
         {tab === 'rules' && data.rules ? (
-          <div className="flex flex-col gap-space-4">
+          <div className="flex min-w-0 flex-col gap-space-4">
             <p className="text-caption text-muted">{t('cicd.rules.note')}</p>
             <RuleTable title={t('cicd.rules.branchNaming')} items={data.rules.branch_naming} />
             <RuleTable title={t('cicd.rules.mergeRules')} items={data.rules.merge_rules} />
