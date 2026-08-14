@@ -7,6 +7,7 @@ The GitHub token is resolved here and never returned to a caller.
 """
 from __future__ import annotations
 
+import os
 import subprocess
 import threading
 import time
@@ -277,11 +278,27 @@ def get_workflow_runs(workflow_id: str = "", per_page: int = 30) -> list[dict[st
 _TEST_GLOBS = ("*test*.py", "*.test.ts", "*.test.tsx")
 
 
+# Dependency and build trees dwarf the source they sit next to: an unpruned
+# walk of this workspace took ~17s per request and counted vendored files as
+# project files. Hidden directories are pruned by prefix, these by name.
+_SKIP_DIRS = frozenset({
+    "node_modules", "__pycache__", "dist", "build", "venv", "site-packages", "target",
+})
+
+
 def _iter_files(directory: Path) -> list[Path]:
+    """Every file under `directory`, skipping dependency and build trees."""
+    files: list[Path] = []
     try:
-        return [path for path in directory.rglob("*") if path.is_file()]
+        for parent, dirnames, filenames in os.walk(directory):
+            dirnames[:] = [
+                name for name in dirnames
+                if name not in _SKIP_DIRS and not name.startswith(".")
+            ]
+            files.extend(Path(parent) / name for name in filenames)
     except OSError:
-        return []
+        return files
+    return files
 
 
 def _list_subprojects() -> list[Path]:

@@ -430,3 +430,25 @@ def test_no_endpoint_leaks_the_token(client: TestClient, monkeypatch: pytest.Mon
     cicd.refresh_cache()
     body = client.get("/api/cicd/github-status").text
     assert "ghp_supersecret" not in body
+
+
+def test_project_health_skips_dependency_and_build_trees(
+    temp_repo: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # An unpruned walk of this workspace took ~17s per request and reported
+    # vendored files as project files.
+    monkeypatch.setattr(config, "GITHUB_TOKEN", "")
+    monkeypatch.setattr(cicd, "_gh_cli_token", lambda: "")
+    project = temp_repo / "alpha"
+    (project / "src").mkdir(parents=True)
+    (project / "src" / "app.py").write_text("x\n", encoding="utf-8")
+    for noise in ("node_modules", "__pycache__", "dist", ".venv"):
+        (project / noise / "nested").mkdir(parents=True)
+        (project / noise / "nested" / "vendor_test.py").write_text("x\n", encoding="utf-8")
+    cicd.refresh_cache()
+
+    alpha = next(
+        entry for entry in cicd.get_project_health()["projects"] if entry["name"] == "alpha"
+    )
+    assert alpha["file_count"] == 1
+    assert alpha["test_count"] == 0
