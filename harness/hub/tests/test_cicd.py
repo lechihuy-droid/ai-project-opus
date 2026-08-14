@@ -296,3 +296,32 @@ def test_recent_activity_respects_the_limit(temp_repo: Path, monkeypatch: pytest
     monkeypatch.setattr(cicd, "get_workflow_runs", lambda workflow_id="", per_page=30: [])
     cicd.refresh_cache()
     assert len(cicd.get_recent_activity(1)) <= 1
+
+
+def test_project_health_survives_a_file_vanishing_mid_scan(
+    temp_repo: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(config, "GITHUB_TOKEN", "")
+    monkeypatch.setattr(cicd, "_gh_cli_token", lambda: "")
+    (temp_repo / "alpha").mkdir()
+    (temp_repo / "alpha" / "gone.txt").write_text("x\n", encoding="utf-8")
+    cicd.refresh_cache()
+
+    # The file survives the first stat and vanishes before the second. That is
+    # exactly the exists()/stat() window: Path.exists() itself calls stat(), so
+    # an always-raising stub would be swallowed by exists() and prove nothing.
+    real_stat = Path.stat
+    seen: dict[str, int] = {}
+
+    def vanishing_stat(self: Path, *args: object, **kwargs: object) -> object:
+        if self.name == "gone.txt":
+            seen["gone.txt"] = seen.get("gone.txt", 0) + 1
+            if seen["gone.txt"] > 2:
+                raise FileNotFoundError(self)
+        return real_stat(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "stat", vanishing_stat)
+    alpha = next(
+        project for project in cicd.get_project_health()["projects"] if project["name"] == "alpha"
+    )
+    assert alpha["file_count"] == 1

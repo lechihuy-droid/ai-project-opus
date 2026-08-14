@@ -304,7 +304,14 @@ def get_project_health() -> dict[str, object]:
     projects: list[dict[str, object]] = []
     for directory in _list_subprojects():
         files = _iter_files(directory)
-        mtimes = [file.stat().st_mtime for file in files if file.exists()]
+        # stat() after exists() is two syscalls: agents write here concurrently,
+        # so a file can vanish in between. Skip what we cannot stat.
+        mtimes: list[float] = []
+        for file in files:
+            try:
+                mtimes.append(file.stat().st_mtime)
+            except OSError:
+                continue
         projects.append({
             "name": directory.name,
             "path": str(directory.relative_to(config.ROOT)),
