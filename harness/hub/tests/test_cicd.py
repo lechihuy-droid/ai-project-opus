@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import subprocess
+import time
 from pathlib import Path
 
 import pytest
@@ -66,5 +67,6 @@ def test_cache_expires_after_ttl(monkeypatch: pytest.MonkeyPatch) -> None:
     cicd.refresh_cache()
     cicd._cache_set("k", 1)
     assert cicd._cache_get("k") == 1
-    monkeypatch.setattr(cicd.time, "time", lambda: 10_000_000.0)
+    later = time.time() + config.CICD_CACHE_TTL_SECONDS + 1
+    monkeypatch.setattr(cicd.time, "time", lambda: later)
     assert cicd._cache_get("k") is None
