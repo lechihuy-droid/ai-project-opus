@@ -240,3 +240,59 @@ def test_workflows_are_cached_between_calls(fake_github: type[_FakeClient]) -> N
     cicd.get_workflows()
     cicd.get_workflows()
     assert len(fake_github.calls) == 1
+
+
+def test_project_health_lists_top_level_dirs(temp_repo: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(config, "GITHUB_TOKEN", "")
+    monkeypatch.setattr(cicd, "_gh_cli_token", lambda: "")
+    (temp_repo / "alpha").mkdir()
+    (temp_repo / "alpha" / "README.md").write_text("# alpha\n", encoding="utf-8")
+    (temp_repo / "alpha" / "test_alpha.py").write_text("def test_x(): pass\n", encoding="utf-8")
+    (temp_repo / ".hidden").mkdir()
+    cicd.refresh_cache()
+
+    projects = cicd.get_project_health()["projects"]
+    names = [project["name"] for project in projects]
+    assert "alpha" in names
+    assert ".hidden" not in names
+    alpha = next(project for project in projects if project["name"] == "alpha")
+    assert alpha["test_count"] == 1
+    assert alpha["file_count"] == 2
+    assert alpha["has_readme"] is True
+    assert alpha["has_git"] is False
+    assert alpha["last_modified"]
+
+
+def test_overview_stats_shape_without_github(temp_repo: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(config, "GITHUB_TOKEN", "")
+    monkeypatch.setattr(cicd, "_gh_cli_token", lambda: "")
+    cicd.refresh_cache()
+    stats = cicd.get_overview_stats()
+    assert set(stats) == {
+        "active_workflows", "total_projects", "test_files", "local_branches",
+        "remote_branches", "worktrees", "recent_commits", "github_available",
+    }
+    assert stats["github_available"] is False
+    assert stats["active_workflows"] == 0
+    assert stats["local_branches"] == 1
+
+
+def test_recent_activity_merges_commits_and_runs_newest_first(
+    temp_repo: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(cicd, "get_workflow_runs", lambda workflow_id="", per_page=30: [{
+        "id": "1", "name": "CI", "status": "completed", "conclusion": "success",
+        "branch": "main", "duration_seconds": 10.0,
+        "created_at": "2099-01-01T00:00:00+00:00", "html_url": "",
+    }])
+    cicd.refresh_cache()
+    activity = cicd.get_recent_activity(5)
+    assert activity[0]["kind"] == "run"
+    assert activity[0]["status"] == "success"
+    assert any(item["kind"] == "commit" for item in activity)
+
+
+def test_recent_activity_respects_the_limit(temp_repo: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(cicd, "get_workflow_runs", lambda workflow_id="", per_page=30: [])
+    cicd.refresh_cache()
+    assert len(cicd.get_recent_activity(1)) <= 1

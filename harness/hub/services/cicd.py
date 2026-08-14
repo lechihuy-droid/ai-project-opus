@@ -11,6 +11,7 @@ import subprocess
 import threading
 import time
 from datetime import datetime
+from pathlib import Path
 from typing import Any
 
 import httpx
@@ -271,3 +272,91 @@ def get_workflow_runs(workflow_id: str = "", per_page: int = 30) -> list[dict[st
     ]
     _cache_set(cache_key, runs)
     return runs
+
+
+_TEST_GLOBS = ("*test*.py", "*.test.ts", "*.test.tsx")
+
+
+def _iter_files(directory: Path) -> list[Path]:
+    try:
+        return [path for path in directory.rglob("*") if path.is_file()]
+    except OSError:
+        return []
+
+
+def _list_subprojects() -> list[Path]:
+    """Top-level, non-hidden directories under the workspace root."""
+    try:
+        entries = sorted(config.ROOT.iterdir())
+    except OSError:
+        return []
+    return [entry for entry in entries if entry.is_dir() and not entry.name.startswith(".")]
+
+
+def _is_test_file(path: Path) -> bool:
+    return any(path.match(pattern) for pattern in _TEST_GLOBS)
+
+
+def get_project_health() -> dict[str, object]:
+    cached = _cache_get("projects")
+    if cached is not None:
+        return cached
+    projects: list[dict[str, object]] = []
+    for directory in _list_subprojects():
+        files = _iter_files(directory)
+        mtimes = [file.stat().st_mtime for file in files if file.exists()]
+        projects.append({
+            "name": directory.name,
+            "path": str(directory.relative_to(config.ROOT)),
+            "test_count": sum(1 for file in files if _is_test_file(file)),
+            "file_count": len(files),
+            "last_modified": (
+                datetime.fromtimestamp(max(mtimes)).isoformat(timespec="seconds") if mtimes else ""
+            ),
+            "has_git": (directory / ".git").exists(),
+            "has_readme": (directory / "README.md").exists(),
+        })
+    data = {"projects": projects}
+    _cache_set("projects", data)
+    return data
+
+
+def get_overview_stats() -> dict[str, object]:
+    workflows = get_workflows()
+    projects = get_project_health()["projects"]
+    return {
+        "active_workflows": sum(1 for workflow in workflows if workflow["state"] == "active"),
+        "total_projects": len(projects),
+        "test_files": sum(int(project["test_count"]) for project in projects),
+        "local_branches": len(get_local_branches()),
+        "remote_branches": len(get_remote_branches()),
+        "worktrees": len(get_worktrees()),
+        "recent_commits": len(get_recent_commits(100)),
+        "github_available": bool(get_github_token_status()["available"]),
+    }
+
+
+def get_recent_activity(limit: int = 20) -> list[dict[str, object]]:
+    limit = max(1, min(limit, 100))
+    items: list[dict[str, object]] = [
+        {
+            "kind": "commit",
+            "title": commit["subject"],
+            "detail": f"{commit['author_name']} · {commit['sha'][:7]}",
+            "status": "",
+            "date": commit["date"],
+        }
+        for commit in get_recent_commits(limit)
+    ]
+    items += [
+        {
+            "kind": "run",
+            "title": run["name"] or "workflow run",
+            "detail": str(run["branch"]),
+            "status": str(run["conclusion"] or run["status"]),
+            "date": str(run["created_at"]),
+        }
+        for run in get_workflow_runs(per_page=limit)
+    ]
+    items.sort(key=lambda item: str(item["date"]), reverse=True)
+    return items[:limit]
