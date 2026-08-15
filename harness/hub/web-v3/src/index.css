@@ -33,6 +33,11 @@
   --radius-full: 999px;
   --spacing-space-1: 4px;
   --spacing-space-2: 8px;
+  /* 10px intermediate — the missing step that forced `[7px]`/`[2px]` arbitrary
+     workarounds elsewhere (e.g. ui.tsx ListItem `mt-[2px]`, SegmentedControl
+     `gap-[4px]`). Exposed as its own scale step so components can reach 10px
+     via `gap-space-2-5` instead of an arbitrary value. */
+  --spacing-space-2-5: 10px;
   --spacing-space-3: 12px;
   --spacing-space-4: 16px;
   --spacing-space-6: 24px;
@@ -215,6 +220,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .message a { color: var(--color-info); }
 .node-pulse { animation: run-pulse 1.4s ease-in-out infinite; }
 @keyframes run-pulse { 0%,100% { opacity: .45; transform: scale(.92); } 50% { opacity: 1; transform: scale(1); } }
-@media (prefers-reduced-motion: reduce) { .node-pulse { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .node-pulse, .animate-pulse { animation: none; } }
 .content h1 { color: var(--color-primary); font-size: 16px; line-height: 24px; margin: 0; }
 .content p { color: var(--color-secondary); margin-top: 8px; }

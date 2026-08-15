@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Alert, Button, Input, Panel, Select, Textarea, Toolbar } from '../lib/ui'
+import { Alert, Button, EmptyState, Input, Panel, Select, Textarea, Toolbar } from '../lib/ui'
 import { vgov, type Artifact, type Revision } from '../lib/vgovApi'
 import { Markdown } from '../lib/markdown'
 import { ApiError } from '../lib/api'
@@ -65,12 +65,12 @@ export default function VgovOutputPage() {
   return (
     <div className="mx-auto max-w-[1100px] space-y-space-4 overflow-auto p-space-6">
       <div>
-        <div className="text-section font-semibold uppercase tracking-section text-muted">Run → output → approve</div>
-        <h1 className="text-title font-semibold text-primary">Output history</h1>
+        <div className="text-section font-semibold uppercase tracking-section text-muted">{t('vgov.outputEyebrow')}</div>
+        <h1 className="text-title font-semibold text-primary">{t('vgov.outputHistoryTitle')}</h1>
       </div>
       <Toolbar className="h-auto min-h-toolbar flex-wrap">
-        <Input className="max-w-xs" value={project} onChange={e => setProject(e.target.value)} aria-label="Project ID" />
-        <Button onClick={loadArtifacts}>Refresh</Button>
+        <Input className="max-w-xs" value={project} onChange={e => setProject(e.target.value)} aria-label={t('vgov.projectIdLabel')} />
+        <Button onClick={loadArtifacts}>{t('vgov.refresh')}</Button>
         <Select
           className="max-w-xs"
           value={artifactId}
@@ -85,18 +85,20 @@ export default function VgovOutputPage() {
         </Select>
         <Select className="max-w-xs" value={revisionId} onChange={e => setRevisionId(e.target.value)}>
           {revisions.map(r => (
-            <option key={r.id} value={r.id}>Revision {r.revision_no} · {r.origin}</option>
+            <option key={r.id} value={r.id}>{t('vgov.revisionOption', { no: r.revision_no, origin: r.origin })}</option>
           ))}
         </Select>
       </Toolbar>
       <Toolbar className="h-auto min-h-8 gap-space-2">
-        <Button onClick={() => setEditing(value => !value)} disabled={!revisionId}>{editing ? 'Preview' : 'Edit content'}</Button>
-        <Button variant="primary" onClick={() => void approve()} disabled={!revisionId}>Approve</Button>
+        <Button onClick={() => setEditing(value => !value)} disabled={!revisionId}>{editing ? t('vgov.preview') : t('vgov.editContent')}</Button>
+        <Button variant="primary" onClick={() => void approve()} disabled={!revisionId}>{t('vgov.approve')}</Button>
       </Toolbar>
+      {!error && !artifactId && <EmptyState title={t('vgov.emptyArtifactsTitle')} description={t('vgov.emptyArtifactsDesc')} />}
+      {!error && artifactId && !revisionId && <EmptyState title={t('vgov.emptyRevisionsTitle')} description={t('vgov.emptyRevisionsDesc')} />}
       {!error && (editing ? (
         <Panel className="space-y-space-2" bodyClassName="space-y-space-2">
-          <Textarea value={content} onChange={e => setContent(e.target.value)} aria-label="Revision markdown" className="min-h-[420px] font-mono" />
-          <Button variant="primary" onClick={() => void revise()}>Save human edit</Button>
+          <Textarea value={content} onChange={e => setContent(e.target.value)} aria-label={t('vgov.revisionMarkdownLabel')} className="min-h-[420px] font-mono" />
+          <Button variant="primary" onClick={() => void revise()}>{t('vgov.saveHumanEdit')}</Button>
         </Panel>
       ) : (
         <Panel bodyClassName="p-space-5 text-label text-secondary">

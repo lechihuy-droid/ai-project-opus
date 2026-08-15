@@ -12,6 +12,7 @@ export default function FilesPage() {
   const [run, setRun] = useState('')
   const [files, setFiles] = useState<Item[]>([])
   const [error, setError] = useState('')
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null)
   const input = useRef<HTMLInputElement>(null)
 
   const load = () => void api<Run[]>('/api/agent/runs').then(rows => { setRuns(rows); setRun(current => current || rows[0]?.run_id || '') }).catch(e => setError(e instanceof ApiError ? e.message : t('misc.files.loadRunsFailed')))
@@ -25,6 +26,9 @@ export default function FilesPage() {
     form.append('file', file)
     try { await api(`/api/runs/${encodeURIComponent(run)}/files`, { method: 'POST', body: form }); loadFiles() } catch (e) { setError(e instanceof ApiError ? e.message : t('misc.files.uploadFailed')) }
   }
+  const remove = async (name: string) => {
+    try { await api(`/api/runs/${encodeURIComponent(run)}/files/${encodeURIComponent(name)}`, { method: 'DELETE' }); loadFiles() } catch (e) { setError(e instanceof ApiError ? e.message : t('misc.files.deleteFailed')) } finally { setPendingDelete(null) }
+  }
 
   const headers = [t('misc.files.name'), t('misc.files.size'), t('misc.files.updated'), '']
 
@@ -37,7 +41,7 @@ export default function FilesPage() {
     {error ? <Alert variant="error">{error}</Alert> : null}
     <Select value={run} onChange={e => setRun(e.target.value)} className="max-w-[420px]"><option value="">{t('misc.files.chooseRun')}</option>{runs.map(item => <option key={item.run_id} value={item.run_id}>{item.run_id} · {item.status}</option>)}</Select>
     <Panel className="min-h-0 flex-1" bodyClassName="h-full min-h-0 overflow-auto p-0">
-      {files.length ? <Table headers={headers} wrapperClassName="rounded-none border-0">{files.map(item => <TableRow key={item.name}><TableCell>{item.name}</TableCell><TableCell>{item.size} B</TableCell><TableCell>{String(item.updated_at)}</TableCell><TableCell><a className="text-accent" href={`/api/runs/${encodeURIComponent(run)}/files/${encodeURIComponent(item.name)}`}>{t('misc.files.download')}</a> <Button size="sm" variant="ghost" onClick={() => void api(`/api/runs/${encodeURIComponent(run)}/files/${encodeURIComponent(item.name)}`, { method: 'DELETE' }).then(loadFiles)}>{t('common.delete')}</Button></TableCell></TableRow>)}</Table> : <div className="p-space-6"><EmptyState title={t('misc.files.emptyTitle')} description={run ? t('misc.files.emptyForRun') : t('misc.files.emptyNoRun')} /></div>}
+      {files.length ? <Table headers={headers} wrapperClassName="rounded-none border-0">{files.map(item => <TableRow key={item.name}><TableCell>{item.name}</TableCell><TableCell>{item.size} B</TableCell><TableCell>{String(item.updated_at)}</TableCell><TableCell><a className="text-accent" href={`/api/runs/${encodeURIComponent(run)}/files/${encodeURIComponent(item.name)}`}>{t('misc.files.download')}</a> {pendingDelete === item.name ? <><span className="text-caption text-secondary">{t('misc.files.deleteConfirm', { name: item.name })}</span> <Button size="sm" variant="destructive" onClick={() => void remove(item.name)}>{t('common.delete')}</Button> <Button size="sm" variant="ghost" onClick={() => setPendingDelete(null)}>{t('common.cancel')}</Button></> : <Button size="sm" variant="ghost" onClick={() => setPendingDelete(item.name)}>{t('common.delete')}</Button>}</TableCell></TableRow>)}</Table> : <div className="p-space-6"><EmptyState title={t('misc.files.emptyTitle')} description={run ? t('misc.files.emptyForRun') : t('misc.files.emptyNoRun')} /></div>}
     </Panel>
   </div>
 }
