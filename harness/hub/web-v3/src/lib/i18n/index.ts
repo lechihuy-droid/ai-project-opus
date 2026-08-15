@@ -10,10 +10,11 @@ import { artifacts } from './artifacts'
 import { runs } from './runs'
 import { misc } from './misc'
 import { vgov } from './vgov'
+import { cicd } from './cicd'
 
 // One flat English dictionary, assembled from per-area files so several
 // migration batches can add keys without editing the same file.
-export const en = { ...common, ...chat, ...workflows, ...usage, ...agents, ...skills, ...settings, ...approvals, ...artifacts, ...runs, ...misc, ...vgov } as const
+export const en = { ...common, ...chat, ...workflows, ...usage, ...agents, ...skills, ...settings, ...approvals, ...artifacts, ...runs, ...misc, ...vgov, ...cicd } as const
 
 export type TranslationKey = keyof typeof en
 

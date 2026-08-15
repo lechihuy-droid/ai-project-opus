@@ -39,6 +39,15 @@ RUNTIME_FILE_MAX_BYTES = 10 * 1024 * 1024
 RUNTIME_FILES_MAX_BYTES = 100 * 1024 * 1024
 PORT = 8799
 VGOV_BASE_URL = os.environ.get("VGOV_BASE_URL", "http://127.0.0.1:8810")
+
+# CI/CD Dashboard. Owner/repo default to this workspace's origin; override in
+# .env for a fork. The token is server-side only and never reaches the SPA.
+GITHUB_OWNER = os.environ.get("GITHUB_OWNER", "lechihuy-droid")
+GITHUB_REPO = os.environ.get("GITHUB_REPO", "ai-project-opus")
+GITHUB_API_BASE = "https://api.github.com"
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+CICD_CACHE_TTL_SECONDS = 300
+
 STEP_CAP = 50
 JOB_AGENT_CMD = "codex"
 JOB_TIME_CAP_SECONDS = 1800

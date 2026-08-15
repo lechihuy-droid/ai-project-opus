@@ -12,6 +12,7 @@ import OverviewPage from './OverviewPage'
 import HooksPage from './HooksPage'
 import FilesPage from './FilesPage'
 import ArtifactDetailPage from './ArtifactDetailPage'
+import CicdDashboardPage from './CicdDashboardPage'
 import VgovReleasesPage from './VgovReleasesPage'
 import VgovRunPage from './VgovRunPage'
 import VgovOutputPage from './VgovOutputPage'
@@ -28,6 +29,7 @@ export const pages = [
   { path: 'hooks', element: <HooksPage /> }, { path: 'files', element: <FilesPage /> },
   { path: 'approvals', element: <ApprovalsPage /> }, { path: 'usage', element: <UsagePage /> },
   { path: 'settings', element: <SettingsPage /> },
+  { path: 'cicd', element: <CicdDashboardPage /> },
   { path: 'vgov/releases', element: <VgovReleasesPage /> },
   { path: 'vgov/run', element: <VgovRunPage /> },
   { path: 'vgov/output', element: <VgovOutputPage /> },
