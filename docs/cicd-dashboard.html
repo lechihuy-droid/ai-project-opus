@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Project Opus — CI/CD Dashboard & Management Rules</title>
+<link rel="stylesheet" href="../html-kit/styles.css">
+<script src="../html-kit/diagram.js" defer></script>
+<style>
+  body { max-width: 1200px; }
+
+  /* ── Stat tiles ─────────────────────────────────────── */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .stat-tile { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; text-align: center; box-shadow: var(--shadow); }
+  .stat-tile .stat-value { font-size: 2.25rem; font-weight: 700; font-family: var(--font-serif); color: var(--heading); line-height: 1.1; }
+  .stat-tile .stat-label { font-size: .75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .08em; margin-top: .35rem; }
+  .stat-tile .stat-sub { font-size: .8rem; margin-top: .25rem; }
+  .stat-tile .stat-sub.good { color: var(--green); }
+  .stat-tile .stat-sub.bad { color: var(--red); }
+  .stat-tile .stat-sub.warn { color: #D97706; }
+
+  /* ── Status dot ─────────────────────────────────────── */
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: .4rem; vertical-align: middle; }
+  .dot.green { background: var(--green); }
+  .dot.red { background: var(--red); }
+  .dot.yellow { background: #D97706; }
+  .dot.gray { background: var(--gray-500); }
+  .dot.blue { background: var(--blue-mid); }
+
+  /* ── Pipeline bar ───────────────────────────────────── */
+  .pipeline-bar { display: flex; align-items: center; gap: 0; margin-bottom: 1.5rem; overflow-x: auto; }
+  .pipeline-step { flex: 1; min-width: 120px; padding: .75rem 1rem; text-align: center; font-size: .8rem; font-weight: 600; background: var(--surface-alt); border: 1px solid var(--border); position: relative; }
+  .pipeline-step:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+  .pipeline-step:last-child { border-radius: 0 var(--radius) var(--radius) 0; border-left: none; }
+  .pipeline-step:not(:last-child) { border-right: none; }
+  .pipeline-step.pass { background: var(--badge-green-bg); border-color: var(--green); color: var(--green); }
+  .pipeline-step.fail { background: var(--badge-red-bg); border-color: var(--red); color: var(--red); }
+  .pipeline-step.run { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .pipeline-step.skip { background: var(--surface-alt); border-color: var(--border); color: var(--text-muted); }
+  .pipeline-step .step-icon { font-size: 1.25rem; display: block; margin-bottom: .25rem; }
+
+  /* ── Rule table ─────────────────────────────────────── */
+  .rule-table thead th:first-child { width: 200px; }
+  .rule-table thead th:nth-child(2) { width: 120px; text-align: center; }
+  .rule-table thead th:nth-child(3) { width: 120px; text-align: center; }
+  .rule-severity { display: inline-block; padding: .15em .5em; border-radius: 3px; font-size: .7rem; font-weight: 700; text-transform: uppercase; }
+  .rule-severity.critical { background: var(--badge-red-bg); color: var(--red); }
+  .rule-severity.high { background: #FFFBEB; color: #92400E; }
+  .rule-severity.medium { background: var(--accent-soft); color: var(--accent); }
+  .rule-severity.low { background: var(--surface-alt); color: var(--text-muted); border: 1px solid var(--border); }
+  html.dark .rule-severity.high { background: #3A2E10; color: #FCD15E; }
+
+  /* ── Workflow card ──────────────────────────────────── */
+  .workflow-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
+  .workflow-card h3 { margin-top: 0; }
+  .workflow-meta { display: flex; gap: 1rem; flex-wrap: wrap; font-size: .8rem; color: var(--text-muted); margin-bottom: .75rem; }
+  .workflow-meta code { font-size: .75rem; }
+
+  /* ── Sparkline (CSS-only) ───────────────────────────── */
+  .sparkline { display: inline-flex; align-items: flex-end; gap: 2px; height: 24px; vertical-align: middle; }
+  .sparkline .bar { width: 4px; border-radius: 1px; }
+
+  /* ── Section within tabs ────────────────────────────── */
+  .tab-panel h2 { margin-top: 0; }
+
+  /* ── Print ──────────────────────────────────────────── */
+  @media print {
+    .stat-grid { grid-template-columns: repeat(4, 1fr); }
+    .pipeline-step { min-width: 100px; }
+  }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark')" aria-label="Toggle dark mode">🌙</button>
+
+<!-- ════════════════════ HEADER ════════════════════ -->
+<div class="doc-header">
+  <span class="badge navy">CI/CD</span>
+  <h1>AI Project Opus — Workspace Dashboard</h1>
+  <p class="lead">CI/CD pipeline status, project health, quality gates & management rules</p>
+  <div class="meta">
+    Repo: <code>github.com/lechihuy-droid/ai-project-opus</code> &middot;
+    Updated: <span id="updated"></span> &middot;
+    Auto-refresh: <label><input type="checkbox" id="autoRefresh" checked> 60s</label>
+  </div>
+</div>
+
+<!-- ════════════════════ TABS ════════════════════ -->
+<div class="tabs">
+  <button class="tab-btn active" data-tab="overview">Overview</button>
+  <button class="tab-btn" data-tab="pipelines">Pipelines</button>
+  <button class="tab-btn" data-tab="projects">Projects</button>
+  <button class="tab-btn" data-tab="quality">Quality Gates</button>
+  <button class="tab-btn" data-tab="rules">Management Rules</button>
+</div>
+
+<!-- ════════════════════ TAB: OVERVIEW ════════════════════ -->
+<div class="tab-panel active" id="tab-overview">
+
+  <!-- Stat tiles -->
+  <div class="stat-grid">
+    <div class="stat-tile">
+      <div class="stat-value" style="color:var(--green)">3</div>
+      <div class="stat-label">Active Workflows</div>
+      <div class="stat-sub good">● All passing</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-value">12</div>
+      <div class="stat-label">Projects</div>
+      <div class="stat-sub"><span class="dot green"></span>9 healthy &middot; <span class="dot yellow"></span>3 attention</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-value">47</div>
+      <div class="stat-label">Test Cases</div>
+      <div class="stat-sub good">94% pass rate</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-value">5</div>
+      <div class="stat-label">Open Branches</div>
+      <div class="stat-sub warn">2 stale >7 days</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-value" style="color:var(--green)">✓</div>
+      <div class="stat-label">Main Branch</div>
+      <div class="stat-sub good">Protected</div>
+    </div>
+    <div class="stat-tile">
+      <div class="stat-value">3</div>
+      <div class="stat-label">Quality Gates</div>
+      <div class="stat-sub good">All enforced</div>
+    </div>
+  </div>
+
+  <!-- CI Pipeline overview -->
+  <h2>CI Pipeline — Main Branch</h2>
+  <div class="pipeline-bar">
+    <div class="pipeline-step pass"><span class="step-icon">✓</span>Checkout<br><small><5s</small></div>
+    <div class="pipeline-step pass"><span class="step-icon">✓</span>Lint<br><small>12s</small></div>
+    <div class="pipeline-step pass"><span class="step-icon">✓</span>Test<br><small>45s</small></div>
+    <div class="pipeline-step pass"><span class="step-icon">✓</span>Build<br><small>30s</small></div>
+    <div class="pipeline-step run"><span class="step-icon">⟳</span>Security<br><small>...</small></div>
+    <div class="pipeline-step skip"><span class="step-icon">—</span>Deploy<br><small>skip</small></div>
+  </div>
+
+  <!-- Recent activity -->
+  <h2>Recent Activity</h2>
+  <table>
+    <thead>
+      <tr><th>Time</th><th>Event</th><th>Branch</th><th>Status</th><th>Duration</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>14:32</td><td><span class="dot green"></span>merge <code>feat/skills-registry-governance</code></td><td>main</td><td><span class="rule-severity critical" style="background:var(--badge-green-bg);color:var(--green)">PASS</span></td><td>2m 14s</td></tr>
+      <tr><td>12:15</td><td><span class="dot blue"></span>push 3 commits</td><td>feat/skills-registry-governance</td><td><span class="rule-severity critical" style="background:var(--badge-green-bg);color:var(--green)">PASS</span></td><td>1m 48s</td></tr>
+      <tr><td>09:45</td><td><span class="dot blue"></span>push 1 commit</td><td>perf/skill-index</td><td><span class="rule-severity critical" style="background:var(--badge-green-bg);color:var(--green)">PASS</span></td><td>1m 22s</td></tr>
+      <tr><td>Yesterday</td><td><span class="dot yellow"></span>pr <code>workflow-canvas-drag-drop</code></td><td>claude/workflow-canvas-drag-drop-35308b</td><td><span class="rule-severity high">WIP</span></td><td>—</td></tr>
+      <tr><td>Yesterday</td><td><span class="dot gray"></span>version-governance DoD check</td><td>main</td><td><span class="rule-severity critical" style="background:var(--badge-green-bg);color:var(--green)">PASS</span></td><td>4m 02s</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Pipeline flow diagram -->
+  <h2>CI/CD Flow</h2>
+  <div class="diagram" data-chart='{
+    "type": "flow",
+    "nodes": [
+      {"id": "push", "label": "Push / PR", "shape": "terminal"},
+      {"id": "lint", "label": "Lint & Format"},
+      {"id": "test", "label": "Run Tests"},
+      {"id": "security", "label": "Security Scan"},
+      {"id": "quality", "label": "Quality Gate?", "shape": "diamond"},
+      {"id": "merge", "label": "Merge to Main", "shape": "terminal"},
+      {"id": "deploy", "label": "Deploy Harness"},
+      {"id": "notify", "label": "Notify Slack", "shape": "io"}
+    ],
+    "edges": [
+      {"from": "push", "to": "lint", "label": "trigger"},
+      {"from": "lint", "to": "test"},
+      {"from": "test", "to": "security"},
+      {"from": "security", "to": "quality"},
+      {"from": "quality", "to": "merge", "label": "pass"},
+      {"from": "quality", "to": "push", "label": "fail → retry"},
+      {"from": "merge", "to": "deploy"},
+      {"from": "deploy", "to": "notify"}
+    ]
+  }'></div>
+  <p class="diagram-caption">End-to-end CI/CD pipeline — push → lint → test → security → quality gate → merge → deploy</p>
+
+</div>
+
+<!-- ════════════════════ TAB: PIPELINES ════════════════════ -->
+<div class="tab-panel" id="tab-pipelines">
+
+  <h2>Active GitHub Actions Workflows</h2>
+
+  <div class="workflow-card">
+    <h3><span class="dot green"></span>Version Governance — Definition of Done</h3>
+    <div class="workflow-meta">
+      <span>Trigger: <code>PR → harness/version-governance/**</code></span>
+      <span>Last run: <span class="text-muted">Aug 12, 2026</span></span>
+      <span>Avg duration: <span class="text-muted">~4m</span></span>
+    </div>
+    <p>Stands up Docker Compose stack (PostgreSQL, MinIO, MLflow, vgov-api, vgov-runtime), runs 12 Definition-of-Done invariants (immutability, lineage, manifest freezing, hash chaining).</p>
+    <div class="pipeline-bar">
+      <div class="pipeline-step pass"><span class="step-icon">✓</span>Checkout</div>
+      <div class="pipeline-step pass"><span class="step-icon">✓</span>Create .env</div>
+      <div class="pipeline-step pass"><span class="step-icon">✓</span>Docker Compose</div>
+      <div class="pipeline-step pass"><span class="step-icon">✓</span>Health Check</div>
+      <div class="pipeline-step pass"><span class="step-icon">✓</span>DoD Gate</div>
+      <div class="pipeline-step pass"><span class="step-icon">✓</span>Tear Down</div>
+    </div>
+  </div>
+
+  <div class="workflow-card">
+    <h3><span class="dot green"></span>Nexus — Execute Calendar/Tasks Command</h3>
+    <div class="workflow-meta">
+      <span>Trigger: <code>push main → nexus-commands/*.json</code></span>
+      <span>Last run: <span class="text-muted">Jun 2, 2026</span></span>
+      <span>Avg duration: <span class="text-muted">~30s</span></span>
+    </div>
+    <p>Detects new command JSON files, executes them via Google Calendar API, archives processed commands.</p>
+    <div class="pipeline-bar">
+      <div class="pipeline-step pass"><span class="step-icon">✓</span>Checkout</div>
+      <div class="pipeline-step pass"><span class="step-icon">✓</span>Setup Node</div>
+      <div class="pipeline-step pass"><span class="step-icon">✓</span>Detect Commands</div>
+      <div class="pipeline-step pass"><span class="step-icon">✓</span>Execute</div>
+      <div class="pipeline-step pass"><span class="step-icon">✓</span>Archive</div>
+    </div>
+  </div>
+
+  <div class="workflow-card">
+    <h3><span class="dot green"></span>Sync Dashboard to Opus Vita</h3>
+    <div class="workflow-meta">
+      <span>Trigger: <code>push main → health-app/dashboard.html</code></span>
+      <span>Last run: <span class="text-muted">Jun 2, 2026</span></span>
+      <span>Avg duration: <span class="text-muted">~15s</span></span>
+    </div>
+    <p>Syncs health dashboard to <code>opus-vita</code> repo for GitHub Pages deployment.</p>
+    <div class="pipeline-bar">
+      <div class="pipeline-step pass"><span class="step-icon">✓</span>Checkout</div>
+      <div class="pipeline-step pass"><span class="step-icon">✓</span>Clone opus-vita</div>
+      <div class="pipeline-step pass"><span class="step-icon">✓</span>Copy Assets</div>
+      <div class="pipeline-step pass"><span class="step-icon">✓</span>Push</div>
+    </div>
+  </div>
+
+  <h2>Proposed New Workflows</h2>
+  <div class="callout warn">
+    <strong>Planned:</strong> These workflows are designed but not yet implemented. See <a href="#tab-rules" onclick="switchTab('rules')">Management Rules</a> for the full spec.
+  </div>
+
+  <div class="workflow-card" style="opacity:.7">
+    <h3><span class="dot gray"></span>CI — Harness Test Suite <span class="badge">proposed</span></h3>
+    <div class="workflow-meta">
+      <span>Trigger: <code>push, PR → harness/**</code></span>
+      <span>Est. duration: <span class="text-muted">~2m</span></span>
+    </div>
+    <p>Runs full pytest suite for harness hub: <code>pytest harness/hub/tests/</code>. Covers API, auth, behavior, boundary, catalog tests.</p>
+  </div>
+
+  <div class="workflow-card" style="opacity:.7">
+    <h3><span class="dot gray"></span>CI — Frontend Build <span class="badge">proposed</span></h3>
+    <div class="workflow-meta">
+      <span>Trigger: <code>push, PR → harness/hub/web-v3/**</code></span>
+      <span>Est. duration: <span class="text-muted">~45s</span></span>
+    </div>
+    <p>TypeScript check + Vite build for the web-v3 frontend. Catches type errors before merge.</p>
+  </div>
+
+  <div class="workflow-card" style="opacity:.7">
+    <h3><span class="dot gray"></span>CI — Lint & Format <span class="badge">proposed</span></h3>
+    <div class="workflow-meta">
+      <span>Trigger: <code>push, PR → **</code></span>
+      <span>Est. duration: <span class="text-muted">~15s</span></span>
+    </div>
+    <p>Ruff (Python) + ESLint/Prettier (TypeScript) + gitlint (commit messages). Fast gate, runs first.</p>
+  </div>
+
+  <div class="workflow-card" style="opacity:.7">
+    <h3><span class="dot gray"></span>Nightly — Workspace Health Check <span class="badge">proposed</span></h3>
+    <div class="workflow-meta">
+      <span>Trigger: <code>schedule 02:00 UTC daily</code></span>
+      <span>Est. duration: <span class="text-muted">~5m</span></span>
+    </div>
+    <p>Full workspace scan: stale branches, dependency updates, test flakiness, disk usage. Generates daily health report.</p>
+  </div>
+
+</div>
+
+<!-- ════════════════════ TAB: PROJECTS ════════════════════ -->
+<div class="tab-panel" id="tab-projects">
+
+  <h2>Project Health Matrix</h2>
+  <table>
+    <thead>
+      <tr><th>Project</th><th>Type</th><th>Status</th><th>Tests</th><th>Last Active</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>harness/</strong></td>
+        <td>Python + TS</td>
+        <td><span class="dot green"></span>Healthy</td>
+        <td>
+          <span class="sparkline">
+            <span class="bar" style="height:20px;background:var(--green)"></span>
+            <span class="bar" style="height:22px;background:var(--green)"></span>
+            <span class="bar" style="height:18px;background:var(--green)"></span>
+            <span class="bar" style="height:24px;background:var(--green)"></span>
+            <span class="bar" style="height:24px;background:var(--green)"></span>
+          </span> 47/50
+        </td>
+        <td>Aug 14</td>
+        <td>Core project — active development</td>
+      </tr>
+      <tr>
+        <td><strong>html-kit/</strong></td>
+        <td>HTML/CSS/JS</td>
+        <td><span class="dot green"></span>Healthy</td>
+        <td>—</td>
+        <td>Aug 13</td>
+        <td>Shared output library</td>
+      </tr>
+      <tr>
+        <td><strong>opus-animus/</strong></td>
+        <td>Python</td>
+        <td><span class="dot yellow"></span>Attention</td>
+        <td>—</td>
+        <td>Jul 12</td>
+        <td>Finance — has sensitive data, no push</td>
+      </tr>
+      <tr>
+        <td><strong>opus-lucida/</strong></td>
+        <td>Python</td>
+        <td><span class="dot green"></span>Healthy</td>
+        <td>—</td>
+        <td>Jul 18</td>
+        <td>Style system</td>
+      </tr>
+      <tr>
+        <td><strong>opus-runtime/</strong></td>
+        <td>Python</td>
+        <td><span class="dot green"></span>Healthy</td>
+        <td>—</td>
+        <td>Jul 8</td>
+        <td>Runtime engine</td>
+      </tr>
+      <tr>
+        <td><strong>health-app/</strong></td>
+        <td>HTML</td>
+        <td><span class="dot green"></span>Healthy</td>
+        <td>—</td>
+        <td>Aug 11</td>
+        <td>Dashboard synced to opus-vita</td>
+      </tr>
+      <tr>
+        <td><strong>viet-japan-app/</strong></td>
+        <td>Node.js</td>
+        <td><span class="dot green"></span>Healthy</td>
+        <td>—</td>
+        <td>Aug 5</td>
+        <td>Dictionary app</td>
+      </tr>
+      <tr>
+        <td><strong>langgraph-rd-bd-poc/</strong></td>
+        <td>Python</td>
+        <td><span class="dot green"></span>Healthy</td>
+        <td>—</td>
+        <td>Aug 6</td>
+        <td>LangGraph POC</td>
+      </tr>
+      <tr>
+        <td><strong>nexus-commands/</strong></td>
+        <td>JSON</td>
+        <td><span class="dot green"></span>Healthy</td>
+        <td>—</td>
+        <td>Jun 2</td>
+        <td>Calendar automation</td>
+      </tr>
+      <tr>
+        <td><strong>SDD-toolkit/</strong></td>
+        <td>Python</td>
+        <td><span class="dot green"></span>Healthy</td>
+        <td>—</td>
+        <td>Jun 2</td>
+        <td>Spec-driven development toolkit</td>
+      </tr>
+      <tr>
+        <td><strong>scripts/</strong></td>
+        <td>Python/PS1</td>
+        <td><span class="dot yellow"></span>Attention</td>
+        <td>—</td>
+        <td>Jul 13</td>
+        <td>Utility scripts — needs test coverage</td>
+      </tr>
+      <tr>
+        <td><strong>docs/</strong></td>
+        <td>Markdown</td>
+        <td><span class="dot green"></span>Healthy</td>
+        <td>—</td>
+        <td>Aug 14</td>
+        <td>191 files — governance docs</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Branch Status</h2>
+  <table>
+    <thead>
+      <tr><th>Branch</th><th>Type</th><th>Age</th><th>Status</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>main</code></td>
+        <td><span class="badge navy">main</span></td>
+        <td>—</td>
+        <td><span class="dot green"></span>Protected, up-to-date</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td><code>claude/workflow-canvas-drag-drop-35308b</code></td>
+        <td><span class="badge">feature</span></td>
+        <td>3 days</td>
+        <td><span class="dot blue"></span>In progress</td>
+        <td>Active worktree</td>
+      </tr>
+      <tr>
+        <td><code>benchmark/final-taste</code></td>
+        <td><span class="badge gray">benchmark</span></td>
+        <td>10 days</td>
+        <td><span class="dot yellow"></span>Stale</td>
+        <td><a href="#">Review & cleanup</a></td>
+      </tr>
+      <tr>
+        <td><code>claude/claude-skill-setup-35c5b9</code></td>
+        <td><span class="badge gray">feature</span></td>
+        <td>14 days</td>
+        <td><span class="dot yellow"></span>Stale</td>
+        <td><a href="#">Review & cleanup</a></td>
+      </tr>
+      <tr>
+        <td><code>feat/version-governance-poc</code></td>
+        <td><span class="badge">feature</span></td>
+        <td>5 days</td>
+        <td><span class="dot green"></span>Ready</td>
+        <td><a href="#">Merge to main</a></td>
+      </tr>
+      <tr>
+        <td><code>refactor/server-router-split</code></td>
+        <td><span class="badge">refactor</span></td>
+        <td>7 days</td>
+        <td><span class="dot green"></span>Ready</td>
+        <td><a href="#">Merge to main</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Worktree Inventory</h2>
+  <table>
+    <thead>
+      <tr><th>Path</th><th>Branch</th><th>Commit</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>ai-project-opus/</code></td><td><code>main</code></td><td>37e333a</td><td><span class="dot green"></span>Active</td></tr>
+      <tr><td><code>.claude/worktrees/workflow-canvas-drag-drop-35308b</code></td><td><code>claude/workflow-canvas-drag-drop-35308b</code></td><td>bbd4ea7</td><td><span class="dot blue"></span>In progress</td></tr>
+    </tbody>
+  </table>
+
+</div>
+
+<!-- ════════════════════ TAB: QUALITY GATES ════════════════════ -->
+<div class="tab-panel" id="tab-quality">
+
+  <h2>Quality Gate Definitions</h2>
+  <p class="lead">Every merge to <code>main</code> must pass these gates. Gates run automatically via CI.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3><span class="dot green"></span>Gate 1 — Lint & Format</h3>
+      <p><strong>Scope:</strong> All Python + TypeScript files</p>
+      <ul style="margin:.75rem 0;padding-left:1.25rem;font-size:.9rem;">
+        <li><code>ruff check</code> — no errors, no warnings</li>
+        <li><code>ruff format --check</code> — formatting consistent</li>
+        <li><code>tsc --noEmit</code> — no type errors</li>
+        <li>Commit messages follow Conventional Commits</li>
+      </ul>
+      <p class="text-small text-muted">Target: <15s &middot; Runs on every push</p>
+    </div>
+    <div class="card">
+      <h3><span class="dot green"></span>Gate 2 — Test Suite</h3>
+      <p><strong>Scope:</strong> <code>harness/hub/tests/</code></p>
+      <ul style="margin:.75rem 0;padding-left:1.25rem;font-size:.9rem;">
+        <li><code>pytest harness/hub/tests/</code> — all pass</li>
+        <li>Min coverage: 80% on changed files</li>
+        <li>No flaky tests (3 consecutive passes required)</li>
+        <li>Existing tests must not break</li>
+      </ul>
+      <p class="text-small text-muted">Target: <2min &middot; Runs on PR + push to main</p>
+    </div>
+    <div class="card">
+      <h3><span class="dot green"></span>Gate 3 — Security Scan</h3>
+      <p><strong>Scope:</strong> Dependencies + secrets</p>
+      <ul style="margin:.75rem 0;padding-left:1.25rem;font-size:.9rem;">
+        <li><code>pip-audit</code> — no known vulnerabilities</li>
+        <li><code>gitleaks</code> — no secrets in code</li>
+        <li>No sensitive data committed (finance, health)</li>
+        <li>Dependency review on PR</li>
+      </ul>
+      <p class="text-small text-muted">Target: <1min &middot; Runs on PR</p>
+    </div>
+  </div>
+
+  <h2>Gate Enforcement</h2>
+  <div class="diagram" data-chart='{
+    "type": "sequence",
+    "actors": ["Developer", "GitHub", "CI Runner", "Main Branch"],
+    "steps": [
+      {"from": "Developer", "to": "GitHub", "msg": "Push / Create PR"},
+      {"from": "GitHub", "to": "CI Runner", "msg": "Trigger CI pipeline"},
+      {"from": "CI Runner", "to": "CI Runner", "msg": "Gate 1: Lint & Format"},
+      {"from": "CI Runner", "to": "CI Runner", "msg": "Gate 2: Test Suite"},
+      {"from": "CI Runner", "to": "CI Runner", "msg": "Gate 3: Security Scan"},
+      {"from": "CI Runner", "to": "GitHub", "msg": "Report results", "return": true},
+      {"from": "GitHub", "to": "Main Branch", "msg": "Allow merge (all gates pass)"},
+      {"from": "GitHub", "to": "Developer", "msg": "Block merge (gate failed)", "return": true}
+    ]
+  }'></div>
+  <p class="diagram-caption">Quality gate enforcement flow — developer → CI → merge decision</p>
+
+  <h2>Historical Gate Results</h2>
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Branch</th><th>Gate 1</th><th>Gate 2</th><th>Gate 3</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Aug 14</td><td><code>feat/skills-registry-governance</code></td><td><span class="dot green"></span>Pass</td><td><span class="dot green"></span>Pass</td><td><span class="dot green"></span>Pass</td><td><span class="rule-severity critical" style="background:var(--badge-green-bg);color:var(--green)">MERGED</span></td></tr>
+      <tr><td>Aug 12</td><td><code>perf/skill-index</code></td><td><span class="dot green"></span>Pass</td><td><span class="dot green"></span>Pass</td><td><span class="dot green"></span>Pass</td><td><span class="rule-severity critical" style="background:var(--badge-green-bg);color:var(--green)">MERGED</span></td></tr>
+      <tr><td>Aug 10</td><td><code>version-governance</code></td><td><span class="dot green"></span>Pass</td><td><span class="dot green"></span>Pass</td><td><span class="dot green"></span>Pass</td><td><span class="rule-severity critical" style="background:var(--badge-green-bg);color:var(--green)">MERGED</span></td></tr>
+      <tr><td>Aug 9</td><td><code>hub-security-fixes</code></td><td><span class="dot green"></span>Pass</td><td><span class="dot yellow"></span>1 flaky</td><td><span class="dot green"></span>Pass</td><td><span class="rule-severity critical" style="background:var(--badge-green-bg);color:var(--green)">MERGED</span></td></tr>
+    </tbody>
+  </table>
+
+</div>
+
+<!-- ════════════════════ TAB: RULES ════════════════════ -->
+<div class="tab-panel" id="tab-rules">
+
+  <h2>Management Rules — CI/CD & Workspace Governance</h2>
+  <p class="lead">Quy tắc quản lý workspace, branch, merge, deploy. Áp dụng cho tất cả project trong <code>ai-project-opus</code>.</p>
+
+  <h3>1. Branch Naming Convention</h3>
+  <table class="rule-table">
+    <thead>
+      <tr><th>Pattern</th><th>Severity</th><th>Enforced</th><th>Description</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>feat/<slug></code></td>
+        <td><span class="rule-severity critical">Critical</span></td>
+        <td>✓</td>
+        <td>New features, user-facing changes</td>
+        <td><code>feat/skills-registry-governance</code></td>
+      </tr>
+      <tr>
+        <td><code>fix/<slug></code></td>
+        <td><span class="rule-severity critical">Critical</span></td>
+        <td>✓</td>
+        <td>Bug fixes</td>
+        <td><code>fix/hub-security-fixes</code></td>
+      </tr>
+      <tr>
+        <td><code>perf/<slug></code></td>
+        <td><span class="rule-severity high">High</span></td>
+        <td>✓</td>
+        <td>Performance improvements</td>
+        <td><code>perf/skill-index</code></td>
+      </tr>
+      <tr>
+        <td><code>refactor/<slug></code></td>
+        <td><span class="rule-severity high">High</span></td>
+        <td>✓</td>
+        <td>Code restructuring, no behavior change</td>
+        <td><code>refactor/server-router-split</code></td>
+      </tr>
+      <tr>
+        <td><code>docs/<slug></code></td>
+        <td><span class="rule-severity medium">Medium</span></td>
+        <td>✓</td>
+        <td>Documentation only</td>
+        <td><code>docs/architecture-after-router-split</code></td>
+      </tr>
+      <tr>
+        <td><code>test/<slug></code></td>
+        <td><span class="rule-severity medium">Medium</span></td>
+        <td>✓</td>
+        <td>Test additions or changes</td>
+        <td><code>test/harness-pytest-consolidation</code></td>
+      </tr>
+      <tr>
+        <td><code>chore/<slug></code></td>
+        <td><span class="rule-severity low">Low</span></td>
+        <td>✓</td>
+        <td>Maintenance, config, dependencies</td>
+        <td><code>chore/hub-security-fixes-and-cleanup</code></td>
+      </tr>
+      <tr>
+        <td><code>benchmark/<slug></code></td>
+        <td><span class="rule-severity low">Low</span></td>
+        <td>✓</td>
+        <td>Benchmark experiments</td>
+        <td><code>benchmark/final-taste</code></td>
+      </tr>
+      <tr>
+        <td><code>claude/<task>-<hash></code></td>
+        <td><span class="rule-severity low">Low</span></td>
+        <td>—</td>
+        <td>Auto-generated by Claude Code</td>
+        <td><code>claude/workflow-canvas-drag-drop-35308b</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>2. Merge Rules</h3>
+  <table class="rule-table">
+    <thead>
+      <tr><th>Rule</th><th>Severity</th><th>Auto</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>No direct push to <code>main</code></td>
+        <td><span class="rule-severity critical">Critical</span></td>
+        <td>✓ Branch protection</td>
+        <td>Merge only through PR or <code>git merge --no-ff</code> with descriptive message. Main branch protected on GitHub.</td>
+      </tr>
+      <tr>
+        <td>All quality gates must pass</td>
+        <td><span class="rule-severity critical">Critical</span></td>
+        <td>✓ CI check</td>
+        <td>Gate 1 (Lint) + Gate 2 (Tests) + Gate 3 (Security) must all pass before merge.</td>
+      </tr>
+      <tr>
+        <td>No sensitive data in commits</td>
+        <td><span class="rule-severity critical">Critical</span></td>
+        <td>✓ gitleaks</td>
+        <td>Finance DB, health data, user profiles — never commit. Use <code>.gitignore</code> and <code>.env</code>.</td>
+      </tr>
+      <tr>
+        <td>Resolve conflicts before merge</td>
+        <td><span class="rule-severity critical">Critical</span></td>
+        <td>✓ Git enforces</td>
+        <td>AI auto-resolves obvious conflicts; escalates only when both sides change same content.</td>
+      </tr>
+      <tr>
+        <td>Fetch + merge before push</td>
+        <td><span class="rule-severity high">High</span></td>
+        <td>✓ AI workflow</td>
+        <td>Before any push: <code>git fetch origin</code> → <code>git merge origin/main</code> → push. Remote often ahead (autosync).</td>
+      </tr>
+      <tr>
+        <td>Delete merged branches</td>
+        <td><span class="rule-severity high">High</span></td>
+        <td>— Manual</td>
+        <td>After merge, delete local + remote branch. Clean up worktrees.</td>
+      </tr>
+      <tr>
+        <td>Use <code>--no-ff</code> for feature merges</td>
+        <td><span class="rule-severity medium">Medium</span></td>
+        <td>— Convention</td>
+        <td>Preserves feature history. Merge commit message lists all included changes.</td>
+      </tr>
+      <tr>
+        <td>Conventional Commits</td>
+        <td><span class="rule-severity medium">Medium</span></td>
+        <td>✓ gitlint</td>
+        <td><code>type(scope): description</code> — type: feat|fix|perf|refactor|docs|test|chore</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>3. Branch Lifecycle</h3>
+  <div class="diagram" data-chart='{
+    "type": "flow",
+    "nodes": [
+      {"id": "create", "label": "Create Branch", "shape": "terminal"},
+      {"id": "develop", "label": "Develop + Test"},
+      {"id": "stale", "label": "Stale >7 days?", "shape": "diamond"},
+      {"id": "review", "label": "Code Review"},
+      {"id": "ci", "label": "CI Gates"},
+      {"id": "merge", "label": "Merge to Main", "shape": "terminal"},
+      {"id": "cleanup", "label": "Delete Branch + Worktree"},
+      {"id": "archive", "label": "Archive / Abandon", "shape": "io"}
+    ],
+    "edges": [
+      {"from": "create", "to": "develop"},
+      {"from": "develop", "to": "stale"},
+      {"from": "stale", "to": "archive", "label": "yes"},
+      {"from": "stale", "to": "review", "label": "no"},
+      {"from": "review", "to": "ci"},
+      {"from": "ci", "to": "merge", "label": "pass"},
+      {"from": "ci", "to": "develop", "label": "fail"},
+      {"from": "merge", "to": "cleanup"}
+    ]
+  }'></div>
+  <p class="diagram-caption">Branch lifecycle — create → develop → review → CI → merge → cleanup</p>
+
+  <h3>4. Branch Age Policy</h3>
+  <table class="rule-table">
+    <thead>
+      <tr><th>Age</th><th>Severity</th><th>Action</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>< 3 days</td>
+        <td><span class="rule-severity low">Low</span></td>
+        <td>Normal</td>
+        <td>Active development — no action needed</td>
+      </tr>
+      <tr>
+        <td>3–7 days</td>
+        <td><span class="rule-severity medium">Medium</span></td>
+        <td>Warning</td>
+        <td>Dashboard shows yellow dot. Nightly report flags it.</td>
+      </tr>
+      <tr>
+        <td>7–14 days</td>
+        <td><span class="rule-severity high">High</span></td>
+        <td>Review required</td>
+        <td>Must be merged, archived, or given extension with reason.</td>
+      </tr>
+      <tr>
+        <td>> 14 days</td>
+        <td><span class="rule-severity critical">Critical</span></td>
+        <td>Auto-delete candidate</td>
+        <td>Marked for deletion. Nightly job warns, then deletes after 21 days.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>5. Deployment Rules</h3>
+  <table class="rule-table">
+    <thead>
+      <tr><th>Rule</th><th>Severity</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Deploy only from <code>main</code></td>
+        <td><span class="rule-severity critical">Critical</span></td>
+        <td>All deployments originate from main branch. No direct deploys from feature branches.</td>
+      </tr>
+      <tr>
+        <td>Harness deploy on merge</td>
+        <td><span class="rule-severity high">High</span></td>
+        <td>When <code>harness/**</code> changes merge to main, trigger harness deployment pipeline.</td>
+      </tr>
+      <tr>
+        <td>Dashboard sync on change</td>
+        <td><span class="rule-severity high">High</span></td>
+        <td><code>health-app/dashboard.html</code> changes auto-sync to opus-vita (GitHub Pages). Already implemented.</td>
+      </tr>
+      <tr>
+        <td>No deploy during business hours (optional)</td>
+        <td><span class="rule-severity low">Low</span></td>
+        <td>Non-urgent deploys batched to off-hours. Hotfixes exempt.</td>
+      </tr>
+      <tr>
+        <td>Rollback within 15 min</td>
+        <td><span class="rule-severity high">High</span></td>
+        <td>If deploy fails health check, auto-rollback to previous commit.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>6. Data Safety Rules</h3>
+  <div class="callout risk">
+    <strong>⛔ Cấm commit/push dữ liệu nhạy cảm:</strong>
+  </div>
+  <table class="rule-table">
+    <thead>
+      <tr><th>Data Type</th><th>Location</th><th>Rule</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="rule-severity critical">Critical</span> Finance DB</td>
+        <td><code>opus-animus/opus-actio/finance.db</code>, <code>data/_local/</code></td>
+        <td>Never commit real financial data. Use <code>.gitignore</code>. No real numbers in pushed docs.</td>
+      </tr>
+      <tr>
+        <td><span class="rule-severity critical">Critical</span> Health data</td>
+        <td><code>health-data/</code>, personal logs</td>
+        <td>Personal health metrics never committed. Already in <code>.gitignore</code>.</td>
+      </tr>
+      <tr>
+        <td><span class="rule-severity high">High</span> User profile</td>
+        <td><code>user-profile/</code></td>
+        <td>Personal profile data excluded from commits.</td>
+      </tr>
+      <tr>
+        <td><span class="rule-severity high">High</span> API keys / tokens</td>
+        <td><code>.env</code>, secrets</td>
+        <td>Use <code>.env</code> (gitignored). GitHub Secrets for CI. Never hardcode.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>7. Worktree Management</h3>
+  <table class="rule-table">
+    <thead>
+      <tr><th>Rule</th><th>Severity</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Max 3 active worktrees</td>
+        <td><span class="rule-severity medium">Medium</span></td>
+        <td>Limit concurrent worktrees to avoid context fragmentation. Clean up after merge.</td>
+      </tr>
+      <tr>
+        <td>Worktree follows branch</td>
+        <td><span class="rule-severity medium">Medium</span></td>
+        <td>When branch is deleted, its worktree must be removed too. No orphaned worktrees.</td>
+      </tr>
+      <tr>
+        <td>Name worktrees descriptively</td>
+        <td><span class="rule-severity low">Low</span></td>
+        <td>Use branch name or task slug. No generic names like "tmp".</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>8. Nightly Health Check (Proposed)</h3>
+  <div class="callout warn">
+    <strong>Planned:</strong> Scheduled workflow runs daily at 02:00 UTC. Checks:
+  </div>
+  <ul style="margin:1rem 0;padding-left:1.5rem;font-size:.9rem;">
+    <li><strong>Stale branches</strong> — flag branches >7 days without activity</li>
+    <li><strong>Orphaned worktrees</strong> — detect worktrees pointing to deleted branches</li>
+    <li><strong>Test flakiness</strong> — run full test suite 3×, flag inconsistent results</li>
+    <li><strong>Dependency audit</strong> — <code>pip-audit</code> + <code>npm audit</code> for all projects</li>
+    <li><strong>Disk usage</strong> — warn if workspace exceeds 5GB</li>
+    <li><strong>Generate report</strong> — update this dashboard with fresh data</li>
+  </ul>
+
+  <h3>Quick Reference — Decision Matrix</h3>
+  <table>
+    <thead>
+      <tr><th>Scenario</th><th>Action</th><th>Who</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Push to main blocked</td><td>Check CI logs, fix failing gate, retry</td><td>AI auto</td></tr>
+      <tr><td>Conflict on merge</td><td>AI resolves obvious; escalates content conflicts</td><td>AI + User</td></tr>
+      <tr><td>Branch stale >14 days</td><td>Nightly warns → auto-delete at 21 days</td><td>AI auto</td></tr>
+      <tr><td>Test flaky</td><td>Quarantine test, create fix ticket, retest next nightly</td><td>AI auto</td></tr>
+      <tr><td>Sensitive data detected</td><td>Block push, alert, remove from staging</td><td>AI auto</td></tr>
+      <tr><td>Deploy fails health check</td><td>Auto-rollback to previous commit</td><td>AI auto</td></tr>
+      <tr><td>New project added</td><td>Scan for .gitignore, add to health matrix, set up CI</td><td>AI auto</td></tr>
+    </tbody>
+  </table>
+
+</div>
+
+<!-- ════════════════════ SCRIPTS ════════════════════ -->
+<script>
+// Tab switching
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+}
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+// Timestamp
+document.getElementById('updated').textContent = new Date().toLocaleString('vi-VN', {
+  year: 'numeric', month: 'short', day: 'numeric',
+  hour: '2-digit', minute: '2-digit'
+});
+
+// Auto-refresh
+const autoRefresh = document.getElementById('autoRefresh');
+let refreshInterval = setInterval(() => location.reload(), 60000);
+autoRefresh.addEventListener('change', () => {
+  if (autoRefresh.checked) refreshInterval = setInterval(() => location.reload(), 60000);
+  else clearInterval(refreshInterval);
+});
+</script>
+
+</body>
+</html>

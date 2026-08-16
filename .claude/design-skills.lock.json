@@ -1,0 +1,20 @@
+{
+  "hallmark": {
+    "repository": "https://github.com/Nutlope/hallmark",
+    "commit": "13ac0ec7e148655948100b6396439e481361d690",
+    "source": "skills/hallmark",
+    "installed": ".claude/skills/hallmark"
+  },
+  "design-taste-frontend": {
+    "repository": "https://github.com/Leonxlnx/taste-skill",
+    "commit": "e988add20dab0fa97d7a76781c48961c8184288e",
+    "source": "skills/taste-skill",
+    "installed": ".claude/skills/design-taste-frontend"
+  },
+  "impeccable": {
+    "repository": "https://github.com/pbakaus/impeccable",
+    "commit": "bd2535974861db28a9f4a18ec78608488cd868dd",
+    "source": ".claude/skills/impeccable",
+    "installed": ".claude/skills/impeccable"
+  }
+}

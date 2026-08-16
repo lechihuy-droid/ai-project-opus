@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multi-Agent CI/CD — Architecture Design</title>
+<link rel="stylesheet" href="../html-kit/styles.css">
+<script src="../html-kit/diagram.js" defer></script>
+<style>
+  body { max-width: 1300px; }
+
+  /* ── Agent cards ─────────────────────────────────── */
+  .agent-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .agent-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow); position: relative; }
+  .agent-card h3 { margin-top: 0; }
+  .agent-card .role { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .5rem; }
+  .agent-card .arrow-out { color: var(--accent); font-weight: 700; }
+  .agent-card .arrow-in { color: var(--green); font-weight: 700; }
+  .agent-card ul { font-size: .85rem; padding-left: 1.1rem; margin: .5rem 0; }
+  .agent-card li { margin-bottom: .25rem; }
+
+  /* ── Flow diagram boxes ──────────────────────────── */
+  .flow-row { display: flex; align-items: center; gap: .5rem; margin-bottom: .75rem; flex-wrap: wrap; }
+  .flow-box { padding: .5rem 1rem; border-radius: var(--radius); font-size: .8rem; font-weight: 600; text-align: center; min-width: 120px; }
+  .flow-box.blue { background: var(--accent-soft); border: 1px solid var(--accent); color: var(--accent); }
+  .flow-box.green { background: var(--badge-green-bg); border: 1px solid var(--green); color: var(--green); }
+  .flow-box.red { background: var(--badge-red-bg); border: 1px solid var(--red); color: var(--red); }
+  .flow-box.gray { background: var(--surface-alt); border: 1px solid var(--border); color: var(--text-muted); }
+  .flow-box.navy { background: var(--header-bg); color: var(--header-text); }
+  .flow-arrow { color: var(--text-muted); font-size: 1.2rem; }
+  .flow-label { font-size: .75rem; color: var(--text-muted); font-style: italic; }
+
+  /* ── Phase timeline ──────────────────────────────── */
+  .phase-timeline { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; margin: 1.5rem 0; counter-reset: phase; }
+  .phase-step { padding: 1.25rem; border: 1px solid var(--border); position: relative; counter-increment: phase; background: var(--surface); }
+  .phase-step:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+  .phase-step:last-child { border-radius: 0 var(--radius) var(--radius) 0; border-left: none; }
+  .phase-step:not(:last-child) { border-right: none; }
+  .phase-step::before { content: counter(phase); display: block; font-size: 1.5rem; font-weight: 700; color: var(--accent); font-family: var(--font-serif); }
+  .phase-step h4 { margin: .25rem 0; font-size: .85rem; }
+  .phase-step p { font-size: .8rem; color: var(--text-muted); margin: 0; }
+
+  /* ── Config block ────────────────────────────────── */
+  .config-block { background: var(--code-bg); color: var(--code-text); padding: 1.25rem; border-radius: var(--radius); overflow-x: auto; font-size: .82rem; line-height: 1.8; margin-bottom: 1rem; font-family: var(--font-mono); }
+  .config-block .comment { color: #6A788A; }
+  .config-block .key { color: #7DD3FC; }
+  .config-block .val { color: #86EFAC; }
+  .config-block .str { color: #FCD15E; }
+
+  /* ── Comparison ──────────────────────────────────── */
+  .vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+  .vs-col { padding: 1.25rem; border-radius: var(--radius); }
+  .vs-col.bad { background: var(--diff-del-bg); border: 1px solid var(--red); }
+  .vs-col.good { background: var(--diff-add-bg); border: 1px solid var(--green); }
+  .vs-col h4 { margin-top: 0; }
+  .vs-col ul { font-size: .85rem; padding-left: 1.1rem; }
+  .vs-col li { margin-bottom: .3rem; }
+
+  /* ── Stat tiles ──────────────────────────────────── */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .stat-tile { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; text-align: center; box-shadow: var(--shadow); }
+  .stat-tile .val { font-size: 1.75rem; font-weight: 700; font-family: var(--font-serif); color: var(--heading); }
+  .stat-tile .label { font-size: .7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; }
+
+  /* ── Rule table ──────────────────────────────────── */
+  .rule-severity { display: inline-block; padding: .15em .5em; border-radius: 3px; font-size: .7rem; font-weight: 700; text-transform: uppercase; }
+  .rule-severity.critical { background: var(--badge-red-bg); color: var(--red); }
+  .rule-severity.high { background: #FFFBEB; color: #92400E; }
+  .rule-severity.medium { background: var(--accent-soft); color: var(--accent); }
+  .rule-severity.low { background: var(--surface-alt); color: var(--text-muted); border: 1px solid var(--border); }
+  html.dark .rule-severity.high { background: #3A2E10; color: #FCD15E; }
+
+  /* ── Tabs ────────────────────────────────────────── */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  @media print { .tab-panel { display: block !important; } }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" onclick="document.documentElement.classList.toggle('dark')" aria-label="Toggle dark mode">🌙</button>
+
+<div class="doc-header">
+  <span class="badge navy">Architecture</span>
+  <h1>Multi-Agent CI/CD — Workspace Architecture</h1>
+  <p class="lead">CI/CD model designed for Claude Code (orchestrator) + Codex (coder) + Cloud Agents, synced through single GitHub repo</p>
+  <div class="meta">
+    Designed for: <code>ai-project-opus</code> &middot;
+    1 human + 3 agent types &middot;
+    Windows 11 local &middot;
+    GitHub Actions CI
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="model">Architecture Model</button>
+  <button class="tab-btn" data-tab="flow">Agent Flow</button>
+  <button class="tab-btn" data-tab="gates">Quality Gates</button>
+  <button class="tab-btn" data-tab="workflows">Workflow Config</button>
+  <button class="tab-btn" data-tab="cleanup">Branch Cleanup</button>
+</div>
+
+<!-- ════════════════════ TAB: ARCHITECTURE MODEL ════════════════════ -->
+<div class="tab-panel active" id="tab-model">
+
+  <h2>Current State vs Proposed</h2>
+
+  <div class="vs-grid">
+    <div class="vs-col bad">
+      <h4>✕ Hiện Tại</h4>
+      <ul>
+        <li>Codex push trực tiếp lên <code>main</code> — không gate</li>
+        <li>25+ remote branches, phần lớn stale >30 ngày</li>
+        <li>Không có CI test khi push — phát hiện bug muộn</li>
+        <li>Conflict phát sinh vì multi-agent cùng sửa</li>
+        <li>Branch protection: <strong>không có</strong></li>
+        <li>Worktree rác không được dọn</li>
+        <li>Không có coordination giữa agents</li>
+      </ul>
+    </div>
+    <div class="vs-col good">
+      <h4>✓ Đề Xuất</h4>
+      <ul>
+        <li>Agent push vào feature branch → CI gate → merge</li>
+        <li>Auto-cleanup: branch >14 days → delete</li>
+        <li>CI test + lint chạy trên mọi push — fail = block</li>
+        <li>Merge queue: agent fetch+merge trước khi push</li>
+        <li>Branch protection: require status check</li>
+        <li>Nightly health check tự dọn worktree/branch</li>
+        <li>Claude Code là orchestrator duy nhất, agents khác báo về Claude</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Core Principle — Single Orchestrator</h2>
+
+  <div class="callout">
+    <strong>Quy tắc vàng:</strong> Claude Code (local session) là <em>orchestrator duy nhất</em>. Codex và cloud agents là <em>workers</em>. Worker không tự quyết định merge — luôn qua orchestrator review.
+  </div>
+
+  <div class="agent-grid">
+    <div class="agent-card">
+      <div class="role rule-severity critical">Orchestrator</div>
+      <h3>🧠 Claude Code (Local)</h3>
+      <ul>
+        <li>Plan, design, review</li>
+        <li>Viết spec / BD / test plan</li>
+        <li>Giao task cho Codex</li>
+        <li>Review kết quả → approve merge</li>
+        <li>Quản lý branch + worktree lifecycle</li>
+      </ul>
+      <p class="text-small text-muted">Model: Opus 5 / Sonnet &middot; Local session</p>
+    </div>
+    <div class="agent-card">
+      <div class="role rule-severity high">Worker</div>
+      <h3>⚡ Codex (Local)</h3>
+      <ul>
+        <li>Implement code theo spec từ Claude</li>
+        <li>Viết test, fix bug</li>
+        <li>Push vào feature branch (KHÔNG push main)</li>
+        <li>Commit message: Conventional Commits</li>
+      </ul>
+      <p class="text-small text-muted">Model: GPT-4.1 / Claude Code Codex &middot; <code>codex exec</code></p>
+    </div>
+    <div class="agent-card">
+      <div class="role rule-severity medium">Worker</div>
+      <h3>☁️ Cloud Agents (GitHub)</h3>
+      <ul>
+        <li>Background tasks (sync, dashboard)</li>
+        <li>CI/CD workflows (GitHub Actions)</li>
+        <li>Nightly health checks</li>
+        <li>Push vào <code>agent/</code> branches</li>
+      </ul>
+      <p class="text-small text-muted">GitHub-hosted runners &middot; Scheduled / event-triggered</p>
+    </div>
+  </div>
+
+  <h2>Repository Topology</h2>
+
+  <div class="diagram" data-chart='{
+    "type": "flow",
+    "nodes": [
+      {"id": "claude", "label": "Claude Code (Orchestrator)", "shape": "rect"},
+      {"id": "codex", "label": "Codex (Worker)", "shape": "rect"},
+      {"id": "cloud", "label": "Cloud Agents", "shape": "io"},
+      {"id": "feat", "label": "Feature Branches", "shape": "rect"},
+      {"id": "ci", "label": "CI Gates", "shape": "diamond"},
+      {"id": "main", "label": "main (Protected)", "shape": "terminal"},
+      {"id": "gh", "label": "GitHub (Sync Hub)", "shape": "io"}
+    ],
+    "edges": [
+      {"from": "claude", "to": "codex", "label": "spec + task"},
+      {"from": "codex", "to": "feat", "label": "push code"},
+      {"from": "claude", "to": "feat", "label": "review"},
+      {"from": "feat", "to": "ci", "label": "trigger"},
+      {"from": "ci", "to": "main", "label": "pass → merge"},
+      {"from": "ci", "to": "codex", "label": "fail → fix"},
+      {"from": "cloud", "to": "gh", "label": "agent/*"},
+      {"from": "main", "to": "gh", "label": "sync"},
+      {"from": "gh", "to": "claude", "label": "fetch"}
+    ]
+  }'></div>
+  <p class="diagram-caption">Multi-agent topology — Claude orchestrates, Codex implements, CI gates protect main</p>
+
+  <h2>Why This Model?</h2>
+
+  <div class="stat-grid">
+    <div class="stat-tile">
+      <div class="val">1</div>
+      <div class="label">Orchestrator</div>
+      <p class="text-small text-muted">Claude Code — single source of truth</p>
+    </div>
+    <div class="stat-tile">
+      <div class="val">N</div>
+      <div class="label">Workers</div>
+      <p class="text-small text-muted">Codex + cloud agents — parallel execution</p>
+    </div>
+    <div class="stat-tile">
+      <div class="val">3</div>
+      <div class="label">CI Gates</div>
+      <p class="text-small text-muted">Lint → Test → Security — all must pass</p>
+    </div>
+    <div class="stat-tile">
+      <div class="val">0</div>
+      <div class="label">Direct Push Main</div>
+      <p class="text-small text-muted">Branch protection — no bypass</p>
+    </div>
+  </div>
+
+  <h3>Vì sao KHÔNG dùng direct push main?</h3>
+  <table>
+    <thead>
+      <tr><th>Vấn đề</th><th>Tần suất</th><th>Hậu quả</th><th>Giải pháp</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Codex push code chưa test</td><td><span class="rule-severity critical">Thường</span></td><td>Broken main, test fail silent</td><td>CI gate block merge</td></tr>
+      <tr><td>2 agents sửa cùng file</td><td><span class="rule-severity high">Trung bình</span></td><td>Conflict, lost changes</td><td>Feature branch isolation</td></tr>
+      <tr><td>Agent push sensitive data</td><td><span class="rule-severity critical">Hiếm nhưng nghiêm trọng</span></td><td>Leaked credentials</td><td>Security gate + gitleaks</td></tr>
+      <tr><td>Branch rác tích tụ</td><td><span class="rule-severity medium">Luôn</span></td><td>25+ stale branches, confusion</td><td>Nightly auto-cleanup</td></tr>
+    </tbody>
+  </table>
+
+</div>
+
+<!-- ════════════════════ TAB: AGENT FLOW ════════════════════ -->
+<div class="tab-panel" id="tab-flow">
+
+  <h2>Task Lifecycle — Từ Idea Đến Merge</h2>
+
+  <div class="phase-timeline">
+    <div class="phase-step">
+      <h4>Plan</h4>
+      <p>Claude Code viết spec/BD. Xác định scope, test criteria.</p>
+    </div>
+    <div class="phase-step">
+      <h4>Branch</h4>
+      <p>Tạo feature branch từ main. <code>feat/<slug></code></p>
+    </div>
+    <div class="phase-step">
+      <h4>Implement</h4>
+      <p>Codex code theo spec. Commit từng bước. Push branch.</p>
+    </div>
+    <div class="phase-step">
+      <h4>CI Gate</h4>
+      <p>Lint → Test → Security. Pass → tiếp tục. Fail → fix.</p>
+    </div>
+    <div class="phase-step">
+      <h4>Review</h4>
+      <p>Claude review diff. Kiểm tra spec compliance.</p>
+    </div>
+    <div class="phase-step">
+      <h4>Merge</h4>
+      <p><code>--no-ff</code> merge vào main. Delete branch + worktree.</p>
+    </div>
+  </div>
+
+  <h2>Sequence — Agent Interaction</h2>
+
+  <div class="diagram" data-chart='{
+    "type": "sequence",
+    "actors": ["Claude (Orch)", "Codex (Worker)", "Git Branch", "CI Runner", "Main"],
+    "steps": [
+      {"from": "Claude", "to": "Claude", "msg": "Write spec + test plan"},
+      {"from": "Claude", "to": "Git Branch", "msg": "git checkout -b feat/task"},
+      {"from": "Claude", "to": "Codex", "msg": "codex exec: implement spec"},
+      {"from": "Codex", "to": "Codex", "msg": "Write code + tests"},
+      {"from": "Codex", "to": "Git Branch", "msg": "git commit + push (Conventional)"},
+      {"from": "Git Branch", "to": "CI Runner", "msg": "Push triggers CI"},
+      {"from": "CI Runner", "to": "CI Runner", "msg": "Gate 1: Lint"},
+      {"from": "CI Runner", "to": "CI Runner", "msg": "Gate 2: Test"},
+      {"from": "CI Runner", "to": "CI Runner", "msg": "Gate 3: Security"},
+      {"from": "CI Runner", "to": "Claude", "msg": "Result: PASS / FAIL", "return": true},
+      {"from": "Claude", "to": "Codex", "msg": "Fix issues (if FAIL)", "return": true},
+      {"from": "Claude", "to": "Claude", "msg": "Review diff + verify spec"},
+      {"from": "Claude", "to": "Main", "msg": "git merge --no-ff + push"},
+      {"from": "Claude", "to": "Git Branch", "msg": "git branch -d + worktree remove"}
+    ]
+  }'></div>
+  <p class="diagram-caption">End-to-end flow — Claude plans, Codex codes, CI validates, Claude reviews & merges</p>
+
+  <h2>Agent Communication Rules</h2>
+  <table>
+    <thead>
+      <tr><th>Rule</th><th>From</th><th>To</th><th>Mechanism</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="rule-severity critical">Critical</span></td><td>Claude</td><td>Codex</td><td><code>codex exec</code> với spec inline hoặc file</td></tr>
+      <tr><td><span class="rule-severity critical">Critical</span></td><td>Codex</td><td>Claude</td><td>Git commit + push → Claude review diff</td></tr>
+      <tr><td><span class="rule-severity high">High</span></td><td>Codex</td><td>Main</td><td><strong>Cấm</strong> — chỉ push vào feature branch</td></tr>
+      <tr><td><span class="rule-severity high">High</span></td><td>Cloud Agent</td><td><code>agent/*</code></td><td>GitHub Actions → push vào <code>agent/</code> branch</td></tr>
+      <tr><td><span class="rule-severity medium">Medium</span></td><td>CI Runner</td><td>Claude</td><td>GitHub check run → Claude đọc status khi merge</td></tr>
+      <tr><td><span class="rule-severity medium">Medium</span></td><td>Claude</td><td>Cloud Agent</td><td>Workflow dispatch via <code>gh workflow run</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Conflict Resolution Strategy</h2>
+
+  <div class="diagram" data-chart='{
+    "type": "flow",
+    "nodes": [
+      {"id": "push", "label": "Agent pushes"},
+      {"id": "conflict", "label": "Conflict?", "shape": "diamond"},
+      {"id": "auto", "label": "Auto-resolvable?", "shape": "diamond"},
+      {"id": "claude-fix", "label": "Claude resolves"},
+      {"id": "test", "label": "Tests pass?", "shape": "diamond"},
+      {"id": "retry", "label": "Re-push"},
+      {"id": "done", "label": "Success", "shape": "terminal"},
+      {"id": "escalate", "label": "Escalate to human", "shape": "io"}
+    ],
+    "edges": [
+      {"from": "push", "to": "conflict"},
+      {"from": "conflict", "to": "retry", "label": "no"},
+      {"from": "conflict", "to": "auto", "label": "yes"},
+      {"from": "auto", "to": "test", "label": "yes"},
+      {"from": "auto", "to": "escalate", "label": "no"},
+      {"from": "test", "to": "done", "label": "yes"},
+      {"from": "test", "to": "claude-fix", "label": "no"},
+      {"from": "claude-fix", "to": "test"},
+      {"from": "retry", "to": "done"}
+    ]
+  }'></div>
+  <p class="diagram-caption">Conflict resolution — auto where possible, Claude reviews, human last resort</p>
+
+  <h2>Pre-Push Checklist (Codex)</h2>
+  <div class="callout">
+    <strong>Mỗi lần Codex push, Claude phải verify:</strong>
+  </div>
+  <table>
+    <thead><tr><th>#</th><th>Check</th><th>Command</th><th>Auto?</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Fetch + merge origin/main</td><td><code>git fetch origin && git merge origin/main</code></td><td>✓ Claude auto</td></tr>
+      <tr><td>2</td><td>Tests pass locally</td><td><code>pytest harness/hub/tests/ -x</code></td><td>✓ Claude auto</td></tr>
+      <tr><td>3</td><td>Lint clean</td><td><code>ruff check .</code></td><td>✓ Claude auto</td></tr>
+      <tr><td>4</td><td>No sensitive data</td><td><code>git diff --cached | grep -E "(password|secret|token)"</code></td><td>✓ Claude auto</td></tr>
+      <tr><td>5</td><td>Conventional commit message</td><td><code>git log --oneline -1 | grep -E "^(feat|fix|perf|refactor|docs|test|chore)"</code></td><td>✓ Claude enforces</td></tr>
+      <tr><td>6</td><td>Not pushing to main</td><td><code>git branch --show-current != main</code></td><td>✓ Claude enforces</td></tr>
+    </tbody>
+  </table>
+
+</div>
+
+<!-- ════════════════════ TAB: QUALITY GATES ════════════════════ -->
+<div class="tab-panel" id="tab-gates">
+
+  <h2>Quality Gate Architecture</h2>
+  <p class="lead">3 gates, chạy tuần tự. Gate trước fail → không chạy gate sau (fail-fast).</p>
+
+  <div class="phase-timeline">
+    <div class="phase-step">
+      <h4>Gate 1 — Lint</h4>
+      <p>Ruff + Prettier + gitlint. <15s.</p>
+      <p class="text-small text-muted">Fail → agent fix immediate</p>
+    </div>
+    <div class="phase-step">
+      <h4>Gate 2 — Test</h4>
+      <p>Pytest harness suite. <2min.</p>
+      <p class="text-small text-muted">Fail → agent debug + fix</p>
+    </div>
+    <div class="phase-step">
+      <h4>Gate 3 — Security</h4>
+      <p>pip-audit + gitleaks. <1min.</p>
+      <p class="text-small text-muted">Fail → block, escalate</p>
+    </div>
+    <div class="phase-step">
+      <h4>Merge Allowed</h4>
+      <p>All 3 pass → Claude merges.</p>
+      <p class="text-small text-muted">--no-ff with summary</p>
+    </div>
+  </div>
+
+  <h2>Gate 1 — Lint & Format</h2>
+  <div class="config-block">
+<span class="comment"># .github/workflows/lint.yml</span>
+<span class="key">name</span>: <span class="str">CI — Lint & Format</span>
+
+<span class="key">on</span>:
+  <span class="key">push</span>:
+    <span class="key">branches</span>: [<span class="str">main</span>]
+  <span class="key">pull_request</span>: {}
+
+<span class="key">jobs</span>:
+  <span class="key">lint</span>:
+    <span class="key">runs-on</span>: <span class="str">ubuntu-latest</span>
+    <span class="key">steps</span>:
+      - <span class="key">uses</span>: <span class="str">actions/checkout@v4</span>
+      - <span class="key">uses</span>: <span class="str">actions/setup-python@v5</span>
+        <span class="key">with</span>:
+          <span class="key">python-version</span>: <span class="str">'3.11'</span>
+      - <span class="key">name</span>: <span class="str">Install ruff</span>
+        <span class="key">run</span>: <span class="str">pip install ruff</span>
+      - <span class="key">name</span>: <span class="str">Ruff check</span>
+        <span class="key">run</span>: <span class="str">ruff check --select E,W,F,I --ignore E501 .</span>
+      - <span class="key">name</span>: <span class="str">Ruff format check</span>
+        <span class="key">run</span>: <span class="str">ruff format --check .</span>
+      - <span class="key">name</span>: <span class="str">TypeScript check</span>
+        <span class="key">if</span>: <span class="str">always()</span>
+        <span class="key">run</span>: |
+          <span class="comment"># Only if web-v3 changed</span>
+          <span class="key">cd</span> harness/hub/web-v3
+          npm ci --omit=dev 2>/dev/null || true
+          npx tsc --noEmit || true
+  </div>
+
+  <h2>Gate 2 — Test Suite</h2>
+  <div class="config-block">
+<span class="comment"># .github/workflows/test.yml</span>
+<span class="key">name</span>: <span class="str">CI — Test Suite</span>
+
+<span class="key">on</span>:
+  <span class="key">push</span>:
+    <span class="key">branches</span>: [<span class="str">main</span>]
+    <span class="key">paths</span>:
+      - <span class="str">harness/**</span>
+      - <span class="str">requirements*.txt</span>
+  <span class="key">pull_request</span>:
+    <span class="key">paths</span>:
+      - <span class="str">harness/**</span>
+
+<span class="key">jobs</span>:
+  <span class="key">test</span>:
+    <span class="key">runs-on</span>: <span class="str">ubuntu-latest</span>
+    <span class="key">steps</span>:
+      - <span class="key">uses</span>: <span class="str">actions/checkout@v4</span>
+      - <span class="key">uses</span>: <span class="str">actions/setup-python@v5</span>
+        <span class="key">with</span>:
+          <span class="key">python-version</span>: <span class="str">'3.11'</span>
+      - <span class="key">name</span>: <span class="str">Install deps</span>
+        <span class="key">run</span>: <span class="str">pip install -r harness/hub/requirements-hub.txt pytest pytest-cov</span>
+      - <span class="key">name</span>: <span class="str">Run tests</span>
+        <span class="key">run</span>: <span class="str">pytest harness/hub/tests/ -x --cov=harness/hub --cov-fail-under=70</span>
+      - <span class="key">name</span>: <span class="str">Upload coverage</span>
+        <span class="key">uses</span>: <span class="str">actions/upload-artifact@v4</span>
+        <span class="key">with</span>:
+          <span class="key">name</span>: <span class="str">coverage-report</span>
+          <span class="key">path</span>: <span class="str">.coverage</span>
+  </div>
+
+  <h2>Gate 3 — Security Scan</h2>
+  <div class="config-block">
+<span class="comment"># .github/workflows/security.yml</span>
+<span class="key">name</span>: <span class="str">CI — Security Scan</span>
+
+<span class="key">on</span>:
+  <span class="key">push</span>:
+    <span class="key">branches</span>: [<span class="str">main</span>]
+  <span class="key">pull_request</span>: {}
+
+<span class="key">jobs</span>:
+  <span class="key">security</span>:
+    <span class="key">runs-on</span>: <span class="str">ubuntu-latest</span>
+    <span class="key">steps</span>:
+      - <span class="key">uses</span>: <span class="str">actions/checkout@v4</span>
+        <span class="key">with</span>:
+          <span class="key">fetch-depth</span>: <span class="str">0</span>
+      - <span class="key">name</span>: <span class="str">Gitleaks</span>
+        <span class="key">uses</span>: <span class="str">gitleaks/gitleaks-action@v2</span>
+      - <span class="key">uses</span>: <span class="str">actions/setup-python@v5</span>
+        <span class="key">with</span>:
+          <span class="key">python-version</span>: <span class="str">'3.11'</span>
+      - <span class="key">name</span>: <span class="str">pip-audit</span>
+        <span class="key">run</span>: |
+          pip install pip-audit
+          pip-audit -r harness/hub/requirements-hub.txt
+      - <span class="key">name</span>: <span class="str">Sensitive file check</span>
+        <span class="key">run</span>: |
+          <span class="comment"># Block if sensitive paths are in the diff</span>
+          <span class="key">if</span> git diff --name-only origin/main..HEAD | grep -E "(finance\.db|\.env|health-data/)"; <span class="key">then</span>
+            <span class="key">echo</span>::error::Sensitive data detected in changes
+            <span class="key">exit</span> 1
+          <span class="key">fi</span>
+  </div>
+
+  <h2>Branch Protection Config</h2>
+  <div class="callout warn">
+    <strong>Setup on GitHub:</strong> Settings → Branches → Add rule
+  </div>
+  <div class="config-block">
+<span class="comment"># GitHub Branch Protection — main</span>
+<span class="key">Branch pattern</span>: <span class="str">main</span>
+<span class="key">Require status checks to pass</span>: <span class="val">✓</span>
+  <span class="comment">- lint (required)</span>
+  <span class="comment">- test (required)</span>
+  <span class="comment">- security (required)</span>
+<span class="key">Include administrators</span>: <span class="val">✓</span>
+<span class="key">Allow force pushes</span>: <span class="val">✗</span>
+<span class="key">Allow deletions</span>: <span class="val">✗</span>
+<span class="key">Require linear history</span>: <span class="val">✗</span>  <span class="comment"># --no-ff creates merge commits</span>
+  </div>
+
+</div>
+
+<!-- ════════════════════ TAB: WORKFLOW CONFIG ════════════════════ -->
+<div class="tab-panel" id="tab-workflows">
+
+  <h2>Complete Workflow Inventory</h2>
+
+  <table>
+    <thead>
+      <tr><th>Workflow</th><th>Trigger</th><th>Status</th><th>Duration</th><th>Files</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Lint & Format</strong></td>
+        <td><code>push, PR → **</code></td>
+        <td><span class="rule-severity high">Proposed</span></td>
+        <td><15s</td>
+        <td><code>.github/workflows/lint.yml</code></td>
+      </tr>
+      <tr>
+        <td><strong>Test Suite</strong></td>
+        <td><code>push, PR → harness/**</code></td>
+        <td><span class="rule-severity high">Proposed</span></td>
+        <td><2min</td>
+        <td><code>.github/workflows/test.yml</code></td>
+      </tr>
+      <tr>
+        <td><strong>Security Scan</strong></td>
+        <td><code>push, PR → **</code></td>
+        <td><span class="rule-severity high">Proposed</span></td>
+        <td><1min</td>
+        <td><code>.github/workflows/security.yml</code></td>
+      </tr>
+      <tr>
+        <td><strong>Version Gov DoD</strong></td>
+        <td><code>PR → harness/version-governance/**</code></td>
+        <td><span class="rule-severity critical" style="background:var(--badge-green-bg);color:var(--green)">Active</span></td>
+        <td>~4min</td>
+        <td><code>.github/workflows/version-governance-dod.yml</code></td>
+      </tr>
+      <tr>
+        <td><strong>Nexus Commands</strong></td>
+        <td><code>push main → nexus-commands/*.json</code></td>
+        <td><span class="rule-severity critical" style="background:var(--badge-green-bg);color:var(--green)">Active</span></td>
+        <td>~30s</td>
+        <td><code>.github/workflows/nexus-command.yml</code></td>
+      </tr>
+      <tr>
+        <td><strong>Dashboard Sync</strong></td>
+        <td><code>push main → health-app/dashboard.html</code></td>
+        <td><span class="rule-severity critical" style="background:var(--badge-green-bg);color:var(--green)">Active</span></td>
+        <td>~15s</td>
+        <td><code>.github/workflows/sync-dashboard.yml</code></td>
+      </tr>
+      <tr>
+        <td><strong>Nightly Health</strong></td>
+        <td><code>schedule 02:00 UTC</code></td>
+        <td><span class="rule-severity medium">Proposed</span></td>
+        <td>~5min</td>
+        <td><code>.github/workflows/nightly-health.yml</code></td>
+      </tr>
+      <tr>
+        <td><strong>Stale Branch Cleanup</strong></td>
+        <td><code>schedule 03:00 UTC daily</code></td>
+        <td><span class="rule-severity low">Proposed</span></td>
+        <td>~1min</td>
+        <td><code>.github/workflows/stale-branches.yml</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Nightly Health Check</h2>
+  <div class="config-block">
+<span class="comment"># .github/workflows/nightly-health.yml</span>
+<span class="key">name</span>: <span class="str">Nightly — Workspace Health</span>
+
+<span class="key">on</span>:
+  <span class="key">schedule</span>:
+    - <span class="key">cron</span>: <span class="str">'0 2 * * *'</span>  <span class="comment"># 02:00 UTC daily</span>
+  <span class="key">workflow_dispatch</span>: {}
+
+<span class="key">permissions</span>:
+  <span class="key">contents</span>: <span class="str">read</span>
+  <span class="key">checks</span>: <span class="str">read</span>
+  <span class="key">pull-requests</span>: <span class="str">read</span>
+
+<span class="key">jobs</span>:
+  <span class="key">health</span>:
+    <span class="key">runs-on</span>: <span class="str">ubuntu-latest</span>
+    <span class="key">steps</span>:
+      - <span class="key">uses</span>: <span class="str">actions/checkout@v4</span>
+        <span class="key">with</span>:
+          <span class="key">fetch-depth</span>: <span class="str">0</span>
+      - <span class="key">name</span>: <span class="str">Stale branch report</span>
+        <span class="key">run</span>: |
+          <span class="key">echo</span> <span class="str">"## Stale Branches (>7 days)"</span>
+          git branch -r --sort=-committerdate | <span class="key">while</span> read branch; <span class="key">do</span>
+            age=$(( ($(date +%s) - $(git log -1 --format=%ct "$branch")) / 86400 ))
+            <span class="key">if</span> [ $age -gt 7 ]; <span class="key">then</span>
+              <span class="key">echo</span> <span class="str">"- $branch: ${age}d"</span>
+            <span class="key">fi</span>
+          <span class="key">done</span>
+      - <span class="key">name</span>: <span class="str">Dependency audit</span>
+        <span class="key">run</span>: |
+          pip install pip-audit
+          pip-audit -r harness/hub/requirements-hub.txt || <span class="key">true</span>
+      - <span class="key">name</span>: <span class="str">Full test suite</span>
+        <span class="key">run</span>: |
+          pip install -r harness/hub/requirements-hub.txt pytest
+          pytest harness/hub/tests/ --tb=short || <span class="key">true</span>
+      - <span class="key">name</span>: <span class="str">Upload report</span>
+        <span class="key">if</span>: <span class="str">always()</span>
+        <span class="key">uses</span>: <span class="str">actions/upload-artifact@v4</span>
+        <span class="key">with</span>:
+          <span class="key">name</span>: <span class="str">nightly-health-report</span>
+          <span class="key">path</span>: <span class="str">health-report.md</span>
+  </div>
+
+  <h2>Stale Branch Cleanup</h2>
+  <div class="config-block">
+<span class="comment"># .github/workflows/stale-branches.yml</span>
+<span class="key">name</span>: <span class="str">Stale Branch Cleanup</span>
+
+<span class="key">on</span>:
+  <span class="key">schedule</span>:
+    - <span class="key">cron</span>: <span class="str">'0 3 * * *'</span>  <span class="comment"># 03:00 UTC daily</span>
+  <span class="key">workflow_dispatch</span>: {}
+
+<span class="key">jobs</span>:
+  <span class="key">cleanup</span>:
+    <span class="key">runs-on</span>: <span class="str">ubuntu-latest</span>
+    <span class="key">permissions</span>:
+      <span class="key">contents</span>: <span class="str">write</span>
+    <span class="key">steps</span>:
+      - <span class="key">uses</span>: <span class="str">actions/checkout@v4</span>
+        <span class="key">with</span>:
+          <span class="key">fetch-depth</span>: <span class="str">0</span>
+      - <span class="key">name</span>: <span class="str">Delete merged branches</span>
+        <span class="key">uses</span>: <span class="str">pr-tab/delete-merged-branches@v1</span>
+      - <span class="key">name</span>: <span class="str">Report stale branches</span>
+        <span class="key">run</span>: |
+          <span class="key">echo</span> <span class="str">"## Branches >14 days without activity"</span>
+          git for-each-ref --sort=-committerdate refs/remotes/origin/ \
+            --format=<span class="str">'%(refname:short) %(committerdate:relative)'</span> | <span class="key">head</span> 20
+  </div>
+
+  <h2>Optimization — Path-Based Triggers</h2>
+  <div class="callout">
+    <strong>Key insight:</strong> Không cần chạy full CI cho mọi push. Trigger theo path để tiết kiệm thời gian.
+  </div>
+  <table>
+    <thead>
+      <tr><th>Path Changed</th><th>Lint</th><th>Test</th><th>Security</th><th>Total</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>harness/**/*.py</code></td><td>✓</td><td>✓</td><td>✓</td><td>~3min</td></tr>
+      <tr><td><code>harness/hub/web-v3/**</code></td><td>✓ TS</td><td>—</td><td>—</td><td>~15s</td></tr>
+      <tr><td><code>docs/**</code></td><td>—</td><td>—</td><td>—</td><td>skip</td></tr>
+      <tr><td><code>harness/hub/requirements*.txt</code></td><td>—</td><td>✓</td><td>✓ pip-audit</td><td>~2min</td></tr>
+      <tr><td><code>nexus-commands/**</code></td><td>—</td><td>—</td><td>—</td><td>skip</td></tr>
+      <tr><td><code>health-app/**</code></td><td>—</td><td>—</td><td>—</td><td>skip</td></tr>
+    </tbody>
+  </table>
+
+</div>
+
+<!-- ════════════════════ TAB: BRANCH CLEANUP ════════════════════ -->
+<div class="tab-panel" id="tab-cleanup">
+
+  <h2>Remote Branch Audit</h2>
+  <p class="lead">Hiện có 25+ remote branches. Đây là phân loại:</p>
+
+  <table>
+    <thead>
+      <tr><th>Prefix</th><th>Count</th><th>Example</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>agent/</code></td>
+        <td>3</td>
+        <td><code>agent/add-n8n-cli-orchestration</code></td>
+        <td><span class="rule-severity high">Review → merge or delete</span></td>
+      </tr>
+      <tr>
+        <td><code>claude/</code></td>
+        <td>20+</td>
+        <td><code>claude/opus-animus-operating-model-ioy54l</code></td>
+        <td><span class="rule-severity critical">Bulk delete stale</span></td>
+      </tr>
+      <tr>
+        <td><code>chore/</code></td>
+        <td>1</td>
+        <td><code>chore/hub-security-fixes-and-cleanup</code></td>
+        <td><span class="rule-severity medium">Review</span></td>
+      </tr>
+      <tr>
+        <td><code>benchmark/</code></td>
+        <td>Local only</td>
+        <td><code>benchmark/final-taste</code></td>
+        <td><span class="rule-severity low">Archive or delete</span></td>
+      </tr>
+      <tr>
+        <td><code>docs/</code>, <code>fix/</code>, <code>refactor/</code></td>
+        <td>Local only</td>
+        <td><code>refactor/server-router-split</code></td>
+        <td><span class="rule-severity medium">Merge if ready</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Cleanup Plan</h2>
+
+  <div class="callout warn">
+    <strong>Before deleting:</strong> These commands are irreversible. Make sure you want to proceed.
+  </div>
+
+  <div class="config-block">
+<span class="comment"># 1. Find remote branches >14 days old</span>
+git fetch --prune
+git for-each-ref --sort=-committerdate refs/remotes/origin/ \
+  --format=<span class="str">'%(refname:short) %(committerdate:iso8601)'</span> | <span class="key">head</span> 30
+
+<span class="comment"># 2. Delete specific stale branches (review first!)</span>
+<span class="comment"># git push origin --delete claude/branch-name</span>
+
+<span class="comment"># 3. Delete all claude/ branches >14 days (dangerous!)</span>
+<span class="comment"># git for-each-ref --sort=-committerdate \</span>
+<span class="comment">#   --format='%(refname:short)' \</span>
+<span class="comment">#   --count=100 \</span>
+<span class="comment">#   refs/remotes/origin/ | grep '^origin/claude/' | \</span>
+<span class="comment">#   while read ref; do git push origin --delete "${ref#origin/}"; done</span>
+
+<span class="comment"># 4. Delete merged branches safely</span>
+<span class="comment"># git branch -r --merged origin/main | grep -v 'origin/main' | \</span>
+<span class="comment">#   while read ref; do git push origin --delete "${ref#origin/}"; done</span>
+  </div>
+
+  <h2>Auto-Cleanup Policy (Going Forward)</h2>
+
+  <table>
+    <thead>
+      <tr><th>Condition</th><th>Action</th><th>Who</th><th>When</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Branch merged into main</td><td>Delete remote branch</td><td>GitHub Actions</td><td>Immediately after merge</td></tr>
+      <tr><td>Branch >14 days, no activity</td><td>Comment warning on PR (if exists)</td><td>Stale bot</td><td>Nightly 03:00 UTC</td></tr>
+      <tr><td>Branch >21 days, no activity</td><td>Delete remote branch</td><td>Stale bot</td><td>Nightly 03:00 UTC</td></tr>
+      <tr><td>Local branch after merge</td><td><code>git branch -d</code></td><td>Claude (auto)</td><td>After merge confirmed</td></tr>
+      <tr><td>Worktree after branch delete</td><td><code>git worktree remove</code></td><td>Claude (auto)</td><td>After branch deleted</td></tr>
+      <tr><td><code>tmp*</code> branches</td><td>Immediate delete</td><td>Claude (auto)</td><td>On detection</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Branch Naming — Enforced Convention</h2>
+  <div class="config-block">
+<span class="comment"># .gitlab-ci.yml or pre-commit hook — validate branch names</span>
+<span class="comment"># Run: git branch | grep -vE '^(main$|((feat|fix|perf|refactor|docs|test|chore|benchmark|agent|claude)\/.*))$'</span>
+
+<span class="comment"># Valid patterns:</span>
+<span class="val">main</span>
+<span class="val">feat</span>/<span class="str">slug</span>              <span class="comment"># New features</span>
+<span class="val">fix</span>/<span class="str">slug</span>               <span class="comment"># Bug fixes</span>
+<span class="val">perf</span>/<span class="str">slug</span>              <span class="comment"># Performance</span>
+<span class="val">refactor</span>/<span class="str">slug</span>          <span class="comment"># Code restructuring</span>
+<span class="val">docs</span>/<span class="str">slug</span>              <span class="comment"># Documentation</span>
+<span class="val">test</span>/<span class="str">slug</span>              <span class="comment"># Test changes</span>
+<span class="val">chore</span>/<span class="str">slug</span>             <span class="comment"># Maintenance</span>
+<span class="val">benchmark</span>/<span class="str">slug</span>         <span class="comment"># Benchmark experiments</span>
+<span class="val">agent</span>/<span class="str">slug</span>             <span class="comment"># Cloud agent branches</span>
+<span class="val">claude</span>/<span class="str">task-hash</span>       <span class="comment"># Claude Code auto-generated</span>
+
+<span class="comment"># Invalid (will be flagged):</span>
+<span class="red">tmp-base</span>               <span class="comment"># → delete</span>
+<span class="red">tmp2</span>                   <span class="comment"># → delete</span>
+<span class="red">b8, b9, c1, c2, d1</span>     <span class="comment"># → rename or delete</span>
+  </div>
+
+</div>
+
+<!-- ════════════════════ SCRIPTS ════════════════════ -->
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+}
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+</script>
+
+</body>
+</html>

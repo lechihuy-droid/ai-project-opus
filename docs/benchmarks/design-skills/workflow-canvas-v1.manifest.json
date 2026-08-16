@@ -1,0 +1,79 @@
+{
+  "target_id": "workflow-canvas-v1",
+  "repository_commit": "6a57162298b29093f8d10b3f89c9bd6137ad63c1",
+  "application": "harness/hub/web-v3",
+  "primary_source": "harness/hub/web-v3/src/pages/WorkflowsPage.tsx",
+  "route": "/#/workflows",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "fixture": {
+    "id": "software-delivery",
+    "workflow": "harness/hub/workflows/software-delivery.workflow.yaml",
+    "layout": "harness/hub/workflows/software-delivery.layout.json",
+    "node_count": 19,
+    "edge_count": 18,
+    "node_types": {
+      "agent": 16,
+      "validate": 3
+    }
+  },
+  "state": {
+    "mode": "design",
+    "workflow": "software-delivery",
+    "sidebar": "open",
+    "inspector": "open",
+    "inspector_tab": "overview",
+    "run_log": "collapsed",
+    "selected_node": "validate-design",
+    "zoom": "fit",
+    "validation_state": "none_active",
+    "minimap": "present_always_visible_derived_from_layout_zoom_pan",
+    "transient_popovers": "closed",
+    "menus": "closed",
+    "hover_state": "none",
+    "drag_state": "none",
+    "edge_draft": "none"
+  },
+  "runtime": {
+    "frontend": "vite / pnpm dev",
+    "backend": "python harness/hub/server.py",
+    "api_proxy": "127.0.0.1:8799",
+    "token_placeholder": "<BENCHMARK_HUB_TOKEN>"
+  },
+  "reproduction_procedure": [
+    "checkout baseline commit",
+    "start backend with explicit HUB_TOKEN",
+    "start frontend",
+    "open /#/workflows?k=<BENCHMARK_HUB_TOKEN>",
+    "wait for workflow API to load",
+    "explicitly select workflow software-delivery",
+    "wait for software-delivery.layout.json positions to resolve",
+    "wait for fit() / requestAnimationFrame to settle",
+    "explicitly select node validate-design",
+    "ensure Inspector tab = Overview",
+    "ensure mode = Design",
+    "ensure RunLog = collapsed",
+    "ensure no popovers/menus/hover/drag state",
+    "verify viewport = 1440x900"
+  ],
+  "determinism_rules": [
+    "DO NOT use API rows[0] as workflow selection",
+    "DO NOT rely on default selected node",
+    "DO NOT capture before layout fetch + fit() settle",
+    "DO NOT use an arbitrary HUB_TOKEN",
+    "DO NOT use a different viewport",
+    "DO NOT alter fixture/layout files",
+    "DO NOT attach a live run"
+  ],
+  "screenshot": {
+    "status": "captured",
+    "path": "docs/benchmarks/design-skills/screenshots/workflow-canvas-v1-baseline.png",
+    "automation": "python_playwright_system_edge",
+    "required_viewport": {
+      "width": 1440,
+      "height": 900
+    }
+  }
+}
