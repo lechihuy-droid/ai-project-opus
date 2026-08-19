@@ -1,0 +1,67 @@
+{
+  "schema_version": "health.v2",
+  "date": "2026-08-19",
+  "meals": [
+    {
+      "time": "12:35",
+      "name": "Lunch",
+      "source": "photo+text",
+      "items": [
+        {
+          "name": "Conbini bento 1 box",
+          "grams": 420,
+          "kcal": 650,
+          "protein": 25.0,
+          "carb": 82.0,
+          "fat": 24.0,
+          "sugar": 10.0,
+          "added_sugar_estimated": 2.0,
+          "sugar_confidence": "low",
+          "fiber": 4.0,
+          "saturated_fat": 7.0,
+          "sodium_mg": 1700,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 650,
+      "total_protein": 25.0,
+      "total_carb": 82.0,
+      "total_fat": 24.0,
+      "total_sugar": 10.0,
+      "total_added_sugar_estimated": 2.0,
+      "total_fiber": 4.0,
+      "total_saturated_fat": 7.0,
+      "total_sodium_mg": 1700,
+      "total_alcohol": 0
+    }
+  ],
+  "daily_totals": {
+    "kcal": 650,
+    "protein_g": 25.0,
+    "carb_g": 82.0,
+    "fat_g": 24.0,
+    "fiber_g": 4.0,
+    "sugar_g": 10.0,
+    "added_sugar_estimated_g": 2.0,
+    "sodium_mg": 1700,
+    "alcohol_g": 0
+  },
+  "sugar_tracking": {
+    "target_total_sugar_g": 50,
+    "target_added_sugar_g": 25,
+    "current_total_sugar_g": 10.0,
+    "current_added_sugar_estimated_g": 2.0,
+    "remaining_total_sugar_g": 40.0,
+    "remaining_added_sugar_g": 23.0,
+    "status": "good",
+    "sources": [
+      {"meal": "Lunch", "item": "Conbini bento 1 box", "sugar_g": 10.0, "added_sugar_estimated_g": 2.0, "confidence": "low"}
+    ],
+    "notes": "Image shows a partial nutrition label for one visible piece: 119 kcal, protein 2.8g, fat 4.3g, carb 17.3g, salt equivalent 0.16g. Full bento nutrition is estimated because the complete bento label is not visible."
+  },
+  "water_ml": 0,
+  "steps": 0,
+  "sleep_hours": 0,
+  "weight_kg": 0,
+  "notes": "Lunch logged from text plus partial photo label. User ate one convenience store bento. Full bento estimated at 650 kcal because only a partial per-piece label is visible in the uploaded image."
+}
