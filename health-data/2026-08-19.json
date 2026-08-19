@@ -3,6 +3,53 @@
   "date": "2026-08-19",
   "meals": [
     {
+      "time": "08:30",
+      "name": "Breakfast",
+      "source": "photo",
+      "items": [
+        {
+          "name": "Sweet pastry 1 piece",
+          "grams": 75,
+          "kcal": 183,
+          "protein": 2.3,
+          "carb": 32.4,
+          "fat": 5.0,
+          "sugar": 32.0,
+          "added_sugar_estimated": 28.0,
+          "sugar_confidence": "high",
+          "fiber": 0.4,
+          "saturated_fat": 2.6,
+          "sodium_mg": 157,
+          "alcohol": 0
+        },
+        {
+          "name": "Yogurt 180g",
+          "grams": 180,
+          "kcal": 158,
+          "protein": 5.8,
+          "carb": 21.2,
+          "fat": 5.6,
+          "sugar": 21.2,
+          "added_sugar_estimated": 10.0,
+          "sugar_confidence": "high",
+          "fiber": 0.0,
+          "saturated_fat": 3.0,
+          "sodium_mg": 79,
+          "alcohol": 0
+        }
+      ],
+      "total_kcal": 341,
+      "total_protein": 8.1,
+      "total_carb": 53.6,
+      "total_fat": 10.6,
+      "total_sugar": 53.2,
+      "total_added_sugar_estimated": 38.0,
+      "total_fiber": 0.4,
+      "total_saturated_fat": 5.6,
+      "total_sodium_mg": 236,
+      "total_alcohol": 0
+    },
+    {
       "time": "12:35",
       "name": "Lunch",
       "source": "photo+text",
@@ -36,32 +83,35 @@
     }
   ],
   "daily_totals": {
-    "kcal": 650,
-    "protein_g": 25.0,
-    "carb_g": 82.0,
-    "fat_g": 24.0,
-    "fiber_g": 4.0,
-    "sugar_g": 10.0,
-    "added_sugar_estimated_g": 2.0,
-    "sodium_mg": 1700,
+    "kcal": 991,
+    "protein_g": 33.1,
+    "carb_g": 135.6,
+    "fat_g": 34.6,
+    "fiber_g": 4.4,
+    "sugar_g": 63.2,
+    "added_sugar_estimated_g": 40.0,
+    "saturated_fat_g": 12.6,
+    "sodium_mg": 1936,
     "alcohol_g": 0
   },
   "sugar_tracking": {
     "target_total_sugar_g": 50,
     "target_added_sugar_g": 25,
-    "current_total_sugar_g": 10.0,
-    "current_added_sugar_estimated_g": 2.0,
-    "remaining_total_sugar_g": 40.0,
-    "remaining_added_sugar_g": 23.0,
-    "status": "good",
+    "current_total_sugar_g": 63.2,
+    "current_added_sugar_estimated_g": 40.0,
+    "remaining_total_sugar_g": -13.2,
+    "remaining_added_sugar_g": -15.0,
+    "status": "over",
     "sources": [
+      {"meal": "Breakfast", "item": "Sweet pastry 1 piece", "sugar_g": 32.0, "added_sugar_estimated_g": 28.0, "confidence": "high"},
+      {"meal": "Breakfast", "item": "Yogurt 180g", "sugar_g": 21.2, "added_sugar_estimated_g": 10.0, "confidence": "high"},
       {"meal": "Lunch", "item": "Conbini bento 1 box", "sugar_g": 10.0, "added_sugar_estimated_g": 2.0, "confidence": "low"}
     ],
-    "notes": "Image shows a partial nutrition label for one visible piece: 119 kcal, protein 2.8g, fat 4.3g, carb 17.3g, salt equivalent 0.16g. Full bento nutrition is estimated because the complete bento label is not visible."
+    "notes": "Breakfast labels were visible. Pastry label per piece: 183 kcal, protein 2.3g, fat 5.0g, carb 32.4g, sugar 32.0g, fiber 0.4g, salt equivalent 0.4g. Yogurt label per 180g: 158 kcal, protein 5.8g, fat 5.6g, carb 21.2g, sugar 21.2g, fiber 0g, salt equivalent 0.2g. Lunch bento remains estimated because full bento label was not visible."
   },
   "water_ml": 0,
   "steps": 0,
   "sleep_hours": 0,
   "weight_kg": 0,
-  "notes": "Lunch logged from text plus partial photo label. User ate one convenience store bento. Full bento estimated at 650 kcal because only a partial per-piece label is visible in the uploaded image."
+  "notes": "Breakfast logged from two photo labels: one sweet pastry and one 180g yogurt. Lunch logged from text plus partial photo label. Sugar target exceeded after breakfast plus lunch; avoid additional sweet foods today."
 }
